@@ -39,8 +39,23 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
         // TODO: implement separate notifications for added, removed, changed and moved
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
             @Override
-            public void onChanged() {
-                notifyDataSetChanged();
+            public void onChanged(EventType type, int index, int oldIndex) {
+                switch (type) {
+                    case Added:
+                        notifyItemInserted(index);
+                        break;
+                    case Changed:
+                        notifyItemChanged(index);
+                        break;
+                    case Removed:
+                        notifyItemRemoved(index);
+                        break;
+                    case Moved:
+                        notifyItemMoved(oldIndex, index);
+                        break;
+                    default:
+                        throw new IllegalStateException("Incomplete case statement");
+                }
             }
         });
 

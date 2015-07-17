@@ -3,13 +3,15 @@ package com.firebase.ui;
 import com.firebase.client.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * This class implements an array-like collection on top of a Firebase location.
  */
 class FirebaseArray implements ChildEventListener {
     public interface OnChangedListener {
-        void onChanged();
+        enum EventType { Added, Changed, Removed, Moved }
+        void onChanged(EventType type, int index, int oldIndex);
     }
 
     private Query mQuery;
@@ -53,25 +55,27 @@ class FirebaseArray implements ChildEventListener {
             index = getIndexForKey(previousChildKey) + 1;
         }
         mSnapshots.add(index, snapshot);
-        notifyChangedListeners();
+        notifyChangedListeners(OnChangedListener.EventType.Added, index);
     }
 
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.set(index, snapshot);
-        notifyChangedListeners();
+        notifyChangedListeners(OnChangedListener.EventType.Changed, index);
     }
 
     public void onChildRemoved(DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
-        notifyChangedListeners();
+        notifyChangedListeners(OnChangedListener.EventType.Removed, index);
     }
 
     public void onChildMoved(DataSnapshot snapshot, String previousChildKey) {
-        onChildRemoved(snapshot);
-        onChildAdded(snapshot, previousChildKey);
-        // TODO: this will send two change notifications, which is wrong
+        int oldIndex = getIndexForKey(snapshot.getKey());
+        mSnapshots.remove(oldIndex);
+        int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
+        mSnapshots.add(newIndex, snapshot);
+        notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
     }
 
     public void onCancelled(FirebaseError firebaseError) {
@@ -82,9 +86,12 @@ class FirebaseArray implements ChildEventListener {
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
-    protected void notifyChangedListeners() {
+    protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
+        notifyChangedListeners(type, index, -1);
+    }
+    protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
-            mListener.onChanged();
+            mListener.onChanged(type, index, oldIndex);
         }
     }
 }

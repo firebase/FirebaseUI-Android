@@ -154,7 +154,7 @@ public class FirebaseArrayOfObjectsTest extends AndroidTestCase {
     public static void runAndWaitUntil(final FirebaseArray array, Firebase ref, Runnable task, Callable<Boolean> done) throws InterruptedException {
         final java.util.concurrent.Semaphore semaphore = new java.util.concurrent.Semaphore(0);
         array.setOnChangedListener(new FirebaseArray.OnChangedListener() {
-            public void onChanged() {
+            public void onChanged(FirebaseArray.OnChangedListener.EventType type, int index, int oldIndex) {
                 semaphore.release();
             }
         });
