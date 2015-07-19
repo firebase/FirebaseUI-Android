@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 
@@ -36,7 +37,6 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
         mModelClass = modelClass;
         mSnapshots = new FirebaseArray(ref);
 
-        // TODO: implement separate notifications for added, removed, changed and moved
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
             @Override
             public void onChanged(EventType type, int index, int oldIndex) {
@@ -73,6 +73,8 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
     public T getItem(int position) {
         return mSnapshots.getItem(position).getValue(mModelClass);
     }
+
+    public Firebase getRef(int position) { return mSnapshots.getItem(position).getRef(); }
 
     @Override
     public long getItemId(int position) {
