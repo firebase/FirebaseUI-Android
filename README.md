@@ -95,11 +95,127 @@ In the above snippet we have a query for the last 5 chat messages. Whenever thos
 we get the `ChatMessage` objects from the `DataSnapshot` with `getValue(ChatMessage.class)`. The Firebase Android client will
 then read the properties that it got from the database and map them to the fields of our `ChatMessage` class.
 
-But when we build our app using the `FirebaseListAdapter`, we often won't need to register our own EventListener. The
+But when we build our app using FirebaseUI, we often won't need to register our own EventListener. The
 `FirebaseListAdapter` takes care of that for us.
 
 ### Subclassing the FirebaseListAdapter
 
+#### Look up the ListView
 
+We'll assume you've already added a `ListView` to your layout and have looked it up in the `onCreate` method of your activity:
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        ListView messagesView = (ListView) findViewById(R.id.messages_list);
+    }
+
+#### Set up connection to Firebase
+
+First we'll tell Firebase that we intend to use it in this activity and set up a reference to the database of chat message.
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        ListView messagesView = (ListView) findViewById(R.id.messages_list);
+
+        Firebase.setAndroidContext(this);
+        Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+    }
+
+#### Create custom FirebaseListAdapter subclass
+
+Next, we need to create a subclass of the `FirebaseListAdapter` with the correct parameters and implement its `populateView` method:
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        ListView messagesView = (ListView) findViewById(R.id.messages_list);
+
+        Firebase.setAndroidContext(this);
+        Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+
+        mAdapter = new FirebaseListAdapter<ChatMessage>(ChatMessage.class, android.R.layout.two_line_list_item, this, ref) {
+            @Override
+            protected void populateView(View view, ChatMessage chatMessage) {
+                ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
+                ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
+
+            }
+        };
+        messagesView.setListAdapter(mAdapter);
+    }
+
+In this last snippet we create a subclass of `FirebaseListAdapter`.
+We tell is that it is of type `<ChatMessage>`, so that it is a type-safe collection. We also tell it to use
+`ChatMessage.class` when reading messages from the database. Next we say that each message will be displayed in
+a `android.R.layout.two_line_list_item`, which is a built-in layout in Android that has two `TextView` elements
+under each other. Then we say that the adapter belongs to `this` activity and that it needs to monitor the
+data location in `ref`.
+
+We also have to override the `populateView()` method, which is abstract in the `FirebaseListAdapter`. The
+`FirebaseListAdapter` will call our `populateView` method for each `ChatMessage` it finds in the database.
+It passes us the `ChatMessage` and a `View`, which is an instance of the `android.R.layout.two_line_list_item`
+we specified in the constructor. So what we do in our subclass is map the fields from `chatMessage` to the
+correct `TextView` controls from the `view`. The code is a bit verbose, but hey... that's Java and Android for you.
+
+#### Clean up when the activity is destroyed
+
+Finally, we need to clean up after ourselves. When the activity is destroyed, we need to call `release()`
+on the `ListAdapter` so that it can stop listening for changes in the Firebase database.
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mAdapter.cleanup();
+    }
+
+#### Sending chat messages
+
+Remember when we showed how to use the `ChatMessage` class in `setValue()`.
+We can now use that in our activity to allow sending a message:
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        ListView messagesView = (ListView) findViewById(R.id.messages_list);
+
+        Firebase.setAndroidContext(this);
+        Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+
+        mAdapter = new FirebaseListAdapter<ChatMessage>(ChatMessage.class, android.R.layout.two_line_list_item, this, ref) {
+            @Override
+            protected void populateView(View view, ChatMessage chatMessage) {
+                ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
+                ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
+            }
+        };
+        setListAdapter(mAdapter);
+
+        final EditText mMessage = (EditText) findViewById(R.id.message_text);
+        findViewById(R.id.send_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRef.push().setValue(new ChatMessage("puf", mMessage.getText().toString()));
+                mMessage.setText("");
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mAdapter.cleanup();
+    }
+
+Et voila: a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
 
 ## Contributing to the library
