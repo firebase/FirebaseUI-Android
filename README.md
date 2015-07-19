@@ -35,7 +35,7 @@ In your app, create a class that represents the data from Firebase that you want
 
 So say we have these chat messages in our Firebase database:
 
-![Chat messages in dashboard](doc-images/5-chat-messages-in-dashboard.png "Chat messages in dashboard")
+![Chat messages in dashboard](doc-images/6-chat-messages-in-dashboard.png "Chat messages in dashboard")
 
 We can represent a chat message with this Java class:
 
