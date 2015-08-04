@@ -82,7 +82,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
      */
     public FirebaseListAdapter(Activity activity, Class<T> modelClass, int modelLayout, Firebase ref) {
-        this(activity, modelClass, modelLayout, (Query)ref);
+        this(activity, modelClass, modelLayout, (Query) ref);
     }
 
     public void cleanup() {
@@ -96,7 +96,9 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) { return mSnapshots.getItem(i); }
+    public T getItem(int i) { return mSnapshots.getItem(i).getValue(mModelClass); }
+
+    public Firebase getRef(int position) { return mSnapshots.getItem(position).getRef(); }
 
     @Override
     public long getItemId(int i) {
