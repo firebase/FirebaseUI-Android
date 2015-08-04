@@ -122,7 +122,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     /**
      * Each time the data at the given Firebase location changes, this method will be called for each item that needs
      * to be displayed. The arguments correspond to the mLayout and mModelClass given to the constructor of this class.
-     * <p/>
+     * <p>
      * Your implementation should populate the view using the data contained in the model.
      *
      * @param v     The view to populate

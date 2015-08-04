@@ -23,7 +23,6 @@ fi
 #  VALIDATE CLIENT VERSIONS  #
 ##############################
 
-#VERSION=$(grep version pom.xml |head -2|tail -1|awk -F '>' '{print $2}'|awk -F '<' '{print $1}'|awk -F '-' '{print $1}')
 VERSION=$(grep versionName library/build.gradle | awk '{print $2}' | awk '{split($0, a, "\"")}{print a[2]}')
 read -p "We are releasing $VERSION, is this correct? (press enter to continue) " DERP
 if [[ ! -z $DERP ]]; then
@@ -45,12 +44,21 @@ fi
 #  exit 1
 #fi
 
+##########################
+# GENERATE RELEASE BUILD #
+##########################
+
+#gradle clean assembleRelease generateReleaseJavadoc
+gradle clean assembleRelease
+
 ###################
 # DEPLOY TO MAVEN #
 ###################
 read -p "Next, make sure this repo is clean and up to date. We will be kicking off a deploy to maven." DERP
-mvn clean
-mvn release:clean release:prepare release:perform -Dtag=v$VERSION
+#mvn clean
+#mvn release:clean release:prepare release:perform -Dtag=v$VERSION
+#mvn install:install-file -Dfile=/Users/puf/Github/FirebaseUI-Android/library/build/outputs/aar/library-release.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=0.0.3 -Dpackaging=aar
+
 
 if [[ $? -ne 0 ]]; then
   echo "error: Error building and releasing to maven."
@@ -64,7 +72,7 @@ fi
 # Push the new git tag created by Maven
 git push --tags
 if [[ $? -ne 0 ]]; then
-  echo "Error: Failed to do 'git push --tags' from geofire repo."
+  echo "Error: Failed to do 'git push --tags' from FirebaseUI-Android repo."
   exit 1
 fi
 
@@ -75,7 +83,7 @@ fi
 echo "Manual steps:"
 echo "  1) release maven repo at http://oss.sonatype.org/"
 echo "  2) Deploy new docs: $> firebase deploy"
-echo "  3) Update the release notes for FirebaseUI-Android version ${VERSION} on GitHub and add jars for downloading"
+echo "  3) Update the release notes for FirebaseUI-Android version ${VERSION} on GitHub and add aar for downloading"
 echo "  4) Update firebase-versions.json in the firebase-clients repo with the changelog information"
 echo "  5) Tweet @FirebaseRelease: 'v${VERSION} of FirebaseUI-Android is available https://github.com/firebase/FirebaseUI-Android"
 echo ---
