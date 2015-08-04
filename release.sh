@@ -57,7 +57,7 @@ gradle clean assembleRelease
 read -p "Next, make sure this repo is clean and up to date. We will be kicking off a deploy to maven." DERP
 #mvn clean
 #mvn release:clean release:prepare release:perform -Dtag=v$VERSION
-#mvn install:install-file -Dfile=/Users/puf/Github/FirebaseUI-Android/library/build/outputs/aar/library-release.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=0.0.3 -Dpackaging=aar
+mvn install:install-file -Dfile=library/build/outputs/aar/library-release.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=$VERSION -Dpackaging=aar
 
 
 if [[ $? -ne 0 ]]; then
