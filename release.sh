@@ -16,7 +16,7 @@ fi
 # Make sure the geofire branch does not have existing changes
 if ! git --git-dir=".git" diff --quiet; then
   echo "Error: Your FirebaseUI-Android repo has existing changes on the master branch. Make sure you commit and push the new version before running this release script."
-#  exit 1
+  exit 1
 fi
 
 ##############################
