@@ -82,9 +82,9 @@ fi
 
 echo "Manual steps:"
 echo "  1) release maven repo at http://oss.sonatype.org/"
-echo "  2) Deploy new docs: $> firebase deploy"
+# echo "  2) Deploy new docs: $> firebase deploy"
 echo "  3) Update the release notes for FirebaseUI-Android version ${VERSION} on GitHub and add aar for downloading"
-echo "  4) Update firebase-versions.json in the firebase-clients repo with the changelog information"
-echo "  5) Tweet @FirebaseRelease: 'v${VERSION} of FirebaseUI-Android is available https://github.com/firebase/FirebaseUI-Android"
+#echo "  4) Update firebase-versions.json in the firebase-clients repo with the changelog information"
+#echo "  5) Tweet @FirebaseRelease: 'v${VERSION} of FirebaseUI-Android is available https://github.com/firebase/FirebaseUI-Android"
 echo ---
 echo "Done! Woo!"
