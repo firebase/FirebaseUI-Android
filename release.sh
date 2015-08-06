@@ -16,7 +16,7 @@ fi
 # Make sure the geofire branch does not have existing changes
 if ! git --git-dir=".git" diff --quiet; then
   echo "Error: Your FirebaseUI-Android repo has existing changes on the master branch. Make sure you commit and push the new version before running this release script."
-  exit 1
+#  exit 1
 fi
 
 ##############################
@@ -26,7 +26,7 @@ fi
 VERSION=$(grep versionName library/build.gradle | awk '{print $2}' | awk '{split($0, a, "\"")}{print a[2]}')
 read -p "We are releasing $VERSION, is this correct? (press enter to continue) " DERP
 if [[ ! -z $DERP ]]; then
-  echo "Cancelling release, please update pom.xml to desired version"
+  echo "Cancelling release, please update library/build.gradle with the desired version"
 fi
 
 # Ensure there is not an existing git tag for the new version
@@ -55,10 +55,12 @@ gradle clean assembleRelease
 # DEPLOY TO MAVEN #
 ###################
 read -p "Next, make sure this repo is clean and up to date. We will be kicking off a deploy to maven." DERP
-#mvn clean
-#mvn release:clean release:prepare release:perform -Dtag=v$VERSION
-mvn install:install-file -Dfile=library/build/outputs/aar/library-release.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=$VERSION -Dpackaging=aar
-
+#the next line perform an entire build+release from maven, meaning it does not generate an aar
+mvn release:clean release:prepare release:perform -Dtag=v$VERSION
+#the next line installs the output of build.gradle into (local) maven, but does not tag it in git
+#mvn install:install-file -Dfile=library/build/outputs/aar/library-release.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=$VERSION -Dpackaging=aar
+#this runs a gradle task that uploads the aar file to maven central
+#gradle uploadArchives
 
 if [[ $? -ne 0 ]]; then
   echo "error: Error building and releasing to maven."

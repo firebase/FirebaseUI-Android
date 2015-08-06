@@ -220,6 +220,14 @@ We can now use that in our activity to allow sending a message:
 Et voila: a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
 
 
+## Deployment
+
+* log onto the build box
+* ensure that appcompat-v7 and recyclerview-v7 are in the local maven
+* checkout and update the master branch
+* `./release.sh` to build the client and update maven
+* close/release the repository from sonatype
+
 ## Contributor License Agreements
 
 We'd love to accept your sample apps and patches! Before we can take them, we
