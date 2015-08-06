@@ -105,7 +105,6 @@ signing {
     sign configurations.archives
 }
 
-
 uploadArchives {
     configuration = configurations.archives
     repositories.mavenDeployer {
@@ -123,9 +122,9 @@ uploadArchives {
             url 'https://github.com/firebase/FirebaseUI-Android'
 
             scm {
+                url 'https://github.com/firebase/FirebaseUI-Android'
                 connection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
                 developerConnection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
-                url 'https://github.com/firebase/FirebaseUI-Android'
             }
 
             organization {
