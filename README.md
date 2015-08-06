@@ -222,10 +222,28 @@ Et voila: a minimal, yet fully functional, chat app in about 30 lines of code. N
 
 ## Deployment
 
+### To get the build server ready to build/deploy FirebaseUI-Android
+
+* Install a JDK (if it's not installed yet):
+* `sudo apt-get install default-jdk`
+* Run gradlew (which will install gradle if it's not yet installed)
+* Install the Android SDK tool for Linux
+* `wget http://dl.google.com/android/android-sdk_r22.0.5-linux.tgz`
+* `tar -xvzf android-sdk_r22.0.5-linux.tgz`
+* Add the android SDK path to `.bashrc`:
+* `export ANDROID_HOME=~/android-sdk-linux/`
+* `export PATH=$PATH:~/android-sdk-linux/tools`
+* Install the Android SDK needed for FirebaseUI
+* `android update sdk -u`
+* `android list sdk --all`
+* `android update sdk -u --all --filter platform-tools,android-22,extra-android-support`
+* `android update sdk --no-ui --filter extra`
+
+### to build/deploy
+
 * log onto the build box
-* ensure that appcompat-v7 and recyclerview-v7 are in the local maven
 * checkout and update the master branch
-* `./release.sh` to build the client and update maven
+* `./release.sh` to build the library and update maven
 * close/release the repository from sonatype
 
 ## Contributor License Agreements
