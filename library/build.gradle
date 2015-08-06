@@ -8,7 +8,7 @@ android {
         minSdkVersion 10
         targetSdkVersion 22
         versionCode 1
-        versionName "0.1.0"
+        versionName "0.0.5"
     }
     buildTypes {
         release {
@@ -32,6 +32,117 @@ android {
 //        options.links("http://d.android.com/reference/");
 //    }
 //}
+
+apply plugin: 'maven'
+
+task createPom << {
+    pom {
+        project {
+            groupId 'com.firebase'
+            artifactId 'firebase-ui'
+            version '0.0.5-SNAPSHOT'
+
+            /* TODO: generate this
+            build {
+                plugins {
+                    plugin {
+                        groupId = 'org.apache.maven.plugins'
+                        artifactId = 'maven-compiler-plugin'
+                        configuration {
+                            source = '1.6'
+                            target = '1.6'
+                        }
+                    }
+                }
+            }
+              <build>
+                <plugins>
+                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                      <source>1.6</source>
+                      <target>1.6</target>
+                    </configuration>
+                  </plugin>
+                </plugins>
+              </build>
+             */
+            dependencies {
+                compile 'com.android.support:appcompat-v7:22.2.0'
+                compile 'com.firebase:firebase-client-android:2.3.1'
+                compile 'com.android.support:recyclerview-v7:22.2.0'
+            }
+            licenses {
+                license {
+                    name 'MIT'
+                    url 'http://firebase.mit-license.org'
+                }
+            }
+            scm {
+                connection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
+                developerConnection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
+                url 'https://github.com/firebase/FirebaseUI-Android'
+            }
+        }
+    }.writeTo("pom.xml")
+}
+
+version = "0.0.5"
+group = "com.firebase"
+
+configurations {
+    archives {
+        extendsFrom configurations.default
+    }
+}
+
+apply plugin: 'signing'
+
+signing {
+    required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+
+uploadArchives {
+    configuration = configurations.archives
+    repositories.mavenDeployer {
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+        repository(url: sonatypeRepo) {
+            authentication(userName: sonatypeUsername,
+                    password: sonatypePassword)
+        }
+
+        pom.project {
+            name 'FirebaseUI library'
+            packaging 'aar'
+            description 'FirebaseUI library for Android applications'
+            url 'https://github.com/firebase/FirebaseUI-Android'
+
+            scm {
+                connection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
+                developerConnection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
+                url 'https://github.com/firebase/FirebaseUI-Android'
+            }
+
+            organization {
+                name 'Firebase'
+                url 'https://www.firebase.com/'
+            }
+
+            licenses {
+                license {
+                    name 'MIT'
+                    url 'http://firebase.mit-license.org'
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
