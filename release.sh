@@ -50,6 +50,7 @@ fi
 
 #gradle clean assembleRelease generateReleaseJavadoc
 gradle clean assembleRelease
+# gradle uploadArchives
 
 ###################
 # DEPLOY TO MAVEN #

@@ -230,10 +230,45 @@ with:
 
 ## Deployment
 
+### To get the build server ready to build/deploy FirebaseUI-Android
+
+* Install a JDK (if it's not installed yet):
+* `sudo apt-get install default-jdk`
+* Run `./gradlew` (which will install gradle if it's not yet installed)
+* Install the Android SDK tool for Linux
+* `wget http://dl.google.com/android/android-sdk_r22.0.5-linux.tgz`
+* `tar -xvzf android-sdk_r22.0.5-linux.tgz`
+* Add the android SDK path to `.bashrc`:
+* `export ANDROID_HOME=~/android-sdk-linux/`
+* `export PATH=$PATH:~/android-sdk-linux/tools`
+* Install the Android SDK needed for FirebaseUI
+* `android update sdk -u`
+* `android list sdk --all`
+* `android update sdk -u --all --filter platform-tools,android-22,extra-android-support`
+* `android update sdk --no-ui --filter extra`
+* The Android aapt tool is 32-bit only. If the machine is 64-bit, we'll need to install some compatibility libraries:
+* `uname -a`
+* > Linux puf 3.16.0-45-generic #60~14.04.1-Ubuntu SMP Fri Jul 24 21:16:23 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+* `sudo apt-get install lib32stdc++6`
+* `sudo apt-get install lib32z1`
+* Run `./gradlew` to ensure it loads/parses the project
+* Now run a build `./gradlew build`
+* Set up for signing and uploading the aar
+* `vi ~/.gradle/gradle.properties`
+    signing.keyId=94B86DB8
+    signing.password=PrivateKeyPassword
+    signing.secretKeyRingFile=/path/to/gpg/secring.gpg
+
+    sonatypeRepo=https://oss.sonatype.org/service/local/staging/deploy/maven2/
+    sonatypeUsername=YourSonatypeJiraUsername
+    sonatypePassword=YourSonatypeJiraPassword
+
+
+### to build/deploy
+
 * log onto the build box
-* ensure that appcompat-v7 and recyclerview-v7 are in the local maven
 * checkout and update the master branch
-* `./release.sh` to build the client and update maven
+* `./release.sh` to build the library and update maven
 * close/release the repository from sonatype
 
 ## Contributor License Agreements
