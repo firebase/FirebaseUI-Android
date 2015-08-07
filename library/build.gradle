@@ -36,7 +36,7 @@ android {
 apply plugin: 'maven'
 
 version = "0.1.0"
-group = "com.firebase"
+group = "com.firebase.puf"
 
 configurations {
     archives {
