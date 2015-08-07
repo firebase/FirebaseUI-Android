@@ -34,6 +34,7 @@ android {
 //}
 
 apply plugin: 'maven'
+apply plugin: 'signing'
 
 version = "0.1.0"
 group = "com.firebase.puf"
@@ -43,8 +44,6 @@ configurations {
         extendsFrom configurations.default
     }
 }
-
-apply plugin: 'signing'
 
 signing {
     required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
@@ -62,13 +61,13 @@ uploadArchives {
         }
 
         pom.project {
-            name 'FirebaseUI library'
+            name 'FirebaseUI'
             packaging 'aar'
             description 'FirebaseUI library for Android applications'
             url 'https://github.com/firebase/FirebaseUI-Android'
 
             scm {
-                url 'https://github.com/firebase/FirebaseUI-Android'
+                url 'scm:git@github.com/firebase/FirebaseUI-Android'
                 connection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
                 developerConnection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
             }
@@ -82,6 +81,14 @@ uploadArchives {
                 license {
                     name 'MIT'
                     url 'http://firebase.mit-license.org'
+                }
+            }
+
+            developers {
+                developer {
+                    id 'puf'
+                    name 'Frank van Puffelen'
+                    email 'puf@google.com'
                 }
             }
         }
