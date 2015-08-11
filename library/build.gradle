@@ -33,67 +33,67 @@ android {
 //    }
 //}
 
-apply plugin: 'maven'
-apply plugin: 'signing'
-
-version = "0.1.0"
-group = "com.firebase"
-
-configurations {
-    archives {
-        extendsFrom configurations.default
-    }
-}
-
-signing {
-    required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
-
-uploadArchives {
-    configuration = configurations.archives
-    repositories.mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-        repository(url: sonatypeRepo) {
-            authentication(userName: sonatypeUsername,
-                    password: sonatypePassword)
-        }
-
-        pom.project {
-            name 'FirebaseUI'
-            packaging 'aar'
-            description 'FirebaseUI library for Android applications'
-            url 'https://github.com/firebase/FirebaseUI-Android'
-
-            scm {
-                url 'scm:git@github.com/firebase/FirebaseUI-Android'
-                connection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
-                developerConnection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
-            }
-
-            organization {
-                name 'Firebase'
-                url 'https://www.firebase.com/'
-            }
-
-            licenses {
-                license {
-                    name 'MIT'
-                    url 'http://firebase.mit-license.org'
-                }
-            }
-
-            developers {
-                developer {
-                    id 'puf'
-                    name 'Frank van Puffelen'
-                    email 'puf@google.com'
-                }
-            }
-        }
-    }
-}
+//apply plugin: 'maven'
+//apply plugin: 'signing'
+//
+//version = "0.1.0"
+//group = "com.firebase"
+//
+//configurations {
+//    archives {
+//        extendsFrom configurations.default
+//    }
+//}
+//
+//signing {
+//    required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
+//    sign configurations.archives
+//}
+//
+//uploadArchives {
+//    configuration = configurations.archives
+//    repositories.mavenDeployer {
+//        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+//
+//        repository(url: sonatypeRepo) {
+//            authentication(userName: sonatypeUsername,
+//                    password: sonatypePassword)
+//        }
+//
+//        pom.project {
+//            name 'FirebaseUI'
+//            packaging 'aar'
+//            description 'FirebaseUI library for Android applications'
+//            url 'https://github.com/firebase/FirebaseUI-Android'
+//
+//            scm {
+//                url 'scm:git@github.com/firebase/FirebaseUI-Android'
+//                connection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
+//                developerConnection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
+//            }
+//
+//            organization {
+//                name 'Firebase'
+//                url 'https://www.firebase.com/'
+//            }
+//
+//            licenses {
+//                license {
+//                    name 'MIT'
+//                    url 'http://firebase.mit-license.org'
+//                }
+//            }
+//
+//            developers {
+//                developer {
+//                    id 'puf'
+//                    name 'Frank van Puffelen'
+//                    email 'puf@google.com'
+//                }
+//            }
+//        }
+//    }
+//}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
