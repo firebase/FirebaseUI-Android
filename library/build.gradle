@@ -37,7 +37,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 version = "0.1.0"
-group = "com.firebase.puf"
+group = "com.firebase"
 
 configurations {
     archives {
