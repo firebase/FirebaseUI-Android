@@ -21,7 +21,6 @@ In this step we'll add the FirebaseUI library as another dependency.
 ![Open module settings](doc-images/1-module-settings-menu.png "Open the module settings")
 ![Current dependencies](doc-images/2-module-settings-add-library.png "Current dependencies")
 ![Find library](doc-images/3-module-settings-find-library.png "Find the firebase-ui library")
-*TODO: add image once the library is available in Maven central*
 ![Updated dependencies](doc-images/4-module-settings-library-added.png "Updated dependencies")
 
 You can also add the library dependency directly to your app's gradle.build file:
