@@ -60,8 +60,6 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
     protected int mModelLayout;
     Class<VH> mViewHolderClass;
     FirebaseArray mSnapshots;
-    protected RecyclerViewClickListener clickListener;
-
 
     /**
      * @param ref        The Firebase location to watch for data changes. Can also be a slice of a location, using some
@@ -119,10 +117,6 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
         return mSnapshots.getItem(position).getKey().hashCode();
     }
 
-    public void setClickListener(RecyclerViewClickListener clickListener) {
-        this.clickListener = clickListener;
-    }
-
     @Override
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewGroup view = (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(mModelLayout, parent, false);
@@ -147,7 +141,4 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
 
     abstract public void populateViewHolder(VH viewHolder, T model);
 
-    public interface RecyclerViewClickListener {
-        public void onItemClicked(int position);
-    }
 }
