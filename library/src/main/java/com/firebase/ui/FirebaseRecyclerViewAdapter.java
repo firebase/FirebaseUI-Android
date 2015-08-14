@@ -29,30 +29,26 @@
 package com.firebase.ui;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * This class is a generic way of backing an RecyclerView with a Firebase location.
  * It handles all of the child events at the given Firebase location. It marshals received data into the given
  * class type.
  *
- * @param <T> The collection type
+ * To use this class in your app, subclass it passing in all required parameters and implement the
+ * populateViewHolder method.
+ *
+ * @param <T> The Java class that maps to the type of objects stored in the Firebase location.
+ * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
 public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
@@ -62,11 +58,14 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
     FirebaseArray mSnapshots;
 
     /**
-     * @param ref        The Firebase location to watch for data changes. Can also be a slice of a location, using some
-     *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
      * @param modelClass Firebase will marshall the data at a location into an instance of a class that you provide
+     * @param modelLayout This is the layout used to represent a single item in the list. You will be responsible for populating an
+     *                    instance of the corresponding view with the data from an instance of modelClass.
+     * @param viewHolderClass The class that hold references to all sub-views in an instance modelLayout.
+     * @param ref        The Firebase location to watch for data changes. Can also be a slice of a location, using some
+     *                   combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>
      */
-    public FirebaseRecyclerViewAdapter(Query ref, Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass) {
+    public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref) {
         mModelClass = modelClass;
         mModelLayout = modelLayout;
         mViewHolderClass = viewHolderClass;
@@ -93,8 +92,20 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
                 }
             }
         });
-
     }
+
+    /**
+     * @param modelClass Firebase will marshall the data at a location into an instance of a class that you provide
+     * @param modelLayout This is the layout used to represent a single item in the list. You will be responsible for populating an
+     *                    instance of the corresponding view with the data from an instance of modelClass.
+     * @param viewHolderClass The class that hold references to all sub-views in an instance modelLayout.
+     * @param ref        The Firebase location to watch for data changes. Can also be a slice of a location, using some
+     *                   combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>
+     */
+    public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Firebase ref) {
+        this(modelClass, modelLayout, viewHolderClass, (Query)ref);
+    }
+
 
     public void cleanup() {
         mSnapshots.cleanup();
