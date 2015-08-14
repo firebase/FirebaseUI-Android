@@ -30,6 +30,9 @@ package com.firebase.ui;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -37,6 +40,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +56,10 @@ import java.util.Map;
  */
 public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    FirebaseArray mSnapshots;
     Class<T> mModelClass;
+    protected int mModelLayout;
+    Class<VH> mViewHolderClass;
+    FirebaseArray mSnapshots;
     protected RecyclerViewClickListener clickListener;
 
 
@@ -61,8 +68,10 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
      * @param modelClass Firebase will marshall the data at a location into an instance of a class that you provide
      */
-    public FirebaseRecyclerViewAdapter(Query ref, Class<T> modelClass) {
+    public FirebaseRecyclerViewAdapter(Query ref, Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass) {
         mModelClass = modelClass;
+        mModelLayout = modelLayout;
+        mViewHolderClass = viewHolderClass;
         mSnapshots = new FirebaseArray(ref);
 
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
@@ -113,6 +122,30 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
     public void setClickListener(RecyclerViewClickListener clickListener) {
         this.clickListener = clickListener;
     }
+
+    @Override
+    public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewGroup view = (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(mModelLayout, parent, false);
+        try {
+            Constructor<VH> constructor = mViewHolderClass.getConstructor(View.class);
+            return constructor.newInstance(view);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public void onBindViewHolder(VH viewHolder, int i) {
+        T model = getItem(i);
+        populateViewHolder(viewHolder, model);
+    }
+
+    abstract public void populateViewHolder(VH viewHolder, T model);
 
     public interface RecyclerViewClickListener {
         public void onItemClicked(int position);
