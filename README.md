@@ -313,9 +313,19 @@ with:
 ### to build a release
 
 * build the project in Android Studio or with Gradle
-*
+* this generates the main binary: `library/build/outputs/aar/library-debug.aar`
+* open the Gradle projects tab, by clicking the tiny gradle tab on the right (or View > Tool Windows > Gradle)
+* select  :library > Tasks > other > bundleReleaseJavadoc
+* this generates the javadoc: `library/build/outputs/library-javadoc.jar`
 
-### to deploy a release
+
+### to tag a release on Github
+
+* ensure that all your changes are on master and that your local build is on master
+* ensure that the correct version number is in both `library/build.gradle` and `library/pom.xml`
+
+
+### to deploy a release to Maven Central
 
 * log onto the build box
 * checkout and update the master branch

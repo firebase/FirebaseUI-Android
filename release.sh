@@ -29,6 +29,8 @@ if [[ ! -z $DERP ]]; then
   echo "Cancelling release, please update library/build.gradle with the desired version"
 fi
 
+# TODO: Ensure this version is also on pom.xml
+
 # Ensure there is not an existing git tag for the new version
 # XXX this is wrong; needs to be semver sorted as my other scripts are
 LAST_GIT_TAG="$(git tag --list | tail -1 | awk -F 'v' '{print $2}')"
@@ -48,9 +50,8 @@ fi
 # GENERATE RELEASE BUILD #
 ##########################
 
-#gradle clean assembleRelease generateReleaseJavadoc
-gradle clean assembleRelease
-# gradle uploadArchives
+#gradle clean assembleRelease assembleDebug bundleReleaseJavadoc
+gradle clean :app:compileDebugSources :app:compileDebugAndroidTestSources :library:compileDebugSources :library:compileDebugAndroidTestSources bundleReleaseJavadoc
 
 ###################
 # DEPLOY TO MAVEN #
