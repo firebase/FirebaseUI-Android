@@ -191,7 +191,7 @@ We can now use that in our activity to allow sending a message:
         Firebase.setAndroidContext(this);
         Firebase ref = new Firebase("https://nanochat.firebaseio.com");
 
-        mAdapter = new FirebaseListAdapter<ChatMessage>(ChatMessage.class, android.R.layout.two_line_list_item, this, ref) {
+        mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
             @Override
             protected void populateView(View view, ChatMessage chatMessage) {
                 ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
@@ -218,6 +218,54 @@ We can now use that in our activity to allow sending a message:
 
 Et voila: a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
 
+## Using a RecyclerView
+
+RecyclerView is the new preferred way to handle potentially long lists of items. Since Firebase collections
+can contain many items, there is an `FirebaseRecyclerViewAdapter` too. Here's how you use it:
+
+1. Create a custom ViewHolder class
+2. Create a custom subclass FirebaseListAdapter
+
+The rest of the steps is the same as for the `FirebaseListAdapter` above, so be sure to read that first.
+
+### Create a custom ViewHolder
+
+A ViewHolder is similar to container of a ViewGroup that allows simple lookup of the sub-views of the group.
+If we use the same layout as before (`android.R.layout.two_line_list_item`), there are two `TextView`s in there.
+We can wrap that in a ViewHolder with:
+
+    private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
+        TextView messageText;
+        TextView nameText;
+
+        public ChatMessageViewHolder(View itemView) {
+            super(itemView);
+            nameText = (TextView)itemView.findViewById(android.R.id.text1);
+            messageText = (TextView) itemView.findViewById(android.R.id.text2);
+        }
+    }
+
+There's nothing magical going on here; we're just mapping numeric IDs and casts into a nice, type-safe contract.
+
+### Create a custom FirebaseListAdapter
+
+Just like we did for FirebaseListAdapter, we'll create an anonymous subclass for our ChatMessages:
+
+        RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
+        recycler.setHasFixedSize(true);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+
+        mAdapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
+            @Override
+            public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
+                chatMessageViewHolder.nameText.setText(chatMessage.getName());
+                chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
+            }
+        };
+        recycler.setAdapter(mAdapter);
+
+Like before, we get a custom RecyclerView populated with data from Firebase by setting the properties to the correct fields.
+
 ## Installing locally
 
 We are still working on deploying FirebaseUI to Maven Central. In the meantime, you can download the
@@ -229,7 +277,7 @@ with:
 
 ## Deployment
 
-### To get the build server ready to build/deploy FirebaseUI-Android
+### To get the build server ready to build FirebaseUI-Android
 
 * Install a JDK (if it's not installed yet):
 * `sudo apt-get install default-jdk`
@@ -262,8 +310,12 @@ with:
     sonatypeUsername=YourSonatypeJiraUsername
     sonatypePassword=YourSonatypeJiraPassword
 
+### to build a release
 
-### to build/deploy
+* build the project in Android Studio or with Gradle
+*
+
+### to deploy a release
 
 * log onto the build box
 * checkout and update the master branch
