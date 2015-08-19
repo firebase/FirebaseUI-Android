@@ -39,12 +39,9 @@ if [[ $VERSION == $LAST_GIT_TAG ]]; then
   exit 1
 fi
 
-# Create docs
-#./create-docs.sh
-#if [[ $? -ne 0 ]]; then
-#  echo "error: There was an error creating the docs."
-#  exit 1
-#fi
+# Tag the release in git
+# XXX this is wrong; needs to be semver sorted as my other scripts are
+git tag -a v$VERSION
 
 ##########################
 # GENERATE RELEASE BUILD #
@@ -60,7 +57,7 @@ read -p "Next, make sure this repo is clean and up to date. We will be kicking o
 #the next line installs the output of build.gradle into (local) maven, but does not tag it in git
 #mvn install:install-file -Dfile=library/build/outputs/aar/library-release.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=$VERSION -Dpackaging=aar
 #the next line signs and deploys the aar file to maven
-mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=ossrh -DpomFile=library/pom.xml -Dfile=library/build/outputs/aar/library-release.aar -Dversion=$VERSION
+#mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=ossrh -DpomFile=library/pom.xml -Dfile=library/build/outputs/aar/library-debug.aar -Dversion=$VERSION
 
 if [[ $? -ne 0 ]]; then
   echo "error: Error building and releasing to maven."
