@@ -57,12 +57,10 @@ gradle clean :app:compileDebugSources :app:compileDebugAndroidTestSources :libra
 # DEPLOY TO MAVEN #
 ###################
 read -p "Next, make sure this repo is clean and up to date. We will be kicking off a deploy to maven." DERP
-#the next line perform an entire build+release from maven, meaning it does not generate an aar
-mvn release:clean release:prepare release:perform -Dtag=v$VERSION
 #the next line installs the output of build.gradle into (local) maven, but does not tag it in git
 #mvn install:install-file -Dfile=library/build/outputs/aar/library-release.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=$VERSION -Dpackaging=aar
-#this runs a gradle task that uploads the aar file to maven central
-#gradle uploadArchives
+#the next line signs and deploys the aar file to maven
+mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=ossrh -DpomFile=library/pom.xml -Dfile=library/build/outputs/aar/library-release.aar -Dversion=$VERSION
 
 if [[ $? -ne 0 ]]; then
   echo "error: Error building and releasing to maven."
@@ -86,7 +84,7 @@ fi
 
 echo "Manual steps:"
 echo "  1) release maven repo at http://oss.sonatype.org/"
-# echo "  2) Deploy new docs: $> firebase deploy"
+#echo "  2) Deploy new docs: $> firebase deploy"
 echo "  3) Update the release notes for FirebaseUI-Android version ${VERSION} on GitHub and add aar for downloading"
 #echo "  4) Update firebase-versions.json in the firebase-clients repo with the changelog information"
 #echo "  5) Tweet @FirebaseRelease: 'v${VERSION} of FirebaseUI-Android is available https://github.com/firebase/FirebaseUI-Android"
