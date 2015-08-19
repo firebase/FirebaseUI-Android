@@ -43,6 +43,21 @@ import com.firebase.client.Query;
  * instance of your list item mLayout and an instance your class that holds your data. Simply populate the view however
  * you like and this class will handle updating the list as the data changes.
  *
+ * <blockquote><pre>
+ * {@code
+ *     Firebase ref = new Firebase("https://<yourapp>.firebaseio.com");
+ *     ListAdapter adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, mRef)
+ *     {
+ *         protected void populateView(View view, ChatMessage chatMessage)
+ *         {
+ *             ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
+ *             ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
+ *         }
+ *     };
+ *     listView.setListAdapter(adapter);
+ * }
+ * </pre></blockquote>
+ *
  * @param <T> The class type to use as a model for the data contained in the children of the given Firebase location
  */
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {

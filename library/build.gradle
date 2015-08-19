@@ -8,13 +8,13 @@ android {
         minSdkVersion 10
         targetSdkVersion 22
         versionCode 1
-        versionName "0.1.0"
+        versionName "0.2.0"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+            }
     }
     packagingOptions {
         exclude 'META-INF/LICENSE'
@@ -22,76 +22,20 @@ android {
         exclude 'META-INF/NOTICE'
     }
 }
-//android.libraryVariants.all { variant ->
-//    task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
-//        description "Generates Javadoc for $variant.name."
-//        source = variant.javaCompile.source
-//        ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
-//        classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
-//        options.links("http://docs.oracle.com/javase/7/docs/api/");
-//        options.links("http://d.android.com/reference/");
-//    }
-//}
-
-apply plugin: 'maven'
-apply plugin: 'signing'
-
-version = "0.1.0"
-group = "com.firebase"
-
-configurations {
-    archives {
-        extendsFrom configurations.default
+android.libraryVariants.all { variant ->
+    task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
+        description "Generates Javadoc for $variant.name."
+        source = variant.javaCompile.source
+        ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+        classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
+        options.links("http://docs.oracle.com/javase/7/docs/api/");
+        options.links("http://d.android.com/reference/");
     }
-}
-
-signing {
-    required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
-
-uploadArchives {
-    configuration = configurations.archives
-    repositories.mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-        repository(url: sonatypeRepo) {
-            authentication(userName: sonatypeUsername,
-                    password: sonatypePassword)
-        }
-
-        pom.project {
-            name 'FirebaseUI'
-            packaging 'aar'
-            description 'FirebaseUI library for Android applications'
-            url 'https://github.com/firebase/FirebaseUI-Android'
-
-            scm {
-                url 'scm:git@github.com/firebase/FirebaseUI-Android'
-                connection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
-                developerConnection 'scm:git:git@github.com:firebase/FirebaseUI-Android.git'
-            }
-
-            organization {
-                name 'Firebase'
-                url 'https://www.firebase.com/'
-            }
-
-            licenses {
-                license {
-                    name 'MIT'
-                    url 'http://firebase.mit-license.org'
-                }
-            }
-
-            developers {
-                developer {
-                    id 'puf'
-                    name 'Frank van Puffelen'
-                    email 'puf@google.com'
-                }
-            }
-        }
+    task("bundle${variant.name.capitalize()}Javadoc", type: Jar) {
+        description "Bundles Javadoc into zip for $variant.name."
+        classifier = "javadoc"
+        destinationDir = file("build/outputs")
+        from tasks["generate${variant.name.capitalize()}Javadoc"]
     }
 }
 

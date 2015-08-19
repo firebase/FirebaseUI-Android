@@ -29,40 +29,76 @@
 package com.firebase.ui;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class is a generic way of backing an RecyclerView with a Firebase location.
  * It handles all of the child events at the given Firebase location. It marshals received data into the given
  * class type.
  *
- * @param <T> The collection type
+ * To use this class in your app, subclass it passing in all required parameters and implement the
+ * populateViewHolder method.
+ *
+ * <blockquote><pre>
+ * {@code
+ *     private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
+ *         TextView messageText;
+ *         TextView nameText;
+ *
+ *         public ChatMessageViewHolder(View itemView) {
+ *             super(itemView);
+ *             nameText = (TextView)itemView.findViewById(android.R.id.text1);
+ *             messageText = (TextView) itemView.findViewById(android.R.id.text2);
+ *         }
+ *     }
+ *
+ *     FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder> adapter;
+ *     ref = new Firebase("https://<yourapp>.firebaseio.com");
+ *
+ *     RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
+ *     recycler.setHasFixedSize(true);
+ *     recycler.setLayoutManager(new LinearLayoutManager(this));
+ *
+ *     adapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
+ *         public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
+ *             chatMessageViewHolder.nameText.setText(chatMessage.getName());
+ *             chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
+ *         }
+ *     };
+ *     recycler.setAdapter(mAdapter);
+ * }
+ * </pre></blockquote>
+ *
+ * @param <T> The Java class that maps to the type of objects stored in the Firebase location.
+ * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
 public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    FirebaseArray mSnapshots;
     Class<T> mModelClass;
-    protected RecyclerViewClickListener clickListener;
-
+    protected int mModelLayout;
+    Class<VH> mViewHolderClass;
+    FirebaseArray mSnapshots;
 
     /**
-     * @param ref        The Firebase location to watch for data changes. Can also be a slice of a location, using some
-     *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
      * @param modelClass Firebase will marshall the data at a location into an instance of a class that you provide
+     * @param modelLayout This is the layout used to represent a single item in the list. You will be responsible for populating an
+     *                    instance of the corresponding view with the data from an instance of modelClass.
+     * @param viewHolderClass The class that hold references to all sub-views in an instance modelLayout.
+     * @param ref        The Firebase location to watch for data changes. Can also be a slice of a location, using some
+     *                   combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>
      */
-    public FirebaseRecyclerViewAdapter(Query ref, Class<T> modelClass) {
+    public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref) {
         mModelClass = modelClass;
+        mModelLayout = modelLayout;
+        mViewHolderClass = viewHolderClass;
         mSnapshots = new FirebaseArray(ref);
 
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
@@ -86,8 +122,20 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
                 }
             }
         });
-
     }
+
+    /**
+     * @param modelClass Firebase will marshall the data at a location into an instance of a class that you provide
+     * @param modelLayout This is the layout used to represent a single item in the list. You will be responsible for populating an
+     *                    instance of the corresponding view with the data from an instance of modelClass.
+     * @param viewHolderClass The class that hold references to all sub-views in an instance modelLayout.
+     * @param ref        The Firebase location to watch for data changes. Can also be a slice of a location, using some
+     *                   combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>
+     */
+    public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Firebase ref) {
+        this(modelClass, modelLayout, viewHolderClass, (Query)ref);
+    }
+
 
     public void cleanup() {
         mSnapshots.cleanup();
@@ -110,11 +158,28 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
         return mSnapshots.getItem(position).getKey().hashCode();
     }
 
-    public void setClickListener(RecyclerViewClickListener clickListener) {
-        this.clickListener = clickListener;
+    @Override
+    public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewGroup view = (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(mModelLayout, parent, false);
+        try {
+            Constructor<VH> constructor = mViewHolderClass.getConstructor(View.class);
+            return constructor.newInstance(view);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public void onBindViewHolder(VH viewHolder, int i) {
+        T model = getItem(i);
+        populateViewHolder(viewHolder, model);
     }
 
-    public interface RecyclerViewClickListener {
-        public void onItemClicked(int position);
-    }
+    abstract public void populateViewHolder(VH viewHolder, T model);
+
 }
