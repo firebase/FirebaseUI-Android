@@ -49,32 +49,33 @@ import java.lang.reflect.InvocationTargetException;
  *
  * <blockquote><pre>
  * {@code
- * private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
- *     TextView messageText;
- *     TextView nameText;
+ *     private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
+ *         TextView messageText;
+ *         TextView nameText;
  *
- *     public ChatMessageViewHolder(View itemView) {
- *         super(itemView);
- *         nameText = (TextView)itemView.findViewById(android.R.id.text1);
- *         messageText = (TextView) itemView.findViewById(android.R.id.text2);
+ *         public ChatMessageViewHolder(View itemView) {
+ *             super(itemView);
+ *             nameText = (TextView)itemView.findViewById(android.R.id.text1);
+ *             messageText = (TextView) itemView.findViewById(android.R.id.text2);
+ *         }
  *     }
+ *
+ *     FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder> adapter;
+ *     ref = new Firebase("https://<yourapp>.firebaseio.com");
+ *
+ *     RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
+ *     recycler.setHasFixedSize(true);
+ *     recycler.setLayoutManager(new LinearLayoutManager(this));
+ *
+ *     adapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
+ *         public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
+ *             chatMessageViewHolder.nameText.setText(chatMessage.getName());
+ *             chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
+ *         }
+ *     };
+ *     recycler.setAdapter(mAdapter);
  * }
- *
- * FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder> adapter;
- * ref = new Firebase("https://<yourapp>.firebaseio.com");
- *
- * RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
- * recycler.setHasFixedSize(true);
- * recycler.setLayoutManager(new LinearLayoutManager(this));
- *
- * adapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
- *     public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
- *         chatMessageViewHolder.nameText.setText(chatMessage.getName());
- *         chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
- *     }
- * };
- * recycler.setAdapter(mAdapter);
- *
+ * </pre></blockquote>
  *
  * @param <T> The Java class that maps to the type of objects stored in the Firebase location.
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
