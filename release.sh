@@ -54,10 +54,12 @@ gradle clean :app:compileDebugSources :app:compileDebugAndroidTestSources :libra
 # DEPLOY TO MAVEN #
 ###################
 read -p "Next, make sure this repo is clean and up to date. We will be kicking off a deploy to maven." DERP
+
 #the next line installs the output of build.gradle into (local) maven, but does not tag it in git
 #mvn install:install-file -Dfile=library/build/outputs/aar/library-release.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=$VERSION -Dpackaging=aar
+
 #the next line signs and deploys the aar file to maven
-#mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=ossrh -DpomFile=library/pom.xml -Dfile=library/build/outputs/aar/library-debug.aar -Dversion=$VERSION
+mvn gpg:sign-and-deploy-file -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ -DrepositoryId=ossrh -DpomFile=library/pom.xml -Dfile=library/build/outputs/aar/library-debug.aar -Djavadoc=library/build/outputs/library-javadoc.jar -Dversion=$VERSION
 
 if [[ $? -ne 0 ]]; then
   echo "error: Error building and releasing to maven."
