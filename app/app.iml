@@ -93,13 +93,14 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="jackson-core-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="jackson-databind-2.2.2" level="project" />
-    <orderEntry type="library" exported="" name="firebase-client-android-2.0.3" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.2.1" level="project" />
-    <orderEntry type="library" exported="" name="tubesock-0.0.10" level="project" />
+    <orderEntry type="library" exported="" name="firebase-client-jvm-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="tubesock-0.0.11" level="project" />
     <orderEntry type="library" exported="" name="jackson-annotations-2.2.2" level="project" />
-    <orderEntry type="library" exported="" name="firebase-client-jvm-2.0.3" level="project" />
+    <orderEntry type="library" exported="" name="firebase-client-android-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
+    <orderEntry type="module" module-name="library" exported="" />
   </component>
 </module>

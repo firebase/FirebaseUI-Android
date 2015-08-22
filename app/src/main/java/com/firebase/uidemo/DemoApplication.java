@@ -1,4 +1,4 @@
-package com.firebase.firebaseui_android;
+package com.firebase.uidemo;
 
 import com.firebase.client.Firebase;
 
