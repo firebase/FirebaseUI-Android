@@ -41,7 +41,9 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
             }
         });
 
-        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, ref) {
+        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter =
+                new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(
+                        Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, ref) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
                 chatView.messageText.setText(chat.getMessage());
@@ -84,7 +86,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         }
     }
 
-    static class ChatHolder extends RecyclerView.ViewHolder {
+    public static class ChatHolder extends RecyclerView.ViewHolder {
         TextView nameText, messageText;
 
         public ChatHolder(View itemView) {
