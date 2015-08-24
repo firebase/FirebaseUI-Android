@@ -1,6 +1,5 @@
 package com.firebase.uidemo;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.firebase.ui.FirebaseRecyclerViewAdapter;
 
 
@@ -23,7 +23,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_view_demo);
 
-        final Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+        final Firebase ref = new Firebase("https://firebaseui.firebaseio.com/chat");
 
         final String name = "Android User";
         final Button sendButton = (Button) findViewById(R.id.sendButton);
@@ -36,7 +36,14 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Chat chat = new Chat(name, messageEdit.getText().toString());
-                ref.push().setValue(chat);
+                ref.push().setValue(chat, new Firebase.CompletionListener() {
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                        if (firebaseError != null) {
+                            Log.e("FirebaseUI.chat", firebaseError.toString());
+                        }
+                    }
+                });
                 messageEdit.setText("");
             }
         });
@@ -44,53 +51,52 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, ref) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
-                chatView.messageText.setText(chat.getMessage());
-                chatView.messageText.setPadding(10, 0, 10, 0);
-                chatView.nameText.setText(chat.getName());
-                chatView.nameText.setPadding(10, 0, 10, 15);
+                chatView.textView.setText(chat.getText());
+                chatView.textView.setPadding(10, 0, 10, 0);
+                chatView.nameView.setText(chat.getName());
+                chatView.nameView.setPadding(10, 0, 10, 15);
                 if (chat.getName().equals(name)) {
-                    chatView.messageText.setGravity(Gravity.END);
-                    chatView.nameText.setGravity(Gravity.END);
-                    chatView.nameText.setTextColor(Color.parseColor("#8BC34A"));
+                    chatView.textView.setGravity(Gravity.END);
+                    chatView.nameView.setGravity(Gravity.END);
+                    chatView.nameView.setTextColor(Color.parseColor("#8BC34A"));
                 } else {
-                    chatView.nameText.setTextColor(Color.parseColor("#00BCD4"));
+                    chatView.nameView.setTextColor(Color.parseColor("#00BCD4"));
                 }
             }
         };
 
         messages.setAdapter(adapter);
-
     }
 
 
     static class Chat {
         String name;
-        String message;
+        String text;
 
         public Chat() {
         }
 
         public Chat(String name, String message) {
             this.name = name;
-            this.message = message;
+            this.text = message;
         }
 
         public String getName() {
             return name;
         }
 
-        public String getMessage() {
-            return message;
+        public String getText() {
+            return text;
         }
     }
 
     static class ChatHolder extends RecyclerView.ViewHolder {
-        TextView nameText, messageText;
+        TextView nameView, textView;
 
         public ChatHolder(View itemView) {
             super(itemView);
-            nameText = (TextView) itemView.findViewById(android.R.id.text2);
-            messageText = (TextView) itemView.findViewById(android.R.id.text1);
+            nameView = (TextView) itemView.findViewById(android.R.id.text2);
+            textView = (TextView) itemView.findViewById(android.R.id.text1);
         }
     }
 }
