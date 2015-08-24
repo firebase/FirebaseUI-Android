@@ -65,7 +65,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
     }
 
 
-    public static class Chat {
+    static class Chat {
         String name;
         String message;
 
