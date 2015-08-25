@@ -195,7 +195,7 @@ Next we'll send data to Firebase! In this step we'll allow the user to enter a m
                 mFirebaseRef.push().setValue(values);
                 textEdit.setText("");
             }
-          });
+        });
 
   You will have to import the packages for some of these classes. Android Studio will tell you where to import them from.
 
@@ -212,15 +212,15 @@ Now that we can send messages to Firebase, it is time for the next step: making 
 
 ## Show the (existing and new) messages
 
-A chat app that doesn’t show existing messages is not very useful. So in this step we’ll add a list of the existing messages to our Android app. At the end of this section we’ll have a fully functional chat app.
+A chat app that doesn’t show existing messages is not very useful. So in this step we’ll add a list of the existing messages to our Android app. And since we're using Firebase, new chat messages will be added to this list automatically. At the end of this section we’ll have a fully functional chat app.
 
-[screenshot:chat messages in list and new message]
+![Chat messages Android app and new message](images/5_1.png)
 
 Let's take this in chunks: first we'll create a Java class to represent each message, then we'll create an Adapter that gets each of the messages from Firebase and puts them into a ListView.
 
 1. As you can see in the screenshot, each chat message has the same layout. Instead of creating a custom layout, we'll use one of the built-in layouts of Android: `android.R.layout.two_line_list_item`. This layout displays the items like this:
 
-  [screenshot:two_line_list_item]
+  ![two_line_list_item](images/5_2.png)
 
   We'll show the user name on the first line (in bold) and the message text on the second line.
 2. Now create a class `ChatMessage.java` that wraps the username and text message:
@@ -248,13 +248,13 @@ Let's take this in chunks: first we'll create a Java class to represent each mes
 
   As you can see, this is plain-old Java object. But it’s a POJO with some special traits. First `ChatMessage` follows a JavaBean pattern for its property names. The `getName` method is a getter for a `name` property, while `getText()` is a getter for a `text` property. And second, those property names correspond to the ones we’ve been using when we sent messages to Firebase in our `OnClickListener`.
 
-  [screenshot:ChatMessage.java]
+  ![ChatMessage.java](images/5_3.png)
 
   Warning: if you end up making this `ChatMessage` an inner class of another class, you must make it static: `public static class ChatMessage`.
 
 3. With the layout for the message specified and their structure defined in a class, we need to make a space for them in the `main_activity.xml`
 
-4. Add a ListView with `android:id="@android:id/list"`` above the LinearLayout:
+  Add a ListView with `android:id="@android:id/list"`` above the LinearLayout:
 
         <ListView
             android:id="@android:id/list"
@@ -262,22 +262,23 @@ Let's take this in chunks: first we'll create a Java class to represent each mes
             android:layout_height="match_parent"
             android:layout_above="@+id/footer"/>
 
-    This is the container that all messages will be added to: one message_layout for each ChatMessage.
+  This is the container that all messages will be added to: one message_layout for each ChatMessage.
 
-    [screenshot:activity_main.xml]
+  ![activity_main.xml with ListView](images/5_4.png)
 
-    The `id` value is very important here, since Android's `ListActivity` uses it to find the `ListView`. So make sure to enter it exactly as specified: ``@android:id/list`.
+  The `id` value is very important here, since Android's `ListActivity` uses it to find the `ListView`. So make sure to enter it exactly as specified: ``@android:id/list`.
 
 4. Make the `MainActivity` class descend from `ListActivity`. This is a built-in Android base-class. By deriving from this, our activity will automatically have access to the ListView we added to the layout:
 
         public class MainActivity extends ListActivity {
 
-    [screenshot:MainActivity descends from ListActivity]
-
 5. We're ready to start on our ListAdapter, which we'll base on the `FirebaseListAdapter` from the firebase-ui project we imported. `The FirebaseListAdapter` class adapts a Firebase collection so that it becomes usable in an Android `ListView`. First we'll add a member to our `MainActivity`:
 
         public class MainActivity extends ListActivity {
+            private Firebase mFirebaseRef;
             FirebaseListAdapter<ChatMessage> mListAdapter;
+
+  ![MainActivity extends ListActivity](images/5_5.png)
 
 6. To make everything come together, we add this to the onCreate method of our MainActivity:
 
@@ -293,7 +294,7 @@ Let's take this in chunks: first we'll create a Java class to represent each mes
 
   The FirebaseListAdapter maps the data from your Firebase database into the ListView that you added to the layout. It creates a new instance of your `two_line_list_item` for each `ChatMessage` and calls the `populateView method`. We override this method and put the name and text in the correct subviews.
 
-    [screenshot:MainActivity code]
+  ![MainActivity code](images/5_6.png)
 
 7. Don't worry, the hardest part is behind us now. All that is left in this step is some clean-up. But before that, run your app and see that it shows all existing messages. And if you send a new message, it shows up in the emulator and in your Firebase dashboard.
 
@@ -317,7 +318,7 @@ Let's take this in chunks: first we'll create a Java class to represent each mes
             mListAdapter.cleanup();
         }
 
-      [screenshot: showing OnClickListener and onDestroy]
+  ![MainActivity showing OnClickListener and onDestroy](images/5_7.png)
 
 In this section we made our app show the chat messages. It was a lot of work, but in the end you can see that the Java code for our main activity still fits in a single screenshot.
 
