@@ -323,7 +323,9 @@ In this section we made our app show the chat messages. It was a lot of work, bu
 As a final step, we're going to allow the users of our app to log in using email and password.
 
 1. In the Login & Auth tab of your Firebase dashboard, enable Email & Password authentication
-    [screenshot:enable email+password auth]
+
+  ![Enable email+password auth in dashboard](images/6_1.png)
+
 2. First add a button to the top right of activity_main.xml
 
         <Button
@@ -335,8 +337,13 @@ As a final step, we're going to allow the users of our app to log in using email
             android:layout_alignRight="@android:id/list"
             android:layout_alignEnd="@android:id/list" />
 
-  [screenshot:main_activity.xml with login button]
-3. Now create a new layout called dialog_signin.xml, which we'll use to model the body of the sign-in dialog
+  ![main_activity.xml with login button](images/6_2.png)
+
+3. Now create a new layout called dialog_signin.xml
+
+  ![Menu option to add a new layout xml](images/6_3.png)
+
+4. In this dialog_signin.xml, we'll model the body of the sign-in dialog
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="vertical"
@@ -367,7 +374,7 @@ As a final step, we're going to allow the users of our app to log in using email
   We have two `EditText controls` under each other, one for the user's name, the other for their password.
   The rest of the popup will be handled by a stock Android dialog.
 
-    [screenshot:dialog_signin.xml (or maybe the design view)]
+  ![dialog_signin.xml](images/6_4.png)
 
 4. Since our app will display the sign-in dialog as a popup, add the handling to MainActivity.java:
 
@@ -396,11 +403,11 @@ As a final step, we're going to allow the users of our app to log in using email
 
   This method builds and show the dialog, with our two text boxes as the main body.
 
-  [screenshot:login dialog]
+  ![Login dialog](images/6_5.png)
 
   When the user clicks OK, it extracts the email address and password from the text controls.
 
-  [screenshot:login OnClickHandler]
+  ![login OnClickHandler code](images/6_6.png)
 
 5. Now wire the values that we got from the dialog to the Firebase Authentication back-end. Replace the `TODO` with the following code:
 
@@ -419,7 +426,7 @@ As a final step, we're going to allow the users of our app to log in using email
 
   Either way, we next call `authWithPassword` to authenticate the (pre-existing or just-created) user.
 
-  [screenshot:OnClickHandler with the login behavior]
+  ![OnClickHandler with the login behavior](images/6_7.png)
 
 6. With the above we have the registration/login flow working. But we still need to listen to when Firebase Authentication tells us the user has been authenticated, so that we can store the username and use that in the chat message instead of the hard-coded value we have now.
 
@@ -427,7 +434,7 @@ As a final step, we're going to allow the users of our app to log in using email
 
         String mUsername;
 
-Add the end of the `onCreate` method, add a callback method that listens for authentication state changes in Firebase:
+  Add the end of the `onCreate` method, add a callback method that listens for authentication state changes in Firebase:
 
         mFirebaseRef.addAuthStateListener(new Firebase.AuthStateListener() {
             @Override
@@ -445,15 +452,15 @@ Add the end of the `onCreate` method, add a callback method that listens for aut
 
   Firebase calls our listener whenever the authentication state changes, so whenever the user logs in or out. When the user logs in, we store their email address in our field and hide the login button.
 
-  [screenshot:authstatelistener]
+  ![AuthStateListener](images/6_8.png)
 
   Firebase Authentication supports multiple authentication providers and each of them exposes a different set of data. For example, if we'd allow our users to authenticate with their existing Twitter account, we could identify them by their twitter handle.
 
 7. Finally, replace the hard-coded username with the field we just populated:
 
-        mFirebaseRef.push().setValue(new ChatMessage(mUsername, message));
+        mFirebaseRef.push().setValue(new ChatMessage(MainActivity.this.mUsername, message));
 
-    [screenshot:messages with one from puf@firebaseui.com]
+  ![messages with one from puf@firebaseui.com](images/6_9.png)
 
     We could definitely improve the layout of things. But this step has been long enough as it is. So let's wrap up with a few notes.
 
@@ -465,7 +472,7 @@ Add the end of the `onCreate` method, add a callback method that listens for aut
 
 9. If you want to know which users logged in to your application, you can find them in the Login & Auth tab of your Firebase's dashboard.
 
-  [screenshot:auth dashboard with some users]
+  ![Auth dashboard with some users](images/6_10.png)
 
   This is also where you can configure the password reset emails that you can send to your users, in case they forgot their password.
 
@@ -475,7 +482,7 @@ Wrap-up
 
 Congratulations! You've just built a fully functional multi-user chat application that uses Firebase to store the data and authentication users.
 
-[screenshot:app]
+![Chat app with login](images/0_1.png)
 
 As a reward for finishing the codelab you’ve earned a promo code! When you’re ready to put your Firebase app in production, you can use the promo code `androidcodelab49` for $49 off your first month of a paid Firebase plan. Just enter the code when you upgrade your Firebase.
 
