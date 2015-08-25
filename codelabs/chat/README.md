@@ -482,7 +482,7 @@ Wrap-up
 
 Congratulations! You've just built a fully functional multi-user chat application that uses Firebase to store the data and authentication users.
 
-![Chat app with login](images/0_1.png)
+![Chat app with login](images/0_0.png)
 
 As a reward for finishing the codelab you’ve earned a promo code! When you’re ready to put your Firebase app in production, you can use the promo code `androidcodelab49` for $49 off your first month of a paid Firebase plan. Just enter the code when you upgrade your Firebase.
 
