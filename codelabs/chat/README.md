@@ -81,7 +81,7 @@ In this step we'll create a project in Android Studio.
 
 ## Connect the Android app to Firebase
 
-Before we can start writing code that interacts with our Firebase database, we'll need to make Android Studio aware that we'll be using Firebase. We need to do this in a few places: in the `gradle.build` script for out app and in its `AndroidManifest.xml`.
+Before we can start writing code that interacts with our Firebase database, we'll need to make Android Studio aware that we'll be using Firebase. We need to do this in a few places: in the `gradle.build` script for our app and in its `AndroidManifest.xml`.
 
 1. open Gradle Scripts > build.gradle (Module: app)
 
