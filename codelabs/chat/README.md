@@ -74,7 +74,7 @@ In this step we'll create a project in Android Studio.
 
 7. Open up the main activity, which can be found in `app/res/layout/activity_main.xml` and switch from its Design to its Text tab if needed. In this file the root element will be a `RelativeLayout` and in there will be a `TextView`. We won't be using the `TextView`, so delete it (or leave it and put a welcome message in it).
 
-  ![emptied up layout_main.xml](2_7.png)
+  ![emptied up layout_main.xml](images/2_7.png)
 
  We now have a blank project in Android Studio. Let's wire our app up to Firebase!
 
