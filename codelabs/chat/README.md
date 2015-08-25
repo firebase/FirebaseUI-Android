@@ -49,32 +49,32 @@ In this step we'll create a project in Android Studio.
 
 1. Start Android Studio and Start a new Android Studio project
 
-    [!Welcome to Android Studio](images/2_1.png)
+  [!Welcome to Android Studio](images/2_1.png)
 
 2. You can name the project anything you want. But in the code below, we've named it Nanochat
 
-    [!Configure your new project](images/2_2.png)
+  [!Configure your new project](images/2_2.png)
 
 3. Set the minimum SDK to 10 or higher.
 
-    [!Minimum Android API level](images/2_3.png)
+  [!Minimum Android API level](images/2_3.png)
 
    We've left it on 10 (Gingerbread) here, since that is the lowest API level Firebase supports.
 4. Start with a Blank Activity
 
-    [!Add an activity](images/2_4.png)
+  [!Add an activity](images/2_4.png)
 
 5. We'll leave all the defaults for this activity
 
-    [!Customize the Activity](images/2_5.png)
+  [!Customize the Activity](images/2_5.png)
 
 6. If the project outline is not visible on the left, click the 1:Project label
 
-    [!Click 1:Project](images/2_6.png)
+  [!Click 1:Project](images/2_6.png)
 
 7. Open up the main activity, which can be found in `app/res/layout/activity_main.xml` and switch from its Design to its Text tab if needed. In this file the root element will be a `RelativeLayout` and in there will be a `TextView`. We won't be using the `TextView`, so delete it (or leave it and put a welcome message in it).
 
-    [!emptied up layout_main.xml](2_7.png)
+  [!emptied up layout_main.xml](2_7.png)
 
  We now have a blank project in Android Studio. Let's wire our app up to Firebase!
 
