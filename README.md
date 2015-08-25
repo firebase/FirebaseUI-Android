@@ -141,7 +141,7 @@ Next, we need to create a subclass of the `FirebaseListAdapter` with the correct
         Firebase.setAndroidContext(this);
         Firebase ref = new Firebase("https://nanochat.firebaseio.com");
 
-        mAdapter = new FirebaseListAdapter<ChatMessage>(ChatMessage.class, android.R.layout.two_line_list_item, this, ref) {
+        mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
             @Override
             protected void populateView(View view, ChatMessage chatMessage) {
                 ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
