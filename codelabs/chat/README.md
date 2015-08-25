@@ -10,12 +10,12 @@ What you'll learn:
 
 The steps:
 
-1. [Register with Firebase](chat#register-with-firebase)
+1. [Register with Firebase](#register-with-firebase)
 2. [Create a project in Android Studio](#create-a-project-in-android-studio)
 3. [Connect the Android app to Firebase](#connect-the-android-app-to-firebase)
 4. [Send a message](#send-a-message)
-5. [Show the messages](#show-the-messages)
-6. [Enable login](#enable-login)
+5. [Show the messages](#show-the-existing-and-new-messages)
+6. [Enable login](#enable-e-mailpassword-login)
 
 What you'll need
  * [Android Studio](https://developer.android.com/sdk/installing/studio.html) version 1.3 or up
@@ -43,7 +43,7 @@ The first step is to create a Firebase application. This will be the server-side
 
 The custom Firebase backend for our application is now ready for use. Let's set up our app in Android Studio.
 
-## Create an Android Studio project
+## Create a project in Android Studio
 
 In this step we'll create a project in Android Studio.
 
