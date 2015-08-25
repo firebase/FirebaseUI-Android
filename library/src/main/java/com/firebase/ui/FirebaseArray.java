@@ -52,6 +52,12 @@ class FirebaseArray implements ChildEventListener {
         mQuery.addChildEventListener(this);
     }
 
+    public void updateQuery(Query ref) {
+        mQuery.removeEventListener(this);
+        mQuery = ref;
+        mQuery.addChildEventListener(this);
+    }
+
     public void cleanup() {
         mQuery.removeEventListener(this);
     }
@@ -82,6 +88,11 @@ class FirebaseArray implements ChildEventListener {
         if (previousChildKey != null) {
             index = getIndexForKey(previousChildKey) + 1;
         }
+        if (mSnapshots.size() >= (index + 1)
+                && mSnapshots.get(index).getKey().equals(snapshot.getKey())) {
+            return;
+        }
+
         mSnapshots.add(index, snapshot);
         notifyChangedListeners(OnChangedListener.EventType.Added, index);
     }
@@ -114,9 +125,11 @@ class FirebaseArray implements ChildEventListener {
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
+
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
+
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChanged(type, index, oldIndex);
