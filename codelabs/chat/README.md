@@ -10,12 +10,12 @@ What you'll learn:
 
 The steps:
 
-1. Register with Firebase
-2. Create a project in Android Studio
-3. Connect the Android app to Firebase
-4. Allow the user to send a message
-5. Show the messages
-6. Enable login
+1. [Register with Firebase](#register-with-firebase)
+2. [Create a project in Android Studio](#create-a-project-in-android-studio)
+3. [Connect the Android app to Firebase](#connect-the-android-app-to-firebase)
+4. [Send a message](#send-a-message)
+5. [Show the messages](#show-the-messages)
+6. [Enable login](#enable-login)
 
 What you'll need
  * [Android Studio](https://developer.android.com/sdk/installing/studio.html) version 1.3 or up
@@ -80,36 +80,20 @@ In this step we'll create a project in Android Studio.
 
 ## Connect the Android app to Firebase
 
-Before we can start writing code that interacts with our Firebase database, we'll need to make Android Studio aware that we'll be using Firebase. We need to do this in two places: in our app's `gradle.build` script and in our `AndroidManifest.xml`.
+Before we can start writing code that interacts with our Firebase database, we'll need to make Android Studio aware that we'll be using Firebase. We need to do this in a few places: in the `gradle.build` script for out app and in its `AndroidManifest.xml`.
 
-1. Right-click on the app and click Open Module Settings
-
-    [screenshot:module settings menu]
-
-2. In the Dependencies tab, click the + under the list and Library dependency
-
-    [screenshot:Dependencies tab with Add Library dependency menu]
-
-3. Type `firebase` in the search box and click the Search button
-
-    [screenshot:search for firebase]
-
-4. Add `firebase-client-android`
-
-    [screenshot:select firebase-client-android]
-
-5. Add another Library dependency, search for `firebase-ui` and add `firebase-ui:0.2` or higher
-
-    [screenshot:select firebase-ui:0.2.0]
-
-6. We now have added dependencies to the Firebase SDK and the FirebaseUI support library for Android.
-
-    [screenshot:all dependencies]
-
-7. open Gradle Scripts > build.gradle (Module: app)
+1. open Gradle Scripts > build.gradle (Module: app)
 
    This file contains the steps that Android Studio uses to build our app. We'll add a reference to Firebase to it, so we can start using it.
-8. Add the following inside the `android` object:
+
+2. add the following lines to the dependencies object at the bottom:
+
+        compile 'com.firebase:firebase-client-android:2.3.1'
+        compile 'com.firebaseui:firebase-ui:0.2.0'
+
+  This tells Gradle to include the Firebase SDK and the FirebaseUI library.
+
+3. Add the following inside the `android` object:
 
         packagingOptions {
             exclude 'META-INF/LICENSE'
@@ -121,30 +105,30 @@ Before we can start writing code that interacts with our Firebase database, we'l
 
   [screenshot:gradle.build]
 
-9. At this stage you'll need to synchronize the project with the gradle files again, so Tools > Android > Sync Project with Gradle Files. Android Studio will parse the gradle files and pick up our changes.
+4. At this stage you'll need to synchronize the project with the gradle files again, so Tools > Android > Sync Project with Gradle Files. Android Studio will parse the gradle files and pick up our changes.
 
     [screenshot:Sync now]
 
-10. Since Firebase is a hosted service, our app will need to be able to access the internet.
-11. Open app > manifests > AndroidManifest.xml
-12. Add this line inside the `manifest` element:
+5. Since Firebase is a hosted service, our app will need to be able to access the internet.
+6. Open app > manifests > AndroidManifest.xml
+7. Add this line inside the `manifest` element:
 
         <uses-permission android:name="android.permission.INTERNET" />
 
     [screenshot:internet permission]
 
-13. Now we can get to the Java code. The first step there is to set up initial connection between our code and its Firebase backend.
+8. Now we can get to the Java code. The first step there is to set up initial connection between our code and its Firebase backend.
 open MainActivity.java and add this code to the end of the onCreate method:
 
         Firebase.setAndroidContext(this);
 
 This code allows the Firebase client to keep its context.
-14. Import Firebase at the top of your MainActivity by adding the following line:
+9. Import Firebase at the top of your MainActivity by adding the following line:
 
         import com.firebase.client.Firebase;
 
-15. If Android Studio is having trouble finding the Firebase class, be sure that you've added dependencies and have synchronized the build file with the project.
-16. We also want to create a connection to our database. We'll keep this connection in a member field:
+10. If Android Studio is having trouble finding the Firebase class, be sure that you've added dependencies and have synchronized the build file with the project.
+11. We also want to create a connection to our database. We'll keep this connection in a member field:
 
         private Firebase mFirebaseRef;
 
@@ -158,7 +142,7 @@ This code allows the Firebase client to keep its context.
 
 That's all the setup that is required. Next up we'll allow the user to enter a message in our app and send the message to Firebase.
 
-## Allow the user to send a message
+## Send a message
 
 Now we can start sending data to Firebase! In this step we'll allow the user to enter a message in a text box. When they then click the Send button, we will send the message to Firebase.
 
