@@ -103,11 +103,11 @@ Before we can start writing code that interacts with our Firebase database, we'l
 
   This tells Gradle to exclude some files that otherwise create conflicts during the build.
 
-  [screenshot:gradle.build]
+  ![gradle.build with Firebase additions](images/3_1.png)
 
-4. At this stage you'll need to synchronize the project with the gradle files again, so Tools > Android > Sync Project with Gradle Files. Android Studio will parse the gradle files and pick up our changes.
+4. At this stage you'll need to synchronize the project with the gradle files again, so Tools > Android > Sync Project with Gradle Files. Android Studio will parse the gradle files and pick up our changes. You can also click the dedicated button in the toolbar
 
-    [screenshot:Sync now]
+    ![Sync now button in toolbar](images/3_2.png)
 
 5. Since Firebase is a hosted service, our app will need to be able to access the internet.
 6. Open app > manifests > AndroidManifest.xml
@@ -115,14 +115,14 @@ Before we can start writing code that interacts with our Firebase database, we'l
 
         <uses-permission android:name="android.permission.INTERNET" />
 
-    [screenshot:internet permission]
+    ![INTERNET permission in AndroidManifest.xml](images/3_3.png)
 
 8. Now we can get to the Java code. The first step there is to set up initial connection between our code and its Firebase backend.
-open MainActivity.java and add this code to the end of the onCreate method:
+open `MainActivity.java` and add this code to the end of the `onCreate` method:
 
         Firebase.setAndroidContext(this);
 
-This code allows the Firebase client to keep its context.
+  This code allows the Firebase client to keep its context.
 9. Import Firebase at the top of your MainActivity by adding the following line:
 
         import com.firebase.client.Firebase;
@@ -134,11 +134,11 @@ This code allows the Firebase client to keep its context.
 
   that we initialize in onCreate:
 
-    mFirebaseRef = new Firebase("https://<your-app>.firebaseio.com");
+        mFirebaseRef = new Firebase("https://<your-app>.firebaseio.com");
 
   Be sure to replace `<your-app>` with the name of the Firebase app you created in the first section.
 
-    [screenshot:MainActivity with setAndroidContext and mFirebaseRef]
+    ![MainActivity with setAndroidContext and mFirebaseRef](images/3_4.png)
 
 That's all the setup that is required. Next up we'll allow the user to enter a message in our app and send the message to Firebase.
 
