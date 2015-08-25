@@ -29,6 +29,7 @@
 package com.firebase.ui;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,7 +134,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      *                   combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>
      */
     public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Firebase ref) {
-        this(modelClass, modelLayout, viewHolderClass, (Query)ref);
+        this(modelClass, modelLayout, viewHolderClass, (Query) ref);
     }
 
 
@@ -180,6 +181,9 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
         populateViewHolder(viewHolder, model);
     }
 
-    abstract public void populateViewHolder(VH viewHolder, T model);
+    public void updateQuery(Query query) {
+        mSnapshots.updateQuery(query);
+    }
 
+    abstract public void populateViewHolder(VH viewHolder, T model);
 }

@@ -1,12 +1,10 @@
 package com.firebase.uidemo;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +16,13 @@ import com.firebase.ui.FirebaseRecyclerViewAdapter;
 
 
 public class RecyclerViewDemoActivity extends AppCompatActivity {
+
+    private static final int INITIAL_LOAD_COUNT = 15;
+    private static final int INCREMENTAL_LOAD_COUNT = 15;
+    private static final int PREFETCH_THRESHOLD = 5;
+
+    private int mLastLimitCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,8 +34,9 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         final Button sendButton = (Button) findViewById(R.id.sendButton);
         final EditText messageEdit = (EditText) findViewById(R.id.messageEdit);
         final RecyclerView messages = (RecyclerView) findViewById(R.id.messagesList);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         messages.setHasFixedSize(true);
-        messages.setLayoutManager(new LinearLayoutManager(this));
+        messages.setLayoutManager(layoutManager);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,27 +47,46 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
             }
         });
 
-        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, ref) {
-            @Override
-            public void populateViewHolder(ChatHolder chatView, Chat chat) {
-                chatView.messageText.setText(chat.getMessage());
-                chatView.messageText.setPadding(10, 0, 10, 0);
-                chatView.nameText.setText(chat.getName());
-                chatView.nameText.setPadding(10, 0, 10, 15);
-                if (chat.getName().equals(name)) {
-                    chatView.messageText.setGravity(Gravity.END);
-                    chatView.nameText.setGravity(Gravity.END);
-                    chatView.nameText.setTextColor(Color.parseColor("#8BC34A"));
-                } else {
-                    chatView.nameText.setTextColor(Color.parseColor("#00BCD4"));
-                }
-            }
-        };
+        mLastLimitCount = INITIAL_LOAD_COUNT;
+        final FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter =
+                new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class,
+                        android.R.layout.two_line_list_item, ChatHolder.class,
+                        ref.orderByKey().limitToLast(mLastLimitCount)) {
+                    @Override
+                    public void populateViewHolder(ChatHolder chatView, Chat chat) {
+                        chatView.messageText.setText(chat.getMessage());
+                        chatView.messageText.setPadding(10, 0, 10, 0);
+                        chatView.nameText.setText(chat.getName());
+                        chatView.nameText.setPadding(10, 0, 10, 15);
+                        if (chat.getName().equals(name)) {
+                            chatView.messageText.setGravity(Gravity.END);
+                            chatView.nameText.setGravity(Gravity.END);
+                            chatView.nameText.setTextColor(Color.parseColor("#8BC34A"));
+                        } else {
+                            chatView.nameText.setTextColor(Color.parseColor("#00BCD4"));
+                        }
+                    }
+                };
 
         messages.setAdapter(adapter);
 
-    }
+        messages.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                boolean isScrollingUp = dy < 0;
+                boolean shouldPrefetch =
+                        layoutManager.findFirstVisibleItemPosition() < PREFETCH_THRESHOLD;
 
+                if (isScrollingUp && shouldPrefetch) {
+                    if (shouldPrefetch) {
+                        mLastLimitCount += INCREMENTAL_LOAD_COUNT;
+                        adapter.updateQuery(ref.orderByKey().limitToLast(mLastLimitCount));
+                    }
+                }
+            }
+        });
+
+    }
 
     static class Chat {
         String name;
@@ -84,7 +109,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         }
     }
 
-    static class ChatHolder extends RecyclerView.ViewHolder {
+    public static class ChatHolder extends RecyclerView.ViewHolder {
         TextView nameText, messageText;
 
         public ChatHolder(View itemView) {
