@@ -18,7 +18,7 @@ The steps:
 
 
 What you'll need
- * [Android Studio][https://developer.android.com/sdk/installing/studio.html] version 1.3 or up
+ * [Android Studio](https://developer.android.com/sdk/installing/studio.html) version 1.3 or up
  * A test device or emulator with Android 2.3.3 or up
  * The device must have internet access to the Firebase servers
  * While we'll show you what to do in Android Studio, this code lab does not explain how Android works
@@ -27,7 +27,7 @@ What you'll need
 
 The first step is to create a Firebase application. This will be the server-side component that our Android application talks to.
 
-1. Go to the [Firebase web site][https://www.firebase.com/]
+1. Go to the [Firebase web site](https://www.firebase.com/)
 2. Login or sign up
 
     [screenshot:signup]
@@ -111,11 +111,11 @@ Before we can start writing code that interacts with our Firebase database, we'l
    This file contains the steps that Android Studio uses to build our app. We'll add a reference to Firebase to it, so we can start using it.
 8. Add the following inside the `android` object:
 
-    packagingOptions {
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE-FIREBASE.txt'
-        exclude 'META-INF/NOTICE'
-    }
+        packagingOptions {
+            exclude 'META-INF/LICENSE'
+            exclude 'META-INF/LICENSE-FIREBASE.txt'
+            exclude 'META-INF/NOTICE'
+        }
 
   This tells Gradle to exclude some files that otherwise create conflicts during the build.
 
@@ -503,11 +503,11 @@ What we've covered
 Next Steps
 * Add a log-out button to the app
 * Add a password-reset button to the login dialog
-* Use a RecyclerView (and []`FirebaseRecyclerViewAdapter`][https://github.com/firebase/FirebaseUI-Android/#using-a-recyclerview]) to ensure the activity also performs well when there are lots of messages
+* Use a RecyclerView (and [`FirebaseRecyclerViewAdapter`](https://github.com/firebase/FirebaseUI-Android/#using-a-recyclerview)) to ensure the activity also performs well when there are lots of messages
 * Allow the user to specify a nickname or use one of the Firebase's social authentication providers to look up their first name.
 * Get your app on the Play Store!
 
 Learn More
-* Learn all about using [Firebase with Android][https://www.firebase.com/docs/android/] by following the [Firebase for Android development guide][https://www.firebase.com/docs/android/guide/].
-* Study a more advanced sample application: [AndroidDrawing][https://github.com/firebase/AndroidDrawing]
-* Learn about [GeoFire for Java][https://github.com/firebase/geofire-java], which allows you to add realtime location queries to your Android application
+* Learn all about using [Firebase with Android](https://www.firebase.com/docs/android/) by following the [Firebase for Android development guide](https://www.firebase.com/docs/android/guide/).
+* Study a more advanced sample application: [AndroidDrawing](https://github.com/firebase/AndroidDrawing).
+* Learn about [GeoFire for Java](https://github.com/firebase/geofire-java), which allows you to add realtime location queries to your Android application
