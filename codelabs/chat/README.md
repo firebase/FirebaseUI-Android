@@ -218,12 +218,8 @@ A chat app that doesn’t show existing messages is not very useful. So in this 
 
 Let's take this in chunks: first we'll create a Java class to represent each message, then we'll create an Adapter that gets each of the messages from Firebase and puts them into a ListView.
 
-1. As you can see in the screenshot, each chat message has the same layout. Instead of creating a custom layout, we'll use one of the built-in layouts of Android: `android.R.layout.two_line_list_item`. This layout displays the items like this:
-
-  ![two_line_list_item](images/5_2.png)
-
-  We'll show the user name on the first line (in bold) and the message text on the second line.
-2. Now create a class `ChatMessage.java` that wraps the username and text message:
+1. As you can see in the screenshot, each chat message has the same layout. Instead of creating a custom layout, we'll use one of the built-in layouts of Android: `android.R.layout.two_line_list_item`. We'll show the user name on the first line (in bold) and the message text on the second line.
+2. Create a class `ChatMessage.java` that wraps the username and text message:
 
         public class ChatMessage {
             private String name;
