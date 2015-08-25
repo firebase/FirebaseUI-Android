@@ -1,7 +1,8 @@
 # FirebaseUI-Android
 
-This library provides the simplest way to bind the Firebase Android SDK to your native Android app.
-Get started now, be running in minutes.
+FirebaseUI is an open-source library for Android that allows you to quickly connect common UI elements to the [Firebase](https://www.firebase.com) database for data storage, allowing views to be updated in realtime as they change, and providing simple interfaces for common tasks like displaying lists or collections of items.
+
+A compatible FirebaseUI client is also available for [iOS](https://github.com/firebase/firebaseui-ios).
 
 ## Using the library in your Android app
 
