@@ -10,7 +10,7 @@ What you'll learn:
 
 The steps:
 
-1. [Register with Firebase](#register-with-firebase)
+1. [Register with Firebase](chat#register-with-firebase)
 2. [Create a project in Android Studio](#create-a-project-in-android-studio)
 3. [Connect the Android app to Firebase](#connect-the-android-app-to-firebase)
 4. [Send a message](#send-a-message)
@@ -49,32 +49,32 @@ In this step we'll create a project in Android Studio.
 
 1. Start Android Studio and Start a new Android Studio project
 
-    [screenshot:Welcome to Android Studio]
+    [!Welcome to Android Studio](images/2_1.png)
 
 2. You can name the project anything you want. But in the code below, we've named it Nanochat
 
-    [screenshot:Configure your new project]
+    [!Configure your new project](images/2_2.png)
 
 3. Set the minimum SDK to 10 or higher.
 
-    [screenhot:minimum Android API level]
+    [!Minimum Android API level](images/2_3.png)
 
-   We've left it on 10 here, since that is the lowest API level Firebase supports.
+   We've left it on 10 (Gingerbread) here, since that is the lowest API level Firebase supports.
 4. Start with a Blank Activity
 
-    [screenshot:Add an activity]
+    [!Add an activity](images/2_4.png)
 
 5. We'll leave all the defaults for this activity
 
-    [screenshot:Customize the Activity]
+    [!Customize the Activity](images/2_5.png)
 
 6. If the project outline is not visible on the left, click the 1:Project label
 
-    [screenshot:Click 1:Project]
+    [!Click 1:Project](images/2_6.png)
 
-7. Open up the main activity, which can be found in `app/res/layout/activity_main.xml`. In this file the root element will be a `RelativeLayout` and in there will be a `TextView`. We won't be using the `TextView`, so delete it (or leave it and put a welcome message in it).
+7. Open up the main activity, which can be found in `app/res/layout/activity_main.xml` and switch from its Design to its Text tab if needed. In this file the root element will be a `RelativeLayout` and in there will be a `TextView`. We won't be using the `TextView`, so delete it (or leave it and put a welcome message in it).
 
-    [screenshot:emptied up layout_main.xml]
+    [!emptied up layout_main.xml](2_7.png)
 
  We now have a blank project in Android Studio. Let's wire our app up to Firebase!
 
