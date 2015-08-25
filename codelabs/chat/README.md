@@ -1,3 +1,4 @@
+# Building a chat application with FirebaseUI for Android
 
 In this code lab you'll build a chat application for Android using Firebase and Android Studio.
 
