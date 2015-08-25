@@ -1,7 +1,8 @@
 
 In this code lab you'll build a chat application for Android using Firebase and Android Studio.
 
-[screenshot: running app]
+![Chat login](images/0_0.png)
+![Chat messages](images/0_1.png)
 
 What you'll learn:
 
@@ -11,11 +12,10 @@ The steps:
 
 1. Register with Firebase
 2. Create a project in Android Studio
-3. Connect the Android project to Firebase
+3. Connect the Android app to Firebase
 4. Allow the user to send a message
-5. Show the (existing and new) messages
+5. Show the messages
 6. Enable login
-
 
 What you'll need
  * [Android Studio](https://developer.android.com/sdk/installing/studio.html) version 1.3 or up
@@ -30,16 +30,16 @@ The first step is to create a Firebase application. This will be the server-side
 1. Go to the [Firebase web site](https://www.firebase.com/)
 2. Login or sign up
 
-    [screenshot:signup]
+  ![Signup](images/1_1.png)
 
 3. Manage the app that was automatically created for you
 
-    [screenshot:manage app]
+  ![Manage app](images/1_2.png)
 
   This app is on Firebase's free hacker plan. This plan is great for when you're developing your app on Firebase.
 4. Any data that our Android application writes, will be visible in the Data tab
 
-    [screenshot:welcome to dashboard]
+  ![Welcome to dashboard](images/1_3.png)
 
 The custom Firebase backend for our application is now ready for use. Let's set up our app in Android Studio.
 
