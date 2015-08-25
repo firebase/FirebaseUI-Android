@@ -105,9 +105,11 @@ Before we can start writing code that interacts with our Firebase database, we'l
 
   ![gradle.build with Firebase additions](images/3_1.png)
 
-4. At this stage you'll need to synchronize the project with the gradle files again, so Tools > Android > Sync Project with Gradle Files. Android Studio will parse the gradle files and pick up our changes. You can also click the dedicated button in the toolbar
+4. At this stage you'll need to synchronize the project with the gradle files again. Either click the Sync Now link in the notification bar or the corresponding button in the toolbar: Sync Project with Gradle Files.
 
-    ![Sync now button in toolbar](images/3_2.png)
+    ![Sync Project with Gradle Files button in toolbar](images/3_2.png)
+
+  Android Studio will parse the gradle files and pick up our changes.
 
 5. Since Firebase is a hosted service, our app will need to be able to access the internet.
 6. Open app > manifests > AndroidManifest.xml
@@ -144,9 +146,9 @@ That's all the setup that is required. Next up we'll allow the user to enter a m
 
 ## Send a message
 
-Now we can start sending data to Firebase! In this step we'll allow the user to enter a message in a text box. When they then click the Send button, we will send the message to Firebase.
+Next we'll send data to Firebase! In this step we'll allow the user to enter a message in a text box. When they then click the Send button, we will send the message to Firebase.
 
-[screenshot:forge+send message]
+![Data dashboard and app for sending a message](images/4_1.png)
 
 1. We'll first add the necessary views to activity_main.xml:
 
@@ -170,16 +172,16 @@ Now we can start sending data to Firebase! In this step we'll allow the user to 
                 android:text="Send" />
         </LinearLayout>
 
-  This layout gives us an `EditText`, where the user can enter their chat message, and a `Button` that they can click to send the message.
+    This layout puts a horizontal bar at the bottom that contains an `EditText`, where the user can enter their chat message, and a `Button` that they can click to send the message.
 
-        [screenshot:activity_main.xml with footer]
+        ![Activity_main.xml with footer](images/4_2.png)
 
 2. In our `MainActivity.java` we'll now add variables for the `EditText` and `Button` at the end of the onCreate method:
 
         final EditText textEdit = (EditText) this.findViewById(R.id.text_edit);
         Button sendButton = (Button) this.findViewById(R.id.send_button);
 
-        [screenshot:main activity Java with EditText and Button bound]
+        ![MainActivity.java with EditText and Button bound](images/4_3.png)
 
 3. Next, we'll add a method that grabs the text from the input and send it to our Firebase database:
 
@@ -197,11 +199,11 @@ Now we can start sending data to Firebase! In this step we'll allow the user to 
 
   You will have to import the packages for some of these classes. Android Studio will tell you where to import them from.
 
-4. Here we grab the message from the EditText, add it to a Map, and send it off to Firebase. We'll look at a way to replace that Map with something more type-safe in the next section, but for now this will work.
+  Here we grab the message from the EditText, add it to a Map, and send it off to Firebase. We'll look at a way to replace that Map with something more type-safe in the next section, but for now this will work.
 
   We hard-coded our user name for the moment. We'll use Firebase Authentication to make this dynamic in the last section of this code lab.
 
-    [screenshot with completed onCreate]
+    ![onCreate with sendButton implemented](images/4_4.png)
 
 5. If you now run the application in the emulator, you will see an input field with a Send button that sends the message to Firebase. Open the URL of your Firebase database, and you'll see it light up green as you add new messages.
 6. Open the Data tab in the Firebase Dashboard of your app. You'll see it light up green as you add new messages. Admit it, this is pretty cool!
