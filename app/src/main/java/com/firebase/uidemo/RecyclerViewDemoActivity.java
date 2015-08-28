@@ -69,7 +69,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
     }
 
 
-    static class Chat {
+    public static class Chat {
         String name;
         String text;
 
@@ -90,7 +90,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         }
     }
 
-    static class ChatHolder extends RecyclerView.ViewHolder {
+    public static class ChatHolder extends RecyclerView.ViewHolder {
         TextView nameView, textView;
 
         public ChatHolder(View itemView) {
