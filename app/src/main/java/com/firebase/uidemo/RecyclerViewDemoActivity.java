@@ -28,7 +28,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_view_demo);
 
-        final Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+        final Firebase ref = new Firebase("https://firebaseui.firebaseio.com/largechat");
 
         final String name = "Android User";
         final Button sendButton = (Button) findViewById(R.id.sendButton);
@@ -54,7 +54,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
                         ref.orderByKey().limitToLast(mLastLimitCount)) {
                     @Override
                     public void populateViewHolder(ChatHolder chatView, Chat chat) {
-                        chatView.messageText.setText(chat.getMessage());
+                        chatView.messageText.setText(chat.getText());
                         chatView.messageText.setPadding(10, 0, 10, 0);
                         chatView.nameText.setText(chat.getName());
                         chatView.nameText.setPadding(10, 0, 10, 15);
@@ -88,24 +88,24 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
 
     }
 
-    static class Chat {
+    public static class Chat {
         String name;
-        String message;
+        String text;
 
         public Chat() {
         }
 
-        public Chat(String name, String message) {
+        public Chat(String name, String text) {
             this.name = name;
-            this.message = message;
+            this.text = text;
         }
 
         public String getName() {
             return name;
         }
 
-        public String getMessage() {
-            return message;
+        public String getText() {
+            return text;
         }
     }
 
