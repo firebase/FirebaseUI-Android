@@ -248,7 +248,7 @@ We can wrap that in a ViewHolder with:
 
 There's nothing magical going on here; we're just mapping numeric IDs and casts into a nice, type-safe contract.
 
-### Create a custom FirebaseListAdapter
+### Create a custom FirebaseRecyclerAdapter
 
 Just like we did for FirebaseListAdapter, we'll create an anonymous subclass for our ChatMessages:
 
