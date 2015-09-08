@@ -269,9 +269,9 @@ Like before, we get a custom RecyclerView populated with data from Firebase by s
 
 ## Installing locally
 
-We are still working on deploying FirebaseUI to Maven Central. In the meantime, you can download the
-latest release from the Releases tab on the Github repo and install it into your local Maven repository
-with:
+You can get the latest released version of FirebaseUI from Maven Central. 
+
+Alternatively, you can download the latest release from the Releases tab on the Github repo and install it into your local Maven repository with:
 
     mvn install:install-file -Dfile=/path/to/library-debug.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=0.1.0 -Dpackaging=aar
 
