@@ -14,7 +14,7 @@ To use the FirebaseUI library in our project, we need to do a few things:
 
 The FirebaseUI library is most prominent in step 3. But first we have to add it to our project.
 
-### Adding the library to your project (gradle.build or module dependencies dialog)
+### Adding the library to your project
 
 If your Android app already uses Firebase, you have added a dependency to the Firebase SDK to your dependencies.
 In this step we'll add the FirebaseUI library as another dependency.
