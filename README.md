@@ -320,6 +320,14 @@ Alternatively, you can download the latest release from the Releases tab on the 
 * this generates the javadoc: `library/build/outputs/library-javadoc.jar`
 
 
+### to deploy a build to your local maven repo
+
+```
+mvn install:install-file -Dfile=/path/to/library-debug.aar -DgroupId=com.firebaseui -DartifactId=firebase-ui -Dversion=0.1.0 -Dpackaging=aar
+```
+
+Don't forget to update the path and the version number in the command.
+
 ### to tag a release on Github
 
 * ensure that all your changes are on master and that your local build is on master
