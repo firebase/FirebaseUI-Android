@@ -1,7 +1,9 @@
 package com.firebase.ui;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -20,11 +22,11 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
     private final String LOG_TAG = "FirebaseLoginBaseAct";
 
-    private Firebase mRef;
+    public Firebase ref;
 
     private GoogleAuthHelper mGoogleAuthHelper;
 
-    public SocialProvider mChosenProvider;
+    public SocialProvider chosenProvider;
 
     /* Abstract methods for Login Events */
     public abstract void onFirebaseLogin(AuthData authData);
@@ -45,31 +47,34 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
                 mGoogleAuthHelper.login();
                 break;
             case Facebook:
+                break;
             case Twitter:
-                throw new UnsupportedOperationException();
+                break;
         }
 
-        mChosenProvider = provider;
+        chosenProvider = provider;
     }
 
     public void logout() {
-        switch (mChosenProvider) {
+        switch (chosenProvider) {
             case Google:
                 mGoogleAuthHelper.logout();
                 break;
             case Facebook:
+                break;
             case Twitter:
-                throw new UnsupportedOperationException();
+                break;
         }
-        mRef.unauth();
+        ref.unauth();
     }
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Firebase.setAndroidContext(this);
 
-        mRef = setupFirebase();
+        ref = setupFirebase();
 
         mGoogleAuthHelper = new GoogleAuthHelper(this, new TokenAuthHandler() {
             @Override
@@ -92,7 +97,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mRef.addAuthStateListener(new Firebase.AuthStateListener() {
+        ref.addAuthStateListener(new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
@@ -105,10 +110,10 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     private void authenticateRefWithProvider(String provider, String token) {
-        mRef.authWithOAuthToken(provider, token, new Firebase.AuthResultHandler() {
+        ref.authWithOAuthToken(provider, token, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
-                // Do nothing. Auth updates are handled in the AuthStateListener
+                 // Do nothing. Auth updates are handled in the AuthStateListener
             }
 
             @Override
