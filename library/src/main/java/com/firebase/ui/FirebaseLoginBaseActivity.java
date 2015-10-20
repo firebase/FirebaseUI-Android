@@ -45,9 +45,8 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
                 mGoogleAuthHelper.login();
                 break;
             case Facebook:
-                break;
             case Twitter:
-                break;
+                throw new UnsupportedOperationException();
         }
 
         mChosenProvider = provider;
@@ -59,9 +58,8 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
                 mGoogleAuthHelper.logout();
                 break;
             case Facebook:
-                break;
             case Twitter:
-                break;
+                throw new UnsupportedOperationException();
         }
         mRef.unauth();
     }
