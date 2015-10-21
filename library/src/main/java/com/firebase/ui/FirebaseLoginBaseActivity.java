@@ -41,11 +41,11 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
     public void loginWithProvider(SocialProvider provider) {
         switch (provider) {
-            case Google:
+            case google:
                 mGoogleAuthHelper.login();
                 break;
-            case Facebook:
-            case Twitter:
+            case facebook:
+            case twitter:
                 throw new UnsupportedOperationException();
         }
 
@@ -54,11 +54,11 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
     public void logout() {
         switch (mChosenProvider) {
-            case Google:
+            case google:
                 mGoogleAuthHelper.logout();
                 break;
-            case Facebook:
-            case Twitter:
+            case facebook:
+            case twitter:
                 throw new UnsupportedOperationException();
         }
         mRef.unauth();
@@ -97,18 +97,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
-                    if (authData.getProvider().equals("google")) {
-                        mChosenProvider = SocialProvider.Google;
-                    }
-                    else if (authData.getProvider().equals("facebook")) {
-                        mChosenProvider = SocialProvider.Facebook;
-                    }
-                    else if (authData.getProvider().equals("twitter")) {
-                        mChosenProvider = SocialProvider.Twitter;
-                    }
-                    else {
-                        throw new UnsupportedOperationException("Provider '"+authData.getProvider()+"' is not handled");
-                    }
+                    mChosenProvider = SocialProvider.valueOf(authData.getProvider());
                     onFirebaseLogin(authData);
                 } else {
                     onFirebaseLogout();

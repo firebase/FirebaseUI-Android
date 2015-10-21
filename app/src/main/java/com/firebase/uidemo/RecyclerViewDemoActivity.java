@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.ui.FirebaseLoginBaseActivity;
 import com.firebase.ui.FirebaseRecyclerViewAdapter;
 import com.firebase.ui.com.firebasei.ui.authimpl.SocialProvider;
@@ -58,7 +59,8 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
             }
         });
 
-        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, mRef) {
+        Query recentMessages = mRef.limitToLast(50);
+        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, recentMessages) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
                 chatView.textView.setText(chat.getText());
@@ -102,7 +104,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case LOGIN:
-                this.loginWithProvider(SocialProvider.Google);
+                this.loginWithProvider(SocialProvider.google);
                 return true;
             case LOGOUT:
                 this.logout();
