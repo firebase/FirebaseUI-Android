@@ -20,26 +20,31 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
     private final String LOG_TAG = "FirebaseLoginBaseAct";
 
-    private Firebase mRef;
-
     private GoogleAuthHelper mGoogleAuthHelper;
 
     public SocialProvider mChosenProvider;
 
     /* Abstract methods for Login Events */
-    public abstract void onFirebaseLogin(AuthData authData);
+    protected abstract void onFirebaseLogin(AuthData authData);
 
-    public abstract void onFirebaseLogout();
+    protected abstract void onFirebaseLogout();
 
-    public abstract void onFirebaseLoginError(FirebaseError firebaseError);
+    protected abstract void onFirebaseLoginError(FirebaseError firebaseError);
 
-    public abstract void onFirebaseLoginCancel();
+    protected abstract void onFirebaseLoginCancel();
 
-    public abstract Firebase setupFirebase();
+    /**
+     * Subclasses of this activity must implement this method and return a valid Firebase reference that
+     * can be used to call authentication related methods on.
+     *
+     * @return a Firebase reference that can be used to call authentication related methods on
+     */
+    protected abstract Firebase getFirebaseRef();
 
     /* Login/Logout */
 
     public void loginWithProvider(SocialProvider provider) {
+        // TODO: what should happen if you're already authenticated?
         switch (provider) {
             case google:
                 mGoogleAuthHelper.login();
@@ -61,16 +66,13 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             case twitter:
                 throw new UnsupportedOperationException();
         }
-        mRef.unauth();
+        getFirebaseRef().unauth();
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Firebase.setAndroidContext(this);
-
-        mRef = setupFirebase();
 
         mGoogleAuthHelper = new GoogleAuthHelper(this, new TokenAuthHandler() {
             @Override
@@ -93,7 +95,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mRef.addAuthStateListener(new Firebase.AuthStateListener() {
+        getFirebaseRef().addAuthStateListener(new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
@@ -107,7 +109,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     private void authenticateRefWithProvider(String provider, String token) {
-        mRef.authWithOAuthToken(provider, token, new Firebase.AuthResultHandler() {
+        getFirebaseRef().authWithOAuthToken(provider, token, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
                 // Do nothing. Auth updates are handled in the AuthStateListener

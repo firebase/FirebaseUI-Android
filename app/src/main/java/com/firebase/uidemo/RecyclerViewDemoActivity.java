@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.client.AuthData;
@@ -42,6 +41,8 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         final RecyclerView messages = (RecyclerView) findViewById(R.id.messagesList);
         messages.setHasFixedSize(true);
         messages.setLayoutManager(new LinearLayoutManager(this));
+
+        mRef = new Firebase("https://firebaseui.firebaseio.com/chat");
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,16 +144,11 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     }
 
     @Override
-    public Firebase setupFirebase() {
-        if (mRef == null) {
-            mRef = new Firebase("https://firebaseui.firebaseio.com/chat");
-        }
-
+    public Firebase getFirebaseRef() {
         return mRef;
     }
 
     // End of FirebaseLoginBaseActivity
-
 
     public static class Chat {
         String name;
