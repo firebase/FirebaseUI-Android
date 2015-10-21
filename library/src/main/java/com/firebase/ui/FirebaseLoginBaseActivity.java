@@ -97,6 +97,18 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
+                    if (authData.getProvider().equals("google")) {
+                        mChosenProvider = SocialProvider.Google;
+                    }
+                    else if (authData.getProvider().equals("facebook")) {
+                        mChosenProvider = SocialProvider.Facebook;
+                    }
+                    else if (authData.getProvider().equals("twitter")) {
+                        mChosenProvider = SocialProvider.Twitter;
+                    }
+                    else {
+                        throw new UnsupportedOperationException("Provider '"+authData.getProvider()+"' is not handled");
+                    }
                     onFirebaseLogin(authData);
                 } else {
                     onFirebaseLogout();
