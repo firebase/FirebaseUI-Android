@@ -3,9 +3,9 @@ set -e
 
 cd $(dirname $0)
 
-###########################
-#  VALIDATE GEOFIRE REPO  #
-###########################
+##############################
+#  VALIDATE FIREBASEUI REPO  #
+##############################
 # Ensure the checked out geofire branch is master
 CHECKED_OUT_BRANCH="$(git branch | grep "*" | awk -F ' ' '{print $2}')"
 if [[ $CHECKED_OUT_BRANCH != "master" ]]; then
