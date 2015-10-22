@@ -122,26 +122,46 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int position, View view, ViewGroup viewGroup) {
         if (view == null) {
             view = mActivity.getLayoutInflater().inflate(mLayout, viewGroup, false);
         }
 
-        T model = mSnapshots.getItem(i).getValue(mModelClass);
+        T model = mSnapshots.getItem(position).getValue(mModelClass);
 
         // Call out to subclass to marshall this model into the provided view
-        populateView(view, model);
+        populateView(view, model, position);
         return view;
     }
 
     /**
      * Each time the data at the given Firebase location changes, this method will be called for each item that needs
-     * to be displayed. The arguments correspond to the mLayout and mModelClass given to the constructor of this class.
+     * to be displayed. The first two arguments correspond to the mLayout and mModelClass given to the constructor of
+     * this class. The third argument is the item's position in the list.
      * <p>
      * Your implementation should populate the view using the data contained in the model.
+     * You should implement either this method or the other {@link FirebaseListAdapter#populateView(View, Object)} method
+     * but not both.
      *
-     * @param v     The view to populate
-     * @param model The object containing the data used to populate the view
+
+     * @param position  The position in the list of the view being populated
      */
-    protected abstract void populateView(View v, T model);
+    protected void populateView(View v, T model, int position) {
+        populateView(v, model);
+    }
+
+    /**
+     * This is a backwards compatible version of populateView.
+     * <p>
+     * You should implement either this method or the other {@link FirebaseListAdapter#populateView(View, Object, int)} method
+     * but not both.
+     *
+     * @see FirebaseListAdapter#populateView(View, Object, int)
+     *
+     * @param v         The view to populate
+     * @param model     The object containing the data used to populate the view
+     */
+    protected void populateView(View v, T model) {
+
+    }
 }
