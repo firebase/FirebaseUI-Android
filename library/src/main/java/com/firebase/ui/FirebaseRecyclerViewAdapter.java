@@ -186,7 +186,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      * this class. The third argument is the item's position in the list.
      * <p>
      * Your implementation should populate the view using the data contained in the model.
-     * You should implement either this method or the other {@link FirebaseRecyclerViewAdapter#populateViewHolder(VH, Object)} method
+     * You should implement either this method or the other FirebaseRecyclerViewAdapter#populateViewHolder(VH, Object) method
      * but not both.
      *
      * @param viewHolder The view to populate
@@ -199,7 +199,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
     /**
      * This is a backwards compatible version of populateViewHolder.
      * <p>
-     * You should implement either this method or the other {@link FirebaseRecyclerViewAdapter#populateViewHolder(VH, Object, int)} method
+     * You should implement either this method or the other FirebaseRecyclerViewAdapter#populateViewHolder(VH, T, int) method
      * but not both.
      *
      * @see FirebaseListAdapter#populateView(View, Object, int)
