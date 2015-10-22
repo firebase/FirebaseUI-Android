@@ -199,7 +199,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
     /**
      * This is a backwards compatible version of populateViewHolder.
      * <p>
-     * You should implement either this method or the other {@link FirebaseListAdapter#populateView(View, Object, int)} method
+     * You should implement either this method or the other {@link FirebaseRecyclerViewAdapter#populateViewHolder(VH, Object, int)} method
      * but not both.
      *
      * @see FirebaseListAdapter#populateView(View, Object, int)
