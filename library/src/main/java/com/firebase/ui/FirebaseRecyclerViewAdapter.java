@@ -133,7 +133,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      *                   combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>
      */
     public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Firebase ref) {
-        this(modelClass, modelLayout, viewHolderClass, (Query)ref);
+        this(modelClass, modelLayout, viewHolderClass, (Query) ref);
     }
 
 
@@ -175,11 +175,39 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
         }
     }
     @Override
-    public void onBindViewHolder(VH viewHolder, int i) {
-        T model = getItem(i);
-        populateViewHolder(viewHolder, model);
+    public void onBindViewHolder(VH viewHolder, int position) {
+        T model = getItem(position);
+        populateViewHolder(viewHolder, model, position);
     }
 
-    abstract public void populateViewHolder(VH viewHolder, T model);
+    /**
+     * Each time the data at the given Firebase location changes, this method will be called for each item that needs
+     * to be displayed. The first two arguments correspond to the mLayout and mModelClass given to the constructor of
+     * this class. The third argument is the item's position in the list.
+     * <p>
+     * Your implementation should populate the view using the data contained in the model.
+     * You should implement either this method or the other {@link FirebaseRecyclerViewAdapter#populateViewHolder(VH, Object)} method
+     * but not both.
+     *
+     * @param viewHolder The view to populate
+     * @param model      The object containing the data used to populate the view
+     * @param position  The position in the list of the view being populated
+     */
+    protected void populateViewHolder(VH viewHolder, T model, int position) {
+        populateViewHolder(viewHolder, model);
+    };
+    /**
+     * This is a backwards compatible version of populateViewHolder.
+     * <p>
+     * You should implement either this method or the other {@link FirebaseListAdapter#populateView(View, Object, int)} method
+     * but not both.
+     *
+     * @see FirebaseListAdapter#populateView(View, Object, int)
+     *
+     * @param viewHolder The view to populate
+     * @param model      The object containing the data used to populate the view
+     */
+    protected void populateViewHolder(VH viewHolder, T model) {
+    };
 
 }

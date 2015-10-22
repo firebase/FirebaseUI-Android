@@ -143,7 +143,8 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * You should implement either this method or the other {@link FirebaseListAdapter#populateView(View, Object)} method
      * but not both.
      *
-
+     * @param v         The view to populate
+     * @param model     The object containing the data used to populate the view
      * @param position  The position in the list of the view being populated
      */
     protected void populateView(View v, T model, int position) {
