@@ -14,7 +14,7 @@ To use the FirebaseUI library in our project, we need to do a few things:
 
 The FirebaseUI library is most prominent in step 3. But first we have to add it to our project.
 
-### Adding the library to your project (gradle.build or module dependencies dialog)
+### Adding the library to your project
 
 If your Android app already uses Firebase, you have added a dependency to the Firebase SDK to your dependencies.
 In this step we'll add the FirebaseUI library as another dependency.
@@ -248,7 +248,7 @@ We can wrap that in a ViewHolder with:
 
 There's nothing magical going on here; we're just mapping numeric IDs and casts into a nice, type-safe contract.
 
-### Create a custom FirebaseListAdapter
+### Create a custom FirebaseRecyclerAdapter
 
 Just like we did for FirebaseListAdapter, we'll create an anonymous subclass for our ChatMessages:
 
@@ -269,9 +269,9 @@ Like before, we get a custom RecyclerView populated with data from Firebase by s
 
 ## Installing locally
 
-We are still working on deploying FirebaseUI to Maven Central. In the meantime, you can download the
-latest release from the Releases tab on the Github repo and install it into your local Maven repository
-with:
+You can get the latest released version of FirebaseUI from Maven Central. 
+
+Alternatively, you can download the latest release from the Releases tab on the Github repo and install it into your local Maven repository with:
 
     mvn install:install-file -Dfile=/path/to/library-debug.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=0.1.0 -Dpackaging=aar
 
@@ -319,6 +319,14 @@ with:
 * select  :library > Tasks > other > bundleReleaseJavadoc
 * this generates the javadoc: `library/build/outputs/library-javadoc.jar`
 
+
+### to deploy a build to your local maven repo
+
+```
+mvn install:install-file -Dfile=/path/to/library-debug.aar -DgroupId=com.firebaseui -DartifactId=firebase-ui -Dversion=0.1.0 -Dpackaging=aar
+```
+
+Don't forget to update the path and the version number in the command.
 
 ### to tag a release on Github
 
