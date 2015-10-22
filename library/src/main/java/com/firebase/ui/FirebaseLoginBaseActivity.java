@@ -95,6 +95,8 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        // TODO: is there a way to delay this? Or make it on-demand (i.e. make them call `startMonitoringState`)?
+        // TODO: should we remove the authStateListener on `onStop()`?
         getFirebaseRef().addAuthStateListener(new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
