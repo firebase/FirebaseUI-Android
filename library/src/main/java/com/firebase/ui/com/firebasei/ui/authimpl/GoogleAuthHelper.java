@@ -149,6 +149,7 @@ public class GoogleAuthHelper implements
             }
         } else {
             // Create error code?
+            Log.e(LOG_TAG, mGoogleConnectionResult.toString());
         }
     }
 }

@@ -1,9 +1,7 @@
 package com.firebase.ui;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -22,59 +20,59 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
     private final String LOG_TAG = "FirebaseLoginBaseAct";
 
-    public Firebase ref;
-
     private GoogleAuthHelper mGoogleAuthHelper;
 
-    public SocialProvider chosenProvider;
+    public SocialProvider mChosenProvider;
 
     /* Abstract methods for Login Events */
-    public abstract void onFirebaseLogin(AuthData authData);
+    protected abstract void onFirebaseLogin(AuthData authData);
 
-    public abstract void onFirebaseLogout();
+    protected abstract void onFirebaseLogout();
 
-    public abstract void onFirebaseLoginError(FirebaseError firebaseError);
+    protected abstract void onFirebaseLoginError(FirebaseError firebaseError);
 
-    public abstract void onFirebaseLoginCancel();
+    protected abstract void onFirebaseLoginCancel();
 
-    public abstract Firebase setupFirebase();
+    /**
+     * Subclasses of this activity must implement this method and return a valid Firebase reference that
+     * can be used to call authentication related methods on.
+     *
+     * @return a Firebase reference that can be used to call authentication related methods on
+     */
+    protected abstract Firebase getFirebaseRef();
 
     /* Login/Logout */
 
     public void loginWithProvider(SocialProvider provider) {
+        // TODO: what should happen if you're already authenticated?
         switch (provider) {
-            case Google:
+            case google:
                 mGoogleAuthHelper.login();
                 break;
-            case Facebook:
-                break;
-            case Twitter:
-                break;
+            case facebook:
+            case twitter:
+                throw new UnsupportedOperationException();
         }
 
-        chosenProvider = provider;
+        mChosenProvider = provider;
     }
 
     public void logout() {
-        switch (chosenProvider) {
-            case Google:
+        switch (mChosenProvider) {
+            case google:
                 mGoogleAuthHelper.logout();
                 break;
-            case Facebook:
-                break;
-            case Twitter:
-                break;
+            case facebook:
+            case twitter:
+                throw new UnsupportedOperationException();
         }
-        ref.unauth();
+        getFirebaseRef().unauth();
     }
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Firebase.setAndroidContext(this);
-
-        ref = setupFirebase();
 
         mGoogleAuthHelper = new GoogleAuthHelper(this, new TokenAuthHandler() {
             @Override
@@ -97,10 +95,13 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        ref.addAuthStateListener(new Firebase.AuthStateListener() {
+        // TODO: is there a way to delay this? Or make it on-demand (i.e. make them call `startMonitoringState`)?
+        // TODO: should we remove the authStateListener on `onStop()`?
+        getFirebaseRef().addAuthStateListener(new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
+                    mChosenProvider = SocialProvider.valueOf(authData.getProvider());
                     onFirebaseLogin(authData);
                 } else {
                     onFirebaseLogout();
@@ -110,10 +111,10 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     private void authenticateRefWithProvider(String provider, String token) {
-        ref.authWithOAuthToken(provider, token, new Firebase.AuthResultHandler() {
+        getFirebaseRef().authWithOAuthToken(provider, token, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
-                 // Do nothing. Auth updates are handled in the AuthStateListener
+                // Do nothing. Auth updates are handled in the AuthStateListener
             }
 
             @Override
