@@ -40,27 +40,28 @@ So say we have these chat messages in our Firebase database:
 
 We can represent a chat message with this Java class:
 
-    public class ChatMessage {
-        String message;
-        String name;
+```java
+public class ChatMessage {
+    String message;
+    String name;
 
-        public ChatMessage() {
-        }
-
-        public ChatMessage(String name, String message) {
-            this.message = message;
-            this.name = name;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public String getName() {
-            return name;
-        }
+    public ChatMessage() {
     }
 
+    public ChatMessage(String name, String message) {
+        this.message = message;
+        this.name = name;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+```
 A few things to note here:
 
  * the field have the exact same name as the properties in Firebase. This allows Firebase to automatically map the properties to these fields.
@@ -70,28 +71,30 @@ A few things to note here:
 
 A little-known feature of Firebase for Android is that you can pass an instance of this `ChatMessage` class to `setValue()`:
 
-    Firebase ref = new Firebase("https://nanochat.firebaseio.com/");
-    ChatMessage msg = new ChatMessage("puf", "Hello FirebaseUI world!");
-    ref.push().setValue(msg);
-
+```java
+Firebase ref = new Firebase("https://nanochat.firebaseio.com/");
+ChatMessage msg = new ChatMessage("puf", "Hello FirebaseUI world!");
+ref.push().setValue(msg);
+```
 The Firebase Android client will read the values from the `msg` and write them into the properties of the new child in the database.
 
 Conversely, we can read a `ChatMessage` straight from a `DataSnapshot` in our event handlers:
 
-    ref.limitToLast(5).addValueEventListener(new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot snapshot) {
-            for (DataSnapshot msgSnapshot: snapshot.getChildren()) {
-                ChatMessage msg = msgSnapshot.getValue(ChatMessage.class);
-                Log.i("Chat", chat.getName()+": "+chat.getMessage());
-            }
+```java
+ref.limitToLast(5).addValueEventListener(new ValueEventListener() {
+    @Override
+    public void onDataChange(DataSnapshot snapshot) {
+        for (DataSnapshot msgSnapshot: snapshot.getChildren()) {
+            ChatMessage msg = msgSnapshot.getValue(ChatMessage.class);
+            Log.i("Chat", chat.getName()+": "+chat.getMessage());
         }
-        @Override
-        public void onCancelled(FirebaseError firebaseError) {
-            Log.e("Chat", "The read failed: " + firebaseError.getMessage());
-        }
-    });
-
+    }
+    @Override
+    public void onCancelled(FirebaseError firebaseError) {
+        Log.e("Chat", "The read failed: " + firebaseError.getMessage());
+    }
+});
+```
 In the above snippet we have a query for the last 5 chat messages. Whenever those change (i.e. when an new message is added)
 we get the `ChatMessage` objects from the `DataSnapshot` with `getValue(ChatMessage.class)`. The Firebase Android client will
 then read the properties that it got from the database and map them to the fields of our `ChatMessage` class.
@@ -105,53 +108,59 @@ But when we build our app using FirebaseUI, we often won't need to register our 
 
 We'll assume you've already added a `ListView` to your layout and have looked it up in the `onCreate` method of your activity:
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        ListView messagesView = (ListView) findViewById(R.id.messages_list);
-    }
+    ListView messagesView = (ListView) findViewById(R.id.messages_list);
+}
+```
 
 #### Set up connection to Firebase
 
 First we'll tell Firebase that we intend to use it in this activity and set up a reference to the database of chat message.
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        ListView messagesView = (ListView) findViewById(R.id.messages_list);
+    ListView messagesView = (ListView) findViewById(R.id.messages_list);
 
-        Firebase.setAndroidContext(this);
-        Firebase ref = new Firebase("https://nanochat.firebaseio.com");
-    }
+    Firebase.setAndroidContext(this);
+    Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+}
+```
 
 #### Create custom FirebaseListAdapter subclass
 
 Next, we need to create a subclass of the `FirebaseListAdapter` with the correct parameters and implement its `populateView` method:
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        ListView messagesView = (ListView) findViewById(R.id.messages_list);
+    ListView messagesView = (ListView) findViewById(R.id.messages_list);
 
-        Firebase.setAndroidContext(this);
-        Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+    Firebase.setAndroidContext(this);
+    Firebase ref = new Firebase("https://nanochat.firebaseio.com");
 
-        mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
-            @Override
-            protected void populateView(View view, ChatMessage chatMessage) {
-                ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
-                ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
+    mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
+        @Override
+        protected void populateView(View view, ChatMessage chatMessage) {
+            ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
+            ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
 
-            }
-        };
-        messagesView.setListAdapter(mAdapter);
-    }
+        }
+    };
+    messagesView.setListAdapter(mAdapter);
+}
+```
 
 In this last snippet we create a subclass of `FirebaseListAdapter`.
 We tell is that it is of type `<ChatMessage>`, so that it is a type-safe collection. We also tell it to use
@@ -171,51 +180,55 @@ correct `TextView` controls from the `view`. The code is a bit verbose, but hey.
 Finally, we need to clean up after ourselves. When the activity is destroyed, we need to call `release()`
 on the `ListAdapter` so that it can stop listening for changes in the Firebase database.
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mAdapter.cleanup();
-    }
+```java
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mAdapter.cleanup();
+}
+```
 
 #### Sending chat messages
 
 Remember when we showed how to use the `ChatMessage` class in `setValue()`.
 We can now use that in our activity to allow sending a message:
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        ListView messagesView = (ListView) findViewById(R.id.messages_list);
+    ListView messagesView = (ListView) findViewById(R.id.messages_list);
 
-        Firebase.setAndroidContext(this);
-        Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+    Firebase.setAndroidContext(this);
+    Firebase ref = new Firebase("https://nanochat.firebaseio.com");
 
-        mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
-            @Override
-            protected void populateView(View view, ChatMessage chatMessage) {
-                ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
-                ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
-            }
-        };
-        setListAdapter(mAdapter);
+    mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
+        @Override
+        protected void populateView(View view, ChatMessage chatMessage) {
+            ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
+            ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
+        }
+    };
+    setListAdapter(mAdapter);
 
-        final EditText mMessage = (EditText) findViewById(R.id.message_text);
-        findViewById(R.id.send_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mRef.push().setValue(new ChatMessage("puf", mMessage.getText().toString()));
-                mMessage.setText("");
-            }
-        });
-    }
+    final EditText mMessage = (EditText) findViewById(R.id.message_text);
+    findViewById(R.id.send_button).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mRef.push().setValue(new ChatMessage("puf", mMessage.getText().toString()));
+            mMessage.setText("");
+        }
+    });
+}
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mAdapter.cleanup();
-    }
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mAdapter.cleanup();
+}
+```
 
 Et voila: a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
 
@@ -235,16 +248,18 @@ A ViewHolder is similar to container of a ViewGroup that allows simple lookup of
 If we use the same layout as before (`android.R.layout.two_line_list_item`), there are two `TextView`s in there.
 We can wrap that in a ViewHolder with:
 
-    private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
-        TextView messageText;
-        TextView nameText;
+```java
+private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
+    TextView messageText;
+    TextView nameText;
 
-        public ChatMessageViewHolder(View itemView) {
-            super(itemView);
-            nameText = (TextView)itemView.findViewById(android.R.id.text1);
-            messageText = (TextView) itemView.findViewById(android.R.id.text2);
-        }
+    public ChatMessageViewHolder(View itemView) {
+        super(itemView);
+        nameText = (TextView)itemView.findViewById(android.R.id.text1);
+        messageText = (TextView) itemView.findViewById(android.R.id.text2);
     }
+}
+```
 
 There's nothing magical going on here; we're just mapping numeric IDs and casts into a nice, type-safe contract.
 
@@ -252,18 +267,20 @@ There's nothing magical going on here; we're just mapping numeric IDs and casts 
 
 Just like we did for FirebaseListAdapter, we'll create an anonymous subclass for our ChatMessages:
 
-        RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
-        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
+```java
+RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
+recycler.setHasFixedSize(true);
+recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
-            @Override
-            public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
-                chatMessageViewHolder.nameText.setText(chatMessage.getName());
-                chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
-            }
-        };
-        recycler.setAdapter(mAdapter);
+mAdapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
+    @Override
+    public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
+        chatMessageViewHolder.nameText.setText(chatMessage.getName());
+        chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
+    }
+};
+recycler.setAdapter(mAdapter);
+```
 
 Like before, we get a custom RecyclerView populated with data from Firebase by setting the properties to the correct fields.
 
