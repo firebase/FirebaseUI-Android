@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -24,8 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import twitter4j.Twitter;
 
 public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
@@ -96,7 +92,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mFacebookAuthHelper = new FacebookAuthHelper(this, new TokenAuthHandler() {
             @Override
             public void onTokenReceived(FirebaseOAuthToken token) {
-                authenticateRefWithProvider(token.provider, token.token);
+                authenticateRefWithFirebaseOAuthToken(token);
             }
 
             @Override
@@ -113,7 +109,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mGoogleAuthHelper = new GoogleAuthHelper(this, new TokenAuthHandler() {
             @Override
             public void onTokenReceived(FirebaseOAuthToken token) {
-                authenticateRefWithProvider(token.provider, token.token);
+                authenticateRefWithFirebaseOAuthToken(token);
             }
 
             @Override
@@ -130,7 +126,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mTwitterAuthHelper = new TwitterAuthHelper(this, new TokenAuthHandler() {
             @Override
             public void onTokenReceived(FirebaseOAuthToken token) {
-                authenticateRefWithProvider(token.provider, token);
+                authenticateRefWithFirebaseOAuthToken(token);
             }
 
             @Override
@@ -146,7 +142,8 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("BASE", "ACTIVITY");
+        Log.d("BASE", "ACTIVITY" + data.toString());
+        mFacebookAuthHelper.mCallbackManager.onActivityResult(requestCode, resultCode, data);
         mTwitterAuthHelper.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -168,57 +165,53 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         });
     }
 
-    private void authenticateRefWithProvider(String provider, String token) {
-        getFirebaseRef().authWithOAuthToken(provider, token, new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                // Do nothing. Auth updates are handled in the AuthStateListener
-            }
+    private void authenticateRefWithFirebaseOAuthToken(FirebaseOAuthToken token) {
+        if (token.mode == FirebaseOAuthToken.SIMPLE) {
+            // Simple mode is used for Facebook and Google auth
+            getFirebaseRef().authWithOAuthToken(token.provider, token.token, new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    // Do nothing. Auth updates are handled in the AuthStateListener
+                }
 
-            @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
-                onFirebaseLoginError(firebaseError);
-            }
-        });
-    }
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    onFirebaseLoginError(firebaseError);
+                }
+            });
+        } else if (token.mode == FirebaseOAuthToken.COMPLEX) {
+            // Complex mode is used for Twitter auth
+            Map<String, String> options = new HashMap<>();
+            options.put("oauth_token", token.token);
+            options.put("oauth_token_secret", token.secret);
+            options.put("user_id", token.uid);
 
-    private void authenticateRefWithProvider(String provider, FirebaseOAuthToken token) {
-        Map<String, String> options = new HashMap<>();
-        options.put("oauth_token", token.token);
-        options.put("oauth_token_secret", token.secret);
-        options.put("user_id", token.uid);
+            getFirebaseRef().authWithOAuthToken(token.provider, options, new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    // Do nothing. Auth updates are handled in the AuthStateListener
+                }
 
-        getFirebaseRef().authWithOAuthToken(provider, options, new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                // Do nothing. Auth updates are handled in the AuthStateListener
-            }
-
-            @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
-                onFirebaseLoginError(firebaseError);
-            }
-        });
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    onFirebaseLoginError(firebaseError);
+                }
+            });
+        }
     }
 
     private String getFirebaseUrlFromConfig() {
         String firebaseUrl;
         try {
-
             InputStream inputStream = getAssets().open("firebase-config.json");
-
             int size  = inputStream.available();
-
             byte[] buffer = new byte[size];
 
             inputStream.read(buffer);
-
             inputStream.close();
 
             String json = new String(buffer, "UTF-8");
-
             JSONObject obj = new JSONObject(json);
-
             firebaseUrl = obj.getString("firebaseUrl");
 
         } catch (IOException ex) {

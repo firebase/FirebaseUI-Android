@@ -35,13 +35,12 @@ public class FacebookAuthHelper {
     public final String PROVIDER_NAME = "facebook";
 
     private LoginManager mLoginManager;
-    private CallbackManager mCallbackManager;
+    public CallbackManager mCallbackManager;
     private Context mContext;
     private TokenAuthHandler mHandler;
     private Activity mActivity;
 
     public FacebookAuthHelper(Context context, TokenAuthHandler handler) {
-        Log.d(LOG_TAG, "SETTING UP");
         mActivity = (Activity) context;
         FacebookSdk.sdkInitialize(context.getApplicationContext());
 
@@ -54,7 +53,6 @@ public class FacebookAuthHelper {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Log.d(LOG_TAG, "LOGGED IN");
                         AccessToken token = loginResult.getAccessToken();
 
                         FirebaseOAuthToken foToken = new FirebaseOAuthToken(
@@ -65,26 +63,15 @@ public class FacebookAuthHelper {
 
                     @Override
                     public void onCancel() {
-                        Log.d(LOG_TAG, "CANCEL");
                         mHandler.onCancelled();
                     }
 
                     @Override
                     public void onError(FacebookException ex) {
-                        Log.d(LOG_TAG, "ERROR");
                         mHandler.onError(ex);
                     }
                 }
         );
-
-        AccessTokenTracker mFacebookAccessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                Log.d(LOG_TAG, "Facebook.AccessTokenTracker.OnCurrentAccessTokenChanged");
-            }
-        };
-        mFacebookAccessTokenTracker.startTracking();
-        Log.d(LOG_TAG, "SETUP DONE");
     }
 
     public void login() {
