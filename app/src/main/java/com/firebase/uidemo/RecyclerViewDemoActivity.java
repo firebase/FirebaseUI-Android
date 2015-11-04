@@ -42,7 +42,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         messages.setHasFixedSize(true);
         messages.setLayoutManager(new LinearLayoutManager(this));
 
-        mRef = new Firebase("https://firebaseui.firebaseio.com/chat");
+        mRef = new Firebase("https://bucket.firebaseio.com/chat");
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,12 +81,16 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         messages.setAdapter(adapter);
     }
 
-    public static final int LOGIN = Menu.FIRST;
-    public static final int LOGOUT = LOGIN+1;
+    public static final int LOGIN_TWITTER = Menu.FIRST;
+    public static final int LOGIN_FACEBOOK = LOGIN_TWITTER+1;
+    public static final int LOGIN_GOOGLE = LOGIN_TWITTER+2;
+    public static final int LOGOUT = LOGIN_TWITTER+3;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(LOGIN, LOGIN, LOGIN, "Log in");
+        menu.add(LOGIN_TWITTER, LOGIN_TWITTER, LOGIN_TWITTER, "Log in via Twitter");
+        menu.add(LOGIN_FACEBOOK, LOGIN_FACEBOOK, LOGIN_FACEBOOK, "Log in via Facebook");
+        menu.add(LOGIN_GOOGLE, LOGIN_GOOGLE, LOGIN_GOOGLE, "Log in via Google");
         menu.add(LOGOUT, LOGOUT, LOGOUT, "Log out");
 
         return super.onCreateOptionsMenu(menu);
@@ -94,7 +98,9 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.getItem(LOGIN-Menu.FIRST).setVisible(mAuthData == null);
+        menu.getItem(LOGIN_TWITTER-Menu.FIRST).setVisible(mAuthData == null);
+        menu.getItem(LOGIN_GOOGLE-Menu.FIRST).setVisible(mAuthData == null);
+        menu.getItem(LOGIN_FACEBOOK-Menu.FIRST).setVisible(mAuthData == null);
         menu.getItem(LOGOUT-Menu.FIRST).setVisible(mAuthData != null);
         mSendButton.setEnabled(mAuthData != null);
         mMessageEdit.setEnabled(mAuthData != null);
@@ -104,7 +110,13 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case LOGIN:
+            case LOGIN_TWITTER:
+                this.loginWithProvider(SocialProvider.twitter);
+                return true;
+            case LOGIN_FACEBOOK:
+                this.loginWithProvider(SocialProvider.facebook);
+                return true;
+            case LOGIN_GOOGLE:
                 this.loginWithProvider(SocialProvider.google);
                 return true;
             case LOGOUT:

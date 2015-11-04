@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FirebaseUI Chat</string>
+    <string name="facebook_app_id">547033782072218</string>
 </resources>

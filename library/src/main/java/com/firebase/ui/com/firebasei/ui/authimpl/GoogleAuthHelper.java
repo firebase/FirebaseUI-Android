@@ -15,6 +15,8 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -73,7 +75,10 @@ public class GoogleAuthHelper implements
         mGoogleTokenTask = new GoogleTokenTask(mContext, mGoogleApiClient, new GoogleTokenHandler() {
             @Override
             public void onTokenReceived(String token) {
-                mHandler.onTokenReceived(token);
+                FirebaseOAuthToken foToken = new FirebaseOAuthToken(
+                        PROVIDER_NAME,
+                        token);
+                mHandler.onTokenReceived(foToken);
             }
 
             @Override
