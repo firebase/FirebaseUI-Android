@@ -17,9 +17,6 @@ import com.google.android.gms.plus.Plus;
 
 import java.io.IOException;
 
-/**
- *
- */
 public class GoogleAuthHelper extends FirebaseAuthHelper implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{

@@ -1,8 +1,5 @@
 package com.firebase.ui.com.firebasei.ui.authimpl;
 
-/**
- * Created by abehaskins on 11/3/15.
- */
 public class FirebaseOAuthToken {
     public String token;
     public String secret;

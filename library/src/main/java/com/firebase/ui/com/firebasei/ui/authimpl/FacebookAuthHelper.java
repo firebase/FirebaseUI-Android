@@ -17,9 +17,6 @@ import com.firebase.client.FirebaseError;
 import java.util.Arrays;
 import java.util.Collection;
 
-/**
- *
- */
 public class FacebookAuthHelper extends FirebaseAuthHelper {
 
     private final String LOG_TAG = "FacebookAuthHelper";

@@ -13,9 +13,6 @@ import com.google.android.gms.plus.Plus;
 
 import java.io.IOException;
 
-/**
- * Created by deast on 9/25/15.
- */
 public class GoogleTokenTask extends AsyncTask<Void, Void, String> {
 
     private final String LOG_TAG = "GoogleTokenTask";

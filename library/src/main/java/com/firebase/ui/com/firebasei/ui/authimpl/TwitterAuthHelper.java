@@ -1,9 +1,5 @@
 package com.firebase.ui.com.firebasei.ui.authimpl;
 
-/**
- * Created by abehaskins on 11/3/15.
- */
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

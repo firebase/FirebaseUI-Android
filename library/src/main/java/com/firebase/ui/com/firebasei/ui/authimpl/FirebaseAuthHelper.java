@@ -9,9 +9,6 @@ import com.firebase.client.FirebaseError;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by abehaskins on 11/4/15.
- */
 public abstract class FirebaseAuthHelper {
     public abstract void logout();
     public abstract String getProviderName();
