@@ -28,10 +28,12 @@
 
 package com.firebase.ui;
 
-import com.firebase.client.*;
+import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * This class implements an array-like collection on top of a Firebase location.

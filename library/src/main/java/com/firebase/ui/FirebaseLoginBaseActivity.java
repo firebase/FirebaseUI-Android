@@ -1,32 +1,18 @@
 package com.firebase.ui;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.ui.com.firebasei.ui.authimpl.FacebookAuthHelper;
-import com.firebase.ui.com.firebasei.ui.authimpl.FirebaseOAuthToken;
 import com.firebase.ui.com.firebasei.ui.authimpl.GoogleAuthHelper;
+import com.firebase.ui.com.firebasei.ui.authimpl.PasswordAuthHelper;
 import com.firebase.ui.com.firebasei.ui.authimpl.SocialProvider;
 import com.firebase.ui.com.firebasei.ui.authimpl.TokenAuthHandler;
 import com.firebase.ui.com.firebasei.ui.authimpl.TwitterAuthHelper;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
@@ -35,18 +21,20 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     private GoogleAuthHelper mGoogleAuthHelper;
     private FacebookAuthHelper mFacebookAuthHelper;
     private TwitterAuthHelper mTwitterAuthHelper;
+    private PasswordAuthHelper mPasswordAuthHelper;
+
     private FirebaseLoginDialog mDialog;
 
     public SocialProvider mChosenProvider;
 
     /* Abstract methods for Login Events */
-    protected abstract void onFirebaseLogin(AuthData authData);
+    protected abstract void onFirebaseLoginSuccess(AuthData authData);
 
     protected abstract void onFirebaseLogout();
 
-    protected abstract void onFirebaseLoginError(FirebaseError firebaseError);
+    protected abstract void onFirebaseLoginProviderError(FirebaseError firebaseError);
 
-    protected abstract void onFirebaseLoginCancel();
+    protected abstract void onFirebaseLoginUserError(FirebaseError firebaseError);
 
     /**
      * Subclasses of this activity must implement this method and return a valid Firebase reference that
@@ -90,65 +78,8 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         getFirebaseRef().unauth();
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mFacebookAuthHelper = new FacebookAuthHelper(this, new TokenAuthHandler() {
-            @Override
-            public void onTokenReceived(FirebaseOAuthToken token) {
-                authenticateRefWithFirebaseOAuthToken(token);
-            }
-
-            @Override
-            public void onCancelled() {
-                onFirebaseLoginCancel();
-            }
-
-            @Override
-            public void onError(Exception ex) {
-                // TODO: Raise GMS Dialog Box?
-            }
-        });
-
-        mGoogleAuthHelper = new GoogleAuthHelper(this, new TokenAuthHandler() {
-            @Override
-            public void onTokenReceived(FirebaseOAuthToken token) {
-                authenticateRefWithFirebaseOAuthToken(token);
-            }
-
-            @Override
-            public void onCancelled() {
-                onFirebaseLoginCancel();
-            }
-
-            @Override
-            public void onError(Exception ex) {
-                // TODO: Raise GMS Dialog Box?
-            }
-        });
-
-        mTwitterAuthHelper = new TwitterAuthHelper(this, new TokenAuthHandler() {
-            @Override
-            public void onTokenReceived(FirebaseOAuthToken token) {
-                authenticateRefWithFirebaseOAuthToken(token);
-            }
-
-            @Override
-            public void onCancelled() {
-                onFirebaseLoginCancel();
-            }
-
-            @Override
-            public void onError(Exception ex) {
-                // TODO: Raise GMS Dialog Box?
-            }
-        });
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("BASE", "ACTIVITY" + data.toString());
+        // TODO: If someone isn't extending this activity, they need to implement this by hand
         mFacebookAuthHelper.mCallbackManager.onActivityResult(requestCode, resultCode, data);
         mTwitterAuthHelper.onActivityResult(requestCode, resultCode, data);
     }
@@ -159,12 +90,34 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             .addAuthHelper(mGoogleAuthHelper)
             .addAuthHelper(mFacebookAuthHelper)
             .addAuthHelper(mTwitterAuthHelper)
+            .addAuthHelper(mPasswordAuthHelper)
             .show(getFragmentManager(), "");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        TokenAuthHandler handler = new TokenAuthHandler() {
+            @Override
+            public void onSuccess(AuthData data) {}
+
+            @Override
+            public void onUserError(FirebaseError err) {
+                onFirebaseLoginUserError(err);
+            }
+
+            @Override
+            public void onProviderError(FirebaseError err) {
+                onFirebaseLoginProviderError(err);
+            }
+        };
+
+        mFacebookAuthHelper = new FacebookAuthHelper(this, getFirebaseRef(), handler);
+        mGoogleAuthHelper = new GoogleAuthHelper(this, getFirebaseRef(), handler);
+        mTwitterAuthHelper = new TwitterAuthHelper(this, getFirebaseRef(), handler);
+        mPasswordAuthHelper = new PasswordAuthHelper(this, getFirebaseRef(), handler);
+
         // TODO: is there a way to delay this? Or make it on-demand (i.e. make them call `startMonitoringState`)?
         // TODO: should we remove the authStateListener on `onStop()`?
         getFirebaseRef().addAuthStateListener(new Firebase.AuthStateListener() {
@@ -173,72 +126,12 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
                 if (authData != null) {
                     mChosenProvider = SocialProvider.valueOf(authData.getProvider());
                     if (mDialog != null) mDialog.dismiss();
-                    onFirebaseLogin(authData);
+                    onFirebaseLoginSuccess(authData);
+                    Log.d(TAG, "Auth data changed");
                 } else {
                     onFirebaseLogout();
                 }
             }
         });
-    }
-
-    private void authenticateRefWithFirebaseOAuthToken(FirebaseOAuthToken token) {
-        if (token.mode == FirebaseOAuthToken.SIMPLE) {
-            // Simple mode is used for Facebook and Google auth
-            getFirebaseRef().authWithOAuthToken(token.provider, token.token, new Firebase.AuthResultHandler() {
-                @Override
-                public void onAuthenticated(AuthData authData) {
-                    // Do nothing. Auth updates are handled in the AuthStateListener
-                }
-
-                @Override
-                public void onAuthenticationError(FirebaseError firebaseError) {
-                    onFirebaseLoginError(firebaseError);
-                }
-            });
-        } else if (token.mode == FirebaseOAuthToken.COMPLEX) {
-            // Complex mode is used for Twitter auth
-            Log.d(TAG, "Complex mode" + token.provider);
-            Map<String, String> options = new HashMap<>();
-            options.put("oauth_token", token.token);
-            options.put("oauth_token_secret", token.secret);
-            options.put("user_id", token.uid);
-
-            getFirebaseRef().authWithOAuthToken(token.provider, options, new Firebase.AuthResultHandler() {
-                @Override
-                public void onAuthenticated(AuthData authData) {
-                    // Do nothing. Auth updates are handled in the AuthStateListener
-                }
-
-                @Override
-                public void onAuthenticationError(FirebaseError firebaseError) {
-                    onFirebaseLoginError(firebaseError);
-                }
-            });
-        }
-    }
-
-    private String getFirebaseUrlFromConfig() {
-        String firebaseUrl;
-        try {
-            InputStream inputStream = getAssets().open("firebase-config.json");
-            int size  = inputStream.available();
-            byte[] buffer = new byte[size];
-
-            inputStream.read(buffer);
-            inputStream.close();
-
-            String json = new String(buffer, "UTF-8");
-            JSONObject obj = new JSONObject(json);
-            firebaseUrl = obj.getString("firebaseUrl");
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-
-        return firebaseUrl;
     }
 }

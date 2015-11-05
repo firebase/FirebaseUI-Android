@@ -6,6 +6,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.firebase.client.Firebase;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
@@ -15,23 +16,21 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
  */
-public class GoogleAuthHelper implements
+public class GoogleAuthHelper extends FirebaseAuthHelper implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        FirebaseAuthHelper {
+        GoogleApiClient.OnConnectionFailedListener{
 
     private final String LOG_TAG = "GoogleAuthHelper";
 
-    public final String PROVIDER_NAME = "google";
+    public static final String PROVIDER_NAME = "google";
 
     /* User provided callback class */
     private TokenAuthHandler mHandler;
+    private Firebase mRef;
 
     /* Request code used to invoke sign in user interactions. */
     private static final int RC_GOOGLE_SIGN_IN = 0;
@@ -56,7 +55,7 @@ public class GoogleAuthHelper implements
 
     private GoogleTokenTask mGoogleTokenTask;
 
-    public GoogleAuthHelper(Context context, TokenAuthHandler handler) {
+    public GoogleAuthHelper(Context context, Firebase ref, TokenAuthHandler handler) {
         // Builder API
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
@@ -67,6 +66,8 @@ public class GoogleAuthHelper implements
 
         // Activity Context
         mContext = context;
+
+        mRef = ref;
 
         // User defined callbacks
         mHandler = handler;
@@ -79,22 +80,22 @@ public class GoogleAuthHelper implements
                 FirebaseOAuthToken foToken = new FirebaseOAuthToken(
                         PROVIDER_NAME,
                         token);
-                mHandler.onTokenReceived(foToken);
+                //mHandler.onTokenReceived(foToken);
             }
 
             @Override
             public void onUserRecoverableAuthException(UserRecoverableAuthException ex) {
-                mHandler.onError(ex);
+                //mHandler.onError(ex);
             }
 
             @Override
             public void onGoogleAuthException(GoogleAuthException ex) {
-                mHandler.onError(ex);
+                //mHandler.onError(ex);
             }
 
             @Override
             public void onIOException(IOException ex) {
-                mHandler.onError(ex);
+                //mHandler.onError(ex);
             }
         });
     }
@@ -117,6 +118,7 @@ public class GoogleAuthHelper implements
         mGoogleApiClient.disconnect();
     }
     public String getProviderName() { return PROVIDER_NAME; }
+    public Firebase getFirebaseRef() { return mRef; }
 
     @Override
     public void onConnected(Bundle bundle) {

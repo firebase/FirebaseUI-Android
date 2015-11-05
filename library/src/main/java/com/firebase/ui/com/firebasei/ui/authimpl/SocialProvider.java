@@ -4,5 +4,6 @@ package com.firebase.ui.com.firebasei.ui.authimpl;
 public enum SocialProvider {
     google,
     facebook,
-    twitter
+    twitter,
+    password
 }

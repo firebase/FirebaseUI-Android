@@ -61,10 +61,8 @@ public class TwitterPromptActivity extends Activity {
                         if (url.startsWith("oauth://cb")) {
                             mTwitterView.destroy();
                             if (url.contains("oauth_verifier")) {
-                                Log.d(TAG, "CAUGHT OAUTH");
                                 getTwitterOAuthTokenAndLogin(token, Uri.parse(url).getQueryParameter("oauth_verifier"));
                             } else if (url.contains("denied")) {
-                                Log.d(TAG, "DENIED");
                                 Intent resultIntent = new Intent();
                                 setResult(TwitterAuthHelper.RC_TWITTER_CANCEL, resultIntent);
                                 finish();

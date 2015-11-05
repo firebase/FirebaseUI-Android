@@ -3,24 +3,19 @@ package com.firebase.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.hardware.camera2.params.Face;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.EditText;
 
-import com.firebase.ui.com.firebasei.ui.authimpl.FacebookAuthHelper;
 import com.firebase.ui.com.firebasei.ui.authimpl.FirebaseAuthHelper;
-import com.firebase.ui.com.firebasei.ui.authimpl.GoogleAuthHelper;
-import com.firebase.ui.com.firebasei.ui.authimpl.SocialProvider;
-import com.firebase.ui.com.firebasei.ui.authimpl.TwitterAuthHelper;
 
 public class FirebaseLoginDialog extends DialogFragment {
 
     FirebaseAuthHelper mFacebookAuthHelper;
     FirebaseAuthHelper mTwitterAuthHelper;
     FirebaseAuthHelper mGoogleAuthHelper;
+    FirebaseAuthHelper mPasswordAuthHelper;
     View mView;
 
     @Override
@@ -42,6 +37,9 @@ public class FirebaseLoginDialog extends DialogFragment {
         if (mTwitterAuthHelper != null) showLoginOption(mTwitterAuthHelper, R.id.twitter_button);
         else mView.findViewById(R.id.twitter_button).setVisibility(View.GONE);
 
+        if (mPasswordAuthHelper != null) showLoginOption(mPasswordAuthHelper, R.id.password_button);
+        else mView.findViewById(R.id.password_section).setVisibility(View.GONE);
+
         builder.setView(mView);
         return builder.create();
     }
@@ -57,6 +55,8 @@ public class FirebaseLoginDialog extends DialogFragment {
             case "twitter":
                 mTwitterAuthHelper = helper;
                 break;
+            case "password":
+                mPasswordAuthHelper = helper;
         }
 
         return this;
@@ -66,7 +66,13 @@ public class FirebaseLoginDialog extends DialogFragment {
         mView.findViewById(id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+            if (helper.getProviderName() == "password") {
+                EditText emailText = (EditText) mView.findViewById(R.id.email);
+                EditText passwordText = (EditText) mView.findViewById(R.id.password);
+                helper.login(emailText.getText().toString(), passwordText.getText().toString());
+            } else {
                 helper.login();
+            }
             }
         });
     }
