@@ -12,7 +12,7 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TwitterAuthHelper {
+public class TwitterAuthHelper implements FirebaseAuthHelper {
 
     public static final String TAG = "TwitterAuthHelper";
     public final String PROVIDER_NAME = "twitter";
@@ -24,7 +24,7 @@ public class TwitterAuthHelper {
     private TokenAuthHandler mHandler;
 
     public TwitterAuthHelper(Context context, TokenAuthHandler handler) {
-        // setup twitter client
+        // setup ic_twitter client
         mActivity = (Activity) context;
         mHandler = handler;
     }
@@ -35,6 +35,10 @@ public class TwitterAuthHelper {
 
     public void logout() {
 
+    }
+
+    public String getProviderName() {
+        return PROVIDER_NAME;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

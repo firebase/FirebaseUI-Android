@@ -1,9 +1,14 @@
 package com.firebase.ui;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -25,11 +30,12 @@ import java.util.Map;
 
 public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
-    private final String LOG_TAG = "FirebaseLoginBaseAct";
+    private final String TAG = "FirebaseLoginBaseAct";
 
     private GoogleAuthHelper mGoogleAuthHelper;
     private FacebookAuthHelper mFacebookAuthHelper;
     private TwitterAuthHelper mTwitterAuthHelper;
+    private FirebaseLoginDialog mDialog;
 
     public SocialProvider mChosenProvider;
 
@@ -147,6 +153,15 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mTwitterAuthHelper.onActivityResult(requestCode, resultCode, data);
     }
 
+    public void showFirebaseLoginPrompt() {
+        mDialog = new FirebaseLoginDialog();
+        mDialog
+            .addAuthHelper(mGoogleAuthHelper)
+            .addAuthHelper(mFacebookAuthHelper)
+            .addAuthHelper(mTwitterAuthHelper)
+            .show(getFragmentManager(), "");
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -157,6 +172,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
                     mChosenProvider = SocialProvider.valueOf(authData.getProvider());
+                    if (mDialog != null) mDialog.dismiss();
                     onFirebaseLogin(authData);
                 } else {
                     onFirebaseLogout();
@@ -181,6 +197,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             });
         } else if (token.mode == FirebaseOAuthToken.COMPLEX) {
             // Complex mode is used for Twitter auth
+            Log.d(TAG, "Complex mode" + token.provider);
             Map<String, String> options = new HashMap<>();
             options.put("oauth_token", token.token);
             options.put("oauth_token_secret", token.secret);

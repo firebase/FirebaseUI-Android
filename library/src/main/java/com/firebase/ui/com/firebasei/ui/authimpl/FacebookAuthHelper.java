@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  *
  */
-public class FacebookAuthHelper {
+public class FacebookAuthHelper implements FirebaseAuthHelper {
 
     private final String LOG_TAG = "FacebookAuthHelper";
 
@@ -77,6 +77,10 @@ public class FacebookAuthHelper {
     public void login() {
         Collection<String> permissions = Arrays.asList("public_profile");
         mLoginManager.logInWithReadPermissions(mActivity, permissions);
+    }
+
+    public String getProviderName() {
+        return PROVIDER_NAME;
     }
 
     public void logout() {

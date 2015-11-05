@@ -23,7 +23,8 @@ import java.util.Map;
  */
 public class GoogleAuthHelper implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        FirebaseAuthHelper {
 
     private final String LOG_TAG = "GoogleAuthHelper";
 
@@ -115,6 +116,7 @@ public class GoogleAuthHelper implements
     public void logout() {
         mGoogleApiClient.disconnect();
     }
+    public String getProviderName() { return PROVIDER_NAME; }
 
     @Override
     public void onConnected(Bundle bundle) {

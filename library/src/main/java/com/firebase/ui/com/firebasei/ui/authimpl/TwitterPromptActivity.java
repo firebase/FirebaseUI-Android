@@ -33,7 +33,7 @@ public class TwitterPromptActivity extends Activity {
                 .setOAuthConsumerSecret("GgJnJiYSUiHUJ5pCGJ1XQCL0yUsy8G8eBBW2LnAqaQ")
                 .build()).getInstance();
 
-        // setup twitter webview
+        // setup ic_twitter webview
         mTwitterView = new WebView(this);
         mTwitterView.getSettings().setJavaScriptEnabled(true);
 
