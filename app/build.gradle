@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 22
@@ -6,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.firebase.uidemo"
-        minSdkVersion 10
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -28,8 +29,10 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.google.android.gms:play-services-identity:8.1.0'
+    compile 'com.google.android.gms:play-services-plus:8.1.0'
     compile 'com.firebase:firebase-client-android:2.3.1'
     compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile project(':library')
 }
-

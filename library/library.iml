@@ -36,14 +36,15 @@
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/aidl/debug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/debug" isTestSource="false" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/rs/debug" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/google-services/debug" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/debug" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/generated/debug" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/debug" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/r/androidTest/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/aidl/androidTest/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/buildConfig/androidTest/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/source/rs/androidTest/debug" isTestSource="true" generated="true" />
       <sourceFolder url="file://$MODULE_DIR$/build/generated/res/rs/androidTest/debug" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/generated/androidTest/debug" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated/res/resValues/androidTest/debug" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/assets" type="java-resource" />
@@ -73,9 +74,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.2.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jacoco" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javaResources" />
@@ -93,17 +92,28 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 22 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="jackson-core-2.2.2" level="project" />
-    <orderEntry type="library" exported="" name="jackson-databind-2.2.2" level="project" />
-    <orderEntry type="library" exported="" name="firebase-client-jvm-2.3.1" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-22.2.0" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-22.2.0" level="project" />
-    <orderEntry type="library" exported="" name="tubesock-0.0.11" level="project" />
+    <orderEntry type="library" exported="" name="play-services-measurement-8.1.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-22.2.0" level="project" />
-    <orderEntry type="library" exported="" name="jackson-annotations-2.2.2" level="project" />
+    <orderEntry type="library" exported="" name="play-services-appindexing-8.1.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-base-8.1.0" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="play-services-ads-8.1.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-identity-8.1.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="firebase-client-jvm-2.3.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-client-android-2.3.1" level="project" />
+    <orderEntry type="library" exported="" name="jackson-core-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
+    <orderEntry type="library" exported="" name="jackson-databind-2.2.2" level="project" />
+    <orderEntry type="library" exported="" name="play-services-basement-8.1.0" level="project" />
+    <orderEntry type="library" exported="" name="tubesock-0.0.11" level="project" />
+    <orderEntry type="library" exported="" name="facebook-android-sdk-4.6.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="hamcrest-core-1.3" level="project" />
+    <orderEntry type="library" exported="" name="play-services-analytics-8.1.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
+    <orderEntry type="library" exported="" name="jackson-annotations-2.2.2" level="project" />
+    <orderEntry type="library" exported="" name="bolts-android-1.2.0" level="project" />
+    <orderEntry type="library" exported="" name="twitter4j-core-4.0.2" level="project" />
+    <orderEntry type="library" exported="" name="play-services-plus-8.1.0" level="project" />
   </component>
 </module>

@@ -1,54 +1,72 @@
 package com.firebase.uidemo;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
+import com.firebase.ui.FirebaseLoginBaseActivity;
 import com.firebase.ui.FirebaseRecyclerViewAdapter;
+import com.firebase.ui.com.firebasei.ui.authimpl.SocialProvider;
 
+public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
-public class RecyclerViewDemoActivity extends AppCompatActivity {
+    public static String TAG = "FirebaseUI.chat";
+    private Firebase mRef;
+    private AuthData mAuthData;
+    private Button mSendButton;
+    private EditText mMessageEdit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_view_demo);
 
-        final Firebase ref = new Firebase("https://firebaseui.firebaseio.com/chat");
-
         final String name = "Android User";
-        final Button sendButton = (Button) findViewById(R.id.sendButton);
-        final EditText messageEdit = (EditText) findViewById(R.id.messageEdit);
+        mSendButton = (Button) findViewById(R.id.sendButton);
+        mMessageEdit = (EditText) findViewById(R.id.messageEdit);
         final RecyclerView messages = (RecyclerView) findViewById(R.id.messagesList);
         messages.setHasFixedSize(true);
         messages.setLayoutManager(new LinearLayoutManager(this));
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
+        mRef = new Firebase("https://bucket.firebaseio.com/chat");
+
+        mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Chat chat = new Chat(name, messageEdit.getText().toString());
-                ref.push().setValue(chat, new Firebase.CompletionListener() {
+                Chat chat = new Chat(name, mMessageEdit.getText().toString());
+                mRef.push().setValue(chat, new Firebase.CompletionListener() {
                     @Override
                     public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                         if (firebaseError != null) {
-                            Log.e("FirebaseUI.chat", firebaseError.toString());
+                            Log.e(TAG, firebaseError.toString());
                         }
                     }
                 });
-                messageEdit.setText("");
+                mMessageEdit.setText("");
             }
         });
 
-        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, ref) {
+        Query recentMessages = mRef.limitToLast(50);
+        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, recentMessages) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
                 chatView.textView.setText(chat.getText());
@@ -68,6 +86,73 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         messages.setAdapter(adapter);
     }
 
+    public static final int LOGIN = Menu.FIRST;
+    public static final int LOGOUT = LOGIN+1;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(LOGIN, LOGIN, LOGIN, "Login");
+        menu.add(LOGOUT, LOGOUT, LOGOUT, "Log out");
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.getItem(LOGIN-Menu.FIRST).setVisible(mAuthData == null);
+        menu.getItem(LOGOUT-Menu.FIRST).setVisible(mAuthData != null);
+        mSendButton.setEnabled(mAuthData != null);
+        mMessageEdit.setEnabled(mAuthData != null);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case LOGIN:
+                this.showFirebaseLoginPrompt();
+                return true;
+            case LOGOUT:
+                this.logout();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+    // Start of FirebaseLoginBaseActivity
+
+    @Override
+    public void onFirebaseLogin(AuthData authData) {
+        Log.i(TAG, "Logged in");
+        mAuthData = authData;
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onFirebaseLogout() {
+        Log.i(TAG, "Logged out");
+        mAuthData = null;
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onFirebaseLoginError(FirebaseError firebaseError) {
+        Log.e(TAG, firebaseError.toString());
+    }
+
+    @Override
+    public void onFirebaseLoginCancel() {
+        Log.i(TAG, "Login cancelled");
+    }
+
+    @Override
+    public Firebase getFirebaseRef() {
+        return mRef;
+    }
+
+    // End of FirebaseLoginBaseActivity
 
     public static class Chat {
         String name;
