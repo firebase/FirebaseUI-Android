@@ -1,4 +1,4 @@
-package com.firebase.ui.com.firebasei.ui.authimpl;
+package com.firebase.ui.authimpl;
 
 import android.app.Activity;
 import android.content.Context;
@@ -38,7 +38,6 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
         mCallbackManager = CallbackManager.Factory.create();
         mContext = context;
         mHandler = handler;
-        Log.d(LOG_TAG, ref.toString());
         mRef = ref;
 
         mLoginManager.registerCallback(mCallbackManager,

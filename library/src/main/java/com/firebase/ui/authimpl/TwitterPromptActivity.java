@@ -1,4 +1,4 @@
-package com.firebase.ui.com.firebasei.ui.authimpl;
+package com.firebase.ui.authimpl;
 
 import android.app.Activity;
 import android.content.Intent;

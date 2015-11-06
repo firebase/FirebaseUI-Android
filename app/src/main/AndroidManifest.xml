@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.firebase.ui.com.firebasei.ui.authimpl.TwitterPromptActivity"></activity>
+        <activity android:name="com.firebase.ui.authimpl.TwitterPromptActivity"></activity>
 
         <activity
             android:name="com.facebook.FacebookActivity"

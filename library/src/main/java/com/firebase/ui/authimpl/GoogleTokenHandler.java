@@ -1,4 +1,4 @@
-package com.firebase.ui.com.firebasei.ui.authimpl;
+package com.firebase.ui.authimpl;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.UserRecoverableAuthException;

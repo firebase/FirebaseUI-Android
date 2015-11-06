@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import com.firebase.ui.com.firebasei.ui.authimpl.FirebaseAuthHelper;
+import com.firebase.ui.authimpl.FirebaseAuthHelper;
 
 public class FirebaseLoginDialog extends DialogFragment {
 
