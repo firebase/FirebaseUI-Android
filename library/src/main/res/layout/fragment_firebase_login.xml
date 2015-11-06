@@ -26,7 +26,9 @@
                 android:id="@+id/email"
                 android:ems="10"
                 android:hint="Email"
-                android:paddingTop="20dp" />
+                android:paddingTop="20dp"
+                style="@style/FirebaseEditTextTheme"
+                android:theme="@style/FirebaseEditTextTheme"/>
 
             <EditText
                 android:layout_width="match_parent"
@@ -35,7 +37,9 @@
                 android:ems="10"
                 android:hint="Password"
                 android:paddingTop="20dp"
-                android:password="true" />
+                android:password="true"
+                style="@style/FirebaseEditTextTheme"
+                android:theme="@style/FirebaseEditTextTheme"/>
 
             <Button
                 android:layout_width="match_parent"
