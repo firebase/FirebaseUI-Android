@@ -95,9 +95,6 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         messages.setAdapter(adapter);
     }
 
-    public static final int LOGIN = Menu.FIRST;
-    public static final int LOGOUT = LOGIN+1;
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

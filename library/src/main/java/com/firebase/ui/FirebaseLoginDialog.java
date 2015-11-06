@@ -37,7 +37,11 @@ public class FirebaseLoginDialog extends DialogFragment {
         if (mTwitterAuthHelper != null) showLoginOption(mTwitterAuthHelper, R.id.twitter_button);
         else mView.findViewById(R.id.twitter_button).setVisibility(View.GONE);
 
-        if (mPasswordAuthHelper != null) showLoginOption(mPasswordAuthHelper, R.id.password_button);
+        if (mPasswordAuthHelper != null) {
+            showLoginOption(mPasswordAuthHelper, R.id.password_button);
+            if (mFacebookAuthHelper == null && mGoogleAuthHelper == null && mTwitterAuthHelper == null)
+                mView.findViewById(R.id.or_section).setVisibility(View.GONE);
+        }
         else mView.findViewById(R.id.password_section).setVisibility(View.GONE);
 
         builder.setView(mView);
