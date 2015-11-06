@@ -40,7 +40,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
 
-        mRef = new Firebase("https://bucket.firebaseio.com/chat");
+        mRef = new Firebase("https://firebaseui.firebaseio.com/chat_3");
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override

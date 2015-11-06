@@ -25,8 +25,8 @@ public class TwitterPromptActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTwitter = new TwitterFactory(new ConfigurationBuilder()
-                .setOAuthConsumerKey("OnDqMFmCtY4uNiXBv3FLwg")
-                .setOAuthConsumerSecret("GgJnJiYSUiHUJ5pCGJ1XQCL0yUsy8G8eBBW2LnAqaQ")
+                .setOAuthConsumerKey("mbX13kp9wqi3JzmwXwATvciAZ")
+                .setOAuthConsumerSecret("8QObfaBn0YxzvZ0RiyoW8BUL8o3LBSfeElRHPR5ppvkFRqEMTq")
                 .build()).getInstance();
 
         // setup ic_twitter webview

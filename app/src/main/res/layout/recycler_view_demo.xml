@@ -36,7 +36,10 @@
             android:layout_height="wrap_content"
             android:text="Send"
             android:id="@+id/sendButton"
-            android:layout_gravity="bottom|right" />
+            android:layout_gravity="bottom|right"
+            android:drawableRight="@drawable/ic_send"
+            android:drawablePadding="6dp"
+            android:paddingLeft="18dp" />
     </LinearLayout>
 
 </RelativeLayout>

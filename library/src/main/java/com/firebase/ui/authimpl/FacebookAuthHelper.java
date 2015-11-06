@@ -25,7 +25,6 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
 
     private LoginManager mLoginManager;
     public CallbackManager mCallbackManager;
-    private Context mContext;
     private TokenAuthHandler mHandler;
     private Activity mActivity;
     private Firebase mRef;
@@ -36,7 +35,6 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
 
         mLoginManager = LoginManager.getInstance();
         mCallbackManager = CallbackManager.Factory.create();
-        mContext = context;
         mHandler = handler;
         mRef = ref;
 
@@ -75,10 +73,7 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
         return PROVIDER_NAME;
     }
 
-    public Firebase getFirebaseRef() {
-        Log.d(LOG_TAG, mRef.toString());
-        return mRef;
-    }
+    public Firebase getFirebaseRef() {return mRef; }
 
     public void logout() {
         mLoginManager.logOut();
