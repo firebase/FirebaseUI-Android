@@ -7,17 +7,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.ui.FirebaseRecyclerViewAdapter;
 
 
 public class RecyclerViewDemoActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,12 +30,12 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
 
         final Firebase ref = new Firebase("https://firebaseui.firebaseio.com/chat");
 
-        final String name = "Android User";
+        final String name = "PR User";
         final Button sendButton = (Button) findViewById(R.id.sendButton);
         final EditText messageEdit = (EditText) findViewById(R.id.messageEdit);
         final RecyclerView messages = (RecyclerView) findViewById(R.id.messagesList);
-        messages.setHasFixedSize(true);
-        messages.setLayoutManager(new LinearLayoutManager(this));
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,25 +52,31 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
                 messageEdit.setText("");
             }
         });
+        final FirebaseRecyclerViewAdapter<Chat, RecyclerView.ViewHolder> adapter = new Adapter(
+                Chat.class,
+                android.R.layout.two_line_list_item,
+                ref,
+                15,
+                false,
+                name );
 
-        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, ref) {
-            @Override
-            public void populateViewHolder(ChatHolder chatView, Chat chat) {
-                chatView.textView.setText(chat.getText());
-                chatView.textView.setPadding(10, 0, 10, 0);
-                chatView.nameView.setText(chat.getName());
-                chatView.nameView.setPadding(10, 0, 10, 15);
-                if (chat.getName().equals(name)) {
-                    chatView.textView.setGravity(Gravity.END);
-                    chatView.nameView.setGravity(Gravity.END);
-                    chatView.nameView.setTextColor(Color.parseColor("#8BC34A"));
-                } else {
-                    chatView.nameView.setTextColor(Color.parseColor("#00BCD4"));
-                }
-            }
-        };
-
+        layoutManager.setReverseLayout(true);
+        messages.setHasFixedSize(true);
+        messages.setLayoutManager(layoutManager);
         messages.setAdapter(adapter);
+
+        messages.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    return;
+                }
+                if (layoutManager.findLastVisibleItemPosition() < adapter.getItemCount() - 20) {
+                    return;
+                }
+                adapter.more();
+            }
+        });
     }
 
 
@@ -90,6 +101,16 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         }
     }
 
+    public static class HeaderHolder extends RecyclerView.ViewHolder {
+        ProgressBar progressBar;
+
+        public HeaderHolder(View itemView) {
+            super(itemView);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
+        }
+    }
+
+
     public static class ChatHolder extends RecyclerView.ViewHolder {
         TextView nameView, textView;
 
@@ -98,5 +119,87 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
             nameView = (TextView) itemView.findViewById(android.R.id.text2);
             textView = (TextView) itemView.findViewById(android.R.id.text1);
         }
+    }
+
+    public static class Adapter extends FirebaseRecyclerViewAdapter<Chat, RecyclerView.ViewHolder> {
+
+        public static int VIEW_TYPE_FOOTER = 0;
+        public static int VIEW_TYPE_CONTENT = 1;
+        private String name;
+        private boolean synced;
+
+        public Adapter(Class<Chat> modelClass, int modelLayout, Query ref, int pageSize, boolean orderASC, String name) {
+            super(modelClass, modelLayout, RecyclerView.ViewHolder.class, ref, pageSize, orderASC);
+            this.name = name;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position  == super.getItemCount()) {
+                return VIEW_TYPE_FOOTER;
+            }
+            return VIEW_TYPE_CONTENT;
+        }
+
+        @Override
+        public int getItemCount() {
+            return super.getItemCount() + 1;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view;
+            if(viewType == VIEW_TYPE_FOOTER) {
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_progress, parent, false);
+                return new HeaderHolder(view);
+            }
+            else {
+                view = LayoutInflater.from(parent.getContext()).inflate(mModelLayout, parent, false);
+                return new ChatHolder(view);
+            }
+
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+            int itemViewType = getItemViewType(position);
+            if(itemViewType == VIEW_TYPE_FOOTER) {
+                HeaderHolder headerHolder = (HeaderHolder) viewHolder;
+                headerHolder.progressBar.setVisibility(synced ? View.GONE : View.VISIBLE);
+            }
+            else if(itemViewType == VIEW_TYPE_CONTENT) {
+                super.onBindViewHolder(viewHolder, position);
+            }
+        }
+
+        @Override
+        public void populateViewHolder(RecyclerView.ViewHolder viewHolder, Chat chat) {
+            ChatHolder chatView = (ChatHolder) viewHolder;
+            chatView.textView.setText(chat.getText());
+            chatView.textView.setPadding(10, 0, 10, 0);
+            chatView.nameView.setText(chat.getName());
+            chatView.nameView.setPadding(10, 0, 10, 15);
+            if (chat.getName().equals(name)) {
+                chatView.textView.setGravity(Gravity.END);
+                chatView.nameView.setGravity(Gravity.END);
+                chatView.nameView.setTextColor(Color.parseColor("#8BC34A"));
+            } else {
+                chatView.textView.setGravity(Gravity.START);
+                chatView.nameView.setGravity(Gravity.START);
+                chatView.nameView.setTextColor(Color.parseColor("#00BCD4"));
+            }
+        }
+
+        @Override
+        protected void onSyncStatusChanged(boolean synced) {
+            this.synced = synced;
+            notifyItemChanged(0);
+        }
+
+        @Override
+        protected void onError(FirebaseError firebaseError) {
+
+        }
+
     }
 }
