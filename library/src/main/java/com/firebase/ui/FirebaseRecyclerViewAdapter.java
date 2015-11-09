@@ -96,11 +96,11 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      * @param ref        The Firebase location to watch for data changes.
      * @param pageSize   initial page size. set 0 for no limit.
      */
-    public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref, int pageSize) {
+    public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref, int pageSize, boolean orderASC) {
         mModelClass = modelClass;
         mModelLayout = modelLayout;
         mViewHolderClass = viewHolderClass;
-        mSnapshots = new FirebaseArray(ref, pageSize);
+        mSnapshots = new FirebaseArray(ref, pageSize, orderASC);
 
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
             @Override
@@ -151,7 +151,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      *                   combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>
      */
     public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref) {
-        this(modelClass, modelLayout, viewHolderClass, ref, 0);
+        this(modelClass, modelLayout, viewHolderClass, ref, 0, true);
     }
 
     /**

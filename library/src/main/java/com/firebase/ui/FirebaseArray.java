@@ -29,6 +29,7 @@
 package com.firebase.ui;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.firebase.client.*;
 
@@ -64,15 +65,17 @@ class FirebaseArray implements
     private int mPageSize;
     private int mCurrentSize;
     private boolean mSyncing;
+    private boolean mOrderASC;
 
     public FirebaseArray(@NonNull Query query) {
-        this(query, 0);
+        this(query, 0, true);
     }
 
-    public FirebaseArray(@NonNull Query query, int pageSize) {
+    public FirebaseArray(@NonNull Query query, int pageSize, boolean orderASC) {
         mOriginalQuery = query;
         mSnapshots = new ArrayList<DataSnapshot>();
         mPageSize = mCurrentSize = Math.abs(pageSize);
+        mOrderASC = orderASC;
 
         setup();
     }
@@ -110,8 +113,11 @@ class FirebaseArray implements
         if(mPageSize == 0) {
             mQuery = mOriginalQuery;
         }
-        else {
+        else if(mOrderASC == true){
             mQuery = mOriginalQuery.limitToFirst(mCurrentSize);
+        }
+        else {
+            mQuery = mOriginalQuery.limitToLast(mCurrentSize);
         }
         setSyncing(true);
         mQuery.addChildEventListener(this);
@@ -150,13 +156,24 @@ class FirebaseArray implements
     // Start of ChildEventListener and ValueEventListener methods
 
     public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
-        int index = 0;
+        int index = (mOrderASC) ? 0 : getCount();
         if (previousChildKey != null) {
-            index = getIndexForKey(previousChildKey) + 1;
+            if(mOrderASC) {
+                index = getIndexForKey(previousChildKey) + 1;
+            }
+            else {
+                index = getIndexForKey(previousChildKey);
+            }
         }
-        if(index < getCount()
-            && mSnapshots.get(index).getKey().equals(snapshot.getKey())) {
-            // duplicate
+        if(mOrderASC &&
+                index < getCount()  &&
+                mSnapshots.get(index).getKey().equals(snapshot.getKey())) {
+            return;
+        }
+        else if(!mOrderASC &&
+                index < getCount() + 1  &&
+                index > 0 &&
+                mSnapshots.get(index - 1).getKey().equals(snapshot.getKey())) {
             return;
         }
 

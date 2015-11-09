@@ -57,7 +57,8 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
                 Chat.class,
                 android.R.layout.two_line_list_item,
                 ref,
-                15,
+                8,
+                false,
                 name );
 
         layoutManager.setReverseLayout(true);
@@ -130,8 +131,8 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         private String name;
         private boolean synced;
 
-        public Adapter(Class<Chat> modelClass, int modelLayout, Query ref, int pageSize, String name) {
-            super(modelClass, modelLayout, RecyclerView.ViewHolder.class, ref, pageSize);
+        public Adapter(Class<Chat> modelClass, int modelLayout, Query ref, int pageSize, boolean orderASC, String name) {
+            super(modelClass, modelLayout, RecyclerView.ViewHolder.class, ref, pageSize, orderASC);
             this.name = name;
         }
 
@@ -195,7 +196,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         @Override
         protected void onSyncStatusChanged(boolean synced) {
             this.synced = synced;
-            notifyItemChanged(0);
+            notifyItemChanged(getItemCount() - 1);
         }
 
         @Override
