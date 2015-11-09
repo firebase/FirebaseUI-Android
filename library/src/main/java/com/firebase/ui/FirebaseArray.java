@@ -82,6 +82,7 @@ class FirebaseArray implements
 
     public void reset() {
         mCurrentSize = mPageSize;
+        mSnapshots.clear();
         setup();
         notifyChangedListeners(OnChangedListener.EventType.Reset, 0);
     }
