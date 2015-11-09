@@ -63,18 +63,16 @@ class FirebaseArray implements
     private ArrayList<DataSnapshot> mSnapshots;
     private int mPageSize;
     private int mCurrentSize;
-    private boolean mOrderASC;
     private boolean mSyncing;
 
     public FirebaseArray(@NonNull Query query) {
-        this(query, 0, true);
+        this(query, 0);
     }
 
-    public FirebaseArray(@NonNull Query query, int pageSize, boolean orderASC) {
+    public FirebaseArray(@NonNull Query query, int pageSize) {
         mOriginalQuery = query;
         mSnapshots = new ArrayList<DataSnapshot>();
         mPageSize = mCurrentSize = Math.abs(pageSize);
-        mOrderASC = orderASC;
 
         setup();
     }
@@ -112,11 +110,8 @@ class FirebaseArray implements
         if(mPageSize == 0) {
             mQuery = mOriginalQuery;
         }
-        else if(mOrderASC) {
-            mQuery = mOriginalQuery.limitToFirst(mCurrentSize);
-        }
         else {
-            mQuery = mOriginalQuery.limitToLast(mCurrentSize);
+            mQuery = mOriginalQuery.limitToFirst(mCurrentSize);
         }
         setSyncing(true);
         mQuery.addChildEventListener(this);

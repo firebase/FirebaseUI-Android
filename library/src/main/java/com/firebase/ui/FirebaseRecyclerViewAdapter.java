@@ -95,13 +95,12 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      * @param viewHolderClass The class that hold references to all sub-views in an instance modelLayout.
      * @param ref        The Firebase location to watch for data changes.
      * @param pageSize   initial page size. set 0 for no limit.
-     * @param orderASC   uses limitToFirst() if true, or limitToLast() if false
      */
-    public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref, int pageSize, boolean orderASC) {
+    public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref, int pageSize) {
         mModelClass = modelClass;
         mModelLayout = modelLayout;
         mViewHolderClass = viewHolderClass;
-        mSnapshots = new FirebaseArray(ref, pageSize, orderASC);
+        mSnapshots = new FirebaseArray(ref, pageSize);
 
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
             @Override
@@ -152,7 +151,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      *                   combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>
      */
     public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref) {
-        this(modelClass, modelLayout, viewHolderClass, ref, 0, true);
+        this(modelClass, modelLayout, viewHolderClass, ref, 0);
     }
 
     /**
