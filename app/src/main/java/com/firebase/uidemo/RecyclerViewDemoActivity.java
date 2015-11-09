@@ -53,7 +53,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
                 messageEdit.setText("");
             }
         });
-        final FirebaseRecyclerViewAdapter<Chat, RecyclerView.ViewHolder> adapter = new Adapter(
+        final FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new Adapter(
                 Chat.class,
                 android.R.layout.two_line_list_item,
                 ref,
@@ -102,33 +102,20 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         }
     }
 
-    public static class HeaderHolder extends  RecyclerView.ViewHolder {
-        public HeaderHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    public static class FooterHolder extends RecyclerView.ViewHolder {
-        ProgressBar progressBar;
-
-        public FooterHolder(View itemView) {
-            super(itemView);
-            progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
-        }
-    }
-
-
+    // This view holder has to work with all view types.
     public static class ChatHolder extends RecyclerView.ViewHolder {
         TextView nameView, textView;
+        ProgressBar progressBar;
 
         public ChatHolder(View itemView) {
             super(itemView);
             nameView = (TextView) itemView.findViewById(android.R.id.text2);
             textView = (TextView) itemView.findViewById(android.R.id.text1);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
         }
     }
 
-    public static class Adapter extends FirebaseRecyclerViewAdapter<Chat, RecyclerView.ViewHolder> {
+    public static class Adapter extends FirebaseRecyclerViewAdapter<Chat, ChatHolder> {
 
         public static final String TAG = Adapter.class.getSimpleName();
 
@@ -139,7 +126,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         private boolean synced;
 
         public Adapter(Class<Chat> modelClass, int modelLayout, Query ref, int pageSize, boolean orderASC, String name) {
-            super(modelClass, modelLayout, RecyclerView.ViewHolder.class, ref, pageSize, orderASC);
+            super(modelClass, modelLayout, ChatHolder.class, ref, pageSize, orderASC);
             this.name = name;
         }
 
@@ -165,52 +152,43 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         }
 
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view;
             if(viewType == VIEW_TYPE_FOOTER) {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_progress, parent, false);
-                return new FooterHolder(view);
-            }
-            else if(viewType == VIEW_TYPE_HEADER) {
-                view = new LinearLayout(parent.getContext());
-                view.setMinimumHeight(1);
-                return new HeaderHolder(view);
-            }
-            else {
-                view = LayoutInflater.from(parent.getContext()).inflate(mModelLayout, parent, false);
                 return new ChatHolder(view);
             }
-
+            else if(viewType == VIEW_TYPE_HEADER) {
+                // header is needed to make list stick to the bottom.
+                view = new LinearLayout(parent.getContext());
+                view.setMinimumHeight(1);
+                return new ChatHolder(view);
+            }
+            return super.onCreateViewHolder(parent, viewType);
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        public void populateViewHolder(ChatHolder viewHolder, Chat chat, int position) {
             int itemViewType = getItemViewType(position);
             if(itemViewType == VIEW_TYPE_FOOTER) {
-                FooterHolder footerHolder = (FooterHolder) viewHolder;
-                footerHolder.progressBar.setVisibility(synced ? View.GONE : View.VISIBLE);
+                viewHolder.progressBar.setVisibility(synced ? View.GONE : View.VISIBLE);
             }
             else if(itemViewType == VIEW_TYPE_CONTENT) {
-                super.onBindViewHolder(viewHolder, position);
+                viewHolder.textView.setText(chat.getText());
+                viewHolder.textView.setPadding(10, 0, 10, 0);
+                viewHolder.nameView.setText(chat.getName());
+                viewHolder.nameView.setPadding(10, 0, 10, 15);
+                if (chat.getName().equals(name)) {
+                    viewHolder.textView.setGravity(Gravity.END);
+                    viewHolder.nameView.setGravity(Gravity.END);
+                    viewHolder.nameView.setTextColor(Color.parseColor("#8BC34A"));
+                } else {
+                    viewHolder.textView.setGravity(Gravity.START);
+                    viewHolder.nameView.setGravity(Gravity.START);
+                    viewHolder.nameView.setTextColor(Color.parseColor("#00BCD4"));
+                }
             }
-        }
-
-        @Override
-        public void populateViewHolder(RecyclerView.ViewHolder viewHolder, Chat chat) {
-            ChatHolder chatView = (ChatHolder) viewHolder;
-            chatView.textView.setText(chat.getText());
-            chatView.textView.setPadding(10, 0, 10, 0);
-            chatView.nameView.setText(chat.getName());
-            chatView.nameView.setPadding(10, 0, 10, 15);
-            if (chat.getName().equals(name)) {
-                chatView.textView.setGravity(Gravity.END);
-                chatView.nameView.setGravity(Gravity.END);
-                chatView.nameView.setTextColor(Color.parseColor("#8BC34A"));
-            } else {
-                chatView.textView.setGravity(Gravity.START);
-                chatView.nameView.setGravity(Gravity.START);
-                chatView.nameView.setTextColor(Color.parseColor("#00BCD4"));
-            }
+            // Header is empty so no need to bind it.
         }
 
         @Override

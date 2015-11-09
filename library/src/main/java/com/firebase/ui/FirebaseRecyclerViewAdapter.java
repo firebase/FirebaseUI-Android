@@ -235,13 +235,13 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
         }
     }
 
-    /**
-     * Override when adding headers and footers.
-     * Call super for binding a content item.
-     */
     @Override
     public void onBindViewHolder(VH viewHolder, int position) {
-        T model = getItem(position);
+        T model = null;
+        int arrayPosition = position - getSnapShotOffset();
+        if(arrayPosition < mSnapshots.getCount() && arrayPosition >= 0) {
+            model = getItem(position);
+        }
         populateViewHolder(viewHolder, model, position);
     }
 
