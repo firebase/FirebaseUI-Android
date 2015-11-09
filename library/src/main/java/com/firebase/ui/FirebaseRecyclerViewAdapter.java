@@ -137,7 +137,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
         mSnapshots.setOnErrorListener(new FirebaseArray.OnErrorListener() {
             @Override
             public void onError(FirebaseError firebaseError) {
-                onError(firebaseError);
+                onArrayError(firebaseError);
             }
         });
     }
@@ -276,5 +276,5 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
     }
 
     protected void onSyncStatusChanged(boolean synced) {}
-    protected void onError(FirebaseError firebaseError) {}
+    protected void onArrayError(FirebaseError firebaseError) {}
 }

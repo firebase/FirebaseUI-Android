@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -122,6 +123,8 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
 
     public static class Adapter extends FirebaseRecyclerViewAdapter<Chat, RecyclerView.ViewHolder> {
 
+        public static final String TAG = Adapter.class.getSimpleName();
+
         public static int VIEW_TYPE_FOOTER = 0;
         public static int VIEW_TYPE_CONTENT = 1;
         private String name;
@@ -196,8 +199,8 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onError(FirebaseError firebaseError) {
-
+        protected void onArrayError(FirebaseError firebaseError) {
+            Log.d(TAG, firebaseError.toString(), firebaseError.toException());
         }
 
     }
