@@ -12,9 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -57,7 +57,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
                 Chat.class,
                 android.R.layout.two_line_list_item,
                 ref,
-                8,
+                15,
                 false,
                 name );
 
@@ -102,10 +102,16 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         }
     }
 
-    public static class HeaderHolder extends RecyclerView.ViewHolder {
+    public static class HeaderHolder extends  RecyclerView.ViewHolder {
+        public HeaderHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    public static class FooterHolder extends RecyclerView.ViewHolder {
         ProgressBar progressBar;
 
-        public HeaderHolder(View itemView) {
+        public FooterHolder(View itemView) {
             super(itemView);
             progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
         }
@@ -128,6 +134,7 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
 
         public static int VIEW_TYPE_FOOTER = 0;
         public static int VIEW_TYPE_CONTENT = 1;
+        public static int VIEW_TYPE_HEADER = 2;
         private String name;
         private boolean synced;
 
@@ -138,15 +145,23 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
 
         @Override
         public int getItemViewType(int position) {
-            if (position  == super.getItemCount()) {
+            if (position  == getItemCount() - 1) {
                 return VIEW_TYPE_FOOTER;
+            }
+            else if(position == 0) {
+                return VIEW_TYPE_HEADER;
             }
             return VIEW_TYPE_CONTENT;
         }
 
         @Override
         public int getItemCount() {
-            return super.getItemCount() + 1;
+            return super.getItemCount() + 2;
+        }
+
+        @Override
+        public int getSnapShotOffset() {
+            return 1;
         }
 
         @Override
@@ -154,6 +169,11 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
             View view;
             if(viewType == VIEW_TYPE_FOOTER) {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_holder_progress, parent, false);
+                return new FooterHolder(view);
+            }
+            else if(viewType == VIEW_TYPE_HEADER) {
+                view = new LinearLayout(parent.getContext());
+                view.setMinimumHeight(1);
                 return new HeaderHolder(view);
             }
             else {
@@ -167,8 +187,8 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
             int itemViewType = getItemViewType(position);
             if(itemViewType == VIEW_TYPE_FOOTER) {
-                HeaderHolder headerHolder = (HeaderHolder) viewHolder;
-                headerHolder.progressBar.setVisibility(synced ? View.GONE : View.VISIBLE);
+                FooterHolder footerHolder = (FooterHolder) viewHolder;
+                footerHolder.progressBar.setVisibility(synced ? View.GONE : View.VISIBLE);
             }
             else if(itemViewType == VIEW_TYPE_CONTENT) {
                 super.onBindViewHolder(viewHolder, position);
