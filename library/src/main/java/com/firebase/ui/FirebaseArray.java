@@ -154,6 +154,12 @@ class FirebaseArray implements
         if (previousChildKey != null) {
             index = getIndexForKey(previousChildKey) + 1;
         }
+        if(index < getCount()
+            && mSnapshots.get(index).getKey().equals(snapshot.getKey())) {
+            // duplicate
+            return;
+        }
+
         mSnapshots.add(index, snapshot);
         notifyChangedListeners(OnChangedListener.EventType.Added, index);
     }
