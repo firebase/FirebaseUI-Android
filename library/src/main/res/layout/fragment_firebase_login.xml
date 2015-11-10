@@ -14,120 +14,142 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/password_section">
+        android:id="@+id/login_section">
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/email"
-            android:ems="10"
-            android:hint="Email"
-            android:paddingTop="20dp"
-            style="@style/FirebaseEditTextTheme"
-            android:theme="@style/FirebaseEditTextTheme"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/password"
-            android:ems="10"
-            android:hint="Password"
-            android:paddingTop="16dp"
-            android:password="true"
-            style="@style/FirebaseEditTextTheme"
-            android:theme="@style/FirebaseEditTextTheme"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Login"
-            android:id="@+id/password_button"
-            android:textColor="#ffffff"
-            android:typeface="normal"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/password_button"
-            android:textStyle="bold" />
-
-        <FrameLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/or_line"
-            android:id="@+id/or_section"
-            android:layout_marginBottom="0dp"
-            android:layout_marginTop="15dp">
+            android:id="@+id/password_section">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <EditText
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="or"
-                android:textColor="#CCCCCC"
+                android:id="@+id/email"
+                android:ems="10"
+                android:hint="Email"
+                android:paddingTop="20dp"
+                style="@style/FirebaseEditTextTheme"
+                android:theme="@style/FirebaseEditTextTheme"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/password"
+                android:ems="10"
+                android:hint="Password"
+                android:paddingTop="16dp"
+                android:password="true"
+                style="@style/FirebaseEditTextTheme"
+                android:theme="@style/FirebaseEditTextTheme"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:id="@+id/password_button"
+                android:textColor="#ffffff"
+                android:typeface="normal"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/password_button"
+                android:textStyle="bold" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/or_line"
+                android:id="@+id/or_section"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="or"
+                    android:textColor="#CCCCCC"
+                    android:typeface="normal"
+                    android:textAlignment="center"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
+                    android:gravity="center"
+                    android:background="#F5f5f5"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/social_section"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="6dp">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Login with Facebook"
+                android:id="@+id/facebook_button"
+                android:background="@drawable/facebook_button"
+                android:textColor="#ffffff"
                 android:typeface="normal"
                 android:textAlignment="center"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="0dp"
-                android:gravity="center"
-                android:background="#F5f5f5"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:layout_gravity="center" />
-        </FrameLayout>
-    </LinearLayout>
+                android:drawableLeft="@drawable/ic_facebook"
+                android:drawablePadding="10dp"
+                android:gravity="left|center"
+                android:textStyle="bold"
+                android:paddingLeft="12dp"
+                android:layout_marginBottom="10dp" />
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Login with Google+"
+                android:id="@+id/google_button"
+                android:background="@drawable/google_button"
+                android:textColor="#ffffff"
+                android:typeface="normal"
+                android:textAlignment="center"
+                android:drawableLeft="@drawable/ic_google"
+                android:drawablePadding="10dp"
+                android:gravity="left|center"
+                android:textStyle="bold"
+                android:paddingLeft="12dp"
+                android:layout_marginBottom="10dp" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Login with Twitter"
+                android:id="@+id/twitter_button"
+                android:background="@drawable/twitter_button"
+                android:textColor="#ffffff"
+                android:typeface="normal"
+                android:textAlignment="center"
+                android:drawableLeft="@drawable/ic_twitter"
+                android:drawablePadding="10dp"
+                android:gravity="left|center"
+                android:textStyle="bold"
+                android:paddingLeft="12dp"
+                android:layout_marginBottom="10dp" />
+
+        </LinearLayout>
+    </LinearLayout>
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/social_section"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="6dp">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/loading_section">
 
-        <Button
-            android:layout_width="match_parent"
+        <ProgressBar
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login with Facebook"
-            android:id="@+id/facebook_button"
-            android:background="@drawable/facebook_button"
-            android:textColor="#ffffff"
-            android:typeface="normal"
-            android:textAlignment="center"
-            android:drawableLeft="@drawable/ic_facebook"
-            android:drawablePadding="10dp"
-            android:gravity="left|center"
-            android:textStyle="bold"
-            android:paddingLeft="12dp"
-            android:layout_marginBottom="10dp" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Login with Google+"
-            android:id="@+id/google_button"
-            android:background="@drawable/google_button"
-            android:textColor="#ffffff"
-            android:typeface="normal"
-            android:textAlignment="center"
-            android:drawableLeft="@drawable/ic_google"
-            android:drawablePadding="10dp"
-            android:gravity="left|center"
-            android:textStyle="bold"
-            android:paddingLeft="12dp"
-            android:layout_marginBottom="10dp" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Login with Twitter"
-            android:id="@+id/twitter_button"
-            android:background="@drawable/twitter_button"
-            android:textColor="#ffffff"
-            android:typeface="normal"
-            android:textAlignment="center"
-            android:drawableLeft="@drawable/ic_twitter"
-            android:drawablePadding="10dp"
-            android:gravity="left|center"
-            android:textStyle="bold"
-            android:paddingLeft="12dp"
-            android:layout_marginBottom="10dp" />
+            android:id="@+id/progressBar"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 </LinearLayout>

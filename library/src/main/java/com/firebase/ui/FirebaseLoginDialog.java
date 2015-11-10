@@ -17,7 +17,6 @@ public class FirebaseLoginDialog extends DialogFragment {
     FirebaseAuthHelper mGoogleAuthHelper;
     FirebaseAuthHelper mPasswordAuthHelper;
     View mView;
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -43,6 +42,8 @@ public class FirebaseLoginDialog extends DialogFragment {
                 mView.findViewById(R.id.or_section).setVisibility(View.GONE);
         }
         else mView.findViewById(R.id.password_section).setVisibility(View.GONE);
+
+        mView.findViewById(R.id.loading_section).setVisibility(View.GONE);
 
         builder.setView(mView);
         return builder.create();
@@ -70,14 +71,17 @@ public class FirebaseLoginDialog extends DialogFragment {
         mView.findViewById(id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            if (helper.getProviderName() == "password") {
+            if (helper.getProviderName().equals("password")) {
                 EditText emailText = (EditText) mView.findViewById(R.id.email);
                 EditText passwordText = (EditText) mView.findViewById(R.id.password);
                 helper.login(emailText.getText().toString(), passwordText.getText().toString());
             } else {
                 helper.login();
             }
+            mView.findViewById(R.id.login_section).setVisibility(View.GONE);
+            mView.findViewById(R.id.loading_section).setVisibility(View.VISIBLE);
             }
         });
+
     }
 }

@@ -1,12 +1,9 @@
 package com.firebase.uidemo;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -71,12 +68,12 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         messages.setLayoutManager(manager);
 
         Query recentMessages = mRef.limitToLast(50);
-        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, R.layout.message, ChatHolder.class, recentMessages) {
+        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, R.layout.incoming_message, ChatHolder.class, recentMessages) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
                 chatView.textView.setText(chat.getText());
 //                chatView.textView.setPadding(30, 30, 30, 0);
-//                chatView.nameView.setText(chat.getName());
+                chatView.nameView.setText(chat.getName());
 //                chatView.nameView.setPadding(30, 0, 30, 30);
 //                chatView.textView.setTextColor(Color.parseColor("#000000"));
 //                chatView.textView.setTypeface(null, Typeface.NORMAL);
@@ -207,7 +204,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         public ChatHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            //nameView = (TextView) itemView.findViewById(android.R.id.text2);
+            nameView = (TextView) itemView.findViewById(R.id.name_text);
             textView = (TextView) itemView.findViewById(R.id.message_text);
         }
     }
