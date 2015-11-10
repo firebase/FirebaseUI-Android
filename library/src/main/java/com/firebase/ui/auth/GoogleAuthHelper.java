@@ -1,4 +1,4 @@
-package com.firebase.ui.authimpl;
+package com.firebase.ui.auth;
 
 import android.app.Activity;
 import android.content.Context;
@@ -77,7 +77,7 @@ public class GoogleAuthHelper extends FirebaseAuthHelper implements
                 FirebaseOAuthToken foToken = new FirebaseOAuthToken(
                         PROVIDER_NAME,
                         token);
-                //mHandler.onTokenReceived(foToken);
+                onFirebaseTokenReceived(foToken, mHandler);
             }
 
             @Override

@@ -1,13 +1,17 @@
-package com.firebase.ui.authimpl;
+package com.firebase.ui.auth;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.firebase.client.Firebase;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -22,11 +26,39 @@ public class TwitterPromptActivity extends Activity {
     private WebView mTwitterView;
 
     @Override
+    public void onBackPressed() {
+        sendResultError(FirebaseStatuses.USER_ERROR, "User closed login prompt.");
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String twitterKey = "";
+        String twitterSecret = "";
+
+        try {
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            twitterKey = bundle.getString("com.firebase.ui.TwitterKey");
+            twitterSecret = bundle.getString("com.firebase.ui.TwitterSecret");
+        } catch (PackageManager.NameNotFoundException e) {
+        } catch (NullPointerException e) {}
+
+        if (twitterKey == null || twitterSecret == null) {
+            sendResultError(FirebaseStatuses.PROVIDER_ERROR, "Invalid Twitter key/secret, are they set in your AndroidManifest.xml?");
+            return;
+        }
+
+        if (twitterKey.compareTo("") == 0|| twitterSecret.compareTo("") == 0) {
+            sendResultError(FirebaseStatuses.PROVIDER_ERROR, "Invalid Twitter key/secret, are they set in your res/values/strings.xml?");
+            return;
+        }
+
         mTwitter = new TwitterFactory(new ConfigurationBuilder()
-                .setOAuthConsumerKey("mbX13kp9wqi3JzmwXwATvciAZ")
-                .setOAuthConsumerSecret("8QObfaBn0YxzvZ0RiyoW8BUL8o3LBSfeElRHPR5ppvkFRqEMTq")
+                .setOAuthConsumerKey(twitterKey)
+                .setOAuthConsumerSecret(twitterSecret)
                 .build()).getInstance();
 
         // setup ic_twitter webview
@@ -44,7 +76,7 @@ public class TwitterPromptActivity extends Activity {
                 try {
                     token = mTwitter.getOAuthRequestToken("oauth://cb");
                 } catch (TwitterException te) {
-                    Log.e(TAG, te.toString());
+                    sendResultError(FirebaseStatuses.PROVIDER_ERROR, te.toString());
                 }
                 return token;
             }
@@ -59,9 +91,7 @@ public class TwitterPromptActivity extends Activity {
                             if (url.contains("oauth_verifier")) {
                                 getTwitterOAuthTokenAndLogin(token, Uri.parse(url).getQueryParameter("oauth_verifier"));
                             } else if (url.contains("denied")) {
-                                Intent resultIntent = new Intent();
-                                setResult(TwitterAuthHelper.RC_TWITTER_CANCEL, resultIntent);
-                                finish();
+                                sendResultError(FirebaseStatuses.USER_ERROR, "User denied access to their account.");
                             }
                         }
                     }
@@ -79,7 +109,7 @@ public class TwitterPromptActivity extends Activity {
                 try {
                     accessToken = mTwitter.getOAuthAccessToken(requestToken, oauthVerifier);
                 } catch (TwitterException te) {
-                    Log.e(TAG, te.toString());
+                    sendResultError(FirebaseStatuses.PROVIDER_ERROR, te.toString());
                 }
                 return accessToken;
             }
@@ -90,10 +120,17 @@ public class TwitterPromptActivity extends Activity {
                 resultIntent.putExtra("oauth_token", token.getToken());
                 resultIntent.putExtra("oauth_token_secret", token.getTokenSecret());
                 resultIntent.putExtra("user_id", token.getUserId() + "");
-                Log.d(TAG, token.getUserId() + "");
-                setResult(TwitterAuthHelper.RC_TWITTER_LOGIN, resultIntent);
+
+                setResult(FirebaseStatuses.SUCCESS, resultIntent);
                 finish();
             }
         }.execute();
+    }
+
+    private void sendResultError(Integer status, String err) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("error", err);
+        setResult(status, resultIntent);
+        finish();
     }
 }

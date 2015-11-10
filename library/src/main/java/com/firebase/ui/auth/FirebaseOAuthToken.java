@@ -1,4 +1,4 @@
-package com.firebase.ui.authimpl;
+package com.firebase.ui.auth;
 
 public class FirebaseOAuthToken {
     public String token;

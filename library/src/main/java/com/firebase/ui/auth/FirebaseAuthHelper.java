@@ -1,4 +1,4 @@
-package com.firebase.ui.authimpl;
+package com.firebase.ui.auth;
 
 import android.util.Log;
 
@@ -26,19 +26,21 @@ public abstract class FirebaseAuthHelper {
     }
 
     private void authenticateRefWithOAuthFirebasetoken(FirebaseOAuthToken token, final TokenAuthHandler handler) {
+        Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                // Do nothing. Auth updates are handled in the AuthStateListener
+            }
+
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                handler.onProviderError(new FirebaseError(0, "Make sure " + getProviderName() + " login is enabled and configured in your Firebase."));
+            }
+        };
+
         if (token.mode == FirebaseOAuthToken.SIMPLE) {
             // Simple mode is used for Facebook and Google auth
-            getFirebaseRef().authWithOAuthToken(token.provider, token.token, new Firebase.AuthResultHandler() {
-                @Override
-                public void onAuthenticated(AuthData authData) {
-                    // Do nothing. Auth updates are handled in the AuthStateListener
-                }
-
-                @Override
-                public void onAuthenticationError(FirebaseError firebaseError) {
-                    handler.onUserError(new FirebaseError(0, "auth_error"));
-                }
-            });
+            getFirebaseRef().authWithOAuthToken(token.provider, token.token, authResultHandler);
         } else if (token.mode == FirebaseOAuthToken.COMPLEX) {
             // Complex mode is used for Twitter auth
             Map<String, String> options = new HashMap<>();
@@ -46,17 +48,7 @@ public abstract class FirebaseAuthHelper {
             options.put("oauth_token_secret", token.secret);
             options.put("user_id", token.uid);
 
-            getFirebaseRef().authWithOAuthToken(token.provider, options, new Firebase.AuthResultHandler() {
-                @Override
-                public void onAuthenticated(AuthData authData) {
-                    // Do nothing. Auth updates are handled in the AuthStateListener
-                }
-
-                @Override
-                public void onAuthenticationError(FirebaseError firebaseError) {
-                    handler.onUserError(new FirebaseError(0, "auth_error"));
-                }
-            });
+            getFirebaseRef().authWithOAuthToken(token.provider, options, authResultHandler);
         }
     }
 }

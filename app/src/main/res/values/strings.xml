@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">FirebaseUI Chat</string>
+    <!-- FirebaseUI Configuration -->
     <string name="facebook_app_id">547033782072218</string>
+    <string name="twitter_app_key">mbX13kp9wqi3JzmwXwATvciAZ</string>
+    <string name="twitter_app_secret">8QObfaBn0YxzvZ0RiyoW8BUL8o3LBSfeElRHPR5ppvkFRqEMTq</string>
 </resources>

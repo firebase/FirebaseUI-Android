@@ -7,12 +7,12 @@ import android.util.Log;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.ui.authimpl.FacebookAuthHelper;
-import com.firebase.ui.authimpl.GoogleAuthHelper;
-import com.firebase.ui.authimpl.PasswordAuthHelper;
-import com.firebase.ui.authimpl.SocialProvider;
-import com.firebase.ui.authimpl.TokenAuthHandler;
-import com.firebase.ui.authimpl.TwitterAuthHelper;
+import com.firebase.ui.auth.FacebookAuthHelper;
+import com.firebase.ui.auth.GoogleAuthHelper;
+import com.firebase.ui.auth.PasswordAuthHelper;
+import com.firebase.ui.auth.SocialProvider;
+import com.firebase.ui.auth.TokenAuthHandler;
+import com.firebase.ui.auth.TwitterAuthHelper;
 
 public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 

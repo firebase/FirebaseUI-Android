@@ -71,23 +71,23 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         messages.setLayoutManager(manager);
 
         Query recentMessages = mRef.limitToLast(50);
-        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, recentMessages) {
+        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, R.layout.message, ChatHolder.class, recentMessages) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
                 chatView.textView.setText(chat.getText());
-                chatView.textView.setPadding(30, 30, 30, 0);
-                chatView.nameView.setText(chat.getName());
-                chatView.nameView.setPadding(30, 0, 30, 30);
-                chatView.textView.setTextColor(Color.parseColor("#000000"));
-                chatView.textView.setTypeface(null, Typeface.NORMAL);
+//                chatView.textView.setPadding(30, 30, 30, 0);
+//                chatView.nameView.setText(chat.getName());
+//                chatView.nameView.setPadding(30, 0, 30, 30);
+//                chatView.textView.setTextColor(Color.parseColor("#000000"));
+//                chatView.textView.setTypeface(null, Typeface.NORMAL);
                 if (mAuthData != null && chat.getUid().equals(mAuthData.getUid())) {
-                    chatView.textView.setGravity(Gravity.END);
-                    chatView.nameView.setGravity(Gravity.END);
-                    chatView.nameView.setTextColor(Color.parseColor("#AAAAAA"));
-                    chatView.itemView.setBackground(getDrawable(R.drawable.outgoing_message));
+//                    chatView.textView.setGravity(Gravity.END);
+//                    chatView.nameView.setGravity(Gravity.END);
+//                    chatView.nameView.setTextColor(Color.parseColor("#AAAAAA"));
+//                    chatView.itemView.setBackground(getDrawable(R.drawable.outgoing_message));
                 } else {
-                    chatView.nameView.setTextColor(Color.parseColor("#00BCD4"));
-                    chatView.itemView.setBackground(getDrawable(R.drawable.incoming_message));
+//                    chatView.nameView.setTextColor(Color.parseColor("#00BCD4"));
+//                    chatView.itemView.setBackground(getDrawable(R.drawable.incoming_message));
                 }
             }
         };
@@ -158,12 +158,12 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     @Override
     public void onFirebaseLoginProviderError(FirebaseError firebaseError) {
-        Log.e(TAG, firebaseError.toString());
+        Log.i(TAG, "Login provider error: " + firebaseError.toString());
     }
 
     @Override
     public void onFirebaseLoginUserError(FirebaseError firebaseError) {
-        Log.i(TAG, "Login cancelled");
+        Log.i(TAG, "Login user error: " + firebaseError.toString());
     }
 
     @Override
@@ -207,8 +207,8 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         public ChatHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            nameView = (TextView) itemView.findViewById(android.R.id.text2);
-            textView = (TextView) itemView.findViewById(android.R.id.text1);
+            //nameView = (TextView) itemView.findViewById(android.R.id.text2);
+            textView = (TextView) itemView.findViewById(R.id.message_text);
         }
     }
 }
