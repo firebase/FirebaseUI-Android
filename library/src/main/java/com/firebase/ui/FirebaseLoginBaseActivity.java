@@ -22,6 +22,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     private FacebookAuthHelper mFacebookAuthHelper;
     private TwitterAuthHelper mTwitterAuthHelper;
     private PasswordAuthHelper mPasswordAuthHelper;
+    private Firebase.AuthStateListener mAuthStateListener;
 
     TokenAuthHandler mHandler;
 
@@ -115,25 +116,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             }
         };
 
-        mFacebookAuthHelper = new FacebookAuthHelper(this, getFirebaseRef(), mHandler);
-        mGoogleAuthHelper = new GoogleAuthHelper(this, getFirebaseRef(), mHandler);
-        mTwitterAuthHelper = new TwitterAuthHelper(this, getFirebaseRef(), mHandler);
-        mPasswordAuthHelper = new PasswordAuthHelper(this, getFirebaseRef(), mHandler);
-
-        mDialog = new FirebaseLoginDialog();
-        mDialog
-                .setContext(this)
-                .setRef(getFirebaseRef())
-            .setHandler(mHandler);
-
-        mDialog
-            .setProviderEnabled(SocialProvider.facebook)
-            .setProviderEnabled(SocialProvider.google)
-            .setProviderEnabled(SocialProvider.twitter)
-            .setProviderEnabled(SocialProvider.password);
-
-        // TODO: should we remove the authStateListener on `onStop()`?
-        getFirebaseRef().addAuthStateListener(new Firebase.AuthStateListener() {
+        mAuthStateListener = new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
@@ -144,6 +127,30 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
                     onFirebaseLogout();
                 }
             }
-        });
+        };
+
+        mFacebookAuthHelper = new FacebookAuthHelper(this, getFirebaseRef(), mHandler);
+        mGoogleAuthHelper = new GoogleAuthHelper(this, getFirebaseRef(), mHandler);
+        mTwitterAuthHelper = new TwitterAuthHelper(this, getFirebaseRef(), mHandler);
+        mPasswordAuthHelper = new PasswordAuthHelper(this, getFirebaseRef(), mHandler);
+
+        mDialog = new FirebaseLoginDialog();
+        mDialog
+            .setContext(this)
+            .setRef(getFirebaseRef())
+            .setHandler(mHandler);
+
+        mDialog
+            .setProviderEnabled(SocialProvider.facebook)
+            .setProviderEnabled(SocialProvider.google)
+            .setProviderEnabled(SocialProvider.twitter)
+            .setProviderEnabled(SocialProvider.password);
+
+        getFirebaseRef().addAuthStateListener(mAuthStateListener);
+    }
+
+    protected void onStop() {
+        super.onStop();
+        getFirebaseRef().removeAuthStateListener(mAuthStateListener);
     }
 }

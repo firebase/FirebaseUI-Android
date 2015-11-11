@@ -29,7 +29,7 @@ public abstract class FirebaseAuthHelper {
         Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
-                // Do nothing. Auth updates are handled in the AuthStateListener
+                Log.d("Helper", "GO GO GO");
                 handler.onSuccess(authData);
             }
 

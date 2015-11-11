@@ -86,11 +86,9 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
                 chatView.setText(chat.getText());
 
                 if (mAuthData != null && chat.getUid().equals(mAuthData.getUid())) {
-                    // Is me
-                    chatView.setSender(true);
+                    chatView.setIsSender(true);
                 } else {
-                    chatView.setSender(false);
-                    // Isn't me
+                    chatView.setIsSender(false);
                 }
             }
         };
@@ -211,10 +209,11 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
             mView = itemView;
         }
 
-        public void setSender(Boolean isSender) {
+        public void setIsSender(Boolean isSender) {
             FrameLayout left_arrow = (FrameLayout) mView.findViewById(R.id.left_arrow);
             FrameLayout right_arrow = (FrameLayout) mView.findViewById(R.id.right_arrow);
             RelativeLayout messageContainer = (RelativeLayout) mView.findViewById(R.id.message_container);
+
 
             if (isSender) {
                 left_arrow.setVisibility(View.GONE);
@@ -224,10 +223,6 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
                 left_arrow.setVisibility(View.VISIBLE);
                 right_arrow.setVisibility(View.GONE);
                 messageContainer.setGravity(Gravity.LEFT);
-                //GradientDrawable messageBoxBackground= (GradientDrawable) (messageBox.getBackground());
-                //messageBoxBackground.setColor(Color.MAGENTA);
-                //GradientDrawable messageArrowBackground = (GradientDrawable) (messageArrow.getBackground());
-                //messageArrowBackground.setColor(Color.MAGENTA);
 
             }
         }
