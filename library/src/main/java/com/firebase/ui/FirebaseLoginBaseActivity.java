@@ -23,6 +23,8 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     private TwitterAuthHelper mTwitterAuthHelper;
     private PasswordAuthHelper mPasswordAuthHelper;
 
+    TokenAuthHandler mHandler;
+
     private FirebaseLoginDialog mDialog;
 
     public SocialProvider mChosenProvider;
@@ -80,27 +82,27 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO: If someone isn't extending this activity, they need to implement this by hand
-        mFacebookAuthHelper.mCallbackManager.onActivityResult(requestCode, resultCode, data);
-        mTwitterAuthHelper.onActivityResult(requestCode, resultCode, data);
+        if (mDialog.isActive) {
+            mDialog.onActivityResult(requestCode, resultCode, data);
+        } else {
+            mFacebookAuthHelper.mCallbackManager.onActivityResult(requestCode, resultCode, data);
+            mTwitterAuthHelper.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     public void showFirebaseLoginPrompt() {
-        mDialog = new FirebaseLoginDialog();
-        mDialog
-            .addAuthHelper(mGoogleAuthHelper)
-            .addAuthHelper(mFacebookAuthHelper)
-            .addAuthHelper(mTwitterAuthHelper)
-            .addAuthHelper(mPasswordAuthHelper)
-            .show(getFragmentManager(), "");
+        mDialog.show(getFragmentManager(), "");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        TokenAuthHandler handler = new TokenAuthHandler() {
+        mHandler = new TokenAuthHandler() {
             @Override
-            public void onSuccess(AuthData data) {}
+            public void onSuccess(AuthData data) {
+
+            }
 
             @Override
             public void onUserError(FirebaseError err) {
@@ -113,19 +115,29 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             }
         };
 
-        mFacebookAuthHelper = new FacebookAuthHelper(this, getFirebaseRef(), handler);
-        mGoogleAuthHelper = new GoogleAuthHelper(this, getFirebaseRef(), handler);
-        mTwitterAuthHelper = new TwitterAuthHelper(this, getFirebaseRef(), handler);
-        mPasswordAuthHelper = new PasswordAuthHelper(this, getFirebaseRef(), handler);
+        mFacebookAuthHelper = new FacebookAuthHelper(this, getFirebaseRef(), mHandler);
+        mGoogleAuthHelper = new GoogleAuthHelper(this, getFirebaseRef(), mHandler);
+        mTwitterAuthHelper = new TwitterAuthHelper(this, getFirebaseRef(), mHandler);
+        mPasswordAuthHelper = new PasswordAuthHelper(this, getFirebaseRef(), mHandler);
 
-        // TODO: is there a way to delay this? Or make it on-demand (i.e. make them call `startMonitoringState`)?
+        mDialog = new FirebaseLoginDialog();
+        mDialog
+                .setContext(this)
+                .setRef(getFirebaseRef())
+            .setHandler(mHandler);
+
+        mDialog
+            .setProviderEnabled(SocialProvider.facebook)
+            .setProviderEnabled(SocialProvider.google)
+            .setProviderEnabled(SocialProvider.twitter)
+            .setProviderEnabled(SocialProvider.password);
+
         // TODO: should we remove the authStateListener on `onStop()`?
         getFirebaseRef().addAuthStateListener(new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
                     mChosenProvider = SocialProvider.valueOf(authData.getProvider());
-                    if (mDialog != null) mDialog.dismiss();
                     onFirebaseLoginSuccess(authData);
                     Log.d(TAG, "Auth data changed");
                 } else {

@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:gravity="right">
 
-    <ImageView
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:id="@+id/profile_image"
-        android:scaleType="fitXY"/>
-
-    <RelativeLayout
-        android:id="@+id/arrow"
+    <FrameLayout
+        android:id="@+id/left_arrow"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/chat_message_arrow"
         android:rotation="180"
-        android:layout_marginLeft="6dp"/>
+        android:layout_marginLeft="2dp"/>
+
 
     <LinearLayout
         android:layout_height="match_parent"
@@ -27,12 +23,6 @@
         android:layout_marginLeft="26dp"
         android:layout_marginRight="26dp"
         android:layout_marginBottom="10dp">
-
-        <!--<TextView android:id="@+id/text1"-->
-            <!--android:textStyle="bold"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_weight="1"/>-->
 
         <TextView android:id="@+id/message_text"
             android:layout_width="fill_parent"
@@ -46,5 +36,16 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/right_arrow"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/chat_message_arrow"
+        android:rotation="180"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/message"
+        android:layout_alignEnd="@+id/message"
+        android:layout_marginRight="-25dp"/>
 
 </RelativeLayout>

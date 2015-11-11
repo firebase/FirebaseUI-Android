@@ -1,15 +1,24 @@
 package com.firebase.uidemo;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.Shape;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.client.AuthData;
@@ -23,11 +32,14 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     public static String TAG = "FirebaseUI.chat";
     private Firebase mRef;
+    private Query mChatRef;
     private AuthData mAuthData;
     private String name;
     private String uid;
     private Button mSendButton;
     private EditText mMessageEdit;
+
+    private RecyclerView mMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,58 +50,55 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
 
         mRef = new Firebase("https://firebaseui.firebaseio.com/chat_3");
+        mChatRef = mRef.limitToLast(50);
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Chat chat = new Chat(name, mAuthData.getUid(), mMessageEdit.getText().toString());
-                mRef.push().setValue(chat, new Firebase.CompletionListener() {
-                    @Override
-                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                        if (firebaseError != null) {
-                            Log.e(TAG, firebaseError.toString());
-                        }
+            Chat chat = new Chat(name, mAuthData.getUid(), mMessageEdit.getText().toString());
+            mRef.push().setValue(chat, new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (firebaseError != null) {
+                        Log.e(TAG, firebaseError.toString());
                     }
-                });
-                mMessageEdit.setText("");
+                }
+            });
+            mMessageEdit.setText("");
             }
         });
+
+        mMessages = (RecyclerView) findViewById(R.id.messagesList);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setStackFromEnd(true);
+
+        mMessages.setHasFixedSize(true);
+        mMessages.setLayoutManager(manager);
+
 
         updateChat();
     }
 
     protected void updateChat() {
-        final RecyclerView messages = (RecyclerView) findViewById(R.id.messagesList);
-
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        manager.setStackFromEnd(true);
-
-        messages.setHasFixedSize(true);
-        messages.setLayoutManager(manager);
-
-        Query recentMessages = mRef.limitToLast(50);
-        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, R.layout.incoming_message, ChatHolder.class, recentMessages) {
+        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, R.layout.message, ChatHolder.class, mChatRef) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
-                chatView.textView.setText(chat.getText());
-//                chatView.textView.setPadding(30, 30, 30, 0);
-                chatView.nameView.setText(chat.getName());
-//                chatView.nameView.setPadding(30, 0, 30, 30);
-//                chatView.textView.setTextColor(Color.parseColor("#000000"));
-//                chatView.textView.setTypeface(null, Typeface.NORMAL);
+
+                chatView.setName(chat.getName());
+                chatView.setText(chat.getText());
+
                 if (mAuthData != null && chat.getUid().equals(mAuthData.getUid())) {
-//                    chatView.textView.setGravity(Gravity.END);
-//                    chatView.nameView.setGravity(Gravity.END);
-//                    chatView.nameView.setTextColor(Color.parseColor("#AAAAAA"));
-//                    chatView.itemView.setBackground(getDrawable(R.drawable.outgoing_message));
+                    // Is me
+                    chatView.setSender(true);
                 } else {
-//                    chatView.nameView.setTextColor(Color.parseColor("#00BCD4"));
-//                    chatView.itemView.setBackground(getDrawable(R.drawable.incoming_message));
+                    chatView.setSender(false);
+                    // Isn't me
                 }
             }
         };
 
-        messages.setAdapter(adapter);
+        mMessages.setAdapter(adapter);
     }
 
     @Override
@@ -121,10 +130,6 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
-    // Start of FirebaseLoginBaseActivity
 
     @Override
     public void onFirebaseLoginSuccess(AuthData authData) {
@@ -168,8 +173,6 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         return mRef;
     }
 
-    // End of FirebaseLoginBaseActivity
-
     public static class Chat {
         String name;
         String text;
@@ -198,14 +201,50 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     }
 
     public static class ChatHolder extends RecyclerView.ViewHolder {
-        TextView nameView, textView;
-        View itemView;
+        View mView;
 
         public ChatHolder(View itemView) {
             super(itemView);
-            this.itemView = itemView;
-            nameView = (TextView) itemView.findViewById(R.id.name_text);
-            textView = (TextView) itemView.findViewById(R.id.message_text);
+            mView = itemView;
+        }
+
+        public void setSender(Boolean isSender) {
+            FrameLayout arrow;
+
+            if (isSender) {
+                arrow = (FrameLayout) mView.findViewById(R.id.left_arrow);
+            } else {
+                arrow = (FrameLayout) mView.findViewById(R.id.right_arrow);
+
+                View messageBox  = mView.findViewById(R.id.message);
+                View messageArrow = mView.findViewById(R.id.left_arrow);
+
+//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams();
+//                lp.gravity= Gravity.RIGHT;
+//                mView.setLayoutParams(lp);
+
+
+
+
+
+                //GradientDrawable messageBoxBackground= (GradientDrawable) (messageBox.getBackground());
+                //messageBoxBackground.setColor(Color.MAGENTA);
+                //GradientDrawable messageArrowBackground = (GradientDrawable) (messageArrow.getBackground());
+                //messageArrowBackground.setColor(Color.MAGENTA);
+
+            }
+
+            arrow.setVisibility(View.GONE);
+        }
+
+        public void setName(String name) {
+            TextView field = (TextView) mView.findViewById(R.id.name_text);
+            field.setText(name);
+        }
+
+        public void setText(String text) {
+            TextView field = (TextView) mView.findViewById(R.id.message_text);
+            field.setText(text);
         }
     }
 }

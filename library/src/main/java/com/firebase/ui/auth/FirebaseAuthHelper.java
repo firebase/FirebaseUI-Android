@@ -30,6 +30,7 @@ public abstract class FirebaseAuthHelper {
             @Override
             public void onAuthenticated(AuthData authData) {
                 // Do nothing. Auth updates are handled in the AuthStateListener
+                handler.onSuccess(authData);
             }
 
             @Override

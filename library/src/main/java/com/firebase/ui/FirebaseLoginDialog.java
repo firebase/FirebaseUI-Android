@@ -3,19 +3,57 @@ package com.firebase.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import com.firebase.client.AuthData;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.ui.auth.FacebookAuthHelper;
 import com.firebase.ui.auth.FirebaseAuthHelper;
+import com.firebase.ui.auth.GoogleAuthHelper;
+import com.firebase.ui.auth.PasswordAuthHelper;
+import com.firebase.ui.auth.SocialProvider;
+import com.firebase.ui.auth.TokenAuthHandler;
+import com.firebase.ui.auth.TwitterAuthHelper;
 
 public class FirebaseLoginDialog extends DialogFragment {
 
-    FirebaseAuthHelper mFacebookAuthHelper;
-    FirebaseAuthHelper mTwitterAuthHelper;
-    FirebaseAuthHelper mGoogleAuthHelper;
-    FirebaseAuthHelper mPasswordAuthHelper;
+    FacebookAuthHelper mFacebookAuthHelper;
+    TwitterAuthHelper mTwitterAuthHelper;
+    GoogleAuthHelper mGoogleAuthHelper;
+    PasswordAuthHelper mPasswordAuthHelper;
+
+    TokenAuthHandler mHandler;
+    Firebase mRef;
+    Context mContext;
+    public Boolean isActive = false;
+
+    public void onStart() {
+        super.onStart();
+        isActive = true;
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        isActive = false;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (mFacebookAuthHelper != null) {
+            mFacebookAuthHelper.mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+
+        if (mTwitterAuthHelper != null) {
+            mTwitterAuthHelper.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     View mView;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -49,19 +87,53 @@ public class FirebaseLoginDialog extends DialogFragment {
         return builder.create();
     }
 
-    public FirebaseLoginDialog addAuthHelper(FirebaseAuthHelper helper) {
-        switch (helper.getProviderName()) {
-            case "google":
-                mGoogleAuthHelper = helper;
+    public FirebaseLoginDialog setRef(Firebase ref) {
+        mRef = ref;
+        return this;
+    }
+
+    public FirebaseLoginDialog setHandler(final TokenAuthHandler handler) {
+        //TODO: Make this idiomatic?
+        final DialogFragment self = this;
+        mHandler = new TokenAuthHandler() {
+            @Override
+            public void onSuccess(AuthData auth) {
+                self.dismiss();
+                handler.onSuccess(auth);
+            }
+
+            @Override
+            public void onUserError(FirebaseError err) {
+                handler.onUserError(err);
+            }
+
+            @Override
+            public void onProviderError(FirebaseError err) {
+                handler.onProviderError(err);
+            }
+        };
+        return this;
+    }
+
+    public FirebaseLoginDialog setContext(Context context) {
+        mContext = context;
+        return this;
+    }
+
+    public FirebaseLoginDialog setProviderEnabled(SocialProvider provider) {
+        switch (provider) {
+            case facebook:
+                mFacebookAuthHelper = new FacebookAuthHelper(mContext, mRef, mHandler);
                 break;
-            case "facebook":
-                mFacebookAuthHelper = helper;
+            case google:
+                mGoogleAuthHelper = new GoogleAuthHelper(mContext, mRef, mHandler);
                 break;
-            case "twitter":
-                mTwitterAuthHelper = helper;
+            case twitter:
+                mTwitterAuthHelper = new TwitterAuthHelper(mContext, mRef, mHandler);
                 break;
-            case "password":
-                mPasswordAuthHelper = helper;
+            case password:
+                mPasswordAuthHelper = new PasswordAuthHelper(mContext, mRef, mHandler);
+                break;
         }
 
         return this;
