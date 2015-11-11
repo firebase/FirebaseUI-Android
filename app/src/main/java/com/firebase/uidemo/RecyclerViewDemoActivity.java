@@ -1,16 +1,24 @@
 package com.firebase.uidemo;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.Shape;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.client.AuthData;
@@ -19,110 +27,125 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.ui.FirebaseLoginBaseActivity;
 import com.firebase.ui.FirebaseRecyclerViewAdapter;
-import com.firebase.ui.com.firebasei.ui.authimpl.SocialProvider;
-
 
 public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     public static String TAG = "FirebaseUI.chat";
     private Firebase mRef;
+    private Query mChatRef;
     private AuthData mAuthData;
+    private String name;
+    private String uid;
     private Button mSendButton;
     private EditText mMessageEdit;
+
+    private RecyclerView mMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_view_demo);
 
-        final String name = "Android User";
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
-        final RecyclerView messages = (RecyclerView) findViewById(R.id.messagesList);
-        messages.setHasFixedSize(true);
-        messages.setLayoutManager(new LinearLayoutManager(this));
 
-        mRef = new Firebase("https://firebaseui.firebaseio.com/chat");
+        mRef = new Firebase("https://firebaseui.firebaseio.com/chat_3");
+        mChatRef = mRef.limitToLast(50);
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Chat chat = new Chat(name, mMessageEdit.getText().toString());
-                mRef.push().setValue(chat, new Firebase.CompletionListener() {
-                    @Override
-                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                        if (firebaseError != null) {
-                            Log.e(TAG, firebaseError.toString());
-                        }
+            Chat chat = new Chat(name, mAuthData.getUid(), mMessageEdit.getText().toString());
+            mRef.push().setValue(chat, new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (firebaseError != null) {
+                        Log.e(TAG, firebaseError.toString());
                     }
-                });
-                mMessageEdit.setText("");
+                }
+            });
+            mMessageEdit.setText("");
             }
         });
 
-        Query recentMessages = mRef.limitToLast(50);
-        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, recentMessages) {
+        mMessages = (RecyclerView) findViewById(R.id.messagesList);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setStackFromEnd(true);
+
+        mMessages.setHasFixedSize(true);
+        mMessages.setLayoutManager(manager);
+
+
+        updateChat();
+    }
+
+    protected void updateChat() {
+        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, R.layout.message, ChatHolder.class, mChatRef) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
-                chatView.textView.setText(chat.getText());
-                chatView.textView.setPadding(10, 0, 10, 0);
-                chatView.nameView.setText(chat.getName());
-                chatView.nameView.setPadding(10, 0, 10, 15);
-                if (chat.getName().equals(name)) {
-                    chatView.textView.setGravity(Gravity.END);
-                    chatView.nameView.setGravity(Gravity.END);
-                    chatView.nameView.setTextColor(Color.parseColor("#8BC34A"));
+
+                chatView.setName(chat.getName());
+                chatView.setText(chat.getText());
+
+                if (mAuthData != null && chat.getUid().equals(mAuthData.getUid())) {
+                    // Is me
+                    chatView.setSender(true);
                 } else {
-                    chatView.nameView.setTextColor(Color.parseColor("#00BCD4"));
+                    chatView.setSender(false);
+                    // Isn't me
                 }
             }
         };
 
-        messages.setAdapter(adapter);
+        mMessages.setAdapter(adapter);
     }
-
-    public static final int LOGIN = Menu.FIRST;
-    public static final int LOGOUT = LOGIN+1;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(LOGIN, LOGIN, LOGIN, "Log in");
-        menu.add(LOGOUT, LOGOUT, LOGOUT, "Log out");
-
-        return super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.chat_login_menu, menu);
+        return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.getItem(LOGIN-Menu.FIRST).setVisible(mAuthData == null);
-        menu.getItem(LOGOUT-Menu.FIRST).setVisible(mAuthData != null);
+        menu.findItem(R.id.login_menu_item).setVisible(mAuthData == null);
+        menu.findItem(R.id.logout_menu_item).setVisible(mAuthData != null);
         mSendButton.setEnabled(mAuthData != null);
         mMessageEdit.setEnabled(mAuthData != null);
-        return super.onPrepareOptionsMenu(menu);
+
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case LOGIN:
-                this.loginWithProvider(SocialProvider.google);
+            case R.id.login_menu_item:
+                this.showFirebaseLoginPrompt();
                 return true;
-            case LOGOUT:
+            case R.id.logout_menu_item:
                 this.logout();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-
-
-    // Start of FirebaseLoginBaseActivity
-
     @Override
-    public void onFirebaseLogin(AuthData authData) {
-        Log.i(TAG, "Logged in");
+    public void onFirebaseLoginSuccess(AuthData authData) {
+        Log.i(TAG, "Logged in to " + authData.getProvider().toString());
         mAuthData = authData;
+
+        switch (mAuthData.getProvider()) {
+            case "password":
+                name = (String) mAuthData.getProviderData().get("email");
+                break;
+            default:
+                name = (String) mAuthData.getProviderData().get("displayName");
+                break;
+        }
+
+        updateChat();
         invalidateOptionsMenu();
     }
 
@@ -130,17 +153,19 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     public void onFirebaseLogout() {
         Log.i(TAG, "Logged out");
         mAuthData = null;
+        name = "";
         invalidateOptionsMenu();
+        updateChat();
     }
 
     @Override
-    public void onFirebaseLoginError(FirebaseError firebaseError) {
-        Log.e(TAG, firebaseError.toString());
+    public void onFirebaseLoginProviderError(FirebaseError firebaseError) {
+        Log.i(TAG, "Login provider error: " + firebaseError.toString());
     }
 
     @Override
-    public void onFirebaseLoginCancel() {
-        Log.i(TAG, "Login cancelled");
+    public void onFirebaseLoginUserError(FirebaseError firebaseError) {
+        Log.i(TAG, "Login user error: " + firebaseError.toString());
     }
 
     @Override
@@ -148,22 +173,26 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         return mRef;
     }
 
-    // End of FirebaseLoginBaseActivity
-
     public static class Chat {
         String name;
         String text;
+        String uid;
 
         public Chat() {
         }
 
-        public Chat(String name, String message) {
+        public Chat(String name, String uid, String message) {
             this.name = name;
             this.text = message;
+            this.uid = uid;
         }
 
         public String getName() {
             return name;
+        }
+
+        public String getUid() {
+            return uid;
         }
 
         public String getText() {
@@ -172,12 +201,50 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     }
 
     public static class ChatHolder extends RecyclerView.ViewHolder {
-        TextView nameView, textView;
+        View mView;
 
         public ChatHolder(View itemView) {
             super(itemView);
-            nameView = (TextView) itemView.findViewById(android.R.id.text2);
-            textView = (TextView) itemView.findViewById(android.R.id.text1);
+            mView = itemView;
+        }
+
+        public void setSender(Boolean isSender) {
+            FrameLayout arrow;
+
+            if (isSender) {
+                arrow = (FrameLayout) mView.findViewById(R.id.left_arrow);
+            } else {
+                arrow = (FrameLayout) mView.findViewById(R.id.right_arrow);
+
+                View messageBox  = mView.findViewById(R.id.message);
+                View messageArrow = mView.findViewById(R.id.left_arrow);
+
+//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams();
+//                lp.gravity= Gravity.RIGHT;
+//                mView.setLayoutParams(lp);
+
+
+
+
+
+                //GradientDrawable messageBoxBackground= (GradientDrawable) (messageBox.getBackground());
+                //messageBoxBackground.setColor(Color.MAGENTA);
+                //GradientDrawable messageArrowBackground = (GradientDrawable) (messageArrow.getBackground());
+                //messageArrowBackground.setColor(Color.MAGENTA);
+
+            }
+
+            arrow.setVisibility(View.GONE);
+        }
+
+        public void setName(String name) {
+            TextView field = (TextView) mView.findViewById(R.id.name_text);
+            field.setText(name);
+        }
+
+        public void setText(String text) {
+            TextView field = (TextView) mView.findViewById(R.id.message_text);
+            field.setText(text);
         }
     }
 }

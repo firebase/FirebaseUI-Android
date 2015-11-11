@@ -13,7 +13,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/footer" />
+        android:layout_above="@+id/footer"
+        />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -35,7 +36,7 @@
             android:layout_height="wrap_content"
             android:text="Send"
             android:id="@+id/sendButton"
-            android:layout_gravity="bottom|right" />
+            android:layout_gravity="bottom|right"/>
     </LinearLayout>
 
 </RelativeLayout>

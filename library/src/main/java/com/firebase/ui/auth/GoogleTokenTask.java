@@ -1,4 +1,4 @@
-package com.firebase.ui.com.firebasei.ui.authimpl;
+package com.firebase.ui.auth;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -11,12 +11,8 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 
-
 import java.io.IOException;
 
-/**
- * Created by deast on 9/25/15.
- */
 public class GoogleTokenTask extends AsyncTask<Void, Void, String> {
 
     private final String LOG_TAG = "GoogleTokenTask";

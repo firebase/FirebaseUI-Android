@@ -6,7 +6,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        minSdkVersion 10
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "0.2.0"
@@ -47,5 +47,10 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.google.android.gms:play-services-identity:8.1.0'
     compile 'com.google.android.gms:play-services-plus:8.1.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+    compile 'org.twitter4j:twitter4j-core:4.0.2'
+    compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
+        transitive = true;
+    }
     androidTestCompile 'junit:junit:4.12'
 }

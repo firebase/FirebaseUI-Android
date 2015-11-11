@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.firebase.uidemo"
-        minSdkVersion 10
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -33,5 +33,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-plus:8.1.0'
     compile 'com.firebase:firebase-client-android:2.3.1'
     compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile project(':library')
 }
