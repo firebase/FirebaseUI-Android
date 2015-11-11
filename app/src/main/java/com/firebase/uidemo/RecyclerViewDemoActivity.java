@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.client.AuthData;
@@ -40,6 +41,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     private EditText mMessageEdit;
 
     private RecyclerView mMessages;
+    private FirebaseRecyclerViewAdapter<Chat, ChatHolder> mRecycleViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +78,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         mMessages.setHasFixedSize(true);
         mMessages.setLayoutManager(manager);
 
-
-        updateChat();
-    }
-
-    protected void updateChat() {
-        FirebaseRecyclerViewAdapter<Chat, ChatHolder> adapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, R.layout.message, ChatHolder.class, mChatRef) {
+        mRecycleViewAdapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, R.layout.message, ChatHolder.class, mChatRef) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
 
@@ -98,7 +95,13 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
             }
         };
 
-        mMessages.setAdapter(adapter);
+        mMessages.setAdapter(mRecycleViewAdapter);
+
+        updateChat();
+    }
+
+    protected void updateChat() {
+        mRecycleViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -209,32 +212,24 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         }
 
         public void setSender(Boolean isSender) {
-            FrameLayout arrow;
+            FrameLayout left_arrow = (FrameLayout) mView.findViewById(R.id.left_arrow);
+            FrameLayout right_arrow = (FrameLayout) mView.findViewById(R.id.right_arrow);
+            RelativeLayout messageContainer = (RelativeLayout) mView.findViewById(R.id.message_container);
 
             if (isSender) {
-                arrow = (FrameLayout) mView.findViewById(R.id.left_arrow);
+                left_arrow.setVisibility(View.GONE);
+                right_arrow.setVisibility(View.VISIBLE);
+                messageContainer.setGravity(Gravity.RIGHT);
             } else {
-                arrow = (FrameLayout) mView.findViewById(R.id.right_arrow);
-
-                View messageBox  = mView.findViewById(R.id.message);
-                View messageArrow = mView.findViewById(R.id.left_arrow);
-
-//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams();
-//                lp.gravity= Gravity.RIGHT;
-//                mView.setLayoutParams(lp);
-
-
-
-
-
+                left_arrow.setVisibility(View.VISIBLE);
+                right_arrow.setVisibility(View.GONE);
+                messageContainer.setGravity(Gravity.LEFT);
                 //GradientDrawable messageBoxBackground= (GradientDrawable) (messageBox.getBackground());
                 //messageBoxBackground.setColor(Color.MAGENTA);
                 //GradientDrawable messageArrowBackground = (GradientDrawable) (messageArrow.getBackground());
                 //messageArrowBackground.setColor(Color.MAGENTA);
 
             }
-
-            arrow.setVisibility(View.GONE);
         }
 
         public void setName(String name) {
