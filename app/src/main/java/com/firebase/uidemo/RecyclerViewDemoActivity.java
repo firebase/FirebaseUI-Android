@@ -1,11 +1,5 @@
 package com.firebase.uidemo;
 
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.Shape;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +20,7 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
-import com.firebase.ui.FirebaseLoginBaseActivity;
+import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.FirebaseRecyclerViewAdapter;
 
 public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
@@ -75,13 +69,12 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setStackFromEnd(true);
 
-        mMessages.setHasFixedSize(true);
+        mMessages.setHasFixedSize(false);
         mMessages.setLayoutManager(manager);
 
         mRecycleViewAdapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, R.layout.message, ChatHolder.class, mChatRef) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
-
                 chatView.setName(chat.getName());
                 chatView.setText(chat.getText());
 
@@ -94,12 +87,6 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         };
 
         mMessages.setAdapter(mRecycleViewAdapter);
-
-        updateChat();
-    }
-
-    protected void updateChat() {
-        mRecycleViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -146,8 +133,8 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
                 break;
         }
 
-        updateChat();
         invalidateOptionsMenu();
+        mRecycleViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -156,7 +143,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         mAuthData = null;
         name = "";
         invalidateOptionsMenu();
-        updateChat();
+        mRecycleViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -202,7 +189,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     }
 
     public static class ChatHolder extends RecyclerView.ViewHolder {
-        View mView;
+        public View mView;
 
         public ChatHolder(View itemView) {
             super(itemView);
@@ -213,6 +200,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
             FrameLayout left_arrow = (FrameLayout) mView.findViewById(R.id.left_arrow);
             FrameLayout right_arrow = (FrameLayout) mView.findViewById(R.id.right_arrow);
             RelativeLayout messageContainer = (RelativeLayout) mView.findViewById(R.id.message_container);
+            LinearLayout message = (LinearLayout) mView.findViewById(R.id.message);
 
 
             if (isSender) {
@@ -223,7 +211,6 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
                 left_arrow.setVisibility(View.VISIBLE);
                 right_arrow.setVisibility(View.GONE);
                 messageContainer.setGravity(Gravity.LEFT);
-
             }
         }
 

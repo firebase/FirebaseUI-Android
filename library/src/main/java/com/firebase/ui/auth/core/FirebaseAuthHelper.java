@@ -1,4 +1,4 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.core;
 
 import android.util.Log;
 

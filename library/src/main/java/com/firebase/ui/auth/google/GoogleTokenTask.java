@@ -1,4 +1,4 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.google;
 
 import android.content.Context;
 import android.os.AsyncTask;

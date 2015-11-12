@@ -1,4 +1,4 @@
-package com.firebase.ui;
+package com.firebase.ui.auth.core;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -6,7 +6,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -14,13 +13,11 @@ import android.widget.EditText;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.ui.auth.FacebookAuthHelper;
-import com.firebase.ui.auth.FirebaseAuthHelper;
-import com.firebase.ui.auth.GoogleAuthHelper;
-import com.firebase.ui.auth.PasswordAuthHelper;
-import com.firebase.ui.auth.SocialProvider;
-import com.firebase.ui.auth.TokenAuthHandler;
-import com.firebase.ui.auth.TwitterAuthHelper;
+import com.firebase.ui.R;
+import com.firebase.ui.auth.facebook.FacebookAuthHelper;
+import com.firebase.ui.auth.google.GoogleAuthHelper;
+import com.firebase.ui.auth.password.PasswordAuthHelper;
+import com.firebase.ui.auth.twitter.TwitterAuthHelper;
 
 public class FirebaseLoginDialog extends DialogFragment {
 

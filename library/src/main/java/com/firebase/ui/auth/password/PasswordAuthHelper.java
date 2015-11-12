@@ -1,4 +1,4 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.password;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.content.Context;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.ui.auth.core.FirebaseAuthHelper;
+import com.firebase.ui.auth.core.TokenAuthHandler;
 
 public class PasswordAuthHelper extends FirebaseAuthHelper {
 

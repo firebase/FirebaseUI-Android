@@ -1,4 +1,4 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.facebook;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,6 +15,10 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.ui.auth.core.FirebaseAuthHelper;
+import com.firebase.ui.auth.core.FirebaseOAuthToken;
+import com.firebase.ui.auth.core.FirebaseStatuses;
+import com.firebase.ui.auth.core.TokenAuthHandler;
 
 import java.util.Arrays;
 import java.util.Collection;

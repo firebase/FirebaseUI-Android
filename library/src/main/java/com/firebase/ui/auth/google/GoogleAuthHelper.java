@@ -1,4 +1,4 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.google;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.firebase.client.Firebase;
+import com.firebase.ui.auth.core.FirebaseAuthHelper;
+import com.firebase.ui.auth.core.FirebaseOAuthToken;
+import com.firebase.ui.auth.core.TokenAuthHandler;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;

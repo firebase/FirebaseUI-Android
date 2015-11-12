@@ -22,7 +22,7 @@
         </activity>
 
         <!-- Twitter Configuration -->
-        <activity android:name="com.firebase.ui.auth.TwitterPromptActivity" />
+        <activity android:name="com.firebase.ui.auth.twitter.TwitterPromptActivity" />
         <meta-data
             android:name="com.firebase.ui.TwitterKey"
             android:value="@string/twitter_app_key"/>

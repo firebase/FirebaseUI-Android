@@ -1,4 +1,4 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.twitter;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,11 +7,10 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.firebase.client.Firebase;
+import com.firebase.ui.auth.core.FirebaseStatuses;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
