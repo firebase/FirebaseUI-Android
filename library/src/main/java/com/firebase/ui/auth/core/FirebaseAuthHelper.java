@@ -29,13 +29,12 @@ public abstract class FirebaseAuthHelper {
         Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
-                Log.d("Helper", "GO GO GO");
                 handler.onSuccess(authData);
             }
 
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
-                handler.onProviderError(new FirebaseError(0, "Make sure " + getProviderName() + " login is enabled and configured in your Firebase."));
+                handler.onProviderError(new FirebaseLoginError(FirebaseErrors.PROVIDER_NOT_ENABLED, "Make sure " + getProviderName() + " login is enabled and configured in your Firebase."));
             }
         };
 

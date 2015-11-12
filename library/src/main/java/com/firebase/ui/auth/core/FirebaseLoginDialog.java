@@ -97,12 +97,12 @@ public class FirebaseLoginDialog extends DialogFragment {
             }
 
             @Override
-            public void onUserError(FirebaseError err) {
+            public void onUserError(FirebaseLoginError err) {
                 handler.onUserError(err);
             }
 
             @Override
-            public void onProviderError(FirebaseError err) {
+            public void onProviderError(FirebaseLoginError err) {
                 handler.onProviderError(err);
             }
         };

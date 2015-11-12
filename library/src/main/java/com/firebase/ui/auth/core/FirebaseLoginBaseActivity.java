@@ -33,9 +33,9 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
     protected abstract void onFirebaseLogout();
 
-    protected abstract void onFirebaseLoginProviderError(FirebaseError firebaseError);
+    protected abstract void onFirebaseLoginProviderError(FirebaseLoginError firebaseError);
 
-    protected abstract void onFirebaseLoginUserError(FirebaseError firebaseError);
+    protected abstract void onFirebaseLoginUserError(FirebaseLoginError firebaseError);
 
     /**
      * Subclasses of this activity must implement this method and return a valid Firebase reference that
@@ -104,12 +104,12 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onUserError(FirebaseError err) {
+            public void onUserError(FirebaseLoginError err) {
                 onFirebaseLoginUserError(err);
             }
 
             @Override
-            public void onProviderError(FirebaseError err) {
+            public void onProviderError(FirebaseLoginError err) {
                 onFirebaseLoginProviderError(err);
             }
         };

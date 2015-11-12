@@ -22,6 +22,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.FirebaseRecyclerViewAdapter;
+import com.firebase.ui.auth.core.FirebaseLoginError;
 
 public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
@@ -147,12 +148,12 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     }
 
     @Override
-    public void onFirebaseLoginProviderError(FirebaseError firebaseError) {
+    public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {
         Log.i(TAG, "Login provider error: " + firebaseError.toString());
     }
 
     @Override
-    public void onFirebaseLoginUserError(FirebaseError firebaseError) {
+    public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {
         Log.i(TAG, "Login user error: " + firebaseError.toString());
     }
 

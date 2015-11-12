@@ -7,6 +7,8 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.ui.auth.core.FirebaseAuthHelper;
+import com.firebase.ui.auth.core.FirebaseErrors;
+import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
 public class PasswordAuthHelper extends FirebaseAuthHelper {
@@ -33,7 +35,7 @@ public class PasswordAuthHelper extends FirebaseAuthHelper {
             }
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
-                mHandler.onUserError(firebaseError);
+                mHandler.onUserError(new FirebaseLoginError(FirebaseErrors.MISC_PROVIDER_ERROR, firebaseError.toString()));
             }
         });
     }

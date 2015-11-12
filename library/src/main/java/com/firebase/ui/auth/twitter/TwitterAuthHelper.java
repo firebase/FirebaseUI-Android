@@ -5,10 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 import com.firebase.ui.auth.core.FirebaseAuthHelper;
+import com.firebase.ui.auth.core.FirebaseErrors;
+import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
-import com.firebase.ui.auth.core.FirebaseStatuses;
+import com.firebase.ui.auth.core.FirebaseActions;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
 public class TwitterAuthHelper extends FirebaseAuthHelper {
@@ -27,7 +28,7 @@ public class TwitterAuthHelper extends FirebaseAuthHelper {
     }
 
     public void login() {
-        mActivity.startActivityForResult(new Intent(mActivity, TwitterPromptActivity.class), FirebaseStatuses.LOGIN);
+        mActivity.startActivityForResult(new Intent(mActivity, TwitterPromptActivity.class), FirebaseActions.LOGIN);
     }
 
     public void logout() {
@@ -38,17 +39,17 @@ public class TwitterAuthHelper extends FirebaseAuthHelper {
     public Firebase getFirebaseRef() { return mRef; }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == FirebaseStatuses.SUCCESS) {
+        if (resultCode == FirebaseActions.SUCCESS) {
             FirebaseOAuthToken token = new FirebaseOAuthToken(
                     PROVIDER_NAME,
                     data.getStringExtra("oauth_token"),
                     data.getStringExtra("oauth_token_secret"),
                     data.getStringExtra("user_id"));
             onFirebaseTokenReceived(token, mHandler);
-        } else if (resultCode == FirebaseStatuses.USER_ERROR) {
-            mHandler.onUserError(new FirebaseError(0, data.getStringExtra("error")));
-        } else if (resultCode == FirebaseStatuses.PROVIDER_ERROR) {
-            mHandler.onProviderError(new FirebaseError(0, data.getStringExtra("error")));
+        } else if (resultCode == FirebaseActions.USER_ERROR) {
+            mHandler.onUserError(new FirebaseLoginError(data.getIntExtra("code", 0), data.getStringExtra("error")));
+        } else if (resultCode == FirebaseActions.PROVIDER_ERROR) {
+            mHandler.onProviderError(new FirebaseLoginError(data.getIntExtra("code", 0), data.getStringExtra("error")));
         }
     }
 }

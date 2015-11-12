@@ -10,7 +10,8 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.firebase.ui.auth.core.FirebaseStatuses;
+import com.firebase.ui.auth.core.FirebaseActions;
+import com.firebase.ui.auth.core.FirebaseErrors;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -26,7 +27,7 @@ public class TwitterPromptActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        sendResultError(FirebaseStatuses.USER_ERROR, "User closed login prompt.");
+        sendResultError(FirebaseActions.USER_ERROR, FirebaseErrors.LOGIN_CANCELLED, "User closed login prompt.");
         super.onBackPressed();
     }
 
@@ -46,12 +47,12 @@ public class TwitterPromptActivity extends Activity {
         } catch (NullPointerException e) {}
 
         if (twitterKey == null || twitterSecret == null) {
-            sendResultError(FirebaseStatuses.PROVIDER_ERROR, "Invalid Twitter key/secret, are they set in your AndroidManifest.xml?");
+            sendResultError(FirebaseActions.PROVIDER_ERROR, FirebaseErrors.MISSING_PROVIDER_APP_KEY, "Missing Twitter key/secret, are they set in your AndroidManifest.xml?");
             return;
         }
 
         if (twitterKey.compareTo("") == 0|| twitterSecret.compareTo("") == 0) {
-            sendResultError(FirebaseStatuses.PROVIDER_ERROR, "Invalid Twitter key/secret, are they set in your res/values/strings.xml?");
+            sendResultError(FirebaseActions.PROVIDER_ERROR, FirebaseErrors.INVALID_PROVIDER_APP_KEY, "Invalid Twitter key/secret, are they set in your res/values/strings.xml?");
             return;
         }
 
@@ -75,7 +76,7 @@ public class TwitterPromptActivity extends Activity {
                 try {
                     token = mTwitter.getOAuthRequestToken("oauth://cb");
                 } catch (TwitterException te) {
-                    sendResultError(FirebaseStatuses.PROVIDER_ERROR, te.toString());
+                    sendResultError(FirebaseActions.PROVIDER_ERROR, FirebaseErrors.MISC_PROVIDER_ERROR, te.toString());
                 }
                 return token;
             }
@@ -90,7 +91,7 @@ public class TwitterPromptActivity extends Activity {
                             if (url.contains("oauth_verifier")) {
                                 getTwitterOAuthTokenAndLogin(token, Uri.parse(url).getQueryParameter("oauth_verifier"));
                             } else if (url.contains("denied")) {
-                                sendResultError(FirebaseStatuses.USER_ERROR, "User denied access to their account.");
+                                sendResultError(FirebaseActions.USER_ERROR, FirebaseErrors.LOGIN_CANCELLED, "User denied access to their account.");
                             }
                         }
                     }
@@ -108,7 +109,7 @@ public class TwitterPromptActivity extends Activity {
                 try {
                     accessToken = mTwitter.getOAuthAccessToken(requestToken, oauthVerifier);
                 } catch (TwitterException te) {
-                    sendResultError(FirebaseStatuses.PROVIDER_ERROR, te.toString());
+                    sendResultError(FirebaseActions.PROVIDER_ERROR, FirebaseErrors.MISC_PROVIDER_ERROR, te.toString());
                 }
                 return accessToken;
             }
@@ -120,15 +121,16 @@ public class TwitterPromptActivity extends Activity {
                 resultIntent.putExtra("oauth_token_secret", token.getTokenSecret());
                 resultIntent.putExtra("user_id", token.getUserId() + "");
 
-                setResult(FirebaseStatuses.SUCCESS, resultIntent);
+                setResult(FirebaseActions.SUCCESS, resultIntent);
                 finish();
             }
         }.execute();
     }
 
-    private void sendResultError(Integer status, String err) {
+    private void sendResultError(Integer status, int errCode, String err) {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("error", err);
+        resultIntent.putExtra("code", errCode);
         setResult(status, resultIntent);
         finish();
     }
