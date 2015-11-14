@@ -86,6 +86,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         } else {
             mFacebookAuthHelper.mCallbackManager.onActivityResult(requestCode, resultCode, data);
             mTwitterAuthHelper.onActivityResult(requestCode, resultCode, data);
+            mGoogleAuthHelper.onActivityResult(requestCode, resultCode, data);
         }
     }
 

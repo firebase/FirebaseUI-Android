@@ -49,6 +49,10 @@ public class FirebaseLoginDialog extends DialogFragment {
         if (mTwitterAuthHelper != null) {
             mTwitterAuthHelper.onActivityResult(requestCode, resultCode, data);
         }
+
+        if (mGoogleAuthHelper != null) {
+            mGoogleAuthHelper.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     View mView;

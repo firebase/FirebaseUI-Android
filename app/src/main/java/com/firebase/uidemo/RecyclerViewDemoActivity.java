@@ -68,7 +68,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         mMessages = (RecyclerView) findViewById(R.id.messagesList);
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
-        manager.setStackFromEnd(true);
+        manager.setReverseLayout(false);
 
         mMessages.setHasFixedSize(false);
         mMessages.setLayoutManager(manager);
