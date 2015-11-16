@@ -120,16 +120,16 @@ Before we can start writing code that interacts with our Firebase database, we'l
 
     ![INTERNET permission in AndroidManifest.xml](images/3_3.png)
 
-8. Now we can get to the Java code. The first step there is to set up initial connection between our code and its Firebase backend.
+8. Import Firebase at the top of your MainActivity by adding the following line:
+
+        import com.firebase.client.Firebase;
+
+9. Now we can get to the Java code. The first step there is to set up initial connection between our code and its Firebase backend.
 open `MainActivity.java` and add this code to the end of the `onCreate` method:
 
         Firebase.setAndroidContext(this);
 
   This code allows the Firebase client to keep its context.
-9. Import Firebase at the top of your MainActivity by adding the following line:
-
-        import com.firebase.client.Firebase;
-
 10. If Android Studio is having trouble finding the Firebase class, be sure that you've added dependencies and have synchronized the build file with the project.
 11. We also want to create a connection to our database. We'll keep this connection in a member field:
 
