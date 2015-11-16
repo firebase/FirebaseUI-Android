@@ -459,7 +459,7 @@ As a final step, we're going to allow the users of our app to log in using email
 
 7. Finally, replace the hard-coded username with the field we just populated:
 
-        mFirebaseRef.push().setValue(new ChatMessage(MainActivity.this.mUsername, message));
+        mFirebaseRef.push().setValue(new ChatMessage(MainActivity.this.mUsername, text));
 
   ![messages with one from puf@firebaseui.com](images/6_9.png)
 
