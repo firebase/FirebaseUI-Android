@@ -3,14 +3,14 @@ package com.firebase.ui.auth.google;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 
-import com.firebase.ui.R;
-import com.firebase.ui.auth.core.FirebaseActions;
+import com.firebase.ui.auth.core.FirebaseResponse;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -25,7 +25,16 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
 public class GoogleSignInActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks {
+
+    public void onConnectionSuspended(int x) {
+
+    }
+
+    public void onConnected(Bundle x) {
+        signIn();
+    }
 
     private static final String TAG = "GoogleSignInActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -36,13 +45,42 @@ public class GoogleSignInActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        String googleClientId = "";
+
+        try {
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            googleClientId = bundle.getString("com.firebase.ui.GoogleClientId");
+        } catch (PackageManager.NameNotFoundException e) {
+        } catch (NullPointerException e) {}
+
+        if (googleClientId == null) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("code", FirebaseResponse.MISSING_PROVIDER_APP_KEY);
+            resultIntent.putExtra("error", "Missing Twitter key/secret, are they set in your AndroidManifest.xml?");
+            setResult(GoogleActions.PROVIDER_ERROR, resultIntent);
+            finish();
+            return;
+        }
+
+        if (googleClientId.compareTo("") == 0) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("code", FirebaseResponse.INVALID_PROVIDER_APP_KEY);
+            resultIntent.putExtra("error", "Invalid Google key, are they set in your res/values/strings.xml?");
+            setResult(GoogleActions.PROVIDER_ERROR, resultIntent);
+            finish();
+            return;
+        }
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("945226082630-pcab6ppnihnll7663tc8vp8aclc2flbj.apps.googleusercontent.com")
+                .requestIdToken(googleClientId)
+                .requestEmail()
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addConnectionCallbacks(this)
                 .build();
     }
 
@@ -50,18 +88,19 @@ public class GoogleSignInActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
 
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        if (opr.isDone()) {
-            GoogleSignInResult result = opr.get();
-            handleSignInResult(result);
-        } else {
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(GoogleSignInResult googleSignInResult) {
-                    handleSignInResult(googleSignInResult);
-                }
-            });
-        }
+//        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+//        if (opr.isDone()) {
+//            GoogleSignInResult result = opr.get();
+//            handleSignInResult(result);
+//        } else {
+//            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+//                @Override
+//                public void onResult(GoogleSignInResult googleSignInResult) {
+//                    handleSignInResult(googleSignInResult);
+//                }
+//            });
+//        }
+        //signOut();
     }
 
     @Override
@@ -85,7 +124,6 @@ public class GoogleSignInActivity extends AppCompatActivity implements
             googleOauthTask.execute(acct.getEmail());
         } else {
             // Signed out, show unauthenticated UI
-
         }
     }
 
@@ -116,7 +154,11 @@ public class GoogleSignInActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("code", FirebaseResponse.MISC_PROVIDER_ERROR);
+        resultIntent.putExtra("error", "onConnectionFailed:" + connectionResult);
+        setResult(GoogleActions.PROVIDER_ERROR, resultIntent);
+        finish();
     }
 }
 
@@ -127,7 +169,6 @@ class GoogleOAuthTask extends AsyncTask<String, Integer, String> {
 
         try {
             token = GoogleAuthUtil.getToken(context, emails[0], "oauth2:profile email");
-            Log.d("Background", token);
         } catch (UserRecoverableAuthException e) {
 
         } catch (GoogleAuthException e) {
@@ -147,7 +188,7 @@ class GoogleOAuthTask extends AsyncTask<String, Integer, String> {
         Activity activity = ((Activity)context);
         Intent resultIntent = new Intent();
         resultIntent.putExtra("oauth_token", token);
-        activity.setResult(120321, resultIntent);
+        activity.setResult(GoogleActions.SUCCESS, resultIntent);
         activity.finish();
     }
 }

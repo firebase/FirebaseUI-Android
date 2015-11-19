@@ -6,10 +6,8 @@ import android.content.Intent;
 
 import com.firebase.client.Firebase;
 import com.firebase.ui.auth.core.FirebaseAuthHelper;
-import com.firebase.ui.auth.core.FirebaseErrors;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
-import com.firebase.ui.auth.core.FirebaseActions;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
 public class TwitterAuthHelper extends FirebaseAuthHelper {
@@ -28,7 +26,7 @@ public class TwitterAuthHelper extends FirebaseAuthHelper {
     }
 
     public void login() {
-        mActivity.startActivityForResult(new Intent(mActivity, TwitterPromptActivity.class), FirebaseActions.LOGIN);
+        mActivity.startActivityForResult(new Intent(mActivity, TwitterPromptActivity.class), TwitterActions.REQUEST);
     }
 
     public void logout() {
@@ -39,16 +37,16 @@ public class TwitterAuthHelper extends FirebaseAuthHelper {
     public Firebase getFirebaseRef() { return mRef; }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == FirebaseActions.SUCCESS) {
+        if (resultCode == TwitterActions.SUCCESS) {
             FirebaseOAuthToken token = new FirebaseOAuthToken(
                     PROVIDER_NAME,
                     data.getStringExtra("oauth_token"),
                     data.getStringExtra("oauth_token_secret"),
                     data.getStringExtra("user_id"));
             onFirebaseTokenReceived(token, mHandler);
-        } else if (resultCode == FirebaseActions.USER_ERROR) {
+        } else if (resultCode == TwitterActions.USER_ERROR) {
             mHandler.onUserError(new FirebaseLoginError(data.getIntExtra("code", 0), data.getStringExtra("error")));
-        } else if (resultCode == FirebaseActions.PROVIDER_ERROR) {
+        } else if (resultCode == TwitterActions.PROVIDER_ERROR) {
             mHandler.onProviderError(new FirebaseLoginError(data.getIntExtra("code", 0), data.getStringExtra("error")));
         }
     }

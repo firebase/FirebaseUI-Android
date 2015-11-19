@@ -118,13 +118,13 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mAuthStateListener = new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
-                if (authData != null) {
-                    mChosenProvider = SocialProvider.valueOf(authData.getProvider());
-                    onFirebaseLoginSuccess(authData);
-                    Log.d(TAG, "Auth data changed");
-                } else {
-                    onFirebaseLogout();
-                }
+            if (authData != null) {
+                mChosenProvider = SocialProvider.valueOf(authData.getProvider());
+                onFirebaseLoginSuccess(authData);
+                Log.d(TAG, "Auth data changed");
+            } else {
+                onFirebaseLogout();
+            }
             }
         };
 

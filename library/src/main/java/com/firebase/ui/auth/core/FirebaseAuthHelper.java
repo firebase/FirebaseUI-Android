@@ -26,6 +26,7 @@ public abstract class FirebaseAuthHelper {
     }
 
     private void authenticateRefWithOAuthFirebasetoken(FirebaseOAuthToken token, final TokenAuthHandler handler) {
+        Log.d("Got a token", token.token);
         Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
@@ -34,7 +35,7 @@ public abstract class FirebaseAuthHelper {
 
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
-                handler.onProviderError(new FirebaseLoginError(FirebaseErrors.PROVIDER_NOT_ENABLED, "Make sure " + getProviderName() + " login is enabled and configured in your Firebase."));
+                handler.onProviderError(new FirebaseLoginError(FirebaseResponse.PROVIDER_NOT_ENABLED, "Make sure " + getProviderName() + " login is enabled and configured in your Firebase."));
             }
         };
 

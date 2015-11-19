@@ -15,7 +15,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.client.Firebase;
 import com.firebase.ui.auth.core.FirebaseAuthHelper;
-import com.firebase.ui.auth.core.FirebaseErrors;
+import com.firebase.ui.auth.core.FirebaseResponse;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
 import com.firebase.ui.auth.core.TokenAuthHandler;
@@ -60,12 +60,12 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
 
                 @Override
                 public void onCancel() {
-                    mHandler.onUserError(new FirebaseLoginError(FirebaseErrors.LOGIN_CANCELLED, "User closed login dialog"));
+                    mHandler.onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog"));
                 }
 
                 @Override
                 public void onError(FacebookException ex) {
-                    mHandler.onProviderError(new FirebaseLoginError(FirebaseErrors.MISC_PROVIDER_ERROR, ex.toString()));
+                    mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, ex.toString()));
                 }
             }
         );
@@ -80,12 +80,12 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
         } catch (NullPointerException e) {}
 
         if (facebookAppId == null) {
-            mHandler.onProviderError(new FirebaseLoginError(FirebaseErrors.MISSING_PROVIDER_APP_ID, "Missing Facebook Application ID, is it set in your AndroidManifest.xml?"));
+            mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.MISSING_PROVIDER_APP_ID, "Missing Facebook Application ID, is it set in your AndroidManifest.xml?"));
             return;
         }
 
         if (facebookAppId.compareTo("") == 0) {
-            mHandler.onProviderError(new FirebaseLoginError(FirebaseErrors.INVALID_PROVIDER_APP_ID, "Invalid Facebook Application ID, is it set in your res/values/strings.xml?"));
+            mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.INVALID_PROVIDER_APP_ID, "Invalid Facebook Application ID, is it set in your res/values/strings.xml?"));
             return;
         }
 

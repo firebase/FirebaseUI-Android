@@ -41,7 +41,9 @@
             android:value="@string/facebook_app_id" />
 
         <activity android:name="com.firebase.ui.auth.google.GoogleSignInActivity" />
-
+        <meta-data
+            android:name="com.firebase.ui.GoogleClientId"
+            android:value="@string/google_client_id"></meta-data>
 
     </application>
 

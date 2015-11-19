@@ -108,7 +108,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login with Google+"
+                android:text="Login with Google"
                 android:id="@+id/google_button"
                 android:background="@drawable/google_button"
                 android:textColor="#ffffff"

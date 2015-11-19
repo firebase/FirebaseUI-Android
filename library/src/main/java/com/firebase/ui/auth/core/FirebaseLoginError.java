@@ -9,4 +9,8 @@ public class FirebaseLoginError {
         this.error = error;
     }
 
+    public String toString() {
+        return Integer.toString(error) + ": " + message;
+    }
+
 }

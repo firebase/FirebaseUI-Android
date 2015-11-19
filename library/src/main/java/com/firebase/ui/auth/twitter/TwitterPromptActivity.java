@@ -10,8 +10,7 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.firebase.ui.auth.core.FirebaseActions;
-import com.firebase.ui.auth.core.FirebaseErrors;
+import com.firebase.ui.auth.core.FirebaseResponse;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -27,7 +26,7 @@ public class TwitterPromptActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        sendResultError(FirebaseActions.USER_ERROR, FirebaseErrors.LOGIN_CANCELLED, "User closed login prompt.");
+        sendResultError(TwitterActions.USER_ERROR, FirebaseResponse.LOGIN_CANCELLED, "User closed login prompt.");
         super.onBackPressed();
     }
 
@@ -47,12 +46,12 @@ public class TwitterPromptActivity extends Activity {
         } catch (NullPointerException e) {}
 
         if (twitterKey == null || twitterSecret == null) {
-            sendResultError(FirebaseActions.PROVIDER_ERROR, FirebaseErrors.MISSING_PROVIDER_APP_KEY, "Missing Twitter key/secret, are they set in your AndroidManifest.xml?");
+            sendResultError(TwitterActions.PROVIDER_ERROR, FirebaseResponse.MISSING_PROVIDER_APP_KEY, "Missing Twitter key/secret, are they set in your AndroidManifest.xml?");
             return;
         }
 
         if (twitterKey.compareTo("") == 0|| twitterSecret.compareTo("") == 0) {
-            sendResultError(FirebaseActions.PROVIDER_ERROR, FirebaseErrors.INVALID_PROVIDER_APP_KEY, "Invalid Twitter key/secret, are they set in your res/values/strings.xml?");
+            sendResultError(TwitterActions.PROVIDER_ERROR, FirebaseResponse.INVALID_PROVIDER_APP_KEY, "Invalid Twitter key/secret, are they set in your res/values/strings.xml?");
             return;
         }
 
@@ -76,7 +75,7 @@ public class TwitterPromptActivity extends Activity {
                 try {
                     token = mTwitter.getOAuthRequestToken("oauth://cb");
                 } catch (TwitterException te) {
-                    sendResultError(FirebaseActions.PROVIDER_ERROR, FirebaseErrors.MISC_PROVIDER_ERROR, te.toString());
+                    sendResultError(TwitterActions.PROVIDER_ERROR, FirebaseResponse.MISC_PROVIDER_ERROR, te.toString());
                 }
                 return token;
             }
@@ -91,7 +90,7 @@ public class TwitterPromptActivity extends Activity {
                             if (url.contains("oauth_verifier")) {
                                 getTwitterOAuthTokenAndLogin(token, Uri.parse(url).getQueryParameter("oauth_verifier"));
                             } else if (url.contains("denied")) {
-                                sendResultError(FirebaseActions.USER_ERROR, FirebaseErrors.LOGIN_CANCELLED, "User denied access to their account.");
+                                sendResultError(TwitterActions.USER_ERROR, FirebaseResponse.LOGIN_CANCELLED, "User denied access to their account.");
                             }
                         }
                     }
@@ -109,7 +108,7 @@ public class TwitterPromptActivity extends Activity {
                 try {
                     accessToken = mTwitter.getOAuthAccessToken(requestToken, oauthVerifier);
                 } catch (TwitterException te) {
-                    sendResultError(FirebaseActions.PROVIDER_ERROR, FirebaseErrors.MISC_PROVIDER_ERROR, te.toString());
+                    sendResultError(TwitterActions.PROVIDER_ERROR, FirebaseResponse.MISC_PROVIDER_ERROR, te.toString());
                 }
                 return accessToken;
             }
@@ -121,7 +120,7 @@ public class TwitterPromptActivity extends Activity {
                 resultIntent.putExtra("oauth_token_secret", token.getTokenSecret());
                 resultIntent.putExtra("user_id", token.getUserId() + "");
 
-                setResult(FirebaseActions.SUCCESS, resultIntent);
+                setResult(TwitterActions.SUCCESS, resultIntent);
                 finish();
             }
         }.execute();
