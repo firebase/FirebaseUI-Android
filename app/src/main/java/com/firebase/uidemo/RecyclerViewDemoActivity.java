@@ -154,6 +154,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     @Override
     public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {
+        resetFirebaseLoginDialog();
         Log.i(TAG, "Login user error: " + firebaseError.toString());
     }
 

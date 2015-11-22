@@ -40,6 +40,7 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
+        <!-- Google Configuration -->
         <activity android:name="com.firebase.ui.auth.google.GoogleSignInActivity" />
         <meta-data
             android:name="com.firebase.ui.GoogleClientId"

@@ -16,17 +16,9 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
     private final String TAG = "FirebaseLoginBaseAct";
 
-    private GoogleAuthHelper mGoogleAuthHelper;
-    private FacebookAuthHelper mFacebookAuthHelper;
-    private TwitterAuthHelper mTwitterAuthHelper;
-    private PasswordAuthHelper mPasswordAuthHelper;
     private Firebase.AuthStateListener mAuthStateListener;
-
-    TokenAuthHandler mHandler;
-
     private FirebaseLoginDialog mDialog;
-
-    public SocialProvider mChosenProvider;
+    private TokenAuthHandler mHandler;
 
     /* Abstract methods for Login Events */
     protected abstract void onFirebaseLoginSuccess(AuthData authData);
@@ -45,53 +37,24 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      */
     protected abstract Firebase getFirebaseRef();
 
-    /* Login/Logout */
-
-    public void loginWithProvider(SocialProvider provider) {
-        // TODO: what should happen if you're already authenticated?
-        switch (provider) {
-            case google:
-                mGoogleAuthHelper.login();
-                break;
-            case facebook:
-                mFacebookAuthHelper.login();
-                break;
-            case twitter:
-                mTwitterAuthHelper.login();
-                break;
-        }
-
-        mChosenProvider = provider;
-    }
-
     public void logout() {
-        switch (mChosenProvider) {
-            case google:
-                mGoogleAuthHelper.logout();
-                break;
-            case facebook:
-                mFacebookAuthHelper.logout();
-                break;
-            case twitter:
-                mFacebookAuthHelper.logout();
-                break;
-        }
-        getFirebaseRef().unauth();
+        mDialog.logout();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO: If someone isn't extending this activity, they need to implement this by hand
-        if (mDialog.isActive) {
-            mDialog.onActivityResult(requestCode, resultCode, data);
-        } else {
-            mFacebookAuthHelper.mCallbackManager.onActivityResult(requestCode, resultCode, data);
-            mTwitterAuthHelper.onActivityResult(requestCode, resultCode, data);
-            mGoogleAuthHelper.onActivityResult(requestCode, resultCode, data);
-        }
+        mDialog.onActivityResult(requestCode, resultCode, data);
     }
 
     public void showFirebaseLoginPrompt() {
         mDialog.show(getFragmentManager(), "");
+    }
+
+    public void dismissFirebaseLoginPrompt() {
+        mDialog.dismiss();
+    }
+
+    public void resetFirebaseLoginDialog() {
+        mDialog.reset();
     }
 
     @Override
@@ -101,7 +64,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mHandler = new TokenAuthHandler() {
             @Override
             public void onSuccess(AuthData data) {
-
+               /* onFirebaseLoginSuccess is called by the AuthStateListener below */
             }
 
             @Override
@@ -118,20 +81,13 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mAuthStateListener = new Firebase.AuthStateListener() {
             @Override
             public void onAuthStateChanged(AuthData authData) {
-            if (authData != null) {
-                mChosenProvider = SocialProvider.valueOf(authData.getProvider());
-                onFirebaseLoginSuccess(authData);
-                Log.d(TAG, "Auth data changed");
-            } else {
-                onFirebaseLogout();
-            }
+                if (authData != null) {
+                    onFirebaseLoginSuccess(authData);
+                } else {
+                    onFirebaseLogout();
+                }
             }
         };
-
-        mFacebookAuthHelper = new FacebookAuthHelper(this, getFirebaseRef(), mHandler);
-        mGoogleAuthHelper = new GoogleAuthHelper(this, getFirebaseRef(), mHandler);
-        mTwitterAuthHelper = new TwitterAuthHelper(this, getFirebaseRef(), mHandler);
-        mPasswordAuthHelper = new PasswordAuthHelper(this, getFirebaseRef(), mHandler);
 
         mDialog = new FirebaseLoginDialog();
         mDialog

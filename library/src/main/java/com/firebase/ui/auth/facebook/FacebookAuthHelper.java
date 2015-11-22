@@ -2,6 +2,7 @@ package com.firebase.ui.auth.facebook;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -25,12 +26,10 @@ import java.util.Collection;
 
 public class FacebookAuthHelper extends FirebaseAuthHelper {
 
-    private final String LOG_TAG = "FacebookAuthHelper";
-
     public static final String PROVIDER_NAME = "facebook";
-
-    private LoginManager mLoginManager;
+    private final String TAG = "FacebookAuthHelper";
     public CallbackManager mCallbackManager;
+    private LoginManager mLoginManager;
     private TokenAuthHandler mHandler;
     private Activity mActivity;
     private Firebase mRef;
@@ -60,7 +59,7 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
 
                 @Override
                 public void onCancel() {
-                    mHandler.onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog"));
+                    mHandler.onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
                 }
 
                 @Override
@@ -97,6 +96,10 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
             Collection<String> permissions = Arrays.asList("public_profile");
             mLoginManager.logInWithReadPermissions(mActivity, permissions);
         }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     public String getProviderName() {

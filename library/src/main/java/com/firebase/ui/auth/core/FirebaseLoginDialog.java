@@ -25,20 +25,24 @@ public class FirebaseLoginDialog extends DialogFragment {
     TwitterAuthHelper mTwitterAuthHelper;
     GoogleAuthHelper mGoogleAuthHelper;
     PasswordAuthHelper mPasswordAuthHelper;
-
     TokenAuthHandler mHandler;
     Firebase mRef;
     Context mContext;
-    public Boolean isActive = false;
+    View mView;
 
     public void onStart() {
         super.onStart();
-        isActive = true;
+        if (mGoogleAuthHelper != null) mGoogleAuthHelper.onStart();
+    }
+
+    public void onStop() {
+        super.onStop();
+        if (mGoogleAuthHelper != null) mGoogleAuthHelper.onStop();
     }
 
     public void onDestroy() {
         super.onDestroy();
-        isActive = false;
+        if (mGoogleAuthHelper != null) mGoogleAuthHelper.onStop();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -55,7 +59,6 @@ public class FirebaseLoginDialog extends DialogFragment {
         }
     }
 
-    View mView;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -90,6 +93,24 @@ public class FirebaseLoginDialog extends DialogFragment {
         return this;
     }
 
+    public FirebaseLoginDialog setContext(Context context) {
+        mContext = context;
+        return this;
+    }
+
+    public void reset() {
+        mView.findViewById(R.id.login_section).setVisibility(View.VISIBLE);
+        mView.findViewById(R.id.loading_section).setVisibility(View.GONE);
+    }
+
+    public void logout() {
+        if (mFacebookAuthHelper != null) mFacebookAuthHelper.logout();
+        if (mGoogleAuthHelper != null) mGoogleAuthHelper.logout();
+        if (mTwitterAuthHelper != null) mTwitterAuthHelper.logout();
+        if (mPasswordAuthHelper != null) mPasswordAuthHelper.logout();
+        mRef.unauth();
+    }
+
     public FirebaseLoginDialog setHandler(final TokenAuthHandler handler) {
         //TODO: Make this idiomatic?
         final DialogFragment self = this;
@@ -113,24 +134,23 @@ public class FirebaseLoginDialog extends DialogFragment {
         return this;
     }
 
-    public FirebaseLoginDialog setContext(Context context) {
-        mContext = context;
-        return this;
-    }
-
     public FirebaseLoginDialog setProviderEnabled(SocialProvider provider) {
         switch (provider) {
             case facebook:
-                mFacebookAuthHelper = new FacebookAuthHelper(mContext, mRef, mHandler);
+                if (mFacebookAuthHelper == null)
+                    mFacebookAuthHelper = new FacebookAuthHelper(mContext, mRef, mHandler);
                 break;
             case google:
-                mGoogleAuthHelper = new GoogleAuthHelper(mContext, mRef, mHandler);
+                if (mGoogleAuthHelper == null)
+                    mGoogleAuthHelper = new GoogleAuthHelper(mContext, mRef, mHandler);
                 break;
             case twitter:
-                mTwitterAuthHelper = new TwitterAuthHelper(mContext, mRef, mHandler);
+                if (mTwitterAuthHelper == null)
+                    mTwitterAuthHelper = new TwitterAuthHelper(mContext, mRef, mHandler);
                 break;
             case password:
-                mPasswordAuthHelper = new PasswordAuthHelper(mContext, mRef, mHandler);
+                if (mPasswordAuthHelper == null)
+                    mPasswordAuthHelper = new PasswordAuthHelper(mContext, mRef, mHandler);
                 break;
         }
 
@@ -141,17 +161,18 @@ public class FirebaseLoginDialog extends DialogFragment {
         mView.findViewById(id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            if (helper.getProviderName().equals("password")) {
-                EditText emailText = (EditText) mView.findViewById(R.id.email);
-                EditText passwordText = (EditText) mView.findViewById(R.id.password);
-                helper.login(emailText.getText().toString(), passwordText.getText().toString());
-            } else {
-                helper.login();
-            }
-            mView.findViewById(R.id.login_section).setVisibility(View.GONE);
-            mView.findViewById(R.id.loading_section).setVisibility(View.VISIBLE);
+                if (helper.getProviderName().equals("password")) {
+                    EditText emailText = (EditText) mView.findViewById(R.id.email);
+                    EditText passwordText = (EditText) mView.findViewById(R.id.password);
+                    helper.login(emailText.getText().toString(), passwordText.getText().toString());
+
+                    passwordText.setText("");
+                } else {
+                    helper.login();
+                }
+                mView.findViewById(R.id.login_section).setVisibility(View.GONE);
+                mView.findViewById(R.id.loading_section).setVisibility(View.VISIBLE);
             }
         });
-
     }
 }
