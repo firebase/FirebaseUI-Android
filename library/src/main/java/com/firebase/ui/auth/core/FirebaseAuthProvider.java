@@ -9,16 +9,17 @@ import com.firebase.client.FirebaseError;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class FirebaseAuthHelper {
+public abstract class FirebaseAuthProvider {
     public abstract void logout();
     public abstract String getProviderName();
     public abstract Firebase getFirebaseRef();
+    public abstract SocialProvider getProviderType();
 
     public void login() {
-        Log.d("FirebaseAuthHelper", "Login() is not supported for provider type " + getProviderName());
+        Log.d("FirebaseAuthProvider", "Login() is not supported for provider type " + getProviderName());
     };
     public void login(String email, String password) {
-        Log.d("FirebaseAuthHelper", "Login(String email, String password) is not supported for provider type " + getProviderName());
+        Log.d("FirebaseAuthProvider", "Login(String email, String password) is not supported for provider type " + getProviderName());
     };
 
     public void onFirebaseTokenReceived(FirebaseOAuthToken token, TokenAuthHandler handler) {
@@ -26,7 +27,6 @@ public abstract class FirebaseAuthHelper {
     }
 
     private void authenticateRefWithOAuthFirebasetoken(FirebaseOAuthToken token, final TokenAuthHandler handler) {
-        Log.d("Got a token", token.token);
         Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {

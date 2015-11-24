@@ -25,6 +25,7 @@ public class FirebaseLoginDialog extends DialogFragment {
     GoogleAuthProvider mGoogleAuthProvider;
     PasswordAuthProvider mPasswordAuthProvider;
     TokenAuthHandler mHandler;
+    SocialProvider mActiveProvider;
     Firebase mRef;
     Context mContext;
     View mView;
@@ -33,6 +34,12 @@ public class FirebaseLoginDialog extends DialogFragment {
         super.onStart();
         if (mGoogleAuthProvider != null) mGoogleAuthProvider.onStart();
     }
+
+
+    /*
+    We need to be extra aggressive about building / destroying mGoogleauthProviders so we don't
+    end up with two clients connected at the same time.
+     */
 
     public void onStop() {
         super.onStop();
@@ -45,15 +52,15 @@ public class FirebaseLoginDialog extends DialogFragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (mFacebookAuthProvider != null) {
+        if (mFacebookAuthProvider != null && mActiveProvider == SocialProvider.facebook) {
             mFacebookAuthProvider.mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
 
-        if (mTwitterAuthProvider != null) {
+        if (mTwitterAuthProvider != null && mActiveProvider == SocialProvider.twitter) {
             mTwitterAuthProvider.onActivityResult(requestCode, resultCode, data);
         }
 
-        if (mGoogleAuthProvider != null) {
+        if (mGoogleAuthProvider != null && mActiveProvider == SocialProvider.google) {
             mGoogleAuthProvider.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -103,10 +110,20 @@ public class FirebaseLoginDialog extends DialogFragment {
     }
 
     public void logout() {
-        if (mFacebookAuthProvider != null) mFacebookAuthProvider.logout();
-        if (mGoogleAuthProvider != null) mGoogleAuthProvider.logout();
-        if (mTwitterAuthProvider != null) mTwitterAuthProvider.logout();
-        if (mPasswordAuthProvider != null) mPasswordAuthProvider.logout();
+        switch (mActiveProvider) {
+            case twitter:
+                mTwitterAuthProvider.logout();
+                break;
+            case facebook:
+                mFacebookAuthProvider.logout();
+                break;
+            case google:
+                mGoogleAuthProvider.logout();
+                break;
+            case password:
+                mPasswordAuthProvider.logout();
+                break;
+        }
         mRef.unauth();
     }
 
@@ -133,7 +150,7 @@ public class FirebaseLoginDialog extends DialogFragment {
         return this;
     }
 
-    public FirebaseLoginDialog setProviderEnabled(SocialProvider provider) {
+    public FirebaseLoginDialog setEnabledProvider(SocialProvider provider) {
         switch (provider) {
             case facebook:
                 if (mFacebookAuthProvider == null)
@@ -156,11 +173,11 @@ public class FirebaseLoginDialog extends DialogFragment {
         return this;
     }
 
-    private void showLoginOption(final FirebaseAuthHelper helper, int id) {
+    private void showLoginOption(final FirebaseAuthProvider helper, int id) {
         mView.findViewById(id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (helper.getProviderName().equals("password")) {
+                if (helper.getProviderType() == SocialProvider.password) {
                     EditText emailText = (EditText) mView.findViewById(R.id.email);
                     EditText passwordText = (EditText) mView.findViewById(R.id.password);
                     helper.login(emailText.getText().toString(), passwordText.getText().toString());
@@ -169,6 +186,7 @@ public class FirebaseLoginDialog extends DialogFragment {
                 } else {
                     helper.login();
                 }
+                mActiveProvider = helper.getProviderType();
                 mView.findViewById(R.id.login_section).setVisibility(View.GONE);
                 mView.findViewById(R.id.loading_section).setVisibility(View.VISIBLE);
             }

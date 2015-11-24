@@ -21,7 +21,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
-import com.firebase.ui.FirebaseRecyclerViewAdapter;
+import com.firebase.ui.FirebaseRecyclerAdapter;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.SocialProvider;
 
@@ -37,7 +37,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     private EditText mMessageEdit;
 
     private RecyclerView mMessages;
-    private FirebaseRecyclerViewAdapter<Chat, ChatHolder> mRecycleViewAdapter;
+    private FirebaseRecyclerAdapter<Chat, ChatHolder> mRecycleViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +81,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         mMessages.setHasFixedSize(false);
         mMessages.setLayoutManager(manager);
 
-        mRecycleViewAdapter = new FirebaseRecyclerViewAdapter<Chat, ChatHolder>(Chat.class, R.layout.message, ChatHolder.class, mChatRef) {
+        mRecycleViewAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(Chat.class, R.layout.message, ChatHolder.class, mChatRef) {
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat) {
                 chatView.setName(chat.getName());
@@ -208,7 +208,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     }
 
     public static class ChatHolder extends RecyclerView.ViewHolder {
-        public View mView;
+        View mView;
 
         public ChatHolder(View itemView) {
             super(itemView);

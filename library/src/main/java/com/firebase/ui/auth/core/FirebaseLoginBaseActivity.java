@@ -14,13 +14,34 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     private FirebaseLoginDialog mDialog;
     private TokenAuthHandler mHandler;
 
-    /* Abstract methods for Login Events */
+    /**
+     * Subclasses of this activity may implement this method to handle when a user logs in.
+     *
+     * @return void
+     */
     protected abstract void onFirebaseLoggedIn(AuthData authData);
 
+    /**
+     * Subclasses of this activity may implement this method to handle when a user logs out.
+     *
+     * @return void
+     */
     protected abstract void onFirebaseLoggedOut();
 
+    /**
+     * Subclasses of this activity may implement this method to handle any potential provider errors
+     * like OAuth or other internal errors.
+     *
+     * @return void
+     */
     protected abstract void onFirebaseLoginProviderError(FirebaseLoginError firebaseError);
 
+    /**
+     * Subclasses of this activity may implement this method to handle any potential user errors
+     * like entering an incorrect password or closing the login dialog.
+     *
+     * @return void
+     */
     protected abstract void onFirebaseLoginUserError(FirebaseLoginError firebaseError);
 
     /**
@@ -93,7 +114,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     public void setEnabledAuthProvider(SocialProvider provider) {
-        mDialog.setProviderEnabled(provider);
+        mDialog.setEnabledProvider(provider);
     }
 
     protected void onStop() {

@@ -15,18 +15,20 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.client.Firebase;
-import com.firebase.ui.auth.core.FirebaseAuthHelper;
+import com.firebase.ui.auth.core.FirebaseAuthProvider;
 import com.firebase.ui.auth.core.FirebaseResponse;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
+import com.firebase.ui.auth.core.SocialProvider;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-public class FacebookAuthProvider extends FirebaseAuthHelper {
+public class FacebookAuthProvider extends FirebaseAuthProvider {
 
     public static final String PROVIDER_NAME = "facebook";
+    public static final SocialProvider PROVIDER_TYPE = SocialProvider.facebook;
     private final String TAG = "FacebookAuthProvider";
     public CallbackManager mCallbackManager;
     private LoginManager mLoginManager;
@@ -102,10 +104,8 @@ public class FacebookAuthProvider extends FirebaseAuthHelper {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public String getProviderName() {
-        return PROVIDER_NAME;
-    }
-
+    public String getProviderName() { return PROVIDER_NAME; }
+    public SocialProvider getProviderType() { return PROVIDER_TYPE; };
     public Firebase getFirebaseRef() {return mRef; }
 
     public void logout() {

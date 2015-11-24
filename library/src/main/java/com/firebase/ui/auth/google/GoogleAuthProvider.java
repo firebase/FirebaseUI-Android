@@ -7,13 +7,13 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 
 import com.firebase.client.Firebase;
-import com.firebase.ui.auth.core.FirebaseAuthHelper;
+import com.firebase.ui.auth.core.FirebaseAuthProvider;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
 import com.firebase.ui.auth.core.FirebaseResponse;
+import com.firebase.ui.auth.core.SocialProvider;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -24,11 +24,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
-public class GoogleAuthProvider extends FirebaseAuthHelper implements
+public class GoogleAuthProvider extends FirebaseAuthProvider implements
         GoogleApiClient.OnConnectionFailedListener,
         GoogleOAuthTaskHandler {
 
     public final static String PROVIDER_NAME = "google";
+    public static final SocialProvider PROVIDER_TYPE = SocialProvider.google;
     private static final int RC_SIGN_IN = 9001;
     private final String TAG = "GoogleAuthProvider";
     private GoogleApiClient mGoogleApiClient;
@@ -79,6 +80,7 @@ public class GoogleAuthProvider extends FirebaseAuthHelper implements
 
     public String getProviderName() { return PROVIDER_NAME; }
     public Firebase getFirebaseRef() { return mRef; }
+    public SocialProvider getProviderType() { return PROVIDER_TYPE; };
 
     public void logout() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(

@@ -5,15 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.firebase.client.Firebase;
-import com.firebase.ui.auth.core.FirebaseAuthHelper;
+import com.firebase.ui.auth.core.FirebaseAuthProvider;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
+import com.firebase.ui.auth.core.SocialProvider;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
-public class TwitterAuthProvider extends FirebaseAuthHelper {
+public class TwitterAuthProvider extends FirebaseAuthProvider {
 
     public static final String TAG = "TwitterAuthProvider";
     public static final String PROVIDER_NAME = "twitter";
+    public static final SocialProvider PROVIDER_TYPE = SocialProvider.twitter;
 
     private Activity mActivity;
     private TokenAuthHandler mHandler;
@@ -35,6 +37,7 @@ public class TwitterAuthProvider extends FirebaseAuthHelper {
 
     public String getProviderName() { return PROVIDER_NAME; }
     public Firebase getFirebaseRef() { return mRef; }
+    public SocialProvider getProviderType() { return PROVIDER_TYPE; };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == TwitterActions.SUCCESS) {
