@@ -1,20 +1,18 @@
 # FirebaseUI for Android — UI Bindings for Firebase
 
-FirebaseUI is an open-source library for Android that allows you to quickly connect common UI elements to the [Firebase](https://www.firebase.com) database for data storage, allowing views to be updated in realtime as they change, and providing simple interfaces for common tasks like displaying lists or collections of items.
+FirebaseUI is an open-source library for Android that allows you to quickly connect common UI elements to the [Firebase](https://www.firebase.com) database for data storage, allowing views to be updated in realtime as they change, providing simple interfaces for common tasks like displaying lists or collections of items, and displaying prompts for user authentication. 
 
 A compatible FirebaseUI client is also available for [iOS](https://github.com/firebase/firebaseui-ios).
 
-## Using the library in your Android app
+## Table of Content
 
-To use the FirebaseUI library in our project, we need to do a few things:
+1. [Installation](#installation)
+2. [Using FirebaseUI for Authentication](#using-firebaseui-for-authentication)
+3. [Using FirebaseUI to Populate a ListView](#using-firebaseui-to-populate-a-listview)
+4. [Using FirebaseUI to Populate a RecyclerView](#using-firebaseui-to-populate-a-recyclerview)
+5. [Contributing](#contributing)
 
-1. Add the library to the list of dependencies of our project
-2. Create a class to represent the properties of our objects, as they are stored into the database
-3. Create a custom list adapter to map from Firebase to Android
-
-The FirebaseUI library is most prominent in step 3. But first we have to add it to our project.
-
-### Adding the library to your project
+## Installation 
 
 If your Android app already uses Firebase, you have added a dependency to the Firebase SDK to your dependencies.
 In this step we'll add the FirebaseUI library as another dependency.
@@ -26,9 +24,114 @@ In this step we'll add the FirebaseUI library as another dependency.
 
 You can also add the library dependency directly to your app's gradle.build file:
 
-![Added to gradle.build](doc-images/5-gradle-dependency-added.png "Added to gradle.build")
+```
+dependencies {
+    compile 'com.firebaseui:firebase-ui:0.2.2'
+}
+```
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
+
+## Using FirebaseUI for Authentication
+
+FirebaseUI has a wonderful built-in login dialog which you can use to provide a headful UI for your users to authenticate with.
+
+![FirebaseUI Login Dialog](doc-images/mdialog.png "FirebaseUI Login Dialog")
+
+To use FirebaseUI to authenticate users we need to do a few things:
+
+1. Add our Facebook/Twitter/Google keys to strings.xml
+2. Add our activities to our AndroidManifest.xml
+3. Inherit from FirebaseLoginBaseActivity
+4. Call showFirebaseLoginDialog();
+
+### Add our Facebook/Twitter/Google keys to strings.xml
+
+Open your `res/values/strings.xml` file and add the following lines, replacing `[VALUE]` with your key.
+
+Keep in mind, these are all optional. If you don't plan to use Twitter/Facebook/Google login, you can leave those values empty or remove the string definition entirely.
+
+*Note:* If you're not using *all* available providers, you'll need to manually create and manage your `FirebaseLoginDialog` and specify the enabled providers as demonstrated in [`FirebaseLoginBaseActivity.java`](library/src/main/java/com/firebase/ui/auth/core/FirebaseLoginBaseActivity.java).
+
+```xml
+<string name="facebook_app_id">[VALUE]</string>
+<string name="twitter_app_key">[VALUE]</string>
+<string name="twitter_app_secret">[VALUE]</string>
+<string name="google_client_id">[VALUE]</string>
+```
+
+### Add our activities to our AndroidManifest.xml
+
+Open your `manifests/AndroidManifest.xml` file.
+
+Add the following to your `<application>` tag.
+
+```xml
+<!-- Twitter Configuration -->
+<activity android:name="com.firebase.ui.auth.twitter.TwitterPromptActivity" />
+<meta-data
+    android:name="com.firebase.ui.TwitterKey"
+    android:value="@string/twitter_app_key"/>
+<meta-data
+    android:name="com.firebase.ui.TwitterSecret"
+    android:value="@string/twitter_app_secret"/>
+
+<!-- Facebook Configuration -->
+<activity
+    android:name="com.facebook.FacebookActivity"
+    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+    android:label="@string/app_name"
+    android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+<meta-data
+    android:name="com.facebook.sdk.ApplicationId"
+    android:value="@string/facebook_app_id" />
+```
+
+### Inherit from FirebaseLoginBaseActivity
+
+Now we get to the juicy bits. Open your `MainActivity` and change your activity to extend `FirebaseLoginBaseActivity`
+
+```java
+public class MainActivity extends FirebaseLoginBaseActivity {
+    ...
+}
+```
+
+This activity should implement a few methods so your application can react to changing authentication state.
+
+```java
+public class MainActivity extends FirebaseLoginBaseActivity {
+    ...
+    @Override
+    public Firebase getFirebaseRef() {}
+    
+    @Override
+    public void onFirebaseLoginSuccess(AuthData authData) {}
+
+    @Override
+    public void onFirebaseLogout() {}
+
+    @Override
+    public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {}
+
+    @Override
+    public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {}
+}
+```
+
+### Call showFirebaseLoginDialog();
+
+You're now ready to display the login dialog!
+
+Simply call `showFirebaseLoginPrompt()` from within your activity and you'll see the dialog!
+
+
+## Using FirebaseUI to Populate a ListView
+
+To use the FirebaseUI to display Firebase data, we need to do a few things:
+
+1. Create a class to represent the properties of our objects, as they are stored into the database
+2. Create a custom list adapter to map from Firebase to Android
 
 ### Creating a model class
 
@@ -40,27 +143,28 @@ So say we have these chat messages in our Firebase database:
 
 We can represent a chat message with this Java class:
 
-    public class ChatMessage {
-        String message;
-        String name;
+```java
+public class ChatMessage {
+    String message;
+    String name;
 
-        public ChatMessage() {
-        }
-
-        public ChatMessage(String name, String message) {
-            this.message = message;
-            this.name = name;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public String getName() {
-            return name;
-        }
+    public ChatMessage() {
     }
 
+    public ChatMessage(String name, String message) {
+        this.message = message;
+        this.name = name;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+```
 A few things to note here:
 
  * the field have the exact same name as the properties in Firebase. This allows Firebase to automatically map the properties to these fields.
@@ -70,28 +174,30 @@ A few things to note here:
 
 A little-known feature of Firebase for Android is that you can pass an instance of this `ChatMessage` class to `setValue()`:
 
-    Firebase ref = new Firebase("https://nanochat.firebaseio.com/");
-    ChatMessage msg = new ChatMessage("puf", "Hello FirebaseUI world!");
-    ref.push().setValue(msg);
-
+```java
+Firebase ref = new Firebase("https://nanochat.firebaseio.com/");
+ChatMessage msg = new ChatMessage("puf", "Hello FirebaseUI world!");
+ref.push().setValue(msg);
+```
 The Firebase Android client will read the values from the `msg` and write them into the properties of the new child in the database.
 
 Conversely, we can read a `ChatMessage` straight from a `DataSnapshot` in our event handlers:
 
-    ref.limitToLast(5).addValueEventListener(new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot snapshot) {
-            for (DataSnapshot msgSnapshot: snapshot.getChildren()) {
-                ChatMessage msg = msgSnapshot.getValue(ChatMessage.class);
-                Log.i("Chat", chat.getName()+": "+chat.getMessage());
-            }
+```java
+ref.limitToLast(5).addValueEventListener(new ValueEventListener() {
+    @Override
+    public void onDataChange(DataSnapshot snapshot) {
+        for (DataSnapshot msgSnapshot: snapshot.getChildren()) {
+            ChatMessage msg = msgSnapshot.getValue(ChatMessage.class);
+            Log.i("Chat", chat.getName()+": "+chat.getMessage());
         }
-        @Override
-        public void onCancelled(FirebaseError firebaseError) {
-            Log.e("Chat", "The read failed: " + firebaseError.getMessage());
-        }
-    });
-
+    }
+    @Override
+    public void onCancelled(FirebaseError firebaseError) {
+        Log.e("Chat", "The read failed: " + firebaseError.getMessage());
+    }
+});
+```
 In the above snippet we have a query for the last 5 chat messages. Whenever those change (i.e. when an new message is added)
 we get the `ChatMessage` objects from the `DataSnapshot` with `getValue(ChatMessage.class)`. The Firebase Android client will
 then read the properties that it got from the database and map them to the fields of our `ChatMessage` class.
@@ -99,59 +205,63 @@ then read the properties that it got from the database and map them to the field
 But when we build our app using FirebaseUI, we often won't need to register our own EventListener. The
 `FirebaseListAdapter` takes care of that for us.
 
-### Subclassing the FirebaseListAdapter
-
-#### Look up the ListView
+### Find the ListView
 
 We'll assume you've already added a `ListView` to your layout and have looked it up in the `onCreate` method of your activity:
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        ListView messagesView = (ListView) findViewById(R.id.messages_list);
-    }
+    ListView messagesView = (ListView) findViewById(R.id.messages_list);
+}
+```
 
-#### Set up connection to Firebase
+### Connect to Firebase
 
 First we'll tell Firebase that we intend to use it in this activity and set up a reference to the database of chat message.
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        ListView messagesView = (ListView) findViewById(R.id.messages_list);
+    ListView messagesView = (ListView) findViewById(R.id.messages_list);
 
-        Firebase.setAndroidContext(this);
-        Firebase ref = new Firebase("https://nanochat.firebaseio.com");
-    }
+    Firebase.setAndroidContext(this);
+    Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+}
+```
 
-#### Create custom FirebaseListAdapter subclass
+### Create custom FirebaseListAdapter subclass
 
 Next, we need to create a subclass of the `FirebaseListAdapter` with the correct parameters and implement its `populateView` method:
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        ListView messagesView = (ListView) findViewById(R.id.messages_list);
+    ListView messagesView = (ListView) findViewById(R.id.messages_list);
 
-        Firebase.setAndroidContext(this);
-        Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+    Firebase.setAndroidContext(this);
+    Firebase ref = new Firebase("https://nanochat.firebaseio.com");
 
-        mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
-            @Override
-            protected void populateView(View view, ChatMessage chatMessage) {
-                ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
-                ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
+    mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
+        @Override
+        protected void populateView(View view, ChatMessage chatMessage) {
+            ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
+            ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
 
-            }
-        };
-        messagesView.setListAdapter(mAdapter);
-    }
+        }
+    };
+    messagesView.setListAdapter(mAdapter);
+}
+```
 
 In this last snippet we create a subclass of `FirebaseListAdapter`.
 We tell is that it is of type `<ChatMessage>`, so that it is a type-safe collection. We also tell it to use
@@ -166,60 +276,64 @@ It passes us the `ChatMessage` and a `View`, which is an instance of the `androi
 we specified in the constructor. So what we do in our subclass is map the fields from `chatMessage` to the
 correct `TextView` controls from the `view`. The code is a bit verbose, but hey... that's Java and Android for you.
 
-#### Clean up when the activity is destroyed
+### Clean up When the Activity is Destroyed
 
 Finally, we need to clean up after ourselves. When the activity is destroyed, we need to call `release()`
 on the `ListAdapter` so that it can stop listening for changes in the Firebase database.
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mAdapter.cleanup();
-    }
+```java
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mAdapter.cleanup();
+}
+```
 
-#### Sending chat messages
+### Send Chat Messages
 
 Remember when we showed how to use the `ChatMessage` class in `setValue()`.
 We can now use that in our activity to allow sending a message:
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
-        ListView messagesView = (ListView) findViewById(R.id.messages_list);
+    ListView messagesView = (ListView) findViewById(R.id.messages_list);
 
-        Firebase.setAndroidContext(this);
-        Firebase ref = new Firebase("https://nanochat.firebaseio.com");
+    Firebase.setAndroidContext(this);
+    Firebase ref = new Firebase("https://nanochat.firebaseio.com");
 
-        mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
-            @Override
-            protected void populateView(View view, ChatMessage chatMessage) {
-                ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
-                ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
-            }
-        };
-        setListAdapter(mAdapter);
+    mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
+        @Override
+        protected void populateView(View view, ChatMessage chatMessage) {
+            ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
+            ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
+        }
+    };
+    setListAdapter(mAdapter);
 
-        final EditText mMessage = (EditText) findViewById(R.id.message_text);
-        findViewById(R.id.send_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mRef.push().setValue(new ChatMessage("puf", mMessage.getText().toString()));
-                mMessage.setText("");
-            }
-        });
-    }
+    final EditText mMessage = (EditText) findViewById(R.id.message_text);
+    findViewById(R.id.send_button).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mRef.push().setValue(new ChatMessage("puf", mMessage.getText().toString()));
+            mMessage.setText("");
+        }
+    });
+}
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mAdapter.cleanup();
-    }
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mAdapter.cleanup();
+}
+```
 
-Et voila: a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
+You're done! You now have a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
 
-## Using a RecyclerView
+## Using FirebaseUI to Populate a RecyclerView
 
 RecyclerView is the new preferred way to handle potentially long lists of items. Since Firebase collections
 can contain many items, there is an `FirebaseRecyclerViewAdapter` too. Here's how you use it:
@@ -235,50 +349,54 @@ A ViewHolder is similar to container of a ViewGroup that allows simple lookup of
 If we use the same layout as before (`android.R.layout.two_line_list_item`), there are two `TextView`s in there.
 We can wrap that in a ViewHolder with:
 
-    private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
-        TextView messageText;
-        TextView nameText;
+```java
+private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
+    TextView messageText;
+    TextView nameText;
 
-        public ChatMessageViewHolder(View itemView) {
-            super(itemView);
-            nameText = (TextView)itemView.findViewById(android.R.id.text1);
-            messageText = (TextView) itemView.findViewById(android.R.id.text2);
-        }
+    public ChatMessageViewHolder(View itemView) {
+        super(itemView);
+        nameText = (TextView)itemView.findViewById(android.R.id.text1);
+        messageText = (TextView) itemView.findViewById(android.R.id.text2);
     }
+}
+```
 
 There's nothing magical going on here; we're just mapping numeric IDs and casts into a nice, type-safe contract.
 
-### Create a custom FirebaseRecyclerAdapter
+### Create a custom FirebaseListAdapter
 
 Just like we did for FirebaseListAdapter, we'll create an anonymous subclass for our ChatMessages:
 
-        RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
-        recycler.setHasFixedSize(true);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
+```java
+RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
+recycler.setHasFixedSize(true);
+recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
-            @Override
-            public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
-                chatMessageViewHolder.nameText.setText(chatMessage.getName());
-                chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
-            }
-        };
-        recycler.setAdapter(mAdapter);
+mAdapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
+    @Override
+    public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
+        chatMessageViewHolder.nameText.setText(chatMessage.getName());
+        chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
+    }
+};
+recycler.setAdapter(mAdapter);
+```
 
 Like before, we get a custom RecyclerView populated with data from Firebase by setting the properties to the correct fields.
 
-## Installing locally
+## Contributing
 
-You can get the latest released version of FirebaseUI from Maven Central. 
+### Installing locally
 
-Alternatively, you can download the latest release from the Releases tab on the Github repo and install it into your local Maven repository with:
+We are still working on deploying FirebaseUI to Maven Central. In the meantime, you can download the
+latest release from the Releases tab on the Github repo and install it into your local Maven repository
+with:
 
     mvn install:install-file -Dfile=/path/to/library-debug.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=0.1.0 -Dpackaging=aar
 
-
-## Deployment
-
-### To get the build server ready to build FirebaseUI-Android
+###  Deployment
+To get the build server ready to build FirebaseUI-Android
 
 * Install a JDK (if it's not installed yet):
 * `sudo apt-get install default-jdk`
@@ -311,7 +429,7 @@ Alternatively, you can download the latest release from the Releases tab on the 
     sonatypeUsername=YourSonatypeJiraUsername
     sonatypePassword=YourSonatypeJiraPassword
 
-### to build a release
+## to build a release
 
 * build the project in Android Studio or with Gradle
 * this generates the main binary: `library/build/outputs/aar/library-debug.aar`
@@ -320,30 +438,20 @@ Alternatively, you can download the latest release from the Releases tab on the 
 * this generates the javadoc: `library/build/outputs/library-javadoc.jar`
 
 
-### to deploy a build to your local maven repo
-
-```
-mvn install:install-file -Dfile=/path/to/library-debug.aar -DgroupId=com.firebaseui -DartifactId=firebase-ui -Dversion=0.1.0 -Dpackaging=aar
-```
-
-Don't forget to update the path and the version number in the command.
-
-### to tag a release on Github
+## to tag a release on Github
 
 * ensure that all your changes are on master and that your local build is on master
 * ensure that the correct version number is in both `library/build.gradle` and `library/pom.xml`
 
 
-### to deploy a release to Maven Central
+## to deploy a release to Maven Central
 
 * log onto the build box
 * checkout and update the master branch
 * `./release.sh` to build the library and update maven
 * close/release the repository from sonatype
 
-## Contributing to FirebaseUI
-
-### Contributor License Agreements
+## Contributor License Agreements
 
 We'd love to accept your sample apps and patches! Before we can take them, we
 have to jump a couple of legal hurdles.
@@ -362,7 +470,7 @@ Follow either of the two links above to access the appropriate CLA and
 instructions for how to sign and return it. Once we receive it, we'll be able to
 accept your pull requests.
 
-### Contribution Process
+## Contribution Process
 
 1. Submit an issue describing your proposed change to the repo in question.
 1. The repo owner will respond to your issue promptly.

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FirebaseUI</string>
+    <string name="firebaseUrl"></string>
 </resources>

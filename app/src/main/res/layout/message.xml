@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:id="@+id/message_container"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
+
+    <FrameLayout
+        android:id="@+id/left_arrow"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/chat_message_arrow"
+        android:rotation="180"
+        android:layout_marginLeft="2dp"/>
+
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/chat_message_background"
+        android:id="@+id/message"
+        android:padding="10dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginRight="26dp">
+
+        <TextView android:id="@+id/message_text"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textStyle="bold"/>
+
+        <TextView android:id="@+id/name_text"
+            android:textStyle="normal"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/right_arrow"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/chat_message_arrow"
+        android:rotation="180"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/message"
+        android:layout_alignEnd="@+id/message"
+        android:layout_marginRight="-25dp"/>
+
+</RelativeLayout>
