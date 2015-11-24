@@ -6,11 +6,11 @@ A compatible FirebaseUI client is also available for [iOS](https://github.com/fi
 
 ## Table of Content
 
-1. Installation
-2. Using FirebaseUI for Authentication
-3. Using FirebaseUI to Populate a ListView
-4. Using FirebaseUI to Populate a RecyclerView
-5. Contributing
+1. [Installation](#installation)
+2. [Using FirebaseUI for Authentication](#using-firebaseui-for-authentication)
+3. [Using FirebaseUI to Populate a ListView](#using-firebaseui-to-populate-a-listview)
+4. [Using FirebaseUI to Populate a RecyclerView](#using-firebaseui-to-populate-a-recyclerview)
+5. [Contributing](#contributing)
 
 ## Installation 
 
