@@ -1,20 +1,18 @@
 # FirebaseUI for Android — UI Bindings for Firebase
 
-FirebaseUI is an open-source library for Android that allows you to quickly connect common UI elements to the [Firebase](https://www.firebase.com) database for data storage, allowing views to be updated in realtime as they change, and providing simple interfaces for common tasks like displaying lists or collections of items.
+FirebaseUI is an open-source library for Android that allows you to quickly connect common UI elements to the [Firebase](https://www.firebase.com) database for data storage, allowing views to be updated in realtime as they change, providing simple interfaces for common tasks like displaying lists or collections of items, and displaying prompts for user authentication. 
 
 A compatible FirebaseUI client is also available for [iOS](https://github.com/firebase/firebaseui-ios).
 
-## Using the library in your Android app
+## Table of Content
 
-To use the FirebaseUI library in our project, we need to do a few things:
+1. Installation
+2. Using FirebaseUI for Authentication
+3. Using FirebaseUI to Populate a ListView
+4. Using FirebaseUI to Populate a RecyclerView
+5. Contributing
 
-1. Add the library to the list of dependencies of our project
-2. Create a class to represent the properties of our objects, as they are stored into the database
-3. Create a custom list adapter to map from Firebase to Android
-
-The FirebaseUI library is most prominent in step 3. But first we have to add it to our project.
-
-### Adding the library to your project (gradle.build or module dependencies dialog)
+## Installation 
 
 If your Android app already uses Firebase, you have added a dependency to the Firebase SDK to your dependencies.
 In this step we'll add the FirebaseUI library as another dependency.
@@ -26,9 +24,20 @@ In this step we'll add the FirebaseUI library as another dependency.
 
 You can also add the library dependency directly to your app's gradle.build file:
 
-![Added to gradle.build](doc-images/5-gradle-dependency-added.png "Added to gradle.build")
+```
+dependencies {
+    compile 'com.firebaseui:firebase-ui:0.2.2'
+}
+```
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
+
+## Using FirebaseUI to Populate a ListView
+
+To use the FirebaseUI library in our project, we need to do a few things:
+
+1. Create a class to represent the properties of our objects, as they are stored into the database
+2. Create a custom list adapter to map from Firebase to Android
 
 ### Creating a model class
 
@@ -102,9 +111,7 @@ then read the properties that it got from the database and map them to the field
 But when we build our app using FirebaseUI, we often won't need to register our own EventListener. The
 `FirebaseListAdapter` takes care of that for us.
 
-### Subclassing the FirebaseListAdapter
-
-#### Look up the ListView
+### Find the ListView
 
 We'll assume you've already added a `ListView` to your layout and have looked it up in the `onCreate` method of your activity:
 
@@ -118,7 +125,7 @@ protected void onCreate(Bundle savedInstanceState) {
 }
 ```
 
-#### Set up connection to Firebase
+### Connect to Firebase
 
 First we'll tell Firebase that we intend to use it in this activity and set up a reference to the database of chat message.
 
@@ -135,7 +142,7 @@ protected void onCreate(Bundle savedInstanceState) {
 }
 ```
 
-#### Create custom FirebaseListAdapter subclass
+### Create custom FirebaseListAdapter subclass
 
 Next, we need to create a subclass of the `FirebaseListAdapter` with the correct parameters and implement its `populateView` method:
 
@@ -175,7 +182,7 @@ It passes us the `ChatMessage` and a `View`, which is an instance of the `androi
 we specified in the constructor. So what we do in our subclass is map the fields from `chatMessage` to the
 correct `TextView` controls from the `view`. The code is a bit verbose, but hey... that's Java and Android for you.
 
-#### Clean up when the activity is destroyed
+### Clean up When the Activity is Destroyed
 
 Finally, we need to clean up after ourselves. When the activity is destroyed, we need to call `release()`
 on the `ListAdapter` so that it can stop listening for changes in the Firebase database.
@@ -188,7 +195,7 @@ protected void onDestroy() {
 }
 ```
 
-#### Sending chat messages
+### Send Chat Messages
 
 Remember when we showed how to use the `ChatMessage` class in `setValue()`.
 We can now use that in our activity to allow sending a message:
@@ -230,9 +237,9 @@ protected void onDestroy() {
 }
 ```
 
-Et voila: a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
+You're done! You now have a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
 
-## Using a RecyclerView
+## Using FirebaseUI to Populate a RecyclerView
 
 RecyclerView is the new preferred way to handle potentially long lists of items. Since Firebase collections
 can contain many items, there is an `FirebaseRecyclerViewAdapter` too. Here's how you use it:
@@ -284,7 +291,9 @@ recycler.setAdapter(mAdapter);
 
 Like before, we get a custom RecyclerView populated with data from Firebase by setting the properties to the correct fields.
 
-## Installing locally
+## Contributing
+
+### Installing locally
 
 We are still working on deploying FirebaseUI to Maven Central. In the meantime, you can download the
 latest release from the Releases tab on the Github repo and install it into your local Maven repository
@@ -292,10 +301,8 @@ with:
 
     mvn install:install-file -Dfile=/path/to/library-debug.aar -DgroupId=com.firebase -DartifactId=firebase-ui -Dversion=0.1.0 -Dpackaging=aar
 
-
-## Deployment
-
-### To get the build server ready to build FirebaseUI-Android
+###  Deployment
+To get the build server ready to build FirebaseUI-Android
 
 * Install a JDK (if it's not installed yet):
 * `sudo apt-get install default-jdk`
@@ -328,7 +335,7 @@ with:
     sonatypeUsername=YourSonatypeJiraUsername
     sonatypePassword=YourSonatypeJiraPassword
 
-### to build a release
+## to build a release
 
 * build the project in Android Studio or with Gradle
 * this generates the main binary: `library/build/outputs/aar/library-debug.aar`
@@ -337,22 +344,20 @@ with:
 * this generates the javadoc: `library/build/outputs/library-javadoc.jar`
 
 
-### to tag a release on Github
+## to tag a release on Github
 
 * ensure that all your changes are on master and that your local build is on master
 * ensure that the correct version number is in both `library/build.gradle` and `library/pom.xml`
 
 
-### to deploy a release to Maven Central
+## to deploy a release to Maven Central
 
 * log onto the build box
 * checkout and update the master branch
 * `./release.sh` to build the library and update maven
 * close/release the repository from sonatype
 
-## Contributing to FirebaseUI
-
-### Contributor License Agreements
+## Contributor License Agreements
 
 We'd love to accept your sample apps and patches! Before we can take them, we
 have to jump a couple of legal hurdles.
@@ -371,7 +376,7 @@ Follow either of the two links above to access the appropriate CLA and
 instructions for how to sign and return it. Once we receive it, we'll be able to
 accept your pull requests.
 
-### Contribution Process
+## Contribution Process
 
 1. Submit an issue describing your proposed change to the repo in question.
 1. The repo owner will respond to your issue promptly.
