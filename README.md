@@ -99,7 +99,7 @@ public class MainActivity extends FirebaseLoginBaseActivity {
 
 This activity should implement a few methods so your application can react to changing authentication state.
 
-```
+```java
 public class MainActivity extends FirebaseLoginBaseActivity {
     ...
     @Override
