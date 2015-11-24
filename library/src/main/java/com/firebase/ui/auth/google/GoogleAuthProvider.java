@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.firebase.client.Firebase;
 import com.firebase.ui.auth.core.FirebaseAuthProvider;
@@ -26,16 +27,17 @@ import com.google.android.gms.common.api.Status;
 
 public class GoogleAuthProvider extends FirebaseAuthProvider implements
         GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks,
         GoogleOAuthTaskHandler {
 
     public final static String PROVIDER_NAME = "google";
     public static final SocialProvider PROVIDER_TYPE = SocialProvider.google;
-    private static final int RC_SIGN_IN = 9001;
     private final String TAG = "GoogleAuthProvider";
     private GoogleApiClient mGoogleApiClient;
     private TokenAuthHandler mHandler;
     private Activity mActivity;
     private Firebase mRef;
+    private Integer onConnectedAction;
 
     public GoogleAuthProvider(Context context, Firebase ref, TokenAuthHandler handler) {
         mActivity = (Activity) context;
@@ -82,19 +84,41 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
     public Firebase getFirebaseRef() { return mRef; }
     public SocialProvider getProviderType() { return PROVIDER_TYPE; };
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        if (onConnectedAction == GoogleActions.SIGN_IN) {
+            login();
+        } else if (onConnectedAction == GoogleActions.SIGN_OUT) {
+            logout();
+        }
+
+        onConnectedAction = 0;
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {}
+
     public void logout() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        revokeAccess();
-                    }
-                });
+        if (mGoogleApiClient.isConnected()) {
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            revokeAccess();
+                        }
+                    });
+        } else {
+            onConnectedAction = GoogleActions.SIGN_OUT;
+        }
     }
 
     public void login() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        mActivity.startActivityForResult(signInIntent, RC_SIGN_IN);
+        if (mGoogleApiClient.isConnected()) {
+            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+            mActivity.startActivityForResult(signInIntent, GoogleActions.SIGN_IN);
+        } else {
+            onConnectedAction = GoogleActions.SIGN_IN;
+        }
     }
     private void revokeAccess() {
         Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
@@ -107,12 +131,12 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_SIGN_IN && resultCode == -1) {
+        if (requestCode == GoogleActions.SIGN_IN && resultCode == -1) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
 
-        if (requestCode == RC_SIGN_IN && resultCode == 0) {
+        if (requestCode == GoogleActions.SIGN_IN && resultCode == 0) {
             mHandler.onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
         }
     }

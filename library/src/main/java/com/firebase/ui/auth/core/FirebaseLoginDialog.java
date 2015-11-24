@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -91,6 +92,7 @@ public class FirebaseLoginDialog extends DialogFragment {
         mView.findViewById(R.id.loading_section).setVisibility(View.GONE);
 
         builder.setView(mView);
+
         return builder.create();
     }
 
@@ -110,20 +112,10 @@ public class FirebaseLoginDialog extends DialogFragment {
     }
 
     public void logout() {
-        switch (mActiveProvider) {
-            case twitter:
-                mTwitterAuthProvider.logout();
-                break;
-            case facebook:
-                mFacebookAuthProvider.logout();
-                break;
-            case google:
-                mGoogleAuthProvider.logout();
-                break;
-            case password:
-                mPasswordAuthProvider.logout();
-                break;
-        }
+        if (mTwitterAuthProvider != null) mTwitterAuthProvider.logout();
+        if (mFacebookAuthProvider != null) mFacebookAuthProvider.logout();
+        if (mGoogleAuthProvider != null) mGoogleAuthProvider.logout();
+        if (mPasswordAuthProvider != null) mPasswordAuthProvider.logout();
         mRef.unauth();
     }
 

@@ -8,6 +8,7 @@ import com.firebase.client.Firebase;
 import com.firebase.ui.auth.core.FirebaseAuthProvider;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
+import com.firebase.ui.auth.core.FirebaseResponse;
 import com.firebase.ui.auth.core.SocialProvider;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
@@ -48,9 +49,11 @@ public class TwitterAuthProvider extends FirebaseAuthProvider {
                     data.getStringExtra("user_id"));
             onFirebaseTokenReceived(token, mHandler);
         } else if (resultCode == TwitterActions.USER_ERROR) {
-            mHandler.onUserError(new FirebaseLoginError(data.getIntExtra("code", 0), data.getStringExtra("error")));
+            FirebaseResponse error = FirebaseResponse.values()[data.getIntExtra("code", 0)];
+            mHandler.onUserError(new FirebaseLoginError(error, data.getStringExtra("error")));
         } else if (resultCode == TwitterActions.PROVIDER_ERROR) {
-            mHandler.onProviderError(new FirebaseLoginError(data.getIntExtra("code", 0), data.getStringExtra("error")));
+            FirebaseResponse error = FirebaseResponse.values()[data.getIntExtra("code", 0)];
+            mHandler.onProviderError(new FirebaseLoginError(error, data.getStringExtra("error")));
         }
     }
 }

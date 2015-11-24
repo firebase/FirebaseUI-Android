@@ -1,6 +1,6 @@
 # FirebaseUI for Android — UI Bindings for Firebase
 
-FirebaseUI is an open-source library for Android that allows you to quickly connect common UI elements to the [Firebase](https://www.firebase.com) database for data storage, allowing views to be updated in realtime as they change, providing simple interfaces for common tasks like displaying lists or collections of items, and displaying prompts for user authentication. 
+FirebaseUI is an open-source library for Android that allows you to quickly connect common UI elements to the [Firebase](https://www.firebase.com) database for data storage, allowing views to be updated in realtime as they change, providing simple interfaces for common tasks like displaying lists or collections of items, and displaying prompts for user authentication.
 
 A compatible FirebaseUI client is also available for [iOS](https://github.com/firebase/firebaseui-ios).
 
@@ -12,7 +12,7 @@ A compatible FirebaseUI client is also available for [iOS](https://github.com/fi
 4. [Using FirebaseUI to Populate a RecyclerView](#using-firebaseui-to-populate-a-recyclerview)
 5. [Contributing](#contributing)
 
-## Installation 
+## Installation
 
 If your Android app already uses Firebase, you have added a dependency to the Firebase SDK to your dependencies.
 In this step we'll add the FirebaseUI library as another dependency.
@@ -94,6 +94,18 @@ If you're using Facebook authentication, add the following to your `<application
     android:value="@string/facebook_app_id" />
 ```
 
+If you're using Google authentication, add the following to your `<application>` tag.
+
+```
+<!-- Google Configuration -->
+ <meta-data
+     android:name="com.firebase.ui.GoogleClientId"
+     android:value="@string/google_client_id" />
+ ```
+
+ If you're using Google Sign-in you'll also need to ensure that your `google-services.json` file is created
+ and placed in your app folder.
+
 ### Inherit from FirebaseLoginBaseActivity
 
 Now we get to the juicy bits. Open your `MainActivity` and change your activity to extend `FirebaseLoginBaseActivity`
@@ -113,7 +125,7 @@ public class MainActivity extends FirebaseLoginBaseActivity {
     public Firebase getFirebaseRef() {
         // TODO: Return your Firebase ref
     }
-    
+
     @Override
     public void onFirebaseLoginSuccess(AuthData authData) {
         // TODO: Handle successful login
@@ -382,7 +394,7 @@ You're done! You now have a minimal, yet fully functional, chat app in about 30 
 ## Using FirebaseUI to Populate a RecyclerView
 
 RecyclerView is the new preferred way to handle potentially long lists of items. Since Firebase collections
-can contain many items, there is an `FirebaseRecyclerViewAdapter` too. Here's how you use it:
+can contain many items, there is an `FirebaseRecyclerAdapter` too. Here's how you use it:
 
 1. Create a custom ViewHolder class
 2. Create a custom subclass FirebaseListAdapter
