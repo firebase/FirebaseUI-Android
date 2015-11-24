@@ -26,7 +26,7 @@ You can also add the library dependency directly to your app's gradle.build file
 
 ```
 dependencies {
-    compile 'com.firebaseui:firebase-ui:0.3.0'
+    compile 'com.firebaseui:firebase-ui:0.2.2'
 }
 ```
 
@@ -34,7 +34,7 @@ After the project is synchronized, we're ready to start using Firebase functiona
 
 ## Using FirebaseUI for Authentication
 
-FirebaseUI has a wonderful built-in login dialog which you can use to provide a headful UI for your users to authenticate with.
+FirebaseUI has a built-in dialog that you can use pop up to allow your users to log in.
 
 ![FirebaseUI Login Dialog](doc-images/mdialog.png "FirebaseUI Login Dialog")
 
@@ -43,15 +43,18 @@ To use FirebaseUI to authenticate users we need to do a few things:
 1. Add our Facebook/Twitter/Google keys to strings.xml
 2. Add our activities to our AndroidManifest.xml
 3. Inherit from FirebaseLoginBaseActivity
-4. Call showFirebaseLoginDialog();
+4. Enable authentication providers
+5. Call showFirebaseLoginDialog();
+
+We'll go into each of these steps below.
 
 ### Add our Facebook/Twitter/Google keys to strings.xml
 
 Open your `res/values/strings.xml` file and add the following lines, replacing `[VALUE]` with your key.
 
-Keep in mind, these are all optional. If you don't plan to use Twitter/Facebook/Google login, you can leave those values empty or remove the string definition entirely.
+Keep in mind, these are all optional. You only have to provide values for the providers you plan to use.
 
-*Note:* If you're not using *all* available providers, you'll need to manually create and manage your `FirebaseLoginDialog` and specify the enabled providers as demonstrated in [`FirebaseLoginBaseActivity.java`](library/src/main/java/com/firebase/ui/auth/core/FirebaseLoginBaseActivity.java).
+ [`FirebaseLoginBaseActivity.java`](library/src/main/java/com/firebase/ui/auth/core/FirebaseLoginBaseActivity.java).
 
 ```xml
 <string name="facebook_app_id">[VALUE]</string>
@@ -62,9 +65,9 @@ Keep in mind, these are all optional. If you don't plan to use Twitter/Facebook/
 
 ### Add our activities to our AndroidManifest.xml
 
-Open your `manifests/AndroidManifest.xml` file.
+Open your `manifests/AndroidManifest.xml` file. This will allow Android to recognize the various activities that FirebaseUI exposes.
 
-Add the following to your `<application>` tag.
+If you're using Twitter authentication, add the following to your `<application>` tag.
 
 ```xml
 <!-- Twitter Configuration -->
@@ -75,7 +78,11 @@ Add the following to your `<application>` tag.
 <meta-data
     android:name="com.firebase.ui.TwitterSecret"
     android:value="@string/twitter_app_secret"/>
+```
 
+If you're using Facebook authentication, add the following to your `<application>` tag.
+
+```xml
 <!-- Facebook Configuration -->
 <activity
     android:name="com.facebook.FacebookActivity"
@@ -103,27 +110,66 @@ This activity should implement a few methods so your application can react to ch
 public class MainActivity extends FirebaseLoginBaseActivity {
     ...
     @Override
-    public Firebase getFirebaseRef() {}
+    public Firebase getFirebaseRef() {
+        // TODO: Return your Firebase ref
+    }
     
     @Override
-    public void onFirebaseLoginSuccess(AuthData authData) {}
+    public void onFirebaseLoginSuccess(AuthData authData) {
+        // TODO: Handle successful login
+    }
 
     @Override
-    public void onFirebaseLogout() {}
+    public void onFirebaseLogout() {
+        // TODO: Handle logout
+    }
 
     @Override
-    public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {}
+    public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {
+        // TODO: Handle an error from the authentication provider
+    }
 
     @Override
-    public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {}
+    public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {
+        // TODO: Handle an error from the user
+    }
 }
 ```
+
+### Enable Authentication Providers
+
+Now that our activity is set up, we can enable authentication providers. The FirebaseUI login prompt will only display providers you enable here, so don't worry if you don't want to use them all!
+
+```java
+public class MainActivity extends FirebaseLoginBaseActivity {
+    ...
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // All providers are optional! Remove any you don't want.
+        setEnabledAuthProvider(SocialProvider.facebook);
+        setEnabledAuthProvider(SocialProvider.twitter);
+        setEnabledAuthProvider(SocialProvider.google);
+        setEnabledAuthProvider(SocialProvider.password);
+    }
+```
+
 
 ### Call showFirebaseLoginDialog();
 
 You're now ready to display the login dialog!
 
 Simply call `showFirebaseLoginPrompt()` from within your activity and you'll see the dialog!
+
+For example, if we had a mLoginButton, we could display the dialog when the user clicks the button.
+```java
+mLoginButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        showFirebaseLoginPrompt();
+    }
+});
+```
 
 
 ## Using FirebaseUI to Populate a ListView
