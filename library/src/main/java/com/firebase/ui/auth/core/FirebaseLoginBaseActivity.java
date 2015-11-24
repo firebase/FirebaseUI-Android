@@ -95,13 +95,11 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             .setRef(getFirebaseRef())
             .setHandler(mHandler);
 
-        mDialog
-            .setProviderEnabled(SocialProvider.facebook)
-            .setProviderEnabled(SocialProvider.google)
-            .setProviderEnabled(SocialProvider.twitter)
-            .setProviderEnabled(SocialProvider.password);
-
         getFirebaseRef().addAuthStateListener(mAuthStateListener);
+    }
+
+    public void setEnabledAuthProvider(SocialProvider provider) {
+        mDialog.setProviderEnabled(provider);
     }
 
     protected void onStop() {
