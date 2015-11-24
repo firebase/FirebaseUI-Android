@@ -26,7 +26,7 @@ You can also add the library dependency directly to your app's gradle.build file
 
 ```
 dependencies {
-    compile 'com.firebaseui:firebase-ui:0.2.2'
+    compile 'com.firebaseui:firebase-ui:0.3.0'
 }
 ```
 
