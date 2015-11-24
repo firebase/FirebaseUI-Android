@@ -3,7 +3,7 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "23.0.0"
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.firebase.uidemo"

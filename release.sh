@@ -3,10 +3,10 @@ set -e
 
 cd $(dirname $0)
 
-###########################
-#  VALIDATE GEOFIRE REPO  #
-###########################
-# Ensure the checked out geofire branch is master
+##############################
+#  VALIDATE FIREBASEUI REPO  #
+##############################
+# Ensure the checked out firebaseui branch is master
 CHECKED_OUT_BRANCH="$(git branch | grep "*" | awk -F ' ' '{print $2}')"
 if [[ $CHECKED_OUT_BRANCH != "master" ]]; then
   echo "Error: Your FirebaseUI-Android repo is not on the master branch."
