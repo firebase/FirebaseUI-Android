@@ -32,9 +32,103 @@ dependencies {
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
 
+## Using FirebaseUI for Authentication
+
+FirebaseUI has a wonderful built-in login dialog which you can use to provide a headful UI for your users to authenticate with.
+
+![FirebaseUI Login Dialog](doc-images/mdialog.png "FirebaseUI Login Dialog")
+
+To use FirebaseUI to authenticate users we need to do a few things:
+
+1. Add our Facebook/Twitter/Google keys to strings.xml
+2. Add our activities to our AndroidManifest.xml
+3. Inherit from FirebaseLoginBaseActivity
+4. Call showFirebaseLoginDialog();
+
+### Add our Facebook/Twitter/Google keys to strings.xml
+
+Open your `res/values/strings.xml` file and add the following lines, replacing `[VALUE]` with your key.
+
+Keep in mind, these are all optional. If you don't plan to use Twitter/Facebook/Google login, you can leave those values empty or remove the string definition entirely.
+
+*Note:* If you're not using *all* available providers, you'll need to manually create and manage your `FirebaseLoginDialog` and specify the enabled providers as demonstrated in [`FirebaseLoginBaseActivity.java`](library/src/main/java/com/firebase/ui/auth/core/FirebaseLoginBaseActivity.java).
+
+```xml
+<string name="facebook_app_id">[VALUE]</string>
+<string name="twitter_app_key">[VALUE]</string>
+<string name="twitter_app_secret">[VALUE]</string>
+<string name="google_client_id">[VALUE]</string>
+```
+
+### Add our activities to our AndroidManifest.xml
+
+Open your `manifests/AndroidManifest.xml` file.
+
+Add the following to your `<application>` tag.
+
+```xml
+<!-- Twitter Configuration -->
+<activity android:name="com.firebase.ui.auth.twitter.TwitterPromptActivity" />
+<meta-data
+    android:name="com.firebase.ui.TwitterKey"
+    android:value="@string/twitter_app_key"/>
+<meta-data
+    android:name="com.firebase.ui.TwitterSecret"
+    android:value="@string/twitter_app_secret"/>
+
+<!-- Facebook Configuration -->
+<activity
+    android:name="com.facebook.FacebookActivity"
+    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+    android:label="@string/app_name"
+    android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+<meta-data
+    android:name="com.facebook.sdk.ApplicationId"
+    android:value="@string/facebook_app_id" />
+```
+
+### Inherit from FirebaseLoginBaseActivity
+
+Now we get to the juicy bits. Open your `MainActivity` and change your activity to extend `FirebaseLoginBaseActivity`
+
+```java
+public class MainActivity extends FirebaseLoginBaseActivity {
+    ...
+}
+```
+
+This activity should implement a few methods so your application can react to changing authentication state.
+
+```
+public class MainActivity extends FirebaseLoginBaseActivity {
+    ...
+    @Override
+    public Firebase getFirebaseRef() {}
+    
+    @Override
+    public void onFirebaseLoginSuccess(AuthData authData) {}
+
+    @Override
+    public void onFirebaseLogout() {}
+
+    @Override
+    public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {}
+
+    @Override
+    public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {}
+}
+```
+
+### Call showFirebaseLoginDialog();
+
+You're now ready to display the login dialog!
+
+Simply call `showFirebaseLoginPrompt()` from within your activity and you'll see the dialog!
+
+
 ## Using FirebaseUI to Populate a ListView
 
-To use the FirebaseUI library in our project, we need to do a few things:
+To use the FirebaseUI to display Firebase data, we need to do a few things:
 
 1. Create a class to represent the properties of our objects, as they are stored into the database
 2. Create a custom list adapter to map from Firebase to Android
