@@ -24,19 +24,19 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
-public class GoogleAuthHelper extends FirebaseAuthHelper implements
+public class GoogleAuthProvider extends FirebaseAuthHelper implements
         GoogleApiClient.OnConnectionFailedListener,
         GoogleOAuthTaskHandler {
 
     public final static String PROVIDER_NAME = "google";
     private static final int RC_SIGN_IN = 9001;
-    private final String TAG = "GoogleAuthHelper";
+    private final String TAG = "GoogleAuthProvider";
     private GoogleApiClient mGoogleApiClient;
     private TokenAuthHandler mHandler;
     private Activity mActivity;
     private Firebase mRef;
 
-    public GoogleAuthHelper(Context context, Firebase ref, TokenAuthHandler handler) {
+    public GoogleAuthProvider(Context context, Firebase ref, TokenAuthHandler handler) {
         mActivity = (Activity) context;
         mRef = ref;
         mHandler = handler;

@@ -10,16 +10,16 @@ import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
-public class TwitterAuthHelper extends FirebaseAuthHelper {
+public class TwitterAuthProvider extends FirebaseAuthHelper {
 
-    public static final String TAG = "TwitterAuthHelper";
+    public static final String TAG = "TwitterAuthProvider";
     public static final String PROVIDER_NAME = "twitter";
 
     private Activity mActivity;
     private TokenAuthHandler mHandler;
     private Firebase mRef;
 
-    public TwitterAuthHelper(Context context, Firebase ref, TokenAuthHandler handler) {
+    public TwitterAuthProvider(Context context, Firebase ref, TokenAuthHandler handler) {
         mActivity = (Activity) context;
         mHandler = handler;
         mRef = ref;

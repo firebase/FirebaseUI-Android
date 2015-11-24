@@ -24,10 +24,10 @@ import com.firebase.ui.auth.core.TokenAuthHandler;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class FacebookAuthHelper extends FirebaseAuthHelper {
+public class FacebookAuthProvider extends FirebaseAuthHelper {
 
     public static final String PROVIDER_NAME = "facebook";
-    private final String TAG = "FacebookAuthHelper";
+    private final String TAG = "FacebookAuthProvider";
     public CallbackManager mCallbackManager;
     private LoginManager mLoginManager;
     private TokenAuthHandler mHandler;
@@ -35,7 +35,7 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
     private Firebase mRef;
     private Boolean isReady = false;
 
-    public FacebookAuthHelper(Context context, Firebase ref, final TokenAuthHandler handler) {
+    public FacebookAuthProvider(Context context, Firebase ref, final TokenAuthHandler handler) {
         mActivity = (Activity) context;
         FacebookSdk.sdkInitialize(context.getApplicationContext());
 

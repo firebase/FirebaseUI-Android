@@ -12,19 +12,18 @@ import android.widget.EditText;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
 import com.firebase.ui.R;
-import com.firebase.ui.auth.facebook.FacebookAuthHelper;
-import com.firebase.ui.auth.google.GoogleAuthHelper;
-import com.firebase.ui.auth.password.PasswordAuthHelper;
-import com.firebase.ui.auth.twitter.TwitterAuthHelper;
+import com.firebase.ui.auth.facebook.FacebookAuthProvider;
+import com.firebase.ui.auth.google.GoogleAuthProvider;
+import com.firebase.ui.auth.password.PasswordAuthProvider;
+import com.firebase.ui.auth.twitter.TwitterAuthProvider;
 
 public class FirebaseLoginDialog extends DialogFragment {
 
-    FacebookAuthHelper mFacebookAuthHelper;
-    TwitterAuthHelper mTwitterAuthHelper;
-    GoogleAuthHelper mGoogleAuthHelper;
-    PasswordAuthHelper mPasswordAuthHelper;
+    FacebookAuthProvider mFacebookAuthProvider;
+    TwitterAuthProvider mTwitterAuthProvider;
+    GoogleAuthProvider mGoogleAuthProvider;
+    PasswordAuthProvider mPasswordAuthProvider;
     TokenAuthHandler mHandler;
     Firebase mRef;
     Context mContext;
@@ -32,30 +31,30 @@ public class FirebaseLoginDialog extends DialogFragment {
 
     public void onStart() {
         super.onStart();
-        if (mGoogleAuthHelper != null) mGoogleAuthHelper.onStart();
+        if (mGoogleAuthProvider != null) mGoogleAuthProvider.onStart();
     }
 
     public void onStop() {
         super.onStop();
-        if (mGoogleAuthHelper != null) mGoogleAuthHelper.onStop();
+        if (mGoogleAuthProvider != null) mGoogleAuthProvider.onStop();
     }
 
     public void onDestroy() {
         super.onDestroy();
-        if (mGoogleAuthHelper != null) mGoogleAuthHelper.onStop();
+        if (mGoogleAuthProvider != null) mGoogleAuthProvider.onStop();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (mFacebookAuthHelper != null) {
-            mFacebookAuthHelper.mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        if (mFacebookAuthProvider != null) {
+            mFacebookAuthProvider.mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
 
-        if (mTwitterAuthHelper != null) {
-            mTwitterAuthHelper.onActivityResult(requestCode, resultCode, data);
+        if (mTwitterAuthProvider != null) {
+            mTwitterAuthProvider.onActivityResult(requestCode, resultCode, data);
         }
 
-        if (mGoogleAuthHelper != null) {
-            mGoogleAuthHelper.onActivityResult(requestCode, resultCode, data);
+        if (mGoogleAuthProvider != null) {
+            mGoogleAuthProvider.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -66,18 +65,18 @@ public class FirebaseLoginDialog extends DialogFragment {
 
         mView = inflater.inflate(R.layout.fragment_firebase_login, null);
 
-        if (mFacebookAuthHelper != null) showLoginOption(mFacebookAuthHelper, R.id.facebook_button);
+        if (mFacebookAuthProvider != null) showLoginOption(mFacebookAuthProvider, R.id.facebook_button);
         else mView.findViewById(R.id.facebook_button).setVisibility(View.GONE);
 
-        if (mGoogleAuthHelper != null) showLoginOption(mGoogleAuthHelper, R.id.google_button);
+        if (mGoogleAuthProvider != null) showLoginOption(mGoogleAuthProvider, R.id.google_button);
         else mView.findViewById(R.id.google_button).setVisibility(View.GONE);
 
-        if (mTwitterAuthHelper != null) showLoginOption(mTwitterAuthHelper, R.id.twitter_button);
+        if (mTwitterAuthProvider != null) showLoginOption(mTwitterAuthProvider, R.id.twitter_button);
         else mView.findViewById(R.id.twitter_button).setVisibility(View.GONE);
 
-        if (mPasswordAuthHelper != null) {
-            showLoginOption(mPasswordAuthHelper, R.id.password_button);
-            if (mFacebookAuthHelper == null && mGoogleAuthHelper == null && mTwitterAuthHelper == null)
+        if (mPasswordAuthProvider != null) {
+            showLoginOption(mPasswordAuthProvider, R.id.password_button);
+            if (mFacebookAuthProvider == null && mGoogleAuthProvider == null && mTwitterAuthProvider == null)
                 mView.findViewById(R.id.or_section).setVisibility(View.GONE);
         }
         else mView.findViewById(R.id.password_section).setVisibility(View.GONE);
@@ -104,10 +103,10 @@ public class FirebaseLoginDialog extends DialogFragment {
     }
 
     public void logout() {
-        if (mFacebookAuthHelper != null) mFacebookAuthHelper.logout();
-        if (mGoogleAuthHelper != null) mGoogleAuthHelper.logout();
-        if (mTwitterAuthHelper != null) mTwitterAuthHelper.logout();
-        if (mPasswordAuthHelper != null) mPasswordAuthHelper.logout();
+        if (mFacebookAuthProvider != null) mFacebookAuthProvider.logout();
+        if (mGoogleAuthProvider != null) mGoogleAuthProvider.logout();
+        if (mTwitterAuthProvider != null) mTwitterAuthProvider.logout();
+        if (mPasswordAuthProvider != null) mPasswordAuthProvider.logout();
         mRef.unauth();
     }
 
@@ -137,20 +136,20 @@ public class FirebaseLoginDialog extends DialogFragment {
     public FirebaseLoginDialog setProviderEnabled(SocialProvider provider) {
         switch (provider) {
             case facebook:
-                if (mFacebookAuthHelper == null)
-                    mFacebookAuthHelper = new FacebookAuthHelper(mContext, mRef, mHandler);
+                if (mFacebookAuthProvider == null)
+                    mFacebookAuthProvider = new FacebookAuthProvider(mContext, mRef, mHandler);
                 break;
             case google:
-                if (mGoogleAuthHelper == null)
-                    mGoogleAuthHelper = new GoogleAuthHelper(mContext, mRef, mHandler);
+                if (mGoogleAuthProvider == null)
+                    mGoogleAuthProvider = new GoogleAuthProvider(mContext, mRef, mHandler);
                 break;
             case twitter:
-                if (mTwitterAuthHelper == null)
-                    mTwitterAuthHelper = new TwitterAuthHelper(mContext, mRef, mHandler);
+                if (mTwitterAuthProvider == null)
+                    mTwitterAuthProvider = new TwitterAuthProvider(mContext, mRef, mHandler);
                 break;
             case password:
-                if (mPasswordAuthHelper == null)
-                    mPasswordAuthHelper = new PasswordAuthHelper(mContext, mRef, mHandler);
+                if (mPasswordAuthProvider == null)
+                    mPasswordAuthProvider = new PasswordAuthProvider(mContext, mRef, mHandler);
                 break;
         }
 
