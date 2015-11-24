@@ -21,9 +21,9 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     private TokenAuthHandler mHandler;
 
     /* Abstract methods for Login Events */
-    protected abstract void onFirebaseLoginSuccess(AuthData authData);
+    protected abstract void onFirebaseLoggedIn(AuthData authData);
 
-    protected abstract void onFirebaseLogout();
+    protected abstract void onFirebaseLoggedOut();
 
     protected abstract void onFirebaseLoginProviderError(FirebaseLoginError firebaseError);
 
@@ -82,9 +82,9 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
-                    onFirebaseLoginSuccess(authData);
+                    onFirebaseLoggedIn(authData);
                 } else {
-                    onFirebaseLogout();
+                    onFirebaseLoggedOut();
                 }
             }
         };

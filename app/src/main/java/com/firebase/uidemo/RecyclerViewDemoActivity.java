@@ -47,6 +47,13 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
 
+        mSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFirebaseLoginPrompt();
+            }
+        });
+
         mRef = new Firebase("https://firebaseui.firebaseio.com/chat_3");
         mChatRef = mRef.limitToLast(50);
 
@@ -131,7 +138,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     }
 
     @Override
-    public void onFirebaseLoginSuccess(AuthData authData) {
+    public void onFirebaseLoggedIn(AuthData authData) {
         Log.i(TAG, "Logged in to " + authData.getProvider().toString());
         mAuthData = authData;
 
@@ -149,7 +156,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     }
 
     @Override
-    public void onFirebaseLogout() {
+    public void onFirebaseLoggedOut() {
         Log.i(TAG, "Logged out");
         mAuthData = null;
         name = "";
