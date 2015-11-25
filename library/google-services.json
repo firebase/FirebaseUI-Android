@@ -1,0 +1,41 @@
+{
+  "project_info": {
+    "project_id": "",
+    "project_number": "",
+    "name": ""
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "",
+        "client_id": "",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": ""
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "",
+            "certificate_hash": ""
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": ""
+        }
+      ],
+      "services": {
+      
+      }
+    }
+  ],
+  "client_info": [
+
+  ],
+  "ARTIFACT_VERSION": "1"
+}

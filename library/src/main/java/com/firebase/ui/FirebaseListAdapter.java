@@ -162,6 +162,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * @param v         The view to populate
      * @param model     The object containing the data used to populate the view
      */
+    @Deprecated
     protected void populateView(View v, T model) {
 
     }

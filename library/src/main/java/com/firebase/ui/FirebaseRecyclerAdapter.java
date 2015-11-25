@@ -60,14 +60,14 @@ import java.lang.reflect.InvocationTargetException;
  *         }
  *     }
  *
- *     FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder> adapter;
+ *     FirebaseRecyclerAdapter<ChatMessage, ChatMessageViewHolder> adapter;
  *     ref = new Firebase("https://<yourapp>.firebaseio.com");
  *
  *     RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
  *     recycler.setHasFixedSize(true);
  *     recycler.setLayoutManager(new LinearLayoutManager(this));
  *
- *     adapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
+ *     adapter = new FirebaseRecyclerAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
  *         public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
  *             chatMessageViewHolder.nameText.setText(chatMessage.getName());
  *             chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
@@ -80,7 +80,7 @@ import java.lang.reflect.InvocationTargetException;
  * @param <T> The Java class that maps to the type of objects stored in the Firebase location.
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
-public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
     Class<T> mModelClass;
     protected int mModelLayout;
@@ -95,7 +95,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      * @param ref        The Firebase location to watch for data changes. Can also be a slice of a location, using some
      *                   combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>
      */
-    public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref) {
+    public FirebaseRecyclerAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref) {
         mModelClass = modelClass;
         mModelLayout = modelLayout;
         mViewHolderClass = viewHolderClass;
@@ -132,7 +132,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      * @param ref        The Firebase location to watch for data changes. Can also be a slice of a location, using some
      *                   combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>
      */
-    public FirebaseRecyclerViewAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Firebase ref) {
+    public FirebaseRecyclerAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Firebase ref) {
         this(modelClass, modelLayout, viewHolderClass, (Query) ref);
     }
 
@@ -186,7 +186,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      * this class. The third argument is the item's position in the list.
      * <p>
      * Your implementation should populate the view using the data contained in the model.
-     * You should implement either this method or the other FirebaseRecyclerViewAdapter#populateViewHolder(VH, Object) method
+     * You should implement either this method or the other FirebaseRecyclerAdapter#populateViewHolder(VH, Object) method
      * but not both.
      *
      * @param viewHolder The view to populate
@@ -199,7 +199,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
     /**
      * This is a backwards compatible version of populateViewHolder.
      * <p>
-     * You should implement either this method or the other FirebaseRecyclerViewAdapter#populateViewHolder(VH, T, int) method
+     * You should implement either this method or the other FirebaseRecyclerAdapter#populateViewHolder(VH, T, int) method
      * but not both.
      *
      * @see FirebaseListAdapter#populateView(View, Object, int)
@@ -207,6 +207,7 @@ public abstract class FirebaseRecyclerViewAdapter<T, VH extends RecyclerView.Vie
      * @param viewHolder The view to populate
      * @param model      The object containing the data used to populate the view
      */
+    @Deprecated
     protected void populateViewHolder(VH viewHolder, T model) {
     };
 

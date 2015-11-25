@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:uidemo="http://schemas.android.com/apk/res-auto">
+        <item android:id="@+id/login_menu_item"
+            android:title="Login"
+            uidemo:showAsAction="always"/>
+        <item android:id="@+id/logout_menu_item"
+            android:title="Logout"
+            uidemo:showAsAction="always"/>
+</menu>
