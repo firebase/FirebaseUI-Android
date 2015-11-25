@@ -2,6 +2,7 @@ package com.firebase.ui.auth.core;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -72,6 +73,10 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mDialog.reset();
     }
 
+    public void setEnabledAuthProvider(SocialProvider provider) {
+        mDialog.setEnabledProvider(provider);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -113,12 +118,21 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         getFirebaseRef().addAuthStateListener(mAuthStateListener);
     }
 
-    public void setEnabledAuthProvider(SocialProvider provider) {
-        mDialog.setEnabledProvider(provider);
-    }
-
     protected void onStop() {
         super.onStop();
         getFirebaseRef().removeAuthStateListener(mAuthStateListener);
+        mDialog.cleanUp();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mDialog.cleanUp();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDialog.cleanUp();
     }
 }

@@ -40,15 +40,29 @@ FirebaseUI has a built-in dialog that you can use pop up to allow your users to 
 
 To use FirebaseUI to authenticate users we need to do a few things:
 
-1. Add our Facebook/Twitter/Google keys to strings.xml
-2. Add our activities to our AndroidManifest.xml
-3. Inherit from FirebaseLoginBaseActivity
-4. Enable authentication providers
-5. Call showFirebaseLoginDialog();
+1. Add SDK dependencies
+2. Add Facebook/Twitter/Google keys to strings.xml
+3. Change our AndroidManifest.xml
+4. Inherit from FirebaseLoginBaseActivity
+5. Enable authentication providers
+6. Call showFirebaseLoginDialog();
 
 We'll go into each of these steps below.
 
-### Add our Facebook/Twitter/Google keys to strings.xml
+### Add SDK dependencies
+
+Since FirebaseUI depends on the SDKs of various providers, we'll need to include those in our depedencies as well.
+
+```
+dependencies {
+    ...
+    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+    compile 'com.google.android.gms:play-services-auth:8.3.0'
+    compile 'org.twitter4j:twitter4j-core:4.0.2'
+}
+```
+
+### Add Facebook/Twitter/Google keys to strings.xml
 
 Open your `res/values/strings.xml` file and add the following lines, replacing `[VALUE]` with your key.
 
@@ -63,9 +77,15 @@ Keep in mind, these are all optional. You only have to provide values for the pr
 <string name="google_client_id">[VALUE]</string>
 ```
 
-### Add our activities to our AndroidManifest.xml
+### Change our AndroidManifest.xml
 
 Open your `manifests/AndroidManifest.xml` file. This will allow Android to recognize the various activities that FirebaseUI exposes.
+
+First though, double check that you've requested the `INTERNET` permission in your `<manifest>` tag.
+
+```xml
+<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+```
 
 If you're using Twitter authentication, add the following to your `<application>` tag.
 
@@ -96,15 +116,15 @@ If you're using Facebook authentication, add the following to your `<application
 
 If you're using Google authentication, add the following to your `<application>` tag.
 
-```
+```xml
 <!-- Google Configuration -->
  <meta-data
      android:name="com.firebase.ui.GoogleClientId"
      android:value="@string/google_client_id" />
  ```
 
- If you're using Google Sign-in you'll also need to ensure that your `google-services.json` file is created
- and placed in your app folder.
+**Note:** If you're using Google Sign-in you'll also need to ensure that your `google-services.json` file is created
+and placed in your app folder.
 
 ### Inherit from FirebaseLoginBaseActivity
 
@@ -127,12 +147,12 @@ public class MainActivity extends FirebaseLoginBaseActivity {
     }
 
     @Override
-    public void onFirebaseLoginSuccess(AuthData authData) {
+    public void onFirebaseLoggedIn(AuthData authData) {
         // TODO: Handle successful login
     }
 
     @Override
-    public void onFirebaseLogout() {
+    public void onFirebaseLoggedOut() {
         // TODO: Handle logout
     }
 

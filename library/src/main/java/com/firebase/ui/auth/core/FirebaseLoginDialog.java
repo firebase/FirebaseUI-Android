@@ -31,12 +31,6 @@ public class FirebaseLoginDialog extends DialogFragment {
     Context mContext;
     View mView;
 
-    public void onStart() {
-        super.onStart();
-        if (mGoogleAuthProvider != null) mGoogleAuthProvider.onStart();
-    }
-
-
     /*
     We need to be extra aggressive about building / destroying mGoogleauthProviders so we don't
     end up with two clients connected at the same time.
@@ -44,24 +38,34 @@ public class FirebaseLoginDialog extends DialogFragment {
 
     public void onStop() {
         super.onStop();
-        if (mGoogleAuthProvider != null) mGoogleAuthProvider.onStop();
+        cleanUp();
     }
 
     public void onDestroy() {
         super.onDestroy();
-        if (mGoogleAuthProvider != null) mGoogleAuthProvider.onStop();
+        cleanUp();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+       cleanUp();
+    }
+
+    public void cleanUp() {
+        if (mGoogleAuthProvider != null) mGoogleAuthProvider.cleanUp();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (mFacebookAuthProvider != null && mActiveProvider == SocialProvider.facebook) {
+        if (mFacebookAuthProvider != null) {
             mFacebookAuthProvider.mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
 
-        if (mTwitterAuthProvider != null && mActiveProvider == SocialProvider.twitter) {
+        if (mTwitterAuthProvider != null) {
             mTwitterAuthProvider.onActivityResult(requestCode, resultCode, data);
         }
 
-        if (mGoogleAuthProvider != null && mActiveProvider == SocialProvider.google) {
+        if (mGoogleAuthProvider != null) {
             mGoogleAuthProvider.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -120,12 +124,10 @@ public class FirebaseLoginDialog extends DialogFragment {
     }
 
     public FirebaseLoginDialog setHandler(final TokenAuthHandler handler) {
-        //TODO: Make this idiomatic?
-        final DialogFragment self = this;
         mHandler = new TokenAuthHandler() {
             @Override
             public void onSuccess(AuthData auth) {
-                self.dismiss();
+                dismiss();
                 handler.onSuccess(auth);
             }
 

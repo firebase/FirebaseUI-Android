@@ -97,13 +97,14 @@
                 android:background="@drawable/facebook_button"
                 android:textColor="#ffffff"
                 android:typeface="normal"
-                android:textAlignment="center"
+                android:textAlignment="gravity"
                 android:drawableLeft="@drawable/ic_facebook"
                 android:drawablePadding="10dp"
-                android:gravity="left|center"
                 android:textStyle="bold"
                 android:paddingLeft="12dp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="left"
+                android:gravity="left|center_vertical" />
 
             <Button
                 android:layout_width="match_parent"
@@ -113,13 +114,13 @@
                 android:background="@drawable/google_button"
                 android:textColor="#ffffff"
                 android:typeface="normal"
-                android:textAlignment="center"
+                android:textAlignment="gravity"
                 android:drawableLeft="@drawable/ic_google"
                 android:drawablePadding="10dp"
-                android:gravity="left|center"
                 android:textStyle="bold"
                 android:paddingLeft="12dp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:gravity="left|center_vertical" />
 
             <Button
                 android:layout_width="match_parent"
@@ -129,13 +130,13 @@
                 android:background="@drawable/twitter_button"
                 android:textColor="#ffffff"
                 android:typeface="normal"
-                android:textAlignment="center"
+                android:textAlignment="gravity"
                 android:drawableLeft="@drawable/ic_twitter"
                 android:drawablePadding="10dp"
-                android:gravity="left|center"
                 android:textStyle="bold"
                 android:paddingLeft="12dp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:gravity="left|center_vertical" />
 
         </LinearLayout>
     </LinearLayout>

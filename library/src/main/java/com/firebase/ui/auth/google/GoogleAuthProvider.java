@@ -78,6 +78,9 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
                 .enableAutoManage((FragmentActivity) mActivity, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+        mGoogleApiClient.connect();
+
     }
 
     public String getProviderName() { return PROVIDER_NAME; }
@@ -137,6 +140,7 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
         }
 
         if (requestCode == GoogleActions.SIGN_IN && resultCode == 0) {
+            Log.d(TAG, data.getExtras().keySet().toString());
             mHandler.onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
         }
     }
@@ -164,13 +168,8 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
         mHandler.onProviderError(firebaseError);
     }
 
-    public void onStart() {
-        if (mGoogleApiClient != null)
-            mGoogleApiClient.connect();
-    }
-
-    public void onStop() {
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+    public void cleanUp() {
+        if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
             mGoogleApiClient.stopAutoManage((FragmentActivity) mActivity);
         }
