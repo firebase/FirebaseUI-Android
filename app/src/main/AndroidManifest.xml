@@ -2,7 +2,6 @@
     package="com.firebase.uidemo">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +21,7 @@
         </activity>
 
         <!-- Twitter Configuration -->
-        <activity android:name="com.firebase.ui.auth.TwitterPromptActivity" />
+        <activity android:name="com.firebase.ui.auth.twitter.TwitterPromptActivity" />
         <meta-data
             android:name="com.firebase.ui.TwitterKey"
             android:value="@string/twitter_app_key"/>
@@ -39,6 +38,11 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
+        <!-- Google Configuration -->
+        <meta-data
+            android:name="com.firebase.ui.GoogleClientId"
+            android:value="@string/google_client_id" />
 
 
     </application>

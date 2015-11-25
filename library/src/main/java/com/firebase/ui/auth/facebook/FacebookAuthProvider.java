@@ -1,7 +1,8 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.facebook;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -14,25 +15,29 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
+import com.firebase.ui.auth.core.FirebaseAuthProvider;
+import com.firebase.ui.auth.core.FirebaseResponse;
+import com.firebase.ui.auth.core.FirebaseLoginError;
+import com.firebase.ui.auth.core.FirebaseOAuthToken;
+import com.firebase.ui.auth.core.SocialProvider;
+import com.firebase.ui.auth.core.TokenAuthHandler;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-public class FacebookAuthHelper extends FirebaseAuthHelper {
-
-    private final String LOG_TAG = "FacebookAuthHelper";
+public class FacebookAuthProvider extends FirebaseAuthProvider {
 
     public static final String PROVIDER_NAME = "facebook";
-
-    private LoginManager mLoginManager;
+    public static final SocialProvider PROVIDER_TYPE = SocialProvider.facebook;
+    private final String TAG = "FacebookAuthProvider";
     public CallbackManager mCallbackManager;
+    private LoginManager mLoginManager;
     private TokenAuthHandler mHandler;
     private Activity mActivity;
     private Firebase mRef;
     private Boolean isReady = false;
 
-    public FacebookAuthHelper(Context context, Firebase ref, final TokenAuthHandler handler) {
+    public FacebookAuthProvider(Context context, Firebase ref, final TokenAuthHandler handler) {
         mActivity = (Activity) context;
         FacebookSdk.sdkInitialize(context.getApplicationContext());
 
@@ -56,12 +61,12 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
 
                 @Override
                 public void onCancel() {
-                    mHandler.onUserError(new FirebaseError(0, "User closed login prompt."));
+                    mHandler.onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
                 }
 
                 @Override
                 public void onError(FacebookException ex) {
-                    mHandler.onProviderError(new FirebaseError(1, ex.toString()));
+                    mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, ex.toString()));
                 }
             }
         );
@@ -76,12 +81,12 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
         } catch (NullPointerException e) {}
 
         if (facebookAppId == null) {
-            mHandler.onProviderError(new FirebaseError(FirebaseStatuses.PROVIDER_ERROR, "Invalid Facebook Application ID, is it set in your AndroidManifest.xml?"));
+            mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.MISSING_PROVIDER_APP_ID, "Missing Facebook Application ID, is it set in your AndroidManifest.xml?"));
             return;
         }
 
         if (facebookAppId.compareTo("") == 0) {
-            mHandler.onProviderError(new FirebaseError(FirebaseStatuses.PROVIDER_ERROR, "Invalid Facebook Application ID, is it set in your res/values/strings.xml?"));
+            mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.INVALID_PROVIDER_APP_ID, "Invalid Facebook Application ID, is it set in your res/values/strings.xml?"));
             return;
         }
 
@@ -95,10 +100,12 @@ public class FacebookAuthHelper extends FirebaseAuthHelper {
         }
     }
 
-    public String getProviderName() {
-        return PROVIDER_NAME;
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    public String getProviderName() { return PROVIDER_NAME; }
+    public SocialProvider getProviderType() { return PROVIDER_TYPE; };
     public Firebase getFirebaseRef() {return mRef; }
 
     public void logout() {

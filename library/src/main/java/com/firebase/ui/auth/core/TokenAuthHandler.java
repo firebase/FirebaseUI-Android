@@ -1,10 +1,10 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.core;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.FirebaseError;
 
 public interface TokenAuthHandler {
     void onSuccess(AuthData auth);
-    void onUserError(FirebaseError err);
-    void onProviderError(FirebaseError err);
+    void onUserError(FirebaseLoginError err);
+    void onProviderError(FirebaseLoginError err);
 }

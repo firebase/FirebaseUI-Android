@@ -1,4 +1,4 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.core;
 
 import android.util.Log;
 
@@ -9,16 +9,17 @@ import com.firebase.client.FirebaseError;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class FirebaseAuthHelper {
+public abstract class FirebaseAuthProvider {
     public abstract void logout();
     public abstract String getProviderName();
     public abstract Firebase getFirebaseRef();
+    public abstract SocialProvider getProviderType();
 
     public void login() {
-        Log.d("FirebaseAuthHelper", "Login() is not supported for provider type " + getProviderName());
+        Log.d("FirebaseAuthProvider", "Login() is not supported for provider type " + getProviderName());
     };
     public void login(String email, String password) {
-        Log.d("FirebaseAuthHelper", "Login(String email, String password) is not supported for provider type " + getProviderName());
+        Log.d("FirebaseAuthProvider", "Login(String email, String password) is not supported for provider type " + getProviderName());
     };
 
     public void onFirebaseTokenReceived(FirebaseOAuthToken token, TokenAuthHandler handler) {
@@ -29,13 +30,12 @@ public abstract class FirebaseAuthHelper {
         Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
-                // Do nothing. Auth updates are handled in the AuthStateListener
                 handler.onSuccess(authData);
             }
 
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
-                handler.onProviderError(new FirebaseError(0, "Make sure " + getProviderName() + " login is enabled and configured in your Firebase."));
+                handler.onProviderError(new FirebaseLoginError(FirebaseResponse.PROVIDER_NOT_ENABLED, "Make sure " + getProviderName() + " login is enabled and configured in your Firebase."));
             }
         };
 
