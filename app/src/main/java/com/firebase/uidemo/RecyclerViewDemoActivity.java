@@ -101,9 +101,9 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        setEnabledAuthProvider(SocialProvider.facebook);
-        setEnabledAuthProvider(SocialProvider.twitter);
-        setEnabledAuthProvider(SocialProvider.google);
+//        setEnabledAuthProvider(SocialProvider.facebook);
+//        setEnabledAuthProvider(SocialProvider.twitter);
+//        setEnabledAuthProvider(SocialProvider.google);
         setEnabledAuthProvider(SocialProvider.password);
     }
 
