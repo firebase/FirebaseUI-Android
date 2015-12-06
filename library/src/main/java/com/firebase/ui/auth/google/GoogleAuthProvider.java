@@ -116,12 +116,8 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
     }
 
     public void login() {
-        if (mGoogleApiClient.isConnected()) {
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
             mActivity.startActivityForResult(signInIntent, GoogleActions.SIGN_IN);
-        } else {
-            onConnectedAction = GoogleActions.SIGN_IN;
-        }
     }
     private void revokeAccess() {
         Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
