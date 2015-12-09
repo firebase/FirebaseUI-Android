@@ -4,7 +4,7 @@
         <shape
             android:shape="rectangle"
             xmlns:android="http://schemas.android.com/apk/res/android">
-            <solid android:color="#9a362d" />
+            <solid android:color="#0F52C1" />
             <corners android:radius="3dp" />
         </shape>
     </item>
@@ -12,7 +12,7 @@
         <shape
             android:shape="rectangle"
             xmlns:android="http://schemas.android.com/apk/res/android">
-            <solid android:color="#DC4E41" />
+            <solid android:color="#4285F4" />
             <corners android:radius="3dp" />
         </shape>
     </item>
