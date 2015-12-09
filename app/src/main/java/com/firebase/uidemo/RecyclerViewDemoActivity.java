@@ -30,9 +30,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     public static String TAG = "FirebaseUI.chat";
     private Firebase mRef;
     private Query mChatRef;
-    private AuthData mAuthData;
-    private String name;
-    private String uid;
+    private String mName;
     private Button mSendButton;
     private EditText mMessageEdit;
 
@@ -60,7 +58,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Chat chat = new Chat(name, mAuthData.getUid(), mMessageEdit.getText().toString());
+            Chat chat = new Chat(mName, getAuth().getUid(), mMessageEdit.getText().toString());
             mRef.push().setValue(chat, new Firebase.CompletionListener() {
                 @Override
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -83,11 +81,11 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
         mRecycleViewAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(Chat.class, R.layout.message, ChatHolder.class, mChatRef) {
             @Override
-            public void populateViewHolder(ChatHolder chatView, Chat chat) {
+            public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {
                 chatView.setName(chat.getName());
                 chatView.setText(chat.getText());
 
-                if (mAuthData != null && chat.getUid().equals(mAuthData.getUid())) {
+                if (getAuth() != null && chat.getUid().equals(getAuth().getUid())) {
                     chatView.setIsSender(true);
                 } else {
                     chatView.setIsSender(false);
@@ -101,9 +99,9 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        setEnabledAuthProvider(SocialProvider.facebook);
-//        setEnabledAuthProvider(SocialProvider.twitter);
-//        setEnabledAuthProvider(SocialProvider.google);
+        setEnabledAuthProvider(SocialProvider.facebook);
+        setEnabledAuthProvider(SocialProvider.twitter);
+        setEnabledAuthProvider(SocialProvider.google);
         setEnabledAuthProvider(SocialProvider.password);
     }
 
@@ -116,10 +114,10 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.login_menu_item).setVisible(mAuthData == null);
-        menu.findItem(R.id.logout_menu_item).setVisible(mAuthData != null);
-        mSendButton.setEnabled(mAuthData != null);
-        mMessageEdit.setEnabled(mAuthData != null);
+        menu.findItem(R.id.login_menu_item).setVisible(getAuth() == null);
+        menu.findItem(R.id.logout_menu_item).setVisible(getAuth() != null);
+        mSendButton.setEnabled(getAuth() != null);
+        mMessageEdit.setEnabled(getAuth() != null);
 
         return true;
     }
@@ -140,14 +138,13 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     public void onFirebaseLoggedIn(AuthData authData) {
         Log.i(TAG, "Logged in to " + authData.getProvider().toString());
-        mAuthData = authData;
 
-        switch (mAuthData.getProvider()) {
+        switch (authData.getProvider()) {
             case "password":
-                name = (String) mAuthData.getProviderData().get("email");
+                mName = (String) authData.getProviderData().get("email");
                 break;
             default:
-                name = (String) mAuthData.getProviderData().get("displayName");
+                mName = (String) authData.getProviderData().get("displayName");
                 break;
         }
 
@@ -158,8 +155,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     public void onFirebaseLoggedOut() {
         Log.i(TAG, "Logged out");
-        mAuthData = null;
-        name = "";
+        mName = "";
         invalidateOptionsMenu();
         mRecycleViewAdapter.notifyDataSetChanged();
     }

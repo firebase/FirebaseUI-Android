@@ -12,22 +12,44 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     private final String TAG = "FirebaseLoginBaseAct";
 
     private Firebase.AuthStateListener mAuthStateListener;
+    private AuthData mAuthData;
     private FirebaseLoginDialog mDialog;
     private TokenAuthHandler mHandler;
+
+
+    /**
+     * Subclasses of this activity must implement this method and return a valid Firebase reference that
+     * can be used to call authentication related methods on. The method is guaranteed *not* to be called
+     * before onCreate() has finished.
+     *
+     * @return a Firebase reference that can be used to call authentication related methods on
+     */
+    protected abstract Firebase getFirebaseRef();
+
+    /**
+     * Returns the data for the currently authenticated users, or null if no user is authenticated.
+     *
+     * @return the data for the currently authenticated users, or null if no user is authenticated.
+     */
+    public AuthData getAuth() {
+        return mAuthData;
+    }
 
     /**
      * Subclasses of this activity may implement this method to handle when a user logs in.
      *
      * @return void
      */
-    protected abstract void onFirebaseLoggedIn(AuthData authData);
+    protected void onFirebaseLoggedIn(AuthData authData) {
+    }
 
     /**
      * Subclasses of this activity may implement this method to handle when a user logs out.
      *
      * @return void
      */
-    protected abstract void onFirebaseLoggedOut();
+    protected void onFirebaseLoggedOut() {
+    }
 
     /**
      * Subclasses of this activity may implement this method to handle any potential provider errors
@@ -44,14 +66,6 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      * @return void
      */
     protected abstract void onFirebaseLoginUserError(FirebaseLoginError firebaseError);
-
-    /**
-     * Subclasses of this activity must implement this method and return a valid Firebase reference that
-     * can be used to call authentication related methods on.
-     *
-     * @return a Firebase reference that can be used to call authentication related methods on
-     */
-    protected abstract Firebase getFirebaseRef();
 
     public void logout() {
         mDialog.logout();
@@ -102,8 +116,10 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(AuthData authData) {
                 if (authData != null) {
+                    mAuthData = authData;
                     onFirebaseLoggedIn(authData);
                 } else {
+                    mAuthData = null;
                     onFirebaseLoggedOut();
                 }
             }
