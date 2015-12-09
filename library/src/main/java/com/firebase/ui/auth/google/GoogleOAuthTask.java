@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseResponse;
@@ -12,6 +13,8 @@ import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
 
 class GoogleOAuthTask extends AsyncTask<String, Integer, String> {
+    private final String TAG = "GoogleOAuthTask";
+
     private Context mContext;
     private GoogleOAuthTaskHandler mHandler;
 
@@ -21,11 +24,11 @@ class GoogleOAuthTask extends AsyncTask<String, Integer, String> {
         try {
             token = GoogleAuthUtil.getToken(mContext, emails[0], "oauth2:profile email");
         } catch (UserRecoverableAuthException e) {
-
+            Log.e(TAG, "Error getting token", e);
         } catch (GoogleAuthException e) {
-
+            Log.e(TAG, "Error getting token", e);
         } catch (java.io.IOException e) {
-
+            Log.e(TAG, "Error getting token", e);
         }
         if (!token.equals("")) return token;
         else return "";
