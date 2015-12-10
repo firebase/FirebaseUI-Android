@@ -35,7 +35,7 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
     private TokenAuthHandler mHandler;
     private Activity mActivity;
     private Firebase mRef;
-    private Integer onConnectedAction;
+    private Integer onConnectedAction = 0;
 
     public GoogleAuthProvider(Context context, Firebase ref, TokenAuthHandler handler) {
         mActivity = (Activity) context;
@@ -48,6 +48,7 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
 
         mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
                 .enableAutoManage((FragmentActivity) mActivity, this)
+                .addConnectionCallbacks(this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -95,6 +96,9 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
             mActivity.startActivityForResult(signInIntent, GoogleActions.SIGN_IN);
         } else {
             onConnectedAction = GoogleActions.SIGN_IN;
+            if (!mGoogleApiClient.isConnecting()) {
+                mGoogleApiClient.connect();
+            }
         }
     }
     private void revokeAccess() {
