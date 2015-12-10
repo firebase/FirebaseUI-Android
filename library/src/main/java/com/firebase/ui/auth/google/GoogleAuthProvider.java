@@ -3,8 +3,6 @@ package com.firebase.ui.auth.google;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -44,33 +42,7 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
         mRef = ref;
         mHandler = handler;
 
-        String googleClientId = "";
-
-        try {
-            ApplicationInfo ai = mActivity.getPackageManager().getApplicationInfo(mActivity.getPackageName(), PackageManager.GET_META_DATA);
-            Bundle bundle = ai.metaData;
-            googleClientId = bundle.getString("com.firebase.ui.GoogleClientId");
-        } catch (PackageManager.NameNotFoundException e) {
-        } catch (NullPointerException e) {}
-
-        if (googleClientId == null) {
-            FirebaseLoginError error = new FirebaseLoginError(
-                    FirebaseResponse.MISSING_PROVIDER_APP_KEY,
-                    "Missing Google client ID, is it set in your AndroidManifest.xml?");
-            mHandler.onProviderError(error);
-            return;
-        }
-
-        if (googleClientId.compareTo("") == 0) {
-            FirebaseLoginError error = new FirebaseLoginError(
-                    FirebaseResponse.INVALID_PROVIDER_APP_KEY,
-                    "Invalid Google client ID, is it set in your res/values/strings.xml?");
-            mHandler.onProviderError(error);
-            return;
-        }
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(googleClientId)
                 .requestEmail()
                 .build();
 
@@ -99,7 +71,9 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
     }
 
     @Override
-    public void onConnectionSuspended(int i) {}
+    public void onConnectionSuspended(int i) {
+
+    }
 
     public void logout() {
         if (mGoogleApiClient.isConnected()) {
@@ -153,6 +127,9 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
             googleOAuthTask.setContext(mActivity);
             googleOAuthTask.setHandler(this);
             googleOAuthTask.execute(acct.getEmail());
+        }
+        else {
+            mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, result.getStatus().toString()));
         }
     }
 

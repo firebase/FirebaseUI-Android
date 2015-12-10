@@ -39,12 +39,6 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <!-- Google Configuration -->
-        <meta-data
-            android:name="com.firebase.ui.GoogleClientId"
-            android:value="@string/google_client_id" />
-
-
     </application>
 
 </manifest>
