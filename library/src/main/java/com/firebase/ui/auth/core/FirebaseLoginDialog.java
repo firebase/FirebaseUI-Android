@@ -35,11 +35,13 @@ public class FirebaseLoginDialog extends DialogFragment {
     end up with two clients connected at the same time.
      */
 
+    @Override
     public void onStop() {
         super.onStop();
         cleanUp();
     }
 
+    @Override
     public void onDestroy() {
         super.onDestroy();
         cleanUp();
