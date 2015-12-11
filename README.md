@@ -62,9 +62,9 @@ dependencies {
 }
 ```
 
-### Add Facebook/Twitter/Google keys to strings.xml
+### Add Facebook/Twitter/Google keys
 
-Open your `res/values/strings.xml` file and add the following lines, replacing `[VALUE]` with your key.
+Open your application's `res/values/strings.xml` file and add the following lines, replacing `[VALUE]` with your key.
 
 Keep in mind, these are all optional. You only have to provide values for the providers you plan to use.
 
@@ -74,8 +74,9 @@ Keep in mind, these are all optional. You only have to provide values for the pr
 <string name="facebook_app_id">[VALUE]</string>
 <string name="twitter_app_key">[VALUE]</string>
 <string name="twitter_app_secret">[VALUE]</string>
-<string name="google_client_id">[VALUE]</string>
 ```
+
+If you're using Facebook authentication, add the following to your `<application>` tag.
 
 ### Change our AndroidManifest.xml
 
@@ -100,8 +101,6 @@ If you're using Twitter authentication, add the following to your `<application>
     android:value="@string/twitter_app_secret"/>
 ```
 
-If you're using Facebook authentication, add the following to your `<application>` tag.
-
 ```xml
 <!-- Facebook Configuration -->
 <activity
@@ -114,7 +113,7 @@ If you're using Facebook authentication, add the following to your `<application
     android:value="@string/facebook_app_id" />
 ```
 
-If you're using Google authentication, you'll place your `google-services.json` in the app folder.
+If you're using Google authentication, place your `google-services.json` in the app folder.
 
 ### Inherit from FirebaseLoginBaseActivity
 
