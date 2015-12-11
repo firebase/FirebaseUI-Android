@@ -51,7 +51,7 @@ We'll go into each of these steps below.
 
 ### Add SDK dependencies
 
-Since FirebaseUI depends on the SDKs of various providers, we'll need to include those in our depedencies as well.
+Since FirebaseUI depends on the SDKs of various providers, we'll need to include those in our dependencies as well.
 
 ```
 dependencies {
@@ -114,17 +114,7 @@ If you're using Facebook authentication, add the following to your `<application
     android:value="@string/facebook_app_id" />
 ```
 
-If you're using Google authentication, add the following to your `<application>` tag.
-
-```xml
-<!-- Google Configuration -->
- <meta-data
-     android:name="com.firebase.ui.GoogleClientId"
-     android:value="@string/google_client_id" />
- ```
-
-**Note:** If you're using Google Sign-in you'll also need to ensure that your `google-services.json` file is created
-and placed in your app folder.
+If you're using Google authentication, you'll place your `google-services.json` in the app folder.
 
 ### Inherit from FirebaseLoginBaseActivity
 
@@ -147,16 +137,6 @@ public class MainActivity extends FirebaseLoginBaseActivity {
     }
 
     @Override
-    public void onFirebaseLoggedIn(AuthData authData) {
-        // TODO: Handle successful login
-    }
-
-    @Override
-    public void onFirebaseLoggedOut() {
-        // TODO: Handle logout
-    }
-
-    @Override
     public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {
         // TODO: Handle an error from the authentication provider
     }
@@ -167,6 +147,23 @@ public class MainActivity extends FirebaseLoginBaseActivity {
     }
 }
 ```
+
+In addition you can override these methods to customize what happens when a user logs in or out:
+
+```
+    @Override
+    public void onFirebaseLoggedIn(AuthData authData) {
+        // TODO: Handle successful login
+    }
+
+    @Override
+    public void onFirebaseLoggedOut() {
+        // TODO: Handle logout
+    }
+
+```
+
+If you want to know the current `AuthData` at any point, you can call `getAuth()`. This will return the `AuthData` for the currently authenticated user, or `null` if no user is authenticated.
 
 ### Enable Authentication Providers
 
