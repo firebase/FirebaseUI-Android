@@ -76,7 +76,7 @@ Keep in mind, these are all optional. You only have to provide values for the pr
 <string name="twitter_app_secret">[VALUE]</string>
 ```
 
-If you're using Facebook authentication, add the following to your `<application>` tag.
+If you're using Google authentication, place your `google-services.json` in the app folder.
 
 ### Change our AndroidManifest.xml
 
@@ -101,6 +101,8 @@ If you're using Twitter authentication, add the following to your `<application>
     android:value="@string/twitter_app_secret"/>
 ```
 
+If you're using Facebook authentication, add the following to your `<application>` tag.
+
 ```xml
 <!-- Facebook Configuration -->
 <activity
@@ -112,8 +114,6 @@ If you're using Twitter authentication, add the following to your `<application>
     android:name="com.facebook.sdk.ApplicationId"
     android:value="@string/facebook_app_id" />
 ```
-
-If you're using Google authentication, place your `google-services.json` in the app folder.
 
 ### Inherit from FirebaseLoginBaseActivity
 
