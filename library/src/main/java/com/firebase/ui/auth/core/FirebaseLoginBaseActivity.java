@@ -7,6 +7,11 @@ import android.util.Log;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 
+/**
+ * You can subclass this activity in your app to easily get authentication working. If you already
+ * have a base class and cannot switch, copy the relevant parts of this base activity into your own
+ * activity.
+ */
 public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
     private final String TAG = "FirebaseLoginBaseAct";
