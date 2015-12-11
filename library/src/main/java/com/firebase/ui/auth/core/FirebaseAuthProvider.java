@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.core;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.firebase.client.AuthData;
@@ -10,10 +11,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class FirebaseAuthProvider {
+    private final Context mContext;
+    private final SocialProvider mProviderType;
+    private final String mProviderName;
+    private final Firebase mRef;
+    private final TokenAuthHandler mHandler;
+
     public abstract void logout();
-    public abstract String getProviderName();
-    public abstract Firebase getFirebaseRef();
-    public abstract SocialProvider getProviderType();
+    public Context getContext() { return mContext; }
+    public SocialProvider getProviderType() { return mProviderType; }
+    public String getProviderName() { return mProviderName; }
+    public Firebase getFirebaseRef() { return mRef; }
+    public TokenAuthHandler getHandler() { return mHandler; }
+
+    protected FirebaseAuthProvider(Context context, SocialProvider providerType, String providerName, Firebase ref, TokenAuthHandler handler) {
+        mContext = context;
+        mProviderType = providerType;
+        mProviderName = providerName;
+        mRef = ref;
+        mHandler = handler;
+    }
 
     public void login() {
         Log.d("FirebaseAuthProvider", "Login() is not supported for provider type " + getProviderName());

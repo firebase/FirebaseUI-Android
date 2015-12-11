@@ -99,10 +99,10 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        setEnabledAuthProvider(SocialProvider.facebook);
-        setEnabledAuthProvider(SocialProvider.twitter);
-        setEnabledAuthProvider(SocialProvider.google);
-        setEnabledAuthProvider(SocialProvider.password);
+        setEnabledAuthProvider(SocialProvider.FACEBOOK);
+        setEnabledAuthProvider(SocialProvider.TWITTER);
+        setEnabledAuthProvider(SocialProvider.GOOGLE);
+        setEnabledAuthProvider(SocialProvider.PASSWORD);
     }
 
     @Override
@@ -162,13 +162,14 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     @Override
     public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {
-        Log.i(TAG, "Login provider error: " + firebaseError.toString());
+        Log.e(TAG, "Login provider error: " + firebaseError.toString());
+        resetFirebaseLoginDialog();
     }
 
     @Override
     public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {
+        Log.e(TAG, "Login user error: "+firebaseError.toString());
         resetFirebaseLoginDialog();
-        Log.i(TAG, "Login user error: " + firebaseError.toString());
     }
 
     @Override

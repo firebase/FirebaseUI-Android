@@ -27,24 +27,17 @@ import java.util.Collection;
 
 public class FacebookAuthProvider extends FirebaseAuthProvider {
 
-    public static final String PROVIDER_NAME = "facebook";
-    public static final SocialProvider PROVIDER_TYPE = SocialProvider.facebook;
     private final String TAG = "FacebookAuthProvider";
     public CallbackManager mCallbackManager;
     private LoginManager mLoginManager;
-    private TokenAuthHandler mHandler;
-    private Activity mActivity;
-    private Firebase mRef;
     private Boolean isReady = false;
 
-    public FacebookAuthProvider(Context context, Firebase ref, final TokenAuthHandler handler) {
-        mActivity = (Activity) context;
+    public FacebookAuthProvider(Context context, SocialProvider providerType, String providerName, Firebase ref, final TokenAuthHandler handler) {
+        super(context, providerType, providerName, ref, handler);
         FacebookSdk.sdkInitialize(context.getApplicationContext());
 
         mLoginManager = LoginManager.getInstance();
         mCallbackManager = CallbackManager.Factory.create();
-        mHandler = handler;
-        mRef = ref;
 
         mLoginManager.registerCallback(mCallbackManager,
             new FacebookCallback<LoginResult>() {
@@ -53,7 +46,7 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
                     AccessToken token = loginResult.getAccessToken();
 
                     FirebaseOAuthToken foToken = new FirebaseOAuthToken(
-                            PROVIDER_NAME,
+                            getProviderName(),
                             token.getToken().toString());
 
                     onFirebaseTokenReceived(foToken, handler);
@@ -61,12 +54,12 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
 
                 @Override
                 public void onCancel() {
-                    mHandler.onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
+                    getHandler().onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
                 }
 
                 @Override
                 public void onError(FacebookException ex) {
-                    mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, ex.toString()));
+                    getHandler().onProviderError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, ex.toString()));
                 }
             }
         );
@@ -74,19 +67,19 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
         String facebookAppId = "";
 
         try {
-            ApplicationInfo ai = mActivity.getPackageManager().getApplicationInfo(mActivity.getPackageName(), PackageManager.GET_META_DATA);
+            ApplicationInfo ai = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = ai.metaData;
             facebookAppId = bundle.getString("com.facebook.sdk.ApplicationId");
         } catch (PackageManager.NameNotFoundException e) {
         } catch (NullPointerException e) {}
 
         if (facebookAppId == null) {
-            mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.MISSING_PROVIDER_APP_ID, "Missing Facebook Application ID, is it set in your AndroidManifest.xml?"));
+            getHandler().onProviderError(new FirebaseLoginError(FirebaseResponse.MISSING_PROVIDER_APP_ID, "Missing Facebook Application ID, is it set in your AndroidManifest.xml?"));
             return;
         }
 
         if (facebookAppId.compareTo("") == 0) {
-            mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.INVALID_PROVIDER_APP_ID, "Invalid Facebook Application ID, is it set in your res/values/strings.xml?"));
+            getHandler().onProviderError(new FirebaseLoginError(FirebaseResponse.INVALID_PROVIDER_APP_ID, "Invalid Facebook Application ID, is it set in your res/values/strings.xml?"));
             return;
         }
 
@@ -96,17 +89,13 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
     public void login() {
         if (isReady) {
             Collection<String> permissions = Arrays.asList("public_profile");
-            mLoginManager.logInWithReadPermissions(mActivity, permissions);
+            mLoginManager.logInWithReadPermissions((Activity)getContext(), permissions);
         }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
-
-    public String getProviderName() { return PROVIDER_NAME; }
-    public SocialProvider getProviderType() { return PROVIDER_TYPE; };
-    public Firebase getFirebaseRef() {return mRef; }
 
     public void logout() {
         mLoginManager.logOut();
