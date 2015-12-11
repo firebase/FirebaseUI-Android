@@ -57,7 +57,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * Subclasses of this activity may implement this method to handle any potential provider errors
+     * Subclasses of this activity should implement this method to handle any potential provider errors
      * like OAuth or other internal errors.
      *
      * @return void
@@ -65,13 +65,17 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     protected abstract void onFirebaseLoginProviderError(FirebaseLoginError firebaseError);
 
     /**
-     * Subclasses of this activity may implement this method to handle any potential user errors
+     * Subclasses of this activity should implement this method to handle any potential user errors
      * like entering an incorrect password or closing the login dialog.
      *
      * @return void
      */
     protected abstract void onFirebaseLoginUserError(FirebaseLoginError firebaseError);
 
+    /**
+     * Calling this method will log out the currently authenticated user. It is only legal to call
+     * this method after the `onStart()` method has completed.
+     */
     public void logout() {
         mDialog.logout();
     }
@@ -80,6 +84,11 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mDialog.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Calling this method displays the Firebase login dialog over the current activity, allowing the
+     * user to authenticate with any of the configured providers. It is only legal to call this
+     * method after the `onStart()` method has completed.
+     */
     public void showFirebaseLoginPrompt() {
         mDialog.show(getFragmentManager(), "");
     }
@@ -92,6 +101,11 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mDialog.reset();
     }
 
+    /**
+     * Enables authentication with the specified provider.
+     *
+     * @param provider the provider to enable.
+     */
     public void setEnabledAuthProvider(SocialProvider provider) {
         mDialog.setEnabledProvider(provider);
     }
@@ -139,6 +153,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         getFirebaseRef().addAuthStateListener(mAuthStateListener);
     }
 
+    @Override
     protected void onStop() {
         super.onStop();
         getFirebaseRef().removeAuthStateListener(mAuthStateListener);
