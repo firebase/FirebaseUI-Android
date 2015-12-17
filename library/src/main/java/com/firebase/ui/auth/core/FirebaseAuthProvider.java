@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class FirebaseAuthProvider {
+    private static final String TAG = "FirebaseAuthProvider";
     private final Context mContext;
     private final SocialProvider mProviderType;
     private final String mProviderName;
@@ -52,7 +53,8 @@ public abstract class FirebaseAuthProvider {
 
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
-                handler.onProviderError(new FirebaseLoginError(FirebaseResponse.PROVIDER_NOT_ENABLED, "Make sure " + getProviderName() + " login is enabled and configured in your Firebase."));
+                Log.e(TAG, "Authentication failed: "+firebaseError.toString());
+                handler.onProviderError(new FirebaseLoginError(FirebaseResponse.PROVIDER_NOT_ENABLED, "Make sure " + getProviderName() + " login is enabled and configured in your Firebase. ("+firebaseError.toString()+")"));
             }
         };
 
