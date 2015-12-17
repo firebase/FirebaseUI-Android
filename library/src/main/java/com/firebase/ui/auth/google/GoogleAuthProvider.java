@@ -115,7 +115,6 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
             GoogleSignInAccount acct = result.getSignInAccount();
-            acct.getServerAuthCode();
             GoogleOAuthTask googleOAuthTask = new GoogleOAuthTask();
             googleOAuthTask.setContext(getContext());
             googleOAuthTask.setHandler(this);
