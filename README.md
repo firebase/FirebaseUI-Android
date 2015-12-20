@@ -124,7 +124,8 @@ If you're using Google authentication, add the following to your `<application>`
  ```
 
 **Note:** If you're using Google Sign-in you'll also need to ensure that your `google-services.json` file is created
-and placed in your app folder.
+and placed in your app folder. To get one for your project, you can do so [on this link]
+(https://developers.google.com/identity/sign-in/android/start).
 
 ### Inherit from FirebaseLoginBaseActivity
 
