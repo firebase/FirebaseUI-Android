@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.core;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.firebase.client.AuthData;
@@ -34,14 +35,26 @@ public abstract class FirebaseAuthProvider {
     }
 
     public void login() {
-        Log.d("FirebaseAuthProvider", "Login() is not supported for provider type " + getProviderName());
+        Log.w("FirebaseAuthProvider", "Login() is not supported for provider type " + getProviderName());
     };
     public void login(String email, String password) {
-        Log.d("FirebaseAuthProvider", "Login(String email, String password) is not supported for provider type " + getProviderName());
+        Log.w("FirebaseAuthProvider", "Login(String email, String password) is not supported for provider type " + getProviderName());
     };
 
     public void onFirebaseTokenReceived(FirebaseOAuthToken token, TokenAuthHandler handler) {
         authenticateRefWithOAuthFirebasetoken(token, handler);
+    }
+
+    /**
+     * Override this method in your provider subclass if you start an activity from the login() method.
+     * Receive the result from a previous call to startActivityForResult(Intent, int). This follows
+     * the related Activity API as described there in onActivityResult(int, int, Intent).
+     * @param requestCode The integer request code originally supplied to startActivityForResult(),
+     *                    allowing you to identify who this result came from/
+     * @param resultCode The integer result code returned by the child activity through its setResult().
+     * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     */
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
     }
 
     private void authenticateRefWithOAuthFirebasetoken(FirebaseOAuthToken token, final TokenAuthHandler handler) {

@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -23,9 +24,9 @@ import java.util.Map;
 
 public class FirebaseLoginDialog extends DialogFragment {
 
-    Map<SocialProvider, FirebaseAuthProvider> mEnabledProvidersByType = new HashMap<>();
+    Map<AuthProviderType, FirebaseAuthProvider> mEnabledProvidersByType = new HashMap<>();
     TokenAuthHandler mHandler;
-    SocialProvider mActiveProvider;
+    AuthProviderType mActiveProvider;
     Firebase mRef;
     Context mContext;
     View mView;
@@ -58,16 +59,8 @@ public class FirebaseLoginDialog extends DialogFragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (getFacebookAuthProvider() != null) {
-            getFacebookAuthProvider().mCallbackManager.onActivityResult(requestCode, resultCode, data);
-        }
-
-        if (getTwitterAuthProvider() != null) {
-            getTwitterAuthProvider().onActivityResult(requestCode, resultCode, data);
-        }
-
-        if (getGoogleAuthProvider() != null) {
-            getGoogleAuthProvider().onActivityResult(requestCode, resultCode, data);
+        for (FirebaseAuthProvider provider: mEnabledProvidersByType.values()) {
+            provider.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -78,7 +71,7 @@ public class FirebaseLoginDialog extends DialogFragment {
 
         mView = inflater.inflate(R.layout.fragment_firebase_login, null);
 
-        for (SocialProvider providerType : SocialProvider.values()) {
+        for (AuthProviderType providerType : AuthProviderType.values()) {
             if (mEnabledProvidersByType.keySet().contains(providerType)) {
                 showLoginOption(mEnabledProvidersByType.get(providerType), providerType.getButtonId());
             }
@@ -87,8 +80,8 @@ public class FirebaseLoginDialog extends DialogFragment {
             }
         }
 
-        if (mEnabledProvidersByType.containsKey(SocialProvider.PASSWORD) &&
-           !(mEnabledProvidersByType.containsKey(SocialProvider.FACEBOOK) || mEnabledProvidersByType.containsKey(SocialProvider.GOOGLE) || mEnabledProvidersByType.containsKey(SocialProvider.TWITTER))) {
+        if (mEnabledProvidersByType.containsKey(AuthProviderType.PASSWORD) &&
+           !(mEnabledProvidersByType.containsKey(AuthProviderType.FACEBOOK) || mEnabledProvidersByType.containsKey(AuthProviderType.GOOGLE) || mEnabledProvidersByType.containsKey(AuthProviderType.TWITTER))) {
             mView.findViewById(R.id.or_section).setVisibility(View.GONE);
         }
 
@@ -142,7 +135,7 @@ public class FirebaseLoginDialog extends DialogFragment {
         return this;
     }
 
-    public FirebaseLoginDialog setEnabledProvider(SocialProvider provider) {
+    public FirebaseLoginDialog setEnabledProvider(AuthProviderType provider) {
         if (!mEnabledProvidersByType.containsKey(provider)) {
             mEnabledProvidersByType.put(provider, provider.createProvider(mContext, mRef, mHandler));
         }
@@ -153,7 +146,7 @@ public class FirebaseLoginDialog extends DialogFragment {
         mView.findViewById(id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (SocialProvider.getTypeForProvider(helper) == SocialProvider.PASSWORD) {
+                if (AuthProviderType.getTypeForProvider(helper) == AuthProviderType.PASSWORD) {
                     EditText emailText = (EditText) mView.findViewById(R.id.email);
                     EditText passwordText = (EditText) mView.findViewById(R.id.password);
                     helper.login(emailText.getText().toString(), passwordText.getText().toString());
@@ -169,19 +162,7 @@ public class FirebaseLoginDialog extends DialogFragment {
         });
     }
 
-    public FacebookAuthProvider getFacebookAuthProvider() {
-        return (FacebookAuthProvider) mEnabledProvidersByType.get(SocialProvider.FACEBOOK);
-    }
-
-    public TwitterAuthProvider getTwitterAuthProvider() {
-        return (TwitterAuthProvider) mEnabledProvidersByType.get(SocialProvider.TWITTER);
-    }
-
     public GoogleAuthProvider getGoogleAuthProvider() {
-        return (GoogleAuthProvider) mEnabledProvidersByType.get(SocialProvider.GOOGLE);
-    }
-
-    public PasswordAuthProvider getPasswordAuthProvider() {
-        return (PasswordAuthProvider) mEnabledProvidersByType.get(SocialProvider.PASSWORD);
+        return (GoogleAuthProvider) mEnabledProvidersByType.get(AuthProviderType.GOOGLE);
     }
 }
