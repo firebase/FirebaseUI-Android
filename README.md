@@ -424,7 +424,7 @@ If we use the same layout as before (`android.R.layout.two_line_list_item`), the
 We can wrap that in a ViewHolder with:
 
 ```java
-private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
+public static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
     TextView messageText;
     TextView nameText;
 
