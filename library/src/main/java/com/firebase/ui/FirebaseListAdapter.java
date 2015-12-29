@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.Query;
 
@@ -48,7 +49,7 @@ import com.firebase.client.Query;
  *     Firebase ref = new Firebase("https://<yourapp>.firebaseio.com");
  *     ListAdapter adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, mRef)
  *     {
- *         protected void populateView(View view, ChatMessage chatMessage)
+ *         protected void populateView(View view, ChatMessage chatMessage, int position)
  *         {
  *             ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
  *             ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
@@ -111,7 +112,14 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     }
 
     @Override
-    public T getItem(int i) { return mSnapshots.getItem(i).getValue(mModelClass); }
+    public T getItem(int position) {
+        if (mModelClass != DataSnapshot.class) {
+            return mSnapshots.getItem(position).getValue(mModelClass);
+        }
+        else {
+            return (T) mSnapshots.getItem(position);
+        }
+    }
 
     public Firebase getRef(int position) { return mSnapshots.getItem(position).getRef(); }
 
@@ -127,7 +135,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             view = mActivity.getLayoutInflater().inflate(mLayout, viewGroup, false);
         }
 
-        T model = mSnapshots.getItem(position).getValue(mModelClass);
+        T model = getItem(position);
 
         // Call out to subclass to marshall this model into the provided view
         populateView(view, model, position);
@@ -140,30 +148,11 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * this class. The third argument is the item's position in the list.
      * <p>
      * Your implementation should populate the view using the data contained in the model.
-     * You should implement either this method or the other {@link FirebaseListAdapter#populateView(View, Object)} method
-     * but not both.
      *
      * @param v         The view to populate
      * @param model     The object containing the data used to populate the view
      * @param position  The position in the list of the view being populated
      */
-    protected void populateView(View v, T model, int position) {
-        populateView(v, model);
-    }
+    abstract protected void populateView(View v, T model, int position);
 
-    /**
-     * This is a backwards compatible version of populateView.
-     * <p>
-     * You should implement either this method or the other {@link FirebaseListAdapter#populateView(View, Object, int)} method
-     * but not both.
-     *
-     * @see FirebaseListAdapter#populateView(View, Object, int)
-     *
-     * @param v         The view to populate
-     * @param model     The object containing the data used to populate the view
-     */
-    @Deprecated
-    protected void populateView(View v, T model) {
-
-    }
 }

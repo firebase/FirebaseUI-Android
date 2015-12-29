@@ -33,6 +33,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.Query;
 
@@ -68,7 +69,7 @@ import java.lang.reflect.InvocationTargetException;
  *     recycler.setLayoutManager(new LinearLayoutManager(this));
  *
  *     adapter = new FirebaseRecyclerAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
- *         public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
+ *         public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage, int position) {
  *             chatMessageViewHolder.nameText.setText(chatMessage.getName());
  *             chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
  *         }
@@ -136,7 +137,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         this(modelClass, modelLayout, viewHolderClass, (Query) ref);
     }
 
-
     public void cleanup() {
         mSnapshots.cleanup();
     }
@@ -147,7 +147,12 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     public T getItem(int position) {
-        return mSnapshots.getItem(position).getValue(mModelClass);
+        if (mModelClass != DataSnapshot.class) {
+            return mSnapshots.getItem(position).getValue(mModelClass);
+        }
+        else {
+            return (T) mSnapshots.getItem(position);
+        }
     }
 
     public Firebase getRef(int position) { return mSnapshots.getItem(position).getRef(); }
@@ -186,29 +191,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * this class. The third argument is the item's position in the list.
      * <p>
      * Your implementation should populate the view using the data contained in the model.
-     * You should implement either this method or the other FirebaseRecyclerAdapter#populateViewHolder(VH, Object) method
-     * but not both.
      *
      * @param viewHolder The view to populate
      * @param model      The object containing the data used to populate the view
      * @param position  The position in the list of the view being populated
      */
-    protected void populateViewHolder(VH viewHolder, T model, int position) {
-        populateViewHolder(viewHolder, model);
-    };
-    /**
-     * This is a backwards compatible version of populateViewHolder.
-     * <p>
-     * You should implement either this method or the other FirebaseRecyclerAdapter#populateViewHolder(VH, T, int) method
-     * but not both.
-     *
-     * @see FirebaseListAdapter#populateView(View, Object, int)
-     *
-     * @param viewHolder The view to populate
-     * @param model      The object containing the data used to populate the view
-     */
-    @Deprecated
-    protected void populateViewHolder(VH viewHolder, T model) {
-    };
-
+    abstract protected void populateViewHolder(VH viewHolder, T model, int position);
 }
