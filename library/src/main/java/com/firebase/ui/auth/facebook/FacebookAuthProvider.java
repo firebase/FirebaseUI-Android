@@ -19,7 +19,7 @@ import com.firebase.ui.auth.core.FirebaseAuthProvider;
 import com.firebase.ui.auth.core.FirebaseResponse;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
-import com.firebase.ui.auth.core.SocialProvider;
+import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
 import java.util.Arrays;
@@ -32,7 +32,7 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
     private LoginManager mLoginManager;
     private Boolean isReady = false;
 
-    public FacebookAuthProvider(Context context, SocialProvider providerType, String providerName, Firebase ref, final TokenAuthHandler handler) {
+    public FacebookAuthProvider(Context context, AuthProviderType providerType, String providerName, Firebase ref, final TokenAuthHandler handler) {
         super(context, providerType, providerName, ref, handler);
         FacebookSdk.sdkInitialize(context.getApplicationContext());
 

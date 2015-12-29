@@ -13,21 +13,21 @@ import java.util.Map;
 public abstract class FirebaseAuthProvider {
     private static final String TAG = "FirebaseAuthProvider";
     private final Context mContext;
-    private final SocialProvider mProviderType;
+    private final AuthProviderType mAuthProviderType;
     private final String mProviderName;
     private final Firebase mRef;
     private final TokenAuthHandler mHandler;
 
     public abstract void logout();
     public Context getContext() { return mContext; }
-    public SocialProvider getProviderType() { return mProviderType; }
+    public AuthProviderType getProviderType() { return mAuthProviderType; }
     public String getProviderName() { return mProviderName; }
     public Firebase getFirebaseRef() { return mRef; }
     public TokenAuthHandler getHandler() { return mHandler; }
 
-    protected FirebaseAuthProvider(Context context, SocialProvider providerType, String providerName, Firebase ref, TokenAuthHandler handler) {
+    protected FirebaseAuthProvider(Context context, AuthProviderType providerType, String providerName, Firebase ref, TokenAuthHandler handler) {
         mContext = context;
-        mProviderType = providerType;
+        mAuthProviderType = providerType;
         mProviderName = providerName;
         mRef = ref;
         mHandler = handler;

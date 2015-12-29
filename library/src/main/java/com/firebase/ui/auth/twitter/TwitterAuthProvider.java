@@ -9,14 +9,14 @@ import com.firebase.ui.auth.core.FirebaseAuthProvider;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
 import com.firebase.ui.auth.core.FirebaseResponse;
-import com.firebase.ui.auth.core.SocialProvider;
+import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
 public class TwitterAuthProvider extends FirebaseAuthProvider {
 
     public static final String TAG = "TwitterAuthProvider";
 
-    public TwitterAuthProvider(Context context, SocialProvider providerType, String providerName, Firebase ref, TokenAuthHandler handler) {
+    public TwitterAuthProvider(Context context, AuthProviderType providerType, String providerName, Firebase ref, TokenAuthHandler handler) {
         super(context, providerType, providerName, ref, handler);
     }
 
