@@ -147,12 +147,18 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     public T getItem(int position) {
-        if (mModelClass != DataSnapshot.class) {
-            return mSnapshots.getItem(position).getValue(mModelClass);
-        }
-        else {
-            return (T) mSnapshots.getItem(position);
-        }
+        return parseSnapshot(mSnapshots.getItem(position));
+    }
+
+    /**
+     * This method parses the DataSnapshot into the requested type. You can override it in subclasses
+     * to do custom parsing.
+     *
+     * @param snapshot the DataSnapshot to extract the model from
+     * @return the model extracted from the DataSnapshot
+     */
+    protected T parseSnapshot(DataSnapshot snapshot) {
+        return snapshot.getValue(mModelClass);
     }
 
     public Firebase getRef(int position) { return mSnapshots.getItem(position).getRef(); }
