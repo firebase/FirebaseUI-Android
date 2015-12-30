@@ -12,11 +12,12 @@ import com.firebase.ui.auth.twitter.TwitterAuthProvider;
 import java.lang.reflect.InvocationTargetException;
 
 public enum AuthProviderType {
-    GOOGLE  ("google",   "com.firebase.ui.auth.google.GoogleAuthProvider",     R.id.google_button),
-    FACEBOOK("facebook", "com.firebase.ui.auth.facebook.FacebookAuthProvider", R.id.facebook_button),
-    TWITTER ("twitter",  "com.firebase.ui.auth.twitter.TwitterAuthProvider",   R.id.twitter_button),
-    PASSWORD("password", "com.firebase.ui.auth.password.PasswordAuthProvider", R.id.password_button);
+    GOOGLE  ("google",   "google.GoogleAuthProvider",     R.id.google_button),
+    FACEBOOK("facebook", "facebook.FacebookAuthProvider", R.id.facebook_button),
+    TWITTER ("twitter",  "twitter.TwitterAuthProvider",   R.id.twitter_button),
+    PASSWORD("password", "password.PasswordAuthProvider", R.id.password_button);
 
+    private final static String AUTH_PACKAGE = "com.firebase.ui.auth.";
     private final String mName;
     private final String mProviderName;
     private final int mButtonId;
@@ -36,7 +37,7 @@ public enum AuthProviderType {
 
     public FirebaseAuthProvider createProvider(Context context, Firebase ref, TokenAuthHandler handler) {
         try {
-            Class<? extends FirebaseAuthProvider> clazz = (Class<? extends FirebaseAuthProvider>) Class.forName(mProviderName);
+            Class<? extends FirebaseAuthProvider> clazz = (Class<? extends FirebaseAuthProvider>) Class.forName(AUTH_PACKAGE+mProviderName);
             return clazz.getConstructor(Context.class, AuthProviderType.class, String.class, Firebase.class, TokenAuthHandler.class).newInstance(context, this, this.getName(), ref, handler);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
