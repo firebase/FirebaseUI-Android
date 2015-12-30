@@ -282,14 +282,14 @@ Let's take this in chunks: first we'll create a Java class to represent each mes
         mListAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class,
                 android.R.layout.two_line_list_item, mFirebaseRef) {
             @Override
-            protected void populateView(View v, ChatMessage model) {
+            protected void populateView(View v, ChatMessage model, int position) {
                 ((TextView)v.findViewById(android.R.id.text1)).setText(model.getName());
                 ((TextView)v.findViewById(android.R.id.text2)).setText(model.getText());
             }
         };
         setListAdapter(mListAdapter);
 
-  The FirebaseListAdapter maps the data from your Firebase database into the ListView that you added to the layout. It creates a new instance of your `two_line_list_item` for each `ChatMessage` and calls the `populateView method`. We override this method and put the name and text in the correct subviews.
+  The FirebaseListAdapter maps the data from your Firebase database into the ListView that you added to the layout. It creates a new instance of your `two_line_list_item` for each `ChatMessage` and calls the `populateView` method. We override this method and put the name and text in the correct subviews.
 
   ![MainActivity code](images/5_6.png)
 
