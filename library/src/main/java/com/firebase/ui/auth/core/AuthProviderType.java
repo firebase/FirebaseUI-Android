@@ -12,18 +12,18 @@ import com.firebase.ui.auth.twitter.TwitterAuthProvider;
 import java.lang.reflect.InvocationTargetException;
 
 public enum AuthProviderType {
-    GOOGLE  ("google",   GoogleAuthProvider.class,   R.id.google_button),
-    FACEBOOK("facebook", FacebookAuthProvider.class, R.id.facebook_button),
-    TWITTER ("twitter",  TwitterAuthProvider.class,  R.id.twitter_button),
-    PASSWORD("password", PasswordAuthProvider.class, R.id.password_button);
+    GOOGLE  ("google",   "com.firebase.ui.auth.google.GoogleAuthProvider",     R.id.google_button),
+    FACEBOOK("facebook", "com.firebase.ui.auth.facebook.FacebookAuthProvider", R.id.facebook_button),
+    TWITTER ("twitter",  "com.firebase.ui.auth.twitter.TwitterAuthProvider",   R.id.twitter_button),
+    PASSWORD("password", "com.firebase.ui.auth.password.PasswordAuthProvider", R.id.password_button);
 
     private final String mName;
-    private final Class<? extends FirebaseAuthProvider> mClass;
+    private final String mProviderName;
     private final int mButtonId;
 
-    AuthProviderType(String name, Class<? extends FirebaseAuthProvider> clazz, int button_id) {
+    AuthProviderType(String name, String providerName, int button_id) {
         this.mName = name;
-        this.mClass = clazz;
+        this.mProviderName = providerName;
         this.mButtonId = button_id;
     }
 
@@ -36,7 +36,8 @@ public enum AuthProviderType {
 
     public FirebaseAuthProvider createProvider(Context context, Firebase ref, TokenAuthHandler handler) {
         try {
-            return mClass.getConstructor(Context.class, AuthProviderType.class, String.class, Firebase.class, TokenAuthHandler.class).newInstance(context, this, this.getName(), ref, handler);
+            Class<? extends FirebaseAuthProvider> clazz = (Class<? extends FirebaseAuthProvider>) Class.forName(mProviderName);
+            return clazz.getConstructor(Context.class, AuthProviderType.class, String.class, Firebase.class, TokenAuthHandler.class).newInstance(context, this, this.getName(), ref, handler);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -44,6 +45,8 @@ public enum AuthProviderType {
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
