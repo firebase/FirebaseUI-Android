@@ -11,19 +11,20 @@ import com.firebase.ui.auth.twitter.TwitterAuthProvider;
 
 import java.lang.reflect.InvocationTargetException;
 
-public enum SocialProvider {
-    GOOGLE  ("google",   GoogleAuthProvider.class,   R.id.google_button),
-    FACEBOOK("facebook", FacebookAuthProvider.class, R.id.facebook_button),
-    TWITTER ("twitter",  TwitterAuthProvider.class,  R.id.twitter_button),
-    PASSWORD("password", PasswordAuthProvider.class, R.id.password_button);
+public enum AuthProviderType {
+    GOOGLE  ("google",   "google.GoogleAuthProvider",     R.id.google_button),
+    FACEBOOK("facebook", "facebook.FacebookAuthProvider", R.id.facebook_button),
+    TWITTER ("twitter",  "twitter.TwitterAuthProvider",   R.id.twitter_button),
+    PASSWORD("password", "password.PasswordAuthProvider", R.id.password_button);
 
+    private final static String AUTH_PACKAGE = "com.firebase.ui.auth.";
     private final String mName;
-    private final Class<? extends FirebaseAuthProvider> mClass;
+    private final String mProviderName;
     private final int mButtonId;
 
-    SocialProvider(String name, Class<? extends FirebaseAuthProvider> clazz, int button_id) {
+    AuthProviderType(String name, String providerName, int button_id) {
         this.mName = name;
-        this.mClass = clazz;
+        this.mProviderName = providerName;
         this.mButtonId = button_id;
     }
 
@@ -36,7 +37,8 @@ public enum SocialProvider {
 
     public FirebaseAuthProvider createProvider(Context context, Firebase ref, TokenAuthHandler handler) {
         try {
-            return mClass.getConstructor(Context.class, SocialProvider.class, String.class, Firebase.class, TokenAuthHandler.class).newInstance(context, this, this.getName(), ref, handler);
+            Class<? extends FirebaseAuthProvider> clazz = (Class<? extends FirebaseAuthProvider>) Class.forName(AUTH_PACKAGE+mProviderName);
+            return clazz.getConstructor(Context.class, AuthProviderType.class, String.class, Firebase.class, TokenAuthHandler.class).newInstance(context, this, this.getName(), ref, handler);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -45,10 +47,12 @@ public enum SocialProvider {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
-    public static SocialProvider getTypeForProvider(FirebaseAuthProvider provider) {
-        for (SocialProvider type : SocialProvider.values()) {
+    public static AuthProviderType getTypeForProvider(FirebaseAuthProvider provider) {
+        for (AuthProviderType type : AuthProviderType.values()) {
             if (provider.getProviderName() == type.getName()) {
                 return type;
             }

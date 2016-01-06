@@ -23,7 +23,7 @@ import com.firebase.client.Query;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.FirebaseRecyclerAdapter;
 import com.firebase.ui.auth.core.FirebaseLoginError;
-import com.firebase.ui.auth.core.SocialProvider;
+import com.firebase.ui.auth.core.AuthProviderType;
 
 public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
@@ -99,10 +99,10 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        setEnabledAuthProvider(SocialProvider.FACEBOOK);
-        setEnabledAuthProvider(SocialProvider.TWITTER);
-        setEnabledAuthProvider(SocialProvider.GOOGLE);
-        setEnabledAuthProvider(SocialProvider.PASSWORD);
+        setEnabledAuthProvider(AuthProviderType.FACEBOOK);
+        setEnabledAuthProvider(AuthProviderType.TWITTER);
+        setEnabledAuthProvider(AuthProviderType.GOOGLE);
+        setEnabledAuthProvider(AuthProviderType.PASSWORD);
     }
 
     @Override

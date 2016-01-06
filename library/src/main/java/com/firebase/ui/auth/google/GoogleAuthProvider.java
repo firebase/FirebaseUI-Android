@@ -12,7 +12,7 @@ import com.firebase.ui.auth.core.FirebaseAuthProvider;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
 import com.firebase.ui.auth.core.FirebaseResponse;
-import com.firebase.ui.auth.core.SocialProvider;
+import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -32,7 +32,7 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
     private GoogleApiClient mGoogleApiClient;
     private Integer onConnectedAction = 0;
 
-    public GoogleAuthProvider(Context context, SocialProvider providerType, String providerName, Firebase ref, TokenAuthHandler handler) {
+    public GoogleAuthProvider(Context context, AuthProviderType providerType, String providerName, Firebase ref, TokenAuthHandler handler) {
         super(context, providerType, providerName, ref, handler);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

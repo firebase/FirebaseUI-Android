@@ -175,10 +175,10 @@ public class MainActivity extends FirebaseLoginBaseActivity {
     protected void onStart() {
         super.onStart();
         // All providers are optional! Remove any you don't want.
-        setEnabledAuthProvider(SocialProvider.facebook);
-        setEnabledAuthProvider(SocialProvider.twitter);
-        setEnabledAuthProvider(SocialProvider.google);
-        setEnabledAuthProvider(SocialProvider.password);
+        setEnabledAuthProvider(AuthProviderType.FACEBOOK);
+        setEnabledAuthProvider(AuthProviderType.TWITTER);
+        setEnabledAuthProvider(AuthProviderType.GOOGLE);
+        setEnabledAuthProvider(AuthProviderType.PASSWORD);
     }
 ```
 
@@ -327,7 +327,7 @@ protected void onCreate(Bundle savedInstanceState) {
 
     mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
         @Override
-        protected void populateView(View view, ChatMessage chatMessage) {
+        protected void populateView(View view, ChatMessage chatMessage, int position) {
             ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
             ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
 
@@ -381,7 +381,7 @@ protected void onCreate(Bundle savedInstanceState) {
 
     mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
         @Override
-        protected void populateView(View view, ChatMessage chatMessage) {
+        protected void populateView(View view, ChatMessage chatMessage, int position) {
             ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
             ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
         }
@@ -424,7 +424,7 @@ If we use the same layout as before (`android.R.layout.two_line_list_item`), the
 We can wrap that in a ViewHolder with:
 
 ```java
-private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
+public static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
     TextView messageText;
     TextView nameText;
 
@@ -449,7 +449,7 @@ recycler.setLayoutManager(new LinearLayoutManager(this));
 
 mAdapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
     @Override
-    public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
+    public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage, int position) {
         chatMessageViewHolder.nameText.setText(chatMessage.getName());
         chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
     }

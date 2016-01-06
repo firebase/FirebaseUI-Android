@@ -2,7 +2,6 @@ package com.firebase.ui.auth.core;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -106,7 +105,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      *
      * @param provider the provider to enable.
      */
-    public void setEnabledAuthProvider(SocialProvider provider) {
+    public void setEnabledAuthProvider(AuthProviderType provider) {
         mDialog.setEnabledProvider(provider);
     }
 
