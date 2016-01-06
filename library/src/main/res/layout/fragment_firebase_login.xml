@@ -3,7 +3,6 @@
     android:layout_height="match_parent"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
-    android:foreground="#ffffff"
     android:background="#f5f5f5"
     android:paddingBottom="6dp"
     android:layout_marginTop="5dp"
