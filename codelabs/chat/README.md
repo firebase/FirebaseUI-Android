@@ -3,7 +3,6 @@
 In this code lab you'll build a chat application for Android using Firebase and Android Studio.
 
 ![Chat login](images/0_0.png)
-![Chat messages](images/0_1.png)
 
 What you'll learn:
 
@@ -507,7 +506,7 @@ mFirebaseRef.push().setValue(new ChatMessage(MainActivity.this.mUsername, text))
 
   ![messages with one from puf@firebaseui.com](images/6_9.png)
 
-    We could definitely improve the layout of things. But this step has been long enough as it is. So let's wrap up with a few notes.
+  We could definitely improve the layout of things. But this step has been long enough as it is. So let's wrap up with a few notes.
 
 8. One thing you may note is that the user stays logged in, even when they restart the app. If instead you want to sign out the user, you can call:
 
