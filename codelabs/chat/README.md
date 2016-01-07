@@ -3,6 +3,7 @@
 In this code lab you'll build a chat application for Android using Firebase and Android Studio.
 
 ![Chat login](images/0_0.png)
+![Chat messages](images/0_1.png)
 
 What you'll learn:
 
