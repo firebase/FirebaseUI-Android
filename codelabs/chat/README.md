@@ -151,7 +151,7 @@ mFirebaseRef = new Firebase("https://<your-app>.firebaseio.com");
 
   Be sure to replace `<your-app>` with the name of the Firebase app you created in the first section.
 
-    ![MainActivity with setAndroidContext and mFirebaseRef](images/3_4.png)
+![MainActivity with setAndroidContext and mFirebaseRef](images/3_4.png)
 
 That's all the setup that is required. Next up we'll allow the user to enter a message in our app and send the message to Firebase.
 
