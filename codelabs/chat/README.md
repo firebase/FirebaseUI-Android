@@ -116,28 +116,38 @@ Before we can start writing code that interacts with our Firebase database, we'l
 6. Open app > manifests > AndroidManifest.xml
 7. Add this line inside the `manifest` element:
 
-        <uses-permission android:name="android.permission.INTERNET" />
+```html
+<uses-permission android:name="android.permission.INTERNET" />
+```
 
     ![INTERNET permission in AndroidManifest.xml](images/3_3.png)
 
 8. Import Firebase at the top of your MainActivity by adding the following line:
 
-        import com.firebase.client.Firebase;
+```java
+import com.firebase.client.Firebase;
+```
 
 9. Now we can get to the Java code. The first step there is to set up initial connection between our code and its Firebase backend.
 open `MainActivity.java` and add this code to the end of the `onCreate` method:
 
-        Firebase.setAndroidContext(this);
+```java
+Firebase.setAndroidContext(this);
+```
 
   This code allows the Firebase client to keep its context.
 10. If Android Studio is having trouble finding the Firebase class, be sure that you've added dependencies and have synchronized the build file with the project.
 11. We also want to create a connection to our database. We'll keep this connection in a member field:
 
-        private Firebase mFirebaseRef;
+```java
+private Firebase mFirebaseRef;
+```
 
   that we initialize in onCreate:
 
-        mFirebaseRef = new Firebase("https://<your-app>.firebaseio.com");
+```java
+mFirebaseRef = new Firebase("https://<your-app>.firebaseio.com");
+```
 
   Be sure to replace `<your-app>` with the name of the Firebase app you created in the first section.
 
@@ -153,25 +163,27 @@ Next we'll send data to Firebase! In this step we'll allow the user to enter a m
 
 1. We'll first add the necessary views to activity_main.xml:
 
-        <LinearLayout
-            android:id="@+id/footer"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <EditText
-                android:id="@+id/text_edit"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:inputType="textShortMessage" />
-            <Button
-                android:id="@+id/send_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Send" />
-        </LinearLayout>
+```xml
+<LinearLayout
+    android:id="@+id/footer"
+    android:layout_alignParentBottom="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <EditText
+        android:id="@+id/text_edit"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:inputType="textShortMessage" />
+    <Button
+        android:id="@+id/send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send" />
+</LinearLayout>
+```
 
   This layout puts a horizontal bar at the bottom that contains an `EditText`, where the user can enter their chat message, and a `Button` that they can click to send the message.
 
@@ -179,24 +191,28 @@ Next we'll send data to Firebase! In this step we'll allow the user to enter a m
 
 2. In our `MainActivity.java` we'll now add variables for the `EditText` and `Button` at the end of the onCreate method:
 
-        final EditText textEdit = (EditText) this.findViewById(R.id.text_edit);
-        Button sendButton = (Button) this.findViewById(R.id.send_button);
+```java
+final EditText textEdit = (EditText) this.findViewById(R.id.text_edit);
+Button sendButton = (Button) this.findViewById(R.id.send_button);
+```
 
   ![MainActivity.java with EditText and Button bound](images/4_3.png)
 
 3. Next, we'll add a method that grabs the text from the input and send it to our Firebase database:
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = textEdit.getText().toString();
-                Map<String,Object> values = new HashMap<>();
-                values.put("name", "Android User");
-                values.put("text", text);
-                mFirebaseRef.push().setValue(values);
-                textEdit.setText("");
-            }
-        });
+```java
+sendButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        String text = textEdit.getText().toString();
+        Map<String,Object> values = new HashMap<>();
+        values.put("name", "Android User");
+        values.put("text", text);
+        mFirebaseRef.push().setValue(values);
+        textEdit.setText("");
+    }
+});
+```
 
   You will have to import the packages for some of these classes. Android Studio will tell you where to import them from.
 
@@ -222,26 +238,28 @@ Let's take this in chunks: first we'll create a Java class to represent each mes
 1. As you can see in the screenshot, each chat message has the same layout. Instead of creating a custom layout, we'll use one of the built-in layouts of Android: `android.R.layout.two_line_list_item`. We'll show the user name on the first line (in bold) and the message text on the second line.
 2. Create a class `ChatMessage.java` that wraps the username and text message:
 
-        public class ChatMessage {
-            private String name;
-            private String text;
+```java
+public class ChatMessage {
+    private String name;
+    private String text;
 
-            public ChatMessage() {
-              // necessary for Firebase's deserializer
-            }
-            public ChatMessage(String name, String text) {
-                this.name = name;
-                this.text = text;
-            }
+    public ChatMessage() {
+      // necessary for Firebase's deserializer
+    }
+    public ChatMessage(String name, String text) {
+        this.name = name;
+        this.text = text;
+    }
 
-            public String getName() {
-                return name;
-            }
+    public String getName() {
+        return name;
+    }
 
-            public String getText() {
-                return text;
-            }
-        }
+    public String getText() {
+        return text;
+    }
+}
+```
 
   As you can see, this is plain-old Java object. But it’s a POJO with some special traits. First `ChatMessage` follows a JavaBean pattern for its property names. The `getName` method is a getter for a `name` property, while `getText()` is a getter for a `text` property. And second, those property names correspond to the ones we’ve been using when we sent messages to Firebase in our `OnClickListener`.
 
@@ -253,11 +271,13 @@ Let's take this in chunks: first we'll create a Java class to represent each mes
 
   Add a ListView with `android:id="@android:id/list"`` above the LinearLayout:
 
-        <ListView
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/footer"/>
+```xml
+<ListView
+    android:id="@android:id/list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@+id/footer"/>
+```
 
   This is the container that all messages will be added to: one message_layout for each ChatMessage.
 
@@ -267,27 +287,33 @@ Let's take this in chunks: first we'll create a Java class to represent each mes
 
 4. Make the `MainActivity` class descend from `ListActivity`. This is a built-in Android base-class. By deriving from this, our activity will automatically have access to the ListView we added to the layout:
 
-        public class MainActivity extends ListActivity {
+```java
+public class MainActivity extends ListActivity {
+```
 
 5. We're ready to start on our ListAdapter, which we'll base on the `FirebaseListAdapter` from the firebase-ui project we imported. `The FirebaseListAdapter` class adapts a Firebase collection so that it becomes usable in an Android `ListView`. First we'll add a member to our `MainActivity`:
 
-        public class MainActivity extends ListActivity {
-            private Firebase mFirebaseRef;
-            FirebaseListAdapter<ChatMessage> mListAdapter;
+```java
+public class MainActivity extends ListActivity {
+    private Firebase mFirebaseRef;
+    FirebaseListAdapter<ChatMessage> mListAdapter;
+```
 
   ![MainActivity extends ListActivity](images/5_5.png)
 
 6. To make everything come together, we add this to the onCreate method of our MainActivity:
 
-        mListAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class,
-                android.R.layout.two_line_list_item, mFirebaseRef) {
-            @Override
-            protected void populateView(View v, ChatMessage model, int position) {
-                ((TextView)v.findViewById(android.R.id.text1)).setText(model.getName());
-                ((TextView)v.findViewById(android.R.id.text2)).setText(model.getText());
-            }
-        };
-        setListAdapter(mListAdapter);
+```java
+mListAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class,
+        android.R.layout.two_line_list_item, mFirebaseRef) {
+    @Override
+    protected void populateView(View v, ChatMessage model, int position) {
+        ((TextView)v.findViewById(android.R.id.text1)).setText(model.getName());
+        ((TextView)v.findViewById(android.R.id.text2)).setText(model.getText());
+    }
+};
+setListAdapter(mListAdapter);
+```
 
   The FirebaseListAdapter maps the data from your Firebase database into the ListView that you added to the layout. It creates a new instance of your `two_line_list_item` for each `ChatMessage` and calls the `populateView` method. We override this method and put the name and text in the correct subviews.
 
@@ -297,23 +323,27 @@ Let's take this in chunks: first we'll create a Java class to represent each mes
 
 8. The cleanup is minor, but it's important to keep our code as readable as possible at all times. Remember that onSendButtonClick method that we wrote in step 5? That use of a Map looked a bit messy. Now that we have a ChatMessage class, we can make it much more readable:
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String text = textEdit.getText().toString();
-                ChatMessage message = new ChatMessage("Android User", text);
-                mFirebaseRef.push().setValue(message);
-                textEdit.setText("");
-            }
-        });
+```java
+sendButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        String text = textEdit.getText().toString();
+        ChatMessage message = new ChatMessage("Android User", text);
+        mFirebaseRef.push().setValue(message);
+        textEdit.setText("");
+    }
+});
+```
 
 9. Finally, we also need to clean up our list adapter when the activity is destroyed. This will close the connection to the Firebase server, when the activity is not showing.
 
-        @Override
-        protected void onDestroy() {
-            super.onDestroy();
-            mListAdapter.cleanup();
-        }
+```java
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mListAdapter.cleanup();
+}
+```
 
   ![MainActivity showing OnClickListener and onDestroy](images/5_7.png)
 
@@ -329,14 +359,16 @@ As a final step, we're going to allow the users of our app to log in using email
 
 2. First add a button to the top right of activity_main.xml
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Login"
-            android:id="@+id/login"
-            android:layout_alignTop="@android:id/list"
-            android:layout_alignRight="@android:id/list"
-            android:layout_alignEnd="@android:id/list" />
+```xml
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Login"
+    android:id="@+id/login"
+    android:layout_alignTop="@android:id/list"
+    android:layout_alignRight="@android:id/list"
+    android:layout_alignEnd="@android:id/list" />
+```
 
   ![main_activity.xml with login button](images/6_2.png)
 
@@ -346,31 +378,33 @@ As a final step, we're going to allow the users of our app to log in using email
 
 4. In this dialog_signin.xml, we'll model the body of the sign-in dialog
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-          <EditText
-              android:id="@+id/email"
-              android:inputType="textEmailAddress"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="16dp"
-              android:layout_marginLeft="4dp"
-              android:layout_marginRight="4dp"
-              android:layout_marginBottom="4dp"
-              android:hint="Email" />
-          <EditText
-              android:id="@+id/password"
-              android:inputType="textPassword"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="4dp"
-              android:layout_marginLeft="4dp"
-              android:layout_marginRight="4dp"
-              android:layout_marginBottom="16dp"
-              android:hint="Password"/>
-        </LinearLayout>
+```xml
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+  <EditText
+      android:id="@+id/email"
+      android:inputType="textEmailAddress"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="16dp"
+      android:layout_marginLeft="4dp"
+      android:layout_marginRight="4dp"
+      android:layout_marginBottom="4dp"
+      android:hint="Email" />
+  <EditText
+      android:id="@+id/password"
+      android:inputType="textPassword"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="4dp"
+      android:layout_marginLeft="4dp"
+      android:layout_marginRight="4dp"
+      android:layout_marginBottom="16dp"
+      android:hint="Password"/>
+</LinearLayout>
+```
 
   We have two `EditText controls` under each other, one for the user's name, the other for their password.
   The rest of the popup will be handled by a stock Android dialog.
@@ -379,28 +413,30 @@ As a final step, we're going to allow the users of our app to log in using email
 
 4. Since our app will display the sign-in dialog as a popup, add the handling to MainActivity.java:
 
-        Button loginButton = (Button) findViewById(R.id.login);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setMessage("Enter your email address and password")
-                        .setTitle("Log in")
-                        .setView(MainActivity.this.getLayoutInflater().inflate(R.layout.dialog_signin, null))
-                        .setNegativeButton("Cancel", null)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                AlertDialog dlg = (AlertDialog) dialog;
-                                final String email = ((TextView)dlg.findViewById(R.id.email)).getText().toString();
-                                final String password =((TextView)dlg.findViewById(R.id.password)).getText().toString();
+```java
+Button loginButton = (Button) findViewById(R.id.login);
+loginButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setMessage("Enter your email address and password")
+                .setTitle("Log in")
+                .setView(MainActivity.this.getLayoutInflater().inflate(R.layout.dialog_signin, null))
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        AlertDialog dlg = (AlertDialog) dialog;
+                        final String email = ((TextView)dlg.findViewById(R.id.email)).getText().toString();
+                        final String password =((TextView)dlg.findViewById(R.id.password)).getText().toString();
 
-                                // TODO: sign in to Firebase
-                            }
-                        })
-                        .create()
-                        .show();
-            }
-        });
+                        // TODO: sign in to Firebase
+                    }
+                })
+                .create()
+                .show();
+    }
+});
+```
 
   This method builds and show the dialog, with our two text boxes as the main body.
 
@@ -412,16 +448,18 @@ As a final step, we're going to allow the users of our app to log in using email
 
 5. Now wire the values that we got from the dialog to the Firebase Authentication back-end. Replace the `TODO` with the following code:
 
-        mFirebaseRef.createUser(email, password, new Firebase.ResultHandler() {
-            @Override
-            public void onSuccess() {
-                mFirebaseRef.authWithPassword(email, password, null);
-            }
-            @Override
-            public void onError(FirebaseError firebaseError) {
-                mFirebaseRef.authWithPassword(email, password, null);
-            }
-        });
+```java
+mFirebaseRef.createUser(email, password, new Firebase.ResultHandler() {
+    @Override
+    public void onSuccess() {
+        mFirebaseRef.authWithPassword(email, password, null);
+    }
+    @Override
+    public void onError(FirebaseError firebaseError) {
+        mFirebaseRef.authWithPassword(email, password, null);
+    }
+});
+```
 
   In this code, we always try to register the user. If the user already registered that will result in `onError`, otherwise it will result on onSuccess.
 
@@ -433,23 +471,27 @@ As a final step, we're going to allow the users of our app to log in using email
 
   Add a field to the class to hold the user name:
 
-        String mUsername;
+```java
+String mUsername;
+```
 
   Add the end of the `onCreate` method, add a callback method that listens for authentication state changes in Firebase:
 
-        mFirebaseRef.addAuthStateListener(new Firebase.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(AuthData authData) {
-                if(authData != null) {
-                    mUsername = ((String)authData.getProviderData().get("email"));
-                    findViewById(R.id.login).setVisibility(View.INVISIBLE);
-                }
-                else {
-                    mUsername = null;
-                    findViewById(R.id.login).setVisibility(View.VISIBLE);
-                }
-            }
-        });
+```java
+mFirebaseRef.addAuthStateListener(new Firebase.AuthStateListener() {
+    @Override
+    public void onAuthStateChanged(AuthData authData) {
+        if(authData != null) {
+            mUsername = ((String)authData.getProviderData().get("email"));
+            findViewById(R.id.login).setVisibility(View.INVISIBLE);
+        }
+        else {
+            mUsername = null;
+            findViewById(R.id.login).setVisibility(View.VISIBLE);
+        }
+    }
+});
+```
 
   Firebase calls our listener whenever the authentication state changes, so whenever the user logs in or out. When the user logs in, we store their email address in our field and hide the login button.
 
@@ -459,15 +501,19 @@ As a final step, we're going to allow the users of our app to log in using email
 
 7. Finally, replace the hard-coded username with the field we just populated:
 
-        mFirebaseRef.push().setValue(new ChatMessage(MainActivity.this.mUsername, text));
+```java
+mFirebaseRef.push().setValue(new ChatMessage(MainActivity.this.mUsername, text));
+```
 
   ![messages with one from puf@firebaseui.com](images/6_9.png)
 
-    We could definitely improve the layout of things. But this step has been long enough as it is. So let's wrap up with a few notes.
+  We could definitely improve the layout of things. But this step has been long enough as it is. So let's wrap up with a few notes.
 
 8. One thing you may note is that the user stays logged in, even when they restart the app. If instead you want to sign out the user, you can call:
 
-        mFirebaseRef.unauth();
+```java
+mFirebaseRef.unauth();
+```
 
   This will trigger the `AuthStateListener` we created before, which will clear the username field and re-enable the login button.
 
