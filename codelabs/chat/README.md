@@ -436,7 +436,7 @@ protected void onStart() {
 5. Wire up login button
 
 ```java
-Button loginButton = (Button) this.findViewById(R.id.login_button);
+Button loginButton = (Button) this.findViewById(R.id.login);
 
 loginButton.setOnClickListener(new View.OnClickListener() {
     @Override
@@ -448,7 +448,7 @@ loginButton.setOnClickListener(new View.OnClickListener() {
 
 ![Enable PASSWORD auth](images/6_5.png)
 
-If you want to know which users logged in to your application, you can find them in the Login & Auth tab of your Firebase's dashboard.
+Now go into your Firebase Dashboard and go to the Auth tab and select "Email/Password". You'll see an "Add User" button. Create a user to test logging in with.
 
 ![Auth dashboard with some users](images/6_10.png)
 
