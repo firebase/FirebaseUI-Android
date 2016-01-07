@@ -61,7 +61,7 @@ In this step we'll create a project in Android Studio.
   ![Minimum Android API level](images/2_3.png)
 
    We've left it on 10 (Gingerbread) here, since that is the lowest API level Firebase supports.
-4. Start with a Blank Activity
+4. Start with a Empty Activity
 
   ![Add an activity](images/2_4.png)
 
@@ -89,8 +89,8 @@ Before we can start writing code that interacts with our Firebase database, we'l
 
 2. add the following lines to the dependencies object at the bottom:
 
-        compile 'com.firebase:firebase-client-android:2.3.1'
-        compile 'com.firebaseui:firebase-ui:0.2.0'
+        compile 'com.firebase:firebase-client-android:2.5.0'
+        compile 'com.firebaseui:firebase-ui:0.3.0'
 
   This tells Gradle to include the Firebase SDK and the FirebaseUI library.
 
@@ -120,7 +120,7 @@ Before we can start writing code that interacts with our Firebase database, we'l
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-    ![INTERNET permission in AndroidManifest.xml](images/3_3.png)
+![INTERNET permission in AndroidManifest.xml](images/3_3.png)
 
 8. Import Firebase at the top of your MainActivity by adding the following line:
 
