@@ -372,156 +372,87 @@ As a final step, we're going to allow the users of our app to log in using email
 
   ![main_activity.xml with login button](images/6_2.png)
 
-3. Now create a new layout called dialog_signin.xml
+3. Extend FirebaseLoginBaseActivity
 
-  ![Menu option to add a new layout xml](images/6_3.png)
+Although extending `ListActivity` was useful earlier, when it saved some lines of code, it's now more important that we extend `FirebaseLoginBaseActivity`.
 
-4. In this dialog_signin.xml, we'll model the body of the sign-in dialog
-
-```xml
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-  <EditText
-      android:id="@+id/email"
-      android:inputType="textEmailAddress"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:layout_marginLeft="4dp"
-      android:layout_marginRight="4dp"
-      android:layout_marginBottom="4dp"
-      android:hint="Email" />
-  <EditText
-      android:id="@+id/password"
-      android:inputType="textPassword"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="4dp"
-      android:layout_marginLeft="4dp"
-      android:layout_marginRight="4dp"
-      android:layout_marginBottom="16dp"
-      android:hint="Password"/>
-</LinearLayout>
-```
-
-  We have two `EditText controls` under each other, one for the user's name, the other for their password.
-  The rest of the popup will be handled by a stock Android dialog.
-
-  ![dialog_signin.xml](images/6_4.png)
-
-4. Since our app will display the sign-in dialog as a popup, add the handling to MainActivity.java:
+We'll change our `MainActivity` definition to extend `FirebaseLoginBaseActivity`.
 
 ```java
-Button loginButton = (Button) findViewById(R.id.login);
+public class MainActivity extends FirebaseLoginBaseActivity {
+```
+
+Then we need to update our usage of FirebaseListAdapter.
+
+```java
+final ListView listView = (ListView) this.findViewById(android.R.id.list);
+
+mListAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class,
+        android.R.layout.two_line_list_item, mFirebaseRef) {
+    @Override
+    protected void populateView(View v, ChatMessage model, int position) {
+        ((TextView)v.findViewById(android.R.id.text1)).setText(model.getName());
+        ((TextView)v.findViewById(android.R.id.text2)).setText(model.getText());
+    }
+};
+listView.setAdapter(mListAdapter);
+```
+
+![Update FirebaseListAdapter code](images/6_3.png)
+
+Finally we need to add a few event handlers onto `MainActivity` so we can react to login events.
+
+```java
+@Override
+protected Firebase getFirebaseRef() {
+    return mFirebaseRef;
+}
+
+@Override
+protected void onFirebaseLoginProviderError(FirebaseLoginError firebaseLoginError) {
+
+}
+
+@Override
+protected void onFirebaseLoginUserError(FirebaseLoginError firebaseLoginError) {
+
+}
+```
+
+![Add Firebase event handlers](images/6_3.5.png)
+
+4. Enable Password Authentication
+
+```java
+@Override
+protected void onStart() {
+    super.onStart();
+    setEnabledAuthProvider(AuthProviderType.PASSWORD);
+}
+```
+
+![Enable PASSWORD auth](images/6_4.png)
+
+5. Wire up login button
+
+```java
+Button loginButton = (Button) this.findViewById(R.id.login_button);
+
 loginButton.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        new AlertDialog.Builder(MainActivity.this)
-                .setMessage("Enter your email address and password")
-                .setTitle("Log in")
-                .setView(MainActivity.this.getLayoutInflater().inflate(R.layout.dialog_signin, null))
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        AlertDialog dlg = (AlertDialog) dialog;
-                        final String email = ((TextView)dlg.findViewById(R.id.email)).getText().toString();
-                        final String password =((TextView)dlg.findViewById(R.id.password)).getText().toString();
-
-                        // TODO: sign in to Firebase
-                    }
-                })
-                .create()
-                .show();
+        showFirebaseLoginPrompt();
     }
 });
 ```
 
-  This method builds and show the dialog, with our two text boxes as the main body.
+![Enable PASSWORD auth](images/6_5.png)
 
-  ![Login dialog](images/6_5.png)
+If you want to know which users logged in to your application, you can find them in the Login & Auth tab of your Firebase's dashboard.
 
-  When the user clicks OK, it extracts the email address and password from the text controls.
+![Auth dashboard with some users](images/6_10.png)
 
-  ![login OnClickHandler code](images/6_6.png)
-
-5. Now wire the values that we got from the dialog to the Firebase Authentication back-end. Replace the `TODO` with the following code:
-
-```java
-mFirebaseRef.createUser(email, password, new Firebase.ResultHandler() {
-    @Override
-    public void onSuccess() {
-        mFirebaseRef.authWithPassword(email, password, null);
-    }
-    @Override
-    public void onError(FirebaseError firebaseError) {
-        mFirebaseRef.authWithPassword(email, password, null);
-    }
-});
-```
-
-  In this code, we always try to register the user. If the user already registered that will result in `onError`, otherwise it will result on onSuccess.
-
-  Either way, we next call `authWithPassword` to authenticate the (pre-existing or just-created) user.
-
-  ![OnClickHandler with the login behavior](images/6_7.png)
-
-6. With the above we have the registration/login flow working. But we still need to listen to when Firebase Authentication tells us the user has been authenticated, so that we can store the username and use that in the chat message instead of the hard-coded value we have now.
-
-  Add a field to the class to hold the user name:
-
-```java
-String mUsername;
-```
-
-  Add the end of the `onCreate` method, add a callback method that listens for authentication state changes in Firebase:
-
-```java
-mFirebaseRef.addAuthStateListener(new Firebase.AuthStateListener() {
-    @Override
-    public void onAuthStateChanged(AuthData authData) {
-        if(authData != null) {
-            mUsername = ((String)authData.getProviderData().get("email"));
-            findViewById(R.id.login).setVisibility(View.INVISIBLE);
-        }
-        else {
-            mUsername = null;
-            findViewById(R.id.login).setVisibility(View.VISIBLE);
-        }
-    }
-});
-```
-
-  Firebase calls our listener whenever the authentication state changes, so whenever the user logs in or out. When the user logs in, we store their email address in our field and hide the login button.
-
-  ![AuthStateListener](images/6_8.png)
-
-  Firebase Authentication supports multiple authentication providers and each of them exposes a different set of data. For example, if we'd allow our users to authenticate with their existing Twitter account, we could identify them by their twitter handle.
-
-7. Finally, replace the hard-coded username with the field we just populated:
-
-```java
-mFirebaseRef.push().setValue(new ChatMessage(MainActivity.this.mUsername, text));
-```
-
-  ![messages with one from puf@firebaseui.com](images/6_9.png)
-
-  We could definitely improve the layout of things. But this step has been long enough as it is. So let's wrap up with a few notes.
-
-8. One thing you may note is that the user stays logged in, even when they restart the app. If instead you want to sign out the user, you can call:
-
-```java
-mFirebaseRef.unauth();
-```
-
-  This will trigger the `AuthStateListener` we created before, which will clear the username field and re-enable the login button.
-
-9. If you want to know which users logged in to your application, you can find them in the Login & Auth tab of your Firebase's dashboard.
-
-  ![Auth dashboard with some users](images/6_10.png)
-
-  This is also where you can configure the password reset emails that you can send to your users, in case they forgot their password.
+This is also where you can configure the password reset emails that you can send to your users, in case they forgot their password.
 
 ## Wrap-up
 
