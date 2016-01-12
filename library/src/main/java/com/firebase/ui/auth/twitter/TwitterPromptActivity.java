@@ -82,20 +82,25 @@ public class TwitterPromptActivity extends Activity {
 
             @Override
             protected void onPostExecute(final RequestToken token) {
-                mTwitterView.setWebViewClient(new WebViewClient() {
-                    @Override
-                    public void onPageFinished(final WebView view, final String url) {
-                        if (url.startsWith("oauth://cb")) {
-                            mTwitterView.destroy();
-                            if (url.contains("oauth_verifier")) {
-                                getTwitterOAuthTokenAndLogin(token, Uri.parse(url).getQueryParameter("oauth_verifier"));
-                            } else if (url.contains("denied")) {
-                                sendResultError(TwitterActions.USER_ERROR, FirebaseResponse.LOGIN_CANCELLED.ordinal(), "User denied access to their account.");
+                if (token == null) {
+                    // Then doInBackground failed and triggered error, so just return
+                    return;
+                } else {
+                    mTwitterView.setWebViewClient(new WebViewClient() {
+                        @Override
+                        public void onPageFinished(final WebView view, final String url) {
+                            if (url.startsWith("oauth://cb")) {
+                                mTwitterView.destroy();
+                                if (url.contains("oauth_verifier")) {
+                                    getTwitterOAuthTokenAndLogin(token, Uri.parse(url).getQueryParameter("oauth_verifier"));
+                                } else if (url.contains("denied")) {
+                                    sendResultError(TwitterActions.USER_ERROR, FirebaseResponse.LOGIN_CANCELLED.ordinal(), "User denied access to their account.");
+                                }
                             }
                         }
-                    }
-                });
-                mTwitterView.loadUrl(token.getAuthorizationURL());
+                    });
+                    mTwitterView.loadUrl(token.getAuthorizationURL());
+                }
             }
         }.execute();
     }
