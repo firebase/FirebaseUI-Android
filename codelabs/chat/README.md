@@ -2,8 +2,8 @@
 
 In this code lab you'll build a chat application for Android using Firebase and Android Studio.
 
-![Chat login](images/0_0.png)
-![Chat messages](images/0_1.png)
+<img alt="Chat login" src="images/0_0.png" height="600">
+<img alt="Chat messages" src="images/0_1.png" height="600">
 
 What you'll learn:
 
@@ -231,7 +231,7 @@ Now that we can send messages to Firebase, it is time for the next step: making 
 
 A chat app that doesn’t show existing messages is not very useful. So in this step we’ll add a list of the existing messages to our Android app. And since we're using Firebase, new chat messages will be added to this list automatically. At the end of this section we’ll have a fully functional chat app.
 
-![Chat messages Android app and new message](images/5_1.png)
+<img alt="Chat messages Android app and new message" src="images/5_1.png" height="600">
 
 Let's take this in chunks: first we'll create a Java class to represent each message, then we'll create an Adapter that gets each of the messages from Firebase and puts them into a ListView.
 
@@ -454,13 +454,17 @@ Now go into your Firebase Dashboard and go to the Auth tab and select "Email/Pas
 
 This is also where you can configure the password reset emails that you can send to your users, in case they forgot their password.
 
+6. Log in with your new user.
+
+<img alt="Chat app with login" src="images/0_1.png" height="600">
+
 ## Wrap-up
 
 Wrap-up
 
 Congratulations! You've just built a fully functional multi-user chat application that uses Firebase to store the data and authentication users.
 
-![Chat app with login](images/0_0.png)
+<img alt="Chat app with login" src="images/0_0.png" height="600">
 
 As a reward for finishing the codelab you’ve earned a promo code! When you’re ready to put your Firebase app in production, you can use the promo code `androidcodelab49` for $49 off your first month of a paid Firebase plan. Just enter the code when you upgrade your Firebase.
 
