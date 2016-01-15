@@ -183,7 +183,7 @@ public class MainActivity extends FirebaseLoginBaseActivity {
 ```
 
 
-### Call showFirebaseLoginDialog();
+### Call showFirebaseLoginPrompt();
 
 You're now ready to display the login dialog!
 
