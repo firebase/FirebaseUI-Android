@@ -438,16 +438,16 @@ public static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
 
 There's nothing magical going on here; we're just mapping numeric IDs and casts into a nice, type-safe contract.
 
-### Create a custom FirebaseListAdapter
+### Create a custom FirebaseRecyclerAdapter
 
-Just like we did for FirebaseListAdapter, we'll create an anonymous subclass for our ChatMessages:
+Just like we did for `FirebaseListAdapter`, we'll create an anonymous subclass for our ChatMessages, but this time we'll use `FirebaseRecyclerAdapter`:
 
 ```java
 RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
 recycler.setHasFixedSize(true);
 recycler.setLayoutManager(new LinearLayoutManager(this));
 
-mAdapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
+mAdapter = new FirebaseRecyclerAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
     @Override
     public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage, int position) {
         chatMessageViewHolder.nameText.setText(chatMessage.getName());
