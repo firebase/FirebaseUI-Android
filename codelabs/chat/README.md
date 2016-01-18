@@ -2,8 +2,8 @@
 
 In this code lab you'll build a chat application for Android using Firebase and Android Studio.
 
-![Chat login](images/0_0.png)
-![Chat messages](images/0_1.png)
+<img alt="Chat login" src="images/0_0.png" height="600">
+<img alt="Chat messages" src="images/0_1.png" height="600">
 
 What you'll learn:
 
@@ -271,7 +271,7 @@ Warning: if you end up making this `ChatMessage` an inner class of another class
 
 With the layout for the message specified and their structure defined in a class, we need to make a space for them in the `main_activity.xml`
 
-Add a ListView with `android:id="@android:id/list"`` above the LinearLayout:
+Add a ListView with `android:id="@android:id/list"` above the LinearLayout:
 
 ```xml
 <ListView
@@ -285,18 +285,12 @@ This is the container that all messages will be added to: one message_layout for
 
 ![activity_main.xml with ListView](images/5_4.png)
 
-The `id` value is very important here, since Android's `ListActivity` uses it to find the `ListView`. So make sure to enter it exactly as specified: ``@android:id/list`.
-
-Make the `MainActivity` class descend from `ListActivity`. This is a built-in Android base-class. By deriving from this, our activity will automatically have access to the ListView we added to the layout:
-
-```java
-public class MainActivity extends ListActivity {
-```
+The `id` value is very important here, since we'll use it to look up this list before we populate it with items.
 
 We're ready to start on our ListAdapter, which we'll base on the `FirebaseListAdapter` from the firebase-ui project we imported. `The FirebaseListAdapter` class adapts a Firebase collection so that it becomes usable in an Android `ListView`. First we'll add a member to our `MainActivity`:
 
 ```java
-public class MainActivity extends ListActivity {
+public class MainActivity extends AppCompatActivity {
     private Firebase mFirebaseRef;
     FirebaseListAdapter<ChatMessage> mListAdapter;
 ```
@@ -306,6 +300,7 @@ public class MainActivity extends ListActivity {
 To make everything come together, we add this to the onCreate method of our MainActivity:
 
 ```java
+final ListView listView = (ListView) this.findViewById(android.R.id.list);
 mListAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class,
         android.R.layout.two_line_list_item, mFirebaseRef) {
     @Override
@@ -314,7 +309,7 @@ mListAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class,
         ((TextView)v.findViewById(android.R.id.text2)).setText(model.getText());
     }
 };
-setListAdapter(mListAdapter);
+listView.setAdapter(mListAdapter);
 ```
 
 The FirebaseListAdapter maps the data from your Firebase database into the ListView that you added to the layout. It creates a new instance of your `two_line_list_item` for each `ChatMessage` and calls the `populateView` method. We override this method and put the name and text in the correct subviews.
@@ -462,7 +457,7 @@ Wrap-up
 
 Congratulations! You've just built a fully functional multi-user chat application that uses Firebase to store the data and authentication users.
 
-![Chat app with login](images/0_0.png)
+<img alt="Chat login" src="images/0_0.png" height="600">
 
 As a reward for finishing the codelab you’ve earned a promo code! When you’re ready to put your Firebase app in production, you can use the promo code `androidcodelab49` for $49 off your first month of a paid Firebase plan. Just enter the code when you upgrade your Firebase.
 
