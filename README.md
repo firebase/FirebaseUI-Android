@@ -51,7 +51,7 @@ We'll go into each of these steps below.
 
 ### Add SDK dependencies
 
-Since FirebaseUI depends on the SDKs of various providers, we'll need to include those in our depedencies as well.
+Since FirebaseUI depends on the SDKs of various providers, we'll need to include those in our dependencies as well.
 
 ```
 dependencies {
@@ -62,9 +62,9 @@ dependencies {
 }
 ```
 
-### Add Facebook/Twitter/Google keys to strings.xml
+### Add Facebook/Twitter/Google keys
 
-Open your `res/values/strings.xml` file and add the following lines, replacing `[VALUE]` with your key.
+Open your application's `res/values/strings.xml` file and add the following lines, replacing `[VALUE]` with your key.
 
 Keep in mind, these are all optional. You only have to provide values for the providers you plan to use.
 
@@ -74,8 +74,9 @@ Keep in mind, these are all optional. You only have to provide values for the pr
 <string name="facebook_app_id">[VALUE]</string>
 <string name="twitter_app_key">[VALUE]</string>
 <string name="twitter_app_secret">[VALUE]</string>
-<string name="google_client_id">[VALUE]</string>
 ```
+
+If you're using Google authentication, place your `google-services.json` in the app folder.
 
 ### Change our AndroidManifest.xml
 
@@ -114,18 +115,6 @@ If you're using Facebook authentication, add the following to your `<application
     android:value="@string/facebook_app_id" />
 ```
 
-If you're using Google authentication, add the following to your `<application>` tag.
-
-```xml
-<!-- Google Configuration -->
- <meta-data
-     android:name="com.firebase.ui.GoogleClientId"
-     android:value="@string/google_client_id" />
- ```
-
-**Note:** If you're using Google Sign-in you'll also need to ensure that your `google-services.json` file is created
-and placed in your app folder.
-
 ### Inherit from FirebaseLoginBaseActivity
 
 Now we get to the juicy bits. Open your `MainActivity` and change your activity to extend `FirebaseLoginBaseActivity`
@@ -147,16 +136,6 @@ public class MainActivity extends FirebaseLoginBaseActivity {
     }
 
     @Override
-    public void onFirebaseLoggedIn(AuthData authData) {
-        // TODO: Handle successful login
-    }
-
-    @Override
-    public void onFirebaseLoggedOut() {
-        // TODO: Handle logout
-    }
-
-    @Override
     public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {
         // TODO: Handle an error from the authentication provider
     }
@@ -167,6 +146,23 @@ public class MainActivity extends FirebaseLoginBaseActivity {
     }
 }
 ```
+
+In addition you can override these methods to customize what happens when a user logs in or out:
+
+```
+    @Override
+    public void onFirebaseLoggedIn(AuthData authData) {
+        // TODO: Handle successful login
+    }
+
+    @Override
+    public void onFirebaseLoggedOut() {
+        // TODO: Handle logout
+    }
+
+```
+
+If you want to know the current `AuthData` at any point, you can call `getAuth()`. This will return the `AuthData` for the currently authenticated user, or `null` if no user is authenticated.
 
 ### Enable Authentication Providers
 
@@ -179,15 +175,15 @@ public class MainActivity extends FirebaseLoginBaseActivity {
     protected void onStart() {
         super.onStart();
         // All providers are optional! Remove any you don't want.
-        setEnabledAuthProvider(SocialProvider.facebook);
-        setEnabledAuthProvider(SocialProvider.twitter);
-        setEnabledAuthProvider(SocialProvider.google);
-        setEnabledAuthProvider(SocialProvider.password);
+        setEnabledAuthProvider(AuthProviderType.FACEBOOK);
+        setEnabledAuthProvider(AuthProviderType.TWITTER);
+        setEnabledAuthProvider(AuthProviderType.GOOGLE);
+        setEnabledAuthProvider(AuthProviderType.PASSWORD);
     }
 ```
 
 
-### Call showFirebaseLoginDialog();
+### Call showFirebaseLoginPrompt();
 
 You're now ready to display the login dialog!
 
@@ -331,7 +327,7 @@ protected void onCreate(Bundle savedInstanceState) {
 
     mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
         @Override
-        protected void populateView(View view, ChatMessage chatMessage) {
+        protected void populateView(View view, ChatMessage chatMessage, int position) {
             ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
             ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
 
@@ -385,7 +381,7 @@ protected void onCreate(Bundle savedInstanceState) {
 
     mAdapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref) {
         @Override
-        protected void populateView(View view, ChatMessage chatMessage) {
+        protected void populateView(View view, ChatMessage chatMessage, int position) {
             ((TextView)view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
             ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
         }
@@ -428,7 +424,7 @@ If we use the same layout as before (`android.R.layout.two_line_list_item`), the
 We can wrap that in a ViewHolder with:
 
 ```java
-private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
+public static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
     TextView messageText;
     TextView nameText;
 
@@ -442,18 +438,18 @@ private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
 
 There's nothing magical going on here; we're just mapping numeric IDs and casts into a nice, type-safe contract.
 
-### Create a custom FirebaseListAdapter
+### Create a custom FirebaseRecyclerAdapter
 
-Just like we did for FirebaseListAdapter, we'll create an anonymous subclass for our ChatMessages:
+Just like we did for `FirebaseListAdapter`, we'll create an anonymous subclass for our ChatMessages, but this time we'll use `FirebaseRecyclerAdapter`:
 
 ```java
 RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
 recycler.setHasFixedSize(true);
 recycler.setLayoutManager(new LinearLayoutManager(this));
 
-mAdapter = new FirebaseRecyclerViewAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
+mAdapter = new FirebaseRecyclerAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
     @Override
-    public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage) {
+    public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage, int position) {
         chatMessageViewHolder.nameText.setText(chatMessage.getName());
         chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
     }

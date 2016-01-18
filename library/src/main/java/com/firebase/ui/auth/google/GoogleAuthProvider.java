@@ -12,7 +12,7 @@ import com.firebase.ui.auth.core.FirebaseAuthProvider;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.FirebaseOAuthToken;
 import com.firebase.ui.auth.core.FirebaseResponse;
-import com.firebase.ui.auth.core.SocialProvider;
+import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,26 +28,19 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleOAuthTaskHandler {
 
-    public final static String PROVIDER_NAME = "google";
-    public static final SocialProvider PROVIDER_TYPE = SocialProvider.google;
     private final String TAG = "GoogleAuthProvider";
     private GoogleApiClient mGoogleApiClient;
-    private TokenAuthHandler mHandler;
-    private Activity mActivity;
-    private Firebase mRef;
     private Integer onConnectedAction = 0;
 
-    public GoogleAuthProvider(Context context, Firebase ref, TokenAuthHandler handler) {
-        mActivity = (Activity) context;
-        mRef = ref;
-        mHandler = handler;
+    public GoogleAuthProvider(Context context, AuthProviderType providerType, String providerName, Firebase ref, TokenAuthHandler handler) {
+        super(context, providerType, providerName, ref, handler);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
-                .enableAutoManage((FragmentActivity) mActivity, this)
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .enableAutoManage((FragmentActivity) getContext(), this)
                 .addConnectionCallbacks(this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
@@ -55,10 +48,6 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
         mGoogleApiClient.connect();
 
     }
-
-    public String getProviderName() { return PROVIDER_NAME; }
-    public Firebase getFirebaseRef() { return mRef; }
-    public SocialProvider getProviderType() { return PROVIDER_TYPE; };
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -93,7 +82,7 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
     public void login() {
         if (mGoogleApiClient.isConnected()) {
             Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-            mActivity.startActivityForResult(signInIntent, GoogleActions.SIGN_IN);
+            ((Activity)getContext()).startActivityForResult(signInIntent, GoogleActions.SIGN_IN);
         } else {
             onConnectedAction = GoogleActions.SIGN_IN;
             if (!mGoogleApiClient.isConnecting()) {
@@ -119,45 +108,44 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
 
         if (requestCode == GoogleActions.SIGN_IN && resultCode == 0) {
             Log.d(TAG, data.getExtras().keySet().toString());
-            mHandler.onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
+            getHandler().onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
         }
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
             GoogleSignInAccount acct = result.getSignInAccount();
-            acct.getServerAuthCode();
             GoogleOAuthTask googleOAuthTask = new GoogleOAuthTask();
-            googleOAuthTask.setContext(mActivity);
+            googleOAuthTask.setContext(getContext());
             googleOAuthTask.setHandler(this);
             googleOAuthTask.execute(acct.getEmail());
         }
         else {
-            mHandler.onProviderError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, result.getStatus().toString()));
+            getHandler().onProviderError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, result.getStatus().toString()));
         }
     }
 
 
     public void onOAuthSuccess(String OAuthToken) {
         FirebaseOAuthToken token = new FirebaseOAuthToken(
-                PROVIDER_NAME,
+                getProviderName(),
                 OAuthToken);
-        onFirebaseTokenReceived(token, mHandler);
+        onFirebaseTokenReceived(token, getHandler());
     }
 
     public void onOAuthFailure(FirebaseLoginError firebaseError) {
-        mHandler.onProviderError(firebaseError);
+        getHandler().onProviderError(firebaseError);
     }
 
     public void cleanUp() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
-            mGoogleApiClient.stopAutoManage((FragmentActivity) mActivity);
+            mGoogleApiClient.stopAutoManage((FragmentActivity) getContext());
         }
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         FirebaseLoginError error = new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, connectionResult.toString());
-        mHandler.onProviderError(error);}
+        getHandler().onProviderError(error);}
 }

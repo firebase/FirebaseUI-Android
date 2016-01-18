@@ -23,7 +23,7 @@ import com.firebase.client.Query;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.FirebaseRecyclerAdapter;
 import com.firebase.ui.auth.core.FirebaseLoginError;
-import com.firebase.ui.auth.core.SocialProvider;
+import com.firebase.ui.auth.core.AuthProviderType;
 
 public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
@@ -99,10 +99,10 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        setEnabledAuthProvider(SocialProvider.facebook);
-        setEnabledAuthProvider(SocialProvider.twitter);
-        setEnabledAuthProvider(SocialProvider.google);
-        setEnabledAuthProvider(SocialProvider.password);
+        setEnabledAuthProvider(AuthProviderType.FACEBOOK);
+        setEnabledAuthProvider(AuthProviderType.TWITTER);
+        setEnabledAuthProvider(AuthProviderType.GOOGLE);
+        setEnabledAuthProvider(AuthProviderType.PASSWORD);
     }
 
     @Override
@@ -135,6 +135,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public void onFirebaseLoggedIn(AuthData authData) {
         Log.i(TAG, "Logged in to " + authData.getProvider().toString());
@@ -162,13 +163,14 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     @Override
     public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {
-        Log.i(TAG, "Login provider error: " + firebaseError.toString());
+        Log.e(TAG, "Login provider error: " + firebaseError.toString());
+        resetFirebaseLoginPrompt();
     }
 
     @Override
     public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {
-        resetFirebaseLoginDialog();
-        Log.i(TAG, "Login user error: " + firebaseError.toString());
+        Log.e(TAG, "Login user error: "+firebaseError.toString());
+        resetFirebaseLoginPrompt();
     }
 
     @Override
