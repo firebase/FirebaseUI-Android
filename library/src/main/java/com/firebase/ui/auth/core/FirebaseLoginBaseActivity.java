@@ -96,7 +96,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mDialog.dismiss();
     }
 
-    public void resetFirebaseLoginDialog() {
+    public void resetFirebaseLoginPrompt() {
         mDialog.reset();
     }
 
@@ -112,7 +112,6 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         mHandler = new TokenAuthHandler() {
             @Override
             public void onSuccess(AuthData data) {

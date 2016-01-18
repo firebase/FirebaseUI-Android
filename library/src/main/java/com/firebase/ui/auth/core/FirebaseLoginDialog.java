@@ -6,7 +6,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -14,10 +13,7 @@ import android.widget.EditText;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.ui.R;
-import com.firebase.ui.auth.facebook.FacebookAuthProvider;
 import com.firebase.ui.auth.google.GoogleAuthProvider;
-import com.firebase.ui.auth.password.PasswordAuthProvider;
-import com.firebase.ui.auth.twitter.TwitterAuthProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,11 +26,6 @@ public class FirebaseLoginDialog extends DialogFragment {
     Firebase mRef;
     Context mContext;
     View mView;
-
-    /*
-    We need to be extra aggressive about building / destroying mGoogleauthProviders so we don't
-    end up with two clients connected at the same time.
-     */
 
     @Override
     public void onStop() {
@@ -76,7 +67,7 @@ public class FirebaseLoginDialog extends DialogFragment {
                 showLoginOption(mEnabledProvidersByType.get(providerType), providerType.getButtonId());
             }
             else {
-                mView.findViewById(providerType.getButtonId()).setVisibility(View.GONE);;
+                mView.findViewById(providerType.getButtonId()).setVisibility(View.GONE);
             }
         }
 
@@ -86,9 +77,9 @@ public class FirebaseLoginDialog extends DialogFragment {
         }
 
         mView.findViewById(R.id.loading_section).setVisibility(View.GONE);
-
         builder.setView(mView);
 
+        this.setRetainInstance(true);
         return builder.create();
     }
 
@@ -146,18 +137,18 @@ public class FirebaseLoginDialog extends DialogFragment {
         mView.findViewById(id).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (AuthProviderType.getTypeForProvider(helper) == AuthProviderType.PASSWORD) {
-                    EditText emailText = (EditText) mView.findViewById(R.id.email);
-                    EditText passwordText = (EditText) mView.findViewById(R.id.password);
-                    helper.login(emailText.getText().toString(), passwordText.getText().toString());
+            if (AuthProviderType.getTypeForProvider(helper) == AuthProviderType.PASSWORD) {
+                EditText emailText = (EditText) mView.findViewById(R.id.email);
+                EditText passwordText = (EditText) mView.findViewById(R.id.password);
+                helper.login(emailText.getText().toString(), passwordText.getText().toString());
 
-                    passwordText.setText("");
-                } else {
-                    helper.login();
-                }
-                mActiveProvider = helper.getProviderType();
-                mView.findViewById(R.id.login_section).setVisibility(View.GONE);
-                mView.findViewById(R.id.loading_section).setVisibility(View.VISIBLE);
+                passwordText.setText("");
+            } else {
+                helper.login();
+            }
+            mActiveProvider = helper.getProviderType();
+            mView.findViewById(R.id.login_section).setVisibility(View.GONE);
+            mView.findViewById(R.id.loading_section).setVisibility(View.VISIBLE);
             }
         });
     }

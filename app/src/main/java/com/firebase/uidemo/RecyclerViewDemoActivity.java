@@ -135,6 +135,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public void onFirebaseLoggedIn(AuthData authData) {
         Log.i(TAG, "Logged in to " + authData.getProvider().toString());
@@ -163,13 +164,13 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {
         Log.e(TAG, "Login provider error: " + firebaseError.toString());
-        resetFirebaseLoginDialog();
+        resetFirebaseLoginPrompt();
     }
 
     @Override
     public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {
         Log.e(TAG, "Login user error: "+firebaseError.toString());
-        resetFirebaseLoginDialog();
+        resetFirebaseLoginPrompt();
     }
 
     @Override
