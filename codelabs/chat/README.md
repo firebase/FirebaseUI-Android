@@ -232,7 +232,7 @@ Now that we can send messages to Firebase, it is time for the next step: making 
 
 A chat app that doesn’t show existing messages is not very useful. So in this step we’ll add a list of the existing messages to our Android app. And since we're using Firebase, new chat messages will be added to this list automatically. At the end of this section we’ll have a fully functional chat app.
 
-![Chat messages Android app and new message](images/5_1.png)
+<img alt="Chat messages Android app and new message" src="images/5_1.png" height="600">
 
 Let's take this in chunks: first we'll create a Java class to represent each message, then we'll create an Adapter that gets each of the messages from Firebase and puts them into a ListView.
 
@@ -369,11 +369,7 @@ First add a button to the top right of activity_main.xml
 
   ![main_activity.xml with login button](images/6_2.png)
 
-Extend FirebaseLoginBaseActivity
-
-Although extending `ListActivity` was useful earlier, when it saved some lines of code, it's now more important that we extend `FirebaseLoginBaseActivity`.
-
-We'll change our `MainActivity` definition to extend `FirebaseLoginBaseActivity`.
+We'll change our `MainActivity` definition to extend `FirebaseLoginBaseActivity`. This allows us to make use of FirebaseUIs headful auth in the easiest way.
 
 ```java
 public class MainActivity extends FirebaseLoginBaseActivity {
@@ -397,7 +393,7 @@ listView.setAdapter(mListAdapter);
 
 ![Update FirebaseListAdapter code](images/6_3.png)
 
-Finally we need to add a few event handlers onto `MainActivity` so we can react to login events.
+We'll need to add a few event handlers onto `MainActivity` so we can react to login events.
 
 ```java
 @Override
@@ -418,7 +414,7 @@ protected void onFirebaseLoginUserError(FirebaseLoginError firebaseLoginError) {
 
 ![Add Firebase event handlers](images/6_3.5.png)
 
-Enable Password Authentication
+Then we can enable an auth provider. In this example we'll just use `PASSWORD` but social providers can be enabled here, too.
 
 ```java
 @Override
@@ -430,7 +426,7 @@ protected void onStart() {
 
 ![Enable PASSWORD auth](images/6_4.png)
 
-Wire up login button
+We want our users to be able to click a button to be prompted to log in, so we'll wire up the button we added a moment ago to call `showFirebaseLoginPrompt()`.
 
 ```java
 Button loginButton = (Button) this.findViewById(R.id.login);
@@ -450,6 +446,10 @@ Now go into your Firebase Dashboard and go to the Auth tab and select "Email/Pas
 ![Auth dashboard with some users](images/6_10.png)
 
 This is also where you can configure the password reset emails that you can send to your users, in case they forgot their password.
+
+Now run your app and click the Login button and you'll see the FirebaseUI dialog. When a user logs in the event handlers we added on our activity will be called and you can interact with their authentication data however you want.
+
+<img alt="Chat login" src="images/0_1.png" height="600">
 
 ## Wrap-up
 
