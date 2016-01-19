@@ -6,7 +6,7 @@
   <name>FirebaseUI-Android</name>
   <description>FirebaseUI library for Android applications</description>
   <url>https://github.com/firebase/FirebaseUI-Android</url>
-  <version>0.3.0</version>
+  <version>0.3.1</version>
   <packaging>aar</packaging>
   <scm>
     <url>scm:git@github.com/firebase/FirebaseUI-Android</url>
