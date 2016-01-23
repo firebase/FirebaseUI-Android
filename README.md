@@ -175,10 +175,10 @@ public class MainActivity extends FirebaseLoginBaseActivity {
     protected void onStart() {
         super.onStart();
         // All providers are optional! Remove any you don't want.
-        setEnabledAuthProvider(AuthProviderType.FACEBOOK);
-        setEnabledAuthProvider(AuthProviderType.TWITTER);
-        setEnabledAuthProvider(AuthProviderType.GOOGLE);
-        setEnabledAuthProvider(AuthProviderType.PASSWORD);
+        setEnabledAuthProvider(SocialProvider.facebook);
+        setEnabledAuthProvider(SocialProvider.twitter);
+        setEnabledAuthProvider(SocialProvider.google);
+        setEnabledAuthProvider(SocialProvider.password);
     }
 ```
 
