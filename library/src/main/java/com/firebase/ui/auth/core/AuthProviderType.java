@@ -1,38 +1,32 @@
 package com.firebase.ui.auth.core;
 
 import android.content.Context;
-
 import com.firebase.client.Firebase;
 import com.firebase.ui.R;
-import com.firebase.ui.auth.facebook.FacebookAuthProvider;
-import com.firebase.ui.auth.google.GoogleAuthProvider;
-import com.firebase.ui.auth.password.PasswordAuthProvider;
-import com.firebase.ui.auth.twitter.TwitterAuthProvider;
-
 import java.lang.reflect.InvocationTargetException;
 
 public enum AuthProviderType {
     GOOGLE  ("google",   "google.GoogleAuthProvider",     R.id.google_button),
     FACEBOOK("facebook", "facebook.FacebookAuthProvider", R.id.facebook_button),
     TWITTER ("twitter",  "twitter.TwitterAuthProvider",   R.id.twitter_button),
-    PASSWORD("password", "password.PasswordAuthProvider", R.id.password_button);
+    PASSWORD("password", "password.PasswordAuthProvider", R.id.password_section);
 
     private final static String AUTH_PACKAGE = "com.firebase.ui.auth.";
     private final String mName;
     private final String mProviderName;
-    private final int mButtonId;
+    private final int mLayoutId;
 
-    AuthProviderType(String name, String providerName, int button_id) {
+    AuthProviderType(String name, String providerName, int layoutId) {
         this.mName = name;
         this.mProviderName = providerName;
-        this.mButtonId = button_id;
+        this.mLayoutId = layoutId;
     }
 
     public String getName() {
         return mName;
     }
-    public int getButtonId() {
-        return mButtonId;
+    public int getLayoutId() {
+        return mLayoutId;
     }
 
     public FirebaseAuthProvider createProvider(Context context, Firebase ref, TokenAuthHandler handler) {
