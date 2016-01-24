@@ -94,8 +94,10 @@ public class FirebaseLoginDialog extends DialogFragment {
     }
 
     public void reset() {
+      if (mView != null) {
         mView.findViewById(R.id.login_section).setVisibility(View.VISIBLE);
         mView.findViewById(R.id.loading_section).setVisibility(View.GONE);
+      }
     }
 
     public void logout() {
