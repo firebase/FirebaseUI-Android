@@ -14,19 +14,19 @@ public enum AuthProviderType {
     private final static String AUTH_PACKAGE = "com.firebase.ui.auth.";
     private final String mName;
     private final String mProviderName;
-    private final int mLayoutId;
+    private final int mViewId;
 
-    AuthProviderType(String name, String providerName, int layoutId) {
+    AuthProviderType(String name, String providerName, int viewId) {
         this.mName = name;
         this.mProviderName = providerName;
-        this.mLayoutId = layoutId;
+        this.mViewId = viewId;
     }
 
     public String getName() {
         return mName;
     }
-    public int getLayoutId() {
-        return mLayoutId;
+    public int getViewId() {
+        return mViewId;
     }
 
     public FirebaseAuthProvider createProvider(Context context, Firebase ref, TokenAuthHandler handler) {
