@@ -89,7 +89,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      * method after the `onStart()` method has completed.
      */
     public void showFirebaseLoginPrompt() {
-        mDialog.show(getFragmentManager(), "");
+        mDialog.show(getSupportFragmentManager(), "");
     }
 
     public void dismissFirebaseLoginPrompt() {
