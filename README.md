@@ -333,7 +333,7 @@ protected void onCreate(Bundle savedInstanceState) {
 
         }
     };
-    messagesView.setListAdapter(mAdapter);
+    messagesView.setAdapter(mAdapter);
 }
 ```
 
@@ -386,7 +386,7 @@ protected void onCreate(Bundle savedInstanceState) {
             ((TextView)view.findViewById(android.R.id.text2)).setText(chatMessage.getMessage());
         }
     };
-    setListAdapter(mAdapter);
+    messagesView.setAdapter(mAdapter);
 
     final EditText mMessage = (EditText) findViewById(R.id.message_text);
     findViewById(R.id.send_button).setOnClickListener(new View.OnClickListener() {
