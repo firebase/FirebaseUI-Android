@@ -64,7 +64,7 @@ public class FirebaseLoginDialog extends DialogFragment {
 
         for (AuthProviderType providerType : AuthProviderType.values()) {
             if (mEnabledProvidersByType.keySet().contains(providerType)) {
-                showLoginOption(mEnabledProvidersByType.get(providerType), providerType.getViewId());
+                showLoginOption(mEnabledProvidersByType.get(providerType), providerType.getButtonId());
             }
             else {
                 mView.findViewById(providerType.getViewId()).setVisibility(View.GONE);

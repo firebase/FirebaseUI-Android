@@ -6,20 +6,22 @@ import com.firebase.ui.R;
 import java.lang.reflect.InvocationTargetException;
 
 public enum AuthProviderType {
-    GOOGLE  ("google",   "google.GoogleAuthProvider",     R.id.google_button),
-    FACEBOOK("facebook", "facebook.FacebookAuthProvider", R.id.facebook_button),
-    TWITTER ("twitter",  "twitter.TwitterAuthProvider",   R.id.twitter_button),
-    PASSWORD("password", "password.PasswordAuthProvider", R.id.password_section);
+    GOOGLE  ("google",   "google.GoogleAuthProvider",     R.id.google_button, R.id.google_button),
+    FACEBOOK("facebook", "facebook.FacebookAuthProvider", R.id.facebook_button, R.id.facebook_button),
+    TWITTER ("twitter",  "twitter.TwitterAuthProvider",   R.id.twitter_button, R.id.twitter_button),
+    PASSWORD("password", "password.PasswordAuthProvider", R.id.password_section, R.id.password_button);
 
     private final static String AUTH_PACKAGE = "com.firebase.ui.auth.";
     private final String mName;
     private final String mProviderName;
     private final int mViewId;
+    private final int mButtonId;
 
-    AuthProviderType(String name, String providerName, int viewId) {
+    AuthProviderType(String name, String providerName, int viewId, int buttonId) {
         this.mName = name;
         this.mProviderName = providerName;
         this.mViewId = viewId;
+        this.mButtonId = buttonId;
     }
 
     public String getName() {
@@ -27,6 +29,10 @@ public enum AuthProviderType {
     }
     public int getViewId() {
         return mViewId;
+    }
+
+    public int getButtonId() {
+        return mButtonId;
     }
 
     public FirebaseAuthProvider createProvider(Context context, Firebase ref, TokenAuthHandler handler) {
