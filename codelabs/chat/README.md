@@ -90,7 +90,7 @@ First, open Gradle Scripts > build.gradle (Module: app)
 Then add the following lines to the dependencies object at the bottom:
 
         compile 'com.firebase:firebase-client-android:2.5.0'
-        compile 'com.firebaseui:firebase-ui:0.3.0'
+        compile 'com.firebaseui:firebase-ui:0.3.1'
 
   This tells Gradle to include the Firebase SDK and the FirebaseUI library.
 
