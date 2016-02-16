@@ -22,7 +22,6 @@ public class FirebaseLoginDialog extends DialogFragment {
 
     Map<AuthProviderType, FirebaseAuthProvider> mEnabledProvidersByType = new HashMap<>();
     TokenAuthHandler mHandler;
-    AuthProviderType mActiveProvider;
     Firebase mRef;
     Context mContext;
     View mView;
@@ -148,7 +147,6 @@ public class FirebaseLoginDialog extends DialogFragment {
             } else {
                 helper.login();
             }
-            mActiveProvider = helper.getProviderType();
             mView.findViewById(R.id.login_section).setVisibility(View.GONE);
             mView.findViewById(R.id.loading_section).setVisibility(View.VISIBLE);
             }
