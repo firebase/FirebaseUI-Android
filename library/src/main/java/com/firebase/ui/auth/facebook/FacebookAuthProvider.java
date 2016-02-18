@@ -22,6 +22,7 @@ import com.firebase.ui.auth.core.FirebaseOAuthToken;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -31,6 +32,7 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
     public CallbackManager mCallbackManager;
     private LoginManager mLoginManager;
     private Boolean isReady = false;
+    private Boolean requestEmail;
 
     public FacebookAuthProvider(Context context, AuthProviderType providerType, String providerName, Firebase ref, final TokenAuthHandler handler) {
         super(context, providerType, providerName, ref, handler);
@@ -70,6 +72,7 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
             ApplicationInfo ai = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA);
             Bundle bundle = ai.metaData;
             facebookAppId = bundle.getString("com.facebook.sdk.ApplicationId");
+            requestEmail = bundle.getBoolean("com.firebase.ui.auth.facebook.RequestEmail", false);
         } catch (PackageManager.NameNotFoundException e) {
         } catch (NullPointerException e) {}
 
@@ -88,7 +91,10 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
 
     public void login() {
         if (isReady) {
-            Collection<String> permissions = Arrays.asList("public_profile");
+            Collection<String> permissions = new ArrayList<>(Arrays.asList("public_profile"));
+            if (requestEmail) {
+                permissions.add("email");
+            }
             mLoginManager.logInWithReadPermissions((Activity)getContext(), permissions);
         }
     }
