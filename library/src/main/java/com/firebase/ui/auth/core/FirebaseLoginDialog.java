@@ -145,10 +145,7 @@ public class FirebaseLoginDialog extends DialogFragment {
         }
         if (config.isFacebookProviderEnabled) {
             setEnabledProvider(AuthProviderType.FACEBOOK);
-            FacebookAuthProvider facebookAuthProvider = getFacebookAuthProvider();
-            if (facebookAuthProvider != null) {
-                getFacebookAuthProvider().setPermissions(config.facebookPermissions);
-            }
+            getFacebookAuthProvider().setPermissions(config.facebookPermissions);
         }
         if (config.isGoogleProviderEnabled) {
             setEnabledProvider(AuthProviderType.GOOGLE);
