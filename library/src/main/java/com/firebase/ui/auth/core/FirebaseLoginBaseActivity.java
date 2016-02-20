@@ -71,7 +71,12 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      */
     protected abstract void onFirebaseLoginUserError(FirebaseLoginError firebaseError);
 
-    protected FirebaseLoginConfig onCreateFirebaseConfig() {
+    /**
+     * Subclasses of this activity may implement this method to alter the default login config
+     *
+     * @return FirebaseLoginConfig
+     */
+    protected FirebaseLoginConfig onCreateFirebaseLoginConfig() {
         return new FirebaseLoginConfig.Builder().setPasswordProviderEnabled(true).build();
     }
 
@@ -143,7 +148,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             .setContext(this)
             .setRef(getFirebaseRef())
             .setHandler(mHandler);
-        mDialog.setFirebaseLoginConfig(onCreateFirebaseConfig());
+        mDialog.setFirebaseLoginConfig(onCreateFirebaseLoginConfig());
 
         getFirebaseRef().addAuthStateListener(mAuthStateListener);
     }
