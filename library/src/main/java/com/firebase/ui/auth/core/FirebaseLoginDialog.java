@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import android.widget.EditText;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.ui.R;
+import com.firebase.ui.auth.facebook.FacebookAuthProvider;
 import com.firebase.ui.auth.google.GoogleAuthProvider;
 
 import java.util.HashMap;
@@ -128,11 +130,26 @@ public class FirebaseLoginDialog extends DialogFragment {
         return this;
     }
 
-    public FirebaseLoginDialog setEnabledProvider(AuthProviderType provider) {
+    private void setEnabledProvider(AuthProviderType provider) {
         if (!mEnabledProvidersByType.containsKey(provider)) {
             mEnabledProvidersByType.put(provider, provider.createProvider(mContext, mRef, mHandler));
         }
-        return this;
+    }
+
+    public void setFirebaseLoginConfig(@NonNull FirebaseLoginConfig config) {
+        if (config.isPasswordProviderEnabled) {
+            setEnabledProvider(AuthProviderType.PASSWORD);
+        }
+        if (config.isFacebookProviderEnabled) {
+            setEnabledProvider(AuthProviderType.FACEBOOK);
+            getFacebookAuthProvider().setPermissions(config.facebookPermissions);
+        }
+        if (config.isGoogleProviderEnabled) {
+            setEnabledProvider(AuthProviderType.GOOGLE);
+        }
+        if (config.isTwitterProviderEnabled) {
+            setEnabledProvider(AuthProviderType.TWITTER);
+        }
     }
 
     private void showLoginOption(final FirebaseAuthProvider helper, int id) {
@@ -155,7 +172,11 @@ public class FirebaseLoginDialog extends DialogFragment {
         });
     }
 
-    public GoogleAuthProvider getGoogleAuthProvider() {
+    private GoogleAuthProvider getGoogleAuthProvider() {
         return (GoogleAuthProvider) mEnabledProvidersByType.get(AuthProviderType.GOOGLE);
+    }
+
+    private FacebookAuthProvider getFacebookAuthProvider() {
+        return (FacebookAuthProvider) mEnabledProvidersByType.get(AuthProviderType.FACEBOOK);
     }
 }
