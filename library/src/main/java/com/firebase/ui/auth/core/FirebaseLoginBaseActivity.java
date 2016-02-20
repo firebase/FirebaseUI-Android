@@ -108,8 +108,6 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        mDialog.setFirebaseLoginConfig(onCreateFirebaseConfig());
-
         mHandler = new TokenAuthHandler() {
             @Override
             public void onSuccess(AuthData data) {
@@ -145,6 +143,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             .setContext(this)
             .setRef(getFirebaseRef())
             .setHandler(mHandler);
+        mDialog.setFirebaseLoginConfig(onCreateFirebaseConfig());
 
         getFirebaseRef().addAuthStateListener(mAuthStateListener);
     }
