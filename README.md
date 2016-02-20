@@ -172,7 +172,7 @@ Now that our activity is set up, we can enable authentication providers. The Fir
 public class MainActivity extends FirebaseLoginBaseActivity {
     ...
     @Override
-    protected FirebaseLoginConfig onCreateFirebaseConfig() {
+    protected FirebaseLoginConfig onCreateFirebaseLoginConfig() {
         // All providers are optional! Don't enable those which you don't want.
         return new FirebaseLoginConfig.Builder()
                 .setPasswordProviderEnabled(true)
@@ -189,7 +189,7 @@ Facebook provider requests just `public_profile` by default, the scope of the pe
 public class MainActivity extends FirebaseLoginBaseActivity {
     ...
     @Override
-    protected FirebaseLoginConfig onCreateFirebaseConfig() {
+    protected FirebaseLoginConfig onCreateFirebaseLoginConfig() {
         return new FirebaseLoginConfig.Builder()
                 .setFacebookProviderEnabled(true)
                 .setFacebookPermissions(Arrays.asList("public_profile", "email"))
