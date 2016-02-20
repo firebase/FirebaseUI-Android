@@ -172,16 +172,30 @@ Now that our activity is set up, we can enable authentication providers. The Fir
 public class MainActivity extends FirebaseLoginBaseActivity {
     ...
     @Override
-    protected void onStart() {
-        super.onStart();
-        // All providers are optional! Remove any you don't want.
-        setEnabledAuthProvider(AuthProviderType.FACEBOOK);
-        setEnabledAuthProvider(AuthProviderType.TWITTER);
-        setEnabledAuthProvider(AuthProviderType.GOOGLE);
-        setEnabledAuthProvider(AuthProviderType.PASSWORD);
+    protected FirebaseLoginConfig onCreateFirebaseConfig() {
+        // All providers are optional! Don't enable those which you don't want.
+        return new FirebaseLoginConfig.Builder()
+                .setPasswordProviderEnabled(true)
+                .setGoogleProviderEnabled(true)
+                .setTwitterProviderEnabled(true)
+                .setFacebookProviderEnabled(true)
+                .build();
     }
 ```
 
+Facebook provider requests just `public_profile` by default, the scope of the permissions can be alerted via `setFacebookPermissions()`
+
+```java
+public class MainActivity extends FirebaseLoginBaseActivity {
+    ...
+    @Override
+    protected FirebaseLoginConfig onCreateFirebaseConfig() {
+        return new FirebaseLoginConfig.Builder()
+                .setFacebookProviderEnabled(true)
+                .setFacebookPermissions(Arrays.asList("public_profile", "email"))
+                .build();
+    }
+```
 
 ### Call showFirebaseLoginPrompt();
 
