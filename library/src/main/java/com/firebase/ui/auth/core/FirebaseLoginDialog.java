@@ -6,6 +6,8 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -13,7 +15,10 @@ import android.widget.EditText;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.ui.R;
+import com.firebase.ui.auth.facebook.FacebookAuthProvider;
 import com.firebase.ui.auth.google.GoogleAuthProvider;
+import com.firebase.ui.auth.password.PasswordAuthProvider;
+import com.firebase.ui.auth.twitter.TwitterAuthProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -128,11 +133,26 @@ public class FirebaseLoginDialog extends DialogFragment {
         return this;
     }
 
-    public FirebaseLoginDialog setEnabledProvider(AuthProviderType provider) {
+    private void setEnabledProvider(AuthProviderType provider) {
         if (!mEnabledProvidersByType.containsKey(provider)) {
             mEnabledProvidersByType.put(provider, provider.createProvider(mContext, mRef, mHandler));
         }
-        return this;
+    }
+
+    public void setFirebaseLoginConfig(@NonNull FirebaseLoginConfig config) {
+        if (config.isPasswordProviderEnabled) {
+            setEnabledProvider(AuthProviderType.PASSWORD);
+        }
+        if (config.isFacebookProviderEnabled) {
+            setEnabledProvider(AuthProviderType.FACEBOOK);
+            getFacebookAuthProvider().setPermissions(config.facebookPermissions);
+        }
+        if (config.isGoogleProviderEnabled) {
+            setEnabledProvider(AuthProviderType.GOOGLE);
+        }
+        if (config.isTwitterProviderEnabled) {
+            setEnabledProvider(AuthProviderType.TWITTER);
+        }
     }
 
     private void showLoginOption(final FirebaseAuthProvider helper, int id) {
@@ -155,7 +175,23 @@ public class FirebaseLoginDialog extends DialogFragment {
         });
     }
 
+    @Nullable
     public GoogleAuthProvider getGoogleAuthProvider() {
         return (GoogleAuthProvider) mEnabledProvidersByType.get(AuthProviderType.GOOGLE);
+    }
+
+    @Nullable
+    public FacebookAuthProvider getFacebookAuthProvider() {
+        return (FacebookAuthProvider) mEnabledProvidersByType.get(AuthProviderType.FACEBOOK);
+    }
+
+    @Nullable
+    public TwitterAuthProvider getTwitterAuthProvider() {
+        return (TwitterAuthProvider) mEnabledProvidersByType.get(AuthProviderType.TWITTER);
+    }
+
+    @Nullable
+    public PasswordAuthProvider getPasswordAuthProvider() {
+        return (PasswordAuthProvider) mEnabledProvidersByType.get(AuthProviderType.PASSWORD);
     }
 }

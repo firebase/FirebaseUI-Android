@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -24,6 +25,7 @@ import com.firebase.ui.auth.core.TokenAuthHandler;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class FacebookAuthProvider extends FirebaseAuthProvider {
 
@@ -31,6 +33,7 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
     public CallbackManager mCallbackManager;
     private LoginManager mLoginManager;
     private Boolean isReady = false;
+    private List<String> permissions = Arrays.asList("public_profile");
 
     public FacebookAuthProvider(Context context, AuthProviderType providerType, String providerName, Firebase ref, final TokenAuthHandler handler) {
         super(context, providerType, providerName, ref, handler);
@@ -86,9 +89,12 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
         isReady = true;
     }
 
+    public void setPermissions(@NonNull List<String> permissions) {
+        this.permissions = permissions;
+    }
+
     public void login() {
         if (isReady) {
-            Collection<String> permissions = Arrays.asList("public_profile");
             mLoginManager.logInWithReadPermissions((Activity)getContext(), permissions);
         }
     }

@@ -72,6 +72,15 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     protected abstract void onFirebaseLoginUserError(FirebaseLoginError firebaseError);
 
     /**
+     * Subclasses of this activity may implement this method to alter the default login config
+     *
+     * @return FirebaseLoginConfig
+     */
+    protected FirebaseLoginConfig onCreateFirebaseLoginConfig() {
+        return new FirebaseLoginConfig.Builder().setPasswordProviderEnabled(true).build();
+    }
+
+    /**
      * Calling this method will log out the currently authenticated user. It is only legal to call
      * this method after the `onStart()` method has completed.
      */
@@ -100,18 +109,10 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mDialog.reset();
     }
 
-    /**
-     * Enables authentication with the specified provider.
-     *
-     * @param provider the provider to enable.
-     */
-    public void setEnabledAuthProvider(AuthProviderType provider) {
-        mDialog.setEnabledProvider(provider);
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
+
         mHandler = new TokenAuthHandler() {
             @Override
             public void onSuccess(AuthData data) {
@@ -147,6 +148,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             .setContext(this)
             .setRef(getFirebaseRef())
             .setHandler(mHandler);
+        mDialog.setFirebaseLoginConfig(onCreateFirebaseLoginConfig());
 
         getFirebaseRef().addAuthStateListener(mAuthStateListener);
     }
