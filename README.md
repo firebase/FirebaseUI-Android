@@ -352,7 +352,7 @@ correct `TextView` controls from the `view`. The code is a bit verbose, but hey.
 
 ### Clean up When the Activity is Destroyed
 
-Finally, we need to clean up after ourselves. When the activity is destroyed, we need to call `release()`
+Finally, we need to clean up after ourselves. When the activity is destroyed, we need to call `cleanup()`
 on the `ListAdapter` so that it can stop listening for changes in the Firebase database.
 
 ```java
@@ -458,6 +458,19 @@ recycler.setAdapter(mAdapter);
 ```
 
 Like before, we get a custom RecyclerView populated with data from Firebase by setting the properties to the correct fields.
+
+### Clean up When the Activity is Destroyed
+
+Just like in the `ListAdapter` example, we need to clean up after ourselves. Call `cleanup()`
+on the `RecyclerAdapter` so that it can stop listening for changes in the Firebase database.
+
+```java
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mAdapter.cleanup();
+}
+```
 
 ## Contributing
 
