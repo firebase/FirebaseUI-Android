@@ -26,7 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.firebase.ui;
+package com.firebase.ui.database;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

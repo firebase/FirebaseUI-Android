@@ -26,7 +26,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.firebase.ui;
+package com.firebase.ui.database;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;

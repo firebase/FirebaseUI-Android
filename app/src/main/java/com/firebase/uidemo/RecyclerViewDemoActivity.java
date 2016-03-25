@@ -21,7 +21,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
-import com.firebase.ui.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.AuthProviderType;
 

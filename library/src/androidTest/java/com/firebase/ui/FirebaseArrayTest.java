@@ -3,6 +3,7 @@ package com.firebase.ui;
 import android.test.AndroidTestCase;
 
 import com.firebase.client.Firebase;
+import com.firebase.ui.database.FirebaseArray;
 
 import junit.framework.AssertionFailedError;
 
