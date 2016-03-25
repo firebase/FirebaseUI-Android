@@ -1,6 +1,7 @@
 package com.firebase.uidemo;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,12 +21,9 @@ import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
-import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.auth.core.FirebaseLoginError;
-import com.firebase.ui.auth.core.AuthProviderType;
 
-public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
+public class RecyclerViewDemoActivity extends AppCompatActivity {
 
     public static String TAG = "FirebaseUI.chat";
     private Firebase mRef;
@@ -45,20 +43,13 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
 
-        mSendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showFirebaseLoginPrompt();
-            }
-        });
-
         mRef = new Firebase("https://firebaseui.firebaseio.com/chat_3");
         mChatRef = mRef.limitToLast(50);
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Chat chat = new Chat(mName, getAuth().getUid(), mMessageEdit.getText().toString());
+            Chat chat = new Chat(mName, "user-id", mMessageEdit.getText().toString());
             mRef.push().setValue(chat, new Firebase.CompletionListener() {
                 @Override
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
@@ -85,11 +76,12 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
                 chatView.setName(chat.getName());
                 chatView.setText(chat.getText());
 
-                if (getAuth() != null && chat.getUid().equals(getAuth().getUid())) {
-                    chatView.setIsSender(true);
-                } else {
-                    chatView.setIsSender(false);
-                }
+//                if (getAuth() != null && chat.getUid().equals(getAuth().getUid())) {
+//                    chatView.setIsSender(true);
+//                } else {
+//                    chatView.setIsSender(false);
+//                }
+                chatView.setIsSender(false);
             }
         };
 
@@ -99,10 +91,6 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        setEnabledAuthProvider(AuthProviderType.FACEBOOK);
-        setEnabledAuthProvider(AuthProviderType.TWITTER);
-        setEnabledAuthProvider(AuthProviderType.GOOGLE);
-        setEnabledAuthProvider(AuthProviderType.PASSWORD);
     }
 
     @Override
@@ -114,69 +102,26 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.login_menu_item).setVisible(getAuth() == null);
-        menu.findItem(R.id.logout_menu_item).setVisible(getAuth() != null);
-        mSendButton.setEnabled(getAuth() != null);
-        mMessageEdit.setEnabled(getAuth() != null);
+//        menu.findItem(R.id.login_menu_item).setVisible(getAuth() == null);
+//        menu.findItem(R.id.logout_menu_item).setVisible(getAuth() != null);
+//        mSendButton.setEnabled(getAuth() != null);
+//        mMessageEdit.setEnabled(getAuth() != null);
 
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.login_menu_item:
-                this.showFirebaseLoginPrompt();
-                return true;
-            case R.id.logout_menu_item:
-                this.logout();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void onFirebaseLoggedIn(AuthData authData) {
-        Log.i(TAG, "Logged in to " + authData.getProvider().toString());
-
-        switch (authData.getProvider()) {
-            case "password":
-                mName = (String) authData.getProviderData().get("email");
-                break;
-            default:
-                mName = (String) authData.getProviderData().get("displayName");
-                break;
-        }
-
-        invalidateOptionsMenu();
-        mRecycleViewAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onFirebaseLoggedOut() {
-        Log.i(TAG, "Logged out");
-        mName = "";
-        invalidateOptionsMenu();
-        mRecycleViewAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {
-        Log.e(TAG, "Login provider error: " + firebaseError.toString());
-        resetFirebaseLoginPrompt();
-    }
-
-    @Override
-    public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {
-        Log.e(TAG, "Login user error: "+firebaseError.toString());
-        resetFirebaseLoginPrompt();
-    }
-
-    @Override
-    public Firebase getFirebaseRef() {
-        return mRef;
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.login_menu_item:
+//                this.showFirebaseLoginPrompt();
+//                return true;
+//            case R.id.logout_menu_item:
+//                this.logout();
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     public static class Chat {
         String name;
