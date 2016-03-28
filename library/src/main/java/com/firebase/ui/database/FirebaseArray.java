@@ -28,10 +28,10 @@
 
 package com.firebase.ui.database;
 
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 
@@ -108,7 +108,7 @@ class FirebaseArray implements ChildEventListener {
         notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
     }
 
-    public void onCancelled(FirebaseError firebaseError) {
+    public void onCancelled(DatabaseError firebaseError) {
         // TODO: what do we do with this?
     }
     // End of ChildEventListener methods

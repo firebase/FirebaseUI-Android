@@ -1,13 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    // STOPSHIP: This is temporarily needed for EAP SDK but should be removed before release
+    enforceUniquePackageName false
 
     defaultConfig {
         applicationId "com.firebase.uidemo"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -27,10 +30,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.google.android.gms:play-services-auth:8.3.0'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.google.android.gms:play-services-auth:8.4.0'
     compile 'com.firebase:firebase-client-android:2.3.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.android.support:recyclerview-v7:23.2.1'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile project(':library')
 }

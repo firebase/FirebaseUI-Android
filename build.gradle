@@ -3,10 +3,11 @@
 buildscript {
     repositories {
         jcenter()
+        mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'com.google.gms:google-services:1.5.0'
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.google.gms:google-services:2.0.0-beta7'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -15,6 +16,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        mavenLocal()
         mavenCentral()
     }
 }

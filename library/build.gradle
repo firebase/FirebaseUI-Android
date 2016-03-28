@@ -1,13 +1,15 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    // STOPSHIP: This is temporarily needed for EAP SDK but should be removed before release
+    enforceUniquePackageName false
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "0.3.1"
     }
@@ -15,7 +17,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            }
+        }
     }
     packagingOptions {
         exclude 'META-INF/LICENSE'
@@ -41,12 +43,14 @@ android.libraryVariants.all { variant ->
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.firebase:firebase-client-android:2.3.1'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
-    compile 'com.google.android.gms:play-services-auth:8.3.0'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:recyclerview-v7:23.2.1'
+
+    compile 'com.google.firebase:firebase-database:8.5.5'
+
+    compile 'com.google.android.gms:play-services-auth:8.5.5'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile 'org.twitter4j:twitter4j-core:4.0.2'
+
     androidTestCompile 'junit:junit:4.12'
 }

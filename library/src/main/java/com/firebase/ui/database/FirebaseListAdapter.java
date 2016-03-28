@@ -33,9 +33,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.Query;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.Query;
 
 /**
  * This class is a generic way of backing an Android ListView with a Firebase location.
@@ -97,7 +97,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * @param ref         The Firebase location to watch for data changes. Can also be a slice of a location, using some
      *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
      */
-    public FirebaseListAdapter(Activity activity, Class<T> modelClass, int modelLayout, Firebase ref) {
+    public FirebaseListAdapter(Activity activity, Class<T> modelClass, int modelLayout, DatabaseReference ref) {
         this(activity, modelClass, modelLayout, (Query) ref);
     }
 
@@ -127,7 +127,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         return snapshot.getValue(mModelClass);
     }
 
-    public Firebase getRef(int position) { return mSnapshots.getItem(position).getRef(); }
+    public DatabaseReference getRef(int position) { return mSnapshots.getItem(position).getRef(); }
 
     @Override
     public long getItemId(int i) {
