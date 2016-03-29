@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".DemoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,25 +20,25 @@
         </activity>
 
         <!-- Twitter Configuration -->
-        <activity android:name="com.firebase.ui.auth.twitter.TwitterPromptActivity" />
+        <!--<activity android:name="com.firebase.ui.auth.twitter.TwitterPromptActivity" />-->
 
-        <meta-data
-            android:name="com.firebase.ui.TwitterKey"
-            android:value="@string/twitter_app_key" />
-        <meta-data
-            android:name="com.firebase.ui.TwitterSecret"
-            android:value="@string/twitter_app_secret" />
+        <!--<meta-data-->
+            <!--android:name="com.firebase.ui.TwitterKey"-->
+            <!--android:value="@string/twitter_app_key" />-->
+        <!--<meta-data-->
+            <!--android:name="com.firebase.ui.TwitterSecret"-->
+            <!--android:value="@string/twitter_app_secret" />-->
 
         <!-- Facebook Configuration -->
-        <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--<activity-->
+            <!--android:name="com.facebook.FacebookActivity"-->
+            <!--android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"-->
+            <!--android:label="@string/app_name"-->
+            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar" />-->
 
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+        <!--<meta-data-->
+            <!--android:name="com.facebook.sdk.ApplicationId"-->
+            <!--android:value="@string/facebook_app_id" />-->
     </application>
 
 </manifest>

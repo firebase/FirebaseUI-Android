@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,16 +16,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.firebase.client.AuthData;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 public class RecyclerViewDemoActivity extends AppCompatActivity {
 
     public static String TAG = "FirebaseUI.chat";
-    private Firebase mRef;
+    private DatabaseReference mRef;
     private Query mChatRef;
     private String mName;
     private Button mSendButton;
@@ -43,18 +42,18 @@ public class RecyclerViewDemoActivity extends AppCompatActivity {
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
 
-        mRef = new Firebase("https://firebaseui.firebaseio.com/chat_3");
+        mRef = FirebaseDatabase.getInstance().getReference();
         mChatRef = mRef.limitToLast(50);
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             Chat chat = new Chat(mName, "user-id", mMessageEdit.getText().toString());
-            mRef.push().setValue(chat, new Firebase.CompletionListener() {
+            mRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
                 @Override
-                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                    if (firebaseError != null) {
-                        Log.e(TAG, firebaseError.toString());
+                public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
+                    if (databaseError != null) {
+                        Log.e(TAG, databaseError.toString());
                     }
                 }
             });
