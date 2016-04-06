@@ -62,13 +62,13 @@ import java.lang.reflect.InvocationTargetException;
  *     }
  *
  *     FirebaseRecyclerAdapter<ChatMessage, ChatMessageViewHolder> adapter;
- *     ref = new Firebase("https://<yourapp>.firebaseio.com");
+ *     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
  *
  *     RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
  *     recycler.setHasFixedSize(true);
  *     recycler.setLayoutManager(new LinearLayoutManager(this));
  *
- *     adapter = new FirebaseRecyclerAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, mRef) {
+ *     adapter = new FirebaseRecyclerAdapter<ChatMessage, ChatMessageViewHolder>(ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class, ref) {
  *         public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder, ChatMessage chatMessage, int position) {
  *             chatMessageViewHolder.nameText.setText(chatMessage.getName());
  *             chatMessageViewHolder.messageText.setText(chatMessage.getMessage());

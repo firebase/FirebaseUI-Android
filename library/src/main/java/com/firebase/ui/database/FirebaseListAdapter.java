@@ -46,7 +46,7 @@ import com.google.firebase.database.Query;
  *
  * <blockquote><pre>
  * {@code
- *     Firebase ref = new Firebase("https://<yourapp>.firebaseio.com");
+ *     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
  *     ListAdapter adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, mRef)
  *     {
  *         protected void populateView(View view, ChatMessage chatMessage, int position)

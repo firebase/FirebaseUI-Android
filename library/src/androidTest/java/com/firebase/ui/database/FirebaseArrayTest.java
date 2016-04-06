@@ -1,9 +1,12 @@
-package com.firebase.ui;
+package com.firebase.ui.database;
 
 import android.test.AndroidTestCase;
 
-import com.firebase.client.Firebase;
-import com.firebase.ui.database.FirebaseArray;
+import com.firebase.ui.ApplicationTest;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import junit.framework.AssertionFailedError;
 
@@ -15,13 +18,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 public class FirebaseArrayTest extends AndroidTestCase {
-    private Firebase mRef;
+    private DatabaseReference mRef;
     private FirebaseArray mArray;
 
     @Before
     public void setUp() throws Exception {
-        Firebase.setAndroidContext(this.getContext());
-        mRef = new Firebase("https://firebaseui-tests.firebaseio-demo.com/firebasearray");
+        FirebaseApp app = ApplicationTest.getAppInstance(getContext());
+        mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
         mArray = new FirebaseArray(mRef);
         mRef.removeValue();
         runAndWaitUntil(mArray, mRef, new Runnable() {
@@ -123,7 +126,7 @@ public class FirebaseArrayTest extends AndroidTestCase {
         }
     }
 
-    public static void runAndWaitUntil(final FirebaseArray array, Firebase ref, Runnable task, Callable<Boolean> done) throws InterruptedException {
+    public static void runAndWaitUntil(final FirebaseArray array, Query ref, Runnable task, Callable<Boolean> done) throws InterruptedException {
         final java.util.concurrent.Semaphore semaphore = new java.util.concurrent.Semaphore(0);
         array.setOnChangedListener(new FirebaseArray.OnChangedListener() {
             public void onChanged(FirebaseArray.OnChangedListener.EventType type, int index, int oldIndex) {
