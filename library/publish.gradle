@@ -1,9 +1,8 @@
 apply plugin: 'maven-publish'
+apply from: "../common/constants.gradle"
+apply from: "../common/repos.gradle"
 
-project.ext.group = 'com.firebase.ui'
-project.ext.archivesBaseName = 'firebase-ui'
-project.ext.version = '1.0.0-beta1'
-project.ext.pomDesc = 'Firebase UI Android'
+archivesBaseName = 'firebase-ui'
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
@@ -20,6 +19,38 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
+/**
+ * Prepare artifacts for this an all sub-projects.
+ */
+task prepareArtifacts(dependsOn: [
+        javadocJar,
+        sourcesJar,
+        assembleRelease,
+        ':database:prepareArtifacts',
+        ':storage:prepareArtifacts']) {
+
+}
+
+/**
+ * Publish all artifacts to the maven local repository.
+ */
+task publishAllToMavenLocal(dependsOn: [
+        'publishMonolithLibraryPublicationToMavenLocal',
+        ':database:publishDatabaseLibraryPublicationToMavenLocal',
+        ':storage:publishStorageLibraryPublicationToMavenLocal']) {
+
+}
+
+/**
+ * Publish all artifacts to the customLocal repository.
+ */
+task publishAllToCustomLocal(dependsOn: [
+        'publishMonolithLibraryPublicationToCustomLocalRepository',
+        ':database:publishDatabaseLibraryPublicationToCustomLocalRepository',
+        ':storage:publishStorageLibraryPublicationToCustomLocalRepository']) {
+
+}
+
 artifacts {
     archives javadocJar
     archives sourcesJar
@@ -29,25 +60,15 @@ artifacts {
 publishing {
 
     publications {
-        library(MavenPublication) {
+        monolithLibrary(MavenPublication) {
             groupId project.ext.group
-            artifactId project.ext.archivesBaseName
+            artifactId archivesBaseName
             version project.ext.version
 
             // Release AAR, Sources, and JavaDoc
             artifact "$buildDir/outputs/aar/firebase-ui-release.aar"
             artifact sourcesJar
             artifact javadocJar
-        }
-    }
-
-    // By passing -Pcustom_local=/some/path and running the
-    // publishLibraryPublicationToCustomLocalRepository task you can publish this library to a
-    // custom maven repository location on your machine.
-    repositories {
-        maven {
-            name 'CustomLocal'
-            url uri(project.hasProperty('custom_local') ? project.getProperty('custom_local') : '/tmp/')
         }
     }
 

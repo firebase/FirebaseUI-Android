@@ -13,18 +13,21 @@ android {
         versionCode 1
         versionName "0.3.1"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE-FIREBASE.txt'
         exclude 'META-INF/NOTICE'
     }
 }
+
 android.libraryVariants.all { variant ->
     task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
         description "Generates Javadoc for $variant.name."
@@ -44,9 +47,9 @@ android.libraryVariants.all { variant ->
 
 dependencies {
     compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:recyclerview-v7:23.2.1'
 
-    compile 'com.google.firebase:firebase-database:8.5.6'
+    compile project(':database')
+    compile project(':storage')
 
     // TODO(samstern): Uncomment these when auth returns
     // compile 'com.google.android.gms:play-services-auth:8.5.6'

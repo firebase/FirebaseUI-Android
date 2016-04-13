@@ -1,0 +1,14 @@
+apply plugin: 'maven-publish'
+
+publishing {
+
+    // By passing -Pcustom_local=/some/path and running the
+    // publishLibraryPublicationToCustomLocalRepository task you can publish this library to a
+    // custom maven repository location on your machine.
+    repositories {
+        maven {
+            name 'CustomLocal'
+            url uri(project.hasProperty('custom_local') ? project.getProperty('custom_local') : '/tmp/')
+        }
+    }
+}

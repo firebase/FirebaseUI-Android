@@ -5,7 +5,7 @@
 In order to publish to your local maven repository, run the following command:
 
 ```
-./gradlew :library:assembleRelease :library:publishLibraryPublicationToMavenLocal
+./gradlew:library:prepareArtifacts :library:publishAllToMavenLocal
 ```
 
 If you would like to specify a custom local maven repo location, run the following command, changing
@@ -13,7 +13,7 @@ the value of the `custom_local` property to your desired location.  The default 
 `custom_local` is `/tmp/`.
 
 ```
-./gradlew -Pcustom_local=<YOUR_MAVEN_REPO> :library:assembleRelease :library:publishLibraryPublicationToCustomLocalRepository
+./gradlew -Pcustom_local=<YOUR_MAVEN_REPO> :library:prepareArtifacts :library:publishAllToCustomLocal
 ```
 
 # Publishing to jCenter
