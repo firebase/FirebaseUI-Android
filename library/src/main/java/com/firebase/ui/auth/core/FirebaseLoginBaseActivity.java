@@ -18,6 +18,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     private Firebase.AuthStateListener mAuthStateListener;
     private AuthData mAuthData;
     private FirebaseLoginDialog mDialog;
+    private FirebaseSignupDialog mSignupDialog;
     private TokenAuthHandler mHandler;
 
 
@@ -92,12 +93,29 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mDialog.show(getFragmentManager(), "");
     }
 
+    /**
+     * Calling this method displays the Firebase signup dialog over the current activity, allowing the
+     * user to authenticate with any of the configured providers. It is only legal to call this
+     * method after the `onStart()` method has completed.
+     */
+    public void showFirebaseSignupPrompt() {
+        mSignupDialog.show(getFragmentManager(), "");
+    }
+
     public void dismissFirebaseLoginPrompt() {
         mDialog.dismiss();
     }
 
+    public void dismissFirebaseSignupPrompt() {
+        mSignupDialog.dismiss();
+    }
+
     public void resetFirebaseLoginPrompt() {
         mDialog.reset();
+    }
+
+    public void resetFirebaseSignupPrompt() {
+        mSignupDialog.reset();
     }
 
     /**
@@ -107,6 +125,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      */
     public void setEnabledAuthProvider(AuthProviderType provider) {
         mDialog.setEnabledProvider(provider);
+        mSignupDialog.setEnabledProvider(provider);
     }
 
     @Override
@@ -148,6 +167,12 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             .setRef(getFirebaseRef())
             .setHandler(mHandler);
 
+        mSignupDialog = new FirebaseSignupDialog();
+        mSignupDialog
+                .setContext(this)
+                .setRef(getFirebaseRef())
+                .setHandler(mHandler);
+
         getFirebaseRef().addAuthStateListener(mAuthStateListener);
     }
 
@@ -156,17 +181,20 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         super.onStop();
         getFirebaseRef().removeAuthStateListener(mAuthStateListener);
         mDialog.cleanUp();
+        mSignupDialog.cleanUp();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mDialog.cleanUp();
+        mSignupDialog.cleanUp();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mDialog.cleanUp();
+        mSignupDialog.cleanUp();
     }
 }

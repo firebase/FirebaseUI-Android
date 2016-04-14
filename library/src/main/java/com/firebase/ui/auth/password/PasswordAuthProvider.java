@@ -11,12 +11,28 @@ import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.AuthProviderType;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
+import java.util.Map;
+
 public class PasswordAuthProvider extends FirebaseAuthProvider {
 
     private final String LOG_TAG = "PasswordAuthProvider";
 
     public PasswordAuthProvider(Context context, AuthProviderType providerType, String providerName, Firebase ref, TokenAuthHandler handler) {
         super(context, providerType, providerName, ref, handler);
+    }
+
+    public void signup(String email, String password, String password2) {
+        getFirebaseRef().createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
+            @Override
+            public void onSuccess(Map<String, Object> result) {
+                getHandler().onSuccess(result);
+            }
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                //TODO: handle Signup error reasons
+                getHandler().onUserError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, firebaseError.toString());
+            }
+        });
     }
 
     public void login(String email, String password) {
