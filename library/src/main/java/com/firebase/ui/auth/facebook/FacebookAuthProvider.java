@@ -88,7 +88,7 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
 
     public void login() {
         if (isReady) {
-            Collection<String> permissions = Arrays.asList("public_profile");
+            Collection<String> permissions = Arrays.asList("public_profile", "email");
             mLoginManager.logInWithReadPermissions((Activity)getContext(), permissions);
         }
     }
