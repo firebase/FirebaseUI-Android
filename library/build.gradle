@@ -46,8 +46,6 @@ android.libraryVariants.all { variant ->
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.2.1'
-
     compile project(':database')
     compile project(':storage')
 
