@@ -103,14 +103,24 @@ public class FirebaseSignupDialog extends DialogFragment {
     public FirebaseSignupDialog setHandler(final TokenAuthHandler handler) {
         mHandler = new TokenAuthHandler() {
             @Override
-            public void onSuccess(AuthData auth) {
+            public void onSignupSuccess(Map<String, Object> result) {
                 dismiss();
-                handler.onSuccess(auth);
+                handler.onSignupSuccess(result);
             }
 
             @Override
-            public void onUserError(FirebaseLoginError err) {
-                handler.onUserError(err);
+            public void onSignupUserError(FirebaseSignupError err) {
+                handler.onSignupUserError(err);
+            }
+
+            @Override
+            public void onLoginSuccess(AuthData auth) {
+                // do nothing, just a placeholder, should never get called from here.
+            }
+
+            @Override
+            public void onLoginUserError(FirebaseLoginError err) {
+                // do nothing, just a placeholder, should never get called from here.
             }
 
             @Override

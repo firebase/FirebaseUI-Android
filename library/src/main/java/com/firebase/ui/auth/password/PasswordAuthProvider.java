@@ -9,6 +9,7 @@ import com.firebase.ui.auth.core.FirebaseAuthProvider;
 import com.firebase.ui.auth.core.FirebaseResponse;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.AuthProviderType;
+import com.firebase.ui.auth.core.FirebaseSignupError;
 import com.firebase.ui.auth.core.TokenAuthHandler;
 
 import java.util.Map;
@@ -25,12 +26,12 @@ public class PasswordAuthProvider extends FirebaseAuthProvider {
         getFirebaseRef().createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
-                getHandler().onSuccess(result);
+                getHandler().onSignupSuccess(result);
             }
             @Override
             public void onError(FirebaseError firebaseError) {
                 //TODO: handle Signup error reasons
-                getHandler().onUserError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, firebaseError.toString());
+                getHandler().onSignupUserError(new FirebaseSignupError(FirebaseResponse.MISC_PROVIDER_ERROR, firebaseError.toString()));
             }
         });
     }
@@ -39,11 +40,11 @@ public class PasswordAuthProvider extends FirebaseAuthProvider {
         getFirebaseRef().authWithPassword(email, password, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
-                getHandler().onSuccess(authData);
+                getHandler().onLoginSuccess(authData);
             }
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
-                getHandler().onUserError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, firebaseError.toString()));
+                getHandler().onLoginUserError(new FirebaseLoginError(FirebaseResponse.MISC_PROVIDER_ERROR, firebaseError.toString()));
             }
         });
     }

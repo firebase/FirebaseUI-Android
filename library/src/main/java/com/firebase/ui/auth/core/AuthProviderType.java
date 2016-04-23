@@ -27,6 +27,7 @@ public enum AuthProviderType {
     public String getName() {
         return mName;
     }
+
     public int getViewId() {
         return mViewId;
     }
@@ -51,6 +52,7 @@ public enum AuthProviderType {
             throw new RuntimeException(e);
         }
     }
+
     public static AuthProviderType getTypeForProvider(FirebaseAuthProvider provider) {
         for (AuthProviderType type : AuthProviderType.values()) {
             if (provider.getProviderName() == type.getName()) {

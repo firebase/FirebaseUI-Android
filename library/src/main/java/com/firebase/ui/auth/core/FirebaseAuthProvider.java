@@ -70,7 +70,7 @@ public abstract class FirebaseAuthProvider {
         Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
-                handler.onSuccess(authData);
+                handler.onLoginSuccess(authData);
             }
 
             @Override
