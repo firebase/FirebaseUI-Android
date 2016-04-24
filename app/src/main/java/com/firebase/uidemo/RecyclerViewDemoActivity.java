@@ -24,6 +24,7 @@ import com.firebase.ui.auth.core.FirebaseLoginBaseActivity;
 import com.firebase.ui.FirebaseRecyclerAdapter;
 import com.firebase.ui.auth.core.FirebaseLoginError;
 import com.firebase.ui.auth.core.AuthProviderType;
+import com.firebase.ui.auth.core.FirebaseSignupError;
 
 public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
@@ -135,6 +136,15 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onFirebaseSignedUp() {
+        Log.e(TAG, "Signed Up");
+    }
+
+    @Override
+    protected void onFirebaseSignupUserError(FirebaseSignupError firebaseError) {
+        Log.e(TAG, "Signup user error: "+firebaseError.toString());
+    }
 
     @Override
     public void onFirebaseLoggedIn(AuthData authData) {
@@ -162,14 +172,14 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     }
 
     @Override
-    public void onFirebaseLoginProviderError(FirebaseLoginError firebaseError) {
-        Log.e(TAG, "Login provider error: " + firebaseError.toString());
+    public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {
+        Log.e(TAG, "Login user error: "+firebaseError.toString());
         resetFirebaseLoginPrompt();
     }
 
     @Override
-    public void onFirebaseLoginUserError(FirebaseLoginError firebaseError) {
-        Log.e(TAG, "Login user error: "+firebaseError.toString());
+    public void onFirebaseProviderError(FirebaseLoginError firebaseError) {
+        Log.e(TAG, "Login provider error: " + firebaseError.toString());
         resetFirebaseLoginPrompt();
     }
 

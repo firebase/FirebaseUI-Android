@@ -42,6 +42,15 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     /**
+     * Subclasses of this activity may implement this method to handle when a user signs up.
+     *
+     * @return void
+     */
+    protected abstract void onFirebaseSignedUp();
+
+    protected abstract void onFirebaseSignupUserError(FirebaseSignupError firebaseError);
+
+    /**
      * Subclasses of this activity may implement this method to handle when a user logs in.
      *
      * @return void
@@ -57,17 +66,6 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     protected void onFirebaseLoggedOut() {
     }
 
-    //TODO: fix signup types
-    protected abstract void onFirebaseSignupSuccess();
-
-    /**
-     * Subclasses of this activity should implement this method to handle any potential provider errors
-     * like OAuth or other internal errors.
-     *
-     * @return void
-     */
-    protected abstract void onFirebaseProviderError(FirebaseLoginError firebaseError);
-
     /**
      * Subclasses of this activity should implement this method to handle any potential user errors
      * like entering an incorrect password or closing the login dialog.
@@ -76,7 +74,13 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      */
     protected abstract void onFirebaseLoginUserError(FirebaseLoginError firebaseError);
 
-    protected abstract void onFirebaseSignupUserError(FirebaseSignupError firebaseError);
+    /**
+     * Subclasses of this activity should implement this method to handle any potential provider errors
+     * like OAuth or other internal errors.
+     *
+     * @return void
+     */
+    protected abstract void onFirebaseProviderError(FirebaseLoginError firebaseError);
 
     /**
      * Calling this method will log out the currently authenticated user. It is only legal to call
@@ -140,7 +144,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mHandler = new TokenAuthHandler() {
             @Override
             public void onSignupSuccess(Map<String, Object> data) {
-                onFirebaseSignupSuccess();
+                onFirebaseSignedUp();
             }
 
             @Override
