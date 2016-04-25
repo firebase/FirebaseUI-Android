@@ -115,6 +115,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.signup_menu_item).setVisible(getAuth() == null);
         menu.findItem(R.id.login_menu_item).setVisible(getAuth() == null);
         menu.findItem(R.id.logout_menu_item).setVisible(getAuth() != null);
         mSendButton.setEnabled(getAuth() != null);
@@ -126,6 +127,9 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.signup_menu_item:
+                this.showFirebaseSignupPrompt();
+                return true;
             case R.id.login_menu_item:
                 this.showFirebaseLoginPrompt();
                 return true;

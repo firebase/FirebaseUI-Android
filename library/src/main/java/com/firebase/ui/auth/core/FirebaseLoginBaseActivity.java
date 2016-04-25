@@ -20,7 +20,6 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     private Firebase.AuthStateListener mAuthStateListener;
     private AuthData mAuthData;
     private FirebaseLoginDialog mDialog;
-    private FirebaseSignupDialog mSignupDialog;
     private TokenAuthHandler mHandler;
 
     /**
@@ -100,6 +99,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      * method after the `onStart()` method has completed.
      */
     public void showFirebaseLoginPrompt() {
+        mDialog.setAction("login");
         mDialog.show(getFragmentManager(), "");
     }
 
@@ -109,7 +109,8 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      * method after the `onStart()` method has completed.
      */
     public void showFirebaseSignupPrompt() {
-        mSignupDialog.show(getFragmentManager(), "");
+        mDialog.setAction("signup");
+        mDialog.show(getFragmentManager(), "");
     }
 
     public void dismissFirebaseLoginPrompt() {
@@ -117,7 +118,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     public void dismissFirebaseSignupPrompt() {
-        mSignupDialog.dismiss();
+        mDialog.dismiss();
     }
 
     public void resetFirebaseLoginPrompt() {
@@ -125,7 +126,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     public void resetFirebaseSignupPrompt() {
-        mSignupDialog.reset();
+        mDialog.reset();
     }
 
     /**
@@ -135,7 +136,6 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      */
     public void setEnabledAuthProvider(AuthProviderType provider) {
         mDialog.setEnabledProvider(provider);
-        mSignupDialog.setEnabledProvider(provider);
     }
 
     @Override
@@ -154,7 +154,7 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
 
             @Override
             public void onLoginSuccess(AuthData data) {
-               /* onFirebaseLoginSuccess is called by the AuthStateListener below */
+               /* onFirebaseLoggedIn() is called by the AuthStateListener below */
             }
 
             @Override
@@ -187,12 +187,6 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
             .setRef(getFirebaseRef())
             .setHandler(mHandler);
 
-        mSignupDialog = new FirebaseSignupDialog();
-        mSignupDialog
-                .setContext(this)
-                .setRef(getFirebaseRef())
-                .setHandler(mHandler);
-
         getFirebaseRef().addAuthStateListener(mAuthStateListener);
     }
 
@@ -201,20 +195,17 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         super.onStop();
         getFirebaseRef().removeAuthStateListener(mAuthStateListener);
         mDialog.cleanUp();
-        mSignupDialog.cleanUp();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mDialog.cleanUp();
-        mSignupDialog.cleanUp();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mDialog.cleanUp();
-        mSignupDialog.cleanUp();
     }
 }
