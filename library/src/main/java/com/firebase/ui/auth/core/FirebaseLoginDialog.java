@@ -29,6 +29,7 @@ public class FirebaseLoginDialog extends DialogFragment {
     Context mContext;
     View mView;
     String mAction;
+    Boolean mAutoLogin;
 
     @Override
     public void onStop() {
@@ -63,8 +64,7 @@ public class FirebaseLoginDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        Log.v(TAG, "CALLING onCreateDialog and inflating xml layout");
-
+        //Log.v(TAG, "CALLING onCreateDialog and inflating xml layout");
         if (mAction == "login") {
             mView = inflater.inflate(R.layout.fragment_firebase_login, null);
         } else if (mAction == "signup") {
@@ -107,9 +107,14 @@ public class FirebaseLoginDialog extends DialogFragment {
     }
 
     public FirebaseLoginDialog setAction(String action) {
-        Log.v(TAG, "CALLING setAction()");
+        //Log.v(TAG, "CALLING setAction()");
         mAction = action;
-        //adjust which xml layout to load, and some labels, clicklisteners
+        //adjust which xml layout to load, and clicklisteners, etc.
+        return this;
+    }
+
+    public FirebaseLoginDialog setAutoLogin(Boolean autoLogin) {
+        mAutoLogin = autoLogin;
         return this;
     }
 
@@ -178,12 +183,12 @@ public class FirebaseLoginDialog extends DialogFragment {
                     EditText emailText = (EditText) mView.findViewById(R.id.email);
                     EditText passwordText = (EditText) mView.findViewById(R.id.password);
                     EditText passwordText2 = (EditText) mView.findViewById(R.id.password2);
-                    helper.signup(emailText.getText().toString(), passwordText.getText().toString(), passwordText2.getText().toString());
+                    helper.signup(emailText.getText().toString(), passwordText.getText().toString(), passwordText2.getText().toString(), mAutoLogin);
 
                     passwordText.setText("");
                     passwordText2.setText("");
                 } else {
-                    helper.signup();
+                    helper.signup(mAutoLogin);
                 }
                 mActiveProvider = helper.getProviderType();
                 mView.findViewById(R.id.signup_section).setVisibility(View.GONE);

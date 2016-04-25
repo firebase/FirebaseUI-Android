@@ -42,11 +42,11 @@ public abstract class FirebaseAuthProvider {
         Log.w("FirebaseAuthProvider", "Login(String email, String password) is not supported for provider type " + getProviderName());
     }
 
-    public void signup() {
+    public void signup(Boolean autoLogin) {
         Log.w("FirebaseAuthProvider", "Signup() is not supported for provider type " + getProviderName());
     }
 
-    public void signup(String email, String password, String password2) {
+    public void signup(String email, String password, String password2, Boolean autoLogin) {
         Log.w("FirebaseAuthProvider", "Signup(String email, String password, String password2) is not supported for provider type " + getProviderName());
     }
 

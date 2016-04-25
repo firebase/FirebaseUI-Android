@@ -108,8 +108,9 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      * user to authenticate with any of the configured providers. It is only legal to call this
      * method after the `onStart()` method has completed.
      */
-    public void showFirebaseSignupPrompt() {
+    public void showFirebaseSignupPrompt(Boolean autoLogin) {
         mDialog.setAction("signup");
+        mDialog.setAutoLogin(autoLogin);
         mDialog.show(getFragmentManager(), "");
     }
 

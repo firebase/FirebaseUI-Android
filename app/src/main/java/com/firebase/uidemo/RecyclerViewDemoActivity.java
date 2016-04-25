@@ -128,7 +128,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.signup_menu_item:
-                this.showFirebaseSignupPrompt();
+                this.showFirebaseSignupPrompt(true); //passing true will automatically log them in on successful signup
                 return true;
             case R.id.login_menu_item:
                 this.showFirebaseLoginPrompt();
@@ -142,7 +142,7 @@ public class RecyclerViewDemoActivity extends FirebaseLoginBaseActivity {
 
     @Override
     protected void onFirebaseSignedUp() {
-        Log.e(TAG, "Signed Up");
+        Log.i(TAG, "Signed Up");
     }
 
     @Override
