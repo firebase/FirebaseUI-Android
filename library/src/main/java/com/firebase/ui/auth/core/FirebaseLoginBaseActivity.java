@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 
+import java.util.Map;
+
 /**
  * You can subclass this activity in your app to easily get authentication working. If you already
  * have a base class and cannot switch, copy the relevant parts of this base activity into your own
@@ -19,7 +21,6 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     private AuthData mAuthData;
     private FirebaseLoginDialog mDialog;
     private TokenAuthHandler mHandler;
-
 
     /**
      * Subclasses of this activity must implement this method and return a valid Firebase reference that
@@ -40,6 +41,15 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     /**
+     * Subclasses of this activity may implement this method to handle when a user signs up.
+     *
+     * @return void
+     */
+    protected abstract void onFirebaseSignedUp();
+
+    protected abstract void onFirebaseSignupUserError(FirebaseSignupError firebaseError);
+
+    /**
      * Subclasses of this activity may implement this method to handle when a user logs in.
      *
      * @return void
@@ -56,20 +66,20 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
     }
 
     /**
-     * Subclasses of this activity should implement this method to handle any potential provider errors
-     * like OAuth or other internal errors.
-     *
-     * @return void
-     */
-    protected abstract void onFirebaseLoginProviderError(FirebaseLoginError firebaseError);
-
-    /**
      * Subclasses of this activity should implement this method to handle any potential user errors
      * like entering an incorrect password or closing the login dialog.
      *
      * @return void
      */
     protected abstract void onFirebaseLoginUserError(FirebaseLoginError firebaseError);
+
+    /**
+     * Subclasses of this activity should implement this method to handle any potential provider errors
+     * like OAuth or other internal errors.
+     *
+     * @return void
+     */
+    protected abstract void onFirebaseProviderError(FirebaseLoginError firebaseError);
 
     /**
      * Calling this method will log out the currently authenticated user. It is only legal to call
@@ -89,6 +99,18 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
      * method after the `onStart()` method has completed.
      */
     public void showFirebaseLoginPrompt() {
+        mDialog.setAction("login");
+        mDialog.show(getFragmentManager(), "");
+    }
+
+    /**
+     * Calling this method displays the Firebase signup dialog over the current activity, allowing the
+     * user to authenticate with any of the configured providers. It is only legal to call this
+     * method after the `onStart()` method has completed.
+     */
+    public void showFirebaseSignupPrompt(Boolean autoLogin) {
+        mDialog.setAction("signup");
+        mDialog.setAutoLogin(autoLogin);
         mDialog.show(getFragmentManager(), "");
     }
 
@@ -96,7 +118,15 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         mDialog.dismiss();
     }
 
+    public void dismissFirebaseSignupPrompt() {
+        mDialog.dismiss();
+    }
+
     public void resetFirebaseLoginPrompt() {
+        mDialog.reset();
+    }
+
+    public void resetFirebaseSignupPrompt() {
         mDialog.reset();
     }
 
@@ -114,18 +144,28 @@ public abstract class FirebaseLoginBaseActivity extends AppCompatActivity {
         super.onStart();
         mHandler = new TokenAuthHandler() {
             @Override
-            public void onSuccess(AuthData data) {
-               /* onFirebaseLoginSuccess is called by the AuthStateListener below */
+            public void onSignupSuccess(Map<String, Object> data) {
+                onFirebaseSignedUp();
             }
 
             @Override
-            public void onUserError(FirebaseLoginError err) {
+            public void onSignupUserError(FirebaseSignupError err) {
+                onFirebaseSignupUserError(err);
+            }
+
+            @Override
+            public void onLoginSuccess(AuthData data) {
+               /* onFirebaseLoggedIn() is called by the AuthStateListener below */
+            }
+
+            @Override
+            public void onLoginUserError(FirebaseLoginError err) {
                 onFirebaseLoginUserError(err);
             }
 
             @Override
             public void onProviderError(FirebaseLoginError err) {
-                onFirebaseLoginProviderError(err);
+                onFirebaseProviderError(err);
             }
         };
 

@@ -38,7 +38,7 @@ public class TwitterAuthProvider extends FirebaseAuthProvider {
             onFirebaseTokenReceived(token, getHandler());
         } else if (resultCode == TwitterActions.USER_ERROR) {
             FirebaseResponse error = FirebaseResponse.values()[data.getIntExtra("code", 0)];
-            getHandler().onUserError(new FirebaseLoginError(error, data.getStringExtra("error")));
+            getHandler().onLoginUserError(new FirebaseLoginError(error, data.getStringExtra("error")));
         } else if (resultCode == TwitterActions.PROVIDER_ERROR) {
             FirebaseResponse error = FirebaseResponse.values()[data.getIntExtra("code", 0)];
             getHandler().onProviderError(new FirebaseLoginError(error, data.getStringExtra("error")));

@@ -54,7 +54,7 @@ public class FacebookAuthProvider extends FirebaseAuthProvider {
 
                 @Override
                 public void onCancel() {
-                    getHandler().onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
+                    getHandler().onLoginUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
                 }
 
                 @Override

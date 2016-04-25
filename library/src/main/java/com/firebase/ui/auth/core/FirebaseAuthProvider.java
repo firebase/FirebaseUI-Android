@@ -36,10 +36,19 @@ public abstract class FirebaseAuthProvider {
 
     public void login() {
         Log.w("FirebaseAuthProvider", "Login() is not supported for provider type " + getProviderName());
-    };
+    }
+
     public void login(String email, String password) {
         Log.w("FirebaseAuthProvider", "Login(String email, String password) is not supported for provider type " + getProviderName());
-    };
+    }
+
+    public void signup(Boolean autoLogin) {
+        Log.w("FirebaseAuthProvider", "Signup() is not supported for provider type " + getProviderName());
+    }
+
+    public void signup(String email, String password, String password2, Boolean autoLogin) {
+        Log.w("FirebaseAuthProvider", "Signup(String email, String password, String password2) is not supported for provider type " + getProviderName());
+    }
 
     public void onFirebaseTokenReceived(FirebaseOAuthToken token, TokenAuthHandler handler) {
         authenticateRefWithOAuthFirebasetoken(token, handler);
@@ -61,7 +70,7 @@ public abstract class FirebaseAuthProvider {
         Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
-                handler.onSuccess(authData);
+                handler.onLoginSuccess(authData);
             }
 
             @Override

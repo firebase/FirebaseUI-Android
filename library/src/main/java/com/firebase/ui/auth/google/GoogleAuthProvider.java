@@ -108,7 +108,7 @@ public class GoogleAuthProvider extends FirebaseAuthProvider implements
 
         if (requestCode == GoogleActions.SIGN_IN && resultCode == 0) {
             Log.d(TAG, data.getExtras().keySet().toString());
-            getHandler().onUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
+            getHandler().onLoginUserError(new FirebaseLoginError(FirebaseResponse.LOGIN_CANCELLED, "User closed login dialog."));
         }
     }
 
