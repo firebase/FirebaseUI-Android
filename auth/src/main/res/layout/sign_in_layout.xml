@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    style="@style/FirebaseUI.WrapperStyle">
+
+    <EditText
+        style="@style/FirebaseUI.EditText"
+        android:id="@+id/email"
+        android:hint="@string/email_hint"
+        />
+   <EditText
+       style="@style/FirebaseUI.EditText"
+        android:id="@+id/password"
+        android:hint="@string/password_hint"
+        />
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:paddingTop="16dp"
+        >
+        <TextView
+            android:id="@+id/trouble_signing_in"
+            android:text="@string/trouble_signing_in"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/FirebaseUI.Text.Link"
+            />
+        <Button
+            style="@style/FirebaseUI.Button"
+            android:text="@string/next"
+            android:id="@+id/button_done"/>
+    </LinearLayout>
+</LinearLayout>

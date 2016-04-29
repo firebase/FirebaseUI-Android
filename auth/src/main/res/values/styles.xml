@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="FirebaseUI" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:buttonStyle">@style/FirebaseUI.Button</item>
+
+    </style>
+
+    <style name="FirebaseUI.Dialog" parent="Base.Theme.AppCompat.Light.Dialog.MinWidth">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:windowMinWidthMajor">360dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name = "FirebaseUI.WrapperStyle">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+    </style>
+
+    <style name="FirebaseUI.Translucent" parent="@style/Theme.AppCompat.Transparent">
+    </style>
+
+    <style name="FirebaseUI.Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T01">
+        <item name="android:textSize">112sp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T02">
+        <item name="android:textSize">64sp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T03">
+        <item name="android:textSize">48sp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T04">
+        <item name="android:textSize">36sp</item>
+        <item name="android:lineSpacingExtra">12sp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T05">
+        <item name="android:textSize">24sp</item>
+        <item name="android:lineSpacingExtra">8sp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T06">
+        <item name="android:textSize">18sp</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T07">
+        <item name="android:textSize">20sp</item>
+        <item name="android:lineSpacingExtra">4sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T08">
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineSpacingExtra">8sp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T09">
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineSpacingExtra">4sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T11">
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T12">
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingExtra">4sp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.T13">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <!-- Common styles -->
+
+    <style name="FirebaseUI.Button" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_gravity">right</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:textColor">@color/buttonTextColor</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:radius">3dp</item>
+        <item name="android:background">@drawable/rounded_button</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AlertButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/buttonColor</item>
+    </style>
+
+    <style name="FirebaseUI.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.Link">
+        <item name="android:textColor">@color/linkColor</item>
+
+    </style>
+
+    <style name="FirebaseUI.Text.Heading" parent="FirebaseUI.Text.T07">
+        <item name="android:textColor">@color/headingColor</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/bodyTextColor</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.ErrorText" parent="FirebaseUI.Text.T12">
+        <item name="android:textColor">@color/errorColor</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.InputLabel" parent="FirebaseUI.Text.T12">
+        <item name="android:textColor">@color/inputLabelColor</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <!-- NASCAR screen -->
+    <style name="FirebaseUI.NASCAR"></style>
+
+    <style name="FirebaseUI.NASCAR.ButtonHolder">
+        <item name="android:orientation">vertical</item>
+        <item name="android:bottom">56dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">220dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="FirebaseUI.NASCAR.EmailButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+    <style name="Theme.AppCompat.Transparent">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+    </style>
+</resources>

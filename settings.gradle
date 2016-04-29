@@ -1,1 +1,1 @@
-include ':app', ':common', ':library', ':database', ':storage'
+include ':app', ':common', ':library', ':database', ':storage', ':ui_flow'

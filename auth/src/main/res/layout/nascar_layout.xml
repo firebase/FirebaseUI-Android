@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:gravity="center"
+    >
+    <LinearLayout
+        style="@style/FirebaseUI.NASCAR.ButtonHolder"
+        android:id="@+id/btn_holder">
+        <Button
+            android:id="@+id/email_provider"
+            style="@style/FirebaseUI.NASCAR.EmailButton"
+            android:text="@string/email_button_text"/>
+    </LinearLayout>
+</RelativeLayout>

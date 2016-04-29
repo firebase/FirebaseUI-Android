@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3E50B4</color>
+    <color name="colorPrimaryDark">#2F3E9E</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="headingColor">#212121</color>
+    <color name="bodyTextColor">#757575</color>
+    <color name="errorColor">#DD2C00</color>
+    <color name="linkColor">#4285F4</color>
+    <color name="buttonColor">#3E50B4</color>
+    <color name="buttonTextColor">#FFFFFF</color>
+    <color name="inputLabelColor">#757575</color>
+    <color name="shadowColor">#eeeeee</color>
+</resources>
