@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FirebaseUI</string>
+    <string name="email">E-mail</string>
+    <string name="login">Ingresar</string>
+    <string name="login_with_facebook">Ingresar con Facebook</string>
+    <string name="login_with_google">Ingresar con Google</string>
+    <string name="login_with_twitter">Ingresar con Twitter</string>
+    <string name="or">ó</string>
+    <string name="password">Contraseña</string>
+</resources>

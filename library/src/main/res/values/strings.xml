@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">FirebaseUI</string>
-    <string name="firebaseUrl"></string>
+    <string name="firebaseUrl" translatable="false"></string>
+
+    <!-- Login strings -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="or">or</string>
+    <string name="login_with_facebook">Login with Facebook</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="login_with_twitter">Login with Twitter</string>
 </resources>

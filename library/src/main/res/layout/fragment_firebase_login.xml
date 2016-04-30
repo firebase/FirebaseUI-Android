@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/email"
                 android:ems="10"
-                android:hint="Email"
+                android:hint="@string/email"
                 android:paddingTop="20dp"
                 style="@style/FirebaseEditTextTheme"
                 android:theme="@style/FirebaseEditTextTheme"
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/password"
                 android:ems="10"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:paddingTop="16dp"
                 style="@style/FirebaseEditTextTheme"
                 android:theme="@style/FirebaseEditTextTheme"
@@ -47,7 +47,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:text="@string/login"
                 android:id="@+id/password_button"
                 android:textColor="#ffffff"
                 android:typeface="normal"
@@ -67,7 +67,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="or"
+                    android:text="@string/or"
                     android:textColor="#CCCCCC"
                     android:typeface="normal"
                     android:textAlignment="center"
@@ -92,7 +92,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login with Facebook"
+                android:text="@string/login_with_facebook"
                 android:id="@+id/facebook_button"
                 android:background="@drawable/facebook_button"
                 android:textColor="#ffffff"
@@ -109,7 +109,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login with Google"
+                android:text="@string/login_with_google"
                 android:id="@+id/google_button"
                 android:background="@drawable/google_button"
                 android:textColor="#ffffff"
@@ -125,7 +125,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login with Twitter"
+                android:text="@string/login_with_twitter"
                 android:id="@+id/twitter_button"
                 android:background="@drawable/twitter_button"
                 android:textColor="#ffffff"
