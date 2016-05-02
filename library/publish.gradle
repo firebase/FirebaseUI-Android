@@ -65,10 +65,30 @@ publishing {
             artifactId archivesBaseName
             version project.ext.version
 
-            // Release AAR, Sources, and JavaDoc
-            artifact "$buildDir/outputs/aar/firebase-ui-release.aar"
-            artifact sourcesJar
+            artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
             artifact javadocJar
+            artifact sourcesJar
+
+            // Monolith is just a POM that depends on the others
+            pom.withXml {
+                def dependenciesNode = asNode().getAt("dependencies")[0]
+                if (dependenciesNode == null) {
+                    dependenciesNode = asNode().appendNode("dependencies");
+                }
+
+                def deps = [
+                        [project.ext.group, 'firebase-ui-database', project.ext.version],
+                        [project.ext.group, 'firebase-ui-storage', project.ext.version],
+                ]
+
+                // Add all that are 'compile'
+               deps.each { dep ->
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', dep[0])
+                    dependencyNode.appendNode('artifactId', dep[1])
+                    dependencyNode.appendNode('version', dep[2])
+                }
+            }
         }
     }
 
