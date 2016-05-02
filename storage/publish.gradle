@@ -40,6 +40,21 @@ publishing {
             artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
             artifact javadocJar
             artifact sourcesJar
+
+            pom.withXml {
+                def dependenciesNode = asNode().getAt("dependencies")[0]
+                if (dependenciesNode == null) {
+                    dependenciesNode = asNode().appendNode("dependencies");
+                }
+
+                // Add all that are 'compile'
+                configurations.compile.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+            }
         }
 
     }
