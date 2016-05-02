@@ -4,6 +4,7 @@ import com.firebase.ui.auth.api.FactoryHeadlessAPI;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 import org.robolectric.internal.bytecode.InstrumentationConfiguration;
 
 public class CustomRobolectricGradleTestRunner extends RobolectricGradleTestRunner {
@@ -12,10 +13,9 @@ public class CustomRobolectricGradleTestRunner extends RobolectricGradleTestRunn
     }
 
     @Override
-    public InstrumentationConfiguration createClassLoaderConfig() {
+    public InstrumentationConfiguration createClassLoaderConfig(Config config) {
         InstrumentationConfiguration.Builder builder = InstrumentationConfiguration.newBuilder();
         builder.addInstrumentedClass(FactoryHeadlessAPI.class.getName());
         return builder.build();
     }
-
 }
