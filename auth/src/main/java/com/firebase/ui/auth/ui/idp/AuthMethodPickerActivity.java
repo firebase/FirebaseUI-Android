@@ -22,10 +22,12 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
 
-public class NascarActivity extends IDPBaseActivity implements IDPProvider.IDPCallback, View.OnClickListener {
+public class AuthMethodPickerActivity
+        extends IDPBaseActivity
+        implements IDPProvider.IDPCallback, View.OnClickListener {
 
     private static final int NASCAR_BUTTON_PADDING = 36;
-    private static final String TAG = "NascarActivity";
+    private static final String TAG = "AuthMethodPicker";
     private ArrayList<IDPProviderParcel> mProviderParcels;
     private ArrayList<IDPProvider> mIDPProviders;
 
@@ -42,7 +44,7 @@ public class NascarActivity extends IDPBaseActivity implements IDPProvider.IDPCa
     public static Intent createIntent(
             Context context, String appName, ArrayList<IDPProviderParcel> parcels) {
     return new Intent()
-        .setClass(context, NascarActivity.class)
+        .setClass(context, AuthMethodPickerActivity.class)
         .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
         .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, parcels)
         .putExtra(EXTRA_ID, IDPController.NASCAR_SCREEN);

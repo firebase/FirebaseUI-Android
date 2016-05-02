@@ -18,8 +18,8 @@ import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
 import com.firebase.ui.auth.ui.BaseActivity;
 import com.firebase.ui.auth.ui.account_link.AccountLinkInitActivity;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
+import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPBaseActivity;
-import com.firebase.ui.auth.ui.idp.NascarActivity;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +39,7 @@ public class IDPController implements Controller{
     @Override
     public Action next(Result result) {
         if(result == null) {
-            return Action.next(ID_INIT, new Intent(mContext, NascarActivity.class));
+            return Action.next(ID_INIT, new Intent(mContext, AuthMethodPickerActivity.class));
         }
         IDPResponse idpSignInResponse
                 = result.getData().getParcelableExtra(ControllerConstants.EXTRA_IDP_RESPONSE);
@@ -111,7 +111,7 @@ public class IDPController implements Controller{
     @NonNull
     private Action getNascarAction(Result result) {
         ArrayList<IDPProviderParcel> parcels = result.getData().getParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS);
-        Intent intent = NascarActivity.createIntent(mContext, mAppName, parcels);
+        Intent intent = AuthMethodPickerActivity.createIntent(mContext, mAppName, parcels);
         return Action.next(NASCAR_SCREEN, intent);
     }
 

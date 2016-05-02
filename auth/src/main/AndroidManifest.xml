@@ -24,7 +24,7 @@
         </activity>
         <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt" >
         </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.idp.NascarActivity" >
+        <activity android:theme="@style/FirebaseUI" android:name=".ui.idp.AuthMethodPickerActivity" >
         </activity>
         <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity" >
         </activity>
