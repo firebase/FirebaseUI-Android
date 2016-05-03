@@ -20,7 +20,7 @@ public class AccountLinkInitActivity extends BaseActivity {
 
     @Override
     protected Controller setUpController() {
-        return new AccountLinkController(getApplicationContext());
+        return new AccountLinkController(getApplicationContext(), mAppName);
     }
 
     public static Intent createStartIntent(Context context, String appName, String id, String

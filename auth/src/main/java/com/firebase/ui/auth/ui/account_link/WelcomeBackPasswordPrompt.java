@@ -49,7 +49,7 @@ public class WelcomeBackPasswordPrompt extends BaseActivity implements View.OnCl
 
     @Override
     protected Controller setUpController() {
-        return new AccountLinkController(getApplicationContext());
+        return new AccountLinkController(getApplicationContext(), mAppName);
     }
 
     @Override

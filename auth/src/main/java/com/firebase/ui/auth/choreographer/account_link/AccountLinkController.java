@@ -30,18 +30,21 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class AccountLinkController implements Controller {
-    private Context mContext;
     private static final String TAG = "AccountLinkController";
-
     // states
     public static final int ID_INIT = 10;
+
     public static final int ID_WELCOME_BACK_PASSWORD = 20;
     public static final int ID_WELCOME_BACK_IDP = 30;
     @VisibleForTesting static final int ID_CREDENTIALS_SAVE = 40;
 
+    private Context mContext;
+    private String mAppName;
 
-    public AccountLinkController(Context context) {
+
+    public AccountLinkController(Context context, String appName) {
         mContext = context;
+        mAppName = appName;
     }
 
     @Override
@@ -51,11 +54,10 @@ public class AccountLinkController implements Controller {
         String email = data.getStringExtra(ControllerConstants.EXTRA_EMAIL);
         String password = data.getStringExtra(ControllerConstants.EXTRA_PASSWORD);
         String provider = data.getStringExtra(ControllerConstants.EXTRA_PROVIDER);
-        String appName = data.getStringExtra(ControllerConstants.EXTRA_APP_NAME);
 
         IDPResponse idpResponse = data.getParcelableExtra(ControllerConstants.EXTRA_IDP_RESPONSE);
         FirebaseUser currentUser;
-        HeadlessAPIWrapper apiWrapper = FactoryHeadlessAPI.getHeadlessAPIWrapperInstance(appName);
+        HeadlessAPIWrapper apiWrapper = FactoryHeadlessAPI.getHeadlessAPIWrapperInstance(mAppName);
 
         switch (result.getId()) {
             case ID_INIT:
@@ -69,7 +71,7 @@ public class AccountLinkController implements Controller {
                     return Action.next(
                             ID_CREDENTIALS_SAVE,
                             SaveCredentialsActivity.createIntent(mContext, null, email, password,
-                                    provider, null, appName));
+                                    provider, null, mAppName));
                 } else if (providers.size() == 1)  {
                     if (providers.get(0).equals(provider)) {
                         // existing account but has this IDP linked
@@ -85,7 +87,7 @@ public class AccountLinkController implements Controller {
                                     ID_WELCOME_BACK_PASSWORD,
                                     new Intent(mContext, WelcomeBackPasswordPrompt.class)
                                         .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                                        .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+                                        .putExtra(ControllerConstants.EXTRA_APP_NAME, mAppName)
                             );
                         } else {
                             // existing account but has a different IDP linked
@@ -108,6 +110,9 @@ public class AccountLinkController implements Controller {
             case ID_WELCOME_BACK_IDP:
                 if (result.getResultCode() == BaseActivity.BACK_IN_FLOW) {
                     return finishAction(Activity.RESULT_CANCELED);
+                }
+                if (idpResponse == null) {
+                    return Action.block(new Intent());
                 }
                 AuthCredential credential;
                 switch (provider) {
@@ -139,7 +144,7 @@ public class AccountLinkController implements Controller {
                 }
                 if (result.getResultCode() == BaseActivity.RESULT_FIRST_USER) {
                     return Action.startFlow(RecoverPasswordActivity
-                            .createIntent(mContext, appName, email));
+                            .createIntent(mContext, mAppName, email));
                 }
                 currentUser = apiWrapper.getCurrentUser();
                 AuthCredential emailCredential = EmailAuthProvider.getCredential(email, password);

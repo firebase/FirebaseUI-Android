@@ -37,9 +37,6 @@ public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickLi
         mProviderId = getProviderIdFromIntent();
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
-        ((TextView) findViewById(R.id.welcome_back_idp_prompt))
-                .setText(getIdpPromptString(getEmailFromIntent(), getAppNameFromIntent()));
-
         IDPProviderParcel parcel;
         switch (mProviderId) {
             case GoogleAuthProvider.PROVIDER_ID:
@@ -58,6 +55,9 @@ public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickLi
                 return;
         }
 
+        ((TextView) findViewById(R.id.welcome_back_idp_prompt))
+                .setText(getIdpPromptString(getEmailFromIntent(), getAppNameFromIntent()));
+
         mIDPProvider.setAuthenticationCallback(this);
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +74,7 @@ public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickLi
 
     @Override
     protected Controller setUpController() {
-        return new AccountLinkController(getApplicationContext());
+        return new AccountLinkController(getApplicationContext(), mAppName);
     }
 
     @Override

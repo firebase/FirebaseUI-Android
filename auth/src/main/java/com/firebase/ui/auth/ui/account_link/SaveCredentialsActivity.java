@@ -87,7 +87,7 @@ public class SaveCredentialsActivity extends BaseActivity
 
     @Override
     protected Controller setUpController() {
-        return new AccountLinkController(getApplicationContext());
+        return new AccountLinkController(getApplicationContext(), mAppName);
     }
 
     @Override
