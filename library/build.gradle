@@ -48,6 +48,7 @@ android.libraryVariants.all { variant ->
 dependencies {
     compile project(':database')
     compile project(':storage')
+    compile project(':auth')
 
     // TODO(samstern): Uncomment these when auth returns
     // compile 'com.google.android.gms:play-services-auth:8.5.6'

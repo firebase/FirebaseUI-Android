@@ -1,4 +1,4 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply from: 'common/constants.gradle'
 
 buildscript {
     repositories {
@@ -18,5 +18,106 @@ allprojects {
         jcenter()
         mavenLocal()
         mavenCentral()
+    }
+}
+
+/**
+ * Configure common tasks on all the submodules
+ */
+allprojects { project ->
+
+    // Get constants, this is where we store things
+    // like the list of submodules or the version
+    apply from: "$rootDir/common/constants.gradle"
+
+    if (project.ext.submodules.contains(project.name)) {
+
+        // So that we can resolve 'android' variable
+        apply plugin: 'com.android.library'
+        android {
+            compileSdkVersion 23
+            buildToolsVersion "23.0.3"
+        }
+
+        // Task to generate sources JAR
+        task sourcesJar(type: Jar) {
+            classifier = 'sources'
+            from android.sourceSets.main.java.srcDirs
+        }
+
+        // Task to generate javadoc
+        task javadoc(type: Javadoc) {
+            source = android.sourceSets.main.java.srcDirs
+            classpath += configurations.compile
+            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        }
+
+        // Task to generate javadoc JAR
+        task javadocJar(type: Jar, dependsOn: javadoc) {
+            classifier = 'javadoc'
+            from javadoc.destinationDir
+        }
+
+        // Convenience tasks that depends on the above
+        task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease]) {}
+
+        // Use tasks above to define artifacts
+        artifacts {
+            archives javadocJar
+            archives sourcesJar
+        }
+
+        // Define base name for archives
+        // Ex: firebase-ui-auth
+        archivesBaseName = "firebase-ui-${project.name}"
+
+        // So that we can define publications
+        apply plugin: 'maven-publish'
+
+        publishing {
+
+            // Define a publication for each submodule
+            publications {
+
+                // Ex: authLibrary(MavenPublication)
+                "${project.name}Library"(MavenPublication) {
+                    groupId project.ext.group
+                    artifactId archivesBaseName
+                    version project.ext.version
+
+                    // Release AAR, Sources, and JavaDoc
+                    artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
+                    artifact javadocJar
+                    artifact sourcesJar
+
+                    pom.withXml {
+                        def dependenciesNode = asNode().getAt("dependencies")[0]
+                        if (dependenciesNode == null) {
+                            dependenciesNode = asNode().appendNode("dependencies");
+                        }
+
+                        // Add all that are 'compile'
+                        configurations.compile.allDependencies.each {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+                        }
+                    }
+                }
+
+            }
+
+            // By passing -Pcustom_local=/some/path and running the
+            // publishLibraryPublicationToCustomLocalRepository task you can publish this library to a
+            // custom maven repository location on your machine.
+            repositories {
+                maven {
+                    name 'CustomLocal'
+                    url uri(project.hasProperty('custom_local') ? project.getProperty('custom_local') : '/tmp/')
+                }
+            }
+
+        }
     }
 }

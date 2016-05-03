@@ -1,8 +1,28 @@
 apply plugin: 'maven-publish'
 apply from: "../common/constants.gradle"
-apply from: "../common/repos.gradle"
 
 archivesBaseName = 'firebase-ui'
+
+/**
+ * Returns list of tasks names that prepareArtfacts should depend on,
+ */
+def prepareArtifactsTasks() {
+    return project.ext.submodules.collect { name ->
+        ":${name}:prepareArtifacts"
+    }.toArray()
+}
+
+/**
+ * Returns list of publish tasks that monolith publish tasks should depend on.
+ * @param repo relevant repository, such as 'MavenLocal' or 'CustomLocalRepository'
+ */
+def publishToRepoTasks(repo) {
+    return project.ext.submodules.collect { name ->
+        // Ex: name = database, repo = MavenLocal
+        // Return: :database:publishDatabaseLibraryPublicationToMavenLocal
+        ":${name}:publish${name.capitalize()}LibraryPublicationTo${repo}"
+    }.toArray()
+}
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
@@ -26,8 +46,7 @@ task prepareArtifacts(dependsOn: [
         javadocJar,
         sourcesJar,
         assembleRelease,
-        ':database:prepareArtifacts',
-        ':storage:prepareArtifacts']) {
+        prepareArtifactsTasks()]) {
 
 }
 
@@ -36,9 +55,7 @@ task prepareArtifacts(dependsOn: [
  */
 task publishAllToMavenLocal(dependsOn: [
         'publishMonolithLibraryPublicationToMavenLocal',
-        ':database:publishDatabaseLibraryPublicationToMavenLocal',
-        ':storage:publishStorageLibraryPublicationToMavenLocal']) {
-
+        publishToRepoTasks('MavenLocal')]) {
 }
 
 /**
@@ -46,8 +63,7 @@ task publishAllToMavenLocal(dependsOn: [
  */
 task publishAllToCustomLocal(dependsOn: [
         'publishMonolithLibraryPublicationToCustomLocalRepository',
-        ':database:publishDatabaseLibraryPublicationToCustomLocalRepository',
-        ':storage:publishStorageLibraryPublicationToCustomLocalRepository']) {
+        publishToRepoTasks('CustomLocalRepository')]) {
 
 }
 
@@ -55,7 +71,6 @@ artifacts {
     archives javadocJar
     archives sourcesJar
 }
-
 
 publishing {
 
@@ -76,20 +91,26 @@ publishing {
                     dependenciesNode = asNode().appendNode("dependencies");
                 }
 
-                def deps = [
-                        [project.ext.group, 'firebase-ui-database', project.ext.version],
-                        [project.ext.group, 'firebase-ui-storage', project.ext.version],
-                ]
-
-                // Add all that are 'compile'
-               deps.each { dep ->
+                // Add a maven dependency on each submodule
+                project.ext.submodules.each { module ->
                     def dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', dep[0])
-                    dependencyNode.appendNode('artifactId', dep[1])
-                    dependencyNode.appendNode('version', dep[2])
+                    dependencyNode.appendNode('groupId', project.ext.group)
+                    dependencyNode.appendNode('artifactId', module)
+                    dependencyNode.appendNode('version', project.ext.version)
                 }
             }
         }
     }
+
+    // By passing -Pcustom_local=/some/path and running the
+    // publishLibraryPublicationToCustomLocalRepository task you can publish this library to a
+    // custom maven repository location on your machine.
+    repositories {
+        maven {
+            name 'CustomLocal'
+            url uri(project.hasProperty('custom_local') ? project.getProperty('custom_local') : '/tmp/')
+        }
+    }
+
 
 }

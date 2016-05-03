@@ -22,5 +22,3 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.google.firebase:firebase-storage:8.5.6'
 }
-
-apply from: 'publish.gradle'
