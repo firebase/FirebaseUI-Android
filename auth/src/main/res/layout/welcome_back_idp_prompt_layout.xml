@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/FirebaseUI.WrapperStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
@@ -13,11 +14,12 @@
         style="@style/TextAppearance.AppCompat.Headline" />
 
     <TextView
+        style="@style/FirebaseUI.Text.BodyText"
         android:id="@+id/welcome_back_idp_prompt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Good news! You've already used jane.doe@example.com. Sign in with Google to continue to SuperApp"
-        style="@style/TextAppearance.AppCompat.Body1" />
+         />
 
     <Button
         android:id="@+id/welcome_back_idp_button"

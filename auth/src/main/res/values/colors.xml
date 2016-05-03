@@ -7,7 +7,8 @@
     <color name="bodyTextColor">#757575</color>
     <color name="errorColor">#DD2C00</color>
     <color name="linkColor">#4285F4</color>
-    <color name="buttonColor">#3E50B4</color>
+    <color name="buttonColor">@color/colorPrimary</color>
+    <color name="buttonColorPressed">#1a237e</color>
     <color name="buttonTextColor">#FFFFFF</color>
     <color name="inputLabelColor">#757575</color>
     <color name="shadowColor">#eeeeee</color>

@@ -4,18 +4,22 @@
     <string name="email_hint">Email</string>
     <string name="sign_in_no_password_title">Put an email to use for sign in</string>
     <string name="button_ok_text">OK</string>
-    <string name="password_hint">Input your password</string>
+    <string name="password_hint">Password</string>
     <string name="button_singin_text">Sign In</string>
     <string name="button_password_recovery_text">Trouble remembering your password</string>
-    <string name="name_hint">Input your name here</string>
-    <string name="button_create_text">Create</string>
+    <string name="name_hint">Name</string>
     <string name="password_recovery_title">We will send instructions on how to reset your password to your email address</string>
+    <string name="create_an_account_title">Create an account</string>
+    <string name="required_field">You can\'t leave this empty.</string>
+    <string name="password_length">Short passwords are easy to guess. Try one with at least
+    %1$d characters.</string>
+    <string name="invalid_email_address">Please enter a valid email address.</string>
     <string name="button_text_next">Next</string>
     <string name="require_email_text">Please input email address</string>
     <string name="confirm_recovery_title">We have sent instructions on how to reset your password to your email address.</string>
     <string name="recovery_fail_title">Sorry, we are unable to find your email. Please start the flow again with another email.</string>
-    <string name="account_welcomeback">Welecom back</string>
-    <string name="finding_credential">Finding a credential...</string>
+    <string name="account_welcomeback">Welcome back</string>
+    <string name="finding_credential">Finding a credential…</string>
     <string name="do_delete">Delete</string>
     <string name="welcome_back">Welcome back!</string>
     <string name="next">Next</string>
@@ -37,7 +41,10 @@
     <string name="welcome_back_idp_button">Sign in</string>
     <string name="welcome_back_password_prompt_body">You\'ve previously used this email address: %1$s for %2$s, but signed in with a password.  Enter your %2$s password to remember this account.</string>
     <string name="password_word">Password</string>
-    <string name="loading_text">Loading...</string>
+    <string name="loading_text">Loading…</string>
     <string name="idp_name_google">Google</string>
     <string name="idp_name_facebook">Facebook</string>
+    <string name="create_account_preamble">"By tapping NEXT you are indicating that you agree to the "</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="sign_in_with_email">Sign in with email</string>
 </resources>

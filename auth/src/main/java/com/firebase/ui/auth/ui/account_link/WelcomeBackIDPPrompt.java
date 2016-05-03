@@ -33,7 +33,7 @@ public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(getResources().getResourceName(R.string.sign_in));
+        setTitle(getResources().getString(R.string.sign_in));
         mProviderId = getProviderIdFromIntent();
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 

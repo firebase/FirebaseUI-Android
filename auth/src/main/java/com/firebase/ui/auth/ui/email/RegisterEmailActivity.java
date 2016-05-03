@@ -2,17 +2,28 @@ package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
+import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
+import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
+import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
 
 public class RegisterEmailActivity extends EmailFlowBaseActivity implements View.OnClickListener {
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mNameEditText;
+    private EmailFieldValidator mEmailFieldValidator;
+    private PasswordFieldValidator mPasswordFieldValidator;
+    private RequiredFieldValidator mNameValidator;
 
     @Override
     public void onBackPressed() {
@@ -25,6 +36,7 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.create_an_account_title);
         setContentView(R.layout.register_email_layout);
 
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
@@ -32,12 +44,33 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
         mPasswordEditText = (EditText) findViewById(R.id.password);
         mNameEditText = (EditText) findViewById(R.id.name);
 
+        mPasswordFieldValidator = new PasswordFieldValidator((TextInputLayout)
+                findViewById(R.id.password_layout),
+                getResources().getInteger(R.integer.min_password_length));
+        mNameValidator = new RequiredFieldValidator((TextInputLayout)
+                findViewById(R.id.name_layout));
+        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
+                .email_layout));
+
         if (email != null) {
             mEmailEditText.setText(email);
         }
-
+        setUpTermsOfService();
         Button createButton = (Button) findViewById(R.id.button_create);
         createButton.setOnClickListener(this);
+    }
+
+    private void setUpTermsOfService() {
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(ContextCompat.getColor
+                (getApplicationContext(), R.color.linkColor));
+
+        String preamble = getResources().getString(R.string.create_account_preamble);
+        String link = getResources().getString(R.string.terms_of_service);
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
+        int start = preamble.length();
+        spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
+        TextView agreementText = (TextView) findViewById(R.id.create_account_text);
+        agreementText.setText(spannableStringBuilder);
     }
 
     @Override
@@ -45,12 +78,21 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
         if(super.isPendingFinishing.get()) {
             return;
         }
-       if (view.getId() == R.id.button_create) {
-           Intent data = new Intent();
-           data.putExtra(ControllerConstants.EXTRA_EMAIL, mEmailEditText.getText().toString());
-           data.putExtra(ControllerConstants.EXTRA_NAME, mNameEditText.getText().toString());
-           data.putExtra(ControllerConstants.EXTRA_PASSWORD, mPasswordEditText.getText().toString());
-           finish(RESULT_OK, data);
-       }
+        if (view.getId() == R.id.button_create) {
+            String email = mEmailEditText.getText().toString();
+            String password = mPasswordEditText.getText().toString();
+            String name = mNameEditText.getText().toString();
+
+            boolean emailValid = mEmailFieldValidator.validate(email);
+            boolean passwordValid = mPasswordFieldValidator.validate(password);
+            boolean nameValid = mNameValidator.validate(name);
+            if (emailValid && passwordValid && nameValid) {
+                Intent data = new Intent();
+                data.putExtra(ControllerConstants.EXTRA_EMAIL, mEmailEditText.getText().toString());
+                data.putExtra(ControllerConstants.EXTRA_NAME, mNameEditText.getText().toString());
+                data.putExtra(ControllerConstants.EXTRA_PASSWORD, mPasswordEditText.getText().toString());
+                finish(RESULT_OK, data);
+            }
+        }
     }
 }

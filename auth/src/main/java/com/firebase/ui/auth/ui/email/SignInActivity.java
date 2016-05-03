@@ -2,6 +2,7 @@ package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,10 +12,14 @@ import android.widget.Toast;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.email.EmailFlowController;
+import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
+import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
 
 public class SignInActivity extends EmailFlowBaseActivity implements View.OnClickListener {
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
+    private EmailFieldValidator mEmailValidator;
+    private RequiredFieldValidator mPasswordValidator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +32,10 @@ public class SignInActivity extends EmailFlowBaseActivity implements View.OnClic
 
         mEmailEditText = (EditText) findViewById(R.id.email);
         mPasswordEditText = (EditText) findViewById(R.id.password);
-
+        mEmailValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
+                .email_layout));
+        mPasswordValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id
+                .password_layout));
         Button signInButton = (Button) findViewById(R.id.button_done);
         TextView recoveryButton =  (TextView) findViewById(R.id.trouble_signing_in);
 
@@ -51,9 +59,10 @@ public class SignInActivity extends EmailFlowBaseActivity implements View.OnClic
             return;
         }
         if (view.getId() == R.id.button_done) {
-            if (mEmailEditText.getText().toString().equalsIgnoreCase("")
-                    || mPasswordEditText.getText().toString().equalsIgnoreCase("")) {
-                Toast.makeText(this, "Missing password or email", Toast.LENGTH_SHORT).show();
+            boolean emailValid = mEmailValidator.validate(mEmailEditText.getText());
+            boolean passwordValid = mPasswordValidator.validate(mPasswordEditText.getText());
+            if (!emailValid || !passwordValid) {
+                Toast.makeText(this, "Invalid password or email", Toast.LENGTH_SHORT).show();
                 return;
             } else {
                 Intent data = new Intent();
