@@ -36,8 +36,15 @@ import java.util.ArrayList;
 
 public class EmailFlowControllerTest {
 
-    public static final String EMAIL = "serikb@google.com";
-    public static final int RANDOM_NUMBER = 914159393;
+    public static final String TEST_EMAIL = "jane.doe@example.com";
+    public static final String TEST_PASSWORD = "securePassword1";
+    public static final int TEST_RESULT_CODE = 101;
+
+
+    public static final Intent NO_RESULT_DATA = new Intent();
+    public static final String NO_EMAIL = null;
+    public static final String NO_PASSWORD = null;
+    public static final Boolean NO_RESTORE_PASSWORD_FLAG = null;
 
     public ArrayList<String> mProvider;
     public ArrayList<String> mProviders;
@@ -45,7 +52,6 @@ public class EmailFlowControllerTest {
     private EmailFlowController mEmailFlowController;
     @Mock private HeadlessAPIWrapper mMockHeadlessApiWrapper;
     @Mock private Result mMockResult;
-    @Mock private Intent mMockIntent;
     @Mock private PendingIntent mMockPendingIntent;
     @Mock private FirebaseUser mMockFirebaseUser;
 
@@ -78,9 +84,12 @@ public class EmailFlowControllerTest {
             boolean hasNextAction,
             int finishResultCode,
             int nextId) {
-        assertEquals(hasNextAction, nextAction.hasNextAction());
-        assertEquals(finishResultCode, nextAction.getFinishResultCode());
-        assertEquals(nextId, nextAction.getNextId());
+        assertEquals(hasNextAction ? "next action expected" : "no next action expected",
+                hasNextAction, nextAction.hasNextAction());
+        assertEquals("finish result code mismatch",
+                finishResultCode, nextAction.getFinishResultCode());
+        assertEquals("next state ID mismatch",
+                nextId, nextAction.getNextId());
     }
 
     void validateFinish(Action action, int resultCode) {
@@ -94,7 +103,7 @@ public class EmailFlowControllerTest {
         initResultWithConditions(
                 EmailFlowController.ID_SELECT_EMAIL,
                 BaseActivity.BACK_IN_FLOW,
-                mMockIntent);
+                NO_RESULT_DATA);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
         validateFinish(nextAction, Activity.RESULT_CANCELED);
@@ -105,7 +114,7 @@ public class EmailFlowControllerTest {
         initResultWithConditions(
                 EmailFlowController.ID_SELECT_EMAIL,
                 Activity.RESULT_CANCELED,
-                mMockIntent);
+                NO_RESULT_DATA);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -114,8 +123,10 @@ public class EmailFlowControllerTest {
 
     @Test
     public void testIdSelectEmailAccountDoesNotExist() {
-        initResultWithConditions(EmailFlowController.ID_SELECT_EMAIL, RANDOM_NUMBER, mMockIntent);
-        when(mMockIntent.getStringExtra(ControllerConstants.EXTRA_EMAIL)).thenReturn(EMAIL);
+        initResultWithConditions(
+                EmailFlowController.ID_SELECT_EMAIL,
+                TEST_RESULT_CODE,
+                resultData(TEST_EMAIL, NO_PASSWORD, NO_RESTORE_PASSWORD_FLAG));
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -125,23 +136,27 @@ public class EmailFlowControllerTest {
 
     @Test
     public void testIdSelectEmailAccountExistsOneProvider() {
-        initResultWithConditions(EmailFlowController.ID_SELECT_EMAIL, RANDOM_NUMBER, mMockIntent);
-        when(mMockIntent.getStringExtra(ControllerConstants.EXTRA_EMAIL)).thenReturn(EMAIL);
-        when(mMockHeadlessApiWrapper.isAccountExists(EMAIL)).thenReturn(true);
-        when(mMockHeadlessApiWrapper.getProviderList(EMAIL)).thenReturn(mProvider);
+        initResultWithConditions(
+                EmailFlowController.ID_SELECT_EMAIL,
+                TEST_RESULT_CODE,
+                resultData(TEST_EMAIL, NO_PASSWORD, NO_RESTORE_PASSWORD_FLAG));
+        when(mMockHeadlessApiWrapper.isAccountExists(TEST_EMAIL)).thenReturn(true);
+        when(mMockHeadlessApiWrapper.getProviderList(TEST_EMAIL)).thenReturn(mProvider);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
-        validateAction(nextAction, Action.ACTION_NEXT, EmailFlowController.ID_SIGN_IN);
+        validateAction(nextAction, Action.ACTION_NEXT, Controller.START_NEW_FLOW_ID);
         // TODO: Validate data
     }
 
     @Test
     public void testIdSelectEmailAccountExistsMultipleProviders() {
-        initResultWithConditions(EmailFlowController.ID_SELECT_EMAIL, RANDOM_NUMBER, mMockIntent);
-        when(mMockIntent.getStringExtra(ControllerConstants.EXTRA_EMAIL)).thenReturn(EMAIL);
-        when(mMockHeadlessApiWrapper.isAccountExists(EMAIL)).thenReturn(true);
-        when(mMockHeadlessApiWrapper.getProviderList(EMAIL)).thenReturn(mProviders);
+        initResultWithConditions(
+                EmailFlowController.ID_SELECT_EMAIL,
+                TEST_RESULT_CODE,
+                resultData(TEST_EMAIL, NO_PASSWORD, NO_RESTORE_PASSWORD_FLAG));
+        when(mMockHeadlessApiWrapper.isAccountExists(TEST_EMAIL)).thenReturn(true);
+        when(mMockHeadlessApiWrapper.getProviderList(TEST_EMAIL)).thenReturn(mProviders);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -153,7 +168,7 @@ public class EmailFlowControllerTest {
         initResultWithConditions(
                 EmailFlowController.ID_SIGN_IN,
                 BaseActivity.BACK_IN_FLOW,
-                mMockIntent);
+                NO_RESULT_DATA);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -164,10 +179,8 @@ public class EmailFlowControllerTest {
     public void testIdSignInRestorePassword() {
         initResultWithConditions(
                 EmailFlowController.ID_SIGN_IN,
-                RANDOM_NUMBER,
-                mMockIntent);
-        when(mMockIntent.getBooleanExtra(ControllerConstants.EXTRA_RESTORE_PASSWORD_FLAG, false))
-                .thenReturn(true);
+                TEST_RESULT_CODE,
+                resultData(NO_EMAIL, NO_PASSWORD, true));
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -179,8 +192,8 @@ public class EmailFlowControllerTest {
     public void testIdSignInNotRestorePasswordFailLogin() {
         initResultWithConditions(
                 EmailFlowController.ID_SIGN_IN,
-                RANDOM_NUMBER,
-                mMockIntent);
+                TEST_RESULT_CODE,
+                NO_RESULT_DATA);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -191,9 +204,9 @@ public class EmailFlowControllerTest {
     public void testIdSignInNotRestorePasswordSuccessLoginNoGMSCore() {
         initResultWithConditions(
                 EmailFlowController.ID_SIGN_IN,
-                RANDOM_NUMBER,
-                mMockIntent);
-        when(mMockHeadlessApiWrapper.signInWithEmailPassword(anyString(), anyString()))
+                TEST_RESULT_CODE,
+                resultData(TEST_EMAIL, TEST_PASSWORD, NO_RESTORE_PASSWORD_FLAG));
+        when(mMockHeadlessApiWrapper.signInWithEmailPassword(TEST_EMAIL, TEST_PASSWORD))
                 .thenReturn(mMockFirebaseUser);
         when(mMockHeadlessApiWrapper.isGMSCorePresent(any(Context.class))).thenReturn(false);
 
@@ -206,15 +219,15 @@ public class EmailFlowControllerTest {
     public void testIdSignInNotRestorePasswordSuccessLoginGMSCore() {
         initResultWithConditions(
                 EmailFlowController.ID_SIGN_IN,
-                RANDOM_NUMBER,
-                mMockIntent);
-        when(mMockHeadlessApiWrapper.signInWithEmailPassword(anyString(), anyString()))
+                TEST_RESULT_CODE,
+                resultData(TEST_EMAIL, TEST_PASSWORD, NO_RESTORE_PASSWORD_FLAG));
+        when(mMockHeadlessApiWrapper.signInWithEmailPassword(TEST_EMAIL, TEST_PASSWORD))
                 .thenReturn(mMockFirebaseUser);
         when(mMockHeadlessApiWrapper.isGMSCorePresent(any(Context.class))).thenReturn(true);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
-        validateAction(nextAction, Action.ACTION_NEXT, EmailFlowController.ID_SAVE_CREDENTIALS);
+        validateAction(nextAction, Action.ACTION_NEXT, Controller.START_NEW_FLOW_ID);
         // TODO: Validate data
     }
 
@@ -223,7 +236,7 @@ public class EmailFlowControllerTest {
         initResultWithConditions(
                 EmailFlowController.ID_REGISTER_EMAIL,
                 BaseActivity.BACK_IN_FLOW,
-                mMockIntent);
+                NO_RESULT_DATA);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -235,8 +248,8 @@ public class EmailFlowControllerTest {
     public void testIdRegisterEmailSuccessLoginNoGMSCore() {
         initResultWithConditions(
                 EmailFlowController.ID_REGISTER_EMAIL,
-                RANDOM_NUMBER,
-                mMockIntent);
+                TEST_RESULT_CODE,
+                NO_RESULT_DATA);
         when(mMockHeadlessApiWrapper.isGMSCorePresent(any(Context.class))).thenReturn(false);
         when(mMockHeadlessApiWrapper.createEmailWithPassword(anyString(), anyString()))
                 .thenReturn(mMockFirebaseUser);
@@ -251,15 +264,15 @@ public class EmailFlowControllerTest {
     public void testIdRegisterEmailSuccessLoginGMSCore() {
         initResultWithConditions(
                 EmailFlowController.ID_REGISTER_EMAIL,
-                RANDOM_NUMBER,
-                mMockIntent);
+                TEST_RESULT_CODE,
+                NO_RESULT_DATA);
         when(mMockHeadlessApiWrapper.createEmailWithPassword(anyString(), anyString()))
                 .thenReturn(mMockFirebaseUser);
         when(mMockHeadlessApiWrapper.isGMSCorePresent(any(Context.class))).thenReturn(true);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
-        validateAction(nextAction, Action.ACTION_NEXT, EmailFlowController.ID_SAVE_CREDENTIALS);
+        validateAction(nextAction, Action.ACTION_NEXT, Controller.START_NEW_FLOW_ID);
         // TODO: Validate data
     }
 
@@ -267,32 +280,8 @@ public class EmailFlowControllerTest {
     public void testIdRegisterEmailFailLogin() {
         initResultWithConditions(
                 EmailFlowController.ID_REGISTER_EMAIL,
-                RANDOM_NUMBER,
-                mMockIntent);
-
-        Action nextAction = mEmailFlowController.next(mMockResult);
-
-        validateAction(nextAction, false, Activity.RESULT_FIRST_USER, Controller.FINISH_FLOW_ID);
-    }
-
-    @Test
-    public void testIdWelcomeBackBackInFlow() {
-//        initResultWithConditions(
-//                EmailFlowController.ID_WELCOME_BACK,
-//                BaseActivity.BACK_IN_FLOW,
-//                mMockIntent);
-
-        Action nextAction = mEmailFlowController.next(mMockResult);
-
-        validateFinish(nextAction, Activity.RESULT_CANCELED);
-    }
-
-    @Test
-    public void testIdWelcomeBack() {
-//        initResultWithConditions(
-//                EmailFlowController.ID_WELCOME_BACK,
-//                RANDOM_NUMBER,
-//                mMockIntent);
+                TEST_RESULT_CODE,
+                NO_RESULT_DATA);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -304,7 +293,7 @@ public class EmailFlowControllerTest {
         initResultWithConditions(
                 EmailFlowController.ID_RECOVER_PASSWORD,
                 BaseActivity.BACK_IN_FLOW,
-                mMockIntent);
+                NO_RESULT_DATA);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -316,8 +305,8 @@ public class EmailFlowControllerTest {
     public void testIdRecoverPassword() {
         initResultWithConditions(
                 EmailFlowController.ID_RECOVER_PASSWORD,
-                RANDOM_NUMBER,
-                mMockIntent);
+                TEST_RESULT_CODE,
+                NO_RESULT_DATA);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -333,7 +322,7 @@ public class EmailFlowControllerTest {
         initResultWithConditions(
                 EmailFlowController.ID_CONFIRM_RECOVER_PASSWORD,
                 BaseActivity.BACK_IN_FLOW,
-                mMockIntent);
+                NO_RESULT_DATA);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -345,24 +334,29 @@ public class EmailFlowControllerTest {
     public void testIdConfirmRecoverPassword() {
         initResultWithConditions(
                 EmailFlowController.ID_CONFIRM_RECOVER_PASSWORD,
-                RANDOM_NUMBER,
-                mMockIntent);
+                TEST_RESULT_CODE,
+                NO_RESULT_DATA);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
         validateAction(nextAction, Action.ACTION_NEXT, EmailFlowController.ID_SIGN_IN);
     }
 
-    @Test
-    public void testIdSaveCredentials() {
-        initResultWithConditions(
-                EmailFlowController.ID_SAVE_CREDENTIALS,
-                RANDOM_NUMBER,
-                mMockIntent);
+    private Intent resultData(String email, String password, Boolean restorePassword) {
+        Intent data = new Intent();
+        if (email != null) {
+            data.putExtra(ControllerConstants.EXTRA_EMAIL, email);
+        }
 
-        Action nextAction = mEmailFlowController.next(mMockResult);
+        if (password != null) {
+            data.putExtra(ControllerConstants.EXTRA_PASSWORD, password);
+        }
 
-        validateAction(nextAction, false, RANDOM_NUMBER, Controller.FINISH_FLOW_ID);
-        // TODO: Validate data
+        if (restorePassword != null) {
+            data.putExtra(
+                    ControllerConstants.EXTRA_RESTORE_PASSWORD_FLAG,
+                    restorePassword.booleanValue());
+        }
+        return data;
     }
 }

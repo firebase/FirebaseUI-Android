@@ -37,7 +37,6 @@ public class EmailFlowController implements Controller {
     static final int ID_REGISTER_EMAIL = 40;
     public static final int ID_RECOVER_PASSWORD = 80;
     static final int ID_CONFIRM_RECOVER_PASSWORD = 90;
-    static final int ID_SAVE_CREDENTIALS = 100;
     private final Context mAppContext;
     private final String mAppName;
 
