@@ -15,6 +15,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 
@@ -42,6 +43,10 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
         Bundle extra = new Bundle();
         extra.putString(APPLICATION_ID, applicationId);
         return new IDPProviderParcel(FacebookAuthProvider.PROVIDER_ID, extra);
+    }
+
+    public String getName(Context context) {
+        return context.getResources().getString(R.string.idp_name_facebook);
     }
 
     @Override

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="email_button_text">SignInWithEmail</string>
     <string name="app_name">ui_flow</string>
     <string name="email_hint">Email</string>
@@ -28,8 +28,16 @@
     <string name="check_your_email">Check your email</string>
     <string name="enter_your_email">Enter your email</string>
     <string name="forgot_password">Forgot password</string>
-    <string name="welcome_back_password_prompt_body">"You've previously used this email address: %1$s for %2$s, but signed in with a password.  Enter your %2$s password to remember this account."</string>
-    <string name="welcome_back_idp_prompt_body">You\'ve previously used this account but signed in with a provider</string>
+    <string name="welcome_back_idp_header">You already have an account</string>
+    <string name="welcome_back_idp_prompt">
+        Good news! You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
+        Sign in with <xliff:g id="provider_name" example="Google">%2$s</xliff:g>
+        to continue to <xliff:g id="app_name" example="SuperApp">%3$s</xliff:g>.
+    </string>
+    <string name="welcome_back_idp_button">Sign in</string>
+    <string name="welcome_back_password_prompt_body">You\'ve previously used this email address: %1$s for %2$s, but signed in with a password.  Enter your %2$s password to remember this account.</string>
     <string name="password_word">Password</string>
     <string name="loading_text">Loading...</string>
+    <string name="idp_name_google">Google</string>
+    <string name="idp_name_facebook">Facebook</string>
 </resources>

@@ -7,6 +7,12 @@ import android.os.Bundle;
 import android.view.View;
 
 public interface IDPProvider {
+
+    /**
+     * Retrieves the name of the IDP, for display on-screen.
+     */
+    String getName(Context context);
+
     View getLoginButton(Context context);
 
     void setAuthenticationCallback(IDPCallback callback);

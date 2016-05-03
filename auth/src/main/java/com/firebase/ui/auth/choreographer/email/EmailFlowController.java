@@ -84,14 +84,17 @@ public class EmailFlowController implements Controller {
                         signInIntent.putExtra(ControllerConstants.EXTRA_EMAIL, email);
                         return Action.next(ID_SIGN_IN, signInIntent);
                     }
-                    Intent idpWelcomeBackIntent
-                            = WelcomeBackIDPPrompt.createIntent(mAppContext, provider, mAppName);
-                    return Action.startFlow(idpWelcomeBackIntent);
+                    return Action.startFlow(WelcomeBackIDPPrompt.createIntent(
+                            mAppContext,
+                            provider,
+                            mAppName,
+                            email));
                 }
 
                 Intent signInIntent = new Intent(mAppContext, SignInActivity.class);
                 signInIntent.putExtra(ControllerConstants.EXTRA_EMAIL, email);
                 return Action.next(ID_SIGN_IN, signInIntent);
+
             case ID_SIGN_IN:
                 if (result.getResultCode() == EmailFlowBaseActivity.BACK_IN_FLOW) {
                     return Action.finish(Activity.RESULT_CANCELED, null);

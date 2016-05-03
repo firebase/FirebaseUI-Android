@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.firebase.ui.auth.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -39,6 +40,10 @@ public class GoogleProvider implements IDPProvider, OnClickListener {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
         mGoogleApiClient.connect();
+    }
+
+    public String getName(Context context) {
+        return context.getResources().getString(R.string.idp_name_google);
     }
 
     @Override

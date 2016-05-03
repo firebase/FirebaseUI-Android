@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,26 +25,20 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickListener, IDPProvider.IDPCallback {
 
-    private IDPProvider mIDPProvider;
-    private String mProviderId;
     private static final String TAG = "WelcomeBackIDPPrompt";
 
-    public static Intent createIntent(Context context, String providerId, String appName) {
-        return new Intent().setClass(context, WelcomeBackIDPPrompt.class)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putExtra(ControllerConstants.EXTRA_PROVIDER, providerId)
-                .putExtra(BaseActivity.EXTRA_ID, AccountLinkController.ID_WELCOME_BACK_IDP);
-    }
+    private IDPProvider mIDPProvider;
+    private String mProviderId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getResources().getResourceName(R.string.sign_in));
-        mProviderId = getIntent().getStringExtra(ControllerConstants.EXTRA_PROVIDER);
+        mProviderId = getProviderIdFromIntent();
         setContentView(R.layout.welcome_back_idp_prompt_layout);
-        TextView bodyText = (TextView) findViewById(R.id.welcome_back_idp_body);
-        LinearLayout IDPButtonHolder = (LinearLayout) findViewById(R.id.IDPButtonHolder);
-        bodyText.setText(R.string.welcome_back_idp_prompt_body);
+
+        ((TextView) findViewById(R.id.welcome_back_idp_prompt))
+                .setText(getIdpPromptString(getEmailFromIntent(), getAppNameFromIntent()));
 
         IDPProviderParcel parcel;
         switch (mProviderId) {
@@ -62,8 +57,19 @@ public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickLi
                 finish(RESULT_CANCELED, getIntent());
                 return;
         }
-        IDPButtonHolder.addView(mIDPProvider.getLoginButton(this));
+
         mIDPProvider.setAuthenticationCallback(this);
+        findViewById(R.id.welcome_back_idp_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIDPProvider.startLogin(WelcomeBackIDPPrompt.this, getEmailFromIntent());
+            }
+        });
+    }
+
+    private String getIdpPromptString(String email, String appName) {
+        String promptStringTemplate = getResources().getString(R.string.welcome_back_idp_prompt);
+        return String.format(promptStringTemplate, email, appName, mIDPProvider.getName(this));
     }
 
     @Override
@@ -95,4 +101,30 @@ public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickLi
         Toast.makeText(getApplicationContext(), "Error signing in", Toast.LENGTH_LONG).show();
         finish(RESULT_FIRST_USER, getIntent());
     }
+
+    private String getAppNameFromIntent() {
+        return getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
+    }
+
+    private String getProviderIdFromIntent() {
+        return getIntent().getStringExtra(ControllerConstants.EXTRA_PROVIDER);
+    }
+
+    private String getEmailFromIntent() {
+        return getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
+    }
+
+    public static Intent createIntent(
+            Context context,
+            String providerId,
+            String appName,
+            String email) {
+        return new Intent().setClass(context, WelcomeBackIDPPrompt.class)
+                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+                .putExtra(ControllerConstants.EXTRA_PROVIDER, providerId)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
+                .putExtra(BaseActivity.EXTRA_ID, AccountLinkController.ID_WELCOME_BACK_IDP);
+    }
+
+
 }

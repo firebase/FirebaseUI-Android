@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-    <TextView
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TextAppearance.AppCompat.Headline"
-        android:text="@string/welcome_back"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/welcome_back_idp_body"/>
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:id="@+id/IDPButtonHolder">
+        android:layout_height="match_parent">
 
-    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome_back_idp_header"
+        style="@style/TextAppearance.AppCompat.Headline" />
+
+    <TextView
+        android:id="@+id/welcome_back_idp_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Good news! You've already used jane.doe@example.com. Sign in with Google to continue to SuperApp"
+        style="@style/TextAppearance.AppCompat.Body1" />
+
+    <Button
+        android:id="@+id/welcome_back_idp_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="@string/welcome_back_idp_button" />
+
 </LinearLayout>
