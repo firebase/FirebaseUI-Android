@@ -1,2 +1,1 @@
-include ':app', ':common', ':library', ':database', ':storage', ':ui_flow', ':auth_ui'
-project(':auth_ui').projectDir = new File('auth')
+include ':app', ':common', ':library', ':database', ':storage', ':ui_flow', ':auth'
