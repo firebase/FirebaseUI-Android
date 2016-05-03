@@ -26,6 +26,7 @@ dependencies {
     testCompile "org.robolectric:robolectric:3.1-rc1"
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.facebook.android:facebook-android-sdk:4.11.0'
+    compile "com.android.support:design:23.3.0"
     compile "com.google.firebase:firebase-auth-api:8.5.6"
     compile "com.google.android.gms:play-services-auth:8.5.6"
     compile "com.google.android.gms:play-services-auth-api:8.5.6"

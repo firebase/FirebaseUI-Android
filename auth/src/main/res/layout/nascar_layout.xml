@@ -6,6 +6,8 @@
     >
     <LinearLayout
         style="@style/FirebaseUI.NASCAR.ButtonHolder"
+        android:paddingBottom="56dp"
+        android:layout_alignParentBottom="true"
         android:id="@+id/btn_holder">
         <Button
             android:id="@+id/email_provider"

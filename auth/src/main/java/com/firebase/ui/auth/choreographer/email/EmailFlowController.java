@@ -69,7 +69,10 @@ public class EmailFlowController implements Controller {
                     return Action.next(ID_SELECT_EMAIL,
                             new Intent(mAppContext, SignInNoPasswordActivity.class));
                 }
-                boolean isAccountExists = apiWrapper.isAccountExists(email);
+                boolean isAccountExists = false;
+                if (email != null && !email.isEmpty()) {
+                    isAccountExists = apiWrapper.isAccountExists(email);
+                }
                 if(!isAccountExists) {
                     Intent registerIntent = new Intent(mAppContext, RegisterEmailActivity.class);
                     registerIntent.putExtra(ControllerConstants.EXTRA_EMAIL, email);
