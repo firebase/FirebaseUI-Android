@@ -44,7 +44,7 @@ public class IDPController implements Controller{
         IDPResponse idpSignInResponse
                 = result.getData().getParcelableExtra(ControllerConstants.EXTRA_IDP_RESPONSE);
         HeadlessAPIWrapper apiWrapper
-                = FactoryHeadlessAPI.getHeadlessAPIWrapperInstance(ControllerConstants.APP_NAME);
+                = FactoryHeadlessAPI.getHeadlessAPIWrapperInstance(mAppName);
         FirebaseUser user = null;
         switch(result.getId()) {
             case DEFAULT_INIT_FLOW_ID:
