@@ -39,6 +39,16 @@
             />
     </android.support.design.widget.TextInputLayout>
 
+    <ImageView
+        style="@style/FirebaseUI.ImageView.VisibilityToggle"
+        android:id="@+id/toggle_visibility"
+        android:layout_alignEnd="@id/password_layout"
+        android:layout_alignBottom="@id/password_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignRight="@id/password_layout">
+    </ImageView>
+
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
