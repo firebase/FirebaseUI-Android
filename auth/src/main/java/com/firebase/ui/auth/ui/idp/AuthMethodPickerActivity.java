@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.idp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -69,9 +70,7 @@ public class AuthMethodPickerActivity
         for (IDPProviderParcel providerParcel : mProviders) {
             switch (providerParcel.getProviderType()) {
                 case FacebookAuthProvider.PROVIDER_ID :
-                    mIDPProviders.add(
-                            new FacebookProvider(
-                                    this, providerParcel));
+                    mIDPProviders.add(new FacebookProvider(this, providerParcel));
                     break;
                 case GoogleAuthProvider.PROVIDER_ID:
                     mIDPProviders.add(new GoogleProvider(this, providerParcel));
@@ -84,13 +83,31 @@ public class AuthMethodPickerActivity
             }
         }
         LinearLayout btnHolder = (LinearLayout) findViewById(R.id.btn_holder);
-        for(IDPProvider provider: mIDPProviders) {
-            View loginButton = provider.getLoginButton(this);
-            LinearLayout wrapper = new LinearLayout(getApplicationContext());
-            wrapper.setPadding(0, NASCAR_BUTTON_PADDING, 0, 0);
-            wrapper.addView(loginButton);
-            provider.setAuthenticationCallback(this);
-            btnHolder.addView(wrapper);
+        for(final IDPProvider provider: mIDPProviders) {
+            View loginButton = null;
+            switch (provider.getProviderId()) {
+                case GoogleAuthProvider.PROVIDER_ID:
+                    loginButton = getLayoutInflater()
+                            .inflate(R.layout.idp_button_google, btnHolder, false);
+
+                    break;
+                case FacebookAuthProvider.PROVIDER_ID:
+                    loginButton = getLayoutInflater()
+                            .inflate(R.layout.idp_button_facebook, btnHolder, false);
+                    break;
+                default:
+                    Log.e(TAG, "No button for provider " + provider.getProviderId());
+            }
+            if (loginButton != null) {
+                loginButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        provider.startLogin(AuthMethodPickerActivity.this, null);
+                    }
+                });
+                provider.setAuthenticationCallback(this);
+                btnHolder.addView(loginButton);
+            }
         }
     }
 

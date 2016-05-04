@@ -20,6 +20,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -27,7 +29,6 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
@@ -48,6 +49,7 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
     private IDPCallback mCallbackObject;
 
     public FacebookProvider (Context appContext, IDPProviderParcel facebookParcel) {
+        mCallbackManager = CallbackManager.Factory.create();
         String applicationId = facebookParcel.getProviderExtra().getString(APPLICATION_ID);
         FacebookSdk.sdkInitialize(appContext);
         FacebookSdk.setApplicationId(applicationId);
@@ -59,18 +61,14 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
         return new IDPProviderParcel(FacebookAuthProvider.PROVIDER_ID, extra);
     }
 
+    @Override
     public String getName(Context context) {
         return context.getResources().getString(R.string.idp_name_facebook);
     }
 
     @Override
-    public View getLoginButton(Context context) {
-        mCallbackManager = CallbackManager.Factory.create();
-        LoginButton button = new LoginButton(context);
-        //TODO: (zhaojiac) give option to pass in permissions
-        button.setReadPermissions("public_profile", "email");
-        button.registerCallback(mCallbackManager, this);
-        return button;
+    public String getProviderId() {
+        return FacebookAuthProvider.PROVIDER_ID;
     }
 
     @Override
