@@ -6,6 +6,7 @@ import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,9 @@ public class SignInActivity extends EmailFlowBaseActivity implements View.OnClic
 
         mEmailEditText = (EditText) findViewById(R.id.email);
         mPasswordEditText = (EditText) findViewById(R.id.password);
+        ImageView toggleImage = (ImageView) findViewById(R.id.toggle_visibility);
+        toggleImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
+
         mEmailValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
                 .email_layout));
         mPasswordValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id

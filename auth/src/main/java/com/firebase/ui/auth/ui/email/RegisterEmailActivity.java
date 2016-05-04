@@ -9,6 +9,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
@@ -42,6 +43,8 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);
         mPasswordEditText = (EditText) findViewById(R.id.password);
+        ImageView toggleImage = (ImageView) findViewById(R.id.toggle_visibility);
+        toggleImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
         mNameEditText = (EditText) findViewById(R.id.name);
 
         mPasswordFieldValidator = new PasswordFieldValidator((TextInputLayout)
