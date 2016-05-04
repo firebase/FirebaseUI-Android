@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.IDPController;
 import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
@@ -31,7 +32,6 @@ import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.firebase.ui.auth.R;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
