@@ -19,8 +19,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.firebase.ui.auth.api.FactoryHeadlessAPI;
-import com.firebase.ui.auth.api.HeadlessAPIWrapper;
+import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.api.FirebaseAuthWrapper;
 import com.firebase.ui.auth.choreographer.Action;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
@@ -57,8 +57,8 @@ public class IDPController implements Controller{
         }
         IDPResponse idpSignInResponse
                 = result.getData().getParcelableExtra(ControllerConstants.EXTRA_IDP_RESPONSE);
-        HeadlessAPIWrapper apiWrapper
-                = FactoryHeadlessAPI.getHeadlessAPIWrapperInstance(mAppName);
+        FirebaseAuthWrapper apiWrapper
+                = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName);
         FirebaseUser user = null;
         switch(result.getId()) {
             case DEFAULT_INIT_FLOW_ID:

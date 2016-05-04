@@ -22,20 +22,20 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONObject;
 
-public class FactoryHeadlessAPI {
+public class FirebaseAuthWrapperFactory {
 
-    private static HeadlessAPIWrapper sDefaultImpl;
+    private static FirebaseAuthWrapper sDefaultImpl;
 
-    public static HeadlessAPIWrapper getHeadlessAPIWrapperInstance(String appName) {
+    public static FirebaseAuthWrapper getFirebaseAuthWrapper(String appName) {
         FirebaseApp firebaseApp = FirebaseApp.getInstance(appName);
-        return new HeadlessAPIWrapperImpl(FirebaseAuth.getInstance(firebaseApp));
+        return new FirebaseAuthWrapperImpl(FirebaseAuth.getInstance(firebaseApp));
     }
 
-    public static HeadlessAPIWrapper getHeadlessAPIWrapperInstance(FirebaseApp firebaseApp) {
-        return new HeadlessAPIWrapperImpl(FirebaseAuth.getInstance(firebaseApp));
+    public static FirebaseAuthWrapper getFirebaseAuthWrapper(FirebaseApp firebaseApp) {
+        return new FirebaseAuthWrapperImpl(FirebaseAuth.getInstance(firebaseApp));
     }
 
-    public static HeadlessAPIWrapper createHeadlessAPIWrapperInstance(
+    public static FirebaseAuthWrapper getFirebaseAuthWrapper(
             Context context, String appName, JSONObject mGoogleServiceJSON) {
         // TODO(zhaojiac): change this to use Google Services plugin instead
         String apiaryKey =
@@ -58,6 +58,6 @@ public class FactoryHeadlessAPI {
                 .setApplicationId(applicationId)
                 .build();
         FirebaseApp curApp = FirebaseApp.initializeApp(context, options, appName);
-        return new HeadlessAPIWrapperImpl(FirebaseAuth.getInstance(curApp));
+        return new FirebaseAuthWrapperImpl(FirebaseAuth.getInstance(curApp));
     }
 }

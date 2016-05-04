@@ -14,16 +14,13 @@
 
 package com.firebase.ui.auth.choreographer.account_link;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
 import android.app.Activity;
 import android.content.Intent;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.CustomRobolectricGradleTestRunner;
-import com.firebase.ui.auth.api.FactoryHeadlessAPIShadow;
-import com.firebase.ui.auth.api.HeadlessAPIWrapper;
+import com.firebase.ui.auth.api.ShadowFirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.api.FirebaseAuthWrapper;
 import com.firebase.ui.auth.choreographer.Action;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.Result;
@@ -41,6 +38,9 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class AccountLinkControllerTest {
@@ -49,17 +49,17 @@ public class AccountLinkControllerTest {
     private static final String EMAIL = "test@example.com";
     private static final String APP_NAME = "My App";
 
-    @Mock private HeadlessAPIWrapper mMockHeadlessAPIWrapper;
+    @Mock private FirebaseAuthWrapper mMockHeadlessAPIWrapper;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mAccountLinkController = new AccountLinkController(RuntimeEnvironment.application);
-        FactoryHeadlessAPIShadow.setHeadlessAPIWrapper(mMockHeadlessAPIWrapper);
+        mAccountLinkController = new AccountLinkController(RuntimeEnvironment.application, APP_NAME);
+        ShadowFirebaseAuthWrapperFactory.setFirebaseAuthWrapper(mMockHeadlessAPIWrapper);
     }
 
     @Test
-    @Config(shadows={FactoryHeadlessAPIShadow.class})
+    @Config(shadows={ShadowFirebaseAuthWrapperFactory.class})
     public void testNewCredentialFlow() {
         Intent startingIntent = new Intent()
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, APP_NAME)
@@ -67,7 +67,7 @@ public class AccountLinkControllerTest {
                 .putExtra(ControllerConstants.EXTRA_PROVIDER, EmailAuthProvider.PROVIDER_ID);
 
         // new account, so no providers
-        when(mMockHeadlessAPIWrapper.getProviderList(EMAIL)).thenReturn(
+        when(mMockHeadlessAPIWrapper.getProvidersForEmail(EMAIL)).thenReturn(
                 new ArrayList<String>());
 
         Result result = new Result(
@@ -79,7 +79,7 @@ public class AccountLinkControllerTest {
     }
 
     @Test
-    @Config(shadows={FactoryHeadlessAPIShadow.class})
+    @Config(shadows={ShadowFirebaseAuthWrapperFactory.class})
     public void testPasswordProviderMismatch() {
         Intent startingIntent = new Intent()
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, APP_NAME)
@@ -87,7 +87,7 @@ public class AccountLinkControllerTest {
                 .putExtra(ControllerConstants.EXTRA_PROVIDER, EmailAuthProvider.PROVIDER_ID);
 
         // claim that there is a Google Auth account that exists
-        when(mMockHeadlessAPIWrapper.getProviderList(EMAIL)).thenReturn(
+        when(mMockHeadlessAPIWrapper.getProvidersForEmail(EMAIL)).thenReturn(
                 Arrays.asList(GoogleAuthProvider.PROVIDER_ID));
 
         Result result = new Result(
@@ -99,7 +99,7 @@ public class AccountLinkControllerTest {
     }
 
     @Test
-    @Config(shadows={FactoryHeadlessAPIShadow.class})
+    @Config(shadows={ShadowFirebaseAuthWrapperFactory.class})
     public void testIDPProviderMismatch() {
         Intent startingIntent = new Intent()
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, APP_NAME)
@@ -107,7 +107,7 @@ public class AccountLinkControllerTest {
                 .putExtra(ControllerConstants.EXTRA_PROVIDER, GoogleAuthProvider.PROVIDER_ID);
 
         // claim that there is an email/password account that exists
-        when(mMockHeadlessAPIWrapper.getProviderList(EMAIL)).thenReturn(
+        when(mMockHeadlessAPIWrapper.getProvidersForEmail(EMAIL)).thenReturn(
                 Arrays.asList(EmailAuthProvider.PROVIDER_ID));
 
         Result result = new Result(

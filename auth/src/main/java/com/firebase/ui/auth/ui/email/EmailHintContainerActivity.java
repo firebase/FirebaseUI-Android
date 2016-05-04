@@ -20,8 +20,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 
-import com.firebase.ui.auth.api.FactoryHeadlessAPI;
-import com.firebase.ui.auth.api.HeadlessAPIWrapper;
+import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.api.FirebaseAuthWrapper;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.email.EmailFlowController;
 import com.firebase.ui.auth.ui.BaseActivity;
@@ -35,10 +35,10 @@ public class EmailHintContainerActivity extends EmailFlowBaseActivity {
         super.onCreate(savedInstanceState);
         mId = EmailFlowController.ID_SELECT_EMAIL;
 
-        HeadlessAPIWrapper apiWrapper = FactoryHeadlessAPI.getHeadlessAPIWrapperInstance
+        FirebaseAuthWrapper apiWrapper = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper
                 (mAppName);
 
-        PendingIntent hintIntent = apiWrapper.getEmailHints(this);
+        PendingIntent hintIntent = apiWrapper.getEmailHintIntent(this);
 
         if(hintIntent != null) {
             try {

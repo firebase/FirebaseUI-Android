@@ -36,7 +36,7 @@ public class CredentialsInitActivity extends CredentialsBaseActivity {
         super.onCreate(savedInstance);
 
         try{
-            FirebaseApp.getInstance(ControllerConstants.APP_NAME);
+            FirebaseApp.getInstance(mAppName);
             return;
         } catch (IllegalStateException e) {
             Log.d(TAG, "FirebaseApp is not created yet");

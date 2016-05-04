@@ -21,7 +21,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.firebase.ui.auth.api.CredentialsAPI;
-import com.firebase.ui.auth.api.FactoryHeadlessAPI;
+import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.Action;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
@@ -78,7 +78,7 @@ public class CredentialsController implements Controller {
                         FirebaseUser loggedInUser;
                         if (!password.isEmpty()) {
                             loggedInUser =
-                                    FactoryHeadlessAPI.getHeadlessAPIWrapperInstance(mAppName)
+                                    FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
                                             .signInWithEmailPassword(email, password);
                             return finishAction(Activity.RESULT_OK, loggedInUser);
                         } else {
@@ -101,7 +101,7 @@ public class CredentialsController implements Controller {
                     FirebaseUser loggedInUser;
                     if (password != null && !password.isEmpty()) {
                         loggedInUser =
-                                FactoryHeadlessAPI.getHeadlessAPIWrapperInstance(mAppName)
+                                FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
                                         .signInWithEmailPassword(email, password);
                         return finishAction(Activity.RESULT_OK, loggedInUser);
                     } else {

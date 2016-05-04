@@ -19,21 +19,21 @@ import com.google.firebase.FirebaseApp;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
-@Implements(FactoryHeadlessAPI.class)
-public class FactoryHeadlessAPIShadow {
-    public static HeadlessAPIWrapper headlessAPIWrapper;
+@Implements(FirebaseAuthWrapperFactory.class)
+public class ShadowFirebaseAuthWrapperFactory {
+    public static FirebaseAuthWrapper firebaseAuthWrapper;
 
-    public static void setHeadlessAPIWrapper(HeadlessAPIWrapper newHeadlessAPIWrapper) {
-        headlessAPIWrapper = newHeadlessAPIWrapper;
+    public static void setFirebaseAuthWrapper(FirebaseAuthWrapper instance) {
+        firebaseAuthWrapper = instance;
     }
 
     @Implementation
-    public static HeadlessAPIWrapper getHeadlessAPIWrapperInstance(FirebaseApp firebaseApp) {
-        return headlessAPIWrapper;
+    public static FirebaseAuthWrapper getFirebaseAuthWrapper(FirebaseApp firebaseApp) {
+        return firebaseAuthWrapper;
     }
 
     @Implementation
-    public static HeadlessAPIWrapper getHeadlessAPIWrapperInstance(String appName) {
-        return headlessAPIWrapper;
+    public static FirebaseAuthWrapper getFirebaseAuthWrapper(String appName) {
+        return firebaseAuthWrapper;
     }
 }

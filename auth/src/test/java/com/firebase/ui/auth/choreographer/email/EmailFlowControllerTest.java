@@ -14,11 +14,6 @@
 
 package com.firebase.ui.auth.choreographer.email;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.when;
-import static junit.framework.Assert.assertEquals;
-
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -26,8 +21,8 @@ import android.content.Intent;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.CustomRobolectricGradleTestRunner;
-import com.firebase.ui.auth.api.FactoryHeadlessAPIShadow;
-import com.firebase.ui.auth.api.HeadlessAPIWrapper;
+import com.firebase.ui.auth.api.FirebaseAuthWrapper;
+import com.firebase.ui.auth.api.ShadowFirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.Action;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
@@ -45,11 +40,17 @@ import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.when;
+
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {FactoryHeadlessAPIShadow.class}, sdk = 21)
+@Config(constants = BuildConfig.class, shadows = {ShadowFirebaseAuthWrapperFactory.class}, sdk = 21)
 
 public class EmailFlowControllerTest {
 
+    public static final String TEST_APP = "SuperApp";
     public static final String TEST_EMAIL = "jane.doe@example.com";
     public static final String TEST_PASSWORD = "securePassword1";
     public static final int TEST_RESULT_CODE = 101;
@@ -64,7 +65,7 @@ public class EmailFlowControllerTest {
     public ArrayList<String> mProviders;
 
     private EmailFlowController mEmailFlowController;
-    @Mock private HeadlessAPIWrapper mMockHeadlessApiWrapper;
+    @Mock private FirebaseAuthWrapper mMockHeadlessApiWrapper;
     @Mock private Result mMockResult;
     @Mock private PendingIntent mMockPendingIntent;
     @Mock private FirebaseUser mMockFirebaseUser;
@@ -72,8 +73,8 @@ public class EmailFlowControllerTest {
     @Before
     public void setUp () {
         MockitoAnnotations.initMocks(this);
-        FactoryHeadlessAPIShadow.setHeadlessAPIWrapper(mMockHeadlessApiWrapper);
-        mEmailFlowController = new EmailFlowController(RuntimeEnvironment.application, ControllerConstants.APP_NAME);
+        ShadowFirebaseAuthWrapperFactory.setFirebaseAuthWrapper(mMockHeadlessApiWrapper);
+        mEmailFlowController = new EmailFlowController(RuntimeEnvironment.application, TEST_APP);
 
         mProvider = new ArrayList<>();
         mProvider.add("first_provider");
@@ -154,8 +155,8 @@ public class EmailFlowControllerTest {
                 EmailFlowController.ID_SELECT_EMAIL,
                 TEST_RESULT_CODE,
                 resultData(TEST_EMAIL, NO_PASSWORD, NO_RESTORE_PASSWORD_FLAG));
-        when(mMockHeadlessApiWrapper.isAccountExists(TEST_EMAIL)).thenReturn(true);
-        when(mMockHeadlessApiWrapper.getProviderList(TEST_EMAIL)).thenReturn(mProvider);
+        when(mMockHeadlessApiWrapper.isExistingAccount(TEST_EMAIL)).thenReturn(true);
+        when(mMockHeadlessApiWrapper.getProvidersForEmail(TEST_EMAIL)).thenReturn(mProvider);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -169,8 +170,8 @@ public class EmailFlowControllerTest {
                 EmailFlowController.ID_SELECT_EMAIL,
                 TEST_RESULT_CODE,
                 resultData(TEST_EMAIL, NO_PASSWORD, NO_RESTORE_PASSWORD_FLAG));
-        when(mMockHeadlessApiWrapper.isAccountExists(TEST_EMAIL)).thenReturn(true);
-        when(mMockHeadlessApiWrapper.getProviderList(TEST_EMAIL)).thenReturn(mProviders);
+        when(mMockHeadlessApiWrapper.isExistingAccount(TEST_EMAIL)).thenReturn(true);
+        when(mMockHeadlessApiWrapper.getProvidersForEmail(TEST_EMAIL)).thenReturn(mProviders);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -222,7 +223,7 @@ public class EmailFlowControllerTest {
                 resultData(TEST_EMAIL, TEST_PASSWORD, NO_RESTORE_PASSWORD_FLAG));
         when(mMockHeadlessApiWrapper.signInWithEmailPassword(TEST_EMAIL, TEST_PASSWORD))
                 .thenReturn(mMockFirebaseUser);
-        when(mMockHeadlessApiWrapper.isGMSCorePresent(any(Context.class))).thenReturn(false);
+        when(mMockHeadlessApiWrapper.isPlayServicesAvailable(any(Context.class))).thenReturn(false);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -237,7 +238,7 @@ public class EmailFlowControllerTest {
                 resultData(TEST_EMAIL, TEST_PASSWORD, NO_RESTORE_PASSWORD_FLAG));
         when(mMockHeadlessApiWrapper.signInWithEmailPassword(TEST_EMAIL, TEST_PASSWORD))
                 .thenReturn(mMockFirebaseUser);
-        when(mMockHeadlessApiWrapper.isGMSCorePresent(any(Context.class))).thenReturn(true);
+        when(mMockHeadlessApiWrapper.isPlayServicesAvailable(any(Context.class))).thenReturn(true);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 
@@ -264,8 +265,8 @@ public class EmailFlowControllerTest {
                 EmailFlowController.ID_REGISTER_EMAIL,
                 TEST_RESULT_CODE,
                 NO_RESULT_DATA);
-        when(mMockHeadlessApiWrapper.isGMSCorePresent(any(Context.class))).thenReturn(false);
-        when(mMockHeadlessApiWrapper.createEmailWithPassword(anyString(), anyString()))
+        when(mMockHeadlessApiWrapper.isPlayServicesAvailable(any(Context.class))).thenReturn(false);
+        when(mMockHeadlessApiWrapper.createUserWithEmailAndPassword(anyString(), anyString()))
                 .thenReturn(mMockFirebaseUser);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
@@ -280,9 +281,9 @@ public class EmailFlowControllerTest {
                 EmailFlowController.ID_REGISTER_EMAIL,
                 TEST_RESULT_CODE,
                 NO_RESULT_DATA);
-        when(mMockHeadlessApiWrapper.createEmailWithPassword(anyString(), anyString()))
+        when(mMockHeadlessApiWrapper.createUserWithEmailAndPassword(anyString(), anyString()))
                 .thenReturn(mMockFirebaseUser);
-        when(mMockHeadlessApiWrapper.isGMSCorePresent(any(Context.class))).thenReturn(true);
+        when(mMockHeadlessApiWrapper.isPlayServicesAvailable(any(Context.class))).thenReturn(true);
 
         Action nextAction = mEmailFlowController.next(mMockResult);
 

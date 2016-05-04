@@ -21,8 +21,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.api.FactoryHeadlessAPI;
-import com.firebase.ui.auth.api.HeadlessAPIWrapper;
+import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.api.FirebaseAuthWrapper;
 import com.firebase.ui.auth.choreographer.Action;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
@@ -68,7 +68,7 @@ public class EmailFlowController implements Controller {
         password = data.getStringExtra(ControllerConstants.EXTRA_PASSWORD);
         restorePassword = data.getBooleanExtra(ControllerConstants.EXTRA_RESTORE_PASSWORD_FLAG,
                 false);
-        HeadlessAPIWrapper apiWrapper = FactoryHeadlessAPI.getHeadlessAPIWrapperInstance
+        FirebaseAuthWrapper apiWrapper = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper
                 (mAppName);
 
         switch (result.getId()) {
@@ -83,7 +83,7 @@ public class EmailFlowController implements Controller {
                 }
                 boolean isAccountExists = false;
                 if (email != null && !email.isEmpty()) {
-                    isAccountExists = apiWrapper.isAccountExists(email);
+                    isAccountExists = apiWrapper.isExistingAccount(email);
                 }
                 if(!isAccountExists) {
                     Intent registerIntent = new Intent(mAppContext, RegisterEmailActivity.class);
@@ -91,7 +91,7 @@ public class EmailFlowController implements Controller {
                     return Action.next(ID_REGISTER_EMAIL, registerIntent);
                 }
                 List<String> providers =
-                        apiWrapper.getProviderList(email);
+                        apiWrapper.getProvidersForEmail(email);
 
                 for (String provider: providers) {
                     if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
@@ -129,7 +129,7 @@ public class EmailFlowController implements Controller {
                     intent.putExtra(ControllerConstants.EXTRA_EMAIL, email);
                     return Action.back(ID_SELECT_EMAIL, intent);
                 }
-                FirebaseUser firebaseUser = apiWrapper.createEmailWithPassword(email, password);
+                FirebaseUser firebaseUser = apiWrapper.createUserWithEmailAndPassword(email, password);
                 if (firebaseUser == null) {
                     if (BuildConfig.DEBUG) {
                         Log.d(TAG, "Error creating account!");
@@ -144,7 +144,7 @@ public class EmailFlowController implements Controller {
                     return Action.back(ID_SIGN_IN, signInIntent);
                 }
                 boolean isSuccess =
-                        apiWrapper.resetEmailPassword(email);
+                        apiWrapper.resetPasswordForEmail(email);
                 Intent confirmIntent = new Intent(mAppContext,
                         ConfirmRecoverPasswordActivity.class);
                 confirmIntent.putExtra(ControllerConstants.EXTRA_SUCCESS, isSuccess);
@@ -164,8 +164,8 @@ public class EmailFlowController implements Controller {
 
     private Action handleSuccessfulLogin(String email, String password, FirebaseUser firebaseUser) {
         if (firebaseUser != null) {
-            if(FactoryHeadlessAPI.getHeadlessAPIWrapperInstance(ControllerConstants.APP_NAME)
-                    .isGMSCorePresent(mAppContext)) {
+            if(FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
+                    .isPlayServicesAvailable(mAppContext)) {
                 Intent saveCredentialIntent =
                         SaveCredentialsActivity.createIntent(
                                 mAppContext,

@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.api.FactoryHeadlessAPI;
+import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.account_link.AccountLinkController;
@@ -80,8 +80,8 @@ public class SaveCredentialsActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.save_credentials_layout);
-        if (!FactoryHeadlessAPI.getHeadlessAPIWrapperInstance(ControllerConstants.APP_NAME)
-                .isGMSCorePresent(this)) {
+        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
+                .isPlayServicesAvailable(this)) {
             finish(RESULT_FIRST_USER, getIntent());
         }
         mName = getIntent().getStringExtra(ControllerConstants.EXTRA_NAME);

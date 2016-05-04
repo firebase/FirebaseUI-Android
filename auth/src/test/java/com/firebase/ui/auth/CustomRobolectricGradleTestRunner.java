@@ -14,7 +14,7 @@
 
 package com.firebase.ui.auth;
 
-import com.firebase.ui.auth.api.FactoryHeadlessAPI;
+import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricGradleTestRunner;
@@ -29,7 +29,7 @@ public class CustomRobolectricGradleTestRunner extends RobolectricGradleTestRunn
     @Override
     public InstrumentationConfiguration createClassLoaderConfig(Config config) {
         InstrumentationConfiguration.Builder builder = InstrumentationConfiguration.newBuilder();
-        builder.addInstrumentedClass(FactoryHeadlessAPI.class.getName());
+        builder.addInstrumentedClass(FirebaseAuthWrapperFactory.class.getName());
         return builder.build();
     }
 }

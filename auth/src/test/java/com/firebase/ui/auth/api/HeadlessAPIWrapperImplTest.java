@@ -38,7 +38,7 @@ import org.robolectric.annotation.Config;
 @Config(constants = BuildConfig.class)
 public class HeadlessAPIWrapperImplTest {
 
-    private HeadlessAPIWrapperImpl mHeadlessAPIWrapperImpl;
+    private FirebaseAuthWrapperImpl mHeadlessAPIWrapperImpl;
 
     @Mock
     private FirebaseAuth mMockFirebaseAuth;
@@ -48,7 +48,7 @@ public class HeadlessAPIWrapperImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mHeadlessAPIWrapperImpl = new HeadlessAPIWrapperImpl(mMockFirebaseAuth);
+        mHeadlessAPIWrapperImpl = new FirebaseAuthWrapperImpl(mMockFirebaseAuth);
     }
 
     @Test
@@ -56,32 +56,32 @@ public class HeadlessAPIWrapperImplTest {
     when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
             RuntimeEnvironment.application))
             .thenReturn(ConnectionResult.SERVICE_UPDATING);
-    assertFalse(mHeadlessAPIWrapperImpl.isGMSCorePresent(
+    assertFalse(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
             RuntimeEnvironment.application,mMockGoogleApiAvailability));
     when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
             RuntimeEnvironment.application))
             .thenReturn(ConnectionResult.SERVICE_MISSING);
-    assertFalse(mHeadlessAPIWrapperImpl.isGMSCorePresent(
+    assertFalse(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
             RuntimeEnvironment.application,mMockGoogleApiAvailability));
     when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
             RuntimeEnvironment.application))
             .thenReturn(ConnectionResult.SERVICE_DISABLED);
-    assertFalse(mHeadlessAPIWrapperImpl.isGMSCorePresent(
+    assertFalse(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
             RuntimeEnvironment.application,mMockGoogleApiAvailability));
     when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
             RuntimeEnvironment.application))
             .thenReturn(ConnectionResult.SERVICE_INVALID);
-    assertFalse(mHeadlessAPIWrapperImpl.isGMSCorePresent(
+    assertFalse(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
             RuntimeEnvironment.application,mMockGoogleApiAvailability));
     when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
             RuntimeEnvironment.application))
             .thenReturn(ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED);
-    assertTrue(mHeadlessAPIWrapperImpl.isGMSCorePresent(
+    assertTrue(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
             RuntimeEnvironment.application,mMockGoogleApiAvailability));
     when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
             RuntimeEnvironment.application))
             .thenReturn(ConnectionResult.SUCCESS);
-    assertTrue(mHeadlessAPIWrapperImpl.isGMSCorePresent(
+    assertTrue(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
             RuntimeEnvironment.application,mMockGoogleApiAvailability));
     }
 }

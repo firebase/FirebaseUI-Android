@@ -15,7 +15,6 @@
 package com.firebase.ui.auth.choreographer;
 
 public class ControllerConstants {
-    public static final String APP_NAME = "headfulUIApp";
     public static final String EXTRA_EMAIL = "extra_email";
     public static final String EXTRA_ERROR = "extra_error";
     public static final String EXTRA_PASSWORD = "extra_password";
