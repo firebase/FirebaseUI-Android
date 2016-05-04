@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 
 public interface IDPProvider {
 
@@ -27,7 +28,7 @@ public interface IDPProvider {
      */
     String getName(Context context);
 
-    View getLoginButton(Context context);
+    String getProviderId();
 
     void setAuthenticationCallback(IDPCallback callback);
 

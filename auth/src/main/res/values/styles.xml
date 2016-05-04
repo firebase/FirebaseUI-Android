@@ -178,15 +178,41 @@
 
     <style name="FirebaseUI.NASCAR.ButtonHolder">
         <item name="android:orientation">vertical</item>
-        <item name="android:bottom">56dp</item>
-        <item name="android:layout_gravity">center</item>
+        <item name="android:paddingBottom">56dp</item>
         <item name="android:layout_width">220dp</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="FirebaseUI.NASCAR.EmailButton">
+    <style name="FirebaseUI.Button.AccountChooser">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:drawablePadding">20dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:layout_marginBottom">24dp</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:typeface">normal</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.EmailButton">
+        <item name="android:drawableLeft">@drawable/ic_email_white_18dp</item>
+        <item name="android:background">@drawable/idp_button_background_email</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.GoogleButton">
+        <item name="android:drawableLeft">@drawable/logo_googleg_color_18dp</item>
+        <item name="android:background">@drawable/idp_button_background_google</item>
+        <item name="android:textColor">#757575</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.FacebookButton">
+        <item name="android:drawableLeft">@drawable/com_facebook_button_icon_white</item>
+        <item name="android:background">@drawable/idp_button_background_facebook</item>
+        <item name="android:textColor">@color/com_facebook_button_text_color</item>
     </style>
 
 

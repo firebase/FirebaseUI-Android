@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_width="match_parent"
      android:layout_height="match_parent"
-     android:gravity="center"
+     android:gravity="center|bottom"
     >
     <LinearLayout
         style="@style/FirebaseUI.NASCAR.ButtonHolder"
-        android:paddingBottom="56dp"
-        android:layout_alignParentBottom="true"
         android:id="@+id/btn_holder">
         <Button
             android:id="@+id/email_provider"
-            style="@style/FirebaseUI.NASCAR.EmailButton"
+            style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
             android:text="@string/email_button_text"/>
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>
