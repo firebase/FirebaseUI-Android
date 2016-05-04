@@ -148,21 +148,7 @@ public class CredentialsAPI implements
 
     public void googleSilentSignIn() {
         // Try silent sign-in with Google Sign In API
-        OptionalPendingResult<GoogleSignInResult> opr =
-                Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        if (opr.isDone()) {
-            GoogleSignInResult gsr = opr.get();
-        } else {
-            showProgress();
-            opr.setResultCallback(
-                    new ResultCallback<GoogleSignInResult>() {
-                        @Override
-                        public void onResult(GoogleSignInResult googleSignInResult) {
-                            hideProgress();
-                            mActivity.asyncTasksDone();
-                        }
-                    });
-        }
+        Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
     }
 
     public void handleCredential(Credential credential) {
@@ -212,12 +198,11 @@ public class CredentialsAPI implements
     }
 
     private void showProgress() {
-        if (mProgressDialog == null) {
+        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
             mProgressDialog = new ProgressDialog(mActivity);
             mProgressDialog.setIndeterminate(true);
             mProgressDialog.setMessage(mActivity.getString(com.firebase.ui.auth.R.string.loading_text));
         }
-
         mProgressDialog.show();
     }
 
