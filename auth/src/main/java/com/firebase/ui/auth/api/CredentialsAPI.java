@@ -38,9 +38,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.firebase.ui.auth.ui.credentials.CredentialsBaseActivity;
 
-/**
- * Created by serikb on 4/22/16.
- */
 public class CredentialsAPI implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {

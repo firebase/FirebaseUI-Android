@@ -28,9 +28,6 @@ import com.google.firebase.FirebaseOptions;
 
 import java.util.ArrayList;
 
-/**
- * Created by serikb on 4/21/16.
- */
 public class CredentialsInitActivity extends CredentialsBaseActivity {
     private static final String TAG = "CredentialsInitActivity";
 

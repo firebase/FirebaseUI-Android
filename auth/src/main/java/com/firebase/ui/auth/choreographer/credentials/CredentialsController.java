@@ -38,9 +38,6 @@ import com.firebase.ui.auth.ui.credentials.ChooseAccountActivity;
 
 import java.util.ArrayList;
 
-/**
- * Created by serikb on 4/21/16.
- */
 public class CredentialsController implements Controller {
     private static final String TAG = "CredentialsController";
     private Context mContext;

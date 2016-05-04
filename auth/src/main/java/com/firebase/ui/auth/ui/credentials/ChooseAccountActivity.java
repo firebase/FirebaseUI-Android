@@ -22,9 +22,6 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.credentials.CredentialsController;
 
-/**
- * Created by serikb on 4/21/16.
- */
 public class ChooseAccountActivity extends CredentialsBaseActivity{
     private static final String TAG = "ChooseAccountActivity";
     private static final int RC_CREDENTIALS_READ = 2;

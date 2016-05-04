@@ -25,9 +25,6 @@ import com.firebase.ui.auth.ui.BaseActivity;
 
 import java.util.ArrayList;
 
-/**
- * Created by serikb on 4/26/16.
- */
 public abstract class CredentialsBaseActivity extends BaseActivity {
     protected CredentialsAPI mCredentialsAPI;
     private ArrayList<Parcelable> mParcelables;
