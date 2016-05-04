@@ -24,9 +24,6 @@ import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 
 import java.util.ArrayList;
 
-/**
- * Created by serikb on 4/21/16.
- */
 public class CredentialsInitActivity extends CredentialsBaseActivity {
     public static Intent createIntent(
             Context context, String appName, ArrayList<IDPProviderParcel> parcels) {
