@@ -93,6 +93,7 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
             finish();
             return;
         } else if (action.getNextId() == Controller.BLOCK_AT_CURRENT_ACTIVITY_ID) {
+            isPendingFinishing.set(false);
             blockHandling(action.getNextIntent());
             return;
         } else if (action.getNextId() == Controller.START_NEW_FLOW_ID) {

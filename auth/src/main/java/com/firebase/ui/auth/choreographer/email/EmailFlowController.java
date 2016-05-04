@@ -121,7 +121,11 @@ public class EmailFlowController implements Controller {
                 } else {
                     FirebaseUser firebaseUser =
                                     apiWrapper.signInWithEmailPassword(email, password);
-                    return handleSuccessfulLogin(email, password, firebaseUser);
+                    return handleLoginResult(
+                            email,
+                            password,
+                            firebaseUser,
+                            mAppContext.getString(com.firebase.ui.auth.R.string.login_error));
                 }
             case ID_REGISTER_EMAIL:
                 if (result.getResultCode() == EmailFlowBaseActivity.BACK_IN_FLOW) {
@@ -130,13 +134,8 @@ public class EmailFlowController implements Controller {
                     return Action.back(ID_SELECT_EMAIL, intent);
                 }
                 FirebaseUser firebaseUser = apiWrapper.createUserWithEmailAndPassword(email, password);
-                if (firebaseUser == null) {
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Error creating account!");
-                    }
-                    return finish(Activity.RESULT_FIRST_USER, (FirebaseUser) null);
-                }
-                return handleSuccessfulLogin(email, password, firebaseUser);
+                return handleLoginResult(email, password, firebaseUser, mAppContext.getString(
+                                com.firebase.ui.auth.R.string.email_account_creation_error));
             case ID_RECOVER_PASSWORD:
                 if (result.getResultCode() == EmailFlowBaseActivity.BACK_IN_FLOW) {
                     signInIntent = new Intent(mAppContext, SignInActivity.class);
@@ -162,7 +161,13 @@ public class EmailFlowController implements Controller {
         }
     }
 
-    private Action handleSuccessfulLogin(String email, String password, FirebaseUser firebaseUser) {
+   private Action handleLoginResult(
+           String email,
+           String password,
+           FirebaseUser firebaseUser,
+           String errorMsg) {
+        Intent data = new Intent();
+        data.putExtra(ControllerConstants.EXTRA_ERROR_MESSAGE, errorMsg);
         if (firebaseUser != null) {
             if(FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
                     .isPlayServicesAvailable(mAppContext)) {
@@ -180,7 +185,7 @@ public class EmailFlowController implements Controller {
             }
             return finish(Activity.RESULT_OK, firebaseUser);
         } else {
-            return finish(Activity.RESULT_FIRST_USER, firebaseUser);
+            return Action.block(data);
         }
     }
 

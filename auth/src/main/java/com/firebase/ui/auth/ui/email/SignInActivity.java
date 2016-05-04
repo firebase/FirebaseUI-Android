@@ -70,6 +70,11 @@ public class SignInActivity extends EmailFlowBaseActivity implements View.OnClic
         super.onBackPressed();
     }
 
+    @Override
+    protected void blockHandling(Intent nextIntent) {
+        TextInputLayout passwordInput = (TextInputLayout) findViewById(R.id.password_layout);
+        passwordInput.setError(nextIntent.getStringExtra(ControllerConstants.EXTRA_ERROR_MESSAGE));
+    }
 
     @Override
     public void onClick(View view) {

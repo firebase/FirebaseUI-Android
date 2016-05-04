@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
@@ -88,6 +89,12 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
         spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
         TextView agreementText = (TextView) findViewById(R.id.create_account_text);
         agreementText.setText(spannableStringBuilder);
+    }
+
+    @Override
+    protected void blockHandling(Intent nextIntent) {
+        TextInputLayout passwordInput = (TextInputLayout) findViewById(R.id.password_layout);
+        passwordInput.setError(nextIntent.getStringExtra(ControllerConstants.EXTRA_ERROR_MESSAGE));
     }
 
     @Override
