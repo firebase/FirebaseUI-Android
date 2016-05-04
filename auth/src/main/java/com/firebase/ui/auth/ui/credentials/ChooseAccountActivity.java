@@ -17,10 +17,10 @@ package com.firebase.ui.auth.ui.credentials;
 import android.content.Intent;
 import android.util.Log;
 
-import com.google.android.gms.auth.api.credentials.Credential;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.credentials.CredentialsController;
+import com.google.android.gms.auth.api.credentials.Credential;
 
 public class ChooseAccountActivity extends CredentialsBaseActivity{
     private static final String TAG = "ChooseAccountActivity";

@@ -137,7 +137,7 @@ Description: https://source.android.com/source/code-style.html
 
     <!-- Android imports come first -->
     <module name="CustomImportOrder">
-        <property name="specialImportsRegExp" value="android"/>
+        <property name="specialImportsRegExp" value="^android"/>
         <property name="sortImportsInGroupAlphabetically" value="true"/>
         <property name="customImportOrderRules" value="STATIC###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE"/>
     </module>

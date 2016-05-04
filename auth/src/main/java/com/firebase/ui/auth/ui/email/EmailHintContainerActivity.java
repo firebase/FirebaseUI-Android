@@ -20,12 +20,12 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 
-import com.google.android.gms.auth.api.credentials.Credential;
 import com.firebase.ui.auth.api.FactoryHeadlessAPI;
 import com.firebase.ui.auth.api.HeadlessAPIWrapper;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.email.EmailFlowController;
 import com.firebase.ui.auth.ui.BaseActivity;
+import com.google.android.gms.auth.api.credentials.Credential;
 
 public class EmailHintContainerActivity extends EmailFlowBaseActivity {
     private static final int RC_HINT = 13;

@@ -20,12 +20,12 @@ import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
+import com.firebase.ui.auth.api.FactoryHeadlessAPI;
 import com.firebase.ui.auth.api.HeadlessAPIWrapper;
 import com.firebase.ui.auth.choreographer.Action;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.Result;
-import com.firebase.ui.auth.api.FactoryHeadlessAPI;
 import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;

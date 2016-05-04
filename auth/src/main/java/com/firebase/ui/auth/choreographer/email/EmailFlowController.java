@@ -29,9 +29,8 @@ import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.Result;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
-import com.firebase.ui.auth.ui.email.EmailFlowBaseActivity;
 import com.firebase.ui.auth.ui.email.ConfirmRecoverPasswordActivity;
-
+import com.firebase.ui.auth.ui.email.EmailFlowBaseActivity;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.email.SignInActivity;

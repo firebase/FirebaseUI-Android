@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.ui.credentials.CredentialsBaseActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -36,7 +37,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.firebase.ui.auth.ui.credentials.CredentialsBaseActivity;
 
 public class CredentialsAPI implements
         GoogleApiClient.ConnectionCallbacks,

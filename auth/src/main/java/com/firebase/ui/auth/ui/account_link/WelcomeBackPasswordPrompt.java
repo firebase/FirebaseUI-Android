@@ -22,8 +22,8 @@ import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.Controller;

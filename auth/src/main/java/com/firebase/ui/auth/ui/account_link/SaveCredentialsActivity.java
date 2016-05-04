@@ -25,6 +25,13 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.api.FactoryHeadlessAPI;
+import com.firebase.ui.auth.choreographer.Controller;
+import com.firebase.ui.auth.choreographer.ControllerConstants;
+import com.firebase.ui.auth.choreographer.account_link.AccountLinkController;
+import com.firebase.ui.auth.ui.BaseActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -33,13 +40,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.api.FactoryHeadlessAPI;
-import com.firebase.ui.auth.choreographer.Controller;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.account_link.AccountLinkController;
-import com.firebase.ui.auth.ui.BaseActivity;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 

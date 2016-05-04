@@ -20,12 +20,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.auth.api.credentials.IdentityProviders;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-
-import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.api.CredentialsAPI;
 import com.firebase.ui.auth.api.FactoryHeadlessAPI;
 import com.firebase.ui.auth.choreographer.Action;
@@ -33,8 +27,13 @@ import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.Result;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
-import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
 import com.firebase.ui.auth.ui.credentials.ChooseAccountActivity;
+import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
+import com.google.android.gms.auth.api.credentials.IdentityProviders;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
 
