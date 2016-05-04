@@ -37,3 +37,9 @@ checkstyle {
     configProperties = ['checkstyle.java.header': file('../common/checkstyle/java.header').getAbsolutePath()]
     toolVersion = "6.11.2"
 }
+
+task checkAllSource(type: Checkstyle) {
+    source 'src/main/java'
+    include '**/*.java'
+    classpath = files(project.configurations.compile)
+}
