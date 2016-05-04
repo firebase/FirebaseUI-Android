@@ -61,8 +61,9 @@ public class CredentialsAPI implements
         requestCredentials(true /* shouldResolve */, false /* onlyPasswords */);
     }
 
-    // TODO: (serikb) find the way to check if Credentials is available on top of GMSCore
+
     public boolean isCredentialsAvailable() {
+        // TODO: (serikb) find the way to check if Credentials is available on top of play services
         return true;
     }
 
@@ -92,11 +93,11 @@ public class CredentialsAPI implements
         }
     }
 
-    public boolean isGMSCoreAvailable() {
+    public boolean isPlayServicesAvailable() {
         return GoogleApiAvailability
                 .getInstance()
-                .isGooglePlayServicesAvailable(mActivity.getApplicationContext()) ==
-                ConnectionResult.SUCCESS;
+                .isGooglePlayServicesAvailable(mActivity.getApplicationContext())
+                == ConnectionResult.SUCCESS;
     }
 
     public String getEmailFromCredential() {

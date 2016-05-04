@@ -216,7 +216,7 @@ public class EmailFlowControllerTest {
     }
 
     @Test
-    public void testIdSignInNotRestorePasswordSuccessLoginNoGMSCore() {
+    public void testIdSignIn_noRestorePassword_successfulLogin_noPlayServicesAvailable() {
         initResultWithConditions(
                 EmailFlowController.ID_SIGN_IN,
                 TEST_RESULT_CODE,
@@ -231,7 +231,7 @@ public class EmailFlowControllerTest {
     }
 
     @Test
-    public void testIdSignInNotRestorePasswordSuccessLoginGMSCore() {
+    public void testIdSignIn_noRestorePassword_successfulLogin_playServicesAvailable() {
         initResultWithConditions(
                 EmailFlowController.ID_SIGN_IN,
                 TEST_RESULT_CODE,
@@ -260,7 +260,7 @@ public class EmailFlowControllerTest {
     }
 
     @Test
-    public void testIdRegisterEmailSuccessLoginNoGMSCore() {
+    public void testIdRegisterEmail_successfulLogin_noPlayServicesAvailable() {
         initResultWithConditions(
                 EmailFlowController.ID_REGISTER_EMAIL,
                 TEST_RESULT_CODE,
@@ -276,7 +276,7 @@ public class EmailFlowControllerTest {
     }
 
     @Test
-    public void testIdRegisterEmailSuccessLoginGMSCore() {
+    public void testIdRegisterEmail_successfulLogin_playServicesAvailable() {
         initResultWithConditions(
                 EmailFlowController.ID_REGISTER_EMAIL,
                 TEST_RESULT_CODE,
