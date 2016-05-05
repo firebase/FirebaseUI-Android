@@ -43,7 +43,12 @@ public abstract class CredentialsBaseActivity extends BaseActivity {
 
     @Override
     protected Controller setUpController() {
-        mCredentialsAPI = new CredentialsAPI(this);
+        mCredentialsAPI = new CredentialsAPI(this, new CredentialsAPI.CallbackInterface() {
+            @Override
+            public void onAsyncTaskFinished() {
+                asyncTasksDone();
+            }
+        });
         return null;
     }
 

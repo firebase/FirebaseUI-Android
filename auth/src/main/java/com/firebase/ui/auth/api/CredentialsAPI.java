@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.api;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -22,19 +23,16 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.ui.credentials.CredentialsBaseActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
@@ -47,15 +45,21 @@ public class CredentialsAPI implements
     private GoogleApiClient mGoogleApiClient;
     private boolean mAutoSignInAvailable;
     private boolean mSignInResolutionNeeded;
-    private CredentialsBaseActivity mActivity;
+    private Activity mActivity;
     private CredentialRequestResult mCredentialRequestResult;
     private ProgressDialog mProgressDialog;
     private Credential mCredential;
+    private final CallbackInterface mCallback;
 
-    public CredentialsAPI(CredentialsBaseActivity activity) {
+    public interface CallbackInterface {
+        void onAsyncTaskFinished();
+    }
+
+    public CredentialsAPI(Activity activity, CallbackInterface callback) {
         mAutoSignInAvailable = false;
         mSignInResolutionNeeded = false;
         mActivity = activity;
+        mCallback = callback;
 
         initGoogleApiClient(null);
         requestCredentials(true /* shouldResolve */, false /* onlyPasswords */);
@@ -79,7 +83,7 @@ public class CredentialsAPI implements
         mSignInResolutionNeeded = false;
     }
 
-    public void resolveSavedEmails(CredentialsBaseActivity activity) {
+    public void resolveSavedEmails(Activity activity) {
         if (mCredentialRequestResult == null || mCredentialRequestResult.getStatus() == null) {
             return;
         }
@@ -192,7 +196,7 @@ public class CredentialsAPI implements
                                     // Getting credential needs to show some UI, start resolution
                                 }
                                 hideProgress();
-                                mActivity.asyncTasksDone();
+                                mCallback.onAsyncTaskFinished();
                             }
                         });
     }
@@ -224,5 +228,20 @@ public class CredentialsAPI implements
 
     public GoogleApiClient getGoogleApiClient() {
         return mGoogleApiClient;
+    }
+
+    public void signOut() {
+        disableAutoSignIn();
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        mCallback.onAsyncTaskFinished();
+                    }
+                });
+    }
+
+    public void disableAutoSignIn() {
+        Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
     }
 }
