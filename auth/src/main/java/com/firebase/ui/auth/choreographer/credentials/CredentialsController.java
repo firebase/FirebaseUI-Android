@@ -40,15 +40,15 @@ import java.util.ArrayList;
 public class CredentialsController implements Controller {
     private static final String TAG = "CredentialsController";
     private Context mContext;
-    private CredentialsAPI mCredentialsAPI;
+    private CredentialsAPI mCredentialsApi;
 
     // states
     public static final int ID_INIT = 10;
     public static final int ID_CHOOSE_ACCOUNT = 20;
     private String mAppName;
 
-    public CredentialsController(Context context, CredentialsAPI credentialsAPI, String appName) {
-        mCredentialsAPI = credentialsAPI;
+    public CredentialsController(Context context, CredentialsAPI credentialsApi, String appName) {
+        mCredentialsApi = credentialsApi;
         mContext = context;
         mAppName = appName;
     }
@@ -57,19 +57,19 @@ public class CredentialsController implements Controller {
     public Action next(Result result) {
         Intent data = result.getData();
 
-        String email = mCredentialsAPI.getEmailFromCredential();
-        String password = mCredentialsAPI.getPasswordFromCredential();
-        String accountType = mCredentialsAPI.getAccountTypeFromCredential();
+        String email = mCredentialsApi.getEmailFromCredential();
+        String password = mCredentialsApi.getPasswordFromCredential();
+        String accountType = mCredentialsApi.getAccountTypeFromCredential();
 
         ArrayList<IDPProviderParcel> providers =
                 data.getParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS);
 
         switch (result.getId()) {
             case ID_INIT:
-                if (mCredentialsAPI.isPlayServicesAvailable()
-                        && mCredentialsAPI.isCredentialsAvailable()) {
-                    if (mCredentialsAPI.isAutoSignInAvailable()) {
-                        mCredentialsAPI.googleSilentSignIn();
+                if (mCredentialsApi.isPlayServicesAvailable()
+                        && mCredentialsApi.isCredentialsAvailable()) {
+                    if (mCredentialsApi.isAutoSignInAvailable()) {
+                        mCredentialsApi.googleSilentSignIn();
                         // TODO: (serikb) authenticate Firebase user and continue to application
                         FirebaseUser loggedInUser;
                         if (password != null && !password.isEmpty()) {
@@ -78,22 +78,23 @@ public class CredentialsController implements Controller {
                                             .signInWithEmailPassword(email, password);
                             return finishAction(Activity.RESULT_OK, loggedInUser);
                         } else {
-                            return redirectToIDPSignIn(email, accountType, providers);
+                            return redirectToIdpSignIn(email, accountType, providers);
                         }
-                    } else if (mCredentialsAPI.isSignInResolutionNeeded()) {
+                    } else if (mCredentialsApi.isSignInResolutionNeeded()) {
                         return Action.next(
                                 ID_CHOOSE_ACCOUNT,
                                 new Intent(mContext, ChooseAccountActivity.class)
                                         .putParcelableArrayListExtra(
-                                                ControllerConstants.EXTRA_PROVIDERS, providers));
+                                                ControllerConstants.EXTRA_PROVIDERS,
+                                                providers));
                     }
                 }
                 break;
             case ID_CHOOSE_ACCOUNT:
                 Log.e(TAG, "email: " + email);
-                if (email != null &&
-                        mCredentialsAPI.isCredentialsAvailable() &&
-                        !mCredentialsAPI.isSignInResolutionNeeded()) {
+                if (email != null
+                        && mCredentialsApi.isCredentialsAvailable()
+                        && !mCredentialsApi.isSignInResolutionNeeded()) {
                     // TODO: (serikb) authenticate Firebase user and continue to application
                     FirebaseUser loggedInUser;
                     if (password != null && !password.isEmpty()) {
@@ -102,10 +103,14 @@ public class CredentialsController implements Controller {
                                         .signInWithEmailPassword(email, password);
                         return finishAction(Activity.RESULT_OK, loggedInUser);
                     } else {
-                        return redirectToIDPSignIn(email, accountType, providers);
+                        return redirectToIdpSignIn(email, accountType, providers);
                     }
                 }
+                break;
+            default:
+                Log.w(TAG, "No handler defined for state " + result.getId());
         }
+
         return Action.startFlow(
                 AuthMethodPickerActivity.createIntent(
                         mContext,
@@ -113,7 +118,7 @@ public class CredentialsController implements Controller {
                         providers));
     }
 
-    private Action redirectToIDPSignIn(
+    private Action redirectToIdpSignIn(
             String email, String accountType, ArrayList<IDPProviderParcel> providers) {
         switch (accountType) {
             case IdentityProviders.GOOGLE:
@@ -132,15 +137,17 @@ public class CredentialsController implements Controller {
                                 email,
                                 providers,
                                 mAppName));
+            default:
+                Log.w(TAG, "unknown provider: " + accountType);
+                return Action.startFlow(
+                        AuthMethodPickerActivity.createIntent(mContext, mAppName, providers));
         }
-        return Action.startFlow(
-                AuthMethodPickerActivity.createIntent(mContext, mAppName, providers));
     }
 
     private Action finishAction(int resultCode, FirebaseUser firebaseUser) {
         Bundle finishingData = new Bundle();
 
-        if(firebaseUser != null) {
+        if (firebaseUser != null) {
             finishingData.putString(ControllerConstants.EXTRA_EMAIL, firebaseUser.getEmail());
         }
 

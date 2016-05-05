@@ -20,8 +20,8 @@ import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
-import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.api.FirebaseAuthWrapper;
+import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.Action;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
@@ -54,8 +54,7 @@ public class AccountLinkController implements Controller {
 
     private Context mContext;
     private String mAppName;
-
-
+    
     public AccountLinkController(Context context, String appName) {
         mContext = context;
         mAppName = appName;
@@ -71,12 +70,13 @@ public class AccountLinkController implements Controller {
 
         IDPResponse idpResponse = data.getParcelableExtra(ControllerConstants.EXTRA_IDP_RESPONSE);
         FirebaseUser currentUser;
-        FirebaseAuthWrapper apiWrapper = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName);
+        FirebaseAuthWrapper apiWrapper =
+                FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName);
 
         switch (result.getId()) {
             case ID_INIT:
                 if (email == null) {
-                   finishAction(Activity.RESULT_OK);
+                    finishAction(Activity.RESULT_OK);
                 }
                 List<String> providers = apiWrapper.getProvidersForEmail(email);
 
@@ -191,8 +191,10 @@ public class AccountLinkController implements Controller {
                 }
             case ID_CREDENTIALS_SAVE:
                 return finishAction(Activity.RESULT_OK);
+            default:
+                Log.w(TAG, "No handler defined for state " + result.getId());
+                return finishAction(Activity.RESULT_FIRST_USER);
         }
-        return finishAction(Activity.RESULT_FIRST_USER);
     }
 
     private Action finishAction(int resultCode) {

@@ -55,11 +55,9 @@ public final class Action {
     }
 
     /**
-     * Block the flow at the current activity without doing anything. Information regarding the block
-     * is contained in the Intent.
-     *
+     * Block the flow at the current activity without doing anything. Information regarding the
+     * block is contained in the Intent.
      * @param data Data contains updated status for the current activity.
-     * @return
      */
     public static Action block(Intent data) {
         return new Action(Controller.BLOCK_AT_CURRENT_ACTIVITY_ID, data, 0, null);

@@ -126,12 +126,10 @@ public class CredentialsAPI implements
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-    }
+    public void onConnected(@Nullable Bundle bundle) {}
 
     @Override
-    public void onConnectionSuspended(int i) {
-    }
+    public void onConnectionSuspended(int cause) {}
 
     private void initGoogleApiClient(String accountName) {
         GoogleSignInOptions.Builder gsoBuilder = new GoogleSignInOptions

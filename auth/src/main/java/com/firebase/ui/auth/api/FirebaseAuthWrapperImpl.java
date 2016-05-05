@@ -52,10 +52,10 @@ public class FirebaseAuthWrapperImpl
 
     private final FirebaseAuth mFirebaseAuth;
 
-    private long timeoutMs = DEFAULT_TIMEOUT;
+    private long mTimeoutMs = DEFAULT_TIMEOUT;
 
     public FirebaseAuthWrapperImpl(@NonNull FirebaseAuth firebaseAuth) {
-        if(firebaseAuth == null) {
+        if (firebaseAuth == null) {
             throw new IllegalArgumentException("firebaseAuth must not be null");
         }
         this.mFirebaseAuth = firebaseAuth;
@@ -78,10 +78,10 @@ public class FirebaseAuthWrapperImpl
             return Collections.emptyList();
         }
 
-        ProviderQueryResult mProviderQueryResult =
+        ProviderQueryResult result =
                 await(mFirebaseAuth.fetchProvidersForEmail(emailAddress));
-        if (hasProviders(mProviderQueryResult)) {
-            return mProviderQueryResult.getProviders();
+        if (hasProviders(result)) {
+            return result.getProviders();
         }
 
         return Collections.emptyList();
@@ -106,7 +106,7 @@ public class FirebaseAuthWrapperImpl
     public FirebaseUser signInWithEmailPassword(
             @NonNull String emailAddress,
             @NonNull String password) {
-        AuthResult authResult=
+        AuthResult authResult =
                 await(mFirebaseAuth.signInWithEmailAndPassword(emailAddress, password));
         return authResult == null ? null : authResult.getUser();
     }
@@ -158,12 +158,12 @@ public class FirebaseAuthWrapperImpl
             return null;
         }
 
-        GoogleApiClient mCredentialsClient = new GoogleApiClient.Builder(context)
+        GoogleApiClient client = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
                 .addApi(Auth.CREDENTIALS_API)
                 .build();
 
-        mCredentialsClient.connect();
+        client.connect();
 
         HintRequest hintRequest = new HintRequest.Builder()
                 .setHintPickerConfig(new CredentialPickerConfig.Builder()
@@ -172,12 +172,12 @@ public class FirebaseAuthWrapperImpl
                 .setEmailAddressIdentifierSupported(true)
                 .build();
 
-        return Auth.CredentialsApi.getHintPickerIntent(mCredentialsClient, hintRequest);
+        return Auth.CredentialsApi.getHintPickerIntent(client, hintRequest);
     }
 
     @Override
     public void setTimeOut(long timeoutMs) {
-        this.timeoutMs = timeoutMs;
+        this.mTimeoutMs = timeoutMs;
     }
 
     @Override
@@ -192,18 +192,14 @@ public class FirebaseAuthWrapperImpl
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
+    public void onConnected(@Nullable Bundle bundle) {}
 
     @Override
-    public void onConnectionSuspended(int i) {
-
-    }
+    public void onConnectionSuspended(int cause) {}
 
     private <T> T await(@NonNull Task<T> curTask) {
         try {
-            Tasks.await(curTask, timeoutMs, TimeUnit.MILLISECONDS);
+            Tasks.await(curTask, mTimeoutMs, TimeUnit.MILLISECONDS);
             return curTask.getResult();
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             if (BuildConfig.DEBUG) {
