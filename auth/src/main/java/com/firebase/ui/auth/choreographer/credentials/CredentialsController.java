@@ -77,7 +77,7 @@ public class CredentialsController implements Controller {
                         mCredentialsAPI.googleSilentSignIn();
                         // TODO: (serikb) authenticate Firebase user and continue to application
                         FirebaseUser loggedInUser;
-                        if (!password.isEmpty()) {
+                        if (password != null && !password.isEmpty()) {
                             loggedInUser =
                                     FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
                                             .signInWithEmailPassword(email, password);
