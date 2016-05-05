@@ -64,11 +64,6 @@ public class CredentialsController implements Controller {
         ArrayList<IDPProviderParcel> providers =
                 data.getParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS);
 
-        Log.e(TAG, "gms: " + mCredentialsAPI.isPlayServicesAvailable() +
-                ", CredentialsAv: " + mCredentialsAPI.isCredentialsAvailable() +
-                ", AutoSign: " + mCredentialsAPI.isAutoSignInAvailable() +
-                ", Resolution: " + mCredentialsAPI.isSignInResolutionNeeded());
-
         switch (result.getId()) {
             case ID_INIT:
                 if (mCredentialsAPI.isPlayServicesAvailable()
