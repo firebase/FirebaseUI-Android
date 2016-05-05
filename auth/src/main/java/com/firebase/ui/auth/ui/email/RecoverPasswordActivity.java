@@ -17,16 +17,18 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
+import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 
 public class RecoverPasswordActivity extends EmailFlowBaseActivity implements View.OnClickListener {
     private EditText mEmailEditText;
+    private EmailFieldValidator mEmailFieldValidator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,9 @@ public class RecoverPasswordActivity extends EmailFlowBaseActivity implements Vi
         setContentView(R.layout.forgot_password_layout);
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
 
+        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
+                .email_layout));
+
         mEmailEditText = (EditText) findViewById(R.id.email);
         Button nextButton = (Button) findViewById(R.id.button_done);
 
@@ -42,7 +47,6 @@ public class RecoverPasswordActivity extends EmailFlowBaseActivity implements Vi
             mEmailEditText.setText(email);
         }
         nextButton.setOnClickListener(this);
-
     }
 
     @Override
@@ -51,8 +55,7 @@ public class RecoverPasswordActivity extends EmailFlowBaseActivity implements Vi
             return;
         }
         if (view.getId() == R.id.button_done) {
-            if(mEmailEditText.getText().toString().equalsIgnoreCase("") ) {
-                Toast.makeText(this, R.string.require_email_text, Toast.LENGTH_SHORT).show();
+            if (!mEmailFieldValidator.validate(mEmailEditText.getText())) {
                 return;
             }
             Intent data = new Intent();

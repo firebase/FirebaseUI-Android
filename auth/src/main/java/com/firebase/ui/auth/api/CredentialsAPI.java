@@ -29,12 +29,10 @@ import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
@@ -201,7 +199,8 @@ public class CredentialsAPI implements
         if (mProgressDialog == null || !mProgressDialog.isShowing()) {
             mProgressDialog = new ProgressDialog(mActivity);
             mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setMessage(mActivity.getString(com.firebase.ui.auth.R.string.loading_text));
+            mProgressDialog.setMessage(
+                    mActivity.getString(com.firebase.ui.auth.R.string.progress_dialog_loading));
         }
         mProgressDialog.show();
     }

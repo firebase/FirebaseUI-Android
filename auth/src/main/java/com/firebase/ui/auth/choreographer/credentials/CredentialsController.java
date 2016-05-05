@@ -71,7 +71,8 @@ public class CredentialsController implements Controller {
 
         switch (result.getId()) {
             case ID_INIT:
-                if (mCredentialsAPI.isPlayServicesAvailable() && mCredentialsAPI.isCredentialsAvailable()) {
+                if (mCredentialsAPI.isPlayServicesAvailable()
+                        && mCredentialsAPI.isCredentialsAvailable()) {
                     if (mCredentialsAPI.isAutoSignInAvailable()) {
                         mCredentialsAPI.googleSilentSignIn();
                         // TODO: (serikb) authenticate Firebase user and continue to application
@@ -88,7 +89,8 @@ public class CredentialsController implements Controller {
                         return Action.next(
                                 ID_CHOOSE_ACCOUNT,
                                 new Intent(mContext, ChooseAccountActivity.class)
-                                        .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, providers));
+                                        .putParcelableArrayListExtra(
+                                                ControllerConstants.EXTRA_PROVIDERS, providers));
                     }
                 }
                 break;

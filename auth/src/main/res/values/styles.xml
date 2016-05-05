@@ -5,7 +5,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:buttonStyle">@style/FirebaseUI.Button</item>
-
+        <item name="android:editTextStyle">@style/FirebaseUI.EditText</item>
     </style>
 
     <style name="FirebaseUI.Dialog" parent="Base.Theme.AppCompat.Light.Dialog.MinWidth">
@@ -25,7 +25,12 @@
         <item name="android:paddingRight">24dp</item>
     </style>
 
-    <style name="FirebaseUI.Translucent" parent="@style/Theme.AppCompat.Transparent">
+    <style name="FirebaseUI.Translucent">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 
     <style name="FirebaseUI.Text">
@@ -95,6 +100,7 @@
 
     <!-- Common styles -->
     <style name="FirebaseUI.Text.TextInputLayout" >
+        <item name="android:paddingTop">8dp</item>
     </style>
 
     <style name="FirebaseUI.Text.HintText" parent="FirebaseUI.Text.T12">
@@ -134,10 +140,14 @@
         <item name="android:textColor">@color/buttonColor</item>
     </style>
 
-    <style name="FirebaseUI.EditText" parent="FirebaseUI.Text.T08">
+    <style name="FirebaseUI.EditText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineSpacingExtra">8sp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">sans-serif</item>
+        <item name="android:colorActivatedHighlight">@color/colorPrimary</item>
+        <item name="android:colorFocusedHighlight">@color/colorPrimary</item>
     </style>
 
     <style name="FirebaseUI.EditText.PasswordField">
