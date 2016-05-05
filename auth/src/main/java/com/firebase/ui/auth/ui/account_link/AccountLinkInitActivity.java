@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.account_link.AccountLinkController;
@@ -29,6 +30,7 @@ public class AccountLinkInitActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mId = AccountLinkController.ID_INIT;
+        showLoadingDialog(getResources().getString(R.string.progress_dialog_loading));
         finish(RESULT_OK, getIntent());
     }
 

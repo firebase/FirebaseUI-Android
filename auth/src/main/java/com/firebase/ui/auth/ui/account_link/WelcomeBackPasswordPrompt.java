@@ -23,6 +23,7 @@ import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
@@ -30,6 +31,7 @@ import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.account_link.AccountLinkController;
 import com.firebase.ui.auth.ui.BaseActivity;
+import com.firebase.ui.auth.ui.email.PasswordToggler;
 
 public class WelcomeBackPasswordPrompt extends BaseActivity implements View.OnClickListener {
     final StyleSpan bold = new StyleSpan(Typeface.BOLD);
@@ -53,6 +55,8 @@ public class WelcomeBackPasswordPrompt extends BaseActivity implements View.OnCl
         Button signIn = (Button) findViewById(R.id.button_done);
         signIn.setOnClickListener(this);
         EditText password = (EditText) findViewById(R.id.password);
+        ImageView toggleImage = (ImageView) findViewById(R.id.toggle_visibility);
+        toggleImage.setOnClickListener(new PasswordToggler(password));
         TextView troubleSigningIn = (TextView) findViewById(R.id.trouble_signing_in);
         troubleSigningIn.setOnClickListener(this);
         String error = getIntent().getStringExtra(ControllerConstants.EXTRA_ERROR);

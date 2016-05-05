@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,7 +40,6 @@ public class AuthMethodPickerActivity
         extends IDPBaseActivity
         implements IDPProvider.IDPCallback, View.OnClickListener {
 
-    private static final int NASCAR_BUTTON_PADDING = 36;
     private static final String TAG = "AuthMethodPicker";
     private ArrayList<IDPProviderParcel> mProviderParcels;
     private ArrayList<IDPProvider> mIDPProviders;
@@ -106,7 +104,7 @@ public class AuthMethodPickerActivity
                     }
                 });
                 provider.setAuthenticationCallback(this);
-                btnHolder.addView(loginButton);
+                btnHolder.addView(loginButton, 0);
             }
         }
     }

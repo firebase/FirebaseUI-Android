@@ -147,6 +147,7 @@ public class EmailFlowController implements Controller {
                 Intent confirmIntent = new Intent(mAppContext,
                         ConfirmRecoverPasswordActivity.class);
                 confirmIntent.putExtra(ControllerConstants.EXTRA_SUCCESS, isSuccess);
+                confirmIntent.putExtra(ControllerConstants.EXTRA_EMAIL, email);
                     return Action.next(ID_CONFIRM_RECOVER_PASSWORD, confirmIntent);
             case ID_CONFIRM_RECOVER_PASSWORD:
                 if (result.getResultCode() == EmailFlowBaseActivity.BACK_IN_FLOW) {

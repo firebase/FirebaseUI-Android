@@ -33,7 +33,7 @@ public class SignInNoPasswordActivity extends EmailFlowBaseActivity implements V
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.enter_your_email);
+        setTitle(R.string.sign_in_with_email);
         setContentView(R.layout.signin_no_password_layout);
 
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
@@ -56,6 +56,7 @@ public class SignInNoPasswordActivity extends EmailFlowBaseActivity implements V
         if(!mEmailFieldValidator.validate(mEmailEditText.getText())) {
             return;
         }
+        showLoadingDialog(getResources().getString(R.string.progress_dialog_loading));
         String email = mEmailEditText.getText().toString();
         Intent dataExtra = new Intent();
         dataExtra.putExtra(ControllerConstants.EXTRA_EMAIL, email);

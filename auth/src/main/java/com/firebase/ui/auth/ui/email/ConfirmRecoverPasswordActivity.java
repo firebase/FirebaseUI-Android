@@ -30,10 +30,18 @@ public class ConfirmRecoverPasswordActivity extends EmailFlowBaseActivity implem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.confirm_recovery_layout);
         setTitle(R.string.check_your_email);
+        String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
+
         boolean isSuccess = getIntent().getBooleanExtra(ControllerConstants.EXTRA_SUCCESS, true);
 
-        if (!isSuccess) {
-            ((TextView) findViewById(R.id.title)).setText(R.string.recovery_fail_title);
+        if (isSuccess) {
+            String text = String.format(
+                    getResources().getString(R.string.confirm_recovery_body),
+                    email
+            );
+            ((TextView) findViewById(R.id.body_text)).setText(text);
+        } else {
+            ((TextView) findViewById(R.id.body_text)).setText(R.string.recovery_fail_body);
         }
         findViewById(R.id.button_done).setOnClickListener(this);
     }

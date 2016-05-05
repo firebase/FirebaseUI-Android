@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
     private static final int NEXT_FLOW = 1000;
 
     private Controller mController;
+    private ProgressDialog mProgressDialog;
 
     protected int mId;
     protected String mAppName;
@@ -45,6 +47,18 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
         mAppName = getIntent().getStringExtra(ControllerConstants.EXTRA_APP_NAME);
         mId = previousIntent.getIntExtra(EXTRA_ID, Controller.DEFAULT_INIT_FLOW_ID);
         mController = setUpController();
+    }
+
+    private void dismissDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
+    }
+
+    protected void showLoadingDialog(String message) {
+        dismissDialog();
+        mProgressDialog = ProgressDialog.show(this, "", message, true);
     }
 
     protected abstract Controller setUpController();
@@ -62,7 +76,6 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
     }
 
     private class StateTransitionTask extends AsyncTask<Result, Void, Action> {
-
         @Override
         protected Action doInBackground(Result... results) {
             isPendingFinishing.set(true);
@@ -71,6 +84,7 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
 
         @Override
         protected void onPostExecute(Action result) {
+            BaseActivity.this.dismissDialog();
             doAction(result);
         }
     }
@@ -119,5 +133,6 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
      * @param nextIntent extra data concerning the block
      */
     protected void blockHandling(Intent nextIntent) {
+        dismissDialog();
     }
 }

@@ -4,10 +4,10 @@
     style="@style/FirebaseUI.WrapperStyle">
     <TextView
         style="@style/FirebaseUI.Text.BodyText"
-        android:id="@+id/title"
-        android:text="@string/confirm_recovery_title"/>
+        android:id="@+id/body_text"/>
     <Button
         style="@style/FirebaseUI.Button.AlertButton"
         android:id="@+id/button_done"
-        android:text="@string/button_done"/>
+        android:text="@string/button_done"
+        />
 </LinearLayout>

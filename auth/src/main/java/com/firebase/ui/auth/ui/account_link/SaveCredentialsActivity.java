@@ -113,6 +113,11 @@ public class SaveCredentialsActivity extends BaseActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        if (mEmail == null) {
+            Log.e(TAG, "Unable to save null credential!");
+            finish(RESULT_FIRST_USER, getIntent());
+            return;
+        }
         Credential.Builder builder = new Credential.Builder(mEmail);
         builder.setPassword(mPassword);
         if (mPassword == null) {

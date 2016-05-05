@@ -31,8 +31,8 @@ public class RecoverPasswordActivity extends EmailFlowBaseActivity implements Vi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.forgot_password);
-        setContentView(R.layout.forget_password_layout);
+        setTitle(R.string.recover_password_title);
+        setContentView(R.layout.forgot_password_layout);
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
 
         mEmailEditText = (EditText) findViewById(R.id.email);

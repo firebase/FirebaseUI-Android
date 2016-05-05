@@ -26,11 +26,14 @@
         </activity>
         <activity android:theme="@style/FirebaseUI" android:name=".ui.idp.AuthMethodPickerActivity" >
         </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity" >
+        <activity android:theme="@style/FirebaseUI.Translucent"
+                  android:name="com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity" >
         </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.credentials.CredentialsInitActivity" >
+        <activity android:theme="@style/FirebaseUI.Translucent"
+                  android:name="com.firebase.ui.auth.ui.credentials.CredentialsInitActivity" >
         </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.credentials.ChooseAccountActivity" >
+        <activity android:theme="@style/FirebaseUI.Translucent"
+                   android:name="com.firebase.ui.auth.ui.credentials.ChooseAccountActivity" >
         </activity>
         <activity android:theme="@style/FirebaseUI.Translucent"
                   android:name="com.facebook.FacebookActivity"

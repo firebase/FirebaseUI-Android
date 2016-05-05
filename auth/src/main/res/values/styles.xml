@@ -125,7 +125,11 @@
 
     <style name="FirebaseUI.Button.AlertButton">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:gravity">right|center</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:textColor">@color/buttonColor</item>
     </style>
@@ -146,7 +150,9 @@
     <style name="FirebaseUI.ImageView.VisibilityToggle">
         <item name="android:layout_marginBottom">12dp</item>
         <item name="android:layout_marginRight">4dp</item>
-        <item name="android:src">@drawable/ic_visibility_off_black_24dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:src">@drawable/ic_visibility_black_24dp</item>
     </style>
 
     <style name="FirebaseUI.Text.Link">

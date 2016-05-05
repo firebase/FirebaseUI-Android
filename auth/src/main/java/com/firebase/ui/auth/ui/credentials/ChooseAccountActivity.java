@@ -22,7 +22,7 @@ import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.credentials.CredentialsController;
 import com.google.android.gms.auth.api.credentials.Credential;
 
-public class ChooseAccountActivity extends CredentialsBaseActivity{
+public class ChooseAccountActivity extends CredentialsBaseActivity {
     private static final String TAG = "ChooseAccountActivity";
     private static final int RC_CREDENTIALS_READ = 2;
 

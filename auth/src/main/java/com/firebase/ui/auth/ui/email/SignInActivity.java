@@ -72,6 +72,7 @@ public class SignInActivity extends EmailFlowBaseActivity implements View.OnClic
 
     @Override
     protected void blockHandling(Intent nextIntent) {
+        super.blockHandling(nextIntent);
         TextInputLayout passwordInput = (TextInputLayout) findViewById(R.id.password_layout);
         passwordInput.setError(nextIntent.getStringExtra(ControllerConstants.EXTRA_ERROR_MESSAGE));
     }
@@ -88,6 +89,7 @@ public class SignInActivity extends EmailFlowBaseActivity implements View.OnClic
                 Toast.makeText(this, "Invalid password or email", Toast.LENGTH_SHORT).show();
                 return;
             } else {
+                showLoadingDialog(getResources().getString(R.string.progress_dialog_signing_in));
                 Intent data = new Intent();
                 data.putExtra(ControllerConstants.EXTRA_EMAIL,
                         mEmailEditText.getText().toString());

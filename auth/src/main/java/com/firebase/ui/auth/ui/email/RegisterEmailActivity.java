@@ -25,7 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
@@ -52,7 +51,7 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.create_an_account_title);
+        setTitle(R.string.create_account_title);
         setContentView(R.layout.register_email_layout);
 
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
@@ -93,6 +92,7 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
 
     @Override
     protected void blockHandling(Intent nextIntent) {
+        super.blockHandling(nextIntent);
         TextInputLayout passwordInput = (TextInputLayout) findViewById(R.id.password_layout);
         passwordInput.setError(nextIntent.getStringExtra(ControllerConstants.EXTRA_ERROR_MESSAGE));
     }
@@ -112,6 +112,7 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
             boolean nameValid = mNameValidator.validate(name);
             if (emailValid && passwordValid && nameValid) {
                 Intent data = new Intent();
+                showLoadingDialog(getResources().getString(R.string.progress_dialog_signing_up));
                 data.putExtra(ControllerConstants.EXTRA_EMAIL, mEmailEditText.getText().toString());
                 data.putExtra(ControllerConstants.EXTRA_NAME, mNameEditText.getText().toString());
                 data.putExtra(ControllerConstants.EXTRA_PASSWORD, mPasswordEditText.getText().toString());
