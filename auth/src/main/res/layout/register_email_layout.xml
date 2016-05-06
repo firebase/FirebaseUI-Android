@@ -83,9 +83,8 @@
             android:id="@+id/create_account_text"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:paddingTop="336dp"
+            android:layout_marginTop="336dp"
             style="@style/FirebaseUI.Text.BodyText"
-            android:text="@string/create_account_preamble"
             />
 
 

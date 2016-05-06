@@ -45,12 +45,20 @@ public class AuthFlowFactory {
             @NonNull String appName,
             @NonNull String apiaryKey,
             @NonNull String applicationId,
+            String termsOfServiceUrl,
             int theme,
             @Nullable List<String> providers) {
         ArrayList<IDPProviderParcel> providerParcels = new ArrayList<>();
         if (providers == null || providers.size() == 0) {
             return CredentialsInitActivity.createIntent(
-                    context,appName, providerParcels, apiaryKey, applicationId, theme);
+                    context,
+                    appName,
+                    providerParcels,
+                    apiaryKey,
+                    applicationId,
+                    termsOfServiceUrl,
+                    theme
+            );
         }
 
         for (String provider : providers) {
@@ -63,6 +71,13 @@ public class AuthFlowFactory {
             }
         }
         return CredentialsInitActivity.createIntent(
-                context,appName, providerParcels, apiaryKey, applicationId, theme);
+                context,
+                appName,
+                providerParcels,
+                apiaryKey,
+                applicationId,
+                termsOfServiceUrl,
+                theme
+        );
     }
 }

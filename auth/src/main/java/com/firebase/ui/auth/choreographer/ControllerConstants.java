@@ -25,6 +25,7 @@ public class ControllerConstants {
     public static final String EXTRA_APPLICATION_ID = "extra_application_id";
     public static final String EXTRA_APIARY_KEY = "extra_apiary_key";
     public static final String EXTRA_SUCCESS = "success_extra";
+    public static final String EXTRA_TERMS_OF_SERVICE_URL = "extra_tos_url";
     public static final String EXTRA_ID_TOKEN = "extra_id_token";
     public static final String EXTRA_RESTORE_PASSWORD_FLAG = "extra_restore_password_flag";
     public static final String EXTRA_HINT_INTENT = "hintIntent";

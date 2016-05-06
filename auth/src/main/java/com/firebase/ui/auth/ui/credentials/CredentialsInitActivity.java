@@ -56,13 +56,14 @@ public class CredentialsInitActivity extends CredentialsBaseActivity {
 
     public static Intent createIntent(
             Context context, String appName, ArrayList<IDPProviderParcel> parcels, String
-            apiaryKey, String applicationId, int theme) {
+            apiaryKey, String applicationId, String termsOfServiceUrl, int theme) {
         return new Intent()
                 .setClass(context, CredentialsInitActivity.class)
                 .putExtra(EXTRA_ID, CredentialsController.ID_INIT)
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
                 .putExtra(ControllerConstants.EXTRA_APIARY_KEY, apiaryKey)
                 .putExtra(ControllerConstants.EXTRA_APPLICATION_ID, applicationId)
+                .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, termsOfServiceUrl)
                 .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, parcels)
                 .putExtra(ControllerConstants.EXTRA_THEME, theme);
     }

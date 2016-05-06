@@ -38,6 +38,7 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
 
     protected int mId;
     protected String mAppName;
+    protected String mTermsOfServiceUrl;
     protected AtomicBoolean isPendingFinishing = new AtomicBoolean(false);
 
     @Override
@@ -45,6 +46,7 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
         super.onCreate(savedInstanceState);
         Intent previousIntent = getIntent();
         mAppName = getIntent().getStringExtra(ControllerConstants.EXTRA_APP_NAME);
+        mTermsOfServiceUrl = getIntent().getStringExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL);
         mId = previousIntent.getIntExtra(EXTRA_ID, Controller.DEFAULT_INIT_FLOW_ID);
         mController = setUpController();
     }
@@ -113,6 +115,10 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
         } else if (action.getNextId() == Controller.START_NEW_FLOW_ID) {
            Intent newFlowIntent = action.getNextIntent();
             newFlowIntent.putExtra(ControllerConstants.EXTRA_APP_NAME, mAppName);
+            newFlowIntent.putExtra(
+                    ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL,
+                    mTermsOfServiceUrl
+            );
             this.startActivityForResult(newFlowIntent, NEXT_FLOW);
             return;
         }
@@ -120,6 +126,10 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
             this.startActivity(action.getNextIntent()
                     .addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
                     .putExtra(ControllerConstants.EXTRA_APP_NAME, mAppName)
+                    .putExtra(
+                            ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL,
+                            mTermsOfServiceUrl
+                    )
                     .putExtra(EXTRA_ID, action.getNextId()));
         } else {
             this.setResult(action.getFinishResultCode(), action.getFinishData());
