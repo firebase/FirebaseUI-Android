@@ -34,7 +34,6 @@ public class CredentialsInitActivity extends CredentialsBaseActivity {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-
         try{
             FirebaseApp.getInstance(mAppName);
             return;
@@ -57,14 +56,15 @@ public class CredentialsInitActivity extends CredentialsBaseActivity {
 
     public static Intent createIntent(
             Context context, String appName, ArrayList<IDPProviderParcel> parcels, String
-            apiaryKey, String applicationId) {
+            apiaryKey, String applicationId, int theme) {
         return new Intent()
                 .setClass(context, CredentialsInitActivity.class)
                 .putExtra(EXTRA_ID, CredentialsController.ID_INIT)
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
                 .putExtra(ControllerConstants.EXTRA_APIARY_KEY, apiaryKey)
                 .putExtra(ControllerConstants.EXTRA_APPLICATION_ID, applicationId)
-                .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, parcels);
+                .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, parcels)
+                .putExtra(ControllerConstants.EXTRA_THEME, theme);
     }
 
     @Override
