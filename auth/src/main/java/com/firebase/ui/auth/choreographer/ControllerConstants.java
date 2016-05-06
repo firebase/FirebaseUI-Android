@@ -31,4 +31,5 @@ public class ControllerConstants {
     public static final String EXTRA_PROFILE_PICTURE_URI = "extra_profile_picture_uri";
     public static final String EXTRA_IDP_RESPONSE = "extra_idp_response";
     public static final String EXTRA_ERROR_MESSAGE = "extra_error_msg";
+    public static final String EXTRA_THEME = "extra_theme";
 }
