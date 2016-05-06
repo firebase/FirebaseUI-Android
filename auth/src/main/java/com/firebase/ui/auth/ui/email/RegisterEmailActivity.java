@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -94,6 +95,9 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
     }
 
     private void setUpTermsOfService() {
+        if (mTermsOfServiceUrl == null) {
+            return;
+        }
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(ContextCompat.getColor
                 (getApplicationContext(), R.color.linkColor));
 
@@ -104,6 +108,14 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
         spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
         TextView agreementText = (TextView) findViewById(R.id.create_account_text);
         agreementText.setText(spannableStringBuilder);
+        agreementText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse
+                        (mTermsOfServiceUrl));
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
