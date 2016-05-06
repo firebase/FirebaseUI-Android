@@ -39,6 +39,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.any;
@@ -260,7 +261,8 @@ public class EmailFlowControllerTest {
     }
 
     @Test
-    public void testIdRegisterEmail_successfulLogin_noPlayServicesAvailable() {
+    public void testIdRegisterEmail_successfulLogin_noPlayServicesAvailable()
+            throws ExecutionException, InterruptedException {
         initResultWithConditions(
                 EmailFlowController.ID_REGISTER_EMAIL,
                 TEST_RESULT_CODE,
@@ -276,7 +278,8 @@ public class EmailFlowControllerTest {
     }
 
     @Test
-    public void testIdRegisterEmail_successfulLogin_playServicesAvailable() {
+    public void testIdRegisterEmail_successfulLogin_playServicesAvailable()
+            throws ExecutionException, InterruptedException {
         initResultWithConditions(
                 EmailFlowController.ID_REGISTER_EMAIL,
                 TEST_RESULT_CODE,

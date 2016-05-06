@@ -57,7 +57,8 @@ public interface FirebaseAuthWrapper {
 
     @WorkerThread
     @Nullable
-    FirebaseUser createUserWithEmailAndPassword(@NonNull String email, @NonNull String password);
+    FirebaseUser createUserWithEmailAndPassword(@NonNull String email, @NonNull String password)
+            throws ExecutionException, InterruptedException;
 
     @WorkerThread
     FirebaseUser linkWithCredential(

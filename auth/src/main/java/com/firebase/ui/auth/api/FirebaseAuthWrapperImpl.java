@@ -132,10 +132,11 @@ public class FirebaseAuthWrapperImpl
     @Nullable
     public FirebaseUser createUserWithEmailAndPassword(
             @NonNull String emailAddress,
-            @NonNull String password) {
-        AuthResult authResult =
-                await(mFirebaseAuth.createUserWithEmailAndPassword(emailAddress, password));
-        return authResult == null ? null : authResult.getUser();
+            @NonNull String password) throws ExecutionException, InterruptedException {
+        Task<AuthResult> curTask;
+        curTask = mFirebaseAuth.createUserWithEmailAndPassword(emailAddress, password);
+        Tasks.await(curTask);
+        return curTask.getResult().getUser();
     }
 
     @Override

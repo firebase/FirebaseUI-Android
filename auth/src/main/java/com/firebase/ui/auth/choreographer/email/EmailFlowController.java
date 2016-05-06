@@ -39,6 +39,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class EmailFlowController implements Controller {
@@ -133,9 +134,15 @@ public class EmailFlowController implements Controller {
                     intent.putExtra(ControllerConstants.EXTRA_EMAIL, email);
                     return Action.back(ID_SELECT_EMAIL, intent);
                 }
-                FirebaseUser firebaseUser = apiWrapper.createUserWithEmailAndPassword(email, password);
-                return handleLoginResult(email, password, firebaseUser, mAppContext.getString(
-                                com.firebase.ui.auth.R.string.email_account_creation_error));
+                FirebaseUser firebaseUser = null;
+                String errorMessage = "";
+                try {
+                    firebaseUser = apiWrapper.createUserWithEmailAndPassword(email, password);
+                } catch (ExecutionException | InterruptedException e) {
+                    errorMessage = e.getLocalizedMessage();
+                    errorMessage = errorMessage.substring(errorMessage.indexOf(":") + 1);
+                }
+                return handleLoginResult(email, password, firebaseUser, errorMessage);
             case ID_RECOVER_PASSWORD:
                 if (result.getResultCode() == EmailFlowBaseActivity.BACK_IN_FLOW) {
                     signInIntent = new Intent(mAppContext, SignInActivity.class);

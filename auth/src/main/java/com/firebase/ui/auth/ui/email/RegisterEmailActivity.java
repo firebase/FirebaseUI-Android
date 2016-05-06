@@ -109,8 +109,8 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
     @Override
     protected void blockHandling(Intent nextIntent) {
         super.blockHandling(nextIntent);
-        TextInputLayout passwordInput = (TextInputLayout) findViewById(R.id.password_layout);
-        passwordInput.setError(nextIntent.getStringExtra(ControllerConstants.EXTRA_ERROR_MESSAGE));
+        TextInputLayout emailInput = (TextInputLayout) findViewById(R.id.email_layout);
+        emailInput.setError(nextIntent.getStringExtra(ControllerConstants.EXTRA_ERROR_MESSAGE));
     }
 
     @Override
