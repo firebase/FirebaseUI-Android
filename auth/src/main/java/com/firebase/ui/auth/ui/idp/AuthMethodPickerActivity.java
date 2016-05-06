@@ -31,6 +31,7 @@ import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 
@@ -72,6 +73,9 @@ public class AuthMethodPickerActivity
                     break;
                 case GoogleAuthProvider.PROVIDER_ID:
                     mIDPProviders.add(new GoogleProvider(this, providerParcel));
+                    break;
+                case EmailAuthProvider.PROVIDER_ID:
+                    findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
                     break;
                 default:
                     if (BuildConfig.DEBUG) {

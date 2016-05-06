@@ -16,6 +16,7 @@ package com.firebase.ui.auth;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -24,6 +25,7 @@ import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.credentials.CredentialsInitActivity;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.EmailAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,10 @@ import java.util.List;
  * Factory class to configure the intent that starts the auth flow
  */
 public class AuthFlowFactory {
+    public static final String EMAIL_PROVIDER = "email";
+    public static final String GOOGLE_PROVIDER = "google";
+    public static final String FACEBOOK_PROVIDER = "facebook";
+
     /**
      * Creates the intent that starts the auth flow
      *
@@ -73,12 +79,16 @@ public class AuthFlowFactory {
         }
 
         for (String provider : providers) {
-            if (provider.equalsIgnoreCase("facebook")) {
+            if (provider.equalsIgnoreCase(FACEBOOK_PROVIDER)) {
                 providerParcels.add(FacebookProvider.createFacebookParcel(
                         context.getString(R.string.facebook_application_id)));
-            } else if (provider.equalsIgnoreCase("google")) {
+            } else if (provider.equalsIgnoreCase(GOOGLE_PROVIDER)) {
                 providerParcels.add(
                         GoogleProvider.createParcel(context.getString(R.string.default_web_client_id)));
+            } else if (provider.equalsIgnoreCase(EMAIL_PROVIDER)) {
+                providerParcels.add(
+                        new IDPProviderParcel(EmailAuthProvider.PROVIDER_ID, new Bundle())
+                );
             }
         }
         return CredentialsInitActivity.createIntent(

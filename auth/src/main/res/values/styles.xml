@@ -215,6 +215,7 @@
 
     <style name="FirebaseUI.Button.AccountChooser.EmailButton">
         <item name="android:drawableLeft">@drawable/ic_email_white_18dp</item>
+        <item name="android:visibility">gone</item>
         <item name="android:background">@drawable/idp_button_background_email</item>
         <item name="android:textColor">#ffffff</item>
     </style>
