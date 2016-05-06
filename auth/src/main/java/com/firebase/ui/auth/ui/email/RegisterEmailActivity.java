@@ -20,6 +20,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +40,7 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
     private EmailFieldValidator mEmailFieldValidator;
     private PasswordFieldValidator mPasswordFieldValidator;
     private RequiredFieldValidator mNameValidator;
+    private ImageView mTogglePasswordImage;
 
     @Override
     public void onBackPressed() {
@@ -56,9 +58,23 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
 
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);
+
+        TypedValue visibleIcon = new TypedValue();
+        TypedValue slightlyVisibleIcon = new TypedValue();
+
+        getResources().getValue(R.dimen.visible_icon, visibleIcon, true);
+        getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
+
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        ImageView toggleImage = (ImageView) findViewById(R.id.toggle_visibility);
-        toggleImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
+        mTogglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
+
+        mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
+                mTogglePasswordImage,
+                visibleIcon.getFloat(),
+                slightlyVisibleIcon.getFloat()));
+
+        mTogglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
+
         mNameEditText = (EditText) findViewById(R.id.name);
 
         mPasswordFieldValidator = new PasswordFieldValidator((TextInputLayout)
