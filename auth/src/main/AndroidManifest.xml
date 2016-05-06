@@ -5,7 +5,7 @@
         <activity android:theme="@style/FirebaseUI.Dialog"
                   android:name="com.firebase.ui.auth.ui.email.ConfirmRecoverPasswordActivity" >
         </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.email.EmailHintContainerActivity" >
+        <activity android:theme="@style/FirebaseUI.Translucent" android:name="com.firebase.ui.auth.ui.email.EmailHintContainerActivity" >
         </activity>
         <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.email.RecoverPasswordActivity" >
         </activity>
