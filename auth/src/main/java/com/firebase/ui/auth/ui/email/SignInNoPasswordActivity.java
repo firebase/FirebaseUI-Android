@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -38,11 +39,14 @@ public class SignInNoPasswordActivity extends EmailFlowBaseActivity implements V
 
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
         mEmailFieldValidator = new EmailFieldValidator(
-                (TextInputLayout) findViewById(R.id.input_layout_password));
+                (TextInputLayout) findViewById(R.id.input_layout_email));
         mEmailEditText = (EditText) findViewById(R.id.email);
         if(email != null) {
             mEmailEditText.setText(email);
         }
+
+        // show the keyboard
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         Button button = (Button) findViewById(R.id.button_ok);
         button.setOnClickListener(this);
