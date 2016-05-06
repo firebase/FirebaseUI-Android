@@ -23,6 +23,7 @@ import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.credentials.CredentialsInitActivity;
+import com.google.firebase.FirebaseApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,21 +35,23 @@ public class AuthFlowFactory {
     /**
      * Creates the intent that starts the auth flow
      * @param context activity context
-     * @param appName the app name of the FirebaseApp that you wish to use
-     * @param apiaryKey the Firebase backend API key
-     * @param applicationId the Firebase application id
-     * @param providers the supported identity providers that you wish to enable (google, facebook, etc)
-     * @return the Intent to start the auth flow
+     * @param firebaseApp the FirebaseApp that's to used for the authentication flow
+     * @param termsOfServiceUrl the URL to the Term of Service page to be present to the user
+     * @param theme the customized theme to be applied to the authentication flow. 0 will use the default theme.
+    * @param providers the supported identity providers that you wish to enable (google, facebook, etc)
+     * @return
      */
     public static Intent createIntent(
+//            * @param providers the supported identity providers that you wish to enable (google, facebook, etc)
             @NonNull Context context,
-            @NonNull String appName,
-            @NonNull String apiaryKey,
-            @NonNull String applicationId,
+            @NonNull FirebaseApp firebaseApp,
             String termsOfServiceUrl,
             int theme,
             @Nullable List<String> providers) {
         ArrayList<IDPProviderParcel> providerParcels = new ArrayList<>();
+        String appName = firebaseApp.getName();
+        String apiaryKey = firebaseApp.getOptions().getApiKey();
+        String applicationId = firebaseApp.getOptions().getApplicationId();
         if (providers == null || providers.size() == 0) {
             return CredentialsInitActivity.createIntent(
                     context,
@@ -67,7 +70,7 @@ public class AuthFlowFactory {
                         context.getString(R.string.facebook_application_id)));
             } else if (provider.equalsIgnoreCase("google")) {
                 providerParcels.add(
-                        GoogleProvider.createParcel(context.getString(R.string.google_client_id)));
+                        GoogleProvider.createParcel(firebaseApp.getOptions().getApplicationId()));
             }
         }
         return CredentialsInitActivity.createIntent(
