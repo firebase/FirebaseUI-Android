@@ -27,18 +27,10 @@ import java.util.ArrayList;
 
 public abstract class CredentialsBaseActivity extends BaseActivity {
     protected CredentialsAPI mCredentialsAPI;
-    private ArrayList<Parcelable> mParcelables;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mParcelables = getIntent().getParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS);
-    }
-
-    @Override
-    public void finish(int resultCode, Intent data) {
-        data.putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, mParcelables);
-        super.finish(resultCode, data);
     }
 
     @Override

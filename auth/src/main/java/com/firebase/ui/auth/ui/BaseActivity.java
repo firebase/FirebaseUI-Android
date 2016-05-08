@@ -24,7 +24,9 @@ import com.firebase.ui.auth.choreographer.Action;
 import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.Result;
+import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BaseActivity extends android.support.v7.app.AppCompatActivity {
@@ -40,6 +42,7 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
     protected String mAppName;
     protected String mTermsOfServiceUrl;
     protected AtomicBoolean isPendingFinishing = new AtomicBoolean(false);
+    protected ArrayList<IDPProviderParcel> mProviderParcels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
         mAppName = getIntent().getStringExtra(ControllerConstants.EXTRA_APP_NAME);
         mTermsOfServiceUrl = getIntent().getStringExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL);
         mId = previousIntent.getIntExtra(EXTRA_ID, Controller.DEFAULT_INIT_FLOW_ID);
+        mProviderParcels = getIntent().getParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS);
         mController = setUpController();
     }
 
@@ -119,6 +123,10 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
                     ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL,
                     mTermsOfServiceUrl
             );
+            newFlowIntent.putExtra(
+                    ControllerConstants.EXTRA_PROVIDERS,
+                    mProviderParcels
+            );
             this.startActivityForResult(newFlowIntent, NEXT_FLOW);
             return;
         }
@@ -129,6 +137,10 @@ public abstract class BaseActivity extends android.support.v7.app.AppCompatActiv
                     .putExtra(
                             ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL,
                             mTermsOfServiceUrl
+                    )
+                    .putExtra(
+                            ControllerConstants.EXTRA_PROVIDERS,
+                            mProviderParcels
                     )
                     .putExtra(EXTRA_ID, action.getNextId()));
         } else {

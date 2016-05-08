@@ -49,22 +49,28 @@ public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickLi
         mProviderId = getProviderIdFromIntent();
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
-        IDPProviderParcel parcel;
-        switch (mProviderId) {
-            case GoogleAuthProvider.PROVIDER_ID:
-                parcel = GoogleProvider.createParcel(
-                        JSONUtil.getGoogleClientId(getApplicationContext()));
-                mIDPProvider = new GoogleProvider(this, parcel);
-                break;
-            case FacebookAuthProvider.PROVIDER_ID:
-                parcel = FacebookProvider.createFacebookParcel(
-                        JSONUtil.getFacebookApplicationId(getApplicationContext()));
-                mIDPProvider = new FacebookProvider(this, parcel);
-                break;
-            default:
-                Log.w(TAG, "Unknown provider: " + mProviderId);
-                finish(RESULT_CANCELED, getIntent());
-                return;
+        mIDPProvider = null;
+        for (IDPProviderParcel providerParcel: mProviderParcels) {
+           if (mProviderId.equals(providerParcel.getProviderType())) {
+               switch (mProviderId) {
+                   case GoogleAuthProvider.PROVIDER_ID:
+                       mIDPProvider = new GoogleProvider(this, providerParcel);
+                       break;
+                   case FacebookAuthProvider.PROVIDER_ID:
+                       mIDPProvider = new FacebookProvider(this, providerParcel);
+                       break;
+                   default:
+                       Log.w(TAG, "Unknown provider: " + mProviderId);
+                       finish(RESULT_CANCELED, getIntent());
+                       return;
+               }
+           }
+        }
+
+        if (mIDPProvider == null) {
+            getIntent().putExtra(ControllerConstants.EXTRA_ERROR_MESSAGE,
+                    "Firebase login successful. Account linking failed due to provider not enabled by application");
+            finish(RESULT_CANCELED, getIntent());
         }
 
         ((TextView) findViewById(R.id.welcome_back_idp_prompt))
