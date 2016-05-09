@@ -28,76 +28,97 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Factory class to configure the intent that starts the auth flow
+ * Provides the entry point to the user authentication flow.
  */
 public class AuthFlowFactory {
+
+    /**
+     * Provider identifier for email and password credentials, for use with {@link #createIntent}.
+     */
     public static final String EMAIL_PROVIDER = "email";
+
+    /**
+     * Provider identifier for Google, for use with {@link #createIntent}.
+     */
     public static final String GOOGLE_PROVIDER = "google";
+
+    /**
+     * Provider identifier for Facebook, for use with {@link #createIntent}.
+     */
     public static final String FACEBOOK_PROVIDER = "facebook";
 
     /**
-     * Creates the intent that starts the auth flow
+     * The theme identifier to use in {@link #createIntent} if no theme customization is required.
+     */
+    public static final int DEFAULT_THEME = 0;
+
+    /**
+     * Creates an intent to start the user authentication flow.
      *
-     * IDP Provider instructions:
-     * Enabling Google Sign In: If you're using Google Services Gradle Plugin, there are no additional
-     *                          steps needed. If not, please override the R.string.default_web_client_id
-     *                          to provider your google oauth web client id.
-     * Enabling Facebook Sign In: Please override the R.string.facebook_application_id to provide the
-     *                          App Id from Facebook Developer Dashboard
+     * <p>IDP Provider instructions:
      *
-     * @param context activity context
-     * @param firebaseApp the FirebaseApp that's to used for the authentication flow
-     * @param termsOfServiceUrl the URL to the Term of Service page to be present to the user
-     * @param theme the customized theme to be applied to the authentication flow. 0 will use the default theme.
-    * @param providers the supported identity providers that you wish to enable (google, facebook, etc)
-     * @return
+     * <ul>
+     * <li>Enabling Google Sign In: If you're using the
+     * <a href="https://developers.google.com/android/guides/google-services-plugin">Google
+     * Services Gradle Plugin</a>, no additional configuration is required. If not, please override
+     * {@code R.string.default_web_client_id} to provide your
+     * <a href="https://developers.google.com/identity/sign-in/web/devconsole-project">Google OAuth
+     * web client id.</a>
+     * </li>
+     * <li>Enabling Facebook Sign In: Please override the
+     * {@code R.string.facebook_application_id} to provide the
+     * <a href="https://developers.facebook.com/docs/apps/register">App Id</a> from
+     * <a href="https://developers.facebook.com/apps">Facebook Developer Dashboard</a>.
+     * </li>
+     * </ul>
+     *
+     * @param context The context of the activity that is starting the authentication flow.
+     * @param firebaseApp the {@link com.google.firebase.FirebaseApp FirebaseApp} instance to
+     *     that the authentication flow should use and update.
+     * @param tosUrl the URL of the Term of Service page for your app that should be presented to
+     *     the user.
+     * @param theme the resource identifier of the customized theme to be applied to the
+     *     authentication flow. Use {@link #DEFAULT_THEME} if no customization is required.
+     * @param providers the identity providers that you wish to enable (e.g.
+     * {@link #GOOGLE google}, {@link #FACEBOOK facebook}, etc).
+     * @return An intent to launch the authentication flow.
      */
     public static Intent createIntent(
-//            * @param providers the supported identity providers that you wish to enable (google, facebook, etc)
             @NonNull Context context,
             @NonNull FirebaseApp firebaseApp,
-            String termsOfServiceUrl,
+            String tosUrl,
             int theme,
             @Nullable List<String> providers) {
-        ArrayList<IDPProviderParcel> providerParcels = new ArrayList<>();
-        String appName = firebaseApp.getName();
-        String apiaryKey = firebaseApp.getOptions().getApiKey();
-        String applicationId = firebaseApp.getOptions().getApplicationId();
         if (providers == null || providers.size() == 0) {
-            return CredentialsInitActivity.createIntent(
-                    context,
-                    appName,
-                    providerParcels,
-                    apiaryKey,
-                    applicationId,
-                    termsOfServiceUrl,
-                    theme
-            );
+            providers = Collections.emptyList();
         }
 
+        ArrayList<IDPProviderParcel> providerParcels = new ArrayList<>();
         for (String provider : providers) {
             if (provider.equalsIgnoreCase(FACEBOOK_PROVIDER)) {
                 providerParcels.add(FacebookProvider.createFacebookParcel(
                         context.getString(R.string.facebook_application_id)));
             } else if (provider.equalsIgnoreCase(GOOGLE_PROVIDER)) {
-                providerParcels.add(
-                        GoogleProvider.createParcel(context.getString(R.string.default_web_client_id)));
+                providerParcels.add(GoogleProvider.createParcel(
+                        context.getString(R.string.default_web_client_id)));
             } else if (provider.equalsIgnoreCase(EMAIL_PROVIDER)) {
                 providerParcels.add(
                         new IDPProviderParcel(EmailAuthProvider.PROVIDER_ID, new Bundle())
                 );
             }
         }
+
         return CredentialsInitActivity.createIntent(
                 context,
-                appName,
+                firebaseApp.getName(),
                 providerParcels,
-                apiaryKey,
-                applicationId,
-                termsOfServiceUrl,
+                firebaseApp.getOptions().getApiKey(),
+                firebaseApp.getOptions().getApplicationId(),
+                tosUrl,
                 theme
         );
     }
