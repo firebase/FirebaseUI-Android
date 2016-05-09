@@ -14,41 +14,48 @@
 
 package com.firebase.ui.auth.ui.account_link;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.account_link.AccountLinkController;
 import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
-import com.firebase.ui.auth.ui.BaseActivity;
+import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class WelcomeBackIDPPrompt
-        extends BaseActivity
+public class WelcomeBackIDPPrompt extends NoControllerBaseActivity
         implements View.OnClickListener, IDPProvider.IDPCallback {
 
     private static final String TAG = "WelcomeBackIDPPrompt";
 
     private IDPProvider mIDPProvider;
     private String mProviderId;
+    private IDPResponse mIdpResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getResources().getString(R.string.sign_in));
         mProviderId = getProviderIdFromIntent();
+        mIdpResponse = getIntent().getParcelableExtra(ControllerConstants.EXTRA_IDP_RESPONSE);
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         mIDPProvider = null;
@@ -95,11 +102,6 @@ public class WelcomeBackIDPPrompt
     }
 
     @Override
-    protected Controller setUpController() {
-        return new AccountLinkController(getApplicationContext(), mAppName);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mIDPProvider.onActivityResult(requestCode, resultCode, data);
@@ -107,21 +109,20 @@ public class WelcomeBackIDPPrompt
 
     @Override
     public void onClick(View view) {
-        finish(RESULT_OK, getIntent());
+        next(mIdpResponse, mProviderId);
     }
 
     @Override
     public void onSuccess(IDPResponse idpResponse) {
         Intent data = getIntent();
         data.putExtra(ControllerConstants.EXTRA_PROVIDER, mProviderId);
-        data.putExtra(ControllerConstants.EXTRA_IDP_RESPONSE, idpResponse);
-        finish(RESULT_OK, data);
+        next(idpResponse, mProviderId);
     }
 
     @Override
     public void onFailure(Bundle extra) {
         Toast.makeText(getApplicationContext(), "Error signing in", Toast.LENGTH_LONG).show();
-        finish(RESULT_FIRST_USER, getIntent());
+        next(mIdpResponse, mProviderId);
     }
 
     private String getAppNameFromIntent() {
@@ -144,9 +145,52 @@ public class WelcomeBackIDPPrompt
         return new Intent().setClass(context, WelcomeBackIDPPrompt.class)
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
                 .putExtra(ControllerConstants.EXTRA_PROVIDER, providerId)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                .putExtra(BaseActivity.EXTRA_ID, AccountLinkController.ID_WELCOME_BACK_IDP);
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
     }
 
+    private void next(IDPResponse idpResponse, String provider) {
+        if (idpResponse == null) {
+            return; // do nothing
+        }
+        AuthCredential credential;
+        switch (provider) {
+            case GoogleAuthProvider.PROVIDER_ID:
+                credential = GoogleProvider.createAuthCredential(idpResponse);
+                break;
+            case FacebookAuthProvider.PROVIDER_ID:
+                credential = FacebookProvider.createAuthCredential(idpResponse);
+                break;
+            default:
+                Log.e(TAG, "Unknown provider: " + provider);
+                finish(Activity.RESULT_FIRST_USER, new Intent());
+                return;
+        }
+        if (credential == null) {
+            Log.e(TAG, "No credential returned");
+            finish(Activity.RESULT_FIRST_USER, new Intent());
+            return;
+        }
 
+        FirebaseAuth firebaseAuth = getFirebaseAuth();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        if (currentUser == null) {
+            Task<AuthResult> authResultTask = firebaseAuth.signInWithCredential(credential);
+            authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    finish(Activity.RESULT_OK, new Intent());
+                }
+            });
+
+        } else {
+            Task<AuthResult> authResultTask = currentUser.linkWithCredential(credential);
+            authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    finish(Activity.RESULT_OK, new Intent());
+                }
+            });
+        }
+    }
 }

@@ -17,6 +17,8 @@ package com.firebase.ui.auth.ui.account_link;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
@@ -27,21 +29,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.account_link.AccountLinkController;
-import com.firebase.ui.auth.ui.BaseActivity;
+import com.firebase.ui.auth.ui.NoControllerBaseActivity;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
+import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
 
-public class WelcomeBackPasswordPrompt extends BaseActivity implements View.OnClickListener {
+public class WelcomeBackPasswordPrompt extends NoControllerBaseActivity implements View.OnClickListener {
     final StyleSpan bold = new StyleSpan(Typeface.BOLD);
     private String mEmail;
+    private TextInputLayout mPasswordLayout;
+    private EditText mPasswordField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.sign_in_title);
         setContentView(R.layout.welcome_back_password_prompt_layout);
+        mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mEmail = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
         String appName = getIntent().getStringExtra(ControllerConstants.EXTRA_APP_NAME);
         TextView bodyTextView = (TextView) findViewById(R.id.welcome_back_password_body);
@@ -54,35 +65,42 @@ public class WelcomeBackPasswordPrompt extends BaseActivity implements View.OnCl
         bodyTextView.setText(spannableStringBuilder);
         Button signIn = (Button) findViewById(R.id.button_done);
         signIn.setOnClickListener(this);
-        EditText password = (EditText) findViewById(R.id.password);
+        mPasswordField = (EditText) findViewById(R.id.password);
         ImageView toggleImage = (ImageView) findViewById(R.id.toggle_visibility);
-        toggleImage.setOnClickListener(new PasswordToggler(password));
+        toggleImage.setOnClickListener(new PasswordToggler(mPasswordField));
         TextView troubleSigningIn = (TextView) findViewById(R.id.trouble_signing_in);
         troubleSigningIn.setOnClickListener(this);
-        String error = getIntent().getStringExtra(ControllerConstants.EXTRA_ERROR);
-        if (error != null) {
-            password.setError(error);
-        }
-    }
-
-    @Override
-    protected Controller setUpController() {
-        return new AccountLinkController(getApplicationContext(), mAppName);
     }
 
     @Override
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.button_done) {
-            EditText password = (EditText) findViewById(R.id.password);
-            finish(RESULT_OK, new Intent()
-                    .putExtra(ControllerConstants.EXTRA_EMAIL, getIntent()
-                            .getStringExtra(ControllerConstants.EXTRA_EMAIL))
-                    .putExtra(ControllerConstants.EXTRA_PASSWORD, password.getText().toString())
-            );
+            next(mEmail, mPasswordField.getText().toString());
         } else if (id == R.id.trouble_signing_in) {
-            finish(RESULT_FIRST_USER, new Intent().putExtra(
-                    ControllerConstants.EXTRA_EMAIL, mEmail));
+            startActivity(RecoverPasswordActivity
+                    .createIntent(getApplicationContext(), mAppName, mEmail));
+            finish(RESULT_OK, new Intent());
+        }
+    }
+
+    private void next(String email, String password) {
+        FirebaseUser currentUser = getCurrentUser();
+        AuthCredential emailCredential = EmailAuthProvider.getCredential(email, password);
+        if (currentUser != null) {
+            Task<AuthResult> authResultTask = currentUser.linkWithCredential(emailCredential);
+            authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    finish(RESULT_OK, new Intent());
+                }
+            });
+            authResultTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Throwable throwable) {
+                    mPasswordLayout.setError(throwable.getLocalizedMessage());
+                }
+            });
         }
     }
 }

@@ -28,10 +28,8 @@ import android.widget.Toast;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
-import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.account_link.AccountLinkController;
-import com.firebase.ui.auth.ui.BaseActivity;
+import com.firebase.ui.auth.ui.NoControllerBaseActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -43,7 +41,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class SaveCredentialsActivity extends BaseActivity
+public class SaveCredentialsActivity extends NoControllerBaseActivity
         implements GoogleApiClient.ConnectionCallbacks, ResultCallback<Status>,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "CredentialsSaveBase";
@@ -99,10 +97,6 @@ public class SaveCredentialsActivity extends BaseActivity
         mCredentialsApiClient.connect();
     }
 
-    @Override
-    protected Controller setUpController() {
-        return new AccountLinkController(getApplicationContext(), mAppName);
-    }
 
     @Override
     protected void onStart() {
