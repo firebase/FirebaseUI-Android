@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">FirebaseUI Chat</string>
-    <!-- FirebaseUI Configuration -->
-    <string name="facebook_app_id"></string>
-    <string name="twitter_app_key"></string>
-    <string name="twitter_app_secret"></string>
+
+    <string name="name_chat">ChatActivity</string>
+    <string name="desc_chat">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
 </resources>

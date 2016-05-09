@@ -50,11 +50,6 @@ dependencies {
     compile project(':storage')
     compile project(':auth')
 
-    // TODO(samstern): Uncomment these when auth returns
-    // compile 'com.google.android.gms:play-services-auth:8.5.6'
-    // compile 'com.facebook.android:facebook-android-sdk:4.6.0'
-    // compile 'org.twitter4j:twitter4j-core:4.0.2'
-
     androidTestCompile 'junit:junit:4.12'
 }
 
