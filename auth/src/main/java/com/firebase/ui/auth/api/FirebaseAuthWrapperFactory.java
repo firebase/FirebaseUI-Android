@@ -14,23 +14,24 @@
 
 package com.firebase.ui.auth.api;
 
-import android.content.Context;
-
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.json.JSONObject;
-
+/**
+ * Utility class for producing instances of {@link FirebaseAuthWrapper}.
+ */
 public class FirebaseAuthWrapperFactory {
 
-    private static FirebaseAuthWrapper sDefaultImpl;
-
+    /**
+     * Produces a {@link FirebaseAuthWrapper} given the Firebase application name.
+     */
     public static FirebaseAuthWrapper getFirebaseAuthWrapper(String appName) {
-        FirebaseApp firebaseApp = FirebaseApp.getInstance(appName);
-        return new FirebaseAuthWrapperImpl(FirebaseAuth.getInstance(firebaseApp));
+        return getFirebaseAuthWrapper(FirebaseApp.getInstance(appName));
     }
 
+    /**
+     * Produces a {@link FirebaseAuthWrapper} given a {@link FirebaseApp} instance.
+     */
     public static FirebaseAuthWrapper getFirebaseAuthWrapper(FirebaseApp firebaseApp) {
         return new FirebaseAuthWrapperImpl(FirebaseAuth.getInstance(firebaseApp));
     }
