@@ -40,7 +40,7 @@ public class EmailHintContainerActivity extends EmailFlowBaseActivity {
 
         PendingIntent hintIntent = apiWrapper.getEmailHintIntent(this);
 
-        if(hintIntent != null) {
+        if (hintIntent != null) {
             try {
                 startIntentSenderForResult(hintIntent.getIntentSender(), RC_HINT, null, 0, 0, 0);
                 return;
@@ -55,9 +55,9 @@ public class EmailHintContainerActivity extends EmailFlowBaseActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if( requestCode == RC_HINT && data != null) {
+        if (requestCode == RC_HINT && data != null) {
             Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
-            if(credential == null) {
+            if (credential == null) {
                 finish(BaseActivity.RESULT_CANCELED, new Intent());
                 return;
             }
