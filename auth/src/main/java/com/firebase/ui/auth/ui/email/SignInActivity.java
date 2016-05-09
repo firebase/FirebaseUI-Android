@@ -72,7 +72,7 @@ public class SignInActivity extends EmailFlowBaseActivity implements View.OnClic
         Button signInButton = (Button) findViewById(R.id.button_done);
         TextView recoveryButton =  (TextView) findViewById(R.id.trouble_signing_in);
 
-        if(email != null) {
+        if (email != null) {
             mEmailEditText.setText(email);
         }
         signInButton.setOnClickListener(this);
@@ -94,7 +94,7 @@ public class SignInActivity extends EmailFlowBaseActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        if( super.isPendingFinishing.get()) {
+        if (super.isPendingFinishing.get()) {
             return;
         }
         if (view.getId() == R.id.button_done) {
