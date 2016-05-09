@@ -62,4 +62,5 @@
     <string name="progress_dialog_signing_in">Signing in…</string>
     <string name="progress_dialog_signing_up">Signing up…</string>
     <string name="facebook_application_id">FACEBOOK-APPID</string>
+    <string name="default_web_client_id">GOOGLE-WEBCLIENT-ID</string>
 </resources>

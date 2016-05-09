@@ -34,6 +34,14 @@ import java.util.List;
 public class AuthFlowFactory {
     /**
      * Creates the intent that starts the auth flow
+     *
+     * IDP Provider instructions:
+     * Enabling Google Sign In: If you're using Google Services Gradle Plugin, there are no additional
+     *                          steps needed. If not, please override the R.string.default_web_client_id
+     *                          to provider your google oauth web client id.
+     * Enabling Facebook Sign In: Please override the R.string.facebook_application_id to provide the
+     *                          App Id from Facebook Developer Dashboard
+     *
      * @param context activity context
      * @param firebaseApp the FirebaseApp that's to used for the authentication flow
      * @param termsOfServiceUrl the URL to the Term of Service page to be present to the user
@@ -70,7 +78,7 @@ public class AuthFlowFactory {
                         context.getString(R.string.facebook_application_id)));
             } else if (provider.equalsIgnoreCase("google")) {
                 providerParcels.add(
-                        GoogleProvider.createParcel(firebaseApp.getOptions().getApplicationId()));
+                        GoogleProvider.createParcel(context.getString(R.string.default_web_client_id)));
             }
         }
         return CredentialsInitActivity.createIntent(
