@@ -35,7 +35,9 @@ import com.firebase.ui.auth.ui.BaseActivity;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickListener, IDPProvider.IDPCallback {
+public class WelcomeBackIDPPrompt
+        extends BaseActivity
+        implements View.OnClickListener, IDPProvider.IDPCallback {
 
     private static final String TAG = "WelcomeBackIDPPrompt";
 
@@ -51,25 +53,27 @@ public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickLi
 
         mIDPProvider = null;
         for (IDPProviderParcel providerParcel: mProviderParcels) {
-           if (mProviderId.equals(providerParcel.getProviderType())) {
-               switch (mProviderId) {
-                   case GoogleAuthProvider.PROVIDER_ID:
-                       mIDPProvider = new GoogleProvider(this, providerParcel);
-                       break;
-                   case FacebookAuthProvider.PROVIDER_ID:
-                       mIDPProvider = new FacebookProvider(this, providerParcel);
-                       break;
-                   default:
-                       Log.w(TAG, "Unknown provider: " + mProviderId);
-                       finish(RESULT_CANCELED, getIntent());
-                       return;
-               }
-           }
+            if (mProviderId.equals(providerParcel.getProviderType())) {
+                switch (mProviderId) {
+                    case GoogleAuthProvider.PROVIDER_ID:
+                        mIDPProvider = new GoogleProvider(this, providerParcel);
+                        break;
+                    case FacebookAuthProvider.PROVIDER_ID:
+                        mIDPProvider = new FacebookProvider(this, providerParcel);
+                        break;
+                    default:
+                        Log.w(TAG, "Unknown provider: " + mProviderId);
+                        finish(RESULT_CANCELED, getIntent());
+                        return;
+                }
+            }
         }
 
         if (mIDPProvider == null) {
-            getIntent().putExtra(ControllerConstants.EXTRA_ERROR_MESSAGE,
-                    "Firebase login successful. Account linking failed due to provider not enabled by application");
+            getIntent().putExtra(
+                    ControllerConstants.EXTRA_ERROR_MESSAGE,
+                    "Firebase login successful. Account linking failed due to provider not "
+                            + "enabled by application");
             finish(RESULT_CANCELED, getIntent());
         }
 
@@ -79,7 +83,7 @@ public class WelcomeBackIDPPrompt extends BaseActivity implements View.OnClickLi
         mIDPProvider.setAuthenticationCallback(this);
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 mIDPProvider.startLogin(WelcomeBackIDPPrompt.this, getEmailFromIntent());
             }
         });
