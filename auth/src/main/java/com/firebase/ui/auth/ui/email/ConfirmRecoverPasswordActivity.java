@@ -22,8 +22,9 @@ import android.widget.TextView;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 
-public class ConfirmRecoverPasswordActivity extends EmailFlowBaseActivity implements View.OnClickListener {
-
+public class ConfirmRecoverPasswordActivity
+        extends EmailFlowBaseActivity
+        implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class ConfirmRecoverPasswordActivity extends EmailFlowBaseActivity implem
 
     @Override
     public void onClick(View view) {
-        if(super.isPendingFinishing.get()) {
+        if (super.isPendingFinishing.get()) {
             return;
         }
         if (view.getId() == R.id.button_done) {
