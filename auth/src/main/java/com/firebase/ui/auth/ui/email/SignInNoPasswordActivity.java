@@ -41,7 +41,7 @@ public class SignInNoPasswordActivity extends EmailFlowBaseActivity implements V
         mEmailFieldValidator = new EmailFieldValidator(
                 (TextInputLayout) findViewById(R.id.input_layout_email));
         mEmailEditText = (EditText) findViewById(R.id.email);
-        if(email != null) {
+        if (email != null) {
             mEmailEditText.setText(email);
         }
 
@@ -57,7 +57,7 @@ public class SignInNoPasswordActivity extends EmailFlowBaseActivity implements V
         if (super.isPendingFinishing.get()) {
             return;
         }
-        if(!mEmailFieldValidator.validate(mEmailEditText.getText())) {
+        if (!mEmailFieldValidator.validate(mEmailEditText.getText())) {
             return;
         }
         showLoadingDialog(getResources().getString(R.string.progress_dialog_loading));
