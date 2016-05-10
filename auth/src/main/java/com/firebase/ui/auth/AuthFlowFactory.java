@@ -23,7 +23,7 @@ import android.support.annotation.Nullable;
 import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
-import com.firebase.ui.auth.ui.credentials.CredentialsInitActivity;
+import com.firebase.ui.auth.ui.credentials.ChooseAccountActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 
@@ -112,12 +112,12 @@ public class AuthFlowFactory {
             }
         }
 
-        return CredentialsInitActivity.createIntent(
+        return ChooseAccountActivity.createIntent(
                 context,
                 firebaseApp.getName(),
-                providerParcels,
                 firebaseApp.getOptions().getApiKey(),
                 firebaseApp.getOptions().getApplicationId(),
+                providerParcels,
                 tosUrl,
                 theme
         );
