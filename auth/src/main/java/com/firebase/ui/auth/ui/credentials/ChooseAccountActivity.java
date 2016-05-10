@@ -15,26 +15,58 @@
 package com.firebase.ui.auth.ui.credentials;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.choreographer.Controller;
-import com.firebase.ui.auth.choreographer.credentials.CredentialsController;
+import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 
 public class ChooseAccountActivity extends CredentialsBaseActivity {
     private static final String TAG = "ChooseAccountActivity";
     private static final int RC_CREDENTIALS_READ = 2;
 
     @Override
-    protected Controller setUpController() {
-        super.setUpController();
-        return new CredentialsController(this, mCredentialsAPI, mAppName);
+    protected void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
     }
 
     @Override
     public void asyncTasksDone() {
-        mCredentialsAPI.resolveSavedEmails(this);
+        mCredentialsApi.resolveSavedEmails(this);
+    }
+
+    private void logInWithCredential(final String email, final String password, final String accountType) {
+        if (email != null
+                && mCredentialsApi.isCredentialsAvailable()
+                && !mCredentialsApi.isSignInResolutionNeeded()) {
+            if (password != null && !password.isEmpty()) {
+                // email/password combination
+                getFirebaseAuth().signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                finish(RESULT_OK, new Intent());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Throwable throwable) {
+                                redirectToIdpSignIn(email, accountType, mProviderParcels);
+                                finish(RESULT_OK, new Intent());
+                            }
+                        });
+            } else {
+                // identifier/provider combination
+                redirectToIdpSignIn(email, accountType, mProviderParcels);
+                finish(RESULT_OK, new Intent());
+            }
+        }
     }
 
     @Override
@@ -46,12 +78,23 @@ public class ChooseAccountActivity extends CredentialsBaseActivity {
 
         if (requestCode == RC_CREDENTIALS_READ) {
             if (resultCode == RESULT_OK) {
+                // credential selected from SmartLock, log in with that credential
                 Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
-                mCredentialsAPI.handleCredential(credential);
-                mCredentialsAPI.resolveSignIn();
-                finish(RESULT_OK, getIntent());
+                mCredentialsApi.handleCredential(credential);
+                mCredentialsApi.resolveSignIn();
+                logInWithCredential(
+                        mCredentialsApi.getEmailFromCredential(),
+                        mCredentialsApi.getPasswordFromCredential(),
+                        mCredentialsApi.getAccountTypeFromCredential()
+                );
             } else if (resultCode == RESULT_CANCELED) {
-                finish(RESULT_OK, getIntent());
+                // Smart lock selector cancelled, go to the AuthMethodPicker screen
+                startActivity(AuthMethodPickerActivity.createIntent(
+                        getApplicationContext(),
+                        mAppName,
+                        mProviderParcels
+                ));
+                finish(RESULT_OK, new Intent());
             } else if (resultCode == RESULT_FIRST_USER) {
                 // TODO: (serikb) figure out flow
             }

@@ -16,55 +16,87 @@ package com.firebase.ui.auth.ui.credentials;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.util.Log;
 
 import com.firebase.ui.auth.api.CredentialsAPI;
-import com.firebase.ui.auth.choreographer.Controller;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.ui.BaseActivity;
+import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
+import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
+import com.google.android.gms.auth.api.credentials.IdentityProviders;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
 
-public abstract class CredentialsBaseActivity extends BaseActivity {
-    protected CredentialsAPI mCredentialsAPI;
+public abstract class CredentialsBaseActivity extends NoControllerBaseActivity {
+    private String TAG = "CredentialsBaseActivity";
+    protected CredentialsAPI mCredentialsApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected Controller setUpController() {
-        mCredentialsAPI = new CredentialsAPI(this, new CredentialsAPI.CallbackInterface() {
+        mCredentialsApi = new CredentialsAPI(this, new CredentialsAPI.CallbackInterface() {
             @Override
             public void onAsyncTaskFinished() {
                 asyncTasksDone();
             }
         });
-        return null;
     }
 
     /**
      * Override this method to handle async tasks. I.E.: if you need to wait until asyncTask(s)
      * will be done processing.
      */
-    public void asyncTasksDone() {
+    protected void asyncTasksDone() {
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (mCredentialsAPI.isGoogleApiClient()){
-            mCredentialsAPI.getGoogleApiClient().connect();
+        if (mCredentialsApi.isGoogleApiClient()){
+            mCredentialsApi.getGoogleApiClient().connect();
         }
     }
 
     @Override
     protected void onStop() {
-        if (mCredentialsAPI.isGoogleApiClient() && mCredentialsAPI.getGoogleApiClient().isConnected()) {
-            mCredentialsAPI.getGoogleApiClient().disconnect();
+        if (mCredentialsApi.isGoogleApiClient()
+                && mCredentialsApi.getGoogleApiClient().isConnected()) {
+            mCredentialsApi.getGoogleApiClient().disconnect();
         }
         super.onStop();
     }
 
+    protected void redirectToIdpSignIn(
+            String email, String accountType, ArrayList<IDPProviderParcel> providers) {
+        Intent nextIntent;
+        switch (accountType) {
+            case IdentityProviders.GOOGLE:
+                nextIntent = IDPSignInContainerActivity.createIntent(
+                        getApplicationContext(),
+                        GoogleAuthProvider.PROVIDER_ID,
+                        email,
+                        providers,
+                        mAppName);
+                break;
+            case IdentityProviders.FACEBOOK:
+                nextIntent =
+                        IDPSignInContainerActivity.createIntent(
+                                getApplicationContext(),
+                                FacebookAuthProvider.PROVIDER_ID,
+                                email,
+                                providers,
+                                mAppName);
+                break;
+            default:
+                Log.w(TAG, "unknown provider: " + accountType);
+                nextIntent = AuthMethodPickerActivity.createIntent(
+                        getApplicationContext(),
+                        mAppName,
+                        providers
+                );
+        }
+        startActivity(nextIntent);
+    }
 }

@@ -14,17 +14,21 @@
 
 package com.firebase.ui.auth.ui.credentials;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.firebase.ui.auth.choreographer.Controller;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.credentials.CredentialsController;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.AuthResult;
 
 import java.util.ArrayList;
 
@@ -59,7 +63,6 @@ public class CredentialsInitActivity extends CredentialsBaseActivity {
             apiaryKey, String applicationId, String termsOfServiceUrl, int theme) {
         return new Intent()
                 .setClass(context, CredentialsInitActivity.class)
-                .putExtra(EXTRA_ID, CredentialsController.ID_INIT)
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
                 .putExtra(ControllerConstants.EXTRA_APIARY_KEY, apiaryKey)
                 .putExtra(ControllerConstants.EXTRA_APPLICATION_ID, applicationId)
@@ -68,14 +71,39 @@ public class CredentialsInitActivity extends CredentialsBaseActivity {
                 .putExtra(ControllerConstants.EXTRA_THEME, theme);
     }
 
-    @Override
-    protected Controller setUpController() {
-        super.setUpController();
-        return new CredentialsController(getApplicationContext(), mCredentialsAPI, mAppName);
+    public void next(String password, final String email, final String accountType) {
+        if (mCredentialsApi.isPlayServicesAvailable()
+                && mCredentialsApi.isCredentialsAvailable()) {
+            if (mCredentialsApi.isAutoSignInAvailable()) {
+                mCredentialsApi.googleSilentSignIn();
+                // TODO: (serikb) authenticate Firebase user and continue to application
+                if (password != null && !password.isEmpty()) {
+                    // login with username/password
+                    getFirebaseAuth().signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    finish(Activity.RESULT_OK, new Intent());
+                                }
+                            });
+                } else {
+                    // log in with id/provider
+                    redirectToIdpSignIn(email, accountType, mProviderParcels);
+                }
+            } else if (mCredentialsApi.isSignInResolutionNeeded()) {
+                // resolve credential
+                startActivity(new Intent(getApplicationContext(), ChooseAccountActivity.class));
+                finish();
+            }
+        }
+
     }
 
     @Override
-    public void asyncTasksDone() {
-        finish(RESULT_OK, getIntent());
+    protected void asyncTasksDone() {
+        String email = mCredentialsApi.getEmailFromCredential();
+        String password = mCredentialsApi.getPasswordFromCredential();
+        String accountType = mCredentialsApi.getAccountTypeFromCredential();
+        next(email, password, accountType);
     }
 }
