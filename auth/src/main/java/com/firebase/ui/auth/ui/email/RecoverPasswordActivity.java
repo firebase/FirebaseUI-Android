@@ -51,7 +51,7 @@ public class RecoverPasswordActivity extends EmailFlowBaseActivity implements Vi
 
     @Override
     public void onClick(View view) {
-        if(super.isPendingFinishing.get()) {
+        if (super.isPendingFinishing.get()) {
             return;
         }
         if (view.getId() == R.id.button_done) {
