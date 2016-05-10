@@ -145,7 +145,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
-                            public void onFailure(@NonNull Throwable throwable) {
+                            public void onFailure(@NonNull Exception ex) {
                                 // email/password auth failed, go to the AuthMethodPickerActivity
                                 startActivity(AuthMethodPickerActivity.createIntent(
                                         getApplicationContext(),
