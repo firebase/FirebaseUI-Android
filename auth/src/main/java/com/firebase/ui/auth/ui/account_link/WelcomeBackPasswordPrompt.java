@@ -97,8 +97,8 @@ public class WelcomeBackPasswordPrompt extends NoControllerBaseActivity implemen
             });
             authResultTask.addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onFailure(@NonNull Throwable throwable) {
-                    mPasswordLayout.setError(throwable.getLocalizedMessage());
+                public void onFailure(@NonNull Exception ex) {
+                    mPasswordLayout.setError(ex.getLocalizedMessage());
                 }
             });
         }
