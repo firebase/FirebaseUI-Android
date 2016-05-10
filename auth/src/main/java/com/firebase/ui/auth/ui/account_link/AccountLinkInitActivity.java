@@ -57,10 +57,13 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
     void next(final String email, final String password, final String provider) {
         if (email == null) {
             finish();
+            return;
         }
         FirebaseAuth firebaseAuth = getFirebaseAuth();
-        Task<ProviderQueryResult> providerQueryResultTask = firebaseAuth.fetchProvidersForEmail(email);
-        providerQueryResultTask.addOnCompleteListener(new OnCompleteListener<ProviderQueryResult>() {
+        Task<ProviderQueryResult> providerQueryResultTask
+                = firebaseAuth.fetchProvidersForEmail(email);
+        providerQueryResultTask.addOnCompleteListener(
+                new OnCompleteListener<ProviderQueryResult>() {
             @Override
             public void onComplete(@NonNull Task<ProviderQueryResult> task) {
                 List<String> providers = task.getResult().getProviders();
@@ -78,7 +81,8 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                 } else if (providers.size() == 1) {
                     if (providers.get(0).equals(provider)) {
                         // existing account but has this IDP linked
-                        startActivity(new Intent(getApplicationContext(), SaveCredentialsActivity.class)
+                        startActivity(
+                            new Intent(getApplicationContext(), SaveCredentialsActivity.class)
                                 .putExtra(ControllerConstants.EXTRA_EMAIL, email)
                                 .putExtra(ControllerConstants.EXTRA_PROVIDER, provider)
                                 .putExtra(ControllerConstants.EXTRA_PASSWORD, password));
@@ -86,13 +90,14 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                     } else {
                         if (providers.get(0).equals(EmailAuthProvider.PROVIDER_ID)) {
                             startActivity(
-                                    new Intent(getApplicationContext(), WelcomeBackPasswordPrompt.class)
-                                            .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                                            .putExtra(ControllerConstants.EXTRA_APP_NAME, mAppName));
+                                new Intent(getApplicationContext(), WelcomeBackPasswordPrompt.class)
+                                    .putExtra(ControllerConstants.EXTRA_EMAIL, email)
+                                    .putExtra(ControllerConstants.EXTRA_APP_NAME, mAppName));
                             finish();
                         } else {
                             // existing account but has a different IDP linked
-                            startActivity(new Intent(getApplicationContext(), WelcomeBackIDPPrompt.class)
+                            startActivity(
+                                new Intent(getApplicationContext(), WelcomeBackIDPPrompt.class)
                                     .putExtra(ControllerConstants.EXTRA_EMAIL, email)
                                     .putExtra(ControllerConstants.EXTRA_PROVIDER, provider)
                             );
