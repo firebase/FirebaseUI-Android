@@ -126,7 +126,21 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
             } else if (mCredentialsApi.isSignInResolutionNeeded()) {
                 // resolve credential
                 mCredentialsApi.resolveSavedEmails(this);
+            } else {
+                startActivity(AuthMethodPickerActivity.createIntent(
+                        getApplicationContext(),
+                        mAppName,
+                        mProviderParcels
+                ));
+                finish();
             }
+        } else {
+            startActivity(AuthMethodPickerActivity.createIntent(
+                    getApplicationContext(),
+                    mAppName,
+                    mProviderParcels
+            ));
+            finish();
         }
     }
 
@@ -225,5 +239,6 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                 );
         }
         this.startActivity(nextIntent);
+        finish();
     }
 }
