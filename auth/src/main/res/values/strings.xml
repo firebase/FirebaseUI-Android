@@ -13,16 +13,18 @@
         reset your password.</string>
     <string name="create_account_title">Create account</string>
     <string name="required_field">You can\'t leave this empty.</string>
-    <string name="password_length">Short passwords are easy to guess. Try one with at least
-    %1$d characters.</string>
-    <string name="invalid_email_address">Please enter a valid email address.</string>
+    <string name="password_length">Strong passwords have at least %1$d characters and a mix of letters
+        and numbers</string>
+    <string name="invalid_email_address">That email address isn\'t correct</string>
+    <string name="missing_email_address">Enter your email address to continue</string>
     <string name="button_text_next">Next</string>
     <string name="button_text_send">Send</string>
     <string name="button_text_save">Save</string>
+    <string name="button_text_sign_in">Sign in</string>
     <string name="require_email_text">Please input email address</string>
     <string name="confirm_recovery_body">Follow the instructions sent to %1$s to recover your
         password.</string>
-    <string name="recovery_fail_body">Sorry, we are unable to find your email. Please start the flow again with another email.</string>
+    <string name="recovery_fail_body">That email address doesn\'t match an existing account</string>
     <string name="account_welcomeback">Welcome back</string>
     <string name="finding_credential">Finding a credential…</string>
     <string name="do_delete">Delete</string>
@@ -38,17 +40,13 @@
     <string name="recover_password_title">Recover password</string>
     <string name="welcome_back_idp_header">You already have an account</string>
     <string name="welcome_back_idp_prompt">
-        Good news! You\'ve already used
-        <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
-        Sign in with <xliff:g id="provider_name" example="Google">%2$s</xliff:g>
-        to continue to <xliff:g id="app_name" example="SuperApp">%3$s</xliff:g>.
+        You've already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
+        Sign in with <xliff:g id="provider_name" example="Google">%2$s</xliff:g> to continue.
     </string>
     <string name="welcome_back_idp_button">Sign in</string>
-    <string name="welcome_back_password_prompt_body">You\'ve previously used this email address:
-        <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g> for
-        <xliff:g id="app_name" example="SuperApp">%2$s</xliff:g>, but signed in with a password.
-        Enter your <xliff:g id="app_name" example="SuperApp">%2$s</xliff:g> password to remember
-        this account.</string>
+    <string name="welcome_back_password_prompt_body">You\'ve already used
+        <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g> to sign in. Enter
+        your password for that account.</string>
     <string name="password_word">Password</string>
     <string name="idp_name_google">Google</string>
     <string name="idp_name_facebook">Facebook</string>

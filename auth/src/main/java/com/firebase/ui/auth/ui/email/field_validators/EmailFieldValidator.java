@@ -23,8 +23,9 @@ public class EmailFieldValidator extends BaseValidator {
 
     public EmailFieldValidator(TextInputLayout errorContainer) {
         super(errorContainer);
-        mErrorMessage = mErrorContainer.getContext().getResources().getString(R.string
-                .invalid_email_address);
+        mErrorMessage = mErrorContainer.getContext().getResources().getString(
+                R.string.invalid_email_address);
+        mEmptyMessage = mErrorContainer.getResources().getString(R.string.missing_email_address);
     }
 
     @Override

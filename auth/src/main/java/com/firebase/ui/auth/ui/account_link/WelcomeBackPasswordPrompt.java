@@ -54,10 +54,9 @@ public class WelcomeBackPasswordPrompt extends NoControllerBaseActivity implemen
         setContentView(R.layout.welcome_back_password_prompt_layout);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mEmail = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
-        String appName = getIntent().getStringExtra(ControllerConstants.EXTRA_APP_NAME);
         TextView bodyTextView = (TextView) findViewById(R.id.welcome_back_password_body);
         String bodyText = getResources().getString(R.string.welcome_back_password_prompt_body);
-        bodyText = String.format(bodyText, mEmail, appName);
+        bodyText = String.format(bodyText, mEmail);
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
         spannableStringBuilder.setSpan(bold, emailStart, emailStart + mEmail.length(), Spannable

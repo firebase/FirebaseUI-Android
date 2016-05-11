@@ -19,6 +19,7 @@ import android.support.design.widget.TextInputLayout;
 public class BaseValidator {
     protected TextInputLayout mErrorContainer;
     protected String mErrorMessage = "";
+    protected String mEmptyMessage = null;
 
     public BaseValidator(TextInputLayout errorContainer) {
         mErrorContainer = errorContainer;
@@ -29,7 +30,10 @@ public class BaseValidator {
     }
 
     public boolean validate(CharSequence charSequence) {
-        if (isValid(charSequence)) {
+        if (mEmptyMessage != null && (charSequence == null || charSequence.length() == 0)) {
+            mErrorContainer.setError(mEmptyMessage);
+            return false;
+        } else if (isValid(charSequence)) {
             mErrorContainer.setError("");
             return true;
         } else {
