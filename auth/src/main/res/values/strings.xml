@@ -40,7 +40,7 @@
     <string name="recover_password_title">Recover password</string>
     <string name="welcome_back_idp_header">You already have an account</string>
     <string name="welcome_back_idp_prompt">
-        You've already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
+        You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
         Sign in with <xliff:g id="provider_name" example="Google">%2$s</xliff:g> to continue.
     </string>
     <string name="welcome_back_idp_button">Sign in</string>

@@ -9,9 +9,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".ChatActivity"
-            android:label="@string/name_chat" />
 
         <activity android:name=".ChooserActivity">
             <intent-filter>
@@ -20,6 +17,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Chat demo -->
+        <activity
+            android:name=".ChatActivity"
+            android:label="@string/name_chat" />
+
+        <!-- Auth UI demo -->
+        <activity
+            android:name=".auth.AuthUiActivity"
+            android:label="@string/name_auth_ui" />
+
+        <activity
+            android:name=".auth.SignedInActivity"
+            android:label="@string/name_auth_ui" />
     </application>
 
 </manifest>

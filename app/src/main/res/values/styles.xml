@@ -1,5 +1,4 @@
 <resources>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -7,4 +6,20 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AuthUIBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar" />
+
+    <style name="BlueTheme" parent="AuthUIBaseTheme">
+        <item name="colorPrimary">@color/material_blue_500</item>
+        <item name="colorAccent">@color/material_blue_a200</item>
+    </style>
+
+    <style name="GreenTheme" parent="AuthUIBaseTheme">
+        <item name="colorPrimary">@color/material_green_500</item>
+        <item name="colorAccent">@color/material_green_a200</item>
+    </style>
+
+    <style name="WarnButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/material_red_a200</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
 </resources>

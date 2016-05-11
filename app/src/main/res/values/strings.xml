@@ -1,6 +1,35 @@
 <resources>
-    <string name="app_name">FirebaseUI Chat</string>
+    <string name="app_name">Firebase UI</string>
 
     <string name="name_chat">ChatActivity</string>
+    <string name="name_auth_ui">Auth UI demo</string>
+
     <string name="desc_chat">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
+    <string name="desc_auth_ui">Demonstrates the Firebase Auth UI flow, with customization options.</string>
+
+    <!-- strings for Auth UI demo activities -->
+    <eat-comment/>
+    <string name="launch_title">Firebase Auth UI Demo</string>
+    <string name="sign_in">Start</string>
+    <string name="blue_theme">Blue Theme</string>
+    <string name="green_theme">Green Theme</string>
+    <string name="use_theme_header">Use theme:</string>
+    <string name="auth_providers_header">Use auth providers:</string>
+    <string name="email_label">Email</string>
+    <string name="facebook_label">Facebook</string>
+    <string name="google_label">Google</string>
+    <string name="google_tos_label">Google TOS</string>
+    <string name="firebase_tos_label">Firebase TOS</string>
+    <string name="tos_header">Terms of Service URL:</string>
+    <string name="unknown_response">Unexpected onActivityResult response code 😐</string>
+    <string name="ok_label">OK</string>
+    <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in 😓</string>
+    <string name="sign_in_cancelled">Sign in cancelled 😔</string>
+    <string name="signed_in_header">You are signed in!</string>
+    <string name="sign_out">Sign out</string>
+    <string name="delete_account_label">Delete account</string>
+    <string name="sign_out_failed">Sign out failed 😨</string>
+    <string name="delete_account_failed">Delete account failed 😨</string>
+    <string name="user_profile_header">User profile:</string>
+    <string name="profile_picture_content_desc">Profile picture</string>
 </resources>
