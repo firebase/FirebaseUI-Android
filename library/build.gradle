@@ -47,7 +47,6 @@ android.libraryVariants.all { variant ->
 
 dependencies {
     compile project(':database')
-    compile project(':storage')
     compile project(':auth')
 
     androidTestCompile 'junit:junit:4.12'

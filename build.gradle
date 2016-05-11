@@ -8,10 +8,9 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'com.google.gms:google-services:3.0.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
     }
 }
 
@@ -32,7 +31,10 @@ allprojects { project ->
     // like the list of submodules or the version
     apply from: "$rootDir/common/constants.gradle"
 
-    if (project.ext.submodules.contains(project.name)) {
+    def isLibrary = 'library'.equals(project.name)
+    def isSubmodule = project.ext.submodules.contains(project.name)
+
+    if (isSubmodule) {
 
         // So that we can resolve 'android' variable
         apply plugin: 'com.android.library'
@@ -120,6 +122,35 @@ allprojects { project ->
                 }
             }
 
+        }
+    }
+
+    // Bintray Configuration (applies to submodule and the monolith)
+    if (isSubmodule || isLibrary) {
+        apply plugin: 'com.jfrog.bintray'
+
+        def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
+        group = project.ext.group
+        version = project.ext.version
+
+        bintray {
+            user = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
+            key = hasProperty('BINTRAY_KEY') ? getProperty('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
+
+            configurations = [ 'archives' ]
+
+            pkg {
+                repo = 'firebase-ui'
+                name = archivesBaseName
+                userOrg = 'firebaseui'
+                licenses = [ 'Apache-2.0' ]
+                vcsUrl = 'https://github.com/firebase/FirebaseUI-Android.git'
+
+                version {
+                    name = version
+                    released = new Date()
+                }
+            }
         }
     }
 }

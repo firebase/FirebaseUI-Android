@@ -4,7 +4,7 @@ apply from: "../common/constants.gradle"
 archivesBaseName = 'firebase-ui'
 
 /**
- * Returns list of tasks names that prepareArtfacts should depend on,
+ * Returns list of tasks names that prepareArtfacts should depend on.
  */
 def prepareArtifactsTasks() {
     return project.ext.submodules.collect { name ->
@@ -21,6 +21,15 @@ def publishToRepoTasks(repo) {
         // Ex: name = database, repo = MavenLocal
         // Return: :database:publishDatabaseLibraryPublicationToMavenLocal
         ":${name}:publish${name.capitalize()}LibraryPublicationTo${repo}"
+    }.toArray()
+}
+
+/**
+ * Returns a list of task names to upload modules to bintray.
+ */
+def bintrayUploadTasks() {
+    return project.ext.submodules.collect { name ->
+        ":${name}:bintrayUpload"
     }.toArray()
 }
 
@@ -56,6 +65,7 @@ task prepareArtifacts(dependsOn: [
 task publishAllToMavenLocal(dependsOn: [
         'publishMonolithLibraryPublicationToMavenLocal',
         publishToRepoTasks('MavenLocal')]) {
+
 }
 
 /**
@@ -64,6 +74,15 @@ task publishAllToMavenLocal(dependsOn: [
 task publishAllToCustomLocal(dependsOn: [
         'publishMonolithLibraryPublicationToCustomLocalRepository',
         publishToRepoTasks('CustomLocalRepository')]) {
+
+}
+
+/**
+ * Upload all artifacts to bintray.
+ */
+task bintrayUploadAll(dependsOn: [
+        'bintrayUpload',
+        bintrayUploadTasks()]) {
 
 }
 
