@@ -14,8 +14,10 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.util.TypedValue;
 import android.view.View;
@@ -23,15 +25,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.email.EmailFlowController;
+import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
+import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseUser;
 
-public class SignInActivity extends EmailFlowBaseActivity implements View.OnClickListener {
+import java.util.ArrayList;
+
+public class SignInActivity extends NoControllerBaseActivity implements View.OnClickListener {
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EmailFieldValidator mEmailValidator;
@@ -42,7 +52,6 @@ public class SignInActivity extends EmailFlowBaseActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.sign_in);
-        mId = EmailFlowController.ID_SIGN_IN;
         setContentView(R.layout.sign_in_layout);
 
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
@@ -80,45 +89,73 @@ public class SignInActivity extends EmailFlowBaseActivity implements View.OnClic
 
     }
 
+    public static Intent createIntent(
+            Context context,
+            String appName,
+            String email,
+           ArrayList<IDPProviderParcel> providers
+    ) {
+        return new Intent(context, SignInActivity.class)
+                .putExtra(ControllerConstants.EXTRA_PROVIDER, providers)
+                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
+    }
+
     @Override
     public void onBackPressed () {
         super.onBackPressed();
     }
 
-    @Override
-    protected void blockHandling(Intent nextIntent) {
-        super.blockHandling(nextIntent);
-        TextInputLayout passwordInput = (TextInputLayout) findViewById(R.id.password_layout);
-        passwordInput.setError(nextIntent.getStringExtra(ControllerConstants.EXTRA_ERROR_MESSAGE));
+    private void signIn(String email, final String password) {
+        getFirebaseAuth()
+                .signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        dismissDialog();
+                        if (task.isSuccessful()) {
+                            FirebaseUser firebaseUser = task.getResult().getUser();
+                            if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
+                                    .isPlayServicesAvailable(SignInActivity.this)) {
+                                Intent saveCredentialIntent =
+                                        SaveCredentialsActivity.createIntent(
+                                                SignInActivity.this,
+                                                firebaseUser.getDisplayName(),
+                                                firebaseUser.getEmail(),
+                                                password,
+                                                null,
+                                                null,
+                                                mAppName
+                                        );
+                                startActivity(saveCredentialIntent);
+                                finish(RESULT_OK, new Intent());
+                            }
+                        } else {
+                            TextInputLayout passwordInput =
+                                    (TextInputLayout) findViewById(R.id.password_layout);
+                            passwordInput.setError(
+                                    getString(com.firebase.ui.auth.R.string.login_error));
+                        }
+                    }
+                });
     }
 
     @Override
     public void onClick(View view) {
-        if (super.isPendingFinishing.get()) {
-            return;
-        }
         if (view.getId() == R.id.button_done) {
             boolean emailValid = mEmailValidator.validate(mEmailEditText.getText());
             boolean passwordValid = mPasswordValidator.validate(mPasswordEditText.getText());
             if (!emailValid || !passwordValid) {
-                Toast.makeText(this, "Invalid password or email", Toast.LENGTH_SHORT).show();
                 return;
             } else {
-                showLoadingDialog(getResources().getString(R.string.progress_dialog_signing_in));
-                Intent data = new Intent();
-                data.putExtra(ControllerConstants.EXTRA_EMAIL,
-                        mEmailEditText.getText().toString());
-                data.putExtra(ControllerConstants.EXTRA_PASSWORD,
-                        mPasswordEditText.getText().toString());
-                data.putExtra(ControllerConstants.EXTRA_RESTORE_PASSWORD_FLAG, false);
-                finish(RESULT_OK, data);
+                showLoadingDialog(R.string.progress_dialog_signing_in);
+                signIn(mEmailEditText.getText().toString(), mPasswordEditText.getText().toString());
                 return;
             }
         } else if (view.getId() == R.id.trouble_signing_in) {
-            Intent data = new Intent();
-            data.putExtra(ControllerConstants.EXTRA_EMAIL, mEmailEditText.getText().toString());
-            data.putExtra(ControllerConstants.EXTRA_RESTORE_PASSWORD_FLAG, true);
-            finish(RESULT_OK, data);
+            startActivity(RecoverPasswordActivity.createIntent(
+                    this, mAppName, mEmailEditText.getText().toString()));
+            finish(RESULT_OK, new Intent());
             return;
         }
     }

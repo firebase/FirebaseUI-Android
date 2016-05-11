@@ -3,6 +3,7 @@ package com.firebase.ui.auth.ui;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthFlowFactory;
@@ -24,7 +25,7 @@ public abstract class NoControllerBaseActivity extends android.support.v7.app.Ap
 
     // TODO once the controller-centric BaseActivity is gone this will no longer be duplicate code
     private ProgressDialog mProgressDialog;
-    private void dismissDialog() {
+    protected void dismissDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
             mProgressDialog = null;
@@ -34,6 +35,10 @@ public abstract class NoControllerBaseActivity extends android.support.v7.app.Ap
     protected void showLoadingDialog(String message) {
         dismissDialog();
         mProgressDialog = ProgressDialog.show(this, "", message, true);
+    }
+
+    protected void showLoadingDialog(@StringRes int stringResource) {
+        showLoadingDialog(getString(stringResource));
     }
 
     @Override

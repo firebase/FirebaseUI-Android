@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,9 +22,13 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
+import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
+import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+
+import java.util.ArrayList;
 
 public class ConfirmRecoverPasswordActivity
-        extends EmailFlowBaseActivity
+        extends NoControllerBaseActivity
         implements View.OnClickListener {
 
     @Override
@@ -47,11 +52,17 @@ public class ConfirmRecoverPasswordActivity
         findViewById(R.id.button_done).setOnClickListener(this);
     }
 
+    public static Intent createIntent(Context context, boolean success, String email, String
+            appName, ArrayList<IDPProviderParcel> providers) {
+        return new Intent(context, ConfirmRecoverPasswordActivity.class)
+                .putExtra(ControllerConstants.EXTRA_SUCCESS, success)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
+                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+                .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, providers);
+    }
+
     @Override
     public void onClick(View view) {
-        if (super.isPendingFinishing.get()) {
-            return;
-        }
         if (view.getId() == R.id.button_done) {
             finish(RESULT_OK, new Intent());
         }

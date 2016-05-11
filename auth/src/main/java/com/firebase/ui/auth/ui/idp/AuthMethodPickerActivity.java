@@ -120,8 +120,8 @@ public class AuthMethodPickerActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_EMAIL_FLOW) {
-            if (resultCode != RESULT_CANCELED) {
-                finish(resultCode, new Intent());
+            if (resultCode == RESULT_OK) {
+                finish(RESULT_OK, new Intent());
             }
         } else {
             for(IDPProvider provider : mIdpProviders) {
