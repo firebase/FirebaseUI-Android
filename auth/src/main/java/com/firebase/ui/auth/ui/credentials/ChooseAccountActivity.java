@@ -42,6 +42,8 @@ import java.util.ArrayList;
 public class ChooseAccountActivity extends NoControllerBaseActivity {
     private static final String TAG = "ChooseAccountActivity";
     private static final int RC_CREDENTIALS_READ = 2;
+    private static final int RC_IDP_SIGNIN = 3;
+    private static final int RC_AUTH_METHOD_PICKER = 4;
 
     protected CredentialsAPI mCredentialsApi;
 
@@ -127,20 +129,18 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                 // resolve credential
                 mCredentialsApi.resolveSavedEmails(this);
             } else {
-                startActivity(AuthMethodPickerActivity.createIntent(
+                startActivityForResult(AuthMethodPickerActivity.createIntent(
                         getApplicationContext(),
                         mAppName,
                         mProviderParcels
-                ));
-                finish();
+                ), RC_AUTH_METHOD_PICKER);
             }
         } else {
-            startActivity(AuthMethodPickerActivity.createIntent(
+            startActivityForResult(AuthMethodPickerActivity.createIntent(
                     getApplicationContext(),
                     mAppName,
                     mProviderParcels
-            ));
-            finish();
+            ), RC_AUTH_METHOD_PICKER);
         }
     }
 
@@ -172,7 +172,6 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
             } else {
                 // identifier/provider combination
                 redirectToIdpSignIn(email, accountType, mProviderParcels);
-                finish(RESULT_OK, new Intent());
             }
         }
     }
@@ -197,15 +196,18 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                 );
             } else if (resultCode == RESULT_CANCELED) {
                 // Smart lock selector cancelled, go to the AuthMethodPicker screen
-                startActivity(AuthMethodPickerActivity.createIntent(
+                startActivityForResult(
+                    AuthMethodPickerActivity.createIntent(
                         getApplicationContext(),
                         mAppName,
-                        mProviderParcels
-                ));
-                finish(RESULT_OK, new Intent());
+                        mProviderParcels), RC_AUTH_METHOD_PICKER);
             } else if (resultCode == RESULT_FIRST_USER) {
                 // TODO: (serikb) figure out flow
             }
+        } else if (requestCode == RC_IDP_SIGNIN) {
+            finish(resultCode, new Intent());
+        } else if (requestCode == RC_AUTH_METHOD_PICKER) {
+            finish(resultCode, new Intent());
         }
     }
 
@@ -238,7 +240,6 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                         providers
                 );
         }
-        this.startActivity(nextIntent);
-        finish();
+        this.startActivityForResult(nextIntent, RC_IDP_SIGNIN);
     }
 }

@@ -20,12 +20,16 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.api.FirebaseAuthWrapper;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.email.EmailFlowController;
+import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.BaseActivity;
 import com.google.android.gms.auth.api.credentials.Credential;
+
+import java.util.ArrayList;
 
 public class EmailHintContainerActivity extends EmailFlowBaseActivity {
     private static final int RC_HINT = 13;
@@ -68,8 +72,12 @@ public class EmailHintContainerActivity extends EmailFlowBaseActivity {
         }
     }
 
-    public static Intent getInitIntent(Context context, String appName) {
+    public static Intent getInitIntent(
+            Context context,
+            String appName,
+            ArrayList<IDPProviderParcel> providers) {
         return new Intent(context, EmailHintContainerActivity.class)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName);
+                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+                .putExtra(ControllerConstants.EXTRA_PROVIDERS, providers);
     }
 }

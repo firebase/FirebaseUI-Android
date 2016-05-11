@@ -14,25 +14,23 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
-import android.os.Bundle;
+import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
+import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
+import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
+import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GoogleAuthProvider;
 
-import com.firebase.ui.auth.choreographer.Controller;
-import com.firebase.ui.auth.choreographer.idp.IDPController;
-import com.firebase.ui.auth.ui.BaseActivity;
-
-public class IDPBaseActivity extends BaseActivity {
-
-    public static final int EMAIL_LOGIN_NEEDED = Activity.RESULT_FIRST_USER + 2;
-    public static final int LOGIN_CANCELLED = Activity.RESULT_FIRST_USER + 3;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+public class IDPBaseActivity extends NoControllerBaseActivity {
+    protected AuthCredential createCredential(IDPResponse idpSignInResponse) {
+        if (idpSignInResponse.getProviderType().equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
+            return FacebookProvider.createAuthCredential(idpSignInResponse);
+        } else if (idpSignInResponse.getProviderType().equalsIgnoreCase(GoogleAuthProvider
+                .PROVIDER_ID)) {
+            return GoogleProvider.createAuthCredential(idpSignInResponse);
+        }
+        return null;
     }
 
-    @Override
-    protected Controller setUpController() {
-        return new IDPController(this, mAppName);
-    }
 }

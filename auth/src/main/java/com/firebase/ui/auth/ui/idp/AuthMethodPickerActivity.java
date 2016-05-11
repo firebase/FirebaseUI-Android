@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,14 +26,20 @@ import android.widget.LinearLayout;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.idp.IDPController;
 import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
+import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
@@ -44,6 +51,7 @@ public class AuthMethodPickerActivity
         extends IDPBaseActivity
         implements IDPProvider.IDPCallback, View.OnClickListener {
 
+    private static final int RC_EMAIL_FLOW = 2;
     private static final String TAG = "AuthMethodPicker";
     private ArrayList<IDPProviderParcel> mProviderParcels;
     private ArrayList<IDPProvider> mIdpProviders;
@@ -111,28 +119,50 @@ public class AuthMethodPickerActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        for (IDPProvider provider : mIdpProviders) {
-            provider.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_EMAIL_FLOW) {
+            if (resultCode != RESULT_CANCELED) {
+                finish(resultCode, new Intent());
+            }
+        } else {
+            for(IDPProvider provider : mIdpProviders) {
+                provider.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 
     @Override
     public void onSuccess(IDPResponse response) {
-        Intent data = new Intent();
-        data.putExtra(ControllerConstants.EXTRA_IDP_RESPONSE, response);
-        finish(RESULT_OK, data);
+        AuthCredential credential = createCredential(response);
+        FirebaseAuth firebaseAuth = getFirebaseAuth();
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(
+                new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        finish(RESULT_OK, new Intent());
+                    }
+                }
+        ).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Firebase login unsuccessful");
+            }
+        });
     }
 
     @Override
     public void onFailure(Bundle extra) {
-        Intent data = new Intent();
-        finish(LOGIN_CANCELLED, data);
+        // stay on this screen
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.email_provider) {
-            finish(IDPBaseActivity.EMAIL_LOGIN_NEEDED, new Intent());
+            Intent intent = EmailHintContainerActivity.getInitIntent(
+                    this,
+                    mAppName,
+                    mProviderParcels
+            );
+            startActivityForResult(intent, RC_EMAIL_FLOW);
         }
     }
 
@@ -148,7 +178,6 @@ public class AuthMethodPickerActivity
         return new Intent()
                 .setClass(context, AuthMethodPickerActivity.class)
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, parcels)
-                .putExtra(EXTRA_ID, IDPController.NASCAR_SCREEN);
+                .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, parcels);
     }
 }

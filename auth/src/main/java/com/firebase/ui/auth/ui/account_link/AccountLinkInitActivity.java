@@ -30,10 +30,18 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ProviderQueryResult;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class AccountLinkInitActivity extends NoControllerBaseActivity {
-    FirebaseAuthWrapper mApiWrapper;
+    protected FirebaseAuthWrapper mApiWrapper;
+    private static final int RC_SAVE_CREDENTIALS = 3;
+    private static final int RC_WELCOME_BACK_IDP_PROMPT = 4;
+    private static final int RC_WELCOME_BACK_PASSWORD_PROMPT = 5;
+    private static final List<Integer> REQUEST_CODES = Arrays.asList(
+            RC_SAVE_CREDENTIALS,
+            RC_WELCOME_BACK_IDP_PROMPT,
+            RC_WELCOME_BACK_PASSWORD_PROMPT);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +62,15 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                 .putExtra(ControllerConstants.EXTRA_PROVIDER, provider);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (REQUEST_CODES.contains(requestCode)) {
+            finish(resultCode, data);
+        }
+    }
+
     void next(final String email, final String password, final String provider) {
         if (email == null) {
-            finish();
+            finish(RESULT_OK, new Intent());
             return;
         }
         FirebaseAuth firebaseAuth = getFirebaseAuth();
@@ -69,44 +83,56 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                 List<String> providers = task.getResult().getProviders();
                 if (providers.size() == 0) {
                     // new account for this email
-                    startActivity(SaveCredentialsActivity.createIntent(
+                    startActivityForResult(SaveCredentialsActivity.createIntent(
                             getApplicationContext(),
                             null,
                             email,
                             password,
                             provider,
                             null,
-                            mAppName));
-                    finish();
+                            mAppName), RC_SAVE_CREDENTIALS);
                 } else if (providers.size() == 1) {
                     if (providers.get(0).equals(provider)) {
                         // existing account but has this IDP linked
-                        startActivity(
-                            new Intent(getApplicationContext(), SaveCredentialsActivity.class)
-                                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                                .putExtra(ControllerConstants.EXTRA_PROVIDER, provider)
-                                .putExtra(ControllerConstants.EXTRA_PASSWORD, password));
-                        finish();
+                        startActivityForResult(
+                            SaveCredentialsActivity.createIntent(
+                                    AccountLinkInitActivity.this,
+                                    null,
+                                    email,
+                                    password,
+                                    provider,
+                                    null,
+                                    mAppName),
+                            RC_SAVE_CREDENTIALS);
                     } else {
                         if (providers.get(0).equals(EmailAuthProvider.PROVIDER_ID)) {
-                            startActivity(
-                                new Intent(getApplicationContext(), WelcomeBackPasswordPrompt.class)
-                                    .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                                    .putExtra(ControllerConstants.EXTRA_APP_NAME, mAppName));
-                            finish();
+                            startActivityForResult(
+                                WelcomeBackPasswordPrompt.createIntent(
+                                    getApplicationContext(), email, mAppName),
+                                RC_WELCOME_BACK_PASSWORD_PROMPT);
                         } else {
                             // existing account but has a different IDP linked
-                            startActivity(
-                                new Intent(getApplicationContext(), WelcomeBackIDPPrompt.class)
-                                    .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                                    .putExtra(ControllerConstants.EXTRA_PROVIDER, provider)
+                            startActivityForResult(
+                                WelcomeBackIDPPrompt.createIntent(
+                                    getApplicationContext(),
+                                    provider,
+                                    mAppName,
+                                    email
+                                ),
+                                RC_WELCOME_BACK_IDP_PROMPT
                             );
                         }
                     }
                 } else {
                     // more than one providers
-                    startActivity(new Intent(getApplicationContext(), WelcomeBackIDPPrompt.class)
-                            .putExtra(ControllerConstants.EXTRA_EMAIL, email));
+                    startActivityForResult(
+                            WelcomeBackIDPPrompt.createIntent(
+                                getApplicationContext(),
+                                provider,
+                                mAppName,
+                                email
+                            ),
+                            RC_WELCOME_BACK_IDP_PROMPT);
                     finish();
                 }
             }

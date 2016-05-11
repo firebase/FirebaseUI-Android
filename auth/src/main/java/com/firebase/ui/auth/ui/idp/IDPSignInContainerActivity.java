@@ -17,6 +17,8 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
@@ -24,16 +26,25 @@ import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
-import com.firebase.ui.auth.ui.BaseActivity;
+import com.firebase.ui.auth.ui.account_link.AccountLinkInitActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPProvider.IDPCallback {
-
+    private static final String TAG = "IDPSignInContainer";
     private static final String PROVIDER = "sign_in_provider";
     private static final String EMAIL = "email";
+    private static final int RC_ACCOUNT_LINK = 3;
     private IDPProvider mIDPProvider;
     private String mProvider;
     private String mEmail;
@@ -66,7 +77,8 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
             }
         }
         if (providerParcel == null) {
-            finish(BaseActivity.RESULT_CANCELED, new Intent());
+            // we don't have a provider to handle this
+            finish(RESULT_CANCELED, new Intent());
             return;
         }
         if (mProvider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
@@ -78,30 +90,56 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         mIDPProvider.startLogin(this, mEmail);
     }
 
+    private void startAccountLinkingActivity(FirebaseUser firebaseUser) {
+        List<String> providers = firebaseUser.getProviders();
+        String provider = null;
+        if (providers.size() == 1) {
+            provider = providers.get(0);
+        } else {
+            Log.e(TAG, "Expecting a single provider, received :" + providers.size());
+        }
+        startActivityForResult(AccountLinkInitActivity.createStartIntent(
+                this,
+                mAppName,
+                firebaseUser.getEmail(),
+                provider
+        ), RC_ACCOUNT_LINK);
+    }
+
     @Override
     public void onSuccess(IDPResponse response) {
         Intent data = new Intent();
         data.putExtra(ControllerConstants.EXTRA_IDP_RESPONSE, response);
-        finish(RESULT_OK, data);
+        AuthCredential credential = createCredential(response);
+        FirebaseAuth firebaseAuth = getFirebaseAuth();
+        Task<AuthResult> authResultTask = firebaseAuth.signInWithCredential(credential);
+        authResultTask
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        startAccountLinkingActivity(task.getResult().getUser());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Failure authenticating with credential");
+                    }
+                });
     }
 
     @Override
     public void onFailure(Bundle extra) {
-        Intent data = new Intent();
-        finish(LOGIN_CANCELLED, data);
-    }
-
-    @Override
-    public void finish(int resultCode, Intent data) {
-        data.putParcelableArrayListExtra(
-                ControllerConstants.EXTRA_PROVIDERS,
-                getIntent().getParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS));
-        super.finish(resultCode, data);
+        finish(RESULT_CANCELED, new Intent());
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mIDPProvider.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_ACCOUNT_LINK) {
+            finish(resultCode, new Intent());
+        } else {
+            mIDPProvider.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

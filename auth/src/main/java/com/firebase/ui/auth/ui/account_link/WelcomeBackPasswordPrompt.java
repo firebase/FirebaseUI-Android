@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.account_link;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -70,6 +71,12 @@ public class WelcomeBackPasswordPrompt extends NoControllerBaseActivity implemen
         toggleImage.setOnClickListener(new PasswordToggler(mPasswordField));
         TextView troubleSigningIn = (TextView) findViewById(R.id.trouble_signing_in);
         troubleSigningIn.setOnClickListener(this);
+    }
+
+    public static Intent createIntent(Context context, String email, String appName) {
+        return new Intent(context, WelcomeBackPasswordPrompt.class)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
+                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName);
     }
 
     @Override
