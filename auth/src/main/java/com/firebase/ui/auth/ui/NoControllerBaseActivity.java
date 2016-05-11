@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.firebase.ui.auth.AuthFlowFactory;
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.google.firebase.FirebaseApp;
@@ -46,7 +46,7 @@ public abstract class NoControllerBaseActivity extends android.support.v7.app.Ap
                 ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL);
         mTheme = getIntent().getIntExtra(
                 ControllerConstants.EXTRA_THEME,
-                AuthFlowFactory.DEFAULT_THEME);
+                AuthUI.DEFAULT_THEME);
     }
 
     private Intent addExtras(Intent intent) {
