@@ -37,13 +37,16 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
 
+/**
+ * Presents the list of authentication options for this app to the user.
+ */
 public class AuthMethodPickerActivity
         extends IDPBaseActivity
         implements IDPProvider.IDPCallback, View.OnClickListener {
 
     private static final String TAG = "AuthMethodPicker";
     private ArrayList<IDPProviderParcel> mProviderParcels;
-    private ArrayList<IDPProvider> mIDPProviders;
+    private ArrayList<IDPProvider> mIdpProviders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,28 +54,20 @@ public class AuthMethodPickerActivity
         setContentView(R.layout.nascar_layout);
         Button emailButton = (Button) findViewById(R.id.email_provider);
         emailButton.setOnClickListener(this);
-    mProviderParcels = getIntent().getParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS);
-        populateIDPList(mProviderParcels);
+        mProviderParcels =
+                getIntent().getParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS);
+        populateIdpList(mProviderParcels);
     }
 
-    public static Intent createIntent(
-            Context context, String appName, ArrayList<IDPProviderParcel> parcels) {
-    return new Intent()
-        .setClass(context, AuthMethodPickerActivity.class)
-        .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-        .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, parcels)
-        .putExtra(EXTRA_ID, IDPController.NASCAR_SCREEN);
-    }
-
-    private void populateIDPList(ArrayList<IDPProviderParcel> mProviders) {
-        mIDPProviders = new ArrayList<>();
-        for (IDPProviderParcel providerParcel : mProviders) {
+    private void populateIdpList(ArrayList<IDPProviderParcel> providers) {
+        mIdpProviders = new ArrayList<>();
+        for (IDPProviderParcel providerParcel : providers) {
             switch (providerParcel.getProviderType()) {
                 case FacebookAuthProvider.PROVIDER_ID :
-                    mIDPProviders.add(new FacebookProvider(this, providerParcel));
+                    mIdpProviders.add(new FacebookProvider(this, providerParcel));
                     break;
                 case GoogleAuthProvider.PROVIDER_ID:
-                    mIDPProviders.add(new GoogleProvider(this, providerParcel));
+                    mIdpProviders.add(new GoogleProvider(this, providerParcel));
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
                     findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
@@ -85,7 +80,7 @@ public class AuthMethodPickerActivity
             }
         }
         LinearLayout btnHolder = (LinearLayout) findViewById(R.id.btn_holder);
-        for(final IDPProvider provider: mIDPProviders) {
+        for (final IDPProvider provider: mIdpProviders) {
             View loginButton = null;
             switch (provider.getProviderId()) {
                 case GoogleAuthProvider.PROVIDER_ID:
@@ -116,8 +111,8 @@ public class AuthMethodPickerActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        for(IDPProvider provider : mIDPProviders) {
-           provider.onActivityResult(requestCode, resultCode, data);
+        for (IDPProvider provider : mIdpProviders) {
+            provider.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -135,9 +130,25 @@ public class AuthMethodPickerActivity
     }
 
     @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.email_provider) {
-           finish(IDPBaseActivity.EMAIL_LOGIN_NEEDED, new Intent());
+    public void onClick(View view) {
+        if (view.getId() == R.id.email_provider) {
+            finish(IDPBaseActivity.EMAIL_LOGIN_NEEDED, new Intent());
         }
+    }
+
+    /**
+     * Creates an intent to start the authentication picker activity with the required information.
+     * @param context The context of the activity which intends to start the picker.
+     * @param appName The Firebase application name.
+     * @param parcels The supported provider descriptors.
+     * @return The intent to start the authentication picker activity.
+     */
+    public static Intent createIntent(
+            Context context, String appName, ArrayList<IDPProviderParcel> parcels) {
+        return new Intent()
+                .setClass(context, AuthMethodPickerActivity.class)
+                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+                .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, parcels)
+                .putExtra(EXTRA_ID, IDPController.NASCAR_SCREEN);
     }
 }
