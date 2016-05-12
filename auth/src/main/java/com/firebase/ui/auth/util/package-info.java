@@ -15,4 +15,4 @@
 /**
  * TODO: javadoc
  */
-package com.firebase.ui.auth.api;
+package com.firebase.ui.auth.util;

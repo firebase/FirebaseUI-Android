@@ -20,8 +20,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.api.FirebaseAuthWrapper;
-import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.util.FirebaseAuthWrapper;
+import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.NoControllerBaseActivity;
 import com.google.android.gms.tasks.OnCompleteListener;

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.api;
+package com.firebase.ui.auth.util;
 
 import android.app.Activity;
 import android.os.Bundle;

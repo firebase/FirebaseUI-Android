@@ -14,7 +14,7 @@
 
 package com.firebase.ui.auth;
 
-import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricGradleTestRunner;

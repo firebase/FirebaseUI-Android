@@ -20,8 +20,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 
-import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
-import com.firebase.ui.auth.api.FirebaseAuthWrapper;
+import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.BaseActivity;

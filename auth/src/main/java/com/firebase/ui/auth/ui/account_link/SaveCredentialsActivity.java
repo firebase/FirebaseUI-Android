@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.NoControllerBaseActivity;
 import com.google.android.gms.auth.api.Auth;

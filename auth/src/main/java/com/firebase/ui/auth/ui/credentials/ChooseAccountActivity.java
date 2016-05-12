@@ -22,7 +22,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.api.CredentialsAPI;
+import com.firebase.ui.auth.util.CredentialsAPI;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.NoControllerBaseActivity;
