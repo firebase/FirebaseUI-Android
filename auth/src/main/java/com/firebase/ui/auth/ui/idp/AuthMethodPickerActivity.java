@@ -160,6 +160,7 @@ public class AuthMethodPickerActivity
             Intent intent = EmailHintContainerActivity.getInitIntent(
                     this,
                     mAppName,
+                    mTermsOfServiceUrl,
                     mProviderParcels
             );
             startActivityForResult(intent, RC_EMAIL_FLOW);
@@ -174,10 +175,11 @@ public class AuthMethodPickerActivity
      * @return The intent to start the authentication picker activity.
      */
     public static Intent createIntent(
-            Context context, String appName, ArrayList<IDPProviderParcel> parcels) {
+            Context context, String appName, String tosUrl, ArrayList<IDPProviderParcel> parcels) {
         return new Intent()
                 .setClass(context, AuthMethodPickerActivity.class)
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+                .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, tosUrl)
                 .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, parcels);
     }
 }

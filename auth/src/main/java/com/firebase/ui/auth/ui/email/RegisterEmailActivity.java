@@ -102,9 +102,11 @@ public class RegisterEmailActivity
     public static Intent createIntent(
             Context context,
             String email,
+            String tosUrl,
             String appName) {
        return new Intent(context, RegisterEmailActivity.class)
                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+               .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, tosUrl)
                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
     }
 

@@ -49,7 +49,7 @@ public class EmailHintContainerActivity extends AcquireEmailActivity {
                 e.printStackTrace();
             }
         }
-        finish(BaseActivity.RESULT_CANCELED, new Intent());
+        finish(RESULT_CANCELED, new Intent());
         return;
     }
 
@@ -65,6 +65,7 @@ public class EmailHintContainerActivity extends AcquireEmailActivity {
                                 this,
                                 null,
                                 mAppName,
+                                mTermsOfServiceUrl,
                                 mProviderParcels
                                 ),
                         RC_SIGN_IN);
@@ -78,9 +79,11 @@ public class EmailHintContainerActivity extends AcquireEmailActivity {
     public static Intent getInitIntent(
             Context context,
             String appName,
+            String tosUrl,
             ArrayList<IDPProviderParcel> providers) {
         return new Intent(context, EmailHintContainerActivity.class)
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+                .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, tosUrl)
                 .putExtra(ControllerConstants.EXTRA_PROVIDERS, providers);
     }
 }
