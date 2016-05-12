@@ -29,7 +29,7 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -41,7 +41,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class SaveCredentialsActivity extends NoControllerBaseActivity
+public class SaveCredentialsActivity extends AppCompatBase
         implements GoogleApiClient.ConnectionCallbacks, ResultCallback<Status>,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "CredentialsSaveBase";
@@ -78,7 +78,7 @@ public class SaveCredentialsActivity extends NoControllerBaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.save_credentials_layout);
-        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
+        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.appName)
                 .isPlayServicesAvailable(this)) {
             finish(RESULT_FIRST_USER, getIntent());
         }

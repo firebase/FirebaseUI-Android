@@ -23,13 +23,11 @@ import android.widget.TextView;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
-import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.AppCompatBase;
 
 import java.util.ArrayList;
 
-public class ConfirmRecoverPasswordActivity
-        extends NoControllerBaseActivity
-        implements View.OnClickListener {
+public class ConfirmRecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

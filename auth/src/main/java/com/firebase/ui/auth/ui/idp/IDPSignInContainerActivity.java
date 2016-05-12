@@ -100,7 +100,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         }
         startActivityForResult(AccountLinkInitActivity.createStartIntent(
                 this,
-                mAppName,
+                mActivityHelper.appName,
                 firebaseUser.getEmail(),
                 provider
         ), RC_ACCOUNT_LINK);
@@ -111,7 +111,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         Intent data = new Intent();
         data.putExtra(ControllerConstants.EXTRA_IDP_RESPONSE, response);
         AuthCredential credential = createCredential(response);
-        FirebaseAuth firebaseAuth = getFirebaseAuth();
+        FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         Task<AuthResult> authResultTask = firebaseAuth.signInWithCredential(credential);
         authResultTask
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {

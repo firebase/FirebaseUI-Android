@@ -17,12 +17,12 @@ package com.firebase.ui.auth.ui.idp;
 import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
-import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class IDPBaseActivity extends NoControllerBaseActivity {
+public class IDPBaseActivity extends AppCompatBase {
     protected AuthCredential createCredential(IDPResponse idpSignInResponse) {
         if (idpSignInResponse.getProviderType().equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
             return FacebookProvider.createAuthCredential(idpSignInResponse);

@@ -23,7 +23,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -33,7 +33,7 @@ import com.google.firebase.auth.ProviderQueryResult;
 import java.util.Arrays;
 import java.util.List;
 
-public class AccountLinkInitActivity extends NoControllerBaseActivity {
+public class AccountLinkInitActivity extends AppCompatBase {
     protected FirebaseAuthWrapper mApiWrapper;
     private static final int RC_SAVE_CREDENTIALS = 3;
     private static final int RC_WELCOME_BACK_IDP_PROMPT = 4;
@@ -46,8 +46,8 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showLoadingDialog(R.string.progress_dialog_loading);
-        mApiWrapper = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName);
+        mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
+        mApiWrapper = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.appName);
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
         String password = getIntent().getStringExtra(ControllerConstants.EXTRA_PASSWORD);
         String provider = getIntent().getStringExtra(ControllerConstants.EXTRA_PROVIDER);
@@ -73,14 +73,14 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
             finish(RESULT_OK, new Intent());
             return;
         }
-        FirebaseAuth firebaseAuth = getFirebaseAuth();
+        FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         Task<ProviderQueryResult> providerQueryResultTask
                 = firebaseAuth.fetchProvidersForEmail(email);
         providerQueryResultTask.addOnCompleteListener(
                 new OnCompleteListener<ProviderQueryResult>() {
             @Override
             public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                dismissDialog();
+                mActivityHelper.dismissDialog();
                 List<String> providers = task.getResult().getProviders();
                 if (providers.size() == 0) {
                     // new account for this email
@@ -91,7 +91,7 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                             password,
                             provider,
                             null,
-                            mAppName), RC_SAVE_CREDENTIALS);
+                            mActivityHelper.appName), RC_SAVE_CREDENTIALS);
                 } else if (providers.size() == 1) {
                     if (providers.get(0).equals(provider)) {
                         // existing account but has this IDP linked
@@ -103,13 +103,13 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                                     password,
                                     provider,
                                     null,
-                                    mAppName),
+                                    mActivityHelper.appName),
                             RC_SAVE_CREDENTIALS);
                     } else {
                         if (providers.get(0).equals(EmailAuthProvider.PROVIDER_ID)) {
                             startActivityForResult(
                                 WelcomeBackPasswordPrompt.createIntent(
-                                    getApplicationContext(), email, mAppName),
+                                    getApplicationContext(), email, mActivityHelper.appName),
                                 RC_WELCOME_BACK_PASSWORD_PROMPT);
                         } else {
                             // existing account but has a different IDP linked
@@ -117,8 +117,8 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                                 WelcomeBackIDPPrompt.createIntent(
                                     getApplicationContext(),
                                     provider,
-                                    mProviderParcels,
-                                    mAppName,
+                                    mActivityHelper.providerParcels,
+                                    mActivityHelper.appName,
                                     email
                                 ),
                                 RC_WELCOME_BACK_IDP_PROMPT
@@ -131,8 +131,8 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                             WelcomeBackIDPPrompt.createIntent(
                                 getApplicationContext(),
                                 provider,
-                                mProviderParcels,
-                                mAppName,
+                                mActivityHelper.providerParcels,
+                                mActivityHelper.appName,
                                 email
                             ),
                             RC_WELCOME_BACK_IDP_PROMPT);

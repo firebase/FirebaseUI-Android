@@ -29,7 +29,7 @@ import android.widget.TextView;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
-import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
@@ -41,7 +41,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
-public class SignInActivity extends NoControllerBaseActivity implements View.OnClickListener {
+public class SignInActivity extends AppCompatBase implements View.OnClickListener {
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EmailFieldValidator mEmailValidator;
@@ -107,15 +107,16 @@ public class SignInActivity extends NoControllerBaseActivity implements View.OnC
     }
 
     private void signIn(String email, final String password) {
-        getFirebaseAuth()
+        mActivityHelper.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        dismissDialog();
+                        mActivityHelper.dismissDialog();
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = task.getResult().getUser();
-                            if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
+                            if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(
+                                    mActivityHelper.appName)
                                     .isPlayServicesAvailable(SignInActivity.this)) {
                                 Intent saveCredentialIntent =
                                         SaveCredentialsActivity.createIntent(
@@ -125,7 +126,7 @@ public class SignInActivity extends NoControllerBaseActivity implements View.OnC
                                                 password,
                                                 null,
                                                 null,
-                                                mAppName
+                                                mActivityHelper.appName
                                         );
                                 startActivity(saveCredentialIntent);
                                 finish(RESULT_OK, new Intent());
@@ -148,13 +149,13 @@ public class SignInActivity extends NoControllerBaseActivity implements View.OnC
             if (!emailValid || !passwordValid) {
                 return;
             } else {
-                showLoadingDialog(R.string.progress_dialog_signing_in);
+                mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
                 signIn(mEmailEditText.getText().toString(), mPasswordEditText.getText().toString());
                 return;
             }
         } else if (view.getId() == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
-                    this, mAppName, mEmailEditText.getText().toString()));
+                    this, mActivityHelper.appName, mEmailEditText.getText().toString()));
             finish(RESULT_OK, new Intent());
             return;
         }

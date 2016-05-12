@@ -31,7 +31,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,7 +42,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 
-public class WelcomeBackPasswordPrompt extends NoControllerBaseActivity implements View.OnClickListener {
+public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
     final StyleSpan bold = new StyleSpan(Typeface.BOLD);
     private String mEmail;
     private TextInputLayout mPasswordLayout;
@@ -85,13 +85,13 @@ public class WelcomeBackPasswordPrompt extends NoControllerBaseActivity implemen
             next(mEmail, mPasswordField.getText().toString());
         } else if (id == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity
-                    .createIntent(getApplicationContext(), mAppName, mEmail));
+                    .createIntent(getApplicationContext(), mActivityHelper.appName, mEmail));
             finish(RESULT_OK, new Intent());
         }
     }
 
     private void next(String email, String password) {
-        FirebaseUser currentUser = getCurrentUser();
+        FirebaseUser currentUser = mActivityHelper.getCurrentUser();
         AuthCredential emailCredential = EmailAuthProvider.getCredential(email, password);
         if (currentUser != null) {
             Task<AuthResult> authResultTask = currentUser.linkWithCredential(emailCredential);

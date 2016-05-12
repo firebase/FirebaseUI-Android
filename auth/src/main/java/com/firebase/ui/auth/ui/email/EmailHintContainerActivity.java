@@ -24,20 +24,22 @@ import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
-import com.firebase.ui.auth.ui.BaseActivity;
+import com.firebase.ui.auth.ui.AcquireEmailHelper;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.android.gms.auth.api.credentials.Credential;
 
 import java.util.ArrayList;
 
-public class EmailHintContainerActivity extends AcquireEmailActivity {
+public class EmailHintContainerActivity extends AppCompatBase {
     private static final int RC_HINT = 13;
+    private AcquireEmailHelper mAcquireEmailHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mAcquireEmailHelper = new AcquireEmailHelper(mActivityHelper);
         FirebaseAuthWrapper apiWrapper =
-                FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName);
+                FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.appName);
 
         PendingIntent hintIntent = apiWrapper.getEmailHintIntent(this);
 
@@ -64,15 +66,17 @@ public class EmailHintContainerActivity extends AcquireEmailActivity {
                         SignInNoPasswordActivity.createIntent(
                                 this,
                                 null,
-                                mAppName,
-                                mTermsOfServiceUrl,
-                                mProviderParcels
+                                mActivityHelper.appName,
+                                mActivityHelper.termsOfServiceUrl,
+                                mActivityHelper.providerParcels
                                 ),
-                        RC_SIGN_IN);
+                        AcquireEmailHelper.RC_SIGN_IN);
                 return;
             }
-            checkAccountExists(credential.getId());
+            mAcquireEmailHelper.checkAccountExists(credential.getId());
             return;
+        } else {
+            mAcquireEmailHelper.onActivityResult(requestCode, resultCode, data);
         }
     }
 

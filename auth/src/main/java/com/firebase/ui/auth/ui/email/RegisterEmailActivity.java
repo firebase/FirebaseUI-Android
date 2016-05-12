@@ -32,7 +32,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
@@ -45,8 +45,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class RegisterEmailActivity
-        extends NoControllerBaseActivity implements View.OnClickListener {
+public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener {
     private static final int RC_SAVE_CREDENTIAL = 3;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
@@ -111,7 +110,7 @@ public class RegisterEmailActivity
     }
 
     private void setUpTermsOfService() {
-        if (mTermsOfServiceUrl == null) {
+        if (mActivityHelper.termsOfServiceUrl == null) {
             return;
         }
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(ContextCompat.getColor
@@ -128,14 +127,14 @@ public class RegisterEmailActivity
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse
-                        (mTermsOfServiceUrl));
+                        (mActivityHelper.termsOfServiceUrl));
                 startActivity(intent);
             }
         });
     }
 
     private void startSaveCredentials(FirebaseUser firebaseUser, String password) {
-        if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
+        if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.appName)
                 .isPlayServicesAvailable(this)) {
             Intent saveCredentialIntent = SaveCredentialsActivity.createIntent(
                     this,
@@ -144,14 +143,14 @@ public class RegisterEmailActivity
                     password,
                     null,
                     null,
-                    mAppName
+                    mActivityHelper.appName
             );
             startActivityForResult(saveCredentialIntent, RC_SAVE_CREDENTIAL);
         }
     }
 
     private void registerUser(String email, final String name, final String password) {
-        final FirebaseAuth firebaseAuth = getFirebaseAuth();
+        final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         // create the user
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -166,12 +165,12 @@ public class RegisterEmailActivity
                             updateTask.addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    dismissDialog();
+                                    mActivityHelper.dismissDialog();
                                     startSaveCredentials(firebaseUser, password);
                                 }
                             });
                         } else {
-                            dismissDialog();
+                            mActivityHelper.dismissDialog();
                             String errorMessage = task.getException().getLocalizedMessage();
                             errorMessage = errorMessage.substring(errorMessage.indexOf(":") + 1);
                             TextInputLayout emailInput =
@@ -201,7 +200,7 @@ public class RegisterEmailActivity
             boolean passwordValid = mPasswordFieldValidator.validate(password);
             boolean nameValid = mNameValidator.validate(name);
             if (emailValid && passwordValid && nameValid) {
-                showLoadingDialog(R.string.progress_dialog_signing_up);
+                mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_up);
                 registerUser(mEmailEditText.getText().toString(), mNameEditText.getText()
                         .toString(), mPasswordEditText.getText().toString());
             }

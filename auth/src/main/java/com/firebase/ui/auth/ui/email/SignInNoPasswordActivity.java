@@ -26,17 +26,21 @@ import android.widget.EditText;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
+import com.firebase.ui.auth.ui.AcquireEmailHelper;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 
 import java.util.ArrayList;
 
-public class SignInNoPasswordActivity extends AcquireEmailActivity implements View.OnClickListener {
+public class SignInNoPasswordActivity extends AppCompatBase implements View.OnClickListener {
     private EditText mEmailEditText;
     private EmailFieldValidator mEmailFieldValidator;
+    private AcquireEmailHelper mAcquireEmailHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAcquireEmailHelper = new AcquireEmailHelper(mActivityHelper);
         setTitle(R.string.sign_in_with_email);
         setContentView(R.layout.signin_no_password_layout);
 
@@ -70,12 +74,18 @@ public class SignInNoPasswordActivity extends AcquireEmailActivity implements Vi
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mAcquireEmailHelper.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public void onClick(View view) {
         if (!mEmailFieldValidator.validate(mEmailEditText.getText())) {
             return;
         }
-        showLoadingDialog(R.string.progress_dialog_loading);
+        mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
         String email = mEmailEditText.getText().toString();
-        checkAccountExists(email);
+        mAcquireEmailHelper.checkAccountExists(email);
     }
 }

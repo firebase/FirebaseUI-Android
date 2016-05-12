@@ -25,14 +25,13 @@ import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class RecoverPasswordActivity
-        extends NoControllerBaseActivity implements View.OnClickListener {
+public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
     private static final int RC_CONFIRM = 3;
     private EditText mEmailEditText;
     private EmailFieldValidator mEmailFieldValidator;
@@ -57,18 +56,18 @@ public class RecoverPasswordActivity
     }
 
     private void next(final String email) {
-        FirebaseAuth firebaseAuth = getFirebaseAuth();
+        FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         firebaseAuth.sendPasswordResetEmail(email).
                 addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                dismissDialog();
+                mActivityHelper.dismissDialog();
                 Intent confirmIntent = ConfirmRecoverPasswordActivity.createIntent(
                         RecoverPasswordActivity.this,
                         task.isSuccessful(),
                         email,
-                        mAppName,
-                        mProviderParcels
+                        mActivityHelper.appName,
+                        mActivityHelper.providerParcels
                 );
                 startActivityForResult(confirmIntent, RC_CONFIRM);
             }
@@ -88,7 +87,7 @@ public class RecoverPasswordActivity
             if (!mEmailFieldValidator.validate(mEmailEditText.getText())) {
                 return;
             }
-            showLoadingDialog(R.string.progress_dialog_sending);
+            mActivityHelper.showLoadingDialog(R.string.progress_dialog_sending);
             next(mEmailEditText.getText().toString());
         }
     }

@@ -25,7 +25,7 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.util.CredentialsAPI;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
-import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.ActivityBase;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -39,7 +39,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
 
-public class ChooseAccountActivity extends NoControllerBaseActivity {
+public class ChooseAccountActivity extends ActivityBase {
     private static final String TAG = "ChooseAccountActivity";
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;
@@ -54,7 +54,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
         String applicationId = getIntent().getStringExtra(ControllerConstants.EXTRA_APPLICATION_ID);
 
         // initialize the FirebaseApp
-        getFirebaseApp(mAppName, apiaryKey, applicationId);
+        mActivityHelper.getFirebaseApp(apiaryKey, applicationId);
 
         mCredentialsApi = new CredentialsAPI(this, new CredentialsAPI.CallbackInterface() {
             @Override
@@ -114,7 +114,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                 // TODO: (serikb) authenticate Firebase user and continue to application
                 if (password != null && !password.isEmpty()) {
                     // login with username/password
-                    getFirebaseAuth().signInWithEmailAndPassword(email, password)
+                    mActivityHelper.getFirebaseAuth().signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -123,7 +123,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                             });
                 } else {
                     // log in with id/provider
-                    redirectToIdpSignIn(email, accountType, mProviderParcels);
+                    redirectToIdpSignIn(email, accountType, mActivityHelper.providerParcels);
                 }
             } else if (mCredentialsApi.isSignInResolutionNeeded()) {
                 // resolve credential
@@ -131,17 +131,17 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
             } else {
                 startActivityForResult(AuthMethodPickerActivity.createIntent(
                         getApplicationContext(),
-                        mAppName,
-                        mTermsOfServiceUrl,
-                        mProviderParcels
+                        mActivityHelper.appName,
+                        mActivityHelper.termsOfServiceUrl,
+                        mActivityHelper.providerParcels
                 ), RC_AUTH_METHOD_PICKER);
             }
         } else {
             startActivityForResult(AuthMethodPickerActivity.createIntent(
                     getApplicationContext(),
-                    mAppName,
-                    mTermsOfServiceUrl,
-                    mProviderParcels
+                    mActivityHelper.appName,
+                    mActivityHelper.termsOfServiceUrl,
+                    mActivityHelper.providerParcels
             ), RC_AUTH_METHOD_PICKER);
         }
     }
@@ -152,7 +152,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                 && !mCredentialsApi.isSignInResolutionNeeded()) {
             if (password != null && !password.isEmpty()) {
                 // email/password combination
-                getFirebaseAuth().signInWithEmailAndPassword(email, password)
+                mActivityHelper.getFirebaseAuth().signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -165,16 +165,16 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                                 // email/password auth failed, go to the AuthMethodPickerActivity
                                 startActivity(AuthMethodPickerActivity.createIntent(
                                         getApplicationContext(),
-                                        mAppName,
-                                        mTermsOfServiceUrl,
-                                        mProviderParcels
+                                        mActivityHelper.appName,
+                                        mActivityHelper.termsOfServiceUrl,
+                                        mActivityHelper.providerParcels
                                 ));
                                 finish(RESULT_OK, new Intent());
                             }
                         });
             } else {
                 // identifier/provider combination
-                redirectToIdpSignIn(email, accountType, mProviderParcels);
+                redirectToIdpSignIn(email, accountType, mActivityHelper.providerParcels);
             }
         }
     }
@@ -202,9 +202,9 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                 startActivityForResult(
                     AuthMethodPickerActivity.createIntent(
                         getApplicationContext(),
-                        mAppName,
-                        mTermsOfServiceUrl,
-                        mProviderParcels), RC_AUTH_METHOD_PICKER);
+                        mActivityHelper.appName,
+                        mActivityHelper.termsOfServiceUrl,
+                        mActivityHelper.providerParcels), RC_AUTH_METHOD_PICKER);
             } else if (resultCode == RESULT_FIRST_USER) {
                 // TODO: (serikb) figure out flow
             }
@@ -225,7 +225,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                         GoogleAuthProvider.PROVIDER_ID,
                         email,
                         providers,
-                        mAppName);
+                        mActivityHelper.appName);
                 break;
             case IdentityProviders.FACEBOOK:
                 nextIntent =
@@ -234,14 +234,14 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                                 FacebookAuthProvider.PROVIDER_ID,
                                 email,
                                 providers,
-                                mAppName);
+                                mActivityHelper.appName);
                 break;
             default:
                 Log.w(TAG, "unknown provider: " + accountType);
                 nextIntent = AuthMethodPickerActivity.createIntent(
                         this,
-                        mAppName,
-                        mTermsOfServiceUrl,
+                        mActivityHelper.appName,
+                        mActivityHelper.termsOfServiceUrl,
                         providers
                 );
         }

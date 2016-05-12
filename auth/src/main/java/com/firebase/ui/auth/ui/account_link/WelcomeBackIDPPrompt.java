@@ -31,7 +31,7 @@ import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
-import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -43,7 +43,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
 
-public class WelcomeBackIDPPrompt extends NoControllerBaseActivity
+public class WelcomeBackIDPPrompt extends AppCompatBase
         implements View.OnClickListener, IDPProvider.IDPCallback {
 
     private static final String TAG = "WelcomeBackIDPPrompt";
@@ -61,7 +61,7 @@ public class WelcomeBackIDPPrompt extends NoControllerBaseActivity
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         mIDPProvider = null;
-        for (IDPProviderParcel providerParcel: mProviderParcels) {
+        for (IDPProviderParcel providerParcel: mActivityHelper.providerParcels) {
             if (mProviderId.equals(providerParcel.getProviderType())) {
                 switch (mProviderId) {
                     case GoogleAuthProvider.PROVIDER_ID:
@@ -175,7 +175,7 @@ public class WelcomeBackIDPPrompt extends NoControllerBaseActivity
             return;
         }
 
-        FirebaseAuth firebaseAuth = getFirebaseAuth();
+        FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         if (currentUser == null) {

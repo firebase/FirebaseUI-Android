@@ -133,7 +133,7 @@ public class AuthMethodPickerActivity
     @Override
     public void onSuccess(IDPResponse response) {
         AuthCredential credential = createCredential(response);
-        FirebaseAuth firebaseAuth = getFirebaseAuth();
+        FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(
                 new OnCompleteListener<AuthResult>() {
                     @Override
@@ -159,8 +159,8 @@ public class AuthMethodPickerActivity
         if (view.getId() == R.id.email_provider) {
             Intent intent = EmailHintContainerActivity.getInitIntent(
                     this,
-                    mAppName,
-                    mTermsOfServiceUrl,
+                    mActivityHelper.appName,
+                    mActivityHelper.termsOfServiceUrl,
                     mProviderParcels
             );
             startActivityForResult(intent, RC_EMAIL_FLOW);
