@@ -19,7 +19,7 @@ import android.app.PendingIntent;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
+import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;

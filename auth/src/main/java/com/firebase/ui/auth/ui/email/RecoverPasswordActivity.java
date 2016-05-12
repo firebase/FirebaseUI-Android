@@ -24,9 +24,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,7 +43,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         super.onCreate(savedInstanceState);
         setTitle(R.string.recover_password_title);
         setContentView(R.layout.forgot_password_layout);
-        String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
         mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
                 .email_layout));
@@ -94,6 +94,6 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
         return ActivityHelper.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

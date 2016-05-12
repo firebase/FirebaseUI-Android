@@ -25,11 +25,11 @@ import android.widget.LinearLayout;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
+import com.firebase.ui.auth.provider.FacebookProvider;
+import com.firebase.ui.auth.provider.GoogleProvider;
+import com.firebase.ui.auth.provider.IDPProvider;
+import com.firebase.ui.auth.provider.IDPProviderParcel;
+import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;

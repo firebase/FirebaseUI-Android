@@ -21,9 +21,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 
 public class ConfirmRecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
@@ -33,8 +33,8 @@ public class ConfirmRecoverPasswordActivity extends AppCompatBase implements Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.confirm_recovery_layout);
         setTitle(R.string.check_your_email);
-        String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
-        boolean isSuccess = getIntent().getBooleanExtra(ControllerConstants.EXTRA_SUCCESS, true);
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
+        boolean isSuccess = getIntent().getBooleanExtra(ExtraConstants.EXTRA_SUCCESS, true);
 
         if (isSuccess) {
             String text = String.format(
@@ -62,7 +62,7 @@ public class ConfirmRecoverPasswordActivity extends AppCompatBase implements Vie
             String email) {
         return ActivityHelper.createBaseIntent(context, ConfirmRecoverPasswordActivity.class,
                 flowParams)
-                .putExtra(ControllerConstants.EXTRA_SUCCESS, success)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
+                .putExtra(ExtraConstants.EXTRA_SUCCESS, success)
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

@@ -28,9 +28,9 @@ import android.widget.Toast;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -65,12 +65,12 @@ public class SaveCredentialsActivity extends AppCompatBase
                 .isPlayServicesAvailable(this)) {
             finish(RESULT_FIRST_USER, getIntent());
         }
-        mName = getIntent().getStringExtra(ControllerConstants.EXTRA_NAME);
-        mEmail = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
-        mPassword = getIntent().getStringExtra(ControllerConstants.EXTRA_PASSWORD);
-        mProvider = getIntent().getStringExtra(ControllerConstants.EXTRA_PROVIDER);
+        mName = getIntent().getStringExtra(ExtraConstants.EXTRA_NAME);
+        mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
+        mPassword = getIntent().getStringExtra(ExtraConstants.EXTRA_PASSWORD);
+        mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
         mProfilePictureUri = getIntent()
-                .getStringExtra(ControllerConstants.EXTRA_PROFILE_PICTURE_URI);
+                .getStringExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI);
 
         mCredentialsApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -203,10 +203,10 @@ public class SaveCredentialsActivity extends AppCompatBase
             String provider,
             String profilePictureUri) {
         return ActivityHelper.createBaseIntent(context, SaveCredentialsActivity.class, flowParams)
-                .putExtra(ControllerConstants.EXTRA_NAME, name)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                .putExtra(ControllerConstants.EXTRA_PASSWORD, password)
-                .putExtra(ControllerConstants.EXTRA_PROVIDER, provider)
-                .putExtra(ControllerConstants.EXTRA_PROFILE_PICTURE_URI, profilePictureUri);
+                .putExtra(ExtraConstants.EXTRA_NAME, name)
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email)
+                .putExtra(ExtraConstants.EXTRA_PASSWORD, password)
+                .putExtra(ExtraConstants.EXTRA_PROVIDER, provider)
+                .putExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI, profilePictureUri);
     }
 }

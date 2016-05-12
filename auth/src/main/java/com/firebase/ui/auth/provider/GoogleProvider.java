@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.choreographer.idp.provider;
+package com.firebase.ui.auth.provider;
 
 import android.app.Activity;
 import android.content.Context;

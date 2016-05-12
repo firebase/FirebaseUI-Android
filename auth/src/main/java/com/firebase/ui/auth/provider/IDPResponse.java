@@ -12,34 +12,34 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.choreographer.idp.provider;
+package com.firebase.ui.auth.provider;
 
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class IDPProviderParcel implements Parcelable {
+public class IDPResponse implements Parcelable {
 
     private final String mProviderId;
-    private final Bundle mProviderExtra;
+    private final Bundle mResponseBundle;
 
-    public IDPProviderParcel(String providerId, Bundle providerExtra) {
+    public IDPResponse(String providerId, Bundle response) {
         mProviderId = providerId;
-        mProviderExtra = providerExtra;
+        mResponseBundle = response;
     }
 
-    public static final Creator<IDPProviderParcel> CREATOR = new Creator<IDPProviderParcel>() {
+    public static final Creator<IDPResponse> CREATOR = new Creator<IDPResponse>() {
         @Override
-        public IDPProviderParcel createFromParcel(Parcel in) {
-            return new IDPProviderParcel(
+        public IDPResponse createFromParcel(Parcel in) {
+            return new IDPResponse(
                     in.readString(),
                     in.readBundle()
             );
         }
 
         @Override
-        public IDPProviderParcel[] newArray(int size) {
-            return new IDPProviderParcel[size];
+        public IDPResponse[] newArray(int size) {
+            return new IDPResponse[size];
         }
     };
 
@@ -47,8 +47,8 @@ public class IDPProviderParcel implements Parcelable {
         return mProviderId;
     }
 
-    public Bundle getProviderExtra() {
-        return mProviderExtra;
+    public Bundle getResponse() {
+        return mResponseBundle;
     }
 
     @Override
@@ -59,6 +59,6 @@ public class IDPProviderParcel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mProviderId);
-        dest.writeBundle(mProviderExtra);
+        dest.writeBundle(mResponseBundle);
     }
 }

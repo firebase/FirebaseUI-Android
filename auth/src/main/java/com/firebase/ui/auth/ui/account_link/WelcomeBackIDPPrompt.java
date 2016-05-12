@@ -25,14 +25,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
+import com.firebase.ui.auth.provider.FacebookProvider;
+import com.firebase.ui.auth.provider.GoogleProvider;
+import com.firebase.ui.auth.provider.IDPProvider;
+import com.firebase.ui.auth.provider.IDPProviderParcel;
+import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -57,7 +57,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         super.onCreate(savedInstanceState);
         setTitle(getResources().getString(R.string.sign_in));
         mProviderId = getProviderIdFromIntent();
-        mIdpResponse = getIntent().getParcelableExtra(ControllerConstants.EXTRA_IDP_RESPONSE);
+        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         mIDPProvider = null;
@@ -80,7 +80,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
 
         if (mIDPProvider == null) {
             getIntent().putExtra(
-                    ControllerConstants.EXTRA_ERROR_MESSAGE,
+                    ExtraConstants.EXTRA_ERROR_MESSAGE,
                     "Firebase login successful. Account linking failed due to provider not "
                             + "enabled by application");
             finish(RESULT_CANCELED, getIntent());
@@ -117,7 +117,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
     @Override
     public void onSuccess(IDPResponse idpResponse) {
         Intent data = getIntent();
-        data.putExtra(ControllerConstants.EXTRA_PROVIDER, mProviderId);
+        data.putExtra(ExtraConstants.EXTRA_PROVIDER, mProviderId);
         next(idpResponse, mProviderId);
     }
 
@@ -128,15 +128,15 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
     }
 
     private String getAppNameFromIntent() {
-        return getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
+        return getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
     }
 
     private String getProviderIdFromIntent() {
-        return getIntent().getStringExtra(ControllerConstants.EXTRA_PROVIDER);
+        return getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
     }
 
     private String getEmailFromIntent() {
-        return getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
+        return getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
     }
 
     private void next(IDPResponse idpResponse, String provider) {
@@ -191,7 +191,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             String providerId,
             String email) {
         return ActivityHelper.createBaseIntent(context, WelcomeBackIDPPrompt.class, flowParams)
-                .putExtra(ControllerConstants.EXTRA_PROVIDER, providerId)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
+                .putExtra(ExtraConstants.EXTRA_PROVIDER, providerId)
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

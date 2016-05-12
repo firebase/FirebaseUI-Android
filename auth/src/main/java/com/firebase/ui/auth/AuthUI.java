@@ -24,9 +24,9 @@ import android.support.annotation.StyleRes;
 
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
-import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
+import com.firebase.ui.auth.provider.FacebookProvider;
+import com.firebase.ui.auth.provider.GoogleProvider;
+import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.credentials.ChooseAccountActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Continuation;

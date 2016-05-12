@@ -20,13 +20,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
+import com.firebase.ui.auth.provider.FacebookProvider;
+import com.firebase.ui.auth.provider.GoogleProvider;
+import com.firebase.ui.auth.provider.IDPProvider;
+import com.firebase.ui.auth.provider.IDPProviderParcel;
+import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.account_link.AccountLinkInitActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -96,7 +96,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
     @Override
     public void onSuccess(IDPResponse response) {
         Intent data = new Intent();
-        data.putExtra(ControllerConstants.EXTRA_IDP_RESPONSE, response);
+        data.putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
         AuthCredential credential = createCredential(response);
         FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         Task<AuthResult> authResultTask = firebaseAuth.signInWithCredential(credential);

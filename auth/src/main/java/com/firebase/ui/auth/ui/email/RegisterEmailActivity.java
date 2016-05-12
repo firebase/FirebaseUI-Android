@@ -31,9 +31,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
@@ -63,7 +63,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         setTitle(R.string.create_account_title);
         setContentView(R.layout.register_email_layout);
 
-        String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);
 
         TypedValue visibleIcon = new TypedValue();
@@ -202,6 +202,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
             FlowParameters flowParams,
             String email) {
         return ActivityHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

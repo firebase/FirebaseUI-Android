@@ -20,9 +20,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
@@ -51,9 +51,9 @@ public class AccountLinkInitActivity extends AppCompatBase {
         mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
         mApiWrapper = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(
                 mActivityHelper.getAppName());
-        String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
-        String password = getIntent().getStringExtra(ControllerConstants.EXTRA_PASSWORD);
-        String provider = getIntent().getStringExtra(ControllerConstants.EXTRA_PROVIDER);
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
+        String password = getIntent().getStringExtra(ExtraConstants.EXTRA_PASSWORD);
+        String provider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
         next(email, password, provider);
     }
 
@@ -137,8 +137,8 @@ public class AccountLinkInitActivity extends AppCompatBase {
             String password,
             String provider) {
         return ActivityHelper.createBaseIntent(context, AccountLinkInitActivity.class, flowParams)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                .putExtra(ControllerConstants.EXTRA_PASSWORD, password)
-                .putExtra(ControllerConstants.EXTRA_PROVIDER, provider);
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email)
+                .putExtra(ExtraConstants.EXTRA_PASSWORD, password)
+                .putExtra(ExtraConstants.EXTRA_PROVIDER, provider);
     }
 }

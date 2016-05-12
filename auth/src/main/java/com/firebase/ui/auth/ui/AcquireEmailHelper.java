@@ -18,7 +18,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.email.SignInActivity;
@@ -94,7 +93,7 @@ public class AcquireEmailHelper {
 
             Intent signInIntent = new Intent(
                     mActivityHelper.getApplicationContext(), SignInActivity.class);
-            signInIntent.putExtra(ControllerConstants.EXTRA_EMAIL, email);
+            signInIntent.putExtra(ExtraConstants.EXTRA_EMAIL, email);
             mActivityHelper.startActivityForResult(signInIntent, RC_SIGN_IN);
             return;
         }

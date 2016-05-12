@@ -24,10 +24,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.AcquireEmailHelper;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 
@@ -43,7 +43,7 @@ public class SignInNoPasswordActivity extends AppCompatBase implements View.OnCl
         setTitle(R.string.sign_in_with_email);
         setContentView(R.layout.signin_no_password_layout);
 
-        String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mEmailFieldValidator = new EmailFieldValidator(
                 (TextInputLayout) findViewById(R.id.input_layout_email));
         mEmailEditText = (EditText) findViewById(R.id.email);
@@ -79,6 +79,6 @@ public class SignInNoPasswordActivity extends AppCompatBase implements View.OnCl
             FlowParameters flowParams,
             String email) {
         return ActivityHelper.createBaseIntent(context, SignInNoPasswordActivity.class, flowParams)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

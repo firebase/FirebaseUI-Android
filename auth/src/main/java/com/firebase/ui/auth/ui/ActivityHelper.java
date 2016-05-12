@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
-import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,7 +35,7 @@ public class ActivityHelper {
 
     public ActivityHelper(Activity activity, Intent intent) {
         mActivity = activity;
-        flowParams = intent.getParcelableExtra(ControllerConstants.EXTRA_FLOW_PARAMS);
+        flowParams = intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
     }
 
     public void dismissDialog() {
@@ -91,7 +90,7 @@ public class ActivityHelper {
         return new Intent(
                 checkNotNull(context, "context cannot be null"),
                 checkNotNull(target, "target activity cannot be null"))
-                .putExtra(ControllerConstants.EXTRA_FLOW_PARAMS,
+                .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS,
                         checkNotNull(flowParams, "flowParams cannot be null"));
     }
 }

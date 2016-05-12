@@ -30,9 +30,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
@@ -56,7 +56,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         setTitle(R.string.sign_in_title);
         setContentView(R.layout.welcome_back_password_prompt_layout);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
-        mEmail = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
+        mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         TextView bodyTextView = (TextView) findViewById(R.id.welcome_back_password_body);
         String bodyText = getResources().getString(R.string.welcome_back_password_prompt_body);
         bodyText = String.format(bodyText, mEmail);
@@ -110,6 +110,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
         return ActivityHelper.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }
