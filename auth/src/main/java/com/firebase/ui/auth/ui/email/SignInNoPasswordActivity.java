@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -24,10 +25,12 @@ import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.ui.BaseActivity;
+import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 
-public class SignInNoPasswordActivity extends EmailFlowBaseActivity implements View.OnClickListener {
+import java.util.ArrayList;
+
+public class SignInNoPasswordActivity extends AcquireEmailActivity implements View.OnClickListener {
     private EditText mEmailEditText;
     private EmailFieldValidator mEmailFieldValidator;
 
@@ -52,18 +55,25 @@ public class SignInNoPasswordActivity extends EmailFlowBaseActivity implements V
         button.setOnClickListener(this);
     }
 
+    public static Intent createIntent(
+            Context context,
+            String email,
+            String appName,
+            ArrayList<IDPProviderParcel> providers
+    ) {
+        return new Intent(context, SignInNoPasswordActivity.class)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
+                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+                .putExtra(ControllerConstants.EXTRA_PROVIDERS, providers);
+    }
+
     @Override
     public void onClick(View view) {
-        if (super.isPendingFinishing.get()) {
-            return;
-        }
         if (!mEmailFieldValidator.validate(mEmailEditText.getText())) {
             return;
         }
-        showLoadingDialog(getResources().getString(R.string.progress_dialog_loading));
+        showLoadingDialog(R.string.progress_dialog_loading);
         String email = mEmailEditText.getText().toString();
-        Intent dataExtra = new Intent();
-        dataExtra.putExtra(ControllerConstants.EXTRA_EMAIL, email);
-        finish(BaseActivity.RESULT_OK, dataExtra);
+        checkAccountExists(email);
     }
 }

@@ -46,7 +46,7 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showLoadingDialog(getResources().getString(R.string.progress_dialog_loading));
+        showLoadingDialog(R.string.progress_dialog_loading);
         mApiWrapper = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName);
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
         String password = getIntent().getStringExtra(ControllerConstants.EXTRA_PASSWORD);
@@ -80,6 +80,7 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                 new OnCompleteListener<ProviderQueryResult>() {
             @Override
             public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                dismissDialog();
                 List<String> providers = task.getResult().getProviders();
                 if (providers.size() == 0) {
                     // new account for this email
@@ -116,6 +117,7 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                                 WelcomeBackIDPPrompt.createIntent(
                                     getApplicationContext(),
                                     provider,
+                                    mProviderParcels,
                                     mAppName,
                                     email
                                 ),
@@ -129,11 +131,11 @@ public class AccountLinkInitActivity extends NoControllerBaseActivity {
                             WelcomeBackIDPPrompt.createIntent(
                                 getApplicationContext(),
                                 provider,
+                                mProviderParcels,
                                 mAppName,
                                 email
                             ),
                             RC_WELCOME_BACK_IDP_PROMPT);
-                    finish();
                 }
             }
         });

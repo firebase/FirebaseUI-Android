@@ -14,9 +14,11 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
@@ -29,12 +31,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
+import com.firebase.ui.auth.ui.NoControllerBaseActivity;
+import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class RegisterEmailActivity extends EmailFlowBaseActivity implements View.OnClickListener {
+public class RegisterEmailActivity
+        extends NoControllerBaseActivity implements View.OnClickListener {
+    private static final int RC_SAVE_CREDENTIAL = 3;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mNameEditText;
@@ -42,14 +55,6 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
     private PasswordFieldValidator mPasswordFieldValidator;
     private RequiredFieldValidator mNameValidator;
     private ImageView mTogglePasswordImage;
-
-    @Override
-    public void onBackPressed() {
-        String email = mEmailEditText.getText().toString();
-        Intent data = new Intent();
-        data.putExtra(ControllerConstants.EXTRA_EMAIL, email);
-        finish(BACK_IN_FLOW, data);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +99,15 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
         createButton.setOnClickListener(this);
     }
 
+    public static Intent createIntent(
+            Context context,
+            String email,
+            String appName) {
+       return new Intent(context, RegisterEmailActivity.class)
+               .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+               .putExtra(ControllerConstants.EXTRA_EMAIL, email);
+    }
+
     private void setUpTermsOfService() {
         if (mTermsOfServiceUrl == null) {
             return;
@@ -118,18 +132,64 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
         });
     }
 
+    private void startSaveCredentials(FirebaseUser firebaseUser, String password) {
+        if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName)
+                .isPlayServicesAvailable(this)) {
+            Intent saveCredentialIntent = SaveCredentialsActivity.createIntent(
+                    this,
+                    firebaseUser.getDisplayName(),
+                    firebaseUser.getEmail(),
+                    password,
+                    null,
+                    null,
+                    mAppName
+            );
+            startActivityForResult(saveCredentialIntent, RC_SAVE_CREDENTIAL);
+        }
+    }
+
+    private void registerUser(String email, final String name, final String password) {
+        final FirebaseAuth firebaseAuth = getFirebaseAuth();
+        // create the user
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            final FirebaseUser firebaseUser = task.getResult().getUser();
+                           Task<Void> updateTask = firebaseUser.updateProfile(
+                                        new UserProfileChangeRequest
+                                            .Builder()
+                                            .setDisplayName(name).build());
+                            updateTask.addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    dismissDialog();
+                                    startSaveCredentials(firebaseUser, password);
+                                }
+                            });
+                        } else {
+                            dismissDialog();
+                            String errorMessage = task.getException().getLocalizedMessage();
+                            errorMessage = errorMessage.substring(errorMessage.indexOf(":") + 1);
+                            TextInputLayout emailInput =
+                                    (TextInputLayout) findViewById(R.id.email_layout);
+                            emailInput.setError(errorMessage);
+                        }
+                    }
+                });
+    }
+
     @Override
-    protected void blockHandling(Intent nextIntent) {
-        super.blockHandling(nextIntent);
-        TextInputLayout emailInput = (TextInputLayout) findViewById(R.id.email_layout);
-        emailInput.setError(nextIntent.getStringExtra(ControllerConstants.EXTRA_ERROR_MESSAGE));
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SAVE_CREDENTIAL) {
+            finish(RESULT_OK, new Intent());
+        }
     }
 
     @Override
     public void onClick(View view) {
-        if (super.isPendingFinishing.get()) {
-            return;
-        }
         if (view.getId() == R.id.button_create) {
             String email = mEmailEditText.getText().toString();
             String password = mPasswordEditText.getText().toString();
@@ -139,12 +199,9 @@ public class RegisterEmailActivity extends EmailFlowBaseActivity implements View
             boolean passwordValid = mPasswordFieldValidator.validate(password);
             boolean nameValid = mNameValidator.validate(name);
             if (emailValid && passwordValid && nameValid) {
-                Intent data = new Intent();
-                showLoadingDialog(getResources().getString(R.string.progress_dialog_signing_up));
-                data.putExtra(ControllerConstants.EXTRA_EMAIL, mEmailEditText.getText().toString());
-                data.putExtra(ControllerConstants.EXTRA_NAME, mNameEditText.getText().toString());
-                data.putExtra(ControllerConstants.EXTRA_PASSWORD, mPasswordEditText.getText().toString());
-                finish(RESULT_OK, data);
+                showLoadingDialog(R.string.progress_dialog_signing_up);
+                registerUser(mEmailEditText.getText().toString(), mNameEditText.getText()
+                        .toString(), mPasswordEditText.getText().toString());
             }
         }
     }

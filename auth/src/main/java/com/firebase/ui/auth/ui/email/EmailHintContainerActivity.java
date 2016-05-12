@@ -20,27 +20,24 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 
-import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.api.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.api.FirebaseAuthWrapper;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.email.EmailFlowController;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.BaseActivity;
 import com.google.android.gms.auth.api.credentials.Credential;
 
 import java.util.ArrayList;
 
-public class EmailHintContainerActivity extends EmailFlowBaseActivity {
+public class EmailHintContainerActivity extends AcquireEmailActivity {
     private static final int RC_HINT = 13;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mId = EmailFlowController.ID_SELECT_EMAIL;
 
-        FirebaseAuthWrapper apiWrapper = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper
-                (mAppName);
+        FirebaseAuthWrapper apiWrapper =
+                FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mAppName);
 
         PendingIntent hintIntent = apiWrapper.getEmailHintIntent(this);
 
@@ -62,12 +59,18 @@ public class EmailHintContainerActivity extends EmailFlowBaseActivity {
         if (requestCode == RC_HINT && data != null) {
             Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
             if (credential == null) {
-                finish(BaseActivity.RESULT_CANCELED, new Intent());
+                // If the hint picker is cancelled show the SignInNoPasswordActivity
+                startActivityForResult(
+                        SignInNoPasswordActivity.createIntent(
+                                this,
+                                null,
+                                mAppName,
+                                mProviderParcels
+                                ),
+                        RC_SIGN_IN);
                 return;
             }
-            Intent finishData = new Intent();
-            finishData.putExtra(ControllerConstants.EXTRA_EMAIL, credential.getId());
-            finish(BaseActivity.RESULT_OK, finishData);
+            checkAccountExists(credential.getId());
             return;
         }
     }

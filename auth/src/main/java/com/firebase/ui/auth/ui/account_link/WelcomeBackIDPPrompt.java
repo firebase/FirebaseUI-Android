@@ -41,6 +41,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.ArrayList;
+
 public class WelcomeBackIDPPrompt extends NoControllerBaseActivity
         implements View.OnClickListener, IDPProvider.IDPCallback {
 
@@ -140,11 +142,13 @@ public class WelcomeBackIDPPrompt extends NoControllerBaseActivity
     public static Intent createIntent(
             Context context,
             String providerId,
+            ArrayList<IDPProviderParcel> providers,
             String appName,
             String email) {
         return new Intent().setClass(context, WelcomeBackIDPPrompt.class)
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
                 .putExtra(ControllerConstants.EXTRA_PROVIDER, providerId)
+                .putExtra(ControllerConstants.EXTRA_PROVIDERS, providers)
                 .putExtra(ControllerConstants.EXTRA_EMAIL, email);
     }
 

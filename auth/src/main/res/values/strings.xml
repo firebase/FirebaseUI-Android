@@ -57,6 +57,7 @@
     <string name="email_account_creation_error">Email account registration unsuccessful</string>
     <string name="missing_password_email_toast">Missing password or email</string>
     <string name="progress_dialog_loading">Loading…</string>
+    <string name="progress_dialog_sending">Sending…</string>
     <string name="progress_dialog_signing_in">Signing in…</string>
     <string name="progress_dialog_signing_up">Signing up…</string>
     <string name="facebook_application_id">FACEBOOK-APPID</string>
