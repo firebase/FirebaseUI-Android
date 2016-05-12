@@ -27,6 +27,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -55,30 +57,11 @@ public class SaveCredentialsActivity extends AppCompatBase
     private String mProfilePictureUri;
     private GoogleApiClient mCredentialsApiClient;
 
-
-    public static Intent createIntent(
-            Context context,
-            String name,
-            String email,
-            String password,
-            String provider,
-            String profilePictureUri,
-            String appName) {
-        return new Intent().setClass(context, SaveCredentialsActivity.class)
-                .putExtra(ControllerConstants.EXTRA_NAME, name)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                .putExtra(ControllerConstants.EXTRA_PASSWORD, password)
-                .putExtra(ControllerConstants.EXTRA_PROVIDER, provider)
-                .putExtra(ControllerConstants.EXTRA_PROFILE_PICTURE_URI, profilePictureUri)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName);
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.save_credentials_layout);
-        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.appName)
+        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.getAppName())
                 .isPlayServicesAvailable(this)) {
             finish(RESULT_FIRST_USER, getIntent());
         }
@@ -209,4 +192,21 @@ public class SaveCredentialsActivity extends AppCompatBase
                 finish(RESULT_FIRST_USER, getIntent());
             }
         }
-    }}
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            String name,
+            String email,
+            String password,
+            String provider,
+            String profilePictureUri) {
+        return ActivityHelper.createBaseIntent(context, SaveCredentialsActivity.class, flowParams)
+                .putExtra(ControllerConstants.EXTRA_NAME, name)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
+                .putExtra(ControllerConstants.EXTRA_PASSWORD, password)
+                .putExtra(ControllerConstants.EXTRA_PROVIDER, provider)
+                .putExtra(ControllerConstants.EXTRA_PROFILE_PICTURE_URI, profilePictureUri);
+    }
+}

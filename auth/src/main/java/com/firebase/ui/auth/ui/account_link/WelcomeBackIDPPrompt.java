@@ -31,7 +31,9 @@ import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
+import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -40,8 +42,6 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.ArrayList;
 
 public class WelcomeBackIDPPrompt extends AppCompatBase
         implements View.OnClickListener, IDPProvider.IDPCallback {
@@ -61,7 +61,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         mIDPProvider = null;
-        for (IDPProviderParcel providerParcel: mActivityHelper.providerParcels) {
+        for (IDPProviderParcel providerParcel: mActivityHelper.flowParams.providerInfo) {
             if (mProviderId.equals(providerParcel.getProviderType())) {
                 switch (mProviderId) {
                     case GoogleAuthProvider.PROVIDER_ID:
@@ -139,19 +139,6 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         return getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
     }
 
-    public static Intent createIntent(
-            Context context,
-            String providerId,
-            ArrayList<IDPProviderParcel> providers,
-            String appName,
-            String email) {
-        return new Intent().setClass(context, WelcomeBackIDPPrompt.class)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putExtra(ControllerConstants.EXTRA_PROVIDER, providerId)
-                .putExtra(ControllerConstants.EXTRA_PROVIDERS, providers)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
-    }
-
     private void next(IDPResponse idpResponse, String provider) {
         if (idpResponse == null) {
             return; // do nothing
@@ -196,5 +183,15 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
                 }
             });
         }
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            String providerId,
+            String email) {
+        return ActivityHelper.createBaseIntent(context, WelcomeBackIDPPrompt.class, flowParams)
+                .putExtra(ControllerConstants.EXTRA_PROVIDER, providerId)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
     }
 }

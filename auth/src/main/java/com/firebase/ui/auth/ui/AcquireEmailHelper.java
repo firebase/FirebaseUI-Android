@@ -68,10 +68,8 @@ public class AcquireEmailHelper {
             // account doesn't exist yet
             Intent registerIntent = RegisterEmailActivity.createIntent(
                     mActivityHelper.getApplicationContext(),
-                    email,
-                    mActivityHelper.termsOfServiceUrl,
-                    mActivityHelper.appName
-            );
+                    mActivityHelper.flowParams,
+                    email);
             mActivityHelper.startActivityForResult(registerIntent, RC_REGISTER_ACCOUNT);
             return;
         } else {
@@ -80,18 +78,15 @@ public class AcquireEmailHelper {
                 if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
                     Intent signInIntent = SignInActivity.createIntent(
                             mActivityHelper.getApplicationContext(),
-                            mActivityHelper.appName,
-                            email,
-                            mActivityHelper.providerParcels
-                    );
+                            mActivityHelper.flowParams,
+                            email);
                     mActivityHelper.startActivityForResult(signInIntent, RC_SIGN_IN);
                     return;
                 }
                 Intent intent = WelcomeBackIDPPrompt.createIntent(
                         mActivityHelper.getApplicationContext(),
+                        mActivityHelper.flowParams,
                         provider,
-                        mActivityHelper.providerParcels,
-                        mActivityHelper.appName,
                         email);
                 mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
                 return;

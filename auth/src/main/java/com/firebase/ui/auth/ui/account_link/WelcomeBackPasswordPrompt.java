@@ -31,7 +31,9 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
+import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -72,20 +74,16 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         troubleSigningIn.setOnClickListener(this);
     }
 
-    public static Intent createIntent(Context context, String email, String appName) {
-        return new Intent(context, WelcomeBackPasswordPrompt.class)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName);
-    }
-
     @Override
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.button_done) {
             next(mEmail, mPasswordField.getText().toString());
         } else if (id == R.id.trouble_signing_in) {
-            startActivity(RecoverPasswordActivity
-                    .createIntent(getApplicationContext(), mActivityHelper.appName, mEmail));
+            startActivity(RecoverPasswordActivity.createIntent(
+                    getApplicationContext(),
+                    mActivityHelper.flowParams,
+                    mEmail));
             finish(RESULT_OK, new Intent());
         }
     }
@@ -108,5 +106,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                 }
             });
         }
+    }
+
+    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
+        return ActivityHelper.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
     }
 }

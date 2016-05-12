@@ -32,7 +32,9 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
+import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
@@ -98,19 +100,8 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         createButton.setOnClickListener(this);
     }
 
-    public static Intent createIntent(
-            Context context,
-            String email,
-            String tosUrl,
-            String appName) {
-       return new Intent(context, RegisterEmailActivity.class)
-               .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-               .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, tosUrl)
-               .putExtra(ControllerConstants.EXTRA_EMAIL, email);
-    }
-
     private void setUpTermsOfService() {
-        if (mActivityHelper.termsOfServiceUrl == null) {
+        if (mActivityHelper.flowParams.termsOfServiceUrl == null) {
             return;
         }
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(ContextCompat.getColor
@@ -127,24 +118,23 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse
-                        (mActivityHelper.termsOfServiceUrl));
+                        (mActivityHelper.flowParams.termsOfServiceUrl));
                 startActivity(intent);
             }
         });
     }
 
     private void startSaveCredentials(FirebaseUser firebaseUser, String password) {
-        if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.appName)
+        if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.flowParams.appName)
                 .isPlayServicesAvailable(this)) {
             Intent saveCredentialIntent = SaveCredentialsActivity.createIntent(
                     this,
+                    mActivityHelper.flowParams,
                     firebaseUser.getDisplayName(),
                     firebaseUser.getEmail(),
                     password,
                     null,
-                    null,
-                    mActivityHelper.appName
-            );
+                    null);
             startActivityForResult(saveCredentialIntent, RC_SAVE_CREDENTIAL);
         }
     }
@@ -205,5 +195,13 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                         .toString(), mPasswordEditText.getText().toString());
             }
         }
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            String email) {
+        return ActivityHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
     }
 }

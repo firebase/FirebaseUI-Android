@@ -22,10 +22,9 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
+import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
-
-import java.util.ArrayList;
+import com.firebase.ui.auth.ui.FlowParameters;
 
 public class ConfirmRecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
 
@@ -35,7 +34,6 @@ public class ConfirmRecoverPasswordActivity extends AppCompatBase implements Vie
         setContentView(R.layout.confirm_recovery_layout);
         setTitle(R.string.check_your_email);
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
-
         boolean isSuccess = getIntent().getBooleanExtra(ControllerConstants.EXTRA_SUCCESS, true);
 
         if (isSuccess) {
@@ -50,19 +48,21 @@ public class ConfirmRecoverPasswordActivity extends AppCompatBase implements Vie
         findViewById(R.id.button_done).setOnClickListener(this);
     }
 
-    public static Intent createIntent(Context context, boolean success, String email, String
-            appName, ArrayList<IDPProviderParcel> providers) {
-        return new Intent(context, ConfirmRecoverPasswordActivity.class)
-                .putExtra(ControllerConstants.EXTRA_SUCCESS, success)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, providers);
-    }
-
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button_done) {
             finish(RESULT_OK, new Intent());
         }
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            boolean success,
+            String email) {
+        return ActivityHelper.createBaseIntent(context, ConfirmRecoverPasswordActivity.class,
+                flowParams)
+                .putExtra(ControllerConstants.EXTRA_SUCCESS, success)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
     }
 }

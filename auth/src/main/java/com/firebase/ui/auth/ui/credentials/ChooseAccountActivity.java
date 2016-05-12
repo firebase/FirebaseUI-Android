@@ -22,12 +22,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.util.CredentialsAPI;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.ActivityBase;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
+import com.firebase.ui.auth.util.CredentialsAPI;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,8 +36,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.ArrayList;
 
 public class ChooseAccountActivity extends ActivityBase {
     private static final String TAG = "ChooseAccountActivity";
@@ -50,12 +48,6 @@ public class ChooseAccountActivity extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        String apiaryKey = getIntent().getStringExtra(ControllerConstants.EXTRA_APIARY_KEY);
-        String applicationId = getIntent().getStringExtra(ControllerConstants.EXTRA_APPLICATION_ID);
-
-        // initialize the FirebaseApp
-        mActivityHelper.getFirebaseApp(apiaryKey, applicationId);
-
         mCredentialsApi = new CredentialsAPI(this, new CredentialsAPI.CallbackInterface() {
             @Override
             public void onAsyncTaskFinished() {
@@ -82,26 +74,6 @@ public class ChooseAccountActivity extends ActivityBase {
     }
 
 
-
-    public static Intent createIntent(
-            Context context,
-            String appName,
-            String apiaryKey,
-            String applicationId,
-            ArrayList<IDPProviderParcel> providerParcels,
-            String tosUrl,
-            int theme
-    ) {
-        return new Intent()
-                .setClass(context, ChooseAccountActivity.class)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putExtra(ControllerConstants.EXTRA_APIARY_KEY, apiaryKey)
-                .putExtra(ControllerConstants.EXTRA_APPLICATION_ID, applicationId)
-                .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, providerParcels)
-                .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, tosUrl)
-                .putExtra(ControllerConstants.EXTRA_THEME, theme);
-    }
-
     public void onCredentialsApiConnected() {
         // called back when the CredentialsAPI connects
         String email = mCredentialsApi.getEmailFromCredential();
@@ -123,26 +95,24 @@ public class ChooseAccountActivity extends ActivityBase {
                             });
                 } else {
                     // log in with id/provider
-                    redirectToIdpSignIn(email, accountType, mActivityHelper.providerParcels);
+                    redirectToIdpSignIn(email, accountType);
                 }
             } else if (mCredentialsApi.isSignInResolutionNeeded()) {
                 // resolve credential
                 mCredentialsApi.resolveSavedEmails(this);
             } else {
-                startActivityForResult(AuthMethodPickerActivity.createIntent(
-                        getApplicationContext(),
-                        mActivityHelper.appName,
-                        mActivityHelper.termsOfServiceUrl,
-                        mActivityHelper.providerParcels
-                ), RC_AUTH_METHOD_PICKER);
+                startActivityForResult(
+                        AuthMethodPickerActivity.createIntent(
+                                this,
+                                mActivityHelper.flowParams),
+                        RC_AUTH_METHOD_PICKER);
             }
         } else {
-            startActivityForResult(AuthMethodPickerActivity.createIntent(
-                    getApplicationContext(),
-                    mActivityHelper.appName,
-                    mActivityHelper.termsOfServiceUrl,
-                    mActivityHelper.providerParcels
-            ), RC_AUTH_METHOD_PICKER);
+            startActivityForResult(
+                    AuthMethodPickerActivity.createIntent(
+                            this,
+                            mActivityHelper.flowParams),
+                    RC_AUTH_METHOD_PICKER);
         }
     }
 
@@ -164,17 +134,14 @@ public class ChooseAccountActivity extends ActivityBase {
                             public void onFailure(@NonNull Exception ex) {
                                 // email/password auth failed, go to the AuthMethodPickerActivity
                                 startActivity(AuthMethodPickerActivity.createIntent(
-                                        getApplicationContext(),
-                                        mActivityHelper.appName,
-                                        mActivityHelper.termsOfServiceUrl,
-                                        mActivityHelper.providerParcels
-                                ));
+                                        ChooseAccountActivity.this,
+                                        mActivityHelper.flowParams));
                                 finish(RESULT_OK, new Intent());
                             }
                         });
             } else {
                 // identifier/provider combination
-                redirectToIdpSignIn(email, accountType, mActivityHelper.providerParcels);
+                redirectToIdpSignIn(email, accountType);
             }
         }
     }
@@ -200,11 +167,10 @@ public class ChooseAccountActivity extends ActivityBase {
             } else if (resultCode == RESULT_CANCELED) {
                 // Smart lock selector cancelled, go to the AuthMethodPicker screen
                 startActivityForResult(
-                    AuthMethodPickerActivity.createIntent(
-                        getApplicationContext(),
-                        mActivityHelper.appName,
-                        mActivityHelper.termsOfServiceUrl,
-                        mActivityHelper.providerParcels), RC_AUTH_METHOD_PICKER);
+                        AuthMethodPickerActivity.createIntent(
+                                this,
+                                mActivityHelper.flowParams),
+                        RC_AUTH_METHOD_PICKER);
             } else if (resultCode == RESULT_FIRST_USER) {
                 // TODO: (serikb) figure out flow
             }
@@ -215,36 +181,35 @@ public class ChooseAccountActivity extends ActivityBase {
         }
     }
 
-    protected void redirectToIdpSignIn(
-            String email, String accountType, ArrayList<IDPProviderParcel> providers) {
+    protected void redirectToIdpSignIn(String email, String accountType) {
         Intent nextIntent;
         switch (accountType) {
             case IdentityProviders.GOOGLE:
                 nextIntent = IDPSignInContainerActivity.createIntent(
                         this,
+                        mActivityHelper.flowParams,
                         GoogleAuthProvider.PROVIDER_ID,
-                        email,
-                        providers,
-                        mActivityHelper.appName);
+                        email);
                 break;
             case IdentityProviders.FACEBOOK:
-                nextIntent =
-                        IDPSignInContainerActivity.createIntent(
-                                this,
-                                FacebookAuthProvider.PROVIDER_ID,
-                                email,
-                                providers,
-                                mActivityHelper.appName);
+                nextIntent = IDPSignInContainerActivity.createIntent(
+                        this,
+                        mActivityHelper.flowParams,
+                        FacebookAuthProvider.PROVIDER_ID,
+                        email);
                 break;
             default:
                 Log.w(TAG, "unknown provider: " + accountType);
                 nextIntent = AuthMethodPickerActivity.createIntent(
                         this,
-                        mActivityHelper.appName,
-                        mActivityHelper.termsOfServiceUrl,
-                        providers
-                );
+                        mActivityHelper.flowParams);
         }
         this.startActivityForResult(nextIntent, RC_IDP_SIGNIN);
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams) {
+        return ActivityHelper.createBaseIntent(context, ChooseAccountActivity.class, flowParams);
     }
 }

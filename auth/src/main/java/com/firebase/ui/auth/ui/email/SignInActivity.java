@@ -28,8 +28,9 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
+import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
@@ -38,8 +39,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.ArrayList;
 
 public class SignInActivity extends AppCompatBase implements View.OnClickListener {
     private EditText mEmailEditText;
@@ -89,18 +88,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
 
     }
 
-    public static Intent createIntent(
-            Context context,
-            String appName,
-            String email,
-           ArrayList<IDPProviderParcel> providers
-    ) {
-        return new Intent(context, SignInActivity.class)
-                .putExtra(ControllerConstants.EXTRA_PROVIDER, providers)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
-    }
-
     @Override
     public void onBackPressed () {
         super.onBackPressed();
@@ -116,18 +103,17 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = task.getResult().getUser();
                             if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(
-                                    mActivityHelper.appName)
+                                    mActivityHelper.getAppName())
                                     .isPlayServicesAvailable(SignInActivity.this)) {
                                 Intent saveCredentialIntent =
                                         SaveCredentialsActivity.createIntent(
                                                 SignInActivity.this,
+                                                mActivityHelper.flowParams,
                                                 firebaseUser.getDisplayName(),
                                                 firebaseUser.getEmail(),
                                                 password,
                                                 null,
-                                                null,
-                                                mActivityHelper.appName
-                                        );
+                                                null);
                                 startActivity(saveCredentialIntent);
                                 finish(RESULT_OK, new Intent());
                             }
@@ -155,9 +141,19 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
             }
         } else if (view.getId() == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
-                    this, mActivityHelper.appName, mEmailEditText.getText().toString()));
+                    this,
+                    mActivityHelper.flowParams,
+                    mEmailEditText.getText().toString()));
             finish(RESULT_OK, new Intent());
             return;
         }
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            String email) {
+        return ActivityHelper.createBaseIntent(context, SignInActivity.class, flowParams)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
     }
 }

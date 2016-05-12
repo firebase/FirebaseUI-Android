@@ -25,7 +25,9 @@ import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
+import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -64,11 +66,9 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 mActivityHelper.dismissDialog();
                 Intent confirmIntent = ConfirmRecoverPasswordActivity.createIntent(
                         RecoverPasswordActivity.this,
+                        mActivityHelper.flowParams,
                         task.isSuccessful(),
-                        email,
-                        mActivityHelper.appName,
-                        mActivityHelper.providerParcels
-                );
+                        email);
                 startActivityForResult(confirmIntent, RC_CONFIRM);
             }
         });
@@ -81,7 +81,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     }
 
 
-        @Override
+    @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button_done) {
             if (!mEmailFieldValidator.validate(mEmailEditText.getText())) {
@@ -92,9 +92,8 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         }
     }
 
-    public static Intent createIntent(Context context, String appName, String email) {
-        return new Intent().setClass(context, RecoverPasswordActivity.class)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
+        return ActivityHelper.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
                 .putExtra(ControllerConstants.EXTRA_EMAIL, email);
     }
 }

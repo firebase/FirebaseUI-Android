@@ -20,10 +20,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.choreographer.ControllerConstants;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -47,19 +49,12 @@ public class AccountLinkInitActivity extends AppCompatBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
-        mApiWrapper = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.appName);
+        mApiWrapper = FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(
+                mActivityHelper.getAppName());
         String email = getIntent().getStringExtra(ControllerConstants.EXTRA_EMAIL);
         String password = getIntent().getStringExtra(ControllerConstants.EXTRA_PASSWORD);
         String provider = getIntent().getStringExtra(ControllerConstants.EXTRA_PROVIDER);
         next(email, password, provider);
-    }
-
-    public static Intent createStartIntent(Context context, String appName, String id,
-                                           String provider) {
-        return new Intent(context, AccountLinkInitActivity.class)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, id)
-                .putExtra(ControllerConstants.EXTRA_PROVIDER, provider);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -91,53 +86,59 @@ public class AccountLinkInitActivity extends AppCompatBase {
                             password,
                             provider,
                             null,
-                            mActivityHelper.appName), RC_SAVE_CREDENTIALS);
+                            mActivityHelper.getAppName()), RC_SAVE_CREDENTIALS);
                 } else if (providers.size() == 1) {
                     if (providers.get(0).equals(provider)) {
                         // existing account but has this IDP linked
-                        startActivityForResult(
-                            SaveCredentialsActivity.createIntent(
-                                    AccountLinkInitActivity.this,
-                                    null,
-                                    email,
-                                    password,
-                                    provider,
-                                    null,
-                                    mActivityHelper.appName),
-                            RC_SAVE_CREDENTIALS);
+                        startActivityForResult(SaveCredentialsActivity.createIntent(
+                                AccountLinkInitActivity.this,
+                                null,
+                                email,
+                                password,
+                                provider,
+                                null,
+                                mActivityHelper.getAppName()),
+                                RC_SAVE_CREDENTIALS);
                     } else {
                         if (providers.get(0).equals(EmailAuthProvider.PROVIDER_ID)) {
-                            startActivityForResult(
-                                WelcomeBackPasswordPrompt.createIntent(
-                                    getApplicationContext(), email, mActivityHelper.appName),
-                                RC_WELCOME_BACK_PASSWORD_PROMPT);
+                            startActivityForResult(WelcomeBackPasswordPrompt.createIntent(
+                                    getApplicationContext(),
+                                    mActivityHelper.flowParams,
+                                    email),
+                                    RC_WELCOME_BACK_PASSWORD_PROMPT);
                         } else {
                             // existing account but has a different IDP linked
-                            startActivityForResult(
-                                WelcomeBackIDPPrompt.createIntent(
+                            startActivityForResult(WelcomeBackIDPPrompt.createIntent(
                                     getApplicationContext(),
+                                    mActivityHelper.flowParams,
                                     provider,
-                                    mActivityHelper.providerParcels,
-                                    mActivityHelper.appName,
-                                    email
-                                ),
+                                    email),
                                 RC_WELCOME_BACK_IDP_PROMPT
                             );
                         }
                     }
                 } else {
                     // more than one providers
-                    startActivityForResult(
-                            WelcomeBackIDPPrompt.createIntent(
-                                getApplicationContext(),
-                                provider,
-                                mActivityHelper.providerParcels,
-                                mActivityHelper.appName,
-                                email
-                            ),
+                    startActivityForResult(WelcomeBackIDPPrompt.createIntent(
+                            getApplicationContext(),
+                            mActivityHelper.flowParams,
+                            provider,
+                            email),
                             RC_WELCOME_BACK_IDP_PROMPT);
                 }
             }
         });
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            String email,
+            String password,
+            String provider) {
+        return ActivityHelper.createBaseIntent(context, AccountLinkInitActivity.class, flowParams)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
+                .putExtra(ControllerConstants.EXTRA_PASSWORD, password)
+                .putExtra(ControllerConstants.EXTRA_PROVIDER, provider);
     }
 }

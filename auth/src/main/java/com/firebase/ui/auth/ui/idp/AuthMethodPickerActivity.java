@@ -25,12 +25,13 @@ import android.widget.LinearLayout;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
 import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,6 +44,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Presents the list of authentication options for this app to the user.
@@ -53,7 +55,6 @@ public class AuthMethodPickerActivity
 
     private static final int RC_EMAIL_FLOW = 2;
     private static final String TAG = "AuthMethodPicker";
-    private ArrayList<IDPProviderParcel> mProviderParcels;
     private ArrayList<IDPProvider> mIdpProviders;
 
     @Override
@@ -62,12 +63,10 @@ public class AuthMethodPickerActivity
         setContentView(R.layout.nascar_layout);
         Button emailButton = (Button) findViewById(R.id.email_provider);
         emailButton.setOnClickListener(this);
-        mProviderParcels =
-                getIntent().getParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS);
-        populateIdpList(mProviderParcels);
+        populateIdpList(mActivityHelper.flowParams.providerInfo);
     }
 
-    private void populateIdpList(ArrayList<IDPProviderParcel> providers) {
+    private void populateIdpList(List<IDPProviderParcel> providers) {
         mIdpProviders = new ArrayList<>();
         for (IDPProviderParcel providerParcel : providers) {
             switch (providerParcel.getProviderType()) {
@@ -157,29 +156,16 @@ public class AuthMethodPickerActivity
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.email_provider) {
-            Intent intent = EmailHintContainerActivity.getInitIntent(
+            Intent intent = EmailHintContainerActivity.createIntent(
                     this,
-                    mActivityHelper.appName,
-                    mActivityHelper.termsOfServiceUrl,
-                    mProviderParcels
-            );
+                    mActivityHelper.flowParams);
             startActivityForResult(intent, RC_EMAIL_FLOW);
         }
     }
 
-    /**
-     * Creates an intent to start the authentication picker activity with the required information.
-     * @param context The context of the activity which intends to start the picker.
-     * @param appName The Firebase application name.
-     * @param parcels The supported provider descriptors.
-     * @return The intent to start the authentication picker activity.
-     */
     public static Intent createIntent(
-            Context context, String appName, String tosUrl, ArrayList<IDPProviderParcel> parcels) {
-        return new Intent()
-                .setClass(context, AuthMethodPickerActivity.class)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, tosUrl)
-                .putParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS, parcels);
+            Context context,
+            FlowParameters flowParams) {
+        return ActivityHelper.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
     }
 }

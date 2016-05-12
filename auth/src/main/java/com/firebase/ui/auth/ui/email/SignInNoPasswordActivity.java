@@ -25,12 +25,11 @@ import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.AcquireEmailHelper;
+import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
-
-import java.util.ArrayList;
 
 public class SignInNoPasswordActivity extends AppCompatBase implements View.OnClickListener {
     private EditText mEmailEditText;
@@ -59,20 +58,6 @@ public class SignInNoPasswordActivity extends AppCompatBase implements View.OnCl
         button.setOnClickListener(this);
     }
 
-    public static Intent createIntent(
-            Context context,
-            String email,
-            String appName,
-            String tosUrl,
-            ArrayList<IDPProviderParcel> providers
-    ) {
-        return new Intent(context, SignInNoPasswordActivity.class)
-                .putExtra(ControllerConstants.EXTRA_EMAIL, email)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, tosUrl)
-                .putExtra(ControllerConstants.EXTRA_PROVIDERS, providers);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -87,5 +72,13 @@ public class SignInNoPasswordActivity extends AppCompatBase implements View.OnCl
         mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
         String email = mEmailEditText.getText().toString();
         mAcquireEmailHelper.checkAccountExists(email);
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            String email) {
+        return ActivityHelper.createBaseIntent(context, SignInNoPasswordActivity.class, flowParams)
+                .putExtra(ControllerConstants.EXTRA_EMAIL, email);
     }
 }

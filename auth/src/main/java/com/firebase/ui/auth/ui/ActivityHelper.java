@@ -18,38 +18,25 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
+import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
 public class ActivityHelper {
     private ProgressDialog mProgressDialog;
     private Activity mActivity;
 
-    public String appName;
-    public ArrayList<IDPProviderParcel> providerParcels;
-    public String termsOfServiceUrl;
-    public int theme;
-
+    public final FlowParameters flowParams;
 
     public ActivityHelper(Activity activity, Intent intent) {
         mActivity = activity;
-        appName = intent.getStringExtra(ControllerConstants.EXTRA_APP_NAME);
-        providerParcels = intent.getParcelableArrayListExtra(
-                ControllerConstants.EXTRA_PROVIDERS);
-        termsOfServiceUrl = intent.getStringExtra(
-                ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL);
-        theme = intent.getIntExtra(
-                ControllerConstants.EXTRA_THEME,
-                AuthUI.DEFAULT_THEME);
+        flowParams = intent.getParcelableExtra(ControllerConstants.EXTRA_FLOW_PARAMS);
     }
 
     public void dismissDialog() {
@@ -68,21 +55,12 @@ public class ActivityHelper {
         showLoadingDialog(mActivity.getString(stringResource));
     }
 
-
-    private Intent addExtras(Intent intent) {
-        intent.putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, termsOfServiceUrl)
-                .putExtra(ControllerConstants.EXTRA_THEME, theme)
-                .putExtra(ControllerConstants.EXTRA_PROVIDERS, providerParcels);
-        return intent;
-    }
-
     public void startActivityForResult(Intent intent, int requestCode) {
         mActivity.startActivityForResult(intent, requestCode);
     }
 
     public void finish(int resultCode, Intent intent) {
-        mActivity.setResult(resultCode, addExtras(intent));
+        mActivity.setResult(resultCode, intent);
         mActivity.finish();
     }
 
@@ -90,22 +68,12 @@ public class ActivityHelper {
         return mActivity.getApplicationContext();
     }
 
-
-    public FirebaseApp getFirebaseApp() {
-        return FirebaseApp.getInstance(appName);
+    public String getAppName() {
+        return flowParams.appName;
     }
 
-    public FirebaseApp getFirebaseApp(String apiaryKey, String applicationId) {
-        try{
-            return FirebaseApp.getInstance(appName);
-        } catch (IllegalStateException e) {
-            FirebaseOptions options
-                    = new FirebaseOptions.Builder()
-                    .setApiKey(apiaryKey)
-                    .setApplicationId(applicationId)
-                    .build();
-            return FirebaseApp.initializeApp(mActivity, options, appName);
-        }
+    public FirebaseApp getFirebaseApp() {
+        return FirebaseApp.getInstance(flowParams.appName);
     }
 
     public FirebaseAuth getFirebaseAuth() {
@@ -116,4 +84,14 @@ public class ActivityHelper {
         return getFirebaseAuth().getCurrentUser();
     }
 
+    public static Intent createBaseIntent(
+            @NonNull Context context,
+            @NonNull Class<? extends Activity> target,
+            @NonNull FlowParameters flowParams) {
+        return new Intent(
+                checkNotNull(context, "context cannot be null"),
+                checkNotNull(target, "target activity cannot be null"))
+                .putExtra(ControllerConstants.EXTRA_FLOW_PARAMS,
+                        checkNotNull(flowParams, "flowParams cannot be null"));
+    }
 }

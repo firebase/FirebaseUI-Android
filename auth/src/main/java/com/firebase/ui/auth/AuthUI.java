@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.choreographer.idp.provider.FacebookProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
@@ -230,16 +231,16 @@ public class AuthUI {
                 mFirebaseApp = getDefaultFirebaseApp();
             }
 
-            ArrayList<IDPProviderParcel> providerParcels = new ArrayList<>();
+            ArrayList<IDPProviderParcel> providerInfo = new ArrayList<>();
             for (String provider : mProviders) {
                 if (provider.equalsIgnoreCase(FACEBOOK_PROVIDER)) {
-                    providerParcels.add(FacebookProvider.createFacebookParcel(
+                    providerInfo.add(FacebookProvider.createFacebookParcel(
                             mContext.getString(R.string.facebook_application_id)));
                 } else if (provider.equalsIgnoreCase(GOOGLE_PROVIDER)) {
-                    providerParcels.add(GoogleProvider.createParcel(
+                    providerInfo.add(GoogleProvider.createParcel(
                             mContext.getString(R.string.default_web_client_id)));
                 } else if (provider.equalsIgnoreCase(EMAIL_PROVIDER)) {
-                    providerParcels.add(
+                    providerInfo.add(
                             new IDPProviderParcel(EmailAuthProvider.PROVIDER_ID, new Bundle())
                     );
                 }
@@ -247,12 +248,11 @@ public class AuthUI {
 
             return ChooseAccountActivity.createIntent(
                     mContext,
-                    mFirebaseApp.getName(),
-                    mFirebaseApp.getOptions().getApiKey(),
-                    mFirebaseApp.getOptions().getApplicationId(),
-                    providerParcels,
-                    mTosUrl,
-                    mTheme);
+                    new FlowParameters(
+                            mFirebaseApp.getName(),
+                            providerInfo,
+                            mTheme,
+                            mTosUrl));
         }
 
         private @NonNull FirebaseApp getDefaultFirebaseApp() {

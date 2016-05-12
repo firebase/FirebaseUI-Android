@@ -26,6 +26,8 @@ import com.firebase.ui.auth.choreographer.idp.provider.GoogleProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProvider;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.choreographer.idp.provider.IDPResponse;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.account_link.AccountLinkInitActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,7 +39,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPProvider.IDPCallback {
@@ -49,28 +50,13 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
     private String mProvider;
     private String mEmail;
 
-    public static Intent createIntent(Context context,
-                                      String provider,
-                                      String email,
-                                      ArrayList<IDPProviderParcel> availableProviderParcel,
-                                      String appName) {
-        return new Intent()
-                .setClass(context, IDPSignInContainerActivity.class)
-                .putExtra(PROVIDER, provider)
-                .putExtra(EMAIL, email)
-                .putExtra(ControllerConstants.EXTRA_PROVIDERS, availableProviderParcel)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mProvider = getIntent().getStringExtra(PROVIDER);
         mEmail = getIntent().getStringExtra(EMAIL);
         IDPProviderParcel providerParcel = null;
-        ArrayList<IDPProviderParcel> parcels =
-                getIntent().getParcelableArrayListExtra(ControllerConstants.EXTRA_PROVIDERS);
-        for ( IDPProviderParcel parcel :  parcels) {
+        for (IDPProviderParcel parcel : mActivityHelper.flowParams.providerInfo) {
             if (parcel.getProviderType().equalsIgnoreCase(mProvider)) {
                 providerParcel = parcel;
                 break;
@@ -98,12 +84,13 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         } else {
             Log.e(TAG, "Expecting a single provider, received :" + providers.size());
         }
-        startActivityForResult(AccountLinkInitActivity.createStartIntent(
+        startActivityForResult(AccountLinkInitActivity.createIntent(
                 this,
-                mActivityHelper.appName,
+                mActivityHelper.flowParams,
                 firebaseUser.getEmail(),
-                provider
-        ), RC_ACCOUNT_LINK);
+                null,
+                provider),
+                RC_ACCOUNT_LINK);
     }
 
     @Override
@@ -141,5 +128,18 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         } else {
             mIDPProvider.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            String provider,
+            String email) {
+        return ActivityHelper.createBaseIntent(
+                context,
+                IDPSignInContainerActivity.class,
+                flowParams)
+                .putExtra(PROVIDER, provider)
+                .putExtra(EMAIL, email);
     }
 }

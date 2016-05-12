@@ -20,15 +20,13 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 
-import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
-import com.firebase.ui.auth.util.FirebaseAuthWrapper;
-import com.firebase.ui.auth.choreographer.ControllerConstants;
-import com.firebase.ui.auth.choreographer.idp.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.AcquireEmailHelper;
+import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.util.FirebaseAuthWrapper;
+import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.google.android.gms.auth.api.credentials.Credential;
-
-import java.util.ArrayList;
 
 public class EmailHintContainerActivity extends AppCompatBase {
     private static final int RC_HINT = 13;
@@ -39,7 +37,7 @@ public class EmailHintContainerActivity extends AppCompatBase {
         super.onCreate(savedInstanceState);
         mAcquireEmailHelper = new AcquireEmailHelper(mActivityHelper);
         FirebaseAuthWrapper apiWrapper =
-                FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.appName);
+                FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.getAppName());
 
         PendingIntent hintIntent = apiWrapper.getEmailHintIntent(this);
 
@@ -65,11 +63,8 @@ public class EmailHintContainerActivity extends AppCompatBase {
                 startActivityForResult(
                         SignInNoPasswordActivity.createIntent(
                                 this,
-                                null,
-                                mActivityHelper.appName,
-                                mActivityHelper.termsOfServiceUrl,
-                                mActivityHelper.providerParcels
-                                ),
+                                mActivityHelper.flowParams,
+                                null),
                         AcquireEmailHelper.RC_SIGN_IN);
                 return;
             }
@@ -80,14 +75,12 @@ public class EmailHintContainerActivity extends AppCompatBase {
         }
     }
 
-    public static Intent getInitIntent(
+    public static Intent createIntent(
             Context context,
-            String appName,
-            String tosUrl,
-            ArrayList<IDPProviderParcel> providers) {
-        return new Intent(context, EmailHintContainerActivity.class)
-                .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
-                .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, tosUrl)
-                .putExtra(ControllerConstants.EXTRA_PROVIDERS, providers);
+            FlowParameters flowParams) {
+        return ActivityHelper.createBaseIntent(
+                context,
+                EmailHintContainerActivity.class,
+                flowParams);
     }
 }
