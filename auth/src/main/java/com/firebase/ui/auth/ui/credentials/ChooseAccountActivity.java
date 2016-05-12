@@ -132,6 +132,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                 startActivityForResult(AuthMethodPickerActivity.createIntent(
                         getApplicationContext(),
                         mAppName,
+                        mTermsOfServiceUrl,
                         mProviderParcels
                 ), RC_AUTH_METHOD_PICKER);
             }
@@ -139,6 +140,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
             startActivityForResult(AuthMethodPickerActivity.createIntent(
                     getApplicationContext(),
                     mAppName,
+                    mTermsOfServiceUrl,
                     mProviderParcels
             ), RC_AUTH_METHOD_PICKER);
         }
@@ -164,6 +166,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                                 startActivity(AuthMethodPickerActivity.createIntent(
                                         getApplicationContext(),
                                         mAppName,
+                                        mTermsOfServiceUrl,
                                         mProviderParcels
                                 ));
                                 finish(RESULT_OK, new Intent());
@@ -200,6 +203,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                     AuthMethodPickerActivity.createIntent(
                         getApplicationContext(),
                         mAppName,
+                        mTermsOfServiceUrl,
                         mProviderParcels), RC_AUTH_METHOD_PICKER);
             } else if (resultCode == RESULT_FIRST_USER) {
                 // TODO: (serikb) figure out flow
@@ -237,6 +241,7 @@ public class ChooseAccountActivity extends NoControllerBaseActivity {
                 nextIntent = AuthMethodPickerActivity.createIntent(
                         this,
                         mAppName,
+                        mTermsOfServiceUrl,
                         providers
                 );
         }

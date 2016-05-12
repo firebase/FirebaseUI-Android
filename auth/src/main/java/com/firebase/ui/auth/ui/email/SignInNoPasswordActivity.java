@@ -59,11 +59,13 @@ public class SignInNoPasswordActivity extends AcquireEmailActivity implements Vi
             Context context,
             String email,
             String appName,
+            String tosUrl,
             ArrayList<IDPProviderParcel> providers
     ) {
         return new Intent(context, SignInNoPasswordActivity.class)
                 .putExtra(ControllerConstants.EXTRA_EMAIL, email)
                 .putExtra(ControllerConstants.EXTRA_APP_NAME, appName)
+                .putExtra(ControllerConstants.EXTRA_TERMS_OF_SERVICE_URL, tosUrl)
                 .putExtra(ControllerConstants.EXTRA_PROVIDERS, providers);
     }
 

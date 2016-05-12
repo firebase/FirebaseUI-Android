@@ -62,6 +62,7 @@ public abstract class AcquireEmailActivity extends NoControllerBaseActivity {
             Intent registerIntent = RegisterEmailActivity.createIntent(
                     AcquireEmailActivity.this,
                     email,
+                    mTermsOfServiceUrl,
                     mAppName
             );
             startActivityForResult(registerIntent, RC_REGISTER_ACCOUNT);
