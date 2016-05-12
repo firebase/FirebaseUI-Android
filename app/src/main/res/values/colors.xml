@@ -1,0 +1,7 @@
+<resources>
+    <color name="material_blue_500">#2196F3</color>
+    <color name="material_blue_a200">#40C4FF</color>
+    <color name="material_green_500">#4CAF50</color>
+    <color name="material_green_a200">#69F0AE</color>
+    <color name="material_red_a200">#FF5252</color>
+</resources>

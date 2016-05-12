@@ -1,0 +1,19 @@
+<resources>
+
+    <style name="AuthUIBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar" />
+
+    <style name="BlueTheme" parent="AuthUIBaseTheme">
+        <item name="android:colorPrimary">@color/material_blue_500</item>
+        <item name="android:colorAccent">@color/material_blue_a200</item>
+    </style>
+
+    <style name="GreenTheme" parent="AuthUIBaseTheme">
+        <item name="android:colorPrimary">@color/material_green_500</item>
+        <item name="android:colorAccent">@color/material_green_a200</item>
+    </style>
+
+    <style name="WarnButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:colorButtonNormal">@color/material_red_a200</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+</resources>

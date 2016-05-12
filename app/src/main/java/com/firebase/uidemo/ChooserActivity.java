@@ -2,46 +2,55 @@ package com.firebase.uidemo;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ChooserActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+import com.firebase.uidemo.auth.AuthUiActivity;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnItemClick;
+
+public class ChooserActivity extends AppCompatActivity {
 
     private static final Class[] CLASSES = new Class[]{
-            ChatActivity.class
+            ChatActivity.class,
+            AuthUiActivity.class,
     };
 
     private static final int[] DESCRIPTION_NAMES = new int[] {
             R.string.name_chat,
+            R.string.name_auth_ui
     };
 
     private static final int[] DESCRIPTION_IDS = new int[] {
             R.string.desc_chat,
+            R.string.desc_auth_ui
     };
+
+    @BindView(R.id.list_view)
+    ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chooser);
+        ButterKnife.bind(this);
 
-        // Set up ListView and Adapter
-        ListView listView = (ListView) findViewById(R.id.list_view);
-
-        MyArrayAdapter adapter = new MyArrayAdapter(this, android.R.layout.simple_list_item_2, CLASSES);
-
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
+        mListView.setAdapter(new MyArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_2,
+                CLASSES));
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    @OnItemClick(R.id.list_view)
+    public void onItemClick(int position) {
         Class clicked = CLASSES[position];
         startActivity(new Intent(this, clicked));
     }
