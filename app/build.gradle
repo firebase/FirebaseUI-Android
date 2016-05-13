@@ -5,9 +5,6 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
-    // STOPSHIP: This is temporarily needed for EAP SDK but should be removed before release
-    enforceUniquePackageName false
-
     defaultConfig {
         applicationId "com.firebase.uidemo"
         minSdkVersion 16
@@ -15,16 +12,12 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    packagingOptions {
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
     }
 
 }
