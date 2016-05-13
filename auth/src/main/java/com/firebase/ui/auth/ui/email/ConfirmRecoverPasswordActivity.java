@@ -26,11 +26,16 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 
-public class ConfirmRecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
+public class ConfirmRecoverPasswordActivity extends android.support.v7.app.AppCompatActivity
+        implements View.OnClickListener {
+    private ActivityHelper mActivityHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mActivityHelper = new ActivityHelper(this, getIntent());
+        // intentionally do not configure the theme on this activity, it is a dialog
+
         setContentView(R.layout.confirm_recovery_layout);
         setTitle(R.string.check_your_email);
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
@@ -64,5 +69,9 @@ public class ConfirmRecoverPasswordActivity extends AppCompatBase implements Vie
                 flowParams)
                 .putExtra(ExtraConstants.EXTRA_SUCCESS, success)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+    }
+
+    private void finish(int resultCode, Intent intent) {
+        mActivityHelper.finish(resultCode, intent);
     }
 }
