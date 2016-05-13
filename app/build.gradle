@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
+apply from: "../common/constants.gradle"
 
 android {
     compileSdkVersion 23
@@ -28,7 +29,12 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.2.1'
     compile 'com.android.support:support-v4:23.2.1'
 
-    compile project(':library')
+    compile project(path: ':auth')
+    compile project(path: ':database')
+
+    compile "com.google.firebase:firebase-database:${project.ext.firebase_version}"
+    compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"
+    compile "com.google.android.gms:play-services-auth:${project.ext.firebase_version}"
 
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for

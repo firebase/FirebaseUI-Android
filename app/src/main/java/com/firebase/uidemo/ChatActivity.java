@@ -11,9 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,6 +42,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText mMessageEdit;
 
     private RecyclerView mMessages;
+    private LinearLayoutManager mManager;
     private FirebaseRecyclerAdapter<Chat, ChatHolder> mRecyclerViewAdapter;
 
     @Override
@@ -56,7 +54,7 @@ public class ChatActivity extends AppCompatActivity {
         mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                invalidateOptionsMenu();
+                updateUI();
             }
         });
 
@@ -88,17 +86,36 @@ public class ChatActivity extends AppCompatActivity {
 
         mMessages = (RecyclerView) findViewById(R.id.messagesList);
 
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        manager.setReverseLayout(false);
+        mManager = new LinearLayoutManager(this);
+        mManager.setReverseLayout(false);
 
         mMessages.setHasFixedSize(false);
-        mMessages.setLayoutManager(manager);
+        mMessages.setLayoutManager(mManager);
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
+        // Default Database rules do not allow unauthenticated reads, so we need to
+        // sign in before attaching the RecyclerView adapter otherwise the Adapter will
+        // not be able to read any data from the Database.
+        if (!isSignedIn()) {
+            signInAnonymously();
+        } else {
+            attachRecyclerViewAdapter();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mRecyclerViewAdapter != null) {
+            mRecyclerViewAdapter.cleanup();
+        }
+    }
+
+    private void attachRecyclerViewAdapter() {
         mRecyclerViewAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
                 Chat.class, R.layout.message, ChatHolder.class, mChatRef) {
 
@@ -116,49 +133,19 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
 
+        // Scroll to bottom on new messages
+        mRecyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                mManager.smoothScrollToPosition(mMessages, null, mRecyclerViewAdapter.getItemCount());
+            }
+        });
+
         mMessages.setAdapter(mRecyclerViewAdapter);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        mRecyclerViewAdapter.cleanup();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.chat_login_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.login_menu_item).setVisible(!isSignedIn());
-        menu.findItem(R.id.logout_menu_item).setVisible(isSignedIn());
-
-        mSendButton.setEnabled(isSignedIn());
-        mMessageEdit.setEnabled(isSignedIn());
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.login_menu_item:
-                signInAnonymously();
-                return true;
-            case R.id.logout_menu_item:
-                mAuth.signOut();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     private void signInAnonymously() {
+        Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show();
         mAuth.signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -167,6 +154,7 @@ public class ChatActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(ChatActivity.this, "Signed In",
                                     Toast.LENGTH_SHORT).show();
+                            attachRecyclerViewAdapter();
                         } else {
                             Toast.makeText(ChatActivity.this, "Sign In Failed",
                                     Toast.LENGTH_SHORT).show();
@@ -177,6 +165,12 @@ public class ChatActivity extends AppCompatActivity {
 
     public boolean isSignedIn() {
         return (mAuth.getCurrentUser() != null);
+    }
+
+    public void updateUI() {
+        // Sending only allowed when signed in
+        mSendButton.setEnabled(isSignedIn());
+        mMessageEdit.setEnabled(isSignedIn());
     }
 
     public static class Chat {
