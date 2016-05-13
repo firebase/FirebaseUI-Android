@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.account_link;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -30,8 +31,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
@@ -41,14 +44,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
+    private static final int RC_YOLO_SAVE = 3;
     final StyleSpan bold = new StyleSpan(Typeface.BOLD);
     private String mEmail;
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
+    private IDPResponse mIdpResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +61,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         setTitle(R.string.sign_in_title);
         setContentView(R.layout.welcome_back_password_prompt_layout);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
-        mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
+        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        mEmail = mIdpResponse.getEmail();
         TextView bodyTextView = (TextView) findViewById(R.id.welcome_back_password_body);
         String bodyText = getResources().getString(R.string.welcome_back_password_prompt_body);
         bodyText = String.format(bodyText, mEmail);
@@ -88,28 +94,63 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         }
     }
 
-    private void next(String email, String password) {
-        FirebaseUser currentUser = mActivityHelper.getCurrentUser();
-        AuthCredential emailCredential = EmailAuthProvider.getCredential(email, password);
-        if (currentUser != null) {
-            Task<AuthResult> authResultTask = currentUser.linkWithCredential(emailCredential);
-            authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    finish(RESULT_OK, new Intent());
-                }
-            });
-            authResultTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception ex) {
-                    mPasswordLayout.setError(ex.getLocalizedMessage());
-                }
-            });
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_YOLO_SAVE) {
+            finish(RESULT_OK, new Intent());
         }
     }
 
-    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
+    private void next(String email, final String password) {
+        final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
+                new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    AuthCredential authCredential =
+                            AuthCredentialHelper.getAuthCredential(mIdpResponse);
+                    task.getResult().getUser().linkWithCredential(authCredential);
+                    firebaseAuth.signOut();
+
+                    firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(
+                            new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    FirebaseUser firebaseUser = task.getResult().getUser();
+                                    String photoUrl = null;
+                                    Uri photoUri = firebaseUser.getPhotoUrl();
+                                    if (photoUri != null) {
+                                        photoUrl = photoUri.toString();
+                                    }
+
+                                    startActivityForResult(
+                                            SaveCredentialsActivity.createIntent(
+                                                    mActivityHelper.getApplicationContext(),
+                                                    mActivityHelper.flowParams,
+                                                    firebaseUser.getDisplayName(),
+                                                    firebaseUser.getEmail(),
+                                                    password,
+                                                    null,
+                                                    photoUrl
+                                            ), RC_YOLO_SAVE);
+                                }
+                            }
+                    );
+                } else {
+                    String error = task.getException().getLocalizedMessage();
+                    mPasswordLayout.setError(error);
+                }
+            }
+        });
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            IDPResponse response) {
         return ActivityHelper.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }
 }

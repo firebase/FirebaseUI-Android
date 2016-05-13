@@ -108,7 +108,7 @@ public class AccountLinkInitActivity extends AppCompatBase {
                             startActivityForResult(WelcomeBackPasswordPrompt.createIntent(
                                     getApplicationContext(),
                                     mActivityHelper.flowParams,
-                                    email),
+                                    mIdpResponse),
                                     RC_WELCOME_BACK_PASSWORD_PROMPT);
                         } else {
                             // existing account but has a different IDP linked
