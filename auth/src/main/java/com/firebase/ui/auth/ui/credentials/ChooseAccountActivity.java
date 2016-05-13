@@ -26,6 +26,7 @@ import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.ActivityBase;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
@@ -117,12 +118,11 @@ public class ChooseAccountActivity extends ActivityBase {
         List<IDPProviderParcel> providers = mActivityHelper.flowParams.providerInfo;
         if ( providers.size() == 1
                 && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
+
             startActivityForResult(
-                    SignInNoPasswordActivity.createIntent(
+                    EmailHintContainerActivity.createIntent(
                             this,
-                            mActivityHelper.flowParams,
-                            null
-                    ),
+                            mActivityHelper.flowParams),
                     RC_EMAIL_FLOW);
         } else {
             startActivityForResult(
