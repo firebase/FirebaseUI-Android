@@ -47,28 +47,40 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         implements View.OnClickListener, IDPProvider.IDPCallback {
 
     private static final String TAG = "WelcomeBackIDPPrompt";
-
-    private IDPProvider mIDPProvider;
+    private IDPProvider mIdpProvider;
     private String mProviderId;
-    private IDPResponse mIdpResponse;
+    private IDPResponse mPrevIdpResponse;
+    private AuthCredential mPrevCredential;
+
+    private static AuthCredential getAuthCredential(IDPResponse idpResponse) {
+        switch (idpResponse.getProviderType()) {
+            case GoogleAuthProvider.PROVIDER_ID:
+                return GoogleProvider.createAuthCredential(idpResponse);
+            case FacebookAuthProvider.PROVIDER_ID:
+                return FacebookProvider.createAuthCredential(idpResponse);
+            default:
+                return null;
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(getResources().getString(R.string.sign_in));
         mProviderId = getProviderIdFromIntent();
-        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        mPrevIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
-        mIDPProvider = null;
+        mIdpProvider = null;
         for (IDPProviderParcel providerParcel: mActivityHelper.flowParams.providerInfo) {
             if (mProviderId.equals(providerParcel.getProviderType())) {
                 switch (mProviderId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mIDPProvider = new GoogleProvider(this, providerParcel);
+                        mIdpProvider = new GoogleProvider(this, providerParcel);
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mIDPProvider = new FacebookProvider(this, providerParcel);
+                        mIdpProvider = new FacebookProvider(this, providerParcel);
                         break;
                     default:
                         Log.w(TAG, "Unknown provider: " + mProviderId);
@@ -78,7 +90,11 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             }
         }
 
-        if (mIDPProvider == null) {
+        if (mPrevIdpResponse != null) {
+            mPrevCredential = getAuthCredential(mPrevIdpResponse);
+        }
+
+        if (mIdpProvider == null) {
             getIntent().putExtra(
                     ExtraConstants.EXTRA_ERROR_MESSAGE,
                     "Firebase login successful. Account linking failed due to provider not "
@@ -87,48 +103,42 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         }
 
         ((TextView) findViewById(R.id.welcome_back_idp_prompt))
-                .setText(getIdpPromptString(getEmailFromIntent(), getAppNameFromIntent()));
+                .setText(getIdpPromptString(getEmailFromIntent()));
 
-        mIDPProvider.setAuthenticationCallback(this);
+        mIdpProvider.setAuthenticationCallback(this);
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mIDPProvider.startLogin(WelcomeBackIDPPrompt.this, getEmailFromIntent());
+                mIdpProvider.startLogin(WelcomeBackIDPPrompt.this, getEmailFromIntent());
             }
         });
     }
 
-    private String getIdpPromptString(String email, String appName) {
+    private String getIdpPromptString(String email) {
         String promptStringTemplate = getResources().getString(R.string.welcome_back_idp_prompt);
-        return String.format(promptStringTemplate, email, appName, mIDPProvider.getName(this));
+        return String.format(promptStringTemplate, email, mIdpProvider.getName(this));
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mIDPProvider.onActivityResult(requestCode, resultCode, data);
+        mIdpProvider.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onClick(View view) {
-        next(mIdpResponse, mProviderId);
+        next(mPrevIdpResponse);
     }
 
     @Override
     public void onSuccess(IDPResponse idpResponse) {
-        Intent data = getIntent();
-        data.putExtra(ExtraConstants.EXTRA_PROVIDER, mProviderId);
-        next(idpResponse, mProviderId);
+        next(idpResponse);
     }
 
     @Override
     public void onFailure(Bundle extra) {
         Toast.makeText(getApplicationContext(), "Error signing in", Toast.LENGTH_LONG).show();
-        next(mIdpResponse, mProviderId);
-    }
-
-    private String getAppNameFromIntent() {
-        return getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
+        finish(RESULT_CANCELED, new Intent());
     }
 
     private String getProviderIdFromIntent() {
@@ -139,43 +149,47 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         return getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
     }
 
-    private void next(IDPResponse idpResponse, String provider) {
-        if (idpResponse == null) {
+    private void next(IDPResponse newIdpResponse) {
+        if (newIdpResponse == null) {
             return; // do nothing
         }
-        AuthCredential credential;
-        switch (provider) {
-            case GoogleAuthProvider.PROVIDER_ID:
-                credential = GoogleProvider.createAuthCredential(idpResponse);
-                break;
-            case FacebookAuthProvider.PROVIDER_ID:
-                credential = FacebookProvider.createAuthCredential(idpResponse);
-                break;
-            default:
-                Log.e(TAG, "Unknown provider: " + provider);
-                finish(Activity.RESULT_FIRST_USER, new Intent());
-                return;
-        }
-        if (credential == null) {
+        AuthCredential newCredential;
+        newCredential = getAuthCredential(newIdpResponse);
+        if (newCredential == null) {
             Log.e(TAG, "No credential returned");
             finish(Activity.RESULT_FIRST_USER, new Intent());
             return;
         }
 
-        FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
+        final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         if (currentUser == null) {
-            Task<AuthResult> authResultTask = firebaseAuth.signInWithCredential(credential);
+            Task<AuthResult> authResultTask = firebaseAuth.signInWithCredential(newCredential);
             authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    finish(Activity.RESULT_OK, new Intent());
+                    if (task.isSuccessful() && mPrevCredential != null) {
+                        FirebaseUser firebaseUser = task.getResult().getUser();
+                        firebaseUser.linkWithCredential(mPrevCredential);
+                        firebaseAuth.signOut();
+                        firebaseAuth.signInWithCredential(mPrevCredential).addOnCompleteListener(
+                                new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        finish(Activity.RESULT_OK, new Intent());
+
+                                    }
+                                }
+                        );
+                    } else {
+                        finish(Activity.RESULT_OK, new Intent());
+                    }
                 }
             });
 
         } else {
-            Task<AuthResult> authResultTask = currentUser.linkWithCredential(credential);
+            Task<AuthResult> authResultTask = currentUser.linkWithCredential(newCredential);
             authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -189,9 +203,11 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             Context context,
             FlowParameters flowParams,
             String providerId,
+            IDPResponse idpResponse,
             String email) {
         return ActivityHelper.createBaseIntent(context, WelcomeBackIDPPrompt.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_PROVIDER, providerId)
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, idpResponse)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

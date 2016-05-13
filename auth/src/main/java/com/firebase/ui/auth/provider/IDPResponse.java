@@ -21,10 +21,12 @@ import android.os.Parcelable;
 public class IDPResponse implements Parcelable {
 
     private final String mProviderId;
+    private final String mEmail;
     private final Bundle mResponseBundle;
 
-    public IDPResponse(String providerId, Bundle response) {
+    public IDPResponse(String providerId, String email, Bundle response) {
         mProviderId = providerId;
+        mEmail = email;
         mResponseBundle = response;
     }
 
@@ -32,6 +34,7 @@ public class IDPResponse implements Parcelable {
         @Override
         public IDPResponse createFromParcel(Parcel in) {
             return new IDPResponse(
+                    in.readString(),
                     in.readString(),
                     in.readBundle()
             );
@@ -51,6 +54,10 @@ public class IDPResponse implements Parcelable {
         return mResponseBundle;
     }
 
+    public String getEmail() {
+        return mEmail;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -59,6 +66,7 @@ public class IDPResponse implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mProviderId);
+        dest.writeString(mEmail);
         dest.writeBundle(mResponseBundle);
     }
 }

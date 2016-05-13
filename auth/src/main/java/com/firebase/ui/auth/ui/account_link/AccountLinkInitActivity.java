@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -36,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AccountLinkInitActivity extends AppCompatBase {
-    protected FirebaseAuthWrapper mApiWrapper;
+    private IDPResponse mIdpResponse;
     private static final int RC_SAVE_CREDENTIALS = 3;
     private static final int RC_WELCOME_BACK_IDP_PROMPT = 4;
     private static final int RC_WELCOME_BACK_PASSWORD_PROMPT = 5;
@@ -44,6 +45,8 @@ public class AccountLinkInitActivity extends AppCompatBase {
             RC_SAVE_CREDENTIALS,
             RC_WELCOME_BACK_IDP_PROMPT,
             RC_WELCOME_BACK_PASSWORD_PROMPT);
+
+    protected FirebaseAuthWrapper mApiWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class AccountLinkInitActivity extends AppCompatBase {
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         String password = getIntent().getStringExtra(ExtraConstants.EXTRA_PASSWORD);
         String provider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
+        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
         next(email, password, provider);
     }
 
@@ -81,7 +85,7 @@ public class AccountLinkInitActivity extends AppCompatBase {
                     // new account for this email
                     startActivityForResult(SaveCredentialsActivity.createIntent(
                             getApplicationContext(),
-                            null,
+                            mActivityHelper.flowParams,
                             email,
                             password,
                             provider,
@@ -92,7 +96,7 @@ public class AccountLinkInitActivity extends AppCompatBase {
                         // existing account but has this IDP linked
                         startActivityForResult(SaveCredentialsActivity.createIntent(
                                 AccountLinkInitActivity.this,
-                                null,
+                                mActivityHelper.flowParams,
                                 email,
                                 password,
                                 provider,
@@ -112,6 +116,7 @@ public class AccountLinkInitActivity extends AppCompatBase {
                                     getApplicationContext(),
                                     mActivityHelper.flowParams,
                                     provider,
+                                    mIdpResponse,
                                     email),
                                 RC_WELCOME_BACK_IDP_PROMPT
                             );
@@ -123,6 +128,7 @@ public class AccountLinkInitActivity extends AppCompatBase {
                             getApplicationContext(),
                             mActivityHelper.flowParams,
                             provider,
+                            mIdpResponse,
                             email),
                             RC_WELCOME_BACK_IDP_PROMPT);
                 }
@@ -135,10 +141,12 @@ public class AccountLinkInitActivity extends AppCompatBase {
             FlowParameters flowParams,
             String email,
             String password,
+            IDPResponse idpResponse,
             String provider) {
         return ActivityHelper.createBaseIntent(context, AccountLinkInitActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email)
                 .putExtra(ExtraConstants.EXTRA_PASSWORD, password)
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, idpResponse)
                 .putExtra(ExtraConstants.EXTRA_PROVIDER, provider);
     }
 }

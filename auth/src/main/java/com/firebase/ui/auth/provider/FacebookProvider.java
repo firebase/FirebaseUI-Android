@@ -24,12 +24,17 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 
@@ -88,20 +93,37 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
     }
 
     @Override
-    public void onSuccess(LoginResult loginResult) {
+    public void onSuccess(final LoginResult loginResult) {
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "Login to facebook successful with Application Id: "
                     + loginResult.getAccessToken().getApplicationId()
                     + " with Token: "
                     + loginResult.getAccessToken().getToken());
         }
-        mCallbackObject.onSuccess(createIDPResponse(loginResult));
+        GraphRequest request = GraphRequest.newMeRequest(
+                loginResult.getAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        try {
+                            String email = object.getString("email");
+                            mCallbackObject.onSuccess(createIDPResponse(loginResult, email));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            mCallbackObject.onFailure(new Bundle());
+                        }
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,email");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
-    private IDPResponse createIDPResponse(LoginResult loginResult) {
+    private IDPResponse createIDPResponse(LoginResult loginResult, String email) {
         Bundle response = new Bundle();
         response.putString(ACCESS_TOKEN, loginResult.getAccessToken().getToken());
-        return new IDPResponse(FacebookAuthProvider.PROVIDER_ID, response);
+        return new IDPResponse(FacebookAuthProvider.PROVIDER_ID, email, response);
     }
 
     public static AuthCredential createAuthCredential(IDPResponse response) {

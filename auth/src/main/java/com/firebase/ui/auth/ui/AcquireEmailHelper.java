@@ -86,6 +86,7 @@ public class AcquireEmailHelper {
                         mActivityHelper.getApplicationContext(),
                         mActivityHelper.flowParams,
                         provider,
+                        null,
                         email);
                 mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
                 return;

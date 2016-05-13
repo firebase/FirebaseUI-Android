@@ -83,7 +83,7 @@ public class GoogleProvider implements IDPProvider, OnClickListener {
     private IDPResponse createIDPResponse(GoogleSignInAccount account) {
         Bundle response = new Bundle();
         response.putString(TOKEN_KEY, account.getIdToken());
-        return new IDPResponse(GoogleAuthProvider.PROVIDER_ID, response);
+        return new IDPResponse(GoogleAuthProvider.PROVIDER_ID, account.getEmail(), response);
     }
 
     @Override
