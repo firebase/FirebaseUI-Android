@@ -223,13 +223,13 @@ public class ChatActivity extends AppCompatActivity {
 
             int color;
             if (isSender) {
-                color = ContextCompat.getColor(mView.getContext(), R.color.green_300);
+                color = ContextCompat.getColor(mView.getContext(), R.color.material_green_300);
 
                 left_arrow.setVisibility(View.GONE);
                 right_arrow.setVisibility(View.VISIBLE);
                 messageContainer.setGravity(Gravity.RIGHT);
             } else {
-                color = ContextCompat.getColor(mView.getContext(), R.color.grey_300);
+                color = ContextCompat.getColor(mView.getContext(), R.color.material_grey_300);
 
                 left_arrow.setVisibility(View.VISIBLE);
                 right_arrow.setVisibility(View.GONE);
