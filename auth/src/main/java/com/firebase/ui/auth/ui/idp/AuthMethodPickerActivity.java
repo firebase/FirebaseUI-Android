@@ -115,6 +115,7 @@ public class AuthMethodPickerActivity
                 loginButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
                         provider.startLogin(AuthMethodPickerActivity.this, null);
                     }
                 });
@@ -163,6 +164,7 @@ public class AuthMethodPickerActivity
                                             @NonNull Task<ProviderQueryResult> task) {
                                         String provider = task.getResult().getProviders().get(0);
                                         if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
+                                            mActivityHelper.dismissDialog();
                                             startActivityForResult(
                                                     WelcomeBackPasswordPrompt.createIntent(
                                                             mActivityHelper.getApplicationContext(),
@@ -171,6 +173,7 @@ public class AuthMethodPickerActivity
                                                     ), RC_WELCOME_BACK_IDP);
 
                                         } else {
+                                            mActivityHelper.dismissDialog();
                                             startActivityForResult(
                                                     WelcomeBackIDPPrompt.createIntent(
                                                         mActivityHelper.getApplicationContext(),
@@ -190,6 +193,7 @@ public class AuthMethodPickerActivity
                             if (photoUri != null) {
                                 photoUrl = photoUri.toString();
                             }
+                            mActivityHelper.dismissDialog();
                             startActivityForResult(SaveCredentialsActivity.createIntent(
                                     mActivityHelper.getApplicationContext(),
                                     mActivityHelper.flowParams,
