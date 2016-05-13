@@ -46,11 +46,14 @@ public class AuthUiActivity extends Activity {
 
     private static final int RC_SIGN_IN = 100;
 
+    @BindView(R.id.default_theme)
+    RadioButton mUseDefaultTheme;
+
     @BindView(R.id.green_theme)
     RadioButton mUseGreenTheme;
 
-    @BindView(R.id.blue_theme)
-    RadioButton mUseBlueTheme;
+    @BindView(R.id.purple_theme)
+    RadioButton mUsePurpleTheme;
 
     @BindView(R.id.email_provider)
     CheckBox mUseEmailProvider;
@@ -83,7 +86,7 @@ public class AuthUiActivity extends Activity {
             finish();
         }
 
-        setContentView(R.layout.launch_layout);
+        setContentView(R.layout.auth_ui_layout);
         ButterKnife.bind(this);
     }
 
@@ -128,10 +131,12 @@ public class AuthUiActivity extends Activity {
     @MainThread
     @StyleRes
     private int getSelectedTheme() {
-        // this can happen prior to initial layout inflation and binding,
-        // in which case the radio button references will be null
-        if (mUseBlueTheme == null || mUseBlueTheme.isChecked()) {
-            return R.style.BlueTheme;
+        if (mUseDefaultTheme.isChecked()) {
+            return AuthUI.DEFAULT_THEME;
+        }
+
+        if (mUsePurpleTheme.isChecked()) {
+            return R.style.PurpleTheme;
         }
 
         return R.style.GreenTheme;

@@ -25,6 +25,7 @@ public class ActivityBase extends Activity {
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         mActivityHelper = new ActivityHelper(this, getIntent());
+        mActivityHelper.configureTheme();
     }
 
     public void finish(int resultCode, Intent intent) {

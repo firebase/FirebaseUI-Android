@@ -38,6 +38,10 @@ public class ActivityHelper {
         flowParams = intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
     }
 
+    public void configureTheme() {
+        mActivity.setTheme(flowParams.themeId);
+    }
+
     public void dismissDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();

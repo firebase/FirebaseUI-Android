@@ -97,7 +97,7 @@ public class AuthUI {
      * The theme identifier to use in {@link SignInIntentBuilder#setTheme(int)} if no theme
      * customization is required.
      */
-    public static final int DEFAULT_THEME = 0;
+    public static final int DEFAULT_THEME = R.style.FirebaseUI;
 
     /**
      * Signs the current user out, if one is signed in. The

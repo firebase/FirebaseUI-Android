@@ -24,6 +24,7 @@ public class AppCompatBase extends android.support.v7.app.AppCompatActivity {
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         mActivityHelper = new ActivityHelper(this, getIntent());
+        mActivityHelper.configureTheme();
     }
 
     public void finish(int resultCode, Intent intent) {
