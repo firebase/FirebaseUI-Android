@@ -22,9 +22,11 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.ActivityBase;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;
@@ -34,14 +36,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.List;
 
 public class ChooseAccountActivity extends ActivityBase {
     private static final String TAG = "ChooseAccountActivity";
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
+    private static final int RC_EMAIL_FLOW = 5;
 
     protected CredentialsAPI mCredentialsApi;
 
@@ -73,7 +79,6 @@ public class ChooseAccountActivity extends ActivityBase {
         super.onStop();
     }
 
-
     public void onCredentialsApiConnected() {
         // called back when the CredentialsAPI connects
         String email = mCredentialsApi.getEmailFromCredential();
@@ -101,12 +106,24 @@ public class ChooseAccountActivity extends ActivityBase {
                 // resolve credential
                 mCredentialsApi.resolveSavedEmails(this);
             } else {
-                startActivityForResult(
-                        AuthMethodPickerActivity.createIntent(
-                                this,
-                                mActivityHelper.flowParams),
-                        RC_AUTH_METHOD_PICKER);
+                startAuthMethodChoice();
             }
+        } else {
+            startAuthMethodChoice();
+        }
+    }
+
+    private void startAuthMethodChoice() {
+        List<IDPProviderParcel> providers = mActivityHelper.flowParams.providerInfo;
+        if ( providers.size() == 1
+                && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
+            startActivityForResult(
+                    SignInNoPasswordActivity.createIntent(
+                            this,
+                            mActivityHelper.flowParams,
+                            null
+                    ),
+                    RC_EMAIL_FLOW);
         } else {
             startActivityForResult(
                     AuthMethodPickerActivity.createIntent(
@@ -166,17 +183,15 @@ public class ChooseAccountActivity extends ActivityBase {
                 );
             } else if (resultCode == RESULT_CANCELED) {
                 // Smart lock selector cancelled, go to the AuthMethodPicker screen
-                startActivityForResult(
-                        AuthMethodPickerActivity.createIntent(
-                                this,
-                                mActivityHelper.flowParams),
-                        RC_AUTH_METHOD_PICKER);
+                startAuthMethodChoice();
             } else if (resultCode == RESULT_FIRST_USER) {
                 // TODO: (serikb) figure out flow
             }
         } else if (requestCode == RC_IDP_SIGNIN) {
             finish(resultCode, new Intent());
         } else if (requestCode == RC_AUTH_METHOD_PICKER) {
+            finish(resultCode, new Intent());
+        } else if (requestCode == RC_EMAIL_FLOW) {
             finish(resultCode, new Intent());
         }
     }
