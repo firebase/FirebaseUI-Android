@@ -132,7 +132,7 @@ public class AuthUiActivity extends Activity {
     @StyleRes
     private int getSelectedTheme() {
         if (mUseDefaultTheme.isChecked()) {
-            return AuthUI.DEFAULT_THEME;
+            return AuthUI.getDefaultTheme();
         }
 
         if (mUsePurpleTheme.isChecked()) {

@@ -22,12 +22,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 
-import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.credentials.ChooseAccountActivity;
+import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -94,10 +94,14 @@ public class AuthUI {
             )));
 
     /**
-     * The theme identifier to use in {@link SignInIntentBuilder#setTheme(int)} if no theme
+     * Default theme to be used in {@link SignInIntentBuilder#setTheme(int)} if no theme
      * customization is required.
      */
-    public static final int DEFAULT_THEME = R.style.FirebaseUI;
+    public static @StyleRes int getDefaultTheme() {
+        // TODO(iainmgin): figure out why this works as a static method but not as a static
+        //                 final variable.
+        return R.style.FirebaseUI;
+    }
 
     /**
      * Signs the current user out, if one is signed in. The
@@ -151,7 +155,8 @@ public class AuthUI {
     public static final class SignInIntentBuilder {
         private Context mContext;
         private FirebaseApp mFirebaseApp;
-        private int mTheme = DEFAULT_THEME;
+
+        private int mTheme = getDefaultTheme();
         private List<String> mProviders = Collections.singletonList(EMAIL_PROVIDER);
         private String mTosUrl;
 
@@ -189,7 +194,7 @@ public class AuthUI {
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified,
-         * {@link #DEFAULT_THEME} will be used.
+         * a default theme will be used.
          */
         public SignInIntentBuilder setTheme(@StyleRes int theme) {
             mTheme = theme;
