@@ -76,7 +76,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         mIDPProvider.startLogin(this, mEmail);
     }
 
-    private void startAccountLinkingActivity(FirebaseUser firebaseUser) {
+    private void startAccountLinkingActivity(FirebaseUser firebaseUser, IDPResponse response) {
         List<String> providers = firebaseUser.getProviders();
         String provider = null;
         if (providers.size() == 1) {
@@ -89,12 +89,13 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
                 mActivityHelper.flowParams,
                 firebaseUser.getEmail(),
                 null,
+                response,
                 provider),
                 RC_ACCOUNT_LINK);
     }
 
     @Override
-    public void onSuccess(IDPResponse response) {
+    public void onSuccess(final IDPResponse response) {
         Intent data = new Intent();
         data.putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
         AuthCredential credential = createCredential(response);
@@ -104,7 +105,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        startAccountLinkingActivity(task.getResult().getUser());
+                        startAccountLinkingActivity(task.getResult().getUser(), response);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
