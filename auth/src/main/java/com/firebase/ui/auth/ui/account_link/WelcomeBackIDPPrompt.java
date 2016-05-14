@@ -32,6 +32,7 @@ import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -51,17 +52,6 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
     private String mProviderId;
     private IDPResponse mPrevIdpResponse;
     private AuthCredential mPrevCredential;
-
-    private static AuthCredential getAuthCredential(IDPResponse idpResponse) {
-        switch (idpResponse.getProviderType()) {
-            case GoogleAuthProvider.PROVIDER_ID:
-                return GoogleProvider.createAuthCredential(idpResponse);
-            case FacebookAuthProvider.PROVIDER_ID:
-                return FacebookProvider.createAuthCredential(idpResponse);
-            default:
-                return null;
-        }
-    }
 
 
     @Override
@@ -91,7 +81,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         }
 
         if (mPrevIdpResponse != null) {
-            mPrevCredential = getAuthCredential(mPrevIdpResponse);
+            mPrevCredential = AuthCredentialHelper.getAuthCredential(mPrevIdpResponse);
         }
 
         if (mIdpProvider == null) {
@@ -154,7 +144,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             return; // do nothing
         }
         AuthCredential newCredential;
-        newCredential = getAuthCredential(newIdpResponse);
+        newCredential = AuthCredentialHelper.getAuthCredential(newIdpResponse);
         if (newCredential == null) {
             Log.e(TAG, "No credential returned");
             finish(Activity.RESULT_FIRST_USER, new Intent());
