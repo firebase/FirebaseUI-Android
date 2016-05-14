@@ -84,8 +84,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.button_done) {
+            mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
             next(mEmail, mPasswordField.getText().toString());
         } else if (id == R.id.trouble_signing_in) {
+            mActivityHelper.dismissDialog();
             startActivity(RecoverPasswordActivity.createIntent(
                     getApplicationContext(),
                     mActivityHelper.flowParams,
@@ -124,7 +126,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                     if (photoUri != null) {
                                         photoUrl = photoUri.toString();
                                     }
-
+                                    mActivityHelper.dismissDialog();
                                     startActivityForResult(
                                             SaveCredentialsActivity.createIntent(
                                                     mActivityHelper.getApplicationContext(),

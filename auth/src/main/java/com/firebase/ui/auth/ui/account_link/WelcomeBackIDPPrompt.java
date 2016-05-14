@@ -99,6 +99,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
                 mIdpProvider.startLogin(WelcomeBackIDPPrompt.this, getEmailFromIntent());
             }
         });
@@ -167,12 +168,14 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
                                 new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
+                                        mActivityHelper.dismissDialog();
                                         finish(Activity.RESULT_OK, new Intent());
 
                                     }
                                 }
                         );
                     } else {
+                        mActivityHelper.dismissDialog();
                         finish(Activity.RESULT_OK, new Intent());
                     }
                 }
@@ -183,6 +186,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
+                    mActivityHelper.dismissDialog();
                     finish(Activity.RESULT_OK, new Intent());
                 }
             });
