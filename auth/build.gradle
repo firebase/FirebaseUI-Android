@@ -42,3 +42,7 @@ task checkAllSource(type: Checkstyle) {
     include '**/*.java'
     classpath = files(project.configurations.compile)
 }
+
+javadoc.exclude 'com/firebase/ui/auth/provider/**'
+javadoc.exclude 'com/firebase/ui/auth/util/**'
+javadoc.exclude 'com/firebase/ui/auth/ui/email/field_validators/**'

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.credentials;
+package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,11 +23,7 @@ import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
-import com.firebase.ui.auth.ui.ActivityBase;
-import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
-import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;

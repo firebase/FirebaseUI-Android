@@ -26,7 +26,7 @@ import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.credentials.ChooseAccountActivity;
+import com.firebase.ui.auth.ui.ChooseAccountActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.google.android.gms.common.api.Status;
