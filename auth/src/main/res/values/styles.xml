@@ -194,10 +194,10 @@
         <item name="android:paddingBottom">8dp</item>
     </style>
 
-    <!-- NASCAR screen -->
-    <style name="FirebaseUI.NASCAR"></style>
+    <!-- Authentication method picker styles -->
+    <style name="FirebaseUI.AuthMethodPicker" />
 
-    <style name="FirebaseUI.NASCAR.ButtonHolder">
+    <style name="FirebaseUI.AuthMethodPicker.ButtonHolder">
         <item name="android:orientation">vertical</item>
         <item name="android:paddingBottom">56dp</item>
         <item name="android:layout_width">220dp</item>

@@ -69,7 +69,7 @@ public class AuthMethodPickerActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.nascar_layout);
+        setContentView(R.layout.auth_method_picker_layout);
         Button emailButton = (Button) findViewById(R.id.email_provider);
         emailButton.setOnClickListener(this);
         populateIdpList(mActivityHelper.flowParams.providerInfo);
