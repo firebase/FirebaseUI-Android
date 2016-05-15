@@ -93,7 +93,7 @@ public class AuthUiActivity extends Activity {
     @OnClick(R.id.sign_in)
     public void signIn(View view) {
         startActivityForResult(
-                new AuthUI.SignInIntentBuilder(this)
+                AuthUI.getInstance().createSignInIntentBuilder()
                         .setTheme(getSelectedTheme())
                         .setProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())

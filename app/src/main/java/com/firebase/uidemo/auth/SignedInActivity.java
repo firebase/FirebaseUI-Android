@@ -81,8 +81,9 @@ public class SignedInActivity extends Activity {
 
     @OnClick(R.id.sign_out)
     public void signOut() {
-        AuthUI.signOut(this).addOnCompleteListener(
-                new OnCompleteListener<Void>() {
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
