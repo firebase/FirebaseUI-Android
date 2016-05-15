@@ -39,6 +39,15 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.List;
 
+/**
+ * Attempts to acquire a credential from Smart Lock for Passwords to sign in
+ * an existing account. If this succeeds, an attempt is made to sign the user in
+ * with this credential. If it does not, the
+ * {@link AuthMethodPickerActivity authentication method picker activity}
+ * is started, unless only email is supported, in which case the
+ * {@link com.firebase.ui.auth.ui.email.SignInNoPasswordActivity email sign-in flow}
+ * is started.
+ */
 public class ChooseAccountActivity extends ActivityBase {
     private static final String TAG = "ChooseAccountActivity";
     private static final int RC_CREDENTIALS_READ = 2;
