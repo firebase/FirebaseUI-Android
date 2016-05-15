@@ -40,7 +40,6 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -48,7 +47,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
-    private static final int RC_YOLO_SAVE = 3;
+    private static final int RC_CREDENTIAL_SAVE = 3;
     final StyleSpan bold = new StyleSpan(Typeface.BOLD);
     private String mEmail;
     private TextInputLayout mPasswordLayout;
@@ -99,7 +98,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_YOLO_SAVE) {
+        if (requestCode == RC_CREDENTIAL_SAVE) {
             finish(RESULT_OK, new Intent());
         }
     }
@@ -136,7 +135,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                                     password,
                                                     null,
                                                     photoUrl
-                                            ), RC_YOLO_SAVE);
+                                            ), RC_CREDENTIAL_SAVE);
                                 }
                             }
                     );
