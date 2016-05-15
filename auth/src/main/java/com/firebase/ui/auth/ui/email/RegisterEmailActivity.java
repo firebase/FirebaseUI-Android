@@ -94,6 +94,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
 
         if (email != null) {
             mEmailEditText.setText(email);
+            mEmailEditText.setEnabled(false);
         }
         setUpTermsOfService();
         Button createButton = (Button) findViewById(R.id.button_create);
