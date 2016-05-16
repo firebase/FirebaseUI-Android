@@ -222,6 +222,14 @@ public void onClick(View v) {
 }
 ```
 
+### Authentication flow chart
+
+The authentication flow implemented on Android is more complex than on other
+platforms, due to the availability of Smart Lock for Passwords. It is
+represented in the following diagram:
+
+![FirebaseUI authentication flow on Android](flow.png)
+
 ### UI customization
 
 To provide customization of the visual style of the activities that implement
