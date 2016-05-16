@@ -79,10 +79,10 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
     private void startAccountLinkingActivity(FirebaseUser firebaseUser, IDPResponse response) {
         List<String> providers = firebaseUser.getProviders();
         String provider = null;
-        if (providers.size() == 1) {
-            provider = providers.get(0);
+        if (providers.isEmpty()) {
+            Log.e(TAG, "User has no existing providers to link with" );
         } else {
-            Log.e(TAG, "Expecting a single provider, received :" + providers.size());
+            provider = firebaseUser.getProviders().get(0);
         }
         startActivityForResult(AccountLinkInitActivity.createIntent(
                 this,

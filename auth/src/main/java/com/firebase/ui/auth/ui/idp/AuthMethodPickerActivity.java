@@ -207,7 +207,7 @@ public class AuthMethodPickerActivity
                                     firebaseUser.getDisplayName(),
                                     firebaseUser.getEmail(),
                                     null,
-                                    firebaseUser.getProviderId(),
+                                    response.getProviderType(),
                                     photoUrl
                             ), RC_ACCOUNT_LINK);
                         }

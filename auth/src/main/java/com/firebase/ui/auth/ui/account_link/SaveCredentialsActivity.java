@@ -23,7 +23,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
@@ -151,7 +150,6 @@ public class SaveCredentialsActivity extends AppCompatBase
     public void onResult(@NonNull Status status) {
 
         if (status.isSuccess()) {
-            Toast.makeText(getApplicationContext(), "Credential saved", Toast.LENGTH_SHORT).show();
             finish(RESULT_OK, getIntent());
         } else {
             if (status.hasResolution()) {

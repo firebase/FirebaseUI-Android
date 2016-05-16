@@ -41,8 +41,9 @@ public class AccountLinkInitActivity extends AppCompatBase {
     private static final int RC_SAVE_CREDENTIALS = 3;
     private static final int RC_WELCOME_BACK_IDP_PROMPT = 4;
     private static final int RC_WELCOME_BACK_PASSWORD_PROMPT = 5;
-    private static final List<Integer> REQUEST_CODES = Arrays.asList(
-            RC_SAVE_CREDENTIALS,
+
+    // request codes where we pass the result back to the calling activity
+    private static final List<Integer> CHECKED_REQUEST_CODES = Arrays.asList(
             RC_WELCOME_BACK_IDP_PROMPT,
             RC_WELCOME_BACK_PASSWORD_PROMPT);
 
@@ -62,8 +63,10 @@ public class AccountLinkInitActivity extends AppCompatBase {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (REQUEST_CODES.contains(requestCode)) {
+        if (CHECKED_REQUEST_CODES.contains(requestCode)) {
             finish(resultCode, data);
+        } else if (RC_SAVE_CREDENTIALS == requestCode){
+            finish(RESULT_OK, new Intent());
         }
     }
 
@@ -86,22 +89,22 @@ public class AccountLinkInitActivity extends AppCompatBase {
                     startActivityForResult(SaveCredentialsActivity.createIntent(
                             getApplicationContext(),
                             mActivityHelper.flowParams,
+                            null,
                             email,
                             password,
                             provider,
-                            null,
-                            mActivityHelper.getAppName()), RC_SAVE_CREDENTIALS);
+                            null), RC_SAVE_CREDENTIALS);
                 } else if (providers.size() == 1) {
                     if (providers.get(0).equals(provider)) {
                         // existing account but has this IDP linked
                         startActivityForResult(SaveCredentialsActivity.createIntent(
                                 AccountLinkInitActivity.this,
                                 mActivityHelper.flowParams,
+                                null,
                                 email,
                                 password,
                                 provider,
-                                null,
-                                mActivityHelper.getAppName()),
+                                null),
                                 RC_SAVE_CREDENTIALS);
                     } else {
                         if (providers.get(0).equals(EmailAuthProvider.PROVIDER_ID)) {
@@ -124,13 +127,26 @@ public class AccountLinkInitActivity extends AppCompatBase {
                     }
                 } else {
                     // more than one providers
-                    startActivityForResult(WelcomeBackIDPPrompt.createIntent(
-                            getApplicationContext(),
-                            mActivityHelper.flowParams,
-                            provider,
-                            mIdpResponse,
-                            email),
-                            RC_WELCOME_BACK_IDP_PROMPT);
+                    if (providers.contains(provider)) {
+                        // this provider is already linked
+                        startActivityForResult(SaveCredentialsActivity.createIntent(
+                                AccountLinkInitActivity.this,
+                                mActivityHelper.flowParams,
+                                null,
+                                email,
+                                password,
+                                provider,
+                                null),
+                                RC_SAVE_CREDENTIALS);
+                    } else {
+                        startActivityForResult(WelcomeBackIDPPrompt.createIntent(
+                                getApplicationContext(),
+                                mActivityHelper.flowParams,
+                                provider,
+                                mIdpResponse,
+                                email),
+                                RC_WELCOME_BACK_IDP_PROMPT);
+                    }
                 }
             }
         });
