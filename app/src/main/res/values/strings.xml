@@ -9,7 +9,7 @@
 
     <!-- strings for Auth UI demo activities -->
     <eat-comment/>
-    <string name="launch_title">Firebase Auth UI Demo</string>
+    <string name="launch_title">FirebaseUI Auth Demo</string>
     <string name="sign_in">Start</string>
     <string name="green_theme">Green Theme</string>
     <string name="purple_theme">Purple Theme</string>
@@ -17,7 +17,9 @@
     <string name="auth_providers_header">Use auth providers:</string>
     <string name="email_label">Email</string>
     <string name="facebook_label">Facebook</string>
+    <string name="facebook_label_missing_config">Facebook - configuration missing</string>
     <string name="google_label">Google</string>
+    <string name="google_label_missing_config">Google - configuration missing</string>
     <string name="google_tos_label">Google TOS</string>
     <string name="firebase_tos_label">Firebase TOS</string>
     <string name="tos_header">Terms of Service URL:</string>
@@ -33,4 +35,5 @@
     <string name="user_profile_header">User profile:</string>
     <string name="profile_picture_content_desc">Profile picture</string>
     <string name="default_theme">Default theme</string>
+    <string name="configuration_required">Configuration is required - see README.md</string>
 </resources>
