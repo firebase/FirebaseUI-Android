@@ -39,6 +39,8 @@ import butterknife.OnClick;
 
 public class AuthUiActivity extends Activity {
 
+    private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
+
     private static final String GOOGLE_TOS_URL =
             "https://www.google.com/policies/terms/";
     private static final String FIREBASE_TOS_URL =
@@ -88,6 +90,22 @@ public class AuthUiActivity extends Activity {
 
         setContentView(R.layout.auth_ui_layout);
         ButterKnife.bind(this);
+
+        if (!isGoogleConfigured()) {
+            mUseGoogleProvider.setChecked(false);
+            mUseGoogleProvider.setEnabled(false);
+            mUseGoogleProvider.setText(R.string.google_label_missing_config);
+        }
+
+        if (!isFacebookConfigured()) {
+            mUseFacebookProvider.setChecked(false);
+            mUseFacebookProvider.setEnabled(false);
+            mUseFacebookProvider.setText(R.string.facebook_label_missing_config);
+        }
+
+        if (!isGoogleConfigured() || !isFacebookConfigured()) {
+            showSnackbar(R.string.configuration_required);
+        }
     }
 
     @OnClick(R.id.sign_in)
@@ -171,9 +189,20 @@ public class AuthUiActivity extends Activity {
     }
 
     @MainThread
+    private boolean isGoogleConfigured() {
+        return !UNCHANGED_CONFIG_VALUE.equals(
+                getResources().getString(R.string.default_web_client_id));
+    }
+
+    @MainThread
+    private boolean isFacebookConfigured() {
+        return !UNCHANGED_CONFIG_VALUE.equals(
+                getResources().getString(R.string.facebook_application_id));
+    }
+
+    @MainThread
     private void showSnackbar(@StringRes int errorMessageRes) {
-        Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG)
-                .show();
+        Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
     }
 
     public static Intent createIntent(Context context) {
