@@ -1,6 +1,6 @@
 # Coming Soon - Codelab
 
-FirebaseUI 1.0.0 contains many API changes that make the original **Building a
+FirebaseUI 0.4.0 contains many API changes that make the original **Building a
 chat application with FirebaseUI for Android** codelab out of date. We are
 working hard to bring you a shiny new codelab as soon as we can.
 

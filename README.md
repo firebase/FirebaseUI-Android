@@ -26,13 +26,13 @@ libraries.
 ```
 dependencies {
     # Single target that includes all FirebaseUI libraries
-    compile 'com.firebaseui:firebase-ui:1.0.0'
+    compile 'com.firebaseui:firebase-ui:0.4.0'
     
     # FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:1.0.0'
+    compile 'com.firebaseui:firebase-ui-database:0.4.0'
     
     # FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:1.0.0'
+    compile 'com.firebaseui:firebase-ui-auth:0.4.0'
 }
 ```
 
