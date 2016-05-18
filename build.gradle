@@ -130,8 +130,11 @@ allprojects { project ->
         apply plugin: 'com.jfrog.bintray'
 
         def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
+
         group = project.ext.group
         version = project.ext.version
+
+        def versionName = project.ext.version
 
         bintray {
             user = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
@@ -147,8 +150,7 @@ allprojects { project ->
                 vcsUrl = 'https://github.com/firebase/FirebaseUI-Android.git'
 
                 version {
-                    name = version
-                    released = new Date()
+                    name = versionName
                 }
             }
         }
