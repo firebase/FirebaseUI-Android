@@ -55,8 +55,8 @@ task prepareArtifacts(dependsOn: [
         javadocJar,
         sourcesJar,
         assembleRelease,
-        prepareArtifactsTasks()]) {
-
+        prepareArtifactsTasks(),
+        "generatePomFileForMonolithLibraryPublication"]) {
 }
 
 /**

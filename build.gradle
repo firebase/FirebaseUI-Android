@@ -33,6 +33,7 @@ allprojects { project ->
 
     def isLibrary = 'library'.equals(project.name)
     def isSubmodule = project.ext.submodules.contains(project.name)
+    def pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication"
 
     if (isSubmodule) {
 
@@ -62,8 +63,12 @@ allprojects { project ->
             from javadoc.destinationDir
         }
 
+        // Define base name for archives
+        // Ex: firebase-ui-auth
+        archivesBaseName = "firebase-ui-${project.name}"
+
         // Convenience tasks that depends on the above
-        task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease]) {}
+        task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
 
         // Use tasks above to define artifacts
         artifacts {
@@ -71,11 +76,7 @@ allprojects { project ->
             archives sourcesJar
         }
 
-        // Define base name for archives
-        // Ex: firebase-ui-auth
-        archivesBaseName = "firebase-ui-${project.name}"
-
-        // So that we can define publications
+        // So that we can define publication
         apply plugin: 'maven-publish'
 
         publishing {
@@ -122,6 +123,13 @@ allprojects { project ->
                 }
             }
 
+            repositories {
+                maven {
+                    name 'BuildLocal'
+                    url "$buildDir/repo"
+                }
+            }
+
         }
     }
 
@@ -130,6 +138,7 @@ allprojects { project ->
         apply plugin: 'com.jfrog.bintray'
 
         def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
+        def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"
 
         group = project.ext.group
         version = project.ext.version
@@ -139,6 +148,14 @@ allprojects { project ->
         bintray {
             user = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
             key = hasProperty('BINTRAY_KEY') ? getProperty('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
+
+            filesSpec {
+                from pomLoc
+                into "com/firebaseui/$archivesBaseName/$versionName/"
+                rename { String fileName ->
+                    "${archivesBaseName}-${project.ext.version}.pom"
+                }
+            }
 
             configurations = [ 'archives' ]
 
