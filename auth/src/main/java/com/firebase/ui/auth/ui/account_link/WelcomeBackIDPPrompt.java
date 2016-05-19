@@ -169,8 +169,12 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         mActivityHelper.dismissDialog();
+                                        if (!task.isSuccessful()) {
+                                            Log.e(TAG,
+                                                    "Error signing in with credential",
+                                                    task.getException());
+                                        }
                                         finish(Activity.RESULT_OK, new Intent());
-
                                     }
                                 }
                         );
@@ -187,6 +191,9 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     mActivityHelper.dismissDialog();
+                    if (!task.isSuccessful()) {
+                        Log.e(TAG, "Error linking with credential", task.getException());
+                    }
                     finish(Activity.RESULT_OK, new Intent());
                 }
             });

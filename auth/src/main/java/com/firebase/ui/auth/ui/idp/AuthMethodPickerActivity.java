@@ -155,7 +155,7 @@ public class AuthMethodPickerActivity
         AuthCredential credential = createCredential(response);
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
 
-            firebaseAuth.signInWithCredential(credential).addOnCompleteListener(
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(
                 new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -192,6 +192,10 @@ public class AuthMethodPickerActivity
                                         }
                                     }
                                 });
+                            } else {
+                                mActivityHelper.dismissDialog();
+                                Log.e(TAG, "Unexpected exception when signing in with " +
+                                        "credential", task.getException());
                             }
                         } else {
                             FirebaseUser firebaseUser = task.getResult().getUser();
@@ -224,6 +228,7 @@ public class AuthMethodPickerActivity
     @Override
     public void onFailure(Bundle extra) {
         // stay on this screen
+        mActivityHelper.dismissDialog();
     }
 
     @Override

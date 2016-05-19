@@ -23,6 +23,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -49,6 +50,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener {
     private static final int RC_SAVE_CREDENTIAL = 3;
+    private static final String TAG = "RegisterEmailActivity";
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mNameEditText;
@@ -157,7 +159,12 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     mActivityHelper.dismissDialog();
-                                    startSaveCredentials(firebaseUser, password);
+                                    if (task.isSuccessful()) {
+                                        startSaveCredentials(firebaseUser, password);
+                                    } else {
+                                        Log.e(TAG, "Error setting display name",
+                                                task.getException());
+                                    }
                                 }
                             });
                         } else {

@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
@@ -31,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AcquireEmailHelper {
+    private static final String TAG = "AcquireEmailHelper";
     public static final int RC_REGISTER_ACCOUNT = 14;
     public static final int RC_WELCOME_BACK_IDP = 15;
     public static final int RC_SIGN_IN = 16;
@@ -54,7 +56,13 @@ public class AcquireEmailHelper {
                     new OnCompleteListener<ProviderQueryResult>() {
                         @Override
                         public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                            startEmailHandler(email, task.getResult().getProviders());
+                            if (task.isSuccessful()) {
+                                startEmailHandler(email, task.getResult().getProviders());
+                            } else {
+                                mActivityHelper.dismissDialog();
+                                Log.e(TAG, "Error fetching providers for email",
+                                        task.getException());
+                            }
                         }
                     }
             );

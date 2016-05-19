@@ -30,7 +30,6 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.account_link.AccountLinkInitActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -105,13 +104,12 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        startAccountLinkingActivity(task.getResult().getUser(), response);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Failure authenticating with credential");
+                        if (task.isSuccessful()) {
+                            startAccountLinkingActivity(task.getResult().getUser(), response);
+                        } else {
+                            Log.e(TAG, "Failure authenticating with credential");
+                            finish(RESULT_CANCELED, new Intent());
+                        }
                     }
                 });
     }

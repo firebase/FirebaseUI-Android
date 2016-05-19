@@ -24,6 +24,7 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +41,8 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -48,6 +51,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
     private static final int RC_CREDENTIAL_SAVE = 3;
+    private static final String TAG = "WelcomeBackPassword";
     final StyleSpan bold = new StyleSpan(Typeface.BOLD);
     private String mEmail;
     private TextInputLayout mPasswordLayout;
@@ -115,30 +119,36 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                     task.getResult().getUser().linkWithCredential(authCredential);
                     firebaseAuth.signOut();
 
-                    firebaseAuth.signInWithCredential(authCredential).addOnCompleteListener(
-                            new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    FirebaseUser firebaseUser = task.getResult().getUser();
-                                    String photoUrl = null;
-                                    Uri photoUri = firebaseUser.getPhotoUrl();
-                                    if (photoUri != null) {
-                                        photoUrl = photoUri.toString();
+                    firebaseAuth.signInWithCredential(authCredential)
+                            .addOnSuccessListener(
+                                new OnSuccessListener<AuthResult>() {
+                                    @Override
+                                    public void onSuccess(AuthResult authResult) {
+                                        FirebaseUser firebaseUser = authResult.getUser();
+                                        String photoUrl = null;
+                                        Uri photoUri = firebaseUser.getPhotoUrl();
+                                        if (photoUri != null) {
+                                            photoUrl = photoUri.toString();
+                                        }
+                                        mActivityHelper.dismissDialog();
+                                        startActivityForResult(
+                                                SaveCredentialsActivity.createIntent(
+                                                        mActivityHelper.getApplicationContext(),
+                                                        mActivityHelper.flowParams,
+                                                        firebaseUser.getDisplayName(),
+                                                        firebaseUser.getEmail(),
+                                                        password,
+                                                        null,
+                                                        photoUrl
+                                                ), RC_CREDENTIAL_SAVE);
                                     }
-                                    mActivityHelper.dismissDialog();
-                                    startActivityForResult(
-                                            SaveCredentialsActivity.createIntent(
-                                                    mActivityHelper.getApplicationContext(),
-                                                    mActivityHelper.flowParams,
-                                                    firebaseUser.getDisplayName(),
-                                                    firebaseUser.getEmail(),
-                                                    password,
-                                                    null,
-                                                    photoUrl
-                                            ), RC_CREDENTIAL_SAVE);
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e(TAG, "Error signing in with credential", e);
                                 }
-                            }
-                    );
+                            });
                 } else {
                     String error = task.getException().getLocalizedMessage();
                     mPasswordLayout.setError(error);

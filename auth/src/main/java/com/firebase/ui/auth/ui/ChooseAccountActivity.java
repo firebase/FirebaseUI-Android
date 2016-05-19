@@ -30,7 +30,6 @@ import com.firebase.ui.auth.util.CredentialsAPI;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -71,7 +70,7 @@ public class ChooseAccountActivity extends ActivityBase {
     @Override
     protected void onStart() {
         super.onStart();
-        if (mCredentialsApi.isGoogleApiClient()){
+        if (mCredentialsApi.isGoogleApiClient()) {
             mCredentialsApi.getGoogleApiClient().connect();
         }
     }
@@ -101,7 +100,12 @@ public class ChooseAccountActivity extends ActivityBase {
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    finish(Activity.RESULT_OK, new Intent());
+                                    if (task.isSuccessful()) {
+                                        finish(Activity.RESULT_OK, new Intent());
+                                    } else {
+                                        Log.e(TAG, "Unsuccessful sign in with email and password",
+                                                task.getException());
+                                    }
                                 }
                             });
                 } else {
@@ -121,7 +125,7 @@ public class ChooseAccountActivity extends ActivityBase {
 
     private void startAuthMethodChoice() {
         List<IDPProviderParcel> providers = mActivityHelper.flowParams.providerInfo;
-        if ( providers.size() == 1
+        if (providers.size() == 1
                 && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
 
             startActivityForResult(
@@ -138,7 +142,10 @@ public class ChooseAccountActivity extends ActivityBase {
         }
     }
 
-    private void logInWithCredential(final String email, final String password, final String accountType) {
+    private void logInWithCredential(
+            final String email,
+            final String password,
+            final String accountType) {
         if (email != null
                 && mCredentialsApi.isCredentialsAvailable()
                 && !mCredentialsApi.isSignInResolutionNeeded()) {
@@ -148,17 +155,17 @@ public class ChooseAccountActivity extends ActivityBase {
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                finish(RESULT_OK, new Intent());
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception ex) {
-                                // email/password auth failed, go to the AuthMethodPickerActivity
-                                startActivity(AuthMethodPickerActivity.createIntent(
-                                        ChooseAccountActivity.this,
-                                        mActivityHelper.flowParams));
-                                finish(RESULT_OK, new Intent());
+                                if (task.isSuccessful()) {
+                                    finish(RESULT_OK, new Intent());
+                                } else {
+                                    // email/password auth failed, go to the
+                                    // AuthMethodPickerActivity
+                                    startActivityForResult(
+                                            AuthMethodPickerActivity.createIntent(
+                                                ChooseAccountActivity.this,
+                                                mActivityHelper.flowParams),
+                                            RC_AUTH_METHOD_PICKER);
+                                }
                             }
                         });
             } else {

@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.IDPResponse;
@@ -27,7 +28,8 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,10 +39,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AccountLinkInitActivity extends AppCompatBase {
-    private IDPResponse mIdpResponse;
+    private static final String TAG = "AccountLinkInitActivity";
     private static final int RC_SAVE_CREDENTIALS = 3;
     private static final int RC_WELCOME_BACK_IDP_PROMPT = 4;
     private static final int RC_WELCOME_BACK_PASSWORD_PROMPT = 5;
+
+    private IDPResponse mIdpResponse;
 
     // request codes where we pass the result back to the calling activity
     private static final List<Integer> CHECKED_REQUEST_CODES = Arrays.asList(
@@ -78,12 +82,12 @@ public class AccountLinkInitActivity extends AppCompatBase {
         FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         Task<ProviderQueryResult> providerQueryResultTask
                 = firebaseAuth.fetchProvidersForEmail(email);
-        providerQueryResultTask.addOnCompleteListener(
-                new OnCompleteListener<ProviderQueryResult>() {
+        providerQueryResultTask.addOnSuccessListener(
+                new OnSuccessListener<ProviderQueryResult>() {
             @Override
-            public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+            public void onSuccess(@NonNull ProviderQueryResult result) {
                 mActivityHelper.dismissDialog();
-                List<String> providers = task.getResult().getProviders();
+                List<String> providers = result.getProviders();
                 if (providers.size() == 0) {
                     // new account for this email
                     startActivityForResult(SaveCredentialsActivity.createIntent(
@@ -148,6 +152,12 @@ public class AccountLinkInitActivity extends AppCompatBase {
                                 RC_WELCOME_BACK_IDP_PROMPT);
                     }
                 }
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "Error querying providers", e);
             }
         });
     }
