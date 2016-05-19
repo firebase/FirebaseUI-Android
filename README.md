@@ -40,8 +40,8 @@ After the project is synchronized, we're ready to start using Firebase functiona
 
 ## Usage
 
-  * [firebase-ui-database](../database/README.md)
-  * [firebase-ui-auth](../auth/README.md)
+  * [firebase-ui-database](database/README.md)
+  * [firebase-ui-auth](auth/README.md)
 
 ## Sample App
 
