@@ -104,7 +104,7 @@
     </style>
 
     <!-- Common styles -->
-    <style name="FirebaseUI.Text.TextInputLayout" >
+    <style name="FirebaseUI.Text.TextInputLayout">
         <item name="android:paddingTop">8dp</item>
     </style>
 
@@ -200,6 +200,7 @@
     <style name="FirebaseUI.AuthMethodPicker.ButtonHolder">
         <item name="android:orientation">vertical</item>
         <item name="android:paddingBottom">56dp</item>
+        <item name="android:clipToPadding">false</item>
         <item name="android:layout_width">220dp</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
