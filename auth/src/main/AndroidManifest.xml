@@ -1,0 +1,41 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.firebase.ui.auth">
+
+    <application>
+        <activity android:theme="@style/FirebaseUI.Dialog"
+                  android:name="com.firebase.ui.auth.ui.email.ConfirmRecoverPasswordActivity">
+        </activity>
+        <activity android:theme="@style/FirebaseUI.Translucent" android:name="com.firebase.ui.auth.ui.email.EmailHintContainerActivity" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.email.RecoverPasswordActivity" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.email.RegisterEmailActivity" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.email.SignInNoPasswordActivity" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.email.SignInActivity" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI.Translucent"
+                  android:name="com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity">
+        </activity>
+        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.account_link.AccountLinkInitActivity" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI" android:name=".ui.idp.AuthMethodPickerActivity" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI.Translucent"
+                  android:name="com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI.Translucent"
+                   android:name=".ui.ChooseAccountActivity" >
+        </activity>
+        <activity android:theme="@style/FirebaseUI.Translucent"
+                  android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+    </application>
+</manifest>

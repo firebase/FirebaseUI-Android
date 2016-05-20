@@ -1,0 +1,52 @@
+<resources>
+
+    <style name="PurpleTheme" parent="FirebaseUI">
+        <item name="colorPrimary">@color/material_deep_purple_500</item>
+        <item name="android:colorPrimary">@color/material_deep_purple_500</item>
+
+        <item name="colorPrimaryDark">@color/material_deep_purple_700</item>
+        <item name="android:colorPrimaryDark">@color/material_deep_purple_700</item>
+
+        <item name="colorAccent">@color/material_lime_a700</item>
+        <item name="android:colorAccent">@color/material_lime_a700</item>
+
+
+        <item name="colorControlNormal">@color/material_deep_purple_500</item>
+        <item name="android:colorControlNormal">@color/material_deep_purple_500</item>
+
+        <item name="colorControlActivated">@color/material_deep_purple_a200</item>
+        <item name="android:colorControlActivated">@color/material_deep_purple_a200</item>
+
+        <item name="colorControlHighlight">@color/material_lime_a700</item>
+        <item name="android:colorControlHighlight">@color/material_lime_a700</item>
+
+        <item name="android:windowBackground">@color/material_purple_50</item>
+    </style>
+
+    <style name="GreenTheme" parent="FirebaseUI">
+        <item name="colorPrimary">@color/material_green_500</item>
+        <item name="android:colorPrimary">@color/material_green_500</item>
+
+        <item name="android:colorPrimaryDark">@color/material_green_700</item>
+        <item name="colorPrimaryDark">@color/material_green_700</item>
+
+        <item name="colorAccent">@color/material_purple_a700</item>
+        <item name="android:colorAccent">@color/material_purple_a700</item>
+
+        <item name="colorControlNormal">@color/material_green_500</item>
+        <item name="android:colorControlNormal">@color/material_green_500</item>
+
+        <item name="colorControlActivated">@color/material_lime_a700</item>
+        <item name="android:colorControlActivated">@color/material_lime_a700</item>
+
+        <item name="colorControlHighlight">@color/material_green_a200</item>
+        <item name="android:colorControlHighlight">@color/material_green_a200</item>
+
+        <item name="android:windowBackground">@color/material_green_50</item>
+    </style>
+
+    <style name="WarnButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:colorButtonNormal">@color/material_red_a200</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+</resources>

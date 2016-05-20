@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FirebaseUI.WrapperStyle">
+    <!--
+        Since the TextInputLayouts change size based on whether or not an error
+        is showing we use a relative layout to position them absolutely
+    -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/email_layout"
+        android:paddingTop="24dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        style="@style/FirebaseUI.Text.TextInputLayout"
+        app:hintTextAppearance="@style/FirebaseUI.Text.HintText"
+        app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            style="@style/FirebaseUI.EditText"
+            android:id="@+id/email"
+            android:hint="@string/email_hint"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/password_layout"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        style="@style/FirebaseUI.Text.TextInputLayout"
+        android:paddingTop="136dp"
+        app:hintTextAppearance="@style/FirebaseUI.Text.HintText"
+        app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            style="@style/FirebaseUI.EditText"
+            android:id="@+id/password"
+            android:hint="@string/password_hint"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        style="@style/FirebaseUI.ImageView.VisibilityToggle"
+        android:id="@+id/toggle_visibility"
+        android:layout_alignEnd="@id/password_layout"
+        android:layout_alignRight="@id/password_layout"
+        android:paddingTop="154dp">
+    </ImageView>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:paddingTop="248dp"
+        >
+        <TextView
+            android:id="@+id/trouble_signing_in"
+            android:text="@string/trouble_signing_in"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="8dp"
+            style="@style/FirebaseUI.Text.Link"
+            />
+        <Button
+            style="@style/FirebaseUI.Button"
+            android:text="@string/button_text_next"
+            android:id="@+id/button_done"/>
+    </LinearLayout>
+</RelativeLayout>

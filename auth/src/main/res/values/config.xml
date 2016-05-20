@@ -1,0 +1,21 @@
+<resources>
+    <!--
+    The Facebook Application ID associated with this Android application. This
+    must be overridden by users of FirebaseUI auth in order to support Facebook
+    accounts in the authentication flow.
+
+    See:
+    https://developers.facebook.com/docs/facebook-login/android
+    -->
+    <string name="facebook_application_id" translatable="false">CHANGE-ME</string>
+
+    <!--
+    The Google web client ID associated with this Android application. The
+    google-services gradle plugin will automatically provide this value.
+
+    See:
+    https://developers.google.com/identity/sign-in/web/devconsole-project
+    https://developers.google.com/android/guides/google-services-plugin
+    -->
+    <string name="default_web_client_id" translatable="false">CHANGE-ME</string>
+</resources>

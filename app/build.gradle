@@ -1,36 +1,48 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+apply from: "../common/constants.gradle"
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.firebase.uidemo"
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    packagingOptions {
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-    }
-    
+
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.google.android.gms:play-services-auth:8.3.0'
-    compile 'com.firebase:firebase-client-android:2.3.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
-    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
-    compile project(':library')
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:recyclerview-v7:23.2.1'
+    compile 'com.android.support:support-v4:23.2.1'
+
+    compile project(path: ':auth')
+    compile project(path: ':database')
+
+    compile "com.google.firebase:firebase-database:${project.ext.firebase_version}"
+    compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"
+    compile "com.google.android.gms:play-services-auth:${project.ext.firebase_version}"
+
+    // The following dependencies are not required to use the Firebase UI library.
+    // They are used to make some aspects of the demo app implementation simpler for
+    // demonstrative purposes, and you may find them useful in your own apps; YMMV.
+    compile 'com.jakewharton:butterknife:8.0.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
 }
+
+apply plugin: 'com.google.gms.google-services'

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center|bottom">
+
+    <LinearLayout
+        android:id="@+id/btn_holder"
+        style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder">
+
+        <Button
+            android:id="@+id/email_provider"
+            style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
+            android:text="@string/email_button_text"/>
+
+    </LinearLayout>
+
+</LinearLayout>

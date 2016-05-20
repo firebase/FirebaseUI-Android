@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  style="@style/FirebaseUI.WrapperStyle"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <!--
+            Since the TextInputLayouts change size based on whether or not an error
+            is showing we use a relative layout to position them absolutely
+        -->
+        <android.support.design.widget.TextInputLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/email_layout"
+            style="@style/FirebaseUI.Text.TextInputLayout"
+            android:paddingTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
+            app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
+
+            <EditText
+                android:id="@+id/email"
+                style="@style/FirebaseUI.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="@string/email_hint"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/name_layout"
+            style="@style/FirebaseUI.Text.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="112dp"
+            app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
+            app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
+
+            <EditText
+                android:id="@+id/name"
+                style="@style/FirebaseUI.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:hint="@string/name_hint"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/password_layout"
+            style="@style/FirebaseUI.Text.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="224dp"
+            app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
+            app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
+
+            <EditText
+                style="@style/FirebaseUI.EditText.PasswordField"
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <ImageView
+            style="@style/FirebaseUI.ImageView.VisibilityToggle"
+            android:id="@+id/toggle_visibility"
+            android:layout_alignEnd="@id/password_layout"
+            android:paddingTop="242dp"
+            android:layout_alignRight="@id/password_layout">
+        </ImageView>
+
+        <TextView
+            android:id="@+id/create_account_text"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="336dp"
+            style="@style/FirebaseUI.Text.BodyText"
+            />
+
+
+        <Button
+            style="@style/FirebaseUI.Button.NextButton"
+            android:layout_below="@id/create_account_text"
+            android:id="@+id/button_create"
+            android:layout_alignParentRight="true"
+            android:text="@string/button_text_save"
+            />
+    </RelativeLayout>
+</ScrollView>

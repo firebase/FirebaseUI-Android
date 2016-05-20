@@ -15,3 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# See:
+# https://firebase-dot-devsite.googleplex.com/docs/auth/android/start/#proguard
+-keepattributes Signature
+-keepattributes *Annotation*

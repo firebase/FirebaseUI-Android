@@ -1,0 +1,63 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="email_button_text">Sign in with email</string>
+    <string name="app_name">ui_flow</string>
+    <string name="email_hint">Email</string>
+    <string name="sign_in_no_password_title">Put an email to use for sign in</string>
+    <string name="button_ok_text">OK</string>
+    <string name="password_hint">Password</string>
+    <string name="button_singin_text">Sign In</string>
+    <string name="button_password_recovery_text">Trouble remembering your password</string>
+    <string name="name_hint">First &amp; last name</string>
+    <string name="password_recovery_title">Forgot password</string>
+    <string name="password_recovery_body">Get instructions sent to this email that explain how to
+        reset your password.</string>
+    <string name="create_account_title">Create account</string>
+    <string name="required_field">You can\'t leave this empty.</string>
+    <string name="password_length">Strong passwords have at least %1$d characters and a mix of letters
+        and numbers</string>
+    <string name="invalid_email_address">That email address isn\'t correct</string>
+    <string name="missing_email_address">Enter your email address to continue</string>
+    <string name="button_text_next">Next</string>
+    <string name="button_text_send">Send</string>
+    <string name="button_text_save">Save</string>
+    <string name="button_text_sign_in">Sign in</string>
+    <string name="require_email_text">Please input email address</string>
+    <string name="confirm_recovery_body">Follow the instructions sent to %1$s to recover your
+        password.</string>
+    <string name="recovery_fail_body">That email address doesn\'t match an existing account</string>
+    <string name="account_welcomeback">Welcome back</string>
+    <string name="finding_credential">Finding a credential…</string>
+    <string name="do_delete">Delete</string>
+    <string name="welcome_back">Welcome back!</string>
+    <string name="next">Next</string>
+    <string name="trouble_signing_in">Trouble signing in?</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_in_title">Sign in</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="sign_in_with_facebook">Sign in with Facebook</string>
+    <string name="button_done">Done</string>
+    <string name="check_your_email">Check your email</string>
+    <string name="recover_password_title">Recover password</string>
+    <string name="welcome_back_idp_header">You already have an account</string>
+    <string name="welcome_back_idp_prompt">
+        You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
+        Sign in with <xliff:g id="provider_name" example="Google">%2$s</xliff:g> to continue.
+    </string>
+    <string name="welcome_back_idp_button">Sign in</string>
+    <string name="welcome_back_password_prompt_body">You\'ve already used
+        <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g> to sign in. Enter
+        your password for that account.</string>
+    <string name="password_word">Password</string>
+    <string name="idp_name_google">Google</string>
+    <string name="idp_name_facebook">Facebook</string>
+    <string name="create_account_preamble">"By tapping SAVE you are indicating that you agree to the "</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="sign_in_with_email">Sign in with email</string>
+    <string name="login_error">Login unsuccessful</string>
+    <string name="email_account_creation_error">Email account registration unsuccessful</string>
+    <string name="missing_password_email_toast">Missing password or email</string>
+    <string name="progress_dialog_loading">Loading…</string>
+    <string name="progress_dialog_sending">Sending…</string>
+    <string name="progress_dialog_signing_in">Signing in…</string>
+    <string name="progress_dialog_signing_up">Signing up…</string>
+</resources>

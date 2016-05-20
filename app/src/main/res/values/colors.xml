@@ -1,0 +1,26 @@
+<resources>
+    <color name="colorPrimary">#039BE5</color>
+    <color name="colorPrimaryDark">#0288D1</color>
+    <color name="colorAccent">#FFA000</color>
+
+    <color name="material_deep_purple_50">#EDE7F6</color>
+    <color name="material_deep_purple_500">#673AB7</color>
+    <color name="material_deep_purple_700">#512DA8</color>
+    <color name="material_deep_purple_a200">#E040FB</color>
+
+    <color name="material_green_50">#E8F5E9</color>
+    <color name="material_green_500">#4CAF50</color>
+    <color name="material_green_700">#388E3C</color>
+    <color name="material_green_300">#AED581</color>
+    <color name="material_green_a200">#69F0AE</color>
+
+    <color name="material_grey_300">#E0E0E0</color>
+
+    <color name="material_lime_50">#F9FBE7</color>
+    <color name="material_lime_a700">#AEEA00</color>
+
+    <color name="material_purple_50">#F3E5F5</color>
+    <color name="material_purple_a700">#AA00FF</color>
+
+    <color name="material_red_a200">#FF5252</color>
+</resources>

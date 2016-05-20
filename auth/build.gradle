@@ -1,0 +1,51 @@
+apply plugin: 'com.android.library'
+apply plugin: 'checkstyle'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile "org.robolectric:robolectric:3.1-rc1"
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.11.0'
+    compile "com.android.support:design:23.3.0"
+
+    compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"
+    compile "com.google.android.gms:play-services-auth:${project.ext.firebase_version}"
+}
+
+checkstyle {
+    configFile file('../common/checkstyle/checkstyle.xml')
+    configProperties = ['checkstyle.java.header': file('../common/checkstyle/java.header').getAbsolutePath()]
+    toolVersion = "6.11.2"
+}
+
+task checkAllSource(type: Checkstyle) {
+    source 'src/main/java'
+    include '**/*.java'
+    classpath = files(project.configurations.compile)
+}
+
+javadoc.exclude([
+        'com/firebase/ui/auth/provider/**',
+        'com/firebase/ui/auth/ui/ExtraConstants',
+        'com/firebase/ui/auth/ui/email/field_validators/**',
+        'com/firebase/ui/auth/util/**',
+        ])

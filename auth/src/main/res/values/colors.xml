@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="authui_colorPrimary">#3E50B4</color>
+    <color name="authui_colorPrimaryDark">#2F3E9E</color>
+    <color name="authui_colorAccent">#3E50B4</color>
+    <color name="authui_colorActivated">#1a237e</color>
+
+    <color name="headingColor">#212121</color>
+    <color name="bodyTextColor">#c0000000</color>
+    <color name="errorColor">#DD2C00</color>
+    <color name="linkColor">#4285F4</color>
+    <color name="buttonColor">@color/authui_colorPrimary</color>
+    <color name="buttonColorPressed">@color/authui_colorActivated</color>
+    <color name="buttonTextColor">#FFFFFF</color>
+    <color name="inputLabelColor">#757575</color>
+    <color name="shadowColor">#eeeeee</color>
+</resources>
