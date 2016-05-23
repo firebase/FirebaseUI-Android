@@ -211,12 +211,12 @@ public void onClick(View v) {
   if (v.getId() == R.id.sign_out) {
       AuthUI.getInstance(this)
           .signOut(this)
-          .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            public void onComplete(@NonNull Task<AuthResult> task) {
+          .addOnCompleteListener(new OnCompleteListener<Void>() {
+            public void onComplete(@NonNull Task<Void> task) {
               // user is now signed out
               startActivity(new Intent(MyActivity.this, SignInActivity.class));
               finish();
-            });
+            }
           });
   }
 }
