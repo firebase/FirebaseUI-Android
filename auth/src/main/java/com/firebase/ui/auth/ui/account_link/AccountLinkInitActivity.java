@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.IDPResponse;
@@ -26,9 +25,9 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -82,84 +81,79 @@ public class AccountLinkInitActivity extends AppCompatBase {
         FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         Task<ProviderQueryResult> providerQueryResultTask
                 = firebaseAuth.fetchProvidersForEmail(email);
-        providerQueryResultTask.addOnSuccessListener(
-                new OnSuccessListener<ProviderQueryResult>() {
-            @Override
-            public void onSuccess(@NonNull ProviderQueryResult result) {
-                mActivityHelper.dismissDialog();
-                List<String> providers = result.getProviders();
-                if (providers.size() == 0) {
-                    // new account for this email
-                    startActivityForResult(SaveCredentialsActivity.createIntent(
-                            getApplicationContext(),
-                            mActivityHelper.flowParams,
-                            null,
-                            email,
-                            password,
-                            provider,
-                            null), RC_SAVE_CREDENTIALS);
-                } else if (providers.size() == 1) {
-                    if (providers.get(0).equals(provider)) {
-                        // existing account but has this IDP linked
-                        startActivityForResult(SaveCredentialsActivity.createIntent(
-                                AccountLinkInitActivity.this,
-                                mActivityHelper.flowParams,
-                                null,
-                                email,
-                                password,
-                                provider,
-                                null),
-                                RC_SAVE_CREDENTIALS);
-                    } else {
-                        if (providers.get(0).equals(EmailAuthProvider.PROVIDER_ID)) {
-                            startActivityForResult(WelcomeBackPasswordPrompt.createIntent(
+        providerQueryResultTask
+                .addOnFailureListener(new TaskFailureLogger(TAG, "Error querying providers"))
+                .addOnSuccessListener(new OnSuccessListener<ProviderQueryResult>() {
+                    @Override
+                    public void onSuccess(@NonNull ProviderQueryResult result) {
+                        mActivityHelper.dismissDialog();
+                        List<String> providers = result.getProviders();
+                        if (providers.size() == 0) {
+                            // new account for this email
+                            startActivityForResult(SaveCredentialsActivity.createIntent(
                                     getApplicationContext(),
                                     mActivityHelper.flowParams,
-                                    mIdpResponse),
-                                    RC_WELCOME_BACK_PASSWORD_PROMPT);
-                        } else {
-                            // existing account but has a different IDP linked
-                            startActivityForResult(WelcomeBackIDPPrompt.createIntent(
-                                    getApplicationContext(),
-                                    mActivityHelper.flowParams,
+                                    null,
+                                    email,
+                                    password,
                                     provider,
-                                    mIdpResponse,
-                                    email),
-                                RC_WELCOME_BACK_IDP_PROMPT
-                            );
+                                    null), RC_SAVE_CREDENTIALS);
+                        } else if (providers.size() == 1) {
+                            if (providers.get(0).equals(provider)) {
+                                // existing account but has this IDP linked
+                                startActivityForResult(SaveCredentialsActivity.createIntent(
+                                        AccountLinkInitActivity.this,
+                                        mActivityHelper.flowParams,
+                                        null,
+                                        email,
+                                        password,
+                                        provider,
+                                        null),
+                                        RC_SAVE_CREDENTIALS);
+                            } else {
+                                if (providers.get(0).equals(EmailAuthProvider.PROVIDER_ID)) {
+                                    startActivityForResult(WelcomeBackPasswordPrompt.createIntent(
+                                            getApplicationContext(),
+                                            mActivityHelper.flowParams,
+                                            mIdpResponse),
+                                            RC_WELCOME_BACK_PASSWORD_PROMPT);
+                                } else {
+                                    // existing account but has a different IDP linked
+                                    startActivityForResult(WelcomeBackIDPPrompt.createIntent(
+                                            getApplicationContext(),
+                                            mActivityHelper.flowParams,
+                                            provider,
+                                            mIdpResponse,
+                                            email),
+                                        RC_WELCOME_BACK_IDP_PROMPT
+                                    );
+                                }
+                            }
+                        } else {
+                            // more than one providers
+                            if (providers.contains(provider)) {
+                                // this provider is already linked
+                                startActivityForResult(SaveCredentialsActivity.createIntent(
+                                        AccountLinkInitActivity.this,
+                                        mActivityHelper.flowParams,
+                                        null,
+                                        email,
+                                        password,
+                                        provider,
+                                        null),
+                                        RC_SAVE_CREDENTIALS);
+                            } else {
+                                startActivityForResult(WelcomeBackIDPPrompt.createIntent(
+                                        getApplicationContext(),
+                                        mActivityHelper.flowParams,
+                                        provider,
+                                        mIdpResponse,
+                                        email),
+                                        RC_WELCOME_BACK_IDP_PROMPT);
+                            }
                         }
                     }
-                } else {
-                    // more than one providers
-                    if (providers.contains(provider)) {
-                        // this provider is already linked
-                        startActivityForResult(SaveCredentialsActivity.createIntent(
-                                AccountLinkInitActivity.this,
-                                mActivityHelper.flowParams,
-                                null,
-                                email,
-                                password,
-                                provider,
-                                null),
-                                RC_SAVE_CREDENTIALS);
-                    } else {
-                        startActivityForResult(WelcomeBackIDPPrompt.createIntent(
-                                getApplicationContext(),
-                                mActivityHelper.flowParams,
-                                provider,
-                                mIdpResponse,
-                                email),
-                                RC_WELCOME_BACK_IDP_PROMPT);
-                    }
-                }
-            }
-        })
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "Error querying providers", e);
-            }
-        });
+                });
     }
 
     public static Intent createIntent(

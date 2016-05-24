@@ -33,12 +33,13 @@ import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -155,74 +156,51 @@ public class AuthMethodPickerActivity
         AuthCredential credential = createCredential(response);
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
 
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(
-                new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            if (task.getException().getClass() ==
-                                    FirebaseAuthUserCollisionException.class) {
-                                final String email = response.getEmail();
-                                firebaseAuth.fetchProvidersForEmail(email)
-                                        .addOnCompleteListener(
-                                                new OnCompleteListener<ProviderQueryResult>() {
-                                    @Override
-                                    public void onComplete(
-                                            @NonNull Task<ProviderQueryResult> task) {
-                                        String provider = task.getResult().getProviders().get(0);
-                                        if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
-                                            mActivityHelper.dismissDialog();
-                                            startActivityForResult(
-                                                    WelcomeBackPasswordPrompt.createIntent(
-                                                            mActivityHelper.getApplicationContext(),
-                                                            mActivityHelper.flowParams,
-                                                            response
-                                                    ), RC_WELCOME_BACK_IDP);
-
-                                        } else {
-                                            mActivityHelper.dismissDialog();
-                                            startActivityForResult(
-                                                    WelcomeBackIDPPrompt.createIntent(
-                                                        mActivityHelper.getApplicationContext(),
-                                                        mActivityHelper.flowParams,
-                                                        task.getResult().getProviders().get(0),
-                                                        response,
-                                                        email
-                                            ), RC_WELCOME_BACK_IDP);
-                                        }
+        firebaseAuth
+                .signInWithCredential(credential)
+                .addOnFailureListener(
+                        new TaskFailureLogger(TAG, "Firebase sign in with credential unsuccessful"))
+                .addOnCompleteListener(
+                        new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (!task.isSuccessful()) {
+                                    if (task.getException().getClass() ==
+                                            FirebaseAuthUserCollisionException.class) {
+                                        final String email = response.getEmail();
+                                        firebaseAuth.fetchProvidersForEmail(email)
+                                                .addOnFailureListener(new TaskFailureLogger(
+                                                        TAG, "Error fetching providers for email"))
+                                                .addOnSuccessListener(
+                                                        new StartWelcomeBackFlow(response, email));
+                                    } else {
+                                        mActivityHelper.dismissDialog();
+                                        Log.e(
+                                            TAG,
+                                            "Unexpected exception when signing in with credential",
+                                            task.getException());
                                     }
-                                });
-                            } else {
-                                mActivityHelper.dismissDialog();
-                                Log.e(TAG, "Unexpected exception when signing in with " +
-                                        "credential", task.getException());
+                                } else {
+                                    FirebaseUser firebaseUser = task.getResult().getUser();
+                                    String photoUrl = null;
+                                    Uri photoUri = firebaseUser.getPhotoUrl();
+                                    if (photoUri != null) {
+                                        photoUrl = photoUri.toString();
+                                    }
+                                    mActivityHelper.dismissDialog();
+                                    startActivityForResult(SaveCredentialsActivity.createIntent(
+                                            mActivityHelper.getApplicationContext(),
+                                            mActivityHelper.flowParams,
+                                            firebaseUser.getDisplayName(),
+                                            firebaseUser.getEmail(),
+                                            null,
+                                            response.getProviderType(),
+                                            photoUrl
+                                    ), RC_ACCOUNT_LINK);
+                                }
                             }
-                        } else {
-                            FirebaseUser firebaseUser = task.getResult().getUser();
-                            String photoUrl = null;
-                            Uri photoUri = firebaseUser.getPhotoUrl();
-                            if (photoUri != null) {
-                                photoUrl = photoUri.toString();
-                            }
-                            mActivityHelper.dismissDialog();
-                            startActivityForResult(SaveCredentialsActivity.createIntent(
-                                    mActivityHelper.getApplicationContext(),
-                                    mActivityHelper.flowParams,
-                                    firebaseUser.getDisplayName(),
-                                    firebaseUser.getEmail(),
-                                    null,
-                                    response.getProviderType(),
-                                    photoUrl
-                            ), RC_ACCOUNT_LINK);
                         }
-                    }
-                }
-        ).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Firebase login unsuccessful");
-            }
-        });
+                );
     }
 
     @Override
@@ -245,5 +223,40 @@ public class AuthMethodPickerActivity
             Context context,
             FlowParameters flowParams) {
         return ActivityHelper.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
+    }
+
+    private class StartWelcomeBackFlow implements OnSuccessListener<ProviderQueryResult> {
+        private IDPResponse mResponse;
+        private String mEmail;
+
+        public StartWelcomeBackFlow(IDPResponse response, String email) {
+            mResponse = response;
+            mEmail = email;
+        }
+
+        @Override
+        public void onSuccess(@NonNull ProviderQueryResult result) {
+            String provider = result.getProviders().get(0);
+            if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
+                mActivityHelper.dismissDialog();
+                startActivityForResult(
+                        WelcomeBackPasswordPrompt.createIntent(
+                                mActivityHelper.getApplicationContext(),
+                                mActivityHelper.flowParams,
+                                mResponse
+                        ), RC_WELCOME_BACK_IDP);
+
+            } else {
+                mActivityHelper.dismissDialog();
+                startActivityForResult(
+                        WelcomeBackIDPPrompt.createIntent(
+                                mActivityHelper.getApplicationContext(),
+                                mActivityHelper.flowParams,
+                                result.getProviders().get(0),
+                                mResponse,
+                                mEmail
+                        ), RC_WELCOME_BACK_IDP);
+            }
+        }
     }
 }
