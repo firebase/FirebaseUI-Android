@@ -64,7 +64,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         mIdpProvider = null;
-        for (IDPProviderParcel providerParcel: mActivityHelper.flowParams.providerInfo) {
+        for (IDPProviderParcel providerParcel: mActivityHelper.getFlowParams().providerInfo) {
             if (mProviderId.equals(providerParcel.getProviderType())) {
                 switch (mProviderId) {
                     case GoogleAuthProvider.PROVIDER_ID:

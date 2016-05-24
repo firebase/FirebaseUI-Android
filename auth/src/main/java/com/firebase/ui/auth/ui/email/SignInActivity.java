@@ -112,7 +112,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                                 Intent saveCredentialIntent =
                                         SaveCredentialsActivity.createIntent(
                                                 SignInActivity.this,
-                                                mActivityHelper.flowParams,
+                                                mActivityHelper.getFlowParams(),
                                                 firebaseUser.getDisplayName(),
                                                 firebaseUser.getEmail(),
                                                 password,
@@ -146,7 +146,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         } else if (view.getId() == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
                     this,
-                    mActivityHelper.flowParams,
+                    mActivityHelper.getFlowParams(),
                     mEmailEditText.getText().toString()));
             finish(RESULT_OK, new Intent());
             return;

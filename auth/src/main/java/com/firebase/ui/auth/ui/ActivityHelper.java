@@ -30,16 +30,15 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 public class ActivityHelper {
     private ProgressDialog mProgressDialog;
     private Activity mActivity;
-
-    public final FlowParameters flowParams;
+    private final FlowParameters mFlowParams;
 
     public ActivityHelper(Activity activity, Intent intent) {
         mActivity = activity;
-        flowParams = intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
+        mFlowParams = intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
     }
 
     public void configureTheme() {
-        mActivity.setTheme(flowParams.themeId);
+        mActivity.setTheme(mFlowParams.themeId);
     }
 
     public void dismissDialog() {
@@ -47,6 +46,10 @@ public class ActivityHelper {
             mProgressDialog.dismiss();
             mProgressDialog = null;
         }
+    }
+
+    public FlowParameters getFlowParams() {
+        return mFlowParams;
     }
 
     public void showLoadingDialog(String message) {
@@ -72,11 +75,11 @@ public class ActivityHelper {
     }
 
     public String getAppName() {
-        return flowParams.appName;
+        return mFlowParams.appName;
     }
 
     public FirebaseApp getFirebaseApp() {
-        return FirebaseApp.getInstance(flowParams.appName);
+        return FirebaseApp.getInstance(mFlowParams.appName);
     }
 
     public FirebaseAuth getFirebaseAuth() {

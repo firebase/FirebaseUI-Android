@@ -92,7 +92,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
             mActivityHelper.dismissDialog();
             startActivity(RecoverPasswordActivity.createIntent(
                     getApplicationContext(),
-                    mActivityHelper.flowParams,
+                    mActivityHelper.getFlowParams(),
                     mEmail));
             finish(RESULT_OK, new Intent());
         }
@@ -137,7 +137,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                         startActivityForResult(
                                                 SaveCredentialsActivity.createIntent(
                                                         mActivityHelper.getApplicationContext(),
-                                                        mActivityHelper.flowParams,
+                                                        mActivityHelper.getFlowParams(),
                                                         firebaseUser.getDisplayName(),
                                                         firebaseUser.getEmail(),
                                                         password,

@@ -12,28 +12,20 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.util;
+package com.firebase.ui.auth.test_helpers;
 
-import com.google.firebase.FirebaseApp;
+import android.content.Context;
+
+import com.firebase.ui.auth.util.FirebaseAuthWrapperImpl;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
-@Implements(FirebaseAuthWrapperFactory.class)
-public class ShadowFirebaseAuthWrapperFactory {
-    public static FirebaseAuthWrapper firebaseAuthWrapper;
 
-    public static void setFirebaseAuthWrapper(FirebaseAuthWrapper instance) {
-        firebaseAuthWrapper = instance;
-    }
-
+@Implements(FirebaseAuthWrapperImpl.class)
+public class FirebaseAuthWrapperImplShadow {
     @Implementation
-    public static FirebaseAuthWrapper getFirebaseAuthWrapper(FirebaseApp firebaseApp) {
-        return firebaseAuthWrapper;
-    }
-
-    @Implementation
-    public static FirebaseAuthWrapper getFirebaseAuthWrapper(String appName) {
-        return firebaseAuthWrapper;
+    public boolean isPlayServicesAvailable(Context context) {
+        return true;
     }
 }

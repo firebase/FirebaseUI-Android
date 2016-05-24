@@ -17,26 +17,22 @@ package com.firebase.ui.auth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 
-import com.firebase.ui.auth.provider.FacebookProvider;
-import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.ChooseAccountActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.Preconditions;
+import com.firebase.ui.auth.util.ProviderHelper;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -361,21 +357,8 @@ public class AuthUI {
 
         public Intent build() {
             Context context = mApp.getApplicationContext();
-            ArrayList<IDPProviderParcel> providerInfo = new ArrayList<>();
-            for (String provider : mProviders) {
-                if (provider.equalsIgnoreCase(FACEBOOK_PROVIDER)) {
-                    providerInfo.add(FacebookProvider.createFacebookParcel(
-                            context.getString(R.string.facebook_application_id)));
-                } else if (provider.equalsIgnoreCase(GOOGLE_PROVIDER)) {
-                    providerInfo.add(GoogleProvider.createParcel(
-                            context.getString(R.string.default_web_client_id)));
-                } else if (provider.equalsIgnoreCase(EMAIL_PROVIDER)) {
-                    providerInfo.add(
-                            new IDPProviderParcel(EmailAuthProvider.PROVIDER_ID, new Bundle())
-                    );
-                }
-            }
-
+            List<IDPProviderParcel> providerInfo =
+                    ProviderHelper.getProviderParcels(context, mProviders);
             return ChooseAccountActivity.createIntent(
                     context,
                     new FlowParameters(

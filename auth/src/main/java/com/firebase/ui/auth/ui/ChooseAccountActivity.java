@@ -30,6 +30,7 @@ import com.firebase.ui.auth.util.CredentialsAPI;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -63,7 +64,7 @@ public class ChooseAccountActivity extends ActivityBase {
         mCredentialsApi = new CredentialsAPI(this, new CredentialsAPI.CallbackInterface() {
             @Override
             public void onAsyncTaskFinished() {
-                onCredentialsApiConnected();
+                onCredentialsApiConnected(mCredentialsApi, mActivityHelper);
             }
         });
     }
@@ -85,19 +86,21 @@ public class ChooseAccountActivity extends ActivityBase {
         super.onStop();
     }
 
-    public void onCredentialsApiConnected() {
+    public void onCredentialsApiConnected(
+            CredentialsAPI credentialsApi,
+            ActivityHelper activityHelper) {
         // called back when the CredentialsAPI connects
-        String email = mCredentialsApi.getEmailFromCredential();
-        String password = mCredentialsApi.getPasswordFromCredential();
-        String accountType = mCredentialsApi.getAccountTypeFromCredential();
-        if (mCredentialsApi.isPlayServicesAvailable()
-                && mCredentialsApi.isCredentialsAvailable()) {
-            if (mCredentialsApi.isAutoSignInAvailable()) {
-                mCredentialsApi.googleSilentSignIn();
+        String email = credentialsApi.getEmailFromCredential();
+        String password = credentialsApi.getPasswordFromCredential();
+        String accountType = credentialsApi.getAccountTypeFromCredential();
+        if (credentialsApi.isPlayServicesAvailable()
+                && credentialsApi.isCredentialsAvailable()) {
+            if (credentialsApi.isAutoSignInAvailable()) {
+                credentialsApi.googleSilentSignIn();
                 // TODO: (serikb) authenticate Firebase user and continue to application
                 if (password != null && !password.isEmpty()) {
                     // login with username/password
-                    mActivityHelper
+                    activityHelper
                             .getFirebaseAuth()
                             .signInWithEmailAndPassword(email, password)
                             .addOnFailureListener(new TaskFailureLogger(
@@ -112,32 +115,32 @@ public class ChooseAccountActivity extends ActivityBase {
                     // log in with id/provider
                     redirectToIdpSignIn(email, accountType);
                 }
-            } else if (mCredentialsApi.isSignInResolutionNeeded()) {
+            } else if (credentialsApi.isSignInResolutionNeeded()) {
                 // resolve credential
-                mCredentialsApi.resolveSavedEmails(this);
+                credentialsApi.resolveSavedEmails(this);
             } else {
-                startAuthMethodChoice();
+                startAuthMethodChoice(activityHelper);
             }
         } else {
-            startAuthMethodChoice();
+            startAuthMethodChoice(activityHelper);
         }
     }
 
-    private void startAuthMethodChoice() {
-        List<IDPProviderParcel> providers = mActivityHelper.flowParams.providerInfo;
+    private void startAuthMethodChoice(ActivityHelper activityHelper) {
+        List<IDPProviderParcel> providers = activityHelper.getFlowParams().providerInfo;
         if (providers.size() == 1
                 && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
 
             startActivityForResult(
                     EmailHintContainerActivity.createIntent(
                             this,
-                            mActivityHelper.flowParams),
+                            activityHelper.getFlowParams()),
                     RC_EMAIL_FLOW);
         } else {
             startActivityForResult(
                     AuthMethodPickerActivity.createIntent(
                             this,
-                            mActivityHelper.flowParams),
+                            activityHelper.getFlowParams()),
                     RC_AUTH_METHOD_PICKER);
         }
     }
@@ -165,7 +168,7 @@ public class ChooseAccountActivity extends ActivityBase {
                                     startActivityForResult(
                                             AuthMethodPickerActivity.createIntent(
                                                 ChooseAccountActivity.this,
-                                                mActivityHelper.flowParams),
+                                                mActivityHelper.getFlowParams()),
                                             RC_AUTH_METHOD_PICKER);
                                 }
                             }
@@ -197,7 +200,7 @@ public class ChooseAccountActivity extends ActivityBase {
                 );
             } else if (resultCode == RESULT_CANCELED) {
                 // Smart lock selector cancelled, go to the AuthMethodPicker screen
-                startAuthMethodChoice();
+                startAuthMethodChoice(mActivityHelper);
             } else if (resultCode == RESULT_FIRST_USER) {
                 // TODO: (serikb) figure out flow
             }
@@ -216,14 +219,14 @@ public class ChooseAccountActivity extends ActivityBase {
             case IdentityProviders.GOOGLE:
                 nextIntent = IDPSignInContainerActivity.createIntent(
                         this,
-                        mActivityHelper.flowParams,
+                        mActivityHelper.getFlowParams(),
                         GoogleAuthProvider.PROVIDER_ID,
                         email);
                 break;
             case IdentityProviders.FACEBOOK:
                 nextIntent = IDPSignInContainerActivity.createIntent(
                         this,
-                        mActivityHelper.flowParams,
+                        mActivityHelper.getFlowParams(),
                         FacebookAuthProvider.PROVIDER_ID,
                         email);
                 break;
@@ -231,7 +234,7 @@ public class ChooseAccountActivity extends ActivityBase {
                 Log.w(TAG, "unknown provider: " + accountType);
                 nextIntent = AuthMethodPickerActivity.createIntent(
                         this,
-                        mActivityHelper.flowParams);
+                        mActivityHelper.getFlowParams());
         }
         this.startActivityForResult(nextIntent, RC_IDP_SIGNIN);
     }

@@ -12,9 +12,12 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.test_helpers;
 
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.util.CredentialsAPI;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.util.FirebaseAuthWrapperImpl;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricGradleTestRunner;
@@ -30,6 +33,9 @@ public class CustomRobolectricGradleTestRunner extends RobolectricGradleTestRunn
     public InstrumentationConfiguration createClassLoaderConfig(Config config) {
         InstrumentationConfiguration.Builder builder = InstrumentationConfiguration.newBuilder();
         builder.addInstrumentedClass(FirebaseAuthWrapperFactory.class.getName());
+        builder.addInstrumentedClass(CredentialsAPI.class.getName());
+        builder.addInstrumentedClass(ActivityHelper.class.getName());
+        builder.addInstrumentedClass(FirebaseAuthWrapperImpl.class.getName());
         return builder.build();
     }
 }

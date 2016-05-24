@@ -70,7 +70,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                         mActivityHelper.dismissDialog();
                         Intent confirmIntent = ConfirmRecoverPasswordActivity.createIntent(
                                 RecoverPasswordActivity.this,
-                                mActivityHelper.flowParams,
+                                mActivityHelper.getFlowParams(),
                                 task.isSuccessful(),
                                 email);
                         startActivityForResult(confirmIntent, RC_CONFIRM);

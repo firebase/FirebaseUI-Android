@@ -92,7 +92,7 @@ public class AccountLinkInitActivity extends AppCompatBase {
                             // new account for this email
                             startActivityForResult(SaveCredentialsActivity.createIntent(
                                     getApplicationContext(),
-                                    mActivityHelper.flowParams,
+                                    mActivityHelper.getFlowParams(),
                                     null,
                                     email,
                                     password,
@@ -103,7 +103,7 @@ public class AccountLinkInitActivity extends AppCompatBase {
                                 // existing account but has this IDP linked
                                 startActivityForResult(SaveCredentialsActivity.createIntent(
                                         AccountLinkInitActivity.this,
-                                        mActivityHelper.flowParams,
+                                        mActivityHelper.getFlowParams(),
                                         null,
                                         email,
                                         password,
@@ -114,14 +114,14 @@ public class AccountLinkInitActivity extends AppCompatBase {
                                 if (providers.get(0).equals(EmailAuthProvider.PROVIDER_ID)) {
                                     startActivityForResult(WelcomeBackPasswordPrompt.createIntent(
                                             getApplicationContext(),
-                                            mActivityHelper.flowParams,
+                                            mActivityHelper.getFlowParams(),
                                             mIdpResponse),
                                             RC_WELCOME_BACK_PASSWORD_PROMPT);
                                 } else {
                                     // existing account but has a different IDP linked
                                     startActivityForResult(WelcomeBackIDPPrompt.createIntent(
                                             getApplicationContext(),
-                                            mActivityHelper.flowParams,
+                                            mActivityHelper.getFlowParams(),
                                             provider,
                                             mIdpResponse,
                                             email),
@@ -135,7 +135,7 @@ public class AccountLinkInitActivity extends AppCompatBase {
                                 // this provider is already linked
                                 startActivityForResult(SaveCredentialsActivity.createIntent(
                                         AccountLinkInitActivity.this,
-                                        mActivityHelper.flowParams,
+                                        mActivityHelper.getFlowParams(),
                                         null,
                                         email,
                                         password,
@@ -145,7 +145,7 @@ public class AccountLinkInitActivity extends AppCompatBase {
                             } else {
                                 startActivityForResult(WelcomeBackIDPPrompt.createIntent(
                                         getApplicationContext(),
-                                        mActivityHelper.flowParams,
+                                        mActivityHelper.getFlowParams(),
                                         provider,
                                         mIdpResponse,
                                         email),

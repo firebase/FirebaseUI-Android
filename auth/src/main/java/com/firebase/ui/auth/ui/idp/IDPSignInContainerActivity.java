@@ -43,8 +43,6 @@ import java.util.List;
 
 public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPProvider.IDPCallback {
     private static final String TAG = "IDPSignInContainer";
-    private static final String PROVIDER = "sign_in_provider";
-    private static final String EMAIL = "email";
     private static final int RC_ACCOUNT_LINK = 3;
     private IDPProvider mIDPProvider;
     private String mProvider;
@@ -53,10 +51,10 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mProvider = getIntent().getStringExtra(PROVIDER);
-        mEmail = getIntent().getStringExtra(EMAIL);
+        mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
+        mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         IDPProviderParcel providerParcel = null;
-        for (IDPProviderParcel parcel : mActivityHelper.flowParams.providerInfo) {
+        for (IDPProviderParcel parcel : mActivityHelper.getFlowParams().providerInfo) {
             if (parcel.getProviderType().equalsIgnoreCase(mProvider)) {
                 providerParcel = parcel;
                 break;
@@ -86,7 +84,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         }
         startActivityForResult(AccountLinkInitActivity.createIntent(
                 this,
-                mActivityHelper.flowParams,
+                mActivityHelper.getFlowParams(),
                 firebaseUser.getEmail(),
                 null,
                 response,
@@ -140,7 +138,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
                 context,
                 IDPSignInContainerActivity.class,
                 flowParams)
-                .putExtra(PROVIDER, provider)
-                .putExtra(EMAIL, email);
+                .putExtra(ExtraConstants.EXTRA_PROVIDER, provider)
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

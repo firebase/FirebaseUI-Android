@@ -63,7 +63,7 @@ public class EmailHintContainerActivity extends AppCompatBase {
                 startActivityForResult(
                         SignInNoPasswordActivity.createIntent(
                                 this,
-                                mActivityHelper.flowParams,
+                                mActivityHelper.getFlowParams(),
                                 null),
                         AcquireEmailHelper.RC_SIGN_IN);
                 return;

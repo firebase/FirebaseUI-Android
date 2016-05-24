@@ -80,7 +80,7 @@ public class AuthMethodPickerActivity
         setContentView(R.layout.auth_method_picker_layout);
         Button emailButton = (Button) findViewById(R.id.email_provider);
         emailButton.setOnClickListener(this);
-        populateIdpList(mActivityHelper.flowParams.providerInfo);
+        populateIdpList(mActivityHelper.getFlowParams().providerInfo);
     }
 
     private void populateIdpList(List<IDPProviderParcel> providers) {
@@ -190,7 +190,7 @@ public class AuthMethodPickerActivity
                                     mActivityHelper.dismissDialog();
                                     startActivityForResult(SaveCredentialsActivity.createIntent(
                                             mActivityHelper.getApplicationContext(),
-                                            mActivityHelper.flowParams,
+                                            mActivityHelper.getFlowParams(),
                                             firebaseUser.getDisplayName(),
                                             firebaseUser.getEmail(),
                                             null,
@@ -214,7 +214,7 @@ public class AuthMethodPickerActivity
         if (view.getId() == R.id.email_provider) {
             Intent intent = EmailHintContainerActivity.createIntent(
                     this,
-                    mActivityHelper.flowParams);
+                    mActivityHelper.getFlowParams());
             startActivityForResult(intent, RC_EMAIL_FLOW);
         }
     }
@@ -242,7 +242,7 @@ public class AuthMethodPickerActivity
                 startActivityForResult(
                         WelcomeBackPasswordPrompt.createIntent(
                                 mActivityHelper.getApplicationContext(),
-                                mActivityHelper.flowParams,
+                                mActivityHelper.getFlowParams(),
                                 mResponse
                         ), RC_WELCOME_BACK_IDP);
 
@@ -251,7 +251,7 @@ public class AuthMethodPickerActivity
                 startActivityForResult(
                         WelcomeBackIDPPrompt.createIntent(
                                 mActivityHelper.getApplicationContext(),
-                                mActivityHelper.flowParams,
+                                mActivityHelper.getFlowParams(),
                                 result.getProviders().get(0),
                                 mResponse,
                                 mEmail
