@@ -6,7 +6,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.0.0'
         classpath 'com.google.gms:google-services:3.0.0'
 
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
@@ -29,16 +29,18 @@ allprojects { project ->
 
     // Get constants, this is where we store things
     // like the list of submodules or the version
-    apply from: "$rootDir/common/constants.gradle"
+    project.apply from: "$rootDir/common/constants.gradle"
 
     def isLibrary = 'library'.equals(project.name)
     def isSubmodule = project.ext.submodules.contains(project.name)
-    def pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication"
 
-    if (isSubmodule) {
+    // Only applies to submodules, not the library module
+    def pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication";
+
+    if (isSubmodule || isLibrary) {
 
         // So that we can resolve 'android' variable
-        apply plugin: 'com.android.library'
+        project.apply plugin: 'com.android.library'
         android {
             compileSdkVersion 23
             buildToolsVersion "${project.ext.buildtools}"
@@ -65,10 +67,7 @@ allprojects { project ->
 
         // Define base name for archives
         // Ex: firebase-ui-auth
-        archivesBaseName = "firebase-ui-${project.name}"
-
-        // Convenience tasks that depends on the above
-        task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
+        archivesBaseName = isSubmodule ? "firebase-ui-${project.name}" : "firebase-ui"
 
         // Use tasks above to define artifacts
         artifacts {
@@ -77,7 +76,31 @@ allprojects { project ->
         }
 
         // So that we can define publication
-        apply plugin: 'maven-publish'
+        project.apply plugin: 'maven-publish'
+
+        publishing {
+            // By passing -Pcustom_local=/some/path and running the
+            // publishLibraryPublicationToCustomLocalRepository task you can publish this library to a
+            // custom maven repository location on your machine.
+            repositories {
+                maven {
+                    name 'CustomLocal'
+                    url uri(project.hasProperty('custom_local') ? project.getProperty('custom_local') : '/tmp/')
+                }
+            }
+
+            repositories {
+                maven {
+                    name 'BuildLocal'
+                    url "$buildDir/repo"
+                }
+            }
+        }
+    }
+
+    if (isSubmodule) {
+        // Convenience task to prepare everything we need for releases
+        task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
 
         publishing {
 
@@ -110,32 +133,48 @@ allprojects { project ->
                         }
                     }
                 }
-
             }
+        }
+    }
 
-            // By passing -Pcustom_local=/some/path and running the
-            // publishLibraryPublicationToCustomLocalRepository task you can publish this library to a
-            // custom maven repository location on your machine.
-            repositories {
-                maven {
-                    name 'CustomLocal'
-                    url uri(project.hasProperty('custom_local') ? project.getProperty('custom_local') : '/tmp/')
+    if (isLibrary) {
+
+        // Define the monolith publication
+        publishing {
+
+            publications {
+                monolithLibrary(MavenPublication) {
+                    groupId project.ext.group
+                    artifactId archivesBaseName
+                    version project.ext.version
+
+                    artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
+                    artifact javadocJar
+                    artifact sourcesJar
+
+                    // Monolith is just a POM that depends on the others
+                    pom.withXml {
+                        def dependenciesNode = asNode().getAt("dependencies")[0]
+                        if (dependenciesNode == null) {
+                            dependenciesNode = asNode().appendNode("dependencies");
+                        }
+
+                        // Add a maven dependency on each submodule
+                        project.ext.submodules.each { module ->
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', project.ext.group)
+                            dependencyNode.appendNode('artifactId', "firebase-ui-${module}")
+                            dependencyNode.appendNode('version', project.ext.version)
+                        }
+                    }
                 }
             }
-
-            repositories {
-                maven {
-                    name 'BuildLocal'
-                    url "$buildDir/repo"
-                }
-            }
-
         }
     }
 
     // Bintray Configuration (applies to submodule and the monolith)
     if (isSubmodule || isLibrary) {
-        apply plugin: 'com.jfrog.bintray'
+        project.apply plugin: 'com.jfrog.bintray'
 
         def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
         def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"

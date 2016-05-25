@@ -26,4 +26,70 @@ dependencies {
     androidTestCompile 'junit:junit:4.12'
 }
 
-apply from: 'publish.gradle'
+/**
+ * Returns list of tasks names that prepareArtfacts should depend on.
+ */
+def prepareArtifactsTasks() {
+    return project.ext.submodules.collect { name ->
+        ":${name}:prepareArtifacts"
+    }.toArray()
+}
+
+/**
+ * Returns list of publish tasks that monolith publish tasks should depend on.
+ * @param repo relevant repository, such as 'MavenLocal' or 'CustomLocalRepository'
+ */
+def publishToRepoTasks(repo) {
+    return project.ext.submodules.collect { name ->
+        // Ex: name = database, repo = MavenLocal
+        // Return: :database:publishDatabaseLibraryPublicationToMavenLocal
+        ":${name}:publish${name.capitalize()}LibraryPublicationTo${repo}"
+    }.toArray()
+}
+
+/**
+ * Returns a list of task names to upload modules to bintray.
+ */
+def bintrayUploadTasks() {
+    return project.ext.submodules.collect { name ->
+        ":${name}:bintrayUpload"
+    }.toArray()
+}
+
+/**
+ * Prepare artifacts for this an all sub-projects.
+ */
+task prepareArtifacts(dependsOn: [
+        javadocJar,
+        sourcesJar,
+        assembleRelease,
+        prepareArtifactsTasks(),
+        "generatePomFileForMonolithLibraryPublication"]) {
+}
+
+/**
+ * Publish all artifacts to the maven local repository.
+ */
+task publishAllToMavenLocal(dependsOn: [
+        'publishMonolithLibraryPublicationToMavenLocal',
+        publishToRepoTasks('MavenLocal')]) {
+
+}
+
+/**
+ * Publish all artifacts to the customLocal repository.
+ */
+task publishAllToCustomLocal(dependsOn: [
+        'publishMonolithLibraryPublicationToCustomLocalRepository',
+        publishToRepoTasks('CustomLocalRepository')]) {
+
+}
+
+/**
+ * Upload all artifacts to bintray.
+ */
+task bintrayUploadAll(dependsOn: [
+        'bintrayUpload',
+        bintrayUploadTasks()]) {
+
+}
