@@ -114,7 +114,7 @@ publishing {
                 project.ext.submodules.each { module ->
                     def dependencyNode = dependenciesNode.appendNode('dependency')
                     dependencyNode.appendNode('groupId', project.ext.group)
-                    dependencyNode.appendNode('artifactId', module)
+                    dependencyNode.appendNode('artifactId', "firebase-ui-${module}")
                     dependencyNode.appendNode('version', project.ext.version)
                 }
             }
