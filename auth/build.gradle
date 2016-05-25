@@ -3,7 +3,7 @@ apply plugin: 'checkstyle'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    buildToolsVersion "${project.ext.buildtools}"
 
     defaultConfig {
         minSdkVersion 16
