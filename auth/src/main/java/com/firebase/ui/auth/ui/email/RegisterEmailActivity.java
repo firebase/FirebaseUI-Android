@@ -23,7 +23,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +35,7 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
@@ -146,27 +146,28 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         // create the user
         firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             final FirebaseUser firebaseUser = task.getResult().getUser();
-                           Task<Void> updateTask = firebaseUser.updateProfile(
-                                        new UserProfileChangeRequest
+                            Task<Void> updateTask = firebaseUser.updateProfile(
+                                    new UserProfileChangeRequest
                                             .Builder()
                                             .setDisplayName(name).build());
-                            updateTask.addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    mActivityHelper.dismissDialog();
-                                    if (task.isSuccessful()) {
-                                        startSaveCredentials(firebaseUser, password);
-                                    } else {
-                                        Log.e(TAG, "Error setting display name",
-                                                task.getException());
-                                    }
-                                }
-                            });
+                            updateTask
+                                    .addOnFailureListener(new TaskFailureLogger(
+                                            TAG, "Error setting display name"))
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            mActivityHelper.dismissDialog();
+                                            if (task.isSuccessful()) {
+                                                startSaveCredentials(firebaseUser, password);
+                                            }
+                                        }
+                                    });
                         } else {
                             mActivityHelper.dismissDialog();
                             String errorMessage = task.getException().getLocalizedMessage();

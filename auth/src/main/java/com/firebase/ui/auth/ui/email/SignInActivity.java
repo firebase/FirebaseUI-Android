@@ -31,6 +31,7 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
@@ -41,6 +42,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SignInActivity extends AppCompatBase implements View.OnClickListener {
+    private static final String TAG = "SignInActivity";
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EmailFieldValidator mEmailValidator;
@@ -96,6 +98,8 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     private void signIn(String email, final String password) {
         mActivityHelper.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
+                .addOnFailureListener(
+                        new TaskFailureLogger(TAG, "Error signing in with email and password"))
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {

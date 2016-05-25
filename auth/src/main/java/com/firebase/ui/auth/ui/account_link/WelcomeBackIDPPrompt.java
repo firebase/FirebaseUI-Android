@@ -35,6 +35,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -164,39 +165,25 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
                         FirebaseUser firebaseUser = task.getResult().getUser();
                         firebaseUser.linkWithCredential(mPrevCredential);
                         firebaseAuth.signOut();
-                        firebaseAuth.signInWithCredential(mPrevCredential).addOnCompleteListener(
-                                new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        mActivityHelper.dismissDialog();
-                                        if (!task.isSuccessful()) {
-                                            Log.e(TAG,
-                                                    "Error signing in with credential",
-                                                    task.getException());
-                                        }
-                                        finish(Activity.RESULT_OK, new Intent());
-                                    }
-                                }
-                        );
+                        firebaseAuth
+                                .signInWithCredential(mPrevCredential)
+                                .addOnFailureListener(new TaskFailureLogger(
+                                        TAG, "Error signing in with previous credential"))
+                                .addOnCompleteListener(new FinishListener());
                     } else {
                         mActivityHelper.dismissDialog();
                         finish(Activity.RESULT_OK, new Intent());
                     }
                 }
-            });
+            }).addOnFailureListener(
+                    new TaskFailureLogger(TAG, "Error signing in with new credential"));
 
         } else {
             Task<AuthResult> authResultTask = currentUser.linkWithCredential(newCredential);
-            authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    mActivityHelper.dismissDialog();
-                    if (!task.isSuccessful()) {
-                        Log.e(TAG, "Error linking with credential", task.getException());
-                    }
-                    finish(Activity.RESULT_OK, new Intent());
-                }
-            });
+            authResultTask
+                    .addOnFailureListener(
+                            new TaskFailureLogger(TAG, "Error linking with credential"))
+                    .addOnCompleteListener(new FinishListener());
         }
     }
 
@@ -210,5 +197,13 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
                 .putExtra(ExtraConstants.EXTRA_PROVIDER, providerId)
                 .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, idpResponse)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+    }
+
+    private class FinishListener implements OnCompleteListener {
+        @Override
+        public void onComplete(@NonNull Task task) {
+            mActivityHelper.dismissDialog();
+            finish(Activity.RESULT_OK, new Intent());
+        }
     }
 }

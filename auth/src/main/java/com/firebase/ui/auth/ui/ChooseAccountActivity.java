@@ -30,6 +30,7 @@ import com.firebase.ui.auth.util.CredentialsAPI;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -96,16 +97,15 @@ public class ChooseAccountActivity extends ActivityBase {
                 // TODO: (serikb) authenticate Firebase user and continue to application
                 if (password != null && !password.isEmpty()) {
                     // login with username/password
-                    mActivityHelper.getFirebaseAuth().signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    mActivityHelper
+                            .getFirebaseAuth()
+                            .signInWithEmailAndPassword(email, password)
+                            .addOnFailureListener(new TaskFailureLogger(
+                                    TAG, "Unsuccessful sign in with email and password"))
+                            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                 @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        finish(Activity.RESULT_OK, new Intent());
-                                    } else {
-                                        Log.e(TAG, "Unsuccessful sign in with email and password",
-                                                task.getException());
-                                    }
+                                public void onSuccess(AuthResult authResult) {
+                                    finish(Activity.RESULT_OK, new Intent());
                                 }
                             });
                 } else {
@@ -152,6 +152,8 @@ public class ChooseAccountActivity extends ActivityBase {
             if (password != null && !password.isEmpty()) {
                 // email/password combination
                 mActivityHelper.getFirebaseAuth().signInWithEmailAndPassword(email, password)
+                        .addOnFailureListener(new TaskFailureLogger(
+                                TAG, "Error signing in with email and password"))
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {

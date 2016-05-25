@@ -24,7 +24,6 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,10 +37,10 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -109,8 +108,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
 
     private void next(String email, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
-        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
-                new OnCompleteListener<AuthResult>() {
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnFailureListener(
+                        new TaskFailureLogger(TAG, "Error signing in with email and password"))
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
@@ -120,6 +121,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                     firebaseAuth.signOut();
 
                     firebaseAuth.signInWithCredential(authCredential)
+                            .addOnFailureListener(
+                                    new TaskFailureLogger(TAG, "Error signing in with credential"))
                             .addOnSuccessListener(
                                 new OnSuccessListener<AuthResult>() {
                                     @Override
@@ -142,12 +145,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                                         photoUrl
                                                 ), RC_CREDENTIAL_SAVE);
                                     }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e(TAG, "Error signing in with credential", e);
-                                }
                             });
                 } else {
                     String error = task.getException().getLocalizedMessage();

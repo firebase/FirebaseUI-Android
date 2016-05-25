@@ -52,20 +52,21 @@ public class AcquireEmailHelper {
         FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
         if (email != null && !email.isEmpty()) {
-            firebaseAuth.fetchProvidersForEmail(email).addOnCompleteListener(
-                    new OnCompleteListener<ProviderQueryResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                            if (task.isSuccessful()) {
-                                startEmailHandler(email, task.getResult().getProviders());
-                            } else {
-                                mActivityHelper.dismissDialog();
-                                Log.e(TAG, "Error fetching providers for email",
-                                        task.getException());
-                            }
-                        }
-                    }
-            );
+            firebaseAuth
+                    .fetchProvidersForEmail(email)
+                    .addOnFailureListener(
+                            new TaskFailureLogger(TAG, "Error fetching providers for email"))
+                    .addOnCompleteListener(
+                            new OnCompleteListener<ProviderQueryResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                                    if (task.isSuccessful()) {
+                                        startEmailHandler(email, task.getResult().getProviders());
+                                    } else {
+                                        mActivityHelper.dismissDialog();
+                                    }
+                                }
+                            });
         }
     }
 
