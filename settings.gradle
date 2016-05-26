@@ -1,1 +1,1 @@
-include ':app', ':common', ':library', ':database', ':auth'
+include ':app', ':common', ':library', ':database', ':auth', ':storage'
