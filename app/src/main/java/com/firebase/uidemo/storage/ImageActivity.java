@@ -1,6 +1,7 @@
 package com.firebase.uidemo.storage;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.DownloadResult;
+import com.firebase.ui.storage.FirebaseFile;
+import com.firebase.ui.storage.UploadResult;
+import com.firebase.ui.storage.images.FirebaseImage;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,11 +27,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,11 +45,19 @@ public class ImageActivity extends AppCompatActivity {
 
     private StorageReference mImageRef;
 
+    private DatabaseReference mDatabase;
+
     @BindView(R.id.button_choose_photo)
     Button mUploadButton;
 
+    @BindView(R.id.button_download_indirect)
+    Button mDownloadIndirectButton;
+
     @BindView(R.id.button_download_direct)
     Button mDownloadDirectButton;
+
+    @BindView(R.id.button_download_bytes)
+    Button mDownloadBytesButton;
 
     @BindView(R.id.first_image)
     ImageView mImageView;
@@ -60,14 +71,18 @@ public class ImageActivity extends AppCompatActivity {
         // By default, Firebase Storage files require authentication to read or write.
         // For this sample to function correctly, enable Anonymous Auth in the Firebase console:
         // https://console.firebase.google.com/project/_/authentication/providers
+
+        // Initialize Database
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        // Authenticate so that uploading/downloading works
         FirebaseAuth.getInstance().signInAnonymously()
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInAnonymously:" + task.isSuccessful());
                         if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInAnonymously", task.getException());
-                            Log.w(TAG, getString(R.string.anonymous_auth_failed_msg));
+                            Log.w(TAG, getString(R.string.anonymous_auth_failed_msg), task.getException());
 
                             Toast.makeText(ImageActivity.this,
                                     getString(R.string.anonymous_auth_failed_toast),
@@ -112,22 +127,25 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     protected void uploadPhoto(Uri uri) {
+        // Ref to a random object where we will upload/download an image
+        mDatabase = mDatabase.child("imagedemo").push();
+
         // Reset UI
         hideDownloadUI();
-        Toast.makeText(this, "Uploading...", Toast.LENGTH_SHORT).show();
 
-        // Upload to Firebase Storage
-        String uuid = UUID.randomUUID().toString();
-        mImageRef = FirebaseStorage.getInstance().getReference(uuid);
-        mImageRef.putFile(uri)
-                .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        Toast.makeText(this, "Uploading...", Toast.LENGTH_SHORT).show();
+        FirebaseFile.upload(this, mDatabase)
+                .from(uri)
+                .fileType(FirebaseFile.TYPE_IMAGE)
+                .execute()
+                .addOnSuccessListener(this, new OnSuccessListener<UploadResult>() {
                     @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Log.d(TAG, "uploadPhoto:onSuccess:" +
-                                taskSnapshot.getMetadata().getReference().getPath());
+                    public void onSuccess(UploadResult uploadResult) {
+                        Log.d(TAG, "uploadPhoto:onSuccess:" + uploadResult.getInfo().storagePath);
                         Toast.makeText(ImageActivity.this, "Image uploaded",
                                 Toast.LENGTH_SHORT).show();
 
+                        mImageRef = uploadResult.getInfo().getReference();
                         showDownloadUI();
                     }
                 })
@@ -136,6 +154,23 @@ public class ImageActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "uploadPhoto:onError", e);
                         Toast.makeText(ImageActivity.this, "Upload failed",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    @OnClick(R.id.button_download_indirect)
+    protected void downloadIndirect() {
+        // Download from DatabaseReference using FirebaseImage
+        FirebaseImage.download(this, mDatabase)
+                .into(mImageView)
+                .vibrant()
+                .execute()
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "downloadPhoto:onError", e);
+                        Toast.makeText(ImageActivity.this, "Download failed",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -152,15 +187,41 @@ public class ImageActivity extends AppCompatActivity {
                 .into(mImageView);
     }
 
+    @OnClick(R.id.button_download_bytes)
+    protected void downloadBytes() {
+        // Download as bytes
+        final Activity activity = this;
+        FirebaseFile.downloadBytes(this, mDatabase).execute()
+                .addOnSuccessListener(new OnSuccessListener<DownloadResult>() {
+                    @Override
+                    public void onSuccess(DownloadResult result) {
+                        byte[] bytes = result.getBytes();
+                        Toast.makeText(activity, "Downloaded bytes: " + bytes.length,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(activity, "Error downloading bytes",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
     private void hideDownloadUI() {
+        mDownloadIndirectButton.setEnabled(false);
         mDownloadDirectButton.setEnabled(false);
+        mDownloadBytesButton.setEnabled(false);
 
         mImageView.setImageResource(0);
         mImageView.setVisibility(View.INVISIBLE);
     }
 
     private void showDownloadUI() {
+        mDownloadIndirectButton.setEnabled(true);
         mDownloadDirectButton.setEnabled(true);
+        mDownloadBytesButton.setEnabled(true);
 
         mImageView.setVisibility(View.VISIBLE);
     }
