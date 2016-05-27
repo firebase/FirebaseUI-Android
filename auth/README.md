@@ -125,6 +125,7 @@ can be started as follows:
 
 ```
 startActivityForResult(
+    // Get an instance of AuthUI based on the current activity (this in the line blow)
     AuthUI.getInstance(this).createSignInIntentBuilder().build(),
     RC_SIGN_IN);
 ```
