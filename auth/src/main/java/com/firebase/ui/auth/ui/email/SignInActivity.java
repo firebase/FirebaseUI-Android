@@ -148,7 +148,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                     this,
                     mActivityHelper.getFlowParams(),
                     mEmailEditText.getText().toString()));
-            finish(RESULT_OK, new Intent());
             return;
         }
     }
