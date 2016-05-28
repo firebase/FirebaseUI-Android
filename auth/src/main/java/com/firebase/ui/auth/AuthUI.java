@@ -17,6 +17,7 @@ package com.firebase.ui.auth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
@@ -24,6 +25,7 @@ import android.support.annotation.StyleRes;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.ChooseAccountActivity;
+import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.ProviderHelper;
@@ -221,6 +223,12 @@ public class AuthUI {
     public static final String FACEBOOK_PROVIDER = "facebook";
 
     /**
+     * Default value for logo resource, omits the logo from the
+     * {@link AuthMethodPickerActivity}
+     */
+    public static final int NO_LOGO = -1;
+
+    /**
      * The set of authentication providers supported in Firebase Auth UI.
      */
     public static final Set<String> SUPPORTED_PROVIDERS =
@@ -306,6 +314,7 @@ public class AuthUI {
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder {
+        private int mLogo = NO_LOGO;
         private int mTheme = getDefaultTheme();
         private List<String> mProviders = Collections.singletonList(EMAIL_PROVIDER);
         private String mTosUrl;
@@ -322,6 +331,15 @@ public class AuthUI {
                     theme,
                     "theme identifier is unknown or not a style definition");
             mTheme = theme;
+            return this;
+        }
+
+        /**
+         * Specifies the logo to use for the {@link AuthMethodPickerActivity}. If no logo
+         * is specified, none will be used.
+         */
+        public SignInIntentBuilder setLogo(@DrawableRes int logo) {
+            mLogo = logo;
             return this;
         }
 
@@ -365,6 +383,7 @@ public class AuthUI {
                             mApp.getName(),
                             providerInfo,
                             mTheme,
+                            mLogo,
                             mTosUrl));
         }
     }

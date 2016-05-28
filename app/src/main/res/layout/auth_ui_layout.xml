@@ -117,6 +117,39 @@
                 android:text="@string/firebase_tos_label" />
         </RadioGroup>
 
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/logo_header" />
+
+        <RadioGroup
+            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/firebase_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/firebase_logo_label" />
+
+            <RadioButton
+                android:id="@+id/google_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/google_logo_label" />
+
+            <RadioButton
+                android:id="@+id/no_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_logo_label" />
+        </RadioGroup>
     </LinearLayout>
 
 </ScrollView>

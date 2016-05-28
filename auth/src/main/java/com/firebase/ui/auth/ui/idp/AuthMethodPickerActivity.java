@@ -22,8 +22,10 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.FacebookProvider;
@@ -81,6 +83,13 @@ public class AuthMethodPickerActivity
         Button emailButton = (Button) findViewById(R.id.email_provider);
         emailButton.setOnClickListener(this);
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);
+        int logoId = mActivityHelper.getFlowParams().logoId;
+        ImageView logo = (ImageView) findViewById(R.id.logo);
+        if (logoId == AuthUI.NO_LOGO) {
+            logo.setVisibility(View.GONE);
+        } else {
+            logo.setImageResource(logoId);
+        }
     }
 
     private void populateIdpList(List<IDPProviderParcel> providers) {

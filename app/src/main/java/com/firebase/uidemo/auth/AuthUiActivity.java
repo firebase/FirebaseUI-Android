@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
@@ -78,6 +79,16 @@ public class AuthUiActivity extends Activity {
     @BindView(android.R.id.content)
     View mRootView;
 
+    @BindView(R.id.firebase_logo)
+    RadioButton mFirebaseLogo;
+
+    @BindView(R.id.google_logo)
+    RadioButton mGoogleLogo;
+
+    @BindView(R.id.no_logo)
+    RadioButton mNoLogo;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +124,7 @@ public class AuthUiActivity extends Activity {
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setTheme(getSelectedTheme())
+                        .setLogo(getSelectedLogo())
                         .setProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
                         .build(),
@@ -158,6 +170,17 @@ public class AuthUiActivity extends Activity {
         }
 
         return R.style.GreenTheme;
+    }
+
+    @MainThread
+    @DrawableRes
+    private int getSelectedLogo() {
+        if (mFirebaseLogo.isChecked()) {
+            return R.drawable.firebase_auth_120dp;
+        } else if (mGoogleLogo.isChecked()) {
+            return R.drawable.logo_googleg_color_144dp;
+        }
+        return AuthUI.NO_LOGO;
     }
 
     @MainThread

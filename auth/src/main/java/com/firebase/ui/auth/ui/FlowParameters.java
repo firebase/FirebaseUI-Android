@@ -15,6 +15,7 @@ package com.firebase.ui.auth.ui;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
@@ -39,6 +40,9 @@ public class FlowParameters implements Parcelable {
     @StyleRes
     public final int themeId;
 
+    @DrawableRes
+    public final int logoId;
+
     @Nullable
     public final String termsOfServiceUrl;
 
@@ -46,10 +50,12 @@ public class FlowParameters implements Parcelable {
             @NonNull String appName,
             @NonNull List<IDPProviderParcel> providerInfo,
             @StyleRes int themeId,
+            @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null");
         this.themeId = themeId;
+        this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
     }
 
@@ -58,6 +64,7 @@ public class FlowParameters implements Parcelable {
         dest.writeString(appName);
         dest.writeTypedList(providerInfo);
         dest.writeInt(themeId);
+        dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
     }
 
@@ -73,8 +80,9 @@ public class FlowParameters implements Parcelable {
             List<IDPProviderParcel> providerInfo =
                     in.createTypedArrayList(IDPProviderParcel.CREATOR);
             int themeId = in.readInt();
+            int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
-            return new FlowParameters(appName, providerInfo, themeId, termsOfServiceUrl);
+            return new FlowParameters(appName, providerInfo, themeId, logoId, termsOfServiceUrl);
         }
 
         @Override
