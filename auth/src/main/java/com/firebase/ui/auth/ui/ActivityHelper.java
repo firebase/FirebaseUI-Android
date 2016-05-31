@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -84,6 +86,10 @@ public class ActivityHelper {
 
     public FirebaseAuth getFirebaseAuth() {
         return FirebaseAuth.getInstance(getFirebaseApp());
+    }
+
+    public CredentialsApi getCredentialsApi() {
+        return Auth.CredentialsApi;
     }
 
     public FirebaseUser getCurrentUser() {

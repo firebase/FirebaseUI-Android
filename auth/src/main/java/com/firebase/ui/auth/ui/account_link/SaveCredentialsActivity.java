@@ -27,10 +27,10 @@ import android.util.Log;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
-import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -63,6 +63,7 @@ public class SaveCredentialsActivity extends AppCompatBase
         if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.getAppName())
                 .isPlayServicesAvailable(this)) {
             finish(RESULT_FIRST_USER, getIntent());
+            return;
         }
         mName = getIntent().getStringExtra(ExtraConstants.EXTRA_NAME);
         mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
@@ -117,7 +118,8 @@ public class SaveCredentialsActivity extends AppCompatBase
         if (mProfilePictureUri != null) {
             builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
         }
-        Auth.CredentialsApi.save(mCredentialsApiClient, builder.build()).setResultCallback(this);
+        mActivityHelper.getCredentialsApi()
+                .save(mCredentialsApiClient, builder.build()).setResultCallback(this);
     }
 
     @Override
@@ -148,7 +150,6 @@ public class SaveCredentialsActivity extends AppCompatBase
 
     @Override
     public void onResult(@NonNull Status status) {
-
         if (status.isSuccess()) {
             finish(RESULT_OK, getIntent());
         } else {
@@ -184,7 +185,8 @@ public class SaveCredentialsActivity extends AppCompatBase
         } else if (requestCode == RC_UPDATE_SERVICE) {
             if (resultCode == RESULT_OK) {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword).build();
-                Auth.CredentialsApi.save(mCredentialsApiClient, credential).setResultCallback(this);
+                mActivityHelper.getCredentialsApi()
+                        .save(mCredentialsApiClient, credential).setResultCallback(this);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
                 finish(RESULT_FIRST_USER, getIntent());

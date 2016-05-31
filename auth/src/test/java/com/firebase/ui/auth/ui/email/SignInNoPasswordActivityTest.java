@@ -97,7 +97,7 @@ public class SignInNoPasswordActivityTest {
         SignInNoPasswordActivity noPasswordActivity = createActivity(TestConstants.EMAIL);
         Button next = (Button) noPasswordActivity.findViewById(R.id.button_ok);
 
-        when(ActivityHelperShadow.mFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL))
+        when(ActivityHelperShadow.firebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL))
                 .thenReturn(
                         new AutoCompleteTask<ProviderQueryResult>(
                                 new FakeProviderQueryResult(Collections.<String>emptyList()),
@@ -123,7 +123,7 @@ public class SignInNoPasswordActivityTest {
         SignInNoPasswordActivity noPasswordActivity = createActivity(TestConstants.EMAIL);
         Button next = (Button) noPasswordActivity.findViewById(R.id.button_ok);
 
-        when(ActivityHelperShadow.mFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL))
+        when(ActivityHelperShadow.firebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL))
                 .thenReturn(
                         new AutoCompleteTask<ProviderQueryResult>(
                                 new FakeProviderQueryResult(

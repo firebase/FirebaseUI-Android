@@ -17,8 +17,6 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
@@ -29,21 +27,17 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.account_link.AccountLinkInitActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.List;
 
 public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPProvider.IDPCallback {
     private static final String TAG = "IDPSignInContainer";
-    private static final int RC_ACCOUNT_LINK = 3;
+    private static final int RC_WELCOME_BACK_IDP = 4;
+    private static final int RC_SAVE_CREDENTIALS = 5;
     private IDPProvider mIDPProvider;
     private String mProvider;
     private String mEmail;
@@ -74,44 +68,22 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         mIDPProvider.startLogin(this, mEmail);
     }
 
-    private void startAccountLinkingActivity(FirebaseUser firebaseUser, IDPResponse response) {
-        List<String> providers = firebaseUser.getProviders();
-        String provider = null;
-        if (providers.isEmpty()) {
-            Log.e(TAG, "User has no existing providers to link with" );
-        } else {
-            provider = firebaseUser.getProviders().get(0);
-        }
-        startActivityForResult(AccountLinkInitActivity.createIntent(
-                this,
-                mActivityHelper.getFlowParams(),
-                firebaseUser.getEmail(),
-                null,
-                response,
-                provider),
-                RC_ACCOUNT_LINK);
-    }
-
     @Override
     public void onSuccess(final IDPResponse response) {
         Intent data = new Intent();
         data.putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
         AuthCredential credential = createCredential(response);
-        FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
+        final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         Task<AuthResult> authResultTask = firebaseAuth.signInWithCredential(credential);
         authResultTask
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Failure authenticating with credential"))
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            startAccountLinkingActivity(task.getResult().getUser(), response);
-                        } else {
-                            finish(RESULT_CANCELED, new Intent());
-                        }
-                    }
-                });
+                .addOnCompleteListener(new CredentialSignInHandler(
+                        IDPSignInContainerActivity.this,
+                        mActivityHelper,
+                        RC_WELCOME_BACK_IDP,
+                        RC_SAVE_CREDENTIALS,
+                        response));
     }
 
     @Override
@@ -122,8 +94,10 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_ACCOUNT_LINK) {
+        if (requestCode == RC_WELCOME_BACK_IDP) {
             finish(resultCode, new Intent());
+        } else if (requestCode == RC_SAVE_CREDENTIALS) {
+            finish(RESULT_OK, new Intent());
         } else {
             mIDPProvider.onActivityResult(requestCode, resultCode, data);
         }

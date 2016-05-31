@@ -14,6 +14,9 @@
 
 package com.firebase.ui.auth.test_helpers;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import android.content.Context;
 
 import com.firebase.ui.auth.AuthUI;
@@ -21,6 +24,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.ProviderHelper;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -50,5 +54,13 @@ public class TestHelper {
                 AuthUI.getDefaultTheme(),
                 null
         );
+    }
+
+    public static FirebaseUser makeMockFirebaseUser() {
+        FirebaseUser mockFirebaseUser = mock(FirebaseUser.class);
+        when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
+        when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
+        when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
+        return mockFirebaseUser;
     }
 }

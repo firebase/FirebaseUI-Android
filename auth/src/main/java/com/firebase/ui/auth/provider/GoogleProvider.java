@@ -31,9 +31,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class GoogleProvider implements IDPProvider, OnClickListener {
+    public static final String TOKEN_KEY = "token_key";
+
     private static final int RC_SIGN_IN = 20;
     private static final String ERROR_KEY = "error";
-    private static final String TOKEN_KEY = "token_key";
     private static final String CLIENT_ID_KEY = "client_id_key";
     private GoogleApiClient mGoogleApiClient;
     private Activity mActivity;

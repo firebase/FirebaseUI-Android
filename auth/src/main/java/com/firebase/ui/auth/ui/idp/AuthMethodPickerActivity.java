@@ -16,9 +16,7 @@ package com.firebase.ui.auth.ui.idp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,22 +32,12 @@ import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
-import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
-import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.ProviderQueryResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,8 +57,8 @@ public class AuthMethodPickerActivity
         implements IDPProvider.IDPCallback, View.OnClickListener {
 
     private static final int RC_EMAIL_FLOW = 2;
-    private static final int RC_WELCOME_BACK_IDP = 3;
-    private static final int RC_ACCOUNT_LINK = 4;
+    private static final int RC_ACCOUNT_LINK = 3;
+    private static final int RC_SAVE_CREDENTIAL = 4;
     private static final String TAG = "AuthMethodPicker";
     private ArrayList<IDPProvider> mIdpProviders;
 
@@ -110,7 +98,6 @@ public class AuthMethodPickerActivity
                 case GoogleAuthProvider.PROVIDER_ID:
                     loginButton = getLayoutInflater()
                             .inflate(R.layout.idp_button_google, btnHolder, false);
-
                     break;
                 case FacebookAuthProvider.PROVIDER_ID:
                     loginButton = getLayoutInflater()
@@ -140,10 +127,10 @@ public class AuthMethodPickerActivity
             if (resultCode == RESULT_OK) {
                 finish(RESULT_OK, new Intent());
             }
-        } else if (requestCode == RC_ACCOUNT_LINK) {
+        } else if (requestCode == RC_SAVE_CREDENTIAL) {
             finish(RESULT_OK, new Intent());
-        } else if (requestCode == RC_WELCOME_BACK_IDP) {
-          finish(resultCode, new Intent());
+        } else if (requestCode == RC_ACCOUNT_LINK) {
+            finish(resultCode, new Intent());
         } else {
             for(IDPProvider provider : mIdpProviders) {
                 provider.onActivityResult(requestCode, resultCode, data);
@@ -160,47 +147,12 @@ public class AuthMethodPickerActivity
                 .signInWithCredential(credential)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Firebase sign in with credential unsuccessful"))
-                .addOnCompleteListener(
-                        new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (!task.isSuccessful()) {
-                                    if (task.getException().getClass() ==
-                                            FirebaseAuthUserCollisionException.class) {
-                                        final String email = response.getEmail();
-                                        firebaseAuth.fetchProvidersForEmail(email)
-                                                .addOnFailureListener(new TaskFailureLogger(
-                                                        TAG, "Error fetching providers for email"))
-                                                .addOnSuccessListener(
-                                                        new StartWelcomeBackFlow(response, email));
-                                    } else {
-                                        mActivityHelper.dismissDialog();
-                                        Log.e(
-                                            TAG,
-                                            "Unexpected exception when signing in with credential",
-                                            task.getException());
-                                    }
-                                } else {
-                                    FirebaseUser firebaseUser = task.getResult().getUser();
-                                    String photoUrl = null;
-                                    Uri photoUri = firebaseUser.getPhotoUrl();
-                                    if (photoUri != null) {
-                                        photoUrl = photoUri.toString();
-                                    }
-                                    mActivityHelper.dismissDialog();
-                                    startActivityForResult(SaveCredentialsActivity.createIntent(
-                                            mActivityHelper.getApplicationContext(),
-                                            mActivityHelper.getFlowParams(),
-                                            firebaseUser.getDisplayName(),
-                                            firebaseUser.getEmail(),
-                                            null,
-                                            response.getProviderType(),
-                                            photoUrl
-                                    ), RC_ACCOUNT_LINK);
-                                }
-                            }
-                        }
-                );
+                .addOnCompleteListener(new CredentialSignInHandler(
+                        AuthMethodPickerActivity.this,
+                        mActivityHelper,
+                        RC_ACCOUNT_LINK,
+                        RC_SAVE_CREDENTIAL,
+                        response));
     }
 
     @Override
@@ -223,40 +175,5 @@ public class AuthMethodPickerActivity
             Context context,
             FlowParameters flowParams) {
         return ActivityHelper.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
-    }
-
-    private class StartWelcomeBackFlow implements OnSuccessListener<ProviderQueryResult> {
-        private IDPResponse mResponse;
-        private String mEmail;
-
-        public StartWelcomeBackFlow(IDPResponse response, String email) {
-            mResponse = response;
-            mEmail = email;
-        }
-
-        @Override
-        public void onSuccess(@NonNull ProviderQueryResult result) {
-            String provider = result.getProviders().get(0);
-            if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
-                mActivityHelper.dismissDialog();
-                startActivityForResult(
-                        WelcomeBackPasswordPrompt.createIntent(
-                                mActivityHelper.getApplicationContext(),
-                                mActivityHelper.getFlowParams(),
-                                mResponse
-                        ), RC_WELCOME_BACK_IDP);
-
-            } else {
-                mActivityHelper.dismissDialog();
-                startActivityForResult(
-                        WelcomeBackIDPPrompt.createIntent(
-                                mActivityHelper.getApplicationContext(),
-                                mActivityHelper.getFlowParams(),
-                                result.getProviders().get(0),
-                                mResponse,
-                                mEmail
-                        ), RC_WELCOME_BACK_IDP);
-            }
-        }
     }
 }
