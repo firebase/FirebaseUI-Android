@@ -14,6 +14,10 @@
     <string name="green_theme">Green Theme</string>
     <string name="purple_theme">Purple Theme</string>
     <string name="use_theme_header">Use theme:</string>
+    <string name="logo_header">Logo:</string>
+    <string name="firebase_logo_label">Firebase Auth</string>
+    <string name="google_logo_label">Google</string>
+    <string name="no_logo_label">None</string>
     <string name="auth_providers_header">Use auth providers:</string>
     <string name="email_label">Email</string>
     <string name="facebook_label">Facebook</string>
