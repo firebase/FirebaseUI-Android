@@ -119,7 +119,8 @@ public class SaveCredentialsActivity extends AppCompatBase
             builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
         }
         mActivityHelper.getCredentialsApi()
-                .save(mCredentialsApiClient, builder.build()).setResultCallback(this);
+                .save(mCredentialsApiClient, builder.build())
+                .setResultCallback(this);
     }
 
     @Override
@@ -186,7 +187,8 @@ public class SaveCredentialsActivity extends AppCompatBase
             if (resultCode == RESULT_OK) {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword).build();
                 mActivityHelper.getCredentialsApi()
-                        .save(mCredentialsApiClient, credential).setResultCallback(this);
+                        .save(mCredentialsApiClient, credential)
+                        .setResultCallback(this);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
                 finish(RESULT_FIRST_USER, getIntent());

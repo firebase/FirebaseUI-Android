@@ -76,7 +76,6 @@ public class AuthMethodPickerActivityTest {
                 AuthUI.FACEBOOK_PROVIDER,
                 AuthUI.GOOGLE_PROVIDER,
                 AuthUI.EMAIL_PROVIDER);
-        new GoogleProvider(null, null);
 
         AuthMethodPickerActivity authMethodPickerActivity =
                 createActivity(providers);
