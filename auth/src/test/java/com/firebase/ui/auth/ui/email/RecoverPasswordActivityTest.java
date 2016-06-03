@@ -65,7 +65,7 @@ public class RecoverPasswordActivityTest {
     public void testNextButton_sendsEmail() {
         RecoverPasswordActivity recoverPasswordActivity = createActivity();
         Button nextButton = (Button) recoverPasswordActivity.findViewById(R.id.button_done);
-        when(ActivityHelperShadow.mFirebaseAuth.sendPasswordResetEmail(TestConstants.EMAIL))
+        when(ActivityHelperShadow.firebaseAuth.sendPasswordResetEmail(TestConstants.EMAIL))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
         nextButton.performClick();
 
@@ -77,7 +77,7 @@ public class RecoverPasswordActivityTest {
                 nextIntent.getComponent().getClassName(),
                 ConfirmRecoverPasswordActivity.class.getName());
 
-        verify(ActivityHelperShadow.mFirebaseAuth).sendPasswordResetEmail(TestConstants.EMAIL);
+        verify(ActivityHelperShadow.firebaseAuth).sendPasswordResetEmail(TestConstants.EMAIL);
         assertEquals(
                 TestConstants.EMAIL,
                 nextIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));

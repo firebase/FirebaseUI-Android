@@ -39,14 +39,13 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResult> {
+    public static final String ACCESS_TOKEN = "facebook_access_token";
 
     protected static final String ERROR = "err";
     protected static final String ERROR_MSG = "err_msg";
 
     private static final String TAG = "FacebookProvider";
-    private static final String ACCESS_TOKEN = "facebook_access_token";
     private static final String APPLICATION_ID = "application_id";
-
     private CallbackManager mCallbackManager;
     private IDPCallback mCallbackObject;
 

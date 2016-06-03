@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.test_helpers;
 
 import com.firebase.ui.auth.ui.ActivityHelper;
+import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.mockito.Mockito;
@@ -23,16 +24,25 @@ import org.robolectric.annotation.Implements;
 
 @Implements(ActivityHelper.class)
 public class ActivityHelperShadow {
-    public static FirebaseAuth mFirebaseAuth;
+    public static FirebaseAuth firebaseAuth;
+    public static CredentialsApi credentialsApi;
 
     public ActivityHelperShadow() {
-        if (mFirebaseAuth == null) {
-            mFirebaseAuth = Mockito.mock(FirebaseAuth.class);
+        if (firebaseAuth == null) {
+            firebaseAuth = Mockito.mock(FirebaseAuth.class);
+        }
+        if (credentialsApi == null) {
+            credentialsApi = Mockito.mock(CredentialsApi.class);
         }
     }
 
     @Implementation
     public FirebaseAuth getFirebaseAuth() {
-        return mFirebaseAuth;
+        return firebaseAuth;
+    }
+
+    @Implementation
+    public CredentialsApi getCredentialsApi() {
+        return credentialsApi;
     }
 }

@@ -104,7 +104,7 @@ public class SignInActivityTest {
 
         FirebaseUser mockFirebaseUser = mock(FirebaseUser.class);
 
-        when(ActivityHelperShadow.mFirebaseAuth.signInWithEmailAndPassword(
+        when(ActivityHelperShadow.firebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
                     new AutoCompleteTask<>(new FakeAuthResult(mockFirebaseUser), true, null));
@@ -114,7 +114,7 @@ public class SignInActivityTest {
         Button signIn = (Button) signInActivity.findViewById(R.id.button_done);
         signIn.performClick();
 
-        verify(ActivityHelperShadow.mFirebaseAuth).signInWithEmailAndPassword(
+        verify(ActivityHelperShadow.firebaseAuth).signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 

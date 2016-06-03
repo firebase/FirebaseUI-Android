@@ -110,7 +110,7 @@ public class RegisterEmailActivityTest {
         when(mockFirebaseUser.updateProfile((UserProfileChangeRequest) Mockito.anyObject()))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
-        when(ActivityHelperShadow.mFirebaseAuth
+        when(ActivityHelperShadow.firebaseAuth
                 .createUserWithEmailAndPassword(
                         TestConstants.EMAIL,
                         TestConstants.PASSWORD))

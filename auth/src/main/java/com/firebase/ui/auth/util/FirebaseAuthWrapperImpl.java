@@ -154,7 +154,7 @@ public class FirebaseAuthWrapperImpl
 
     @Override
     public PendingIntent getEmailHintIntent(Context context) {
-        if (!isPlayServicesAvailable(context,GoogleApiAvailability.getInstance())) {
+        if (!isPlayServicesAvailable(context, GoogleApiAvailability.getInstance())) {
             return null;
         }
 
