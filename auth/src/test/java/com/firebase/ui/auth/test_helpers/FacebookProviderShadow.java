@@ -50,7 +50,7 @@ public class FacebookProviderShadow {
         }
     }
 
-    public void __constructor__(Activity activity, IDPProviderParcel parcel) {}
+    public void __constructor__(Activity activity, IDPProviderParcel parcel, String email) {}
 
     @Implementation
     public void setAuthenticationCallback(IDPProvider.IDPCallback idpCallback) {
@@ -58,7 +58,7 @@ public class FacebookProviderShadow {
     }
 
     @Implementation
-    public void startLogin(Activity activity, String email) {
+    public void startLogin(Activity activity) {
         mCallback.onSuccess(mMockIdpResponse);
     }
 }

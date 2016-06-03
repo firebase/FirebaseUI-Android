@@ -73,7 +73,7 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
     }
 
     @Override
-    public void startLogin(Activity activity, String email) {
+    public void startLogin(Activity activity) {
         mCallbackManager = CallbackManager.Factory.create();
         LoginManager loginManager = LoginManager.getInstance();
         loginManager.registerCallback(mCallbackManager, this);

@@ -88,7 +88,7 @@ public class AuthMethodPickerActivity
                     mIdpProviders.add(new FacebookProvider(this, providerParcel));
                     break;
                 case GoogleAuthProvider.PROVIDER_ID:
-                    mIdpProviders.add(new GoogleProvider(this, providerParcel));
+                    mIdpProviders.add(new GoogleProvider(this, providerParcel, null));
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
                     findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
@@ -120,7 +120,7 @@ public class AuthMethodPickerActivity
                     @Override
                     public void onClick(View view) {
                         mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
-                        provider.startLogin(AuthMethodPickerActivity.this, null);
+                        provider.startLogin(AuthMethodPickerActivity.this);
                     }
                 });
                 provider.setAuthenticationCallback(this);

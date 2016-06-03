@@ -68,7 +68,10 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             if (mProviderId.equals(providerParcel.getProviderType())) {
                 switch (mProviderId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new GoogleProvider(this, providerParcel);
+                        mIdpProvider = new GoogleProvider(
+                                this,
+                                providerParcel,
+                                getEmailFromIntent());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         mIdpProvider = new FacebookProvider(this, providerParcel);
@@ -101,7 +104,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             @Override
             public void onClick(View view) {
                 mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
-                mIdpProvider.startLogin(WelcomeBackIDPPrompt.this, getEmailFromIntent());
+                mIdpProvider.startLogin(WelcomeBackIDPPrompt.this);
             }
         });
     }

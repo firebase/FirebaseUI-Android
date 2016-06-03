@@ -51,7 +51,7 @@ public class GoogleProviderShadow {
         }
     }
 
-    public void __constructor__(Activity activity, IDPProviderParcel parcel) {}
+    public void __constructor__(Activity activity, IDPProviderParcel parcel, String email) {}
 
 
         @Implementation
@@ -60,7 +60,7 @@ public class GoogleProviderShadow {
     }
 
     @Implementation
-    public void startLogin(Activity activity, String email) {
+    public void startLogin(Activity activity) {
         mCallback.onSuccess(mMockIdpResponse);
     }
 }
