@@ -32,7 +32,7 @@ public interface IDPProvider {
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
-    void startLogin(Activity activity, String mEmail);
+    void startLogin(Activity activity);
 
     public interface IDPCallback {
         public void onSuccess(IDPResponse idpResponse);

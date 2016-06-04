@@ -52,6 +52,7 @@ public class TestHelper {
                 FIREBASE_APP_NAME,
                 ProviderHelper.getProviderParcels(context, providerIds),
                 AuthUI.getDefaultTheme(),
+                AuthUI.NO_LOGO,
                 null
         );
     }

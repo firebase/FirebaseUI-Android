@@ -62,10 +62,10 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         if (mProvider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
             mIDPProvider = new FacebookProvider(this, providerParcel);
         } else if (mProvider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new GoogleProvider(this, providerParcel);
+            mIDPProvider = new GoogleProvider(this, providerParcel, mEmail);
         }
         mIDPProvider.setAuthenticationCallback(this);
-        mIDPProvider.startLogin(this, mEmail);
+        mIDPProvider.startLogin(this);
     }
 
     @Override

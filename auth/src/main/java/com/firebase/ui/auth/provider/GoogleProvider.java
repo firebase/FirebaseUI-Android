@@ -18,6 +18,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -40,15 +42,19 @@ public class GoogleProvider implements IDPProvider, OnClickListener {
     private Activity mActivity;
     private IDPCallback mIDPCallback;
 
-    public GoogleProvider(Activity activity, IDPProviderParcel parcel) {
+    public GoogleProvider(Activity activity, IDPProviderParcel parcel, @Nullable String email) {
         mActivity = activity;
         String mClientId = parcel.getProviderExtra().getString(CLIENT_ID_KEY);
         GoogleSignInOptions googleSignInOptions;
 
-        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(GoogleSignInOptions
+                .DEFAULT_SIGN_IN)
                 .requestEmail()
-                .requestIdToken(mClientId)
-                .build();
+                .requestIdToken(mClientId);
+        if (!TextUtils.isEmpty(email)) {
+            builder.setAccountName(email);
+        }
+        googleSignInOptions = builder.build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(activity)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
@@ -104,7 +110,7 @@ public class GoogleProvider implements IDPProvider, OnClickListener {
     }
 
     @Override
-    public void startLogin(Activity activity, String mEmail) {
+    public void startLogin(Activity activity) {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         activity.startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -118,7 +124,7 @@ public class GoogleProvider implements IDPProvider, OnClickListener {
     @Override
     public void onClick(View view) {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        startLogin(mActivity, null);
+        startLogin(mActivity);
     }
 }
 
