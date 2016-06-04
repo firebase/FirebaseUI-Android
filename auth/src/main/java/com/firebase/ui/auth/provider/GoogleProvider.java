@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -50,7 +51,7 @@ public class GoogleProvider implements IDPProvider, OnClickListener {
                 .DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestIdToken(mClientId);
-        if (email != null) {
+        if (!TextUtils.isEmpty(email)) {
             builder.setAccountName(email);
         }
         googleSignInOptions = builder.build();
