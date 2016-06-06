@@ -1,4 +1,5 @@
 project.ext.firebase_version = '9.0.2'
+project.ext.support_library_version = '23.4.0'
 
 project.ext.submodules = ['database', 'auth']
 project.ext.group = "com.firebaseui"
