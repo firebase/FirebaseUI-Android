@@ -185,7 +185,7 @@ public class AuthMethodPickerActivity
         super.onDestroy();
         if (mIdpProviders != null) {
             for (final IDPProvider provider : mIdpProviders) {
-                if (GoogleProvider.class.isInstance(provider)) {
+                if (provider instanceof GoogleProvider) {
                     ((GoogleProvider) provider).disconnect();
                 }
             }
