@@ -180,6 +180,18 @@ public class AuthMethodPickerActivity
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mIdpProviders != null) {
+            for (final IDPProvider provider : mIdpProviders) {
+                if (provider instanceof GoogleProvider) {
+                    ((GoogleProvider) provider).disconnect();
+                }
+            }
+        }
+    }
+
     public static Intent createIntent(
             Context context,
             FlowParameters flowParams) {

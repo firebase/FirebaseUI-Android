@@ -87,6 +87,13 @@ public class GoogleProvider implements IDPProvider, OnClickListener {
         mIDPCallback = callback;
     }
 
+    public void disconnect() {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+            mGoogleApiClient = null;
+        }
+    }
+
     private IDPResponse createIDPResponse(GoogleSignInAccount account) {
         Bundle response = new Bundle();
         response.putString(TOKEN_KEY, account.getIdToken());
