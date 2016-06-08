@@ -163,7 +163,7 @@ public class CredentialsAPI implements
         } else {
             // Email/password account
             String status = String.format("Signed in as %s", credential.getId());
-            Log.e(TAG, status);
+            Log.d(TAG, status);
         }
     }
 
