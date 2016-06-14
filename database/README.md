@@ -237,12 +237,12 @@ public static class ChatHolder extends RecyclerView.ViewHolder {
     }
 
     public void setName(String name) {
-        TextView field = (TextView) mView.findViewById(R.id.name_text);
+        TextView field = (TextView) mView.findViewById(android.R.id.text1);
         field.setText(name);
     }
 
     public void setText(String text) {
-        TextView field = (TextView) mView.findViewById(R.id.message_text);
+        TextView field = (TextView) mView.findViewById(android.R.id.text2);
         field.setText(text);
     }
 }
