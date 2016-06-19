@@ -270,3 +270,61 @@ recycler.setAdapter(mAdapter);
 ```
 
 Like before, we get a custom RecyclerView populated with data from Firebase by setting the properties to the correct fields.
+
+## Using FirebaseUI to Populate a ViewPager
+To use the FirebaseUI to display a ViewPager, we need a few things:
+
+  1. A Java class that represents our database objects
+  1. A custom FragmentStatePagerAdapter to map from a collection from Firebase to Android
+  1. A fragment, which is used in the pager adapter
+
+The rest of the steps is the same as for the `FirebaseListAdapter` above, but instead of a list of chat message we show images in a view pager.
+
+![List of images in dashboard](../doc-images/image-model.png "Images in console")
+
+```java
+public class SomeFragment extends Fragment {
+
+    public SomeFragment() {
+    }
+    
+    public static SomeFragment newInstance(SomeModel someModel) {
+        Bundle arguments = new Bundle();
+        arguments.putString("image_url", someModel.imageUrl);
+
+        SomeFragment fragment = new SomeFragment();
+        fragment.setArguments(arguments);
+
+        return fragment;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
+
+        //load image with your favorite network library
+               
+        return view;
+    }
+}
+```
+
+### Create a custom FirebaseFragmentStatePagerAdapter
+Just like we did for `FirebaseListAdapter`, we'll create an anonymous for our firebase data, but this time we'll use `FirebaseFragmentStatePagerAdapter `:
+
+```java
+ViewPager viewPager = (ViewPager) findViewById(R.id.image_view_pager);
+
+//If the ViewPager is used inside an activity, use the getSupportFragmentManager() method of this activity.
+//If you are already using an Fragment, use the getChildFragmentManager() method of this fragment.
+mAdapter = new FirebaseFragmentStatePagerAdapter <SomeModel, SomeFragment>(fragmentManager, SomeModel.class, mRef) {
+    @Override
+    protected SomeFragment instantiateFragment(SomeModel model, int position) {
+        return SomeFragment.newInstance(model);
+    }
+};
+viewPager.setAdapter(mAdapter);
+```
+The overridden instantiateFragment() method of the `FirebaseFragmentStatePagerAdapter ` will be called for each data entry of our query.
