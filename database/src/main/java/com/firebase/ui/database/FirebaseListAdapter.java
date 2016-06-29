@@ -52,7 +52,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     private final Class<T> mModelClass;
     protected int mLayout;
     protected Activity mActivity;
-    FirebaseArray mSnapshots;
+    protected FirebaseArray mSnapshots;
 
 
     /**
