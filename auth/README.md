@@ -44,7 +44,7 @@ Gradle, add:
 ```
 dependencies {
   // ...
-  compile 'com.firebaseui:firebase-ui-auth:0.4.1'
+  compile 'com.firebaseui:firebase-ui-auth:0.4.2'
 }
 ```
 
@@ -54,7 +54,7 @@ If instead your project uses Maven, add:
 <dependency>
   <groupId>com.firebaseui</groupId>
   <artifactId>firebase-ui-auth</artifactId>
-  <version>0.4.1</version>
+  <version>0.4.2</version>
 </dependency>
 ```
 

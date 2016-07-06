@@ -51,7 +51,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mRef;
-    private Query mChatRef;
+    private DatabaseReference mChatRef;
     private Button mSendButton;
     private EditText mMessageEdit;
 
@@ -76,7 +76,7 @@ public class ChatActivity extends AppCompatActivity {
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
 
         mRef = FirebaseDatabase.getInstance().getReference();
-        mChatRef = mRef.limitToLast(50);
+        mChatRef = mRef.child("chats");
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +85,7 @@ public class ChatActivity extends AppCompatActivity {
                 String name = "User " + uid.substring(0, 6);
 
                 Chat chat = new Chat(name, uid, mMessageEdit.getText().toString());
-                mRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
+                mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
                         if (databaseError != null) {
@@ -130,8 +130,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void attachRecyclerViewAdapter() {
+        Query lastFifty = mChatRef.limitToLast(50);
         mRecyclerViewAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
-                Chat.class, R.layout.message, ChatHolder.class, mChatRef) {
+                Chat.class, R.layout.message, ChatHolder.class, lastFifty) {
 
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {

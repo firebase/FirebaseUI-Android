@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/firebase/FirebaseUI-Android.svg?branch=master)](https://travis-ci.org/firebase/FirebaseUI-Android)
 
-FirebaseUI is an open-source library for Android that allows you to 
-quickly connect common UI elements to [Firebase](https://firebase.google.com) 
+FirebaseUI is an open-source library for Android that allows you to
+quickly connect common UI elements to [Firebase](https://firebase.google.com)
 APIs like the Realtime Database or Firebase Authentication.
 
 A compatible FirebaseUI client is also available for [iOS](https://github.com/firebase/firebaseui-ios).
@@ -18,7 +18,7 @@ A compatible FirebaseUI client is also available for [iOS](https://github.com/fi
 ## Installation
 
 FirebaseUI is published as a collection of libraries separated by the
-Firebase API they target. Each FirebaseUI library has a transitive 
+Firebase API they target. Each FirebaseUI library has a transitive
 dependency on the appropriate Firebase SDK so there is no need to include
 those separately in your app.
 
@@ -28,13 +28,13 @@ libraries.
 ```
 dependencies {
     // Single target that includes all FirebaseUI libraries
-    compile 'com.firebaseui:firebase-ui:0.4.1'
-    
+    compile 'com.firebaseui:firebase-ui:0.4.2'
+
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:0.4.1'
-    
+    compile 'com.firebaseui:firebase-ui-database:0.4.2'
+
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:0.4.1'
+    compile 'com.firebaseui:firebase-ui-auth:0.4.2'
 }
 ```
 
