@@ -1,6 +1,6 @@
 <Button
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/FirebaseUI.Button.AccountChooser.FacebookButton"
-    android:text="Sign in with Facebook"
+    android:text="@string/sign_in_with_facebook"
     android:id="@+id/facebook_button"
     />
