@@ -66,8 +66,9 @@ To deploy FirebaseUI to Bintray
 
   1. Set `BINTRAY_USER` and `BINTRAY_KEY` in your environment. You must
      be a member of the firebaseui Bintray organization.
-  1. Run `./gradlew :library:prepareArtifacts :library:bintrayUploadAll`
-  1. Go to the Bintray dashboard and click 'Publish'
+  1. Run `./gradlew clean :library:prepareArtifacts :library:bintrayUploadAll`
+  1. Go to the Bintray dashboard and click 'Publish'.
+    1. In Bintray click the 'Maven Central' tab and publish the release.
 
 ### Tag a release on Github
 
