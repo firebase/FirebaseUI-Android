@@ -1,6 +1,6 @@
 <Button
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
-    android:text="Sign in with Google"
+    android:text="@string/sign_in_with_google"
     android:id="@+id/google_button"
     />
