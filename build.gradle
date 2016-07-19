@@ -108,6 +108,60 @@ allprojects { project ->
         }
     }
 
+    // POM to meet maven specs
+    if (isLibrary || isSubmodule) {
+        def targetName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
+
+        publishing {
+            publications {
+                "${targetName}"(MavenPublication) {
+                    pom.withXml {
+                        // Common values
+                        def repoUrl = 'https://github.com/firebase/FirebaseUI-Android'
+                        def scmUrl = 'scm:git:git@github.com/firebase/firebaseui-android.git'
+
+                        // Name
+                        asNode().appendNode('name', artifactId)
+
+                        // Description
+                        asNode().appendNode('description', 'Firebase UI for Android')
+
+                        // Organization
+                        def organization = asNode().appendNode('organization')
+                        organization.appendNode('name', 'FirebaseUI')
+                        organization.appendNode('url', repoUrl)
+
+                        // URL
+                        asNode().appendNode('url', repoUrl)
+
+                        // SCM
+                        def scm = asNode().appendNode('scm')
+                        scm.appendNode('connection', scmUrl)
+                        scm.appendNode('developerConnection', scmUrl)
+                        scm.appendNode('url', repoUrl)
+                        scm.appendNode('tag', 'HEAD')
+
+                        // Developers
+                        def developer = asNode().appendNode('developers').appendNode('developer')
+                        developer.appendNode('id', 'samtstern')
+                        developer.appendNode('email', 'samstern@google.com')
+                        developer.appendNode('organization', 'Firebase')
+                        developer.appendNode('organizationUrl', 'https://firebase.google.com')
+                        def roles = developer.appendNode('roles')
+                        roles.appendNode('role', 'Project-Administrator')
+                        roles.appendNode('role', 'Developer')
+                        developer.appendNode('timezone', '-8')
+
+                        // Licenses
+                        def license = asNode().appendNode('licenses').appendNode('license')
+                        license.appendNode('name', 'The Apache License, Version 2.0')
+                        license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
+                    }
+                }
+            }
+        }
+    }
+
     if (isSubmodule) {
         // Convenience task to prepare everything we need for releases
         task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
