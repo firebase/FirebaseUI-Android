@@ -77,8 +77,11 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
         mCallbackManager = CallbackManager.Factory.create();
         LoginManager loginManager = LoginManager.getInstance();
         loginManager.registerCallback(mCallbackManager, this);
+
+        String[] permissions = activity.getResources().getStringArray(R.array.facebook_permissions);
+
         loginManager.logInWithReadPermissions(
-                activity, Arrays.asList("public_profile", "email"));
+                activity, Arrays.asList(permissions));
     }
 
     @Override
