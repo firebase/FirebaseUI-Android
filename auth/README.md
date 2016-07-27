@@ -135,7 +135,7 @@ replaced with:
 
 ```
 startActivityForResult(
-    AuthUI.getInstance(this)
+    AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setProviders(
             AuthUI.EMAIL_PROVIDER,
@@ -149,7 +149,7 @@ Finally, if a terms of service URL and a custom theme are required:
 
 ```
 startActivityForResult(
-    AuthUI.getInstance(this)
+    AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setProviders(...)
         .setTosUrl("https://superapp.example.com/terms-of-service.html")
@@ -210,7 +210,7 @@ completed once all necessary sign-out operations are completed:
 ```
 public void onClick(View v) {
   if (v.getId() == R.id.sign_out) {
-      AuthUI.getInstance(this)
+      AuthUI.getInstance()
           .signOut(this)
           .addOnCompleteListener(new OnCompleteListener<Void>() {
             public void onComplete(@NonNull Task<Void> task) {
