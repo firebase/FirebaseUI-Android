@@ -9,6 +9,13 @@
     -->
     <string name="facebook_application_id" translatable="false">CHANGE-ME</string>
 
+    <!-- The facebook permissions that the app will request from the user -->
+    <array name="facebook_permissions">
+        <item>CHANGE-ME</item>
+        <item>CHANGE-ME-TOO</item>
+    </array>
+
+
     <!--
     The Google web client ID associated with this Android application. The
     google-services gradle plugin will automatically provide this value.
