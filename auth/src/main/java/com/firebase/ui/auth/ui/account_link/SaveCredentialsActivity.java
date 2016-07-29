@@ -87,6 +87,14 @@ public class SaveCredentialsActivity extends AppCompatBase
         mCredentialsApiClient.connect();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mCredentialsApiClient != null) {
+            mCredentialsApiClient.disconnect();
+        }
+    }
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

@@ -18,8 +18,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -28,13 +31,18 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class GoogleProvider implements IDPProvider, OnClickListener {
+public class GoogleProvider implements
+        IDPProvider, OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+
     public static final String TOKEN_KEY = "token_key";
 
+    private static final String TAG = "GoogleProvider";
+    private static final int AUTO_MANAGE_ID = 1;
     private static final int RC_SIGN_IN = 20;
     private static final String ERROR_KEY = "error";
     private static final String CLIENT_ID_KEY = "client_id_key";
@@ -42,7 +50,7 @@ public class GoogleProvider implements IDPProvider, OnClickListener {
     private Activity mActivity;
     private IDPCallback mIDPCallback;
 
-    public GoogleProvider(Activity activity, IDPProviderParcel parcel, @Nullable String email) {
+    public GoogleProvider(FragmentActivity activity, IDPProviderParcel parcel, @Nullable String email) {
         mActivity = activity;
         String mClientId = parcel.getProviderExtra().getString(CLIENT_ID_KEY);
         GoogleSignInOptions googleSignInOptions;
@@ -51,15 +59,16 @@ public class GoogleProvider implements IDPProvider, OnClickListener {
                 .DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestIdToken(mClientId);
+
         if (!TextUtils.isEmpty(email)) {
             builder.setAccountName(email);
         }
         googleSignInOptions = builder.build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(activity)
+                .enableAutoManage(activity, AUTO_MANAGE_ID, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .build();
-        mGoogleApiClient.connect();
     }
 
     public String getName(Context context) {
@@ -132,6 +141,11 @@ public class GoogleProvider implements IDPProvider, OnClickListener {
     public void onClick(View view) {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         startLogin(mActivity);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.w(TAG, "onConnectionFailed:" + connectionResult);
     }
 }
 

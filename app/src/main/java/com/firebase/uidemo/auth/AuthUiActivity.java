@@ -14,7 +14,6 @@
 
 package com.firebase.uidemo.auth;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +22,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,7 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AuthUiActivity extends Activity {
+public class AuthUiActivity extends AppCompatActivity {
 
     private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
 

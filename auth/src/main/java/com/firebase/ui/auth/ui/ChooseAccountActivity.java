@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,10 +28,10 @@ import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;
+import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -55,12 +56,30 @@ public class ChooseAccountActivity extends ActivityBase {
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
     private static final int RC_EMAIL_FLOW = 5;
+    private static final int RC_PLAY_SERVICES = 6;
 
-    protected CredentialsAPI mCredentialsApi;
+    private CredentialsAPI mCredentialsApi;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+
+        // Make Google Play Services available at the correct version, if possible
+        boolean madeAvailable = PlayServicesHelper.makePlayServicesAvailable(this, RC_PLAY_SERVICES,
+                new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialogInterface) {
+                        Log.w(TAG, "playServices:dialog.onCancel()");
+                        finish(RESULT_CANCELED, new Intent());
+                    }
+                });
+
+        if (!madeAvailable) {
+            Log.w(TAG, "playServices: could not make available.");
+            finish(RESULT_CANCELED, new Intent());
+            return;
+        }
+
         mCredentialsApi = new CredentialsAPI(this, new CredentialsAPI.CallbackInterface() {
             @Override
             public void onAsyncTaskFinished() {
@@ -72,29 +91,33 @@ public class ChooseAccountActivity extends ActivityBase {
     @Override
     protected void onStart() {
         super.onStart();
-        if (mCredentialsApi.isGoogleApiClient()) {
-            mCredentialsApi.getGoogleApiClient().connect();
+        if (mCredentialsApi != null) {
+            mCredentialsApi.onStart();
         }
     }
 
     @Override
     protected void onStop() {
-        if (mCredentialsApi.isGoogleApiClient()
-                && mCredentialsApi.getGoogleApiClient().isConnected()) {
-            mCredentialsApi.getGoogleApiClient().disconnect();
-        }
         super.onStop();
+        if (mCredentialsApi != null) {
+            mCredentialsApi.onStop();
+        }
     }
 
+    /**
+     * Called when the Credentials API connects.
+     */
     public void onCredentialsApiConnected(
             CredentialsAPI credentialsApi,
             ActivityHelper activityHelper) {
-        // called back when the CredentialsAPI connects
+
         String email = credentialsApi.getEmailFromCredential();
         String password = credentialsApi.getPasswordFromCredential();
         String accountType = credentialsApi.getAccountTypeFromCredential();
-        if (credentialsApi.isPlayServicesAvailable()
+
+        if (PlayServicesHelper.isPlayServicesAvailable(this)
                 && credentialsApi.isCredentialsAvailable()) {
+
             if (credentialsApi.isAutoSignInAvailable()) {
                 credentialsApi.googleSilentSignIn();
                 // TODO: (serikb) authenticate Firebase user and continue to application
@@ -149,6 +172,7 @@ public class ChooseAccountActivity extends ActivityBase {
             final String email,
             final String password,
             final String accountType) {
+
         if (email != null
                 && mCredentialsApi.isCredentialsAvailable()
                 && !mCredentialsApi.isSignInResolutionNeeded()) {
@@ -187,29 +211,36 @@ public class ChooseAccountActivity extends ActivityBase {
             Log.d(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
         }
 
-        if (requestCode == RC_CREDENTIALS_READ) {
-            if (resultCode == RESULT_OK) {
-                // credential selected from SmartLock, log in with that credential
-                Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
-                mCredentialsApi.handleCredential(credential);
-                mCredentialsApi.resolveSignIn();
-                logInWithCredential(
-                        mCredentialsApi.getEmailFromCredential(),
-                        mCredentialsApi.getPasswordFromCredential(),
-                        mCredentialsApi.getAccountTypeFromCredential()
-                );
-            } else if (resultCode == RESULT_CANCELED) {
-                // Smart lock selector cancelled, go to the AuthMethodPicker screen
-                startAuthMethodChoice(mActivityHelper);
-            } else if (resultCode == RESULT_FIRST_USER) {
-                // TODO: (serikb) figure out flow
-            }
-        } else if (requestCode == RC_IDP_SIGNIN) {
-            finish(resultCode, new Intent());
-        } else if (requestCode == RC_AUTH_METHOD_PICKER) {
-            finish(resultCode, new Intent());
-        } else if (requestCode == RC_EMAIL_FLOW) {
-            finish(resultCode, new Intent());
+        switch (requestCode) {
+            case RC_CREDENTIALS_READ:
+                if (resultCode == RESULT_OK) {
+                    // credential selected from SmartLock, log in with that credential
+                    Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
+                    mCredentialsApi.handleCredential(credential);
+                    mCredentialsApi.resolveSignIn();
+                    logInWithCredential(
+                            mCredentialsApi.getEmailFromCredential(),
+                            mCredentialsApi.getPasswordFromCredential(),
+                            mCredentialsApi.getAccountTypeFromCredential()
+                    );
+                } else if (resultCode == RESULT_CANCELED) {
+                    // Smart lock selector cancelled, go to the AuthMethodPicker screen
+                    startAuthMethodChoice(mActivityHelper);
+                } else if (resultCode == RESULT_FIRST_USER) {
+                    // TODO: (serikb) figure out flow
+                }
+                break;
+            case RC_IDP_SIGNIN:
+            case RC_AUTH_METHOD_PICKER:
+            case RC_EMAIL_FLOW:
+                finish(resultCode, new Intent());
+                break;
+            case RC_PLAY_SERVICES:
+                if (resultCode != RESULT_OK) {
+                    finish(resultCode, new Intent());
+                }
+                break;
+
         }
     }
 
