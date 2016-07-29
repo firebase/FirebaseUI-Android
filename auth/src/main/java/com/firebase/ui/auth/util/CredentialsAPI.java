@@ -30,7 +30,6 @@ import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -65,6 +64,9 @@ public class CredentialsAPI implements
         requestCredentials(true /* shouldResolve */, false /* onlyPasswords */);
     }
 
+    public boolean isPlayServicesAvailable() {
+        return PlayServicesHelper.isPlayServicesAvailable(mActivity);
+    }
 
     public boolean isCredentialsAvailable() {
         // TODO: (serikb) find the way to check if Credentials is available on top of play services
@@ -95,13 +97,6 @@ public class CredentialsAPI implements
                 Log.e(TAG, "Failed to send Credentials intent.", e);
             }
         }
-    }
-
-    public boolean isPlayServicesAvailable() {
-        return GoogleApiAvailability
-                .getInstance()
-                .isGooglePlayServicesAvailable(mActivity.getApplicationContext())
-                == ConnectionResult.SUCCESS;
     }
 
     public String getEmailFromCredential() {
@@ -168,6 +163,12 @@ public class CredentialsAPI implements
     }
 
     public void requestCredentials(final boolean shouldResolve, boolean onlyPasswords) {
+        if (!PlayServicesHelper.isPlayServicesAvailable(mActivity)) {
+            // TODO(samstern): it would probably be better to not actually call the method
+            // in this case.
+            return;
+        }
+
         CredentialRequest.Builder crBuilder = new CredentialRequest.Builder()
                 .setPasswordLoginSupported(true);
 
@@ -213,6 +214,20 @@ public class CredentialsAPI implements
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
+    }
+
+    public void onStart() {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    public void onStop() {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();;
+        }
+
+        hideProgress();;
     }
 
     @Override
