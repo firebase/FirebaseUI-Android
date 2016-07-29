@@ -227,7 +227,7 @@ public class CredentialsAPI implements
             mGoogleApiClient.disconnect();;
         }
 
-        hideProgress();;
+        hideProgress();
     }
 
     @Override

@@ -115,8 +115,8 @@ public class ChooseAccountActivity extends ActivityBase {
         String password = credentialsApi.getPasswordFromCredential();
         String accountType = credentialsApi.getAccountTypeFromCredential();
 
-        if (PlayServicesHelper.isPlayServicesAvailable(this) &&
-                credentialsApi.isCredentialsAvailable()) {
+        if (PlayServicesHelper.isPlayServicesAvailable(this)
+                && credentialsApi.isCredentialsAvailable()) {
 
             if (credentialsApi.isAutoSignInAvailable()) {
                 credentialsApi.googleSilentSignIn();
