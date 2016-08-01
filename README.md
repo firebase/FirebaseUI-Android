@@ -28,13 +28,13 @@ libraries.
 ```
 dependencies {
     // Single target that includes all FirebaseUI libraries
-    compile 'com.firebaseui:firebase-ui:0.4.3'
+    compile 'com.firebaseui:firebase-ui:0.4.4'
 
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:0.4.3'
+    compile 'com.firebaseui:firebase-ui-database:0.4.4'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:0.4.3'
+    compile 'com.firebaseui:firebase-ui-auth:0.4.4'
 }
 ```
 
@@ -61,6 +61,7 @@ For convenience, here are some examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 0.4.4              | 9.4.0                          |
 | 0.4.3              | 9.2.1                          |
 | 0.4.2              | 9.2.0                          |
 | 0.4.1              | 9.0.2                          |
