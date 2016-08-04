@@ -1,3 +1,8 @@
+Welcome to FirebaseUI and thanks for submitting an issue!
+
+Please take a look at [open issues](https://github.com/firebase/FirebaseUI-Android/issues?q=is%3Aopen+is%3Aissue), as well as [resolved issues](https://github.com/firebase/FirebaseUI-Android/issues?q=is%3Aissue+is%3Aclosed), to see if your issue is either already being addressed, or has been solved by someone else.
+
+If not, please feel free to fill in the following info so we can help faster!
 
 ### Step 1: Are you in the right place?
 
