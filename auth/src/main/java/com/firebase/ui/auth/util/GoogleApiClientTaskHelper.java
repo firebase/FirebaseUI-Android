@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
@@ -48,11 +47,17 @@ public class GoogleApiClientTaskHelper {
     @NonNull
     private final AtomicReference<TaskCompletionSource<GoogleApiClient>> mConnectTaskRef;
 
+    @NonNull
+    private final GoogleApiClient.Builder mBuilder;
+
     private GoogleApiClientTaskHelper(@NonNull Activity activity) {
         if (activity == null) {
             throw new IllegalArgumentException("activity must not be null");
         }
+
         mActivity = activity;
+        mBuilder = new GoogleApiClient.Builder(mActivity);
+
         mClientRef = new AtomicReference<>();
         mConnectTaskRef = new AtomicReference<>();
 
@@ -68,7 +73,7 @@ public class GoogleApiClientTaskHelper {
         }
 
         final AtomicReference<GoogleApiClient> gacReference = new AtomicReference<>();
-        GoogleApiClient client = new GoogleApiClient.Builder(mActivity)
+        GoogleApiClient client = mBuilder
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(@Nullable Bundle bundle) {
@@ -86,13 +91,17 @@ public class GoogleApiClientTaskHelper {
                                         + connectionResult.getErrorMessage()));
                     }
                 })
-                .addApi(Auth.CREDENTIALS_API)
                 .build();
 
         gacReference.set(client);
         client.connect();
 
         return source.getTask();
+    }
+
+    @NonNull
+    public GoogleApiClient.Builder getBuilder() {
+        return mBuilder;
     }
 
     /**
