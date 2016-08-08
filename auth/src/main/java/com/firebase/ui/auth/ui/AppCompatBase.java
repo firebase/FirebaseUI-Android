@@ -27,6 +27,12 @@ public class AppCompatBase extends android.support.v7.app.AppCompatActivity {
         mActivityHelper.configureTheme();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mActivityHelper.dismissDialog();
+    }
+
     public void finish(int resultCode, Intent intent) {
         mActivityHelper.finish(resultCode, intent);
     }

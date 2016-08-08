@@ -22,16 +22,23 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.ChooseAccountActivity;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
+import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.ProviderHelper;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -257,15 +264,40 @@ public class AuthUI {
      * ({@code !result.isSuccess()}).
      */
     public Task<Void> signOut(@NonNull Activity activity) {
+        // Get helper for Google Sign In and Credentials API
+        GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
+        taskHelper.getBuilder()
+                .addApi(Auth.CREDENTIALS_API)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN);
+
+        // Get Credentials Helper
+        CredentialsApiHelper credentialsHelper = CredentialsApiHelper.getInstance(taskHelper);
+
+        // Firebase Sign out
         mAuth.signOut();
-        return CredentialsApiHelper.getInstance(activity)
-                .disableAutoSignIn()
-                .continueWith(new Continuation<Status, Void>() {
+
+        // Disable credentials auto sign-in
+        Task<Status> disableCredentialsTask = credentialsHelper.disableAutoSignIn();
+
+        // Google sign out
+        Task<Void> googleSignOutTask = taskHelper.getConnectedGoogleApiClient()
+                .continueWith(new Continuation<GoogleApiClient, Void>() {
                     @Override
-                    public Void then(@NonNull Task<Status> task) throws Exception {
+                    public Void then(@NonNull Task<GoogleApiClient> task) throws Exception {
+                        if (task.isSuccessful()) {
+                            Auth.GoogleSignInApi.signOut(task.getResult());
+                        }
                         return null;
                     }
                 });
+
+        // Facebook sign out
+        if (FacebookSdk.isInitialized()) {
+            LoginManager.getInstance().logOut();
+        }
+
+        // Wait for all tasks to complete
+        return Tasks.whenAll(disableCredentialsTask, googleSignOutTask);
     }
 
     /**
