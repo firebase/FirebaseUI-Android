@@ -2,9 +2,7 @@
     <string name="app_name">ui_flow</string>
     <string name="email_hint">Email</string>
     <string name="sign_in_no_password_title">Put an email to use for sign in</string>
-    <string name="button_ok_text">OK</string>
     <string name="password_hint">Password</string>
-    <string name="button_singin_text">Sign In</string>
     <string name="button_password_recovery_text">Trouble remembering your password</string>
     <string name="name_hint">First &amp; last name</string>
     <string name="password_recovery_title">Forgot password</string>
@@ -16,10 +14,8 @@
         and numbers</string>
     <string name="invalid_email_address">That email address isn\'t correct</string>
     <string name="missing_email_address">Enter your email address to continue</string>
-    <string name="button_text_next">Next</string>
     <string name="button_text_send">Send</string>
     <string name="button_text_save">Save</string>
-    <string name="button_text_sign_in">Sign in</string>
     <string name="require_email_text">Please input email address</string>
     <string name="confirm_recovery_body">Follow the instructions sent to %1$s to recover your
         password.</string>
@@ -31,8 +27,6 @@
     <string name="next">Next</string>
     <string name="trouble_signing_in">Trouble signing in?</string>
     <string name="sign_in">Sign in</string>
-    <string name="sign_in_title">Sign in</string>
-    <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
     <string name="button_done">Done</string>
     <string name="check_your_email">Check your email</string>
@@ -42,7 +36,6 @@
         You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
         Sign in with <xliff:g id="provider_name" example="Google">%2$s</xliff:g> to continue.
     </string>
-    <string name="welcome_back_idp_button">Sign in</string>
     <string name="welcome_back_password_prompt_body">You\'ve already used
         <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g> to sign in. Enter
         your password for that account.</string>
