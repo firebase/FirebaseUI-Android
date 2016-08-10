@@ -24,7 +24,7 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile "org.robolectric:robolectric:3.1-rc1"
     compile "com.android.support:appcompat-v7:${project.ext.support_library_version}"
-    compile 'com.facebook.android:facebook-android-sdk:4.11.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.14.1'
     compile "com.android.support:design:${project.ext.support_library_version}"
 
     compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"

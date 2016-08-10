@@ -9,6 +9,16 @@
     -->
     <string name="facebook_application_id" translatable="false">CHANGE-ME</string>
 
+    <!--
+     To enable Chrome Custom Tabs for Facebook Login on devices without the Facebook app
+     installed, change this value to your Facebook App ID prefixed with 'fb'. This should be
+     'fb' + the value of the facebook_application_id string above
+
+     See:
+     https://developers.facebook.com/docs/facebook-login/android#chrome_custom_tabs
+    -->
+    <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
+
 
     <!--
     The facebook permissions that this Android Application will request from the
