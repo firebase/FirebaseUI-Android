@@ -64,7 +64,7 @@
             />
         <Button
             style="@style/FirebaseUI.Button"
-            android:text="@string/button_text_next"
+            android:text="@string/next"
             android:id="@+id/button_done"/>
     </LinearLayout>
 </RelativeLayout>

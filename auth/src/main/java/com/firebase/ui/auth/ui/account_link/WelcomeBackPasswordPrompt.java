@@ -60,7 +60,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.sign_in_title);
+        setTitle(R.string.sign_in);
         setContentView(R.layout.welcome_back_password_prompt_layout);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
