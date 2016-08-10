@@ -20,7 +20,7 @@
 
         <!-- Chat demo -->
         <activity
-            android:name=".ChatActivity"
+            android:name=".database.ChatActivity"
             android:label="@string/name_chat" />
 
         <!-- Auth UI demo -->
