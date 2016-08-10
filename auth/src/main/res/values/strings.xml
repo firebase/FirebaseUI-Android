@@ -27,6 +27,7 @@
     <string name="next">Next</string>
     <string name="trouble_signing_in">Trouble signing in?</string>
     <string name="sign_in">Sign in</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
     <string name="button_done">Done</string>
     <string name="check_your_email">Check your email</string>
