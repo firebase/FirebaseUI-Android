@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.uidemo.auth.AuthUiActivity;
+import com.firebase.uidemo.database.ChatActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

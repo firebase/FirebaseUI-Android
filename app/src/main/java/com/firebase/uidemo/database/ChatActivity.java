@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.uidemo;
+package com.firebase.uidemo.database;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -45,7 +46,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 
     public static final String TAG = "RecyclerViewDemo";
 
@@ -65,12 +66,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
 
         mAuth = FirebaseAuth.getInstance();
-        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                updateUI();
-            }
-        });
+        mAuth.addAuthStateListener(this);
 
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
@@ -127,6 +123,19 @@ public class ChatActivity extends AppCompatActivity {
         if (mRecyclerViewAdapter != null) {
             mRecyclerViewAdapter.cleanup();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mAuth != null) {
+            mAuth.removeAuthStateListener(this);
+        }
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        updateUI();
     }
 
     private void attachRecyclerViewAdapter() {
@@ -236,13 +245,13 @@ public class ChatActivity extends AppCompatActivity {
 
                 left_arrow.setVisibility(View.GONE);
                 right_arrow.setVisibility(View.VISIBLE);
-                messageContainer.setGravity(Gravity.RIGHT);
+                messageContainer.setGravity(Gravity.END);
             } else {
-                color = ContextCompat.getColor(mView.getContext(), R.color.material_grey_300);
+                color = ContextCompat.getColor(mView.getContext(), R.color.material_gray_300);
 
                 left_arrow.setVisibility(View.VISIBLE);
                 right_arrow.setVisibility(View.GONE);
-                messageContainer.setGravity(Gravity.LEFT);
+                messageContainer.setGravity(Gravity.START);
             }
 
             ((GradientDrawable) message.getBackground()).setColor(color);
