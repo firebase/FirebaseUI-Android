@@ -40,6 +40,8 @@ import butterknife.OnClick;
 
 public class AuthUiActivity extends AppCompatActivity {
 
+    private static final String TAG = "AuthUIActivity";
+
     private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
 
     private static final String GOOGLE_TOS_URL =

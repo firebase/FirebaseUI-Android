@@ -94,6 +94,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
                     "Firebase login successful. Account linking failed due to provider not "
                             + "enabled by application");
             finish(RESULT_CANCELED, getIntent());
+            return;
         }
 
         ((TextView) findViewById(R.id.welcome_back_idp_prompt))

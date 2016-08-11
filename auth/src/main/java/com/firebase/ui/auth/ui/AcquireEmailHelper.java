@@ -16,7 +16,6 @@ package com.firebase.ui.auth.ui;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
@@ -111,7 +110,7 @@ public class AcquireEmailHelper {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (REQUEST_CODES.contains(requestCode)) {
-            mActivityHelper.finish(resultCode, new Intent());
+            mActivityHelper.finish(resultCode, data);
         }
     }
 }
