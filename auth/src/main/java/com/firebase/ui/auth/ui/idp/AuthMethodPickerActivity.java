@@ -35,6 +35,7 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
+import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -68,9 +69,12 @@ public class AuthMethodPickerActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
+
         Button emailButton = (Button) findViewById(R.id.email_provider);
         emailButton.setOnClickListener(this);
+
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);
+
         int logoId = mActivityHelper.getFlowParams().logoId;
         ImageView logo = (ImageView) findViewById(R.id.logo);
         if (logoId == AuthUI.NO_LOGO) {
@@ -173,7 +177,7 @@ public class AuthMethodPickerActivity
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.email_provider) {
-            Intent intent = EmailHintContainerActivity.createIntent(
+            Intent intent = EmailFlowUtil.createIntent(
                     this,
                     mActivityHelper.getFlowParams());
             startActivityForResult(intent, RC_EMAIL_FLOW);

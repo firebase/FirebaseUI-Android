@@ -350,6 +350,7 @@ public class AuthUI {
         private int mTheme = getDefaultTheme();
         private List<String> mProviders = Collections.singletonList(EMAIL_PROVIDER);
         private String mTosUrl;
+        private boolean mIsSmartLockEnabled = true;
 
         private SignInIntentBuilder() {}
 
@@ -405,6 +406,14 @@ public class AuthUI {
             return this;
         }
 
+        /**
+         * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
+         */
+        public SignInIntentBuilder setIsSmartLockEnabled(boolean enabled) {
+            mIsSmartLockEnabled = enabled;
+            return this;
+        }
+
         public Intent build() {
             Context context = mApp.getApplicationContext();
             List<IDPProviderParcel> providerInfo =
@@ -416,7 +425,8 @@ public class AuthUI {
                             providerInfo,
                             mTheme,
                             mLogo,
-                            mTosUrl));
+                            mTosUrl,
+                            mIsSmartLockEnabled));
         }
     }
 }

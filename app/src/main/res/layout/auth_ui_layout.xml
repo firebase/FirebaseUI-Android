@@ -12,6 +12,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginTop="16dp"
+        android:paddingBottom="32dp"
         android:orientation="vertical">
 
         <TextView
@@ -126,7 +127,6 @@
             android:text="@string/logo_header" />
 
         <RadioGroup
-            android:layout_marginBottom="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -150,6 +150,22 @@
                 android:layout_height="wrap_content"
                 android:text="@string/no_logo_label" />
         </RadioGroup>
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/other_options_header" />
+
+        <CheckBox
+            android:id="@+id/smartlock_enabled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/enable_smartlock" />
+
     </LinearLayout>
 
 </ScrollView>

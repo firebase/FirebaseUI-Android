@@ -20,14 +20,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
-import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;
+import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -115,13 +116,16 @@ public class ChooseAccountActivity extends ActivityBase {
         String password = credentialsApi.getPasswordFromCredential();
         String accountType = credentialsApi.getAccountTypeFromCredential();
 
-        if (PlayServicesHelper.isPlayServicesAvailable(this)
+        FlowParameters flowParams = activityHelper.getFlowParams();
+
+        if (flowParams.smartLockEnabled
+                && PlayServicesHelper.isPlayServicesAvailable(this)
                 && credentialsApi.isCredentialsAvailable()) {
 
             if (credentialsApi.isAutoSignInAvailable()) {
                 credentialsApi.googleSilentSignIn();
                 // TODO: (serikb) authenticate Firebase user and continue to application
-                if (password != null && !password.isEmpty()) {
+                if (!TextUtils.isEmpty(password)) {
                     // login with username/password
                     activityHelper
                             .getFirebaseAuth()
@@ -151,11 +155,11 @@ public class ChooseAccountActivity extends ActivityBase {
 
     private void startAuthMethodChoice(ActivityHelper activityHelper) {
         List<IDPProviderParcel> providers = activityHelper.getFlowParams().providerInfo;
+
         if (providers.size() == 1
                 && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
-
             startActivityForResult(
-                    EmailHintContainerActivity.createIntent(
+                    EmailFlowUtil.createIntent(
                             this,
                             activityHelper.getFlowParams()),
                     RC_EMAIL_FLOW);

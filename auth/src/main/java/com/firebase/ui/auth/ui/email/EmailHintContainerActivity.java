@@ -40,7 +40,6 @@ public class EmailHintContainerActivity extends AppCompatBase {
                 FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.getAppName());
 
         PendingIntent hintIntent = apiWrapper.getEmailHintIntent(this);
-
         if (hintIntent != null) {
             try {
                 startIntentSenderForResult(hintIntent.getIntentSender(), RC_HINT, null, 0, 0, 0);
@@ -69,7 +68,6 @@ public class EmailHintContainerActivity extends AppCompatBase {
                 return;
             }
             mAcquireEmailHelper.checkAccountExists(credential.getId());
-            return;
         } else {
             mAcquireEmailHelper.onActivityResult(requestCode, resultCode, data);
         }

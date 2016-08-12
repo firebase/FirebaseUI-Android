@@ -46,17 +46,21 @@ public class FlowParameters implements Parcelable {
     @Nullable
     public final String termsOfServiceUrl;
 
+    public final boolean smartLockEnabled;
+
     public FlowParameters(
             @NonNull String appName,
             @NonNull List<IDPProviderParcel> providerInfo,
             @StyleRes int themeId,
             @DrawableRes int logoId,
-            @Nullable String termsOfServiceUrl) {
+            @Nullable String termsOfServiceUrl,
+            boolean smartLockEnabled) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null");
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
+        this.smartLockEnabled = smartLockEnabled;
     }
 
     @Override
@@ -66,6 +70,7 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(themeId);
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
+        dest.writeInt(smartLockEnabled ? 1 : 0);
     }
 
     @Override
@@ -82,7 +87,11 @@ public class FlowParameters implements Parcelable {
             int themeId = in.readInt();
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
-            return new FlowParameters(appName, providerInfo, themeId, logoId, termsOfServiceUrl);
+            int smartLockEnabledInt = in.readInt();
+            boolean smartLockEnabled = (smartLockEnabledInt != 0);
+
+            return new FlowParameters(
+                    appName, providerInfo, themeId, logoId, termsOfServiceUrl, smartLockEnabled);
         }
 
         @Override

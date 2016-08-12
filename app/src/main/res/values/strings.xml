@@ -40,4 +40,6 @@
     <string name="profile_picture_content_desc">Profile picture</string>
     <string name="default_theme">Default theme</string>
     <string name="configuration_required">Configuration is required - see README.md</string>
+    <string name="other_options_header">Other Options:</string>
+    <string name="enable_smartlock">Enable SmartLock for Passwords</string>
 </resources>

@@ -130,8 +130,8 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
-If Google Sign-in and Facebook Sign-in are also required, then this can be
-replaced with:
+You can enable sign-in providers like Google Sign-In or Facebook Log In by calling the
+`setProviders` method:
 
 ```
 startActivityForResult(
@@ -145,7 +145,7 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
-Finally, if a terms of service URL and a custom theme are required:
+If a terms of service URL and a custom theme are required:
 
 ```
 startActivityForResult(
@@ -154,6 +154,33 @@ startActivityForResult(
         .setProviders(...)
         .setTosUrl("https://superapp.example.com/terms-of-service.html")
         .setTheme(R.style.SuperAppTheme)
+        .build(),
+    RC_SIGN_IN);
+```
+
+By default, FirebaseUI uses [Smart Lock for Passwords](https://developers.google.com/identity/smartlock-passwords/android/)
+to store the user's credentials and automatically sign users into your app on subsequent attempts.
+Using SmartLock is recommended to provide the best user experience, but in some cases you may want
+to disable SmartLock for testing or development.  To disable SmartLock, you can use the 
+`setIsSmartLockEnabled` method when building your sign-in Intent:
+
+```
+startActivityForResult(
+    AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setIsSmartLockEnabled(false)
+        .build(),
+    RC_SIGN_IN);
+```
+
+It is often desirable to disable SmartLock in development but enable it in production. To achieve
+this, you can use the `BuildConfig.DEBUG` flag to control SmartLock:
+
+```
+startActivityForResult(
+    AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
         .build(),
     RC_SIGN_IN);
 ```
