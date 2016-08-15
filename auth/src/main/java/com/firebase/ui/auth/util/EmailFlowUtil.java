@@ -13,7 +13,7 @@ import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 public class EmailFlowUtil {
 
     /**
-     * Return and intent for either {@link EmailHintContainerActivity} or
+     * Return an intent for either {@link EmailHintContainerActivity} or
      * {@link SignInNoPasswordActivity} depending on if SmartLock is enabled.
      */
     public static Intent createIntent(Context context, FlowParameters parameters) {

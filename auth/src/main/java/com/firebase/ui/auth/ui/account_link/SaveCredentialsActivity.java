@@ -60,11 +60,19 @@ public class SaveCredentialsActivity extends AppCompatBase
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.save_credentials_layout);
+
+        // If SmartLock is not enabled, finish immediately
+        if (!getIntent().getBooleanExtra(ExtraConstants.EXTRA_SMARTLOCK_ENABLED, true)) {
+            finish(RESULT_OK, getIntent());
+            return;
+        }
+
         if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.getAppName())
                 .isPlayServicesAvailable(this)) {
             finish(RESULT_FIRST_USER, getIntent());
             return;
         }
+
         mName = getIntent().getStringExtra(ExtraConstants.EXTRA_NAME);
         mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mPassword = getIntent().getStringExtra(ExtraConstants.EXTRA_PASSWORD);
@@ -217,6 +225,7 @@ public class SaveCredentialsActivity extends AppCompatBase
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email)
                 .putExtra(ExtraConstants.EXTRA_PASSWORD, password)
                 .putExtra(ExtraConstants.EXTRA_PROVIDER, provider)
-                .putExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI, profilePictureUri);
+                .putExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI, profilePictureUri)
+                .putExtra(ExtraConstants.EXTRA_SMARTLOCK_ENABLED, flowParams.smartLockEnabled);
     }
 }
