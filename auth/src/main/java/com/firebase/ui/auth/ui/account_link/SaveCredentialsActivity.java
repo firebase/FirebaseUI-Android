@@ -40,6 +40,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class SaveCredentialsActivity extends AppCompatBase
@@ -60,12 +61,6 @@ public class SaveCredentialsActivity extends AppCompatBase
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.save_credentials_layout);
-
-        // If SmartLock is not enabled, finish immediately
-        if (!getIntent().getBooleanExtra(ExtraConstants.EXTRA_SMARTLOCK_ENABLED, true)) {
-            finish(RESULT_OK, getIntent());
-            return;
-        }
 
         if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.getAppName())
                 .isPlayServicesAvailable(this)) {
@@ -215,17 +210,16 @@ public class SaveCredentialsActivity extends AppCompatBase
     public static Intent createIntent(
             Context context,
             FlowParameters flowParams,
-            String name,
-            String email,
-            String password,
-            String provider,
-            String profilePictureUri) {
+            FirebaseUser user,
+            @Nullable String password,
+            @Nullable String provider) {
+
+        String photoUrl = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
         return ActivityHelper.createBaseIntent(context, SaveCredentialsActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_NAME, name)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email)
+                .putExtra(ExtraConstants.EXTRA_NAME, user.getDisplayName())
+                .putExtra(ExtraConstants.EXTRA_EMAIL, user.getEmail())
                 .putExtra(ExtraConstants.EXTRA_PASSWORD, password)
                 .putExtra(ExtraConstants.EXTRA_PROVIDER, provider)
-                .putExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI, profilePictureUri)
-                .putExtra(ExtraConstants.EXTRA_SMARTLOCK_ENABLED, flowParams.smartLockEnabled);
+                .putExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI, photoUrl);
     }
 }

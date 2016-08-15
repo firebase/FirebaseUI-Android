@@ -36,11 +36,10 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.util.SmartlockUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -127,21 +126,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         });
     }
 
-    private void startSaveCredentials(FirebaseUser firebaseUser, String password) {
-        if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.getFlowParams().appName)
-                .isPlayServicesAvailable(this)) {
-            Intent saveCredentialIntent = SaveCredentialsActivity.createIntent(
-                    this,
-                    mActivityHelper.getFlowParams(),
-                    firebaseUser.getDisplayName(),
-                    firebaseUser.getEmail(),
-                    password,
-                    null,
-                    null);
-            startActivityForResult(saveCredentialIntent, RC_SAVE_CREDENTIAL);
-        }
-    }
-
     private void registerUser(String email, final String name, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         // create the user
@@ -164,7 +148,13 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         public void onComplete(@NonNull Task<Void> task) {
                                             mActivityHelper.dismissDialog();
                                             if (task.isSuccessful()) {
-                                                startSaveCredentials(firebaseUser, password);
+                                                SmartlockUtil.saveCredentialOrFinish(
+                                                        RegisterEmailActivity.this,
+                                                        RC_SAVE_CREDENTIAL,
+                                                        mActivityHelper.getFlowParams(),
+                                                        firebaseUser,
+                                                        password,
+                                                        null /* provider */);
                                             }
                                         }
                                     });
