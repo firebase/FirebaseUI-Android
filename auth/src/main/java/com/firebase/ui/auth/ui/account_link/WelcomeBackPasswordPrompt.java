@@ -40,6 +40,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
+import com.firebase.ui.auth.util.SmartlockUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -134,16 +135,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                             photoUrl = photoUri.toString();
                                         }
                                         mActivityHelper.dismissDialog();
-                                        startActivityForResult(
-                                                SaveCredentialsActivity.createIntent(
-                                                        mActivityHelper.getApplicationContext(),
-                                                        mActivityHelper.getFlowParams(),
-                                                        firebaseUser.getDisplayName(),
-                                                        firebaseUser.getEmail(),
-                                                        password,
-                                                        null,
-                                                        photoUrl
-                                                ), RC_CREDENTIAL_SAVE);
+
+                                        SmartlockUtil.saveCredentialOrFinish(
+                                                WelcomeBackPasswordPrompt.this,
+                                                RC_CREDENTIAL_SAVE,
+                                                mActivityHelper.getFlowParams(),
+                                                firebaseUser,
+                                                password,
+                                                null /* provider */);
                                     }
                             });
                 } else {

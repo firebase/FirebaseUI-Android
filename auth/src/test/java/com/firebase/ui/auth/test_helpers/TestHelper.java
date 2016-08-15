@@ -14,9 +14,6 @@
 
 package com.firebase.ui.auth.test_helpers;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import android.content.Context;
 
 import com.firebase.ui.auth.AuthUI;
@@ -27,6 +24,9 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestHelper {
     private static final String APPLICATION_ID = "testAppId";
@@ -53,8 +53,8 @@ public class TestHelper {
                 ProviderHelper.getProviderParcels(context, providerIds),
                 AuthUI.getDefaultTheme(),
                 AuthUI.NO_LOGO,
-                null
-        );
+                null,
+                true);
     }
 
     public static FirebaseUser makeMockFirebaseUser() {

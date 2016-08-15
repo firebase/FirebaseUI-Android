@@ -32,10 +32,9 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.util.SmartlockUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -43,6 +42,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SignInActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "SignInActivity";
+    private static final int RC_CREDENTIAL_SAVE = 101;
+
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EmailFieldValidator mEmailValidator;
@@ -106,21 +107,13 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         mActivityHelper.dismissDialog();
                         if (task.isSuccessful()) {
                             FirebaseUser firebaseUser = task.getResult().getUser();
-                            if (FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(
-                                    mActivityHelper.getAppName())
-                                    .isPlayServicesAvailable(SignInActivity.this)) {
-                                Intent saveCredentialIntent =
-                                        SaveCredentialsActivity.createIntent(
-                                                SignInActivity.this,
-                                                mActivityHelper.getFlowParams(),
-                                                firebaseUser.getDisplayName(),
-                                                firebaseUser.getEmail(),
-                                                password,
-                                                null,
-                                                null);
-                                startActivity(saveCredentialIntent);
-                                finish(RESULT_OK, new Intent());
-                            }
+                            SmartlockUtil.saveCredentialOrFinish(
+                                    SignInActivity.this,
+                                    RC_CREDENTIAL_SAVE,
+                                    mActivityHelper.getFlowParams(),
+                                    firebaseUser,
+                                    password,
+                                    null /* provider */);
                         } else {
                             TextInputLayout passwordInput =
                                     (TextInputLayout) findViewById(R.id.password_layout);
@@ -129,6 +122,14 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         }
                     }
                 });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_CREDENTIAL_SAVE) {
+            finish(RESULT_OK, new Intent());
+        }
     }
 
     @Override

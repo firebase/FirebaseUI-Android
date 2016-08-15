@@ -22,9 +22,9 @@ import android.util.Log;
 import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.util.SmartlockUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -82,15 +82,10 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                 photoUrl = photoUri.toString();
             }
             mActivityHelper.dismissDialog();
-            mActivity.startActivityForResult(SaveCredentialsActivity.createIntent(
-                    mActivityHelper.getApplicationContext(),
-                    mActivityHelper.getFlowParams(),
-                    firebaseUser.getDisplayName(),
-                    firebaseUser.getEmail(),
-                    null,
-                    mResponse.getProviderType(),
-                    photoUrl
-            ), mSaveCredentialsResultCode);
+
+            SmartlockUtil.saveCredentialOrFinish(mActivity, mSaveCredentialsResultCode,
+                    mActivityHelper.getFlowParams(), firebaseUser,
+                    null /* password */, mResponse.getProviderType());
         }
     }
 

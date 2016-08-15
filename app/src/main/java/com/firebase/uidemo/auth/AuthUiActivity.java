@@ -90,6 +90,8 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.no_logo)
     RadioButton mNoLogo;
 
+    @BindView(R.id.smartlock_enabled)
+    CheckBox mEnableSmartLock;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -129,6 +131,7 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setLogo(getSelectedLogo())
                         .setProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
+                        .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
                         .build(),
                 RC_SIGN_IN);
     }
