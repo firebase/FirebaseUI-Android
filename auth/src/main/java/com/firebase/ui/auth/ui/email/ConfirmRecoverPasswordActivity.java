@@ -37,7 +37,6 @@ public class ConfirmRecoverPasswordActivity extends android.support.v7.app.AppCo
         // intentionally do not configure the theme on this activity, it is a dialog
 
         setContentView(R.layout.confirm_recovery_layout);
-        setTitle(R.string.check_your_email);
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         boolean isSuccess = getIntent().getBooleanExtra(ExtraConstants.EXTRA_SUCCESS, true);
 

@@ -53,7 +53,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.sign_in);
         setContentView(R.layout.sign_in_layout);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
