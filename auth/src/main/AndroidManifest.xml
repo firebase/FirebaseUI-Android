@@ -3,36 +3,57 @@
     package="com.firebase.ui.auth">
 
     <application>
-        <activity android:theme="@style/FirebaseUI.Dialog"
-                  android:name="com.firebase.ui.auth.ui.email.ConfirmRecoverPasswordActivity">
-        </activity>
-        <activity android:theme="@style/FirebaseUI.Translucent" android:name="com.firebase.ui.auth.ui.email.EmailHintContainerActivity" >
-        </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.email.RecoverPasswordActivity" >
-        </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.email.RegisterEmailActivity" >
-        </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.email.SignInNoPasswordActivity" >
-        </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.email.SignInActivity" >
-        </activity>
-        <activity android:theme="@style/FirebaseUI.Translucent"
-                  android:name="com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity">
-        </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.account_link.AccountLinkInitActivity" >
-        </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt" >
-        </activity>
-        <activity android:theme="@style/FirebaseUI" android:name="com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt" >
-        </activity>
-        <activity android:theme="@style/FirebaseUI" android:name=".ui.idp.AuthMethodPickerActivity" >
-        </activity>
-        <activity android:theme="@style/FirebaseUI.Translucent"
-                  android:name="com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity" >
-        </activity>
-        <activity android:theme="@style/FirebaseUI.Translucent"
-                   android:name=".ui.ChooseAccountActivity" >
-        </activity>
+        <activity
+            android:name="com.firebase.ui.auth.ui.email.ConfirmRecoverPasswordActivity"
+            android:label="@string/title_confirm_recover_password_activity"
+            android:theme="@style/FirebaseUI.Dialog" />
+        <activity
+            android:name="com.firebase.ui.auth.ui.email.EmailHintContainerActivity"
+            android:label="@string/default_toolbar_title"
+            android:theme="@style/FirebaseUI.Translucent" />
+        <activity
+            android:name="com.firebase.ui.auth.ui.email.RecoverPasswordActivity"
+            android:label="@string/title_recover_password_activity"
+            android:theme="@style/FirebaseUI" />
+        <activity
+            android:name="com.firebase.ui.auth.ui.email.RegisterEmailActivity"
+            android:label="@string/title_register_email_activity"
+            android:theme="@style/FirebaseUI" />
+        <activity
+            android:name="com.firebase.ui.auth.ui.email.SignInNoPasswordActivity"
+            android:label="@string/title_sign_in_no_password_activity"
+            android:theme="@style/FirebaseUI" />
+        <activity
+            android:name="com.firebase.ui.auth.ui.email.SignInActivity"
+            android:label="@string/title_sign_in_activity"
+            android:theme="@style/FirebaseUI" />
+        <activity
+            android:name="com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity"
+            android:label="@string/default_toolbar_title"
+            android:theme="@style/FirebaseUI.Translucent" />
+        <activity
+            android:name="com.firebase.ui.auth.ui.account_link.AccountLinkInitActivity"
+            android:theme="@style/FirebaseUI" />
+        <activity
+            android:name="com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt"
+            android:label="@string/title_welcome_back_idp_prompt"
+            android:theme="@style/FirebaseUI" />
+        <activity
+            android:name="com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt"
+            android:label="@string/title_welcome_back_password_prompt"
+            android:theme="@style/FirebaseUI" />
+        <activity
+            android:name=".ui.idp.AuthMethodPickerActivity"
+            android:label="@string/default_toolbar_title"
+            android:theme="@style/FirebaseUI" />
+        <activity
+            android:name="com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity"
+            android:label="@string/default_toolbar_title"
+            android:theme="@style/FirebaseUI.Translucent" />
+        <activity
+            android:name=".ui.ChooseAccountActivity"
+            android:label="@string/default_toolbar_title"
+            android:theme="@style/FirebaseUI.Translucent" />
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -46,8 +67,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>

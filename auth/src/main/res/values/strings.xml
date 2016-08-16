@@ -1,5 +1,13 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">ui_flow</string>
+    <string name="default_toolbar_title">@string/app_name</string>
+    <string name="title_welcome_back_password_prompt">@string/sign_in</string>
+    <string name="title_sign_in_activity">@string/sign_in</string>
+    <string name="title_sign_in_no_password_activity">@string/sign_in_with_email</string>
+    <string name="title_welcome_back_idp_prompt">@string/sign_in</string>
+    <string name="title_register_email_activity">@string/create_account_title</string>
+    <string name="title_recover_password_activity">@string/recover_password_title</string>
+    <string name="title_confirm_recover_password_activity">@string/check_your_email</string>
     <string name="email_hint">Email</string>
     <string name="sign_in_no_password_title">Put an email to use for sign in</string>
     <string name="password_hint">Password</string>

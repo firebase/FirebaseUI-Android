@@ -40,7 +40,6 @@ public class SignInNoPasswordActivity extends AppCompatBase implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAcquireEmailHelper = new AcquireEmailHelper(mActivityHelper);
-        setTitle(R.string.sign_in_with_email);
         setContentView(R.layout.signin_no_password_layout);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);

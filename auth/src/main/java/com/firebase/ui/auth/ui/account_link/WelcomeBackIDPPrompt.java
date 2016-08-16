@@ -58,7 +58,6 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(getResources().getString(R.string.sign_in));
         mProviderId = getProviderIdFromIntent();
         mPrevIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
         setContentView(R.layout.welcome_back_idp_prompt_layout);

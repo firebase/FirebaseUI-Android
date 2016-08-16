@@ -43,7 +43,6 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.recover_password_title);
         setContentView(R.layout.forgot_password_layout);
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 

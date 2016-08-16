@@ -61,7 +61,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.create_account_title);
         setContentView(R.layout.register_email_layout);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
