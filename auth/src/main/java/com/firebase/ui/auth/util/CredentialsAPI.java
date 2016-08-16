@@ -99,6 +99,10 @@ public class CredentialsAPI implements
         }
     }
 
+    public Credential getCredential() {
+        return mCredential;
+    }
+
     public String getEmailFromCredential() {
         if (mCredential == null) {
             return null;
