@@ -52,7 +52,7 @@ allprojects { project ->
         // So that we can resolve 'android' variable
         project.apply plugin: 'com.android.library'
         android {
-            compileSdkVersion 24
+            compileSdkVersion project.ext.compileSdk
             buildToolsVersion "${project.ext.buildtools}"
         }
 
