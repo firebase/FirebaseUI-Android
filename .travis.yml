@@ -16,4 +16,4 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 script:
-  - ./gradlew clean test :library:prepareArtifacts
+  - ./gradlew clean :library:testAll :library:prepareArtifacts
