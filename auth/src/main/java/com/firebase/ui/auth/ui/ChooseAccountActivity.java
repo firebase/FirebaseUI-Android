@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,16 +27,20 @@ import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;
+import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.List;
@@ -122,22 +125,12 @@ public class ChooseAccountActivity extends ActivityBase {
                 && PlayServicesHelper.isPlayServicesAvailable(this)
                 && credentialsApi.isCredentialsAvailable()) {
 
+            // Attempt auto-sign in using SmartLock
             if (credentialsApi.isAutoSignInAvailable()) {
                 credentialsApi.googleSilentSignIn();
-                // TODO: (serikb) authenticate Firebase user and continue to application
                 if (!TextUtils.isEmpty(password)) {
-                    // login with username/password
-                    activityHelper
-                            .getFirebaseAuth()
-                            .signInWithEmailAndPassword(email, password)
-                            .addOnFailureListener(new TaskFailureLogger(
-                                    TAG, "Unsuccessful sign in with email and password"))
-                            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                                @Override
-                                public void onSuccess(AuthResult authResult) {
-                                    finish(Activity.RESULT_OK, new Intent());
-                                }
-                            });
+                    // Sign in with the email/password retrieved from SmartLock
+                    signInWithEmailAndPassword(email, password);
                 } else {
                     // log in with id/provider
                     redirectToIdpSignIn(email, accountType);
@@ -156,6 +149,8 @@ public class ChooseAccountActivity extends ActivityBase {
     private void startAuthMethodChoice(ActivityHelper activityHelper) {
         List<IDPProviderParcel> providers = activityHelper.getFlowParams().providerInfo;
 
+        // If the only provider is Email, immediately launch the email flow. Otherwise, launch
+        // the auth method picker screen.
         if (providers.size() == 1
                 && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
             startActivityForResult(
@@ -182,25 +177,7 @@ public class ChooseAccountActivity extends ActivityBase {
                 && !mCredentialsApi.isSignInResolutionNeeded()) {
             if (password != null && !password.isEmpty()) {
                 // email/password combination
-                mActivityHelper.getFirebaseAuth().signInWithEmailAndPassword(email, password)
-                        .addOnFailureListener(new TaskFailureLogger(
-                                TAG, "Error signing in with email and password"))
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    finish(RESULT_OK, new Intent());
-                                } else {
-                                    // email/password auth failed, go to the
-                                    // AuthMethodPickerActivity
-                                    startActivityForResult(
-                                            AuthMethodPickerActivity.createIntent(
-                                                ChooseAccountActivity.this,
-                                                mActivityHelper.getFlowParams()),
-                                            RC_AUTH_METHOD_PICKER);
-                                }
-                            }
-                        });
+                signInWithEmailAndPassword(email, password);
             } else {
                 // identifier/provider combination
                 redirectToIdpSignIn(email, accountType);
@@ -246,6 +223,62 @@ public class ChooseAccountActivity extends ActivityBase {
                 break;
 
         }
+    }
+
+    /**
+     * Begin sign in process with email and password from a SmartLock credential.
+     * On success, finish with {@link #RESULT_OK}.
+     * On failure, delete the credential from SmartLock (if applicable) and then launch the
+     * auth method picker flow.
+     */
+    private void signInWithEmailAndPassword(String email, String password) {
+        mActivityHelper.getFirebaseAuth()
+                .signInWithEmailAndPassword(email, password)
+                .addOnFailureListener(new TaskFailureLogger(
+                        TAG, "Error signing in with email and password"))
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        finish(RESULT_OK, new Intent());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (e instanceof FirebaseAuthInvalidUserException) {
+                            // In this case the credential saved in SmartLock was not
+                            // a valid credential, we should delete it from SmartLock
+                            // before continuing.
+                            deleteCredentialAndRedirect();
+                        } else {
+                            startAuthMethodChoice(mActivityHelper);
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Delete the last credential retrieved from SmartLock and then redirect to the
+     * auth method choice flow.
+     */
+    private void deleteCredentialAndRedirect() {
+        if (mCredentialsApi.getCredential() == null) {
+            Log.w(TAG, "deleteCredentialAndRedirect: null credential");
+            startAuthMethodChoice(mActivityHelper);
+            return;
+        }
+
+        CredentialsApiHelper credentialsApiHelper = CredentialsApiHelper.getInstance(this);
+        credentialsApiHelper.delete(mCredentialsApi.getCredential())
+                .addOnCompleteListener(this, new OnCompleteListener<Status>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Status> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "deleteCredential:failure", task.getException());
+                        }
+                        startAuthMethodChoice(mActivityHelper);
+                    }
+                });
     }
 
     protected void redirectToIdpSignIn(String email, String accountType) {
