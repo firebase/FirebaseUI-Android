@@ -14,12 +14,6 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
@@ -36,6 +30,7 @@ import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
+import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.junit.Before;
@@ -49,6 +44,12 @@ import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Collections;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class SignInActivityTest {
@@ -56,6 +57,7 @@ public class SignInActivityTest {
     @Before
     public void setUp() {
         TestHelper.initializeApp(RuntimeEnvironment.application);
+        PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
     }
 
     private SignInActivity createActivity() {

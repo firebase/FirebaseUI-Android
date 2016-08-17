@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,31 +19,40 @@ public class PlayServicesHelper {
 
     private static final String TAG = "PlayServicesHelper";
 
-    private static final GoogleApiAvailability sApiAvailability =
-            GoogleApiAvailability.getInstance();
+    @VisibleForTesting
+    public static GoogleApiAvailability sApiAvailability;
+
+    private final Context mContext;
+
+    public static PlayServicesHelper getInstance(Context context) {
+        return new PlayServicesHelper(context);
+    }
+
+    private PlayServicesHelper(Context context) {
+        this.mContext = context;
+    }
 
     /**
      * Returns {@code true} if Google Play Services is available and at the correct version,
      * false otherwise.
      */
-    public static boolean isPlayServicesAvailable(Context context) {
-        int playServicesAvailable = sApiAvailability.isGooglePlayServicesAvailable(context);
+    public boolean isPlayServicesAvailable() {
+        int playServicesAvailable = sApiAvailability.isGooglePlayServicesAvailable(mContext);
         return playServicesAvailable == ConnectionResult.SUCCESS;
     }
 
     /**
      * Returns {@code true} if Google Play Services is either already available or can be made
      * available with user action, {@code false} otherwise.
-     * @param context the calling context.
      */
-    public static boolean canMakePlayServicesAvailable(Context context) {
+    public boolean canMakePlayServicesAvailable() {
         // Check if already available
-        if (isPlayServicesAvailable(context)) {
+        if (isPlayServicesAvailable()) {
             return true;
         }
 
         // Check if error is resolvable
-        int availabilityCode = sApiAvailability.isGooglePlayServicesAvailable(context);
+        int availabilityCode = sApiAvailability.isGooglePlayServicesAvailable(mContext);
         boolean isUserResolvable = sApiAvailability.isUserResolvableError(availabilityCode);
 
         // Although the API considers SERVICE_INVALID to be resolvable, it can cause crashes
@@ -59,18 +69,18 @@ public class PlayServicesHelper {
      * @return {@code true} if a resolution is launched or if a resolution was not necessary,
      *         {@code false otherwise}.
      */
-    public static boolean makePlayServicesAvailable(
+    public boolean makePlayServicesAvailable(
             @NonNull Activity activity,
             int requestCode,
             @Nullable Dialog.OnCancelListener cancelListener) {
 
         // Check if already available
-        if (isPlayServicesAvailable(activity)) {
+        if (isPlayServicesAvailable()) {
             return true;
         }
 
         // Check if error is resolvable
-        if (!canMakePlayServicesAvailable(activity)) {
+        if (!canMakePlayServicesAvailable()) {
             return false;
         }
 

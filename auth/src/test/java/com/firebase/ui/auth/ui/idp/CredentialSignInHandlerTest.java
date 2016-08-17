@@ -14,16 +14,12 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
@@ -39,8 +35,11 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.util.CredentialsAPI;
+import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,12 +48,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.ProviderQueryResult;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
+
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
@@ -64,6 +72,20 @@ public class CredentialSignInHandlerTest {
     private static final int RC_SAVE_CREDENTIALS = 4;
     private static final String LINKING_ERROR = "ERROR_TEST_LINKING";
     private static final String LINKING_EXPLANATION = "Test explanation";
+
+    @Mock private CredentialsAPI mCredentialsAPI;
+    private FirebaseApp mFirebaseApp;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        mFirebaseApp = TestHelper.initializeApp(RuntimeEnvironment.application);
+        when(mCredentialsAPI.isPlayServicesAvailable()).thenReturn(true);
+        when(mCredentialsAPI.isCredentialsAvailable()).thenReturn(true);
+        when(mCredentialsAPI.isAutoSignInAvailable()).thenReturn(true);
+
+        PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
+    }
 
     @Test
     public void testSignInSucceeded() {
@@ -81,15 +103,21 @@ public class CredentialSignInHandlerTest {
                 RC_SAVE_CREDENTIALS,
                 idpResponse);
         Context mockContext = mock(Context.class);
-        FlowParameters mockFlowParams = mock(FlowParameters.class);
+
+        // Build basic flow parameters
+        FlowParameters flowParams = AuthUI.getInstance(mFirebaseApp)
+                .createSignInIntentBuilder().build()
+                .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
+
         Task signInTask = Tasks.forResult(new FakeAuthResult(mockFirebaseUser));
         when(mockActivityHelper.getApplicationContext()).thenReturn(mockContext);
-        when(mockActivityHelper.getFlowParams()).thenReturn(mockFlowParams);
+        when(mockActivityHelper.getFlowParams()).thenReturn(flowParams);
         credentialSignInHandler.onComplete(signInTask);
 
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
         ArgumentCaptor<Integer> intCaptor = ArgumentCaptor.forClass(Integer.class);
         verify(mockActivity).startActivityForResult(intentCaptor.capture(), intCaptor.capture());
+
         Intent capturedIntent = intentCaptor.getValue();
         assertEquals(RC_SAVE_CREDENTIALS, (int) intCaptor.getValue());
         assertEquals(
