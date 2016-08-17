@@ -14,12 +14,6 @@
 
 package com.firebase.ui.auth.ui;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import android.content.Intent;
 
 import com.firebase.ui.auth.AuthUI;
@@ -51,6 +45,12 @@ import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, shadows = {ActivityHelperShadow.class}, sdk = 21)
 public class ChooseAccountActivityTest {
@@ -66,27 +66,32 @@ public class ChooseAccountActivityTest {
         when(mCredentialsAPI.isPlayServicesAvailable()).thenReturn(true);
         when(mCredentialsAPI.isCredentialsAvailable()).thenReturn(true);
         when(mCredentialsAPI.isAutoSignInAvailable()).thenReturn(true);
-
     }
 
     private Intent createStartIntent() {
-        return AuthUI
-                .getInstance(mFirebaseApp).createSignInIntentBuilder()
+        return AuthUI.getInstance(mFirebaseApp)
+                .createSignInIntentBuilder()
                 .setProviders(AuthUI.EMAIL_PROVIDER, AuthUI.GOOGLE_PROVIDER)
+                .setIsSmartLockEnabled(true)
                 .build();
     }
 
     @Test
     public void testAutoSignInWithSavedUsernameAndPassword_signsIn() {
+        Intent startIntent = createStartIntent();
         ChooseAccountActivity chooseAccountActivity =
                 Robolectric.buildActivity(ChooseAccountActivity.class)
                         .withIntent(createStartIntent()).create().get();
+
         when(mCredentialsAPI.getEmailFromCredential()).thenReturn(TestConstants.EMAIL);
         when(mCredentialsAPI.getPasswordFromCredential()).thenReturn(TestConstants.PASSWORD);
         when(mCredentialsAPI.getAccountTypeFromCredential()).thenReturn(
                 EmailAuthProvider.PROVIDER_ID);
 
         when(mActivityHelper.getFirebaseAuth()).thenReturn(mFirebaseAuth);
+        when(mActivityHelper.getFlowParams()).thenReturn(
+                (FlowParameters) startIntent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS));
+
         when(mFirebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD))

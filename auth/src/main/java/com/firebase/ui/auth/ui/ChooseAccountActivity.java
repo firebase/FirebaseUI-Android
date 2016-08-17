@@ -63,20 +63,23 @@ public class ChooseAccountActivity extends ActivityBase {
     private static final int RC_PLAY_SERVICES = 6;
 
     private CredentialsAPI mCredentialsApi;
+    private PlayServicesHelper mPlayServicesHelper;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
         // Make Google Play Services available at the correct version, if possible
-        boolean madeAvailable = PlayServicesHelper.makePlayServicesAvailable(this, RC_PLAY_SERVICES,
-                new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        Log.w(TAG, "playServices:dialog.onCancel()");
-                        finish(RESULT_CANCELED, new Intent());
-                    }
-                });
+        mPlayServicesHelper = PlayServicesHelper.getInstance(this);
+        boolean madeAvailable = mPlayServicesHelper
+                .makePlayServicesAvailable(this, RC_PLAY_SERVICES,
+                        new DialogInterface.OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialogInterface) {
+                                Log.w(TAG, "playServices:dialog.onCancel()");
+                                finish(RESULT_CANCELED, new Intent());
+                            }
+                        });
 
         if (!madeAvailable) {
             Log.w(TAG, "playServices: could not make available.");
@@ -122,7 +125,7 @@ public class ChooseAccountActivity extends ActivityBase {
         FlowParameters flowParams = activityHelper.getFlowParams();
 
         if (flowParams.smartLockEnabled
-                && PlayServicesHelper.isPlayServicesAvailable(this)
+                && mPlayServicesHelper.isPlayServicesAvailable()
                 && credentialsApi.isCredentialsAvailable()) {
 
             // Attempt auto-sign in using SmartLock
@@ -130,7 +133,7 @@ public class ChooseAccountActivity extends ActivityBase {
                 credentialsApi.googleSilentSignIn();
                 if (!TextUtils.isEmpty(password)) {
                     // Sign in with the email/password retrieved from SmartLock
-                    signInWithEmailAndPassword(email, password);
+                    signInWithEmailAndPassword(activityHelper, email, password);
                 } else {
                     // log in with id/provider
                     redirectToIdpSignIn(email, accountType);
@@ -177,7 +180,7 @@ public class ChooseAccountActivity extends ActivityBase {
                 && !mCredentialsApi.isSignInResolutionNeeded()) {
             if (password != null && !password.isEmpty()) {
                 // email/password combination
-                signInWithEmailAndPassword(email, password);
+                signInWithEmailAndPassword(mActivityHelper, email, password);
             } else {
                 // identifier/provider combination
                 redirectToIdpSignIn(email, accountType);
@@ -231,8 +234,8 @@ public class ChooseAccountActivity extends ActivityBase {
      * On failure, delete the credential from SmartLock (if applicable) and then launch the
      * auth method picker flow.
      */
-    private void signInWithEmailAndPassword(String email, String password) {
-        mActivityHelper.getFirebaseAuth()
+    private void signInWithEmailAndPassword(ActivityHelper helper, String email, String password) {
+        helper.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(
                         TAG, "Error signing in with email and password"))

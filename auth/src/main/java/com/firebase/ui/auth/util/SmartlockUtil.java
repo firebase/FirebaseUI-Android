@@ -37,10 +37,7 @@ public class SmartlockUtil {
         }
 
         // If Play Services is not available, finish the Activity
-
-        if(!FirebaseAuthWrapperFactory
-                .getFirebaseAuthWrapper(parameters.appName)
-                .isPlayServicesAvailable(activity)) {
+        if(!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
             finishActivity(activity);
             return;
         }

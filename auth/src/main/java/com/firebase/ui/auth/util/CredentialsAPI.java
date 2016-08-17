@@ -49,6 +49,7 @@ public class CredentialsAPI implements
     private ProgressDialog mProgressDialog;
     private Credential mCredential;
     private final CallbackInterface mCallback;
+    private PlayServicesHelper mPlayServicesHelper;
 
     public interface CallbackInterface {
         void onAsyncTaskFinished();
@@ -59,13 +60,14 @@ public class CredentialsAPI implements
         mSignInResolutionNeeded = false;
         mActivity = activity;
         mCallback = callback;
+        mPlayServicesHelper = PlayServicesHelper.getInstance(mActivity);
 
         initGoogleApiClient(null);
         requestCredentials(true /* shouldResolve */, false /* onlyPasswords */);
     }
 
     public boolean isPlayServicesAvailable() {
-        return PlayServicesHelper.isPlayServicesAvailable(mActivity);
+        return mPlayServicesHelper.isPlayServicesAvailable();
     }
 
     public boolean isCredentialsAvailable() {
@@ -167,7 +169,7 @@ public class CredentialsAPI implements
     }
 
     public void requestCredentials(final boolean shouldResolve, boolean onlyPasswords) {
-        if (!PlayServicesHelper.isPlayServicesAvailable(mActivity)) {
+        if (!mPlayServicesHelper.isPlayServicesAvailable()) {
             // TODO(samstern): it would probably be better to not actually call the method
             // in this case.
             return;
