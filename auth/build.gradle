@@ -17,7 +17,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+                exceptionFormat = 'full'
+            }
+        }
+    }
 }
+
 
 dependencies {
     testCompile 'junit:junit:4.12'
