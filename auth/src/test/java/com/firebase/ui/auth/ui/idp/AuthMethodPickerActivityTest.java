@@ -14,11 +14,6 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.when;
-
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +22,6 @@ import android.widget.LinearLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
@@ -40,6 +34,7 @@ import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
+import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -58,6 +53,11 @@ import org.robolectric.shadows.ShadowActivity;
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
+
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class,
         shadows = {
@@ -68,7 +68,9 @@ import java.util.List;
 public class AuthMethodPickerActivityTest {
 
     @Before
-    public void setUp() {}
+    public void setUp() {
+        PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
+    }
 
     @Test
     public void testAllProvidersArePopulated() {

@@ -5,8 +5,8 @@ android:
   components:
     - platform-tools
     - tools
-    - build-tools-24.0.1
-    - android-24
+    - build-tools-23.0.3
+    - android-23
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
@@ -16,4 +16,4 @@ android:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 script:
-  - ./gradlew clean :library:prepareArtifacts
+  - ./gradlew clean :library:testAll :library:prepareArtifacts

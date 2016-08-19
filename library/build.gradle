@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion project.ext.compileSdk
     buildToolsVersion "${project.ext.buildtools}"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion project.ext.targetSdk
         versionCode 1
         versionName "0.3.1"
     }
@@ -57,6 +57,15 @@ def bintrayUploadTasks() {
 }
 
 /**
+ * Returns a list of tasks names to test submodules.
+ */
+def testTasks() {
+    return project.ext.submodules.collect { name ->
+        ":${name}:test"
+    }.toArray()
+}
+
+/**
  * Prepare artifacts for this an all sub-projects.
  */
 task prepareArtifacts(dependsOn: [
@@ -92,4 +101,10 @@ task bintrayUploadAll(dependsOn: [
         'bintrayUpload',
         bintrayUploadTasks()]) {
 
+}
+
+/**
+ * Test all submodules.
+ */
+task testAll(dependsOn: [testTasks()]) {
 }

@@ -3,13 +3,13 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply from: "../common/constants.gradle"
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion project.ext.compileSdk
     buildToolsVersion "${project.ext.buildtools}"
 
     defaultConfig {
         applicationId "com.firebase.uidemo"
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion project.ext.targetSdk
         versionCode 1
         versionName "1.0"
     }
