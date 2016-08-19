@@ -26,6 +26,7 @@ import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;
+import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
@@ -63,6 +64,8 @@ public class ChooseAccountActivityTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mFirebaseApp = TestHelper.initializeApp(RuntimeEnvironment.application);
+        PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
+
         when(mCredentialsAPI.isPlayServicesAvailable()).thenReturn(true);
         when(mCredentialsAPI.isCredentialsAvailable()).thenReturn(true);
         when(mCredentialsAPI.isAutoSignInAvailable()).thenReturn(true);
