@@ -81,7 +81,9 @@ public class ChooseAccountActivityTest {
         Intent startIntent = createStartIntent();
         ChooseAccountActivity chooseAccountActivity =
                 Robolectric.buildActivity(ChooseAccountActivity.class)
-                        .withIntent(createStartIntent()).create().get();
+                        .withIntent(startIntent)
+                        .create()
+                        .get();
 
         when(mCredentialsAPI.getEmailFromCredential()).thenReturn(TestConstants.EMAIL);
         when(mCredentialsAPI.getPasswordFromCredential()).thenReturn(TestConstants.PASSWORD);
@@ -113,7 +115,10 @@ public class ChooseAccountActivityTest {
         Intent startIntent = createStartIntent();
         ChooseAccountActivity chooseAccountActivity =
                 Robolectric.buildActivity(ChooseAccountActivity.class)
-                        .withIntent(startIntent).create().get();
+                        .withIntent(startIntent)
+                        .create()
+                        .get();
+
         when(mCredentialsAPI.getEmailFromCredential()).thenReturn(TestConstants.EMAIL);
         when(mCredentialsAPI.getPasswordFromCredential()).thenReturn(null);
         when(mCredentialsAPI.getAccountTypeFromCredential()).thenReturn(
