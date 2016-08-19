@@ -21,6 +21,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.support.annotation.VisibleForTesting;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -416,6 +417,11 @@ public class AuthUI {
 
         public Intent build() {
             Context context = mApp.getApplicationContext();
+            return build(context);
+        }
+
+        @VisibleForTesting
+        public Intent build(Context context) {
             List<IDPProviderParcel> providerInfo =
                     ProviderHelper.getProviderParcels(context, mProviders);
             return ChooseAccountActivity.createIntent(

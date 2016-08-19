@@ -73,7 +73,7 @@ public class ChooseAccountActivityTest {
                 .createSignInIntentBuilder()
                 .setProviders(AuthUI.EMAIL_PROVIDER, AuthUI.GOOGLE_PROVIDER)
                 .setIsSmartLockEnabled(true)
-                .build();
+                .build(RuntimeEnvironment.application);
     }
 
     @Test
