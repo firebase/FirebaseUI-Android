@@ -3,7 +3,7 @@ project.ext.support_library_version = '23.4.0'
 
 project.ext.submodules = ['database', 'auth']
 project.ext.group = "com.firebaseui"
-project.ext.version = '0.5.0'
+project.ext.version = '0.5.1'
 project.ext.pomdesc = 'Firebase UI Android'
 project.ext.buildtools = '23.0.3'
 project.ext.compileSdk = 23

@@ -20,7 +20,7 @@ public class PlayServicesHelper {
     private static final String TAG = "PlayServicesHelper";
 
     @VisibleForTesting
-    public static GoogleApiAvailability sApiAvailability;
+    public static GoogleApiAvailability sApiAvailability = GoogleApiAvailability.getInstance();
 
     private final Context mContext;
 

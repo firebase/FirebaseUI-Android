@@ -61,7 +61,7 @@ For convenience, here are some examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
-| 0.5.0              | 9.4.0                          |
+| 0.5.1              | 9.4.0                          |
 | 0.4.4              | 9.4.0                          |
 | 0.4.3              | 9.2.1                          |
 | 0.4.2              | 9.2.0                          |
