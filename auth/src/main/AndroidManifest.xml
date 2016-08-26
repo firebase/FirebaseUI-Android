@@ -79,10 +79,5 @@
                 <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="@string/twitter_app_id"
-            />
     </application>
 </manifest>
