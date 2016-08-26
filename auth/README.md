@@ -77,13 +77,12 @@ the [Facebook developer dashboard](https://developers.facebook.com):
 </resources>
 ```
 
-If support for Twitter Sign-in is also required, define the resource strings twitter_app_id,
-twitter_consumer_key, and twitter_consumer_secret to match the values of your Twitter app as
+If support for Twitter Sign-in is also required, define the resource strings
+twitter_consumer_key and twitter_consumer_secret to match the values of your Twitter app as
 reported by the [Twitter application manager](https://dev.twitter.com/apps).
 
 ```
 <resources>
-  <string name="twitter_app_id" translatable="false">YOURAPPID</string>
   <string name="twitter_consumer_key" translatable="false">YOURCONSUMERKEY</string>
   <string name="twitter_consumer_secret" translatable="false">YOURCONSUMERSECRET</string>
 </resources>
