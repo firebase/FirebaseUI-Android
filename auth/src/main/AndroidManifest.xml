@@ -80,5 +80,9 @@
             </intent-filter>
         </activity>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="@string/twitter_app_id"
+            />
     </application>
 </manifest>

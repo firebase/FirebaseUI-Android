@@ -10,4 +10,22 @@
     Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs.
     -->
     <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
+
+
+
+    <!--
+    Your Twitter app id. To use Twitter accounts with the demo application, register an application
+    with Twitter and provide the following three values.
+    -->
+    <string name="twitter_app_id" translatable="false">CHANGE-ME</string>
+
+    <!--
+    Your Twitter Consumer Key
+    -->
+    <string name="twitter_consumer_key" translatable="false">CHANGE-ME</string>
+
+    <!--
+    Your Twitter Consumer Secret
+    -->
+    <string name="twitter_consumer_secret" translatable="false">CHANGE-ME</string>
 </resources>
