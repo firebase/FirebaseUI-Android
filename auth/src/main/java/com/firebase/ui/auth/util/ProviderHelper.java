@@ -22,6 +22,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.google.firebase.auth.EmailAuthProvider;
 
 import java.util.ArrayList;
@@ -39,6 +40,10 @@ public class ProviderHelper {
             } else if (provider.equalsIgnoreCase(AuthUI.GOOGLE_PROVIDER)) {
                 providerInfo.add(GoogleProvider.createParcel(
                         context.getString(R.string.default_web_client_id)));
+            } else if (provider.equalsIgnoreCase(AuthUI.TWITTER_PROVIDER)) {
+                providerInfo.add(TwitterProvider.createTwitterParcel(
+                        context.getString(R.string.twitter_consumer_key),
+                        context.getString(R.string.twitter_consumer_secret)));
             } else if (provider.equalsIgnoreCase(AuthUI.EMAIL_PROVIDER)) {
                 providerInfo.add(
                         new IDPProviderParcel(EmailAuthProvider.PROVIDER_ID, new Bundle())

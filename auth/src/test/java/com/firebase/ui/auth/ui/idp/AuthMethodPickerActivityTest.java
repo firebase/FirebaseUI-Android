@@ -40,6 +40,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +56,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
 
@@ -173,6 +175,33 @@ public class AuthMethodPickerActivityTest {
 
         verifySaveCredentialIntent(nextIntent, GoogleAuthProvider.PROVIDER_ID);
     }
+
+    @Test
+    @Config(shadows = {ActivityHelperShadow.class})
+    public void testTwitterLoginFlowStarts() {
+        List<String> providers = Arrays.asList(AuthUI.TWITTER_PROVIDER);
+
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
+
+        FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
+
+        when(mockFirebaseUser.getProviders())
+                .thenReturn(Arrays.asList(TwitterAuthProvider.PROVIDER_ID));
+
+        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) anyObject()))
+                .thenReturn(new AutoCompleteTask<AuthResult>(
+                        new FakeAuthResult(mockFirebaseUser), true, null));
+        Button twitterButton =
+                (Button) authMethodPickerActivity.findViewById(R.id.twitter_button);
+
+        assertNotNull(twitterButton);
+        twitterButton.performClick();
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
+
+        assertTrue(nextIntent.intent.getComponent().getClassName().contains("com.twitter.sdk"));
+    }
+
 
     private static void verifySaveCredentialIntent(
             ShadowActivity.IntentForResult nextIntent,

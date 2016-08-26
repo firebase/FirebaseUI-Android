@@ -231,6 +231,11 @@ public class AuthUI {
     public static final String FACEBOOK_PROVIDER = "facebook";
 
     /**
+     * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setProviders}.
+     */
+    public static final String TWITTER_PROVIDER = "twitter";
+
+    /**
      * Default value for logo resource, omits the logo from the
      * {@link AuthMethodPickerActivity}
      */
@@ -243,7 +248,8 @@ public class AuthUI {
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     EMAIL_PROVIDER,
                     GOOGLE_PROVIDER,
-                    FACEBOOK_PROVIDER
+                    FACEBOOK_PROVIDER,
+                    TWITTER_PROVIDER
             )));
 
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();

@@ -44,4 +44,16 @@
     https://developers.google.com/android/guides/google-services-plugin
     -->
     <string name="default_web_client_id" translatable="false">CHANGE-ME</string>
+
+
+    <!--
+    Your Twitter Consumer Key. To use Twitter accounts with the demo application, register an
+    application with Twitter and provide the following two values.
+    -->
+    <string name="twitter_consumer_key" translatable="false">CHANGE-ME</string>
+
+    <!--
+    Your Twitter Consumer Secret
+    -->
+    <string name="twitter_consumer_secret" translatable="false">CHANGE-ME</string>
 </resources>

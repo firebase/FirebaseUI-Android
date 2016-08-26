@@ -33,6 +33,8 @@ import com.firebase.uidemo.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +70,9 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @BindView(R.id.facebook_provider)
     CheckBox mUseFacebookProvider;
+
+    @BindView(R.id.twitter_provider)
+    CheckBox mUseTwitterProvider;
 
     @BindView(R.id.google_tos)
     RadioButton mUseGoogleTos;
@@ -118,9 +123,16 @@ public class AuthUiActivity extends AppCompatActivity {
             mUseFacebookProvider.setText(R.string.facebook_label_missing_config);
         }
 
-        if (!isGoogleConfigured() || !isFacebookConfigured()) {
+        if (!isTwitterConfigured()) {
+            mUseTwitterProvider.setChecked(false);
+            mUseTwitterProvider.setEnabled(false);
+            mUseTwitterProvider.setText(R.string.twitter_label_missing_config);
+        }
+
+        if (!isGoogleConfigured() || !isFacebookConfigured() || !isTwitterConfigured()) {
             showSnackbar(R.string.configuration_required);
         }
+
     }
 
     @OnClick(R.id.sign_in)
@@ -204,6 +216,10 @@ public class AuthUiActivity extends AppCompatActivity {
             selectedProviders.add(AuthUI.GOOGLE_PROVIDER);
         }
 
+        if (mUseTwitterProvider.isChecked()) {
+            selectedProviders.add(AuthUI.TWITTER_PROVIDER);
+        }
+
         return selectedProviders.toArray(new String[selectedProviders.size()]);
     }
 
@@ -226,6 +242,16 @@ public class AuthUiActivity extends AppCompatActivity {
     private boolean isFacebookConfigured() {
         return !UNCHANGED_CONFIG_VALUE.equals(
                 getResources().getString(R.string.facebook_application_id));
+    }
+
+    @MainThread
+    private boolean isTwitterConfigured() {
+        List<String> twitterConfigs = Arrays.asList(
+                getResources().getString(R.string.twitter_consumer_key),
+                getResources().getString(R.string.twitter_consumer_secret)
+        );
+
+        return !twitterConfigs.contains(UNCHANGED_CONFIG_VALUE);
     }
 
     @MainThread
