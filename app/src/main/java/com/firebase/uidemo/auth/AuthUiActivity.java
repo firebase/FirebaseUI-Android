@@ -247,7 +247,6 @@ public class AuthUiActivity extends AppCompatActivity {
     @MainThread
     private boolean isTwitterConfigured() {
         List<String> twitterConfigs = Arrays.asList(
-                getResources().getString(R.string.twitter_app_id),
                 getResources().getString(R.string.twitter_consumer_key),
                 getResources().getString(R.string.twitter_consumer_secret)
         );
