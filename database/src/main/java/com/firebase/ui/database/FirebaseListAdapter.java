@@ -152,5 +152,11 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      */
     abstract protected void populateView(View v, T model, int position);
 
+    /**
+     * This method will be triggered in the event that this listener either failed at the server,
+     * or is removed as a result of the security and Firebase Database rules.
+     *
+     * @param databaseError A description of the error that occurred
+     */
     abstract protected void onCancelled(DatabaseError databaseError);
 }
