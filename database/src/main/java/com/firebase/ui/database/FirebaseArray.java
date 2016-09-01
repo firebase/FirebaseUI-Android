@@ -26,8 +26,12 @@ import java.util.ArrayList;
  */
 class FirebaseArray implements ChildEventListener {
     public interface OnChangedListener {
-        enum EventType { Added, Changed, Removed, Moved }
-        void onChanged(EventType type, int index, int oldIndex);
+        int ADDED = 0;
+        int CHANGED = 1;
+        int REMOVED = 2;
+        int MOVED = 3;
+
+        void onChanged(int type, int index, int oldIndex);
     }
 
     private Query mQuery;
@@ -71,19 +75,19 @@ class FirebaseArray implements ChildEventListener {
             index = getIndexForKey(previousChildKey) + 1;
         }
         mSnapshots.add(index, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.Added, index);
+        notifyChangedListeners(OnChangedListener.ADDED, index);
     }
 
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.set(index, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.Changed, index);
+        notifyChangedListeners(OnChangedListener.CHANGED, index);
     }
 
     public void onChildRemoved(DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
-        notifyChangedListeners(OnChangedListener.EventType.Removed, index);
+        notifyChangedListeners(OnChangedListener.REMOVED, index);
     }
 
     public void onChildMoved(DataSnapshot snapshot, String previousChildKey) {
@@ -91,7 +95,7 @@ class FirebaseArray implements ChildEventListener {
         mSnapshots.remove(oldIndex);
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
+        notifyChangedListeners(OnChangedListener.MOVED, newIndex, oldIndex);
     }
 
     public void onCancelled(DatabaseError firebaseError) {
@@ -102,10 +106,10 @@ class FirebaseArray implements ChildEventListener {
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
-    protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
+    protected void notifyChangedListeners(int type, int index) {
         notifyChangedListeners(type, index, -1);
     }
-    protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
+    protected void notifyChangedListeners(int type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChanged(type, index, oldIndex);
         }

@@ -90,18 +90,18 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
             @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
+            public void onChanged(int type, int index, int oldIndex) {
                 switch (type) {
-                    case Added:
+                    case ADDED:
                         notifyItemInserted(index);
                         break;
-                    case Changed:
+                    case CHANGED:
                         notifyItemChanged(index);
                         break;
-                    case Removed:
+                    case REMOVED:
                         notifyItemRemoved(index);
                         break;
-                    case Moved:
+                    case MOVED:
                         notifyItemMoved(oldIndex, index);
                         break;
                     default:
