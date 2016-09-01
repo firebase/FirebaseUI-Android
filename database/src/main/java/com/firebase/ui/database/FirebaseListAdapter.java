@@ -72,12 +72,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mLayout = modelLayout;
         mActivity = activity;
         mSnapshots = new FirebaseArray(ref);
-        mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
-            @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
-                notifyDataSetChanged();
-            }
-        });
+        setOnChangedListener();
     }
 
     /**
@@ -100,12 +95,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mLayout = modelLayout;
         mActivity = activity;
         mSnapshots = new FirebaseArray(keyRef, dataRef);
-        mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
-            @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
-                notifyDataSetChanged();
-            }
-        });
+        setOnChangedListener();
     }
 
     /**
@@ -137,6 +127,15 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
                                DatabaseReference keyRef,
                                DatabaseReference dataRef) {
         this(activity, modelClass, modelLayout, (Query) keyRef, dataRef);
+    }
+
+    private void setOnChangedListener() {
+        mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
+            @Override
+            public void onChanged(EventType type, int index, int oldIndex) {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     public void cleanup() {
