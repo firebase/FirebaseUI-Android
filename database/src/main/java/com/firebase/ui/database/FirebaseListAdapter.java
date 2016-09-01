@@ -73,6 +73,11 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             public void onChanged(EventType type, int index, int oldIndex) {
                 notifyDataSetChanged();
             }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                FirebaseRecyclerAdapter.this.onCancelled(databaseError);
+            }
         });
     }
     /**
@@ -147,4 +152,5 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      */
     abstract protected void populateView(View v, T model, int position);
 
+    abstract protected void onCancelled(DatabaseError databaseError);
 }
