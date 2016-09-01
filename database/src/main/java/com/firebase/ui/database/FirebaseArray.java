@@ -106,6 +106,8 @@ class FirebaseArray implements ChildEventListener {
                             mSnapshots.set(index, dataSnapshot);
                             notifyChangedListeners(OnChangedListener.EventType.Changed, index);
                         }
+                    } else {
+                        throw new IllegalStateException("Key not found at ref: " + dataSnapshot.getRef().toString());
                     }
                 }
 
