@@ -118,4 +118,5 @@ class FirebaseArray implements ChildEventListener {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
         }
+    }
 }
