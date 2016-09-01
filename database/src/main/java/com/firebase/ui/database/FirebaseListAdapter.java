@@ -76,7 +76,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                FirebaseRecyclerAdapter.this.onCancelled(databaseError);
+                FirebaseListAdapter.this.onCancelled(databaseError);
             }
         });
     }
