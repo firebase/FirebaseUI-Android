@@ -28,6 +28,7 @@ class FirebaseArray implements ChildEventListener {
     public interface OnChangedListener {
         enum EventType { Added, Changed, Removed, Moved }
         void onChanged(EventType type, int index, int oldIndex);
+        void onCancelled(DatabaseError databaseError);
     }
 
     private Query mQuery;
@@ -95,19 +96,26 @@ class FirebaseArray implements ChildEventListener {
     }
 
     public void onCancelled(DatabaseError firebaseError) {
-        // TODO: what do we do with this?
+        notifyCancelledListeners(databaseError);
     }
     // End of ChildEventListener methods
 
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
+    
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
+    
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChanged(type, index, oldIndex);
         }
     }
+    
+    protected void notifyCancelledListeners(DatabaseError databaseError) {
+        if (mListener != null) {
+            mListener.onCancelled(databaseError);
+        }
 }
