@@ -108,6 +108,11 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                         throw new IllegalStateException("Incomplete case statement");
                 }
             }
+            
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                FirebaseRecyclerAdapter.this.onCancelled(databaseError);
+            }
         });
     }
 
@@ -194,4 +199,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * @param position  The position in the list of the view being populated
      */
     abstract protected void populateViewHolder(VH viewHolder, T model, int position);
+    
+    abstract protected void onCancelled(DatabaseError databaseError);
 }
