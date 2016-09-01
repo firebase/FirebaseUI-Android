@@ -200,5 +200,11 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      */
     abstract protected void populateViewHolder(VH viewHolder, T model, int position);
     
+    /**
+     * This method will be triggered in the event that this listener either failed at the server,
+     * or is removed as a result of the security and Firebase Database rules.
+     *
+     * @param databaseError A description of the error that occurred
+     */
     abstract protected void onCancelled(DatabaseError databaseError);
 }
