@@ -95,7 +95,7 @@ class FirebaseArray implements ChildEventListener {
         notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
     }
 
-    public void onCancelled(DatabaseError firebaseError) {
+    public void onCancelled(DatabaseError databaseError) {
         notifyCancelledListeners(databaseError);
     }
     // End of ChildEventListener methods
