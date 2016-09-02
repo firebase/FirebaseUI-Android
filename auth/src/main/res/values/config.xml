@@ -30,8 +30,20 @@
     https://developers.facebook.com/docs/facebook-login/permissions
     -->
     <array name="facebook_permissions">
-        <item>public_profile</item>
-        <item>email</item>
+    </array>
+
+    <!--
+    The additional Google scopes that this application will request from the user. Users of
+    FirebaseUI can override this array to customize. Note that the 'email' and 'profile' scopes are
+    always requested.
+
+    For example to add the permission to read the user's files in Google Drive:
+    <item>https://www.googleapis.com/auth/drive.readonly</item>
+
+    For a list of all scopes, see:
+    https://developers.google.com/identity/protocols/googlescopes
+    -->
+    <array name="google_permissions">
     </array>
 
 
