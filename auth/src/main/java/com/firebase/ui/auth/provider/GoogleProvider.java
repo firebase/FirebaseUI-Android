@@ -62,8 +62,8 @@ public class GoogleProvider implements
                 .requestIdToken(mClientId);
 
         // Add additional scopes
-        String[] scopeStrings = activity.getResources().getStringArray(R.array.google_permissions);
-        for (String scopeString : scopeStrings) {
+        String[] extraScopes = getExtraScopes();
+        for (String scopeString : extraScopes) {
             builder.requestScopes(new Scope(scopeString));
         }
 
@@ -153,6 +153,10 @@ public class GoogleProvider implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.w(TAG, "onConnectionFailed:" + connectionResult);
+    }
+
+    private String[] getExtraScopes() {
+        return mActivity.getResources().getStringArray(R.array.google_permissions);
     }
 }
 
