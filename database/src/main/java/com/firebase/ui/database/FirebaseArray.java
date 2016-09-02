@@ -195,7 +195,7 @@ class FirebaseArray implements ChildEventListener {
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
-    
+
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
