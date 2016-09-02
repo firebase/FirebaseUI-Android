@@ -115,7 +115,7 @@ The builder provides the following customization options for the authentication 
   a link in the small-print of the account creation step for new users. If no
   terms of service URL is provided, the associated small-print is omitted.
 
-- A custom theme can specified for the flow, which is applied to all the
+- A custom theme can be specified for the flow, which is applied to all the
   activities in the flow for consistent customization of colors and typography.
 
 #### Sign-in examples
