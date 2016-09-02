@@ -32,7 +32,7 @@ class FirebaseArray implements ChildEventListener {
     public interface OnChangedListener {
         enum EventType {Added, Changed, Removed, Moved}
 
-        void onChanged(OnChangedListener.EventType type, int index, int oldIndex);
+        void onChanged(EventType type, int index, int oldIndex);
         
         void onCancelled(DatabaseError databaseError);
     }
