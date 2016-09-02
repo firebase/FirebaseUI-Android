@@ -20,11 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-<<<<<<< HEAD
-=======
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.DatabaseError;
->>>>>>> refs/remotes/firebase/master
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -79,21 +74,8 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mLayout = modelLayout;
         mActivity = activity;
         mSnapshots = new FirebaseArray(ref);
-<<<<<<< HEAD
-        setOnChangedListener();
-=======
-        mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
-            @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
-                notifyDataSetChanged();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                FirebaseListAdapter.this.onCancelled(databaseError);
-            }
-        });
->>>>>>> refs/remotes/firebase/master
+        setOnChangedListener();
     }
 
     /**
@@ -116,6 +98,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mLayout = modelLayout;
         mActivity = activity;
         mSnapshots = new FirebaseArray(keyRef, dataRef);
+
         setOnChangedListener();
     }
 
