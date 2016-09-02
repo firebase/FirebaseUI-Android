@@ -33,10 +33,7 @@ class FirebaseArray implements ChildEventListener {
         enum EventType {Added, Changed, Removed, Moved}
 
         void onChanged(EventType type, int index, int oldIndex);
-<<<<<<< HEAD
-        
-=======
->>>>>>> refs/remotes/firebase/master
+
         void onCancelled(DatabaseError databaseError);
     }
 
@@ -189,10 +186,7 @@ class FirebaseArray implements ChildEventListener {
         notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
     }
 
-<<<<<<< HEAD
     @Override
-=======
->>>>>>> refs/remotes/firebase/master
     public void onCancelled(DatabaseError databaseError) {
         notifyCancelledListeners(databaseError);
     }
@@ -201,29 +195,17 @@ class FirebaseArray implements ChildEventListener {
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
-<<<<<<< HEAD
-
-    protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
-        notifyChangedListeners(type, index, -1);
-    }
-
-=======
     
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
-    
->>>>>>> refs/remotes/firebase/master
+
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChanged(type, index, oldIndex);
         }
     }
-<<<<<<< HEAD
 
-=======
-    
->>>>>>> refs/remotes/firebase/master
     protected void notifyCancelledListeners(DatabaseError databaseError) {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
