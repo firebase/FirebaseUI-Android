@@ -37,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResult> {
     public static final String ACCESS_TOKEN = "facebook_access_token";
@@ -46,6 +47,9 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
 
     private static final String TAG = "FacebookProvider";
     private static final String APPLICATION_ID = "application_id";
+    private static final String EMAIL = "email";
+    private static final String PUBLIC_PROFILE = "public_profile";
+
     private CallbackManager mCallbackManager;
     private IDPCallback mCallbackObject;
 
@@ -79,9 +83,19 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
         loginManager.registerCallback(mCallbackManager, this);
 
         String[] permissions = activity.getResources().getStringArray(R.array.facebook_permissions);
+        List<String> permissionsList = Arrays.asList(permissions);
 
-        loginManager.logInWithReadPermissions(
-                activity, Arrays.asList(permissions));
+        // Ensure we have email and public_profile scopes
+        if (!permissionsList.contains(EMAIL)) {
+            permissionsList.add(EMAIL);
+        }
+
+        if (!permissionsList.contains(PUBLIC_PROFILE)) {
+            permissionsList.add(PUBLIC_PROFILE);
+        }
+
+        // Log in with permissions
+        loginManager.logInWithReadPermissions(activity, permissionsList);
     }
 
     @Override
