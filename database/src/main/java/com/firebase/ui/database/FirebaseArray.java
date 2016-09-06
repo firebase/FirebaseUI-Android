@@ -16,6 +16,7 @@ package com.firebase.ui.database;
 
 import android.support.v4.util.SimpleArrayMap;
 
+import android.util.Log;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -109,7 +110,7 @@ class FirebaseArray implements ChildEventListener {
                             notifyChangedListeners(OnChangedListener.EventType.Changed, index);
                         }
                     } else {
-                        throw new IllegalStateException("Key not found at ref: " + dataSnapshot.getRef().toString());
+                        Log.w("Firebase-UI", "Key not found at ref: " + dataSnapshot.getRef().toString());
                     }
                 }
 
