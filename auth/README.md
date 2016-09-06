@@ -317,8 +317,8 @@ redefine a string to change it, for example:
 
 #### Google
 By default, FirebaseUI requests the `email` and `profile` scopes when using Google Sign In. If you
-would like to request additional scopes from the user, add a string array resource to your
-application like this:
+would like to request additional scopes from the user, add a string array resource named 
+`google_permissions` to your `strings.xml` file like this:
 
 ```xml
 <!--
@@ -335,8 +335,8 @@ application like this:
 #### Facebook
 
 By default, FirebaseUI requests the `email` and `public_profile` permissions when initiating
-Facebook Login.  If you would like to override these scopes, add a string array resource
-to your application like this:
+Facebook Login.  If you would like to override these scopes, a string array resource named 
+`facebook_permissions` to your `strings.xml` file like this:
 
 ```xml
 <!--
