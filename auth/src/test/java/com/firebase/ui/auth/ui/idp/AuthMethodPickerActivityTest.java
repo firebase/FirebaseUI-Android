@@ -81,6 +81,7 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity =
                 createActivity(providers);
+
         assertEquals(providers.size(),
                 ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
                         .getChildCount());

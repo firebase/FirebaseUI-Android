@@ -66,17 +66,6 @@ def testTasks() {
 }
 
 /**
- * Prepare artifacts for this an all sub-projects.
- */
-task prepareArtifacts(dependsOn: [
-        javadocJar,
-        sourcesJar,
-        assembleRelease,
-        prepareArtifactsTasks(),
-        "generatePomFileForMonolithLibraryPublication"]) {
-}
-
-/**
  * Publish all artifacts to the maven local repository.
  */
 task publishAllToMavenLocal(dependsOn: [
@@ -107,4 +96,17 @@ task bintrayUploadAll(dependsOn: [
  * Test all submodules.
  */
 task testAll(dependsOn: [testTasks()]) {
+}
+
+afterEvaluate {
+    /**
+     * Prepare artifacts for this an all sub-projects.
+     */
+    task prepareArtifacts(dependsOn: [
+            javadocJar,
+            sourcesJar,
+            assembleRelease,
+            prepareArtifactsTasks(),
+            "generatePomFileForMonolithLibraryPublication"]) {
+    }
 }
