@@ -63,21 +63,24 @@ public class GoogleApiClientTaskHelper {
 
         // ensure that when the activity is stopped, we release the reference to the
         // GoogleApiClient completion task, so that it can be garbage collected
-        activity.getApplication().registerActivityLifecycleCallbacks(new DiscardOnActivityStop());
+        activity.getApplication().registerActivityLifecycleCallbacks(new GacLifecycleCallbacks());
     }
 
     public Task<GoogleApiClient> getConnectedGoogleApiClient() {
         final TaskCompletionSource<GoogleApiClient> source = new TaskCompletionSource<>();
         if (!mConnectTaskRef.compareAndSet(null, source)) {
+            // mConnectTaskRef Task was not null, return Task
             return mConnectTaskRef.get().getTask();
         }
 
-        final AtomicReference<GoogleApiClient> gacReference = new AtomicReference<>();
-        GoogleApiClient client = mBuilder
+        final GoogleApiClient client = mBuilder
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(@Nullable Bundle bundle) {
-                        source.setResult(gacReference.get());
+                        source.setResult(mClientRef.get());
+                        if (mClientRef.get() != null) {
+                            mClientRef.get().unregisterConnectionCallbacks(this);
+                        }
                     }
 
                     @Override
@@ -89,11 +92,13 @@ public class GoogleApiClientTaskHelper {
                         source.setException(new IOException(
                                 "Failed to connect GoogleApiClient: "
                                         + connectionResult.getErrorMessage()));
+                        if (mClientRef.get() != null) {
+                            mClientRef.get().unregisterConnectionFailedListener(this);
+                        }
                     }
-                })
-                .build();
+                }).build();
 
-        gacReference.set(client);
+        mClientRef.set(client);
         client.connect();
 
         return source.getTask();
@@ -109,7 +114,7 @@ public class GoogleApiClientTaskHelper {
      * otherwise creates a new one.
      */
     public static GoogleApiClientTaskHelper getInstance(Activity activity) {
-        GoogleApiClientTaskHelper helper = null;
+        GoogleApiClientTaskHelper helper;
         synchronized (INSTANCES) {
             helper = INSTANCES.get(activity);
             if (helper == null) {
@@ -126,7 +131,18 @@ public class GoogleApiClientTaskHelper {
         }
     }
 
-    private final class DiscardOnActivityStop extends AbstractActivityLifecycleCallbacks {
+    private final class GacLifecycleCallbacks extends AbstractActivityLifecycleCallbacks {
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+            if (mActivity == activity) {
+                GoogleApiClient client = mClientRef.get();
+                if (client != null) {
+                   client.connect();
+                }
+            }
+        }
+
         @Override
         public void onActivityStopped(Activity activity) {
             if (mActivity == activity) {
@@ -134,9 +150,6 @@ public class GoogleApiClientTaskHelper {
                 if (client != null) {
                     client.disconnect();
                 }
-
-                mClientRef.set(null);
-                mConnectTaskRef.set(null);
             }
         }
 
