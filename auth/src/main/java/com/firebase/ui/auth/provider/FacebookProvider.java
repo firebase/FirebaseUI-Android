@@ -36,6 +36,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -83,7 +84,7 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
         loginManager.registerCallback(mCallbackManager, this);
 
         String[] permissions = activity.getResources().getStringArray(R.array.facebook_permissions);
-        List<String> permissionsList = Arrays.asList(permissions);
+        List<String> permissionsList = new ArrayList<>(Arrays.asList(permissions));
 
         // Ensure we have email and public_profile scopes
         if (!permissionsList.contains(EMAIL)) {
