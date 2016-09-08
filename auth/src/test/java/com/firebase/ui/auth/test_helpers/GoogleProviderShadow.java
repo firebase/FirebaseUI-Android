@@ -62,9 +62,4 @@ public class GoogleProviderShadow {
     public void startLogin(Activity activity) {
         mCallback.onSuccess(mMockIdpResponse);
     }
-
-    @Implementation
-    public String[] getExtraScopes() {
-        return new String[]{};
-    }
 }
