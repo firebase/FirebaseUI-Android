@@ -29,8 +29,8 @@
     https://developers.facebook.com/docs/facebook-login/android
     https://developers.facebook.com/docs/facebook-login/permissions
     -->
-    <array name="facebook_permissions">
-    </array>
+    <string-array name="facebook_permissions">
+    </string-array>
 
     <!--
     The additional Google scopes that this application will request from the user. Users of
@@ -43,8 +43,8 @@
     For a list of all scopes, see:
     https://developers.google.com/identity/protocols/googlescopes
     -->
-    <array name="google_permissions">
-    </array>
+    <string-array name="google_permissions">
+    </string-array>
 
 
     <!--

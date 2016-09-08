@@ -44,7 +44,7 @@ Gradle, add:
 ```groovy
 dependencies {
   // ...
-  compile 'com.firebaseui:firebase-ui-auth:0.5.2'
+  compile 'com.firebaseui:firebase-ui-auth:0.5.3'
 }
 ```
 
@@ -54,7 +54,7 @@ If instead your project uses Maven, add:
 <dependency>
   <groupId>com.firebaseui</groupId>
   <artifactId>firebase-ui-auth</artifactId>
-  <version>0.5.2</version>
+  <version>0.5.3</version>
 </dependency>
 ```
 
@@ -325,10 +325,10 @@ would like to request additional scopes from the user, add a string array resour
     For a list of all scopes, see:
     https://developers.google.com/identity/protocols/googlescopes
 -->
-<array name="google_permissions">
+<string-array name="google_permissions">
     <!-- Request permission to read the user's Google Drive files -->
     <item>https://www.googleapis.com/auth/drive.readonly</item>
-</array>
+</string-array>
 ```
 
 
@@ -344,8 +344,8 @@ Facebook Login.  If you would like to override these scopes, a string array reso
     https://developers.facebook.com/docs/facebook-login/android
     https://developers.facebook.com/docs/facebook-login/permissions
 -->
-<array name="facebook_permissions">
+<string-array name="facebook_permissions">
     <!-- Request permission to know the user's birthday -->
     <item>user_birthday</item>
-</array>
+</string-array>
 ```
