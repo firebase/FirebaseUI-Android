@@ -17,7 +17,6 @@ package com.firebase.ui.auth.ui.account_link;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -25,9 +24,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
@@ -41,18 +38,22 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.util.SmartlockUtil;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming
+ * the password before initiating a link.
+ */
 public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
+
     private static final int RC_CREDENTIAL_SAVE = 3;
     private static final String TAG = "WelcomeBackPassword";
-    final StyleSpan bold = new StyleSpan(Typeface.BOLD);
+    private static final StyleSpan BOLD = new StyleSpan(Typeface.BOLD);
+
     private String mEmail;
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
@@ -62,29 +63,34 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_back_password_prompt_layout);
+
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
+        mPasswordField = (EditText) findViewById(R.id.password);
+
         mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
         mEmail = mIdpResponse.getEmail();
-        TextView bodyTextView = (TextView) findViewById(R.id.welcome_back_password_body);
+
+        // Create welcome back text with email bolded
         String bodyText = getResources().getString(R.string.welcome_back_password_prompt_body);
         bodyText = String.format(bodyText, mEmail);
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
-        spannableStringBuilder.setSpan(bold, emailStart, emailStart + mEmail.length(), Spannable
+        spannableStringBuilder.setSpan(BOLD, emailStart, emailStart + mEmail.length(), Spannable
                 .SPAN_INCLUSIVE_INCLUSIVE);
+
+        TextView bodyTextView = ((TextView) findViewById(R.id.welcome_back_password_body));
         bodyTextView.setText(spannableStringBuilder);
-        Button signIn = (Button) findViewById(R.id.button_done);
-        signIn.setOnClickListener(this);
-        mPasswordField = (EditText) findViewById(R.id.password);
-        ImageView toggleImage = (ImageView) findViewById(R.id.toggle_visibility);
-        toggleImage.setOnClickListener(new PasswordToggler(mPasswordField));
-        TextView troubleSigningIn = (TextView) findViewById(R.id.trouble_signing_in);
-        troubleSigningIn.setOnClickListener(this);
+
+        // Click listeners
+        findViewById(R.id.button_done).setOnClickListener(this);
+        findViewById(R.id.toggle_visibility).setOnClickListener(
+                new PasswordToggler(mPasswordField));
+        findViewById(R.id.trouble_signing_in).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        int id = view.getId();
+        final int id = view.getId();
         if (id == R.id.button_done) {
             mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
             next(mEmail, mPasswordField.getText().toString());
@@ -108,48 +114,48 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
 
     private void next(String email, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
+
+        // Sign in with known email and the password provided
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Error signing in with email and password"))
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    AuthCredential authCredential =
-                            AuthCredentialHelper.getAuthCredential(mIdpResponse);
-                    task.getResult().getUser().linkWithCredential(authCredential);
-                    firebaseAuth.signOut();
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        // Get the social AuthCredential from the IDPResponse object, link
+                        // it to the email/password account.
+                        AuthCredential authCredential =
+                                AuthCredentialHelper.getAuthCredential(mIdpResponse);
+                        authResult.getUser().linkWithCredential(authCredential);
+                        firebaseAuth.signOut();
 
-                    firebaseAuth.signInWithCredential(authCredential)
-                            .addOnFailureListener(
-                                    new TaskFailureLogger(TAG, "Error signing in with credential"))
-                            .addOnSuccessListener(
-                                new OnSuccessListener<AuthResult>() {
-                                    @Override
-                                    public void onSuccess(AuthResult authResult) {
-                                        FirebaseUser firebaseUser = authResult.getUser();
-                                        String photoUrl = null;
-                                        Uri photoUri = firebaseUser.getPhotoUrl();
-                                        if (photoUri != null) {
-                                            photoUrl = photoUri.toString();
-                                        }
-                                        mActivityHelper.dismissDialog();
-
-                                        SmartlockUtil.saveCredentialOrFinish(
-                                                WelcomeBackPasswordPrompt.this,
-                                                RC_CREDENTIAL_SAVE,
-                                                mActivityHelper.getFlowParams(),
-                                                firebaseUser,
-                                                password,
-                                                null /* provider */);
-                                    }
-                            });
-                } else {
-                    String error = task.getException().getLocalizedMessage();
-                    mPasswordLayout.setError(error);
-                }
-            }
-        });
+                        // Sign in with the credential
+                        firebaseAuth.signInWithCredential(authCredential)
+                                .addOnFailureListener(
+                                        new TaskFailureLogger(TAG, "Error signing in with credential"))
+                                .addOnSuccessListener(
+                                        new OnSuccessListener<AuthResult>() {
+                                            @Override
+                                            public void onSuccess(AuthResult authResult) {
+                                                mActivityHelper.dismissDialog();
+                                                SmartlockUtil.saveCredentialOrFinish(
+                                                        WelcomeBackPasswordPrompt.this,
+                                                        RC_CREDENTIAL_SAVE,
+                                                        mActivityHelper.getFlowParams(),
+                                                        authResult.getUser(),
+                                                        password,
+                                                        null /* provider */);
+                                            }
+                                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        String error = e.getLocalizedMessage();
+                        mPasswordLayout.setError(error);
+                    }
+                });
     }
 
     public static Intent createIntent(
