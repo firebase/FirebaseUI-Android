@@ -15,11 +15,13 @@
 package com.firebase.ui.database;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Query;
 
@@ -72,6 +74,11 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             @Override
             public void onChanged(EventType type, int index, int oldIndex) {
                 notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                FirebaseListAdapter.this.onCancelled(databaseError);
             }
         });
     }
@@ -133,6 +140,16 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         populateView(view, model, position);
         return view;
     }
+    
+    /**
+     * This method will be triggered in the event that this listener either failed at the server,
+     * or is removed as a result of the security and Firebase Database rules.
+     *
+     * @param databaseError A description of the error that occurred
+     */
+    protected void onCancelled(DatabaseError databaseError) {
+        Log.w("FirebaseRecyclerAdapter", databaseError.toException());
+    }
 
     /**
      * Each time the data at the given Firebase location changes, this method will be called for each item that needs
@@ -146,5 +163,4 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * @param position  The position in the list of the view being populated
      */
     abstract protected void populateView(View v, T model, int position);
-
 }

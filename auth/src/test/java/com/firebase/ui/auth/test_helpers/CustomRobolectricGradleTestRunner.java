@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.test_helpers;
 
+import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
@@ -34,12 +35,15 @@ public class CustomRobolectricGradleTestRunner extends RobolectricGradleTestRunn
     @Override
     public InstrumentationConfiguration createClassLoaderConfig(Config config) {
         InstrumentationConfiguration.Builder builder = InstrumentationConfiguration.newBuilder();
+
         builder.addInstrumentedClass(FirebaseAuthWrapperFactory.class.getName());
         builder.addInstrumentedClass(CredentialsAPI.class.getName());
         builder.addInstrumentedClass(ActivityHelper.class.getName());
         builder.addInstrumentedClass(FirebaseAuthWrapperImpl.class.getName());
         builder.addInstrumentedClass(FacebookProvider.class.getName());
         builder.addInstrumentedClass(GoogleProvider.class.getName());
+        builder.addInstrumentedClass(LoginManager.class.getName());
+
         return builder.build();
     }
 }
