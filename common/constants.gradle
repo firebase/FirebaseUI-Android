@@ -7,4 +7,4 @@ project.ext.version = '0.5.3'
 project.ext.pomdesc = 'Firebase UI Android'
 project.ext.buildtools = '24.0.2'
 project.ext.compileSdk = 24
-project.ext.targetSdk = 23
+project.ext.targetSdk = 24
