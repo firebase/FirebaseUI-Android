@@ -26,6 +26,14 @@ import java.util.List;
  * This class implements an array-like collection on top of a Firebase location.
  */
 class FirebaseArray implements ChildEventListener {
+    public interface OnChangedListener {
+        enum EventType {Added, Changed, Removed, Moved}
+
+        void onChanged(EventType type, int index, int oldIndex);
+
+        void onCancelled(DatabaseError databaseError);
+    }
+
     private Query mQuery;
     private OnChangedListener mListener;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
@@ -57,8 +65,9 @@ class FirebaseArray implements ChildEventListener {
         for (DataSnapshot snapshot : mSnapshots) {
             if (snapshot.getKey().equals(key)) {
                 return index;
+            } else {
+                index++;
             }
-            index++;
         }
 
         throw new IllegalArgumentException("Key not found");
@@ -66,7 +75,7 @@ class FirebaseArray implements ChildEventListener {
 
     // [START] of ChildEventListener methods
     @Override
-    public void onChildAdded(DataSnapshot snapshot, final String previousChildKey) {
+    public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
         int index = 0;
         if (previousChildKey != null) {
             index = getIndexForKey(previousChildKey) + 1;
@@ -91,7 +100,7 @@ class FirebaseArray implements ChildEventListener {
     }
 
     @Override
-    public void onChildMoved(DataSnapshot snapshot, final String previousChildKey) {
+    public void onChildMoved(DataSnapshot snapshot, String previousChildKey) {
         int oldIndex = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(oldIndex);
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
@@ -123,13 +132,5 @@ class FirebaseArray implements ChildEventListener {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
         }
-    }
-
-    public interface OnChangedListener {
-        void onChanged(EventType type, int index, int oldIndex);
-
-        void onCancelled(DatabaseError databaseError);
-
-        enum EventType {Added, Changed, Removed, Moved}
     }
 }

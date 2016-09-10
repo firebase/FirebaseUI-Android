@@ -57,13 +57,15 @@ class IndexFirebaseArray extends FirebaseArray {
         return mSnapshots.get(index);
     }
 
+
     private int getIndexForKey(String key) {
         int index = 0;
         for (DataSnapshot snapshot : mSnapshots) {
             if (snapshot.getKey().equals(key)) {
                 return index;
+            } else {
+                index++;
             }
-            index++;
         }
 
         throw new IllegalArgumentException("Key not found");
