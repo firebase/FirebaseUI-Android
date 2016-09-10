@@ -48,7 +48,7 @@ class FirebaseArray implements ChildEventListener {
     }
 
     protected DataSnapshot internalGetItem(int index) {
-        // Needed for IndexedFirebaseArray
+        // Needed for IndexFirebaseArray
         return mSnapshots.get(index);
     }
 

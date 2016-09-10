@@ -26,13 +26,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-class IndexedFirebaseArray extends FirebaseArray {
+class IndexFirebaseArray extends FirebaseArray {
     private DatabaseReference mRef;
     private OnChangedListener mListener;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
     private SimpleArrayMap<DatabaseReference, ValueEventListener> mValueEventListeners = new SimpleArrayMap<>();
 
-    public IndexedFirebaseArray(Query keyRef, DatabaseReference dataRef) {
+    public IndexFirebaseArray(Query keyRef, DatabaseReference dataRef) {
         super(keyRef);
         mRef = dataRef;
     }
