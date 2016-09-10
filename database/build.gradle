@@ -19,6 +19,7 @@ android {
 }
 
 dependencies {
+    testCompile 'junit:junit:4.12'
     compile "com.android.support:appcompat-v7:${project.ext.support_library_version}"
     compile "com.android.support:recyclerview-v7:${project.ext.support_library_version}"
 
