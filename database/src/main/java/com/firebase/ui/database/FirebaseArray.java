@@ -14,57 +14,29 @@ package com.firebase.ui.database;
  * limitations under the License.
  */
 
-import android.support.v4.util.SimpleArrayMap;
-
-import android.util.Log;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class implements an array-like collection on top of a Firebase location.
  */
 class FirebaseArray implements ChildEventListener {
-    public interface OnChangedListener {
-        enum EventType {Added, Changed, Removed, Moved}
-
-        void onChanged(EventType type, int index, int oldIndex);
-
-        void onCancelled(DatabaseError databaseError);
-    }
-
     private Query mQuery;
-    private DatabaseReference mRef;
     private OnChangedListener mListener;
-    private ArrayList<DataSnapshot> mSnapshots = new ArrayList<>();
-    private SimpleArrayMap<DatabaseReference, ValueEventListener> mValueEventListeners;
+    private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     public FirebaseArray(Query ref) {
         mQuery = ref;
         mQuery.addChildEventListener(this);
     }
 
-    public FirebaseArray(Query keyRef, DatabaseReference dataRef) {
-        mQuery = keyRef;
-        mRef = dataRef;
-        mQuery.addChildEventListener(this);
-        mValueEventListeners = new SimpleArrayMap<>();
-    }
-
     public void cleanup() {
         mQuery.removeEventListener(this);
-
-        if (mRef != null) {
-            for (int i = 0; i < mValueEventListeners.size(); i++) {
-                DatabaseReference ref = mValueEventListeners.keyAt(i);
-                ref.removeEventListener(mValueEventListeners.get(ref));
-            }
-        }
     }
 
     public int getCount() {
@@ -75,74 +47,40 @@ class FirebaseArray implements ChildEventListener {
         return mSnapshots.get(index);
     }
 
+    protected DataSnapshot internalGetItem(int index) {
+        // Needed for IndexedFirebaseArray
+        return mSnapshots.get(index);
+    }
+
     private int getIndexForKey(String key) {
         int index = 0;
         for (DataSnapshot snapshot : mSnapshots) {
             if (snapshot.getKey().equals(key)) {
                 return index;
-            } else {
-                index++;
             }
+            index++;
         }
+
         throw new IllegalArgumentException("Key not found");
     }
 
-    // Start of ChildEventListener methods
+    // [START] of ChildEventListener methods
     @Override
     public void onChildAdded(DataSnapshot snapshot, final String previousChildKey) {
-        if (mRef == null) {
-            // In this case snapshot is the non-indexed data
-            addChild(snapshot, previousChildKey);
-        } else {
-            // In this case snapshot is the key to the indexed data
-            final boolean[] isNewListener = {true};
-
-            ValueEventListener valueEventListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() != null) {
-                        if (isNewListener[0]) {
-                            addChild(dataSnapshot, previousChildKey);
-                            isNewListener[0] = false;
-                        } else {
-                            int index = getIndexForKey(dataSnapshot.getKey());
-                            mSnapshots.set(index, dataSnapshot);
-                            notifyChangedListeners(OnChangedListener.EventType.Changed, index);
-                        }
-                    } else {
-                        Log.w("Firebase-UI", "Key not found at ref: " + dataSnapshot.getRef().toString());
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    notifyCancelledListeners(databaseError);
-                }
-            };
-
-            DatabaseReference ref = mRef.child(snapshot.getKey());
-            ref.addValueEventListener(valueEventListener);
-            mValueEventListeners.put(ref, valueEventListener);
-        }
-    }
-
-    private void addChild(DataSnapshot snapshot, String previousChildKey) {
         int index = 0;
         if (previousChildKey != null) {
             index = getIndexForKey(previousChildKey) + 1;
         }
+
         mSnapshots.add(index, snapshot);
         notifyChangedListeners(OnChangedListener.EventType.Added, index);
     }
 
     @Override
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
-        if (mRef == null) {
-            int index = getIndexForKey(snapshot.getKey());
-            mSnapshots.set(index, snapshot);
-            notifyChangedListeners(OnChangedListener.EventType.Changed, index);
-        }
-        // else: we don't care because the key's value should not change
+        int index = getIndexForKey(snapshot.getKey());
+        mSnapshots.set(index, snapshot);
+        notifyChangedListeners(OnChangedListener.EventType.Changed, index);
     }
 
     @Override
@@ -150,36 +88,10 @@ class FirebaseArray implements ChildEventListener {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
         notifyChangedListeners(OnChangedListener.EventType.Removed, index);
-
-        if (mRef != null) {
-            // We need to do some extra cleanup and remove the listener
-            DatabaseReference ref = mRef.child(snapshot.getKey());
-            ref.removeEventListener(mValueEventListeners.get(ref));
-            mValueEventListeners.remove(ref);
-        }
     }
 
     @Override
     public void onChildMoved(DataSnapshot snapshot, final String previousChildKey) {
-        if (mRef == null) {
-            moveChild(snapshot, previousChildKey);
-        } else {
-            mRef.child(snapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    moveChild(dataSnapshot, previousChildKey);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    notifyCancelledListeners(databaseError);
-                }
-            });
-        }
-
-    }
-
-    private void moveChild(DataSnapshot snapshot, String previousChildKey) {
         int oldIndex = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(oldIndex);
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
@@ -191,7 +103,7 @@ class FirebaseArray implements ChildEventListener {
     public void onCancelled(DatabaseError databaseError) {
         notifyCancelledListeners(databaseError);
     }
-    // End of ChildEventListener methods
+    // [END] of ChildEventListener methods
 
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
@@ -211,5 +123,13 @@ class FirebaseArray implements ChildEventListener {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
         }
+    }
+
+    public interface OnChangedListener {
+        void onChanged(EventType type, int index, int oldIndex);
+
+        void onCancelled(DatabaseError databaseError);
+
+        enum EventType {Added, Changed, Removed, Moved}
     }
 }

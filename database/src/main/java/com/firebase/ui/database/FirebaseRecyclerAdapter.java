@@ -119,7 +119,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         mModelClass = modelClass;
         mModelLayout = modelLayout;
         mViewHolderClass = viewHolderClass;
-        mSnapshots = new FirebaseArray(keyRef, dataRef);
+        mSnapshots = new IndexedFirebaseArray(keyRef, dataRef);
 
         setOnChangedListener();
     }
@@ -245,7 +245,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     public int getItemViewType(int position) {
         return mModelLayout;
     }
-    
+
     /**
      * This method will be triggered in the event that this listener either failed at the server,
      * or is removed as a result of the security and Firebase Database rules.

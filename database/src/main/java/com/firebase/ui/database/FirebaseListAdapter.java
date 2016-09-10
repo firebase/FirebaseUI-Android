@@ -97,7 +97,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mModelClass = modelClass;
         mLayout = modelLayout;
         mActivity = activity;
-        mSnapshots = new FirebaseArray(keyRef, dataRef);
+        mSnapshots = new IndexedFirebaseArray(keyRef, dataRef);
 
         setOnChangedListener();
     }
