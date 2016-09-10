@@ -14,12 +14,8 @@
 
 package com.firebase.ui.auth.test_helpers;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProvider;
@@ -29,6 +25,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 @Implements(GoogleProvider.class)
@@ -54,7 +53,7 @@ public class GoogleProviderShadow {
     public void __constructor__(Activity activity, IDPProviderParcel parcel, String email) {}
 
 
-        @Implementation
+    @Implementation
     public void setAuthenticationCallback(IDPProvider.IDPCallback idpCallback) {
         mCallback = idpCallback;
     }

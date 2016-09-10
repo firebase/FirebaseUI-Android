@@ -14,12 +14,10 @@
 
 package com.firebase.ui.auth.test_helpers;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.facebook.login.LoginResult;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.IDPProvider;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
@@ -28,6 +26,9 @@ import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 @Implements(FacebookProvider.class)
@@ -58,7 +59,7 @@ public class FacebookProviderShadow {
     }
 
     @Implementation
-    public void startLogin(Activity activity) {
+    public void onSuccess(final LoginResult loginResult) {
         mCallback.onSuccess(mMockIdpResponse);
     }
 }
