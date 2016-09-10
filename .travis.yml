@@ -3,10 +3,10 @@ jdk:
   - oraclejdk8
 android:
   components:
-    - platform-tools
-    - tools
-    - build-tools
-    - android
+    - platform-tools-24.0.2
+    - tools-25.2.2
+    - build-tools-24.0.2
+    - android-24
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
