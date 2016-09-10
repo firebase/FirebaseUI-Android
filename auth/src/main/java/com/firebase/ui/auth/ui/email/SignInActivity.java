@@ -35,11 +35,13 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
 import com.firebase.ui.auth.util.SmartlockUtil;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Activity to sign in with email and password.
+ */
 public class SignInActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "SignInActivity";
     private static final int RC_CREDENTIAL_SAVE = 101;
@@ -100,25 +102,26 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Error signing in with email and password"))
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        mActivityHelper.dismissDialog();
-                        if (task.isSuccessful()) {
-                            FirebaseUser firebaseUser = task.getResult().getUser();
-                            SmartlockUtil.saveCredentialOrFinish(
-                                    SignInActivity.this,
-                                    RC_CREDENTIAL_SAVE,
-                                    mActivityHelper.getFlowParams(),
-                                    firebaseUser,
-                                    password,
-                                    null /* provider */);
-                        } else {
-                            TextInputLayout passwordInput =
-                                    (TextInputLayout) findViewById(R.id.password_layout);
-                            passwordInput.setError(
-                                    getString(com.firebase.ui.auth.R.string.login_error));
-                        }
+                    public void onSuccess(AuthResult authResult) {
+                        // Save credential in SmartLock (if enabled)
+                        SmartlockUtil.saveCredentialOrFinish(
+                                SignInActivity.this,
+                                RC_CREDENTIAL_SAVE,
+                                mActivityHelper.getFlowParams(),
+                                authResult.getUser(),
+                                password,
+                                null /* provider */);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Show error message
+                        TextInputLayout passwordInput =
+                                (TextInputLayout) findViewById(R.id.password_layout);
+                        passwordInput.setError(getString(R.string.login_error));
                     }
                 });
     }
