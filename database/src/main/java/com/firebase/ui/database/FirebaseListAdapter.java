@@ -51,10 +51,10 @@ import com.google.firebase.database.Query;
  */
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
+    private Activity mActivity;
     private final Class<T> mModelClass;
-    protected int mLayout;
-    protected Activity mActivity;
-    FirebaseArray mSnapshots;
+    private int mLayout;
+    private FirebaseArray mSnapshots;
 
 
     /**

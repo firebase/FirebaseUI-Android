@@ -71,10 +71,10 @@ import java.lang.reflect.InvocationTargetException;
  */
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    Class<T> mModelClass;
-    protected int mModelLayout;
-    Class<VH> mViewHolderClass;
-    FirebaseArray mSnapshots;
+    private Class<T> mModelClass;
+    private int mModelLayout;
+    private Class<VH> mViewHolderClass;
+    private FirebaseArray mSnapshots;
 
     /**
      * @param modelClass Firebase will marshall the data at a location into an instance of a class that you provide
