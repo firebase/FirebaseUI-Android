@@ -57,20 +57,6 @@ class IndexFirebaseArray extends FirebaseArray {
         return mSnapshots.get(index);
     }
 
-
-    private int getIndexForKey(String key) {
-        int index = 0;
-        for (DataSnapshot snapshot : mSnapshots) {
-            if (snapshot.getKey().equals(key)) {
-                return index;
-            } else {
-                index++;
-            }
-        }
-
-        throw new IllegalArgumentException("Key not found");
-    }
-
     @Override
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
@@ -93,10 +79,9 @@ class IndexFirebaseArray extends FirebaseArray {
 
                                     isNewListener[0] = false;
                                 } else {
-                                    mSnapshots.set(getIndexForKey(dataSnapshot.getKey()), dataSnapshot);
-                                    mListener.onChanged(OnChangedListener.EventType.Changed,
-                                                        getIndexForKey(dataSnapshot.getKey()),
-                                                        -1);
+                                    int index = getIndexForKey(dataSnapshot.getKey());
+                                    mSnapshots.set(index, dataSnapshot);
+                                    mListener.onChanged(OnChangedListener.EventType.Changed, index, -1);
                                 }
                             } else {
                                 Log.w("Firebase-UI", "Key not found at ref: " + dataSnapshot.getRef().toString());
