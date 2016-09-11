@@ -37,7 +37,7 @@ public class FirebaseArrayTest extends AndroidTestCase {
 
     @Before
     public void setUp() throws Exception {
-        FirebaseApp app = DatabaseTest.getAppInstance(getContext());
+        FirebaseApp app = ApplicationTest.getAppInstance(getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
         mArray = new FirebaseArray(mRef);
         mRef.removeValue();

@@ -68,7 +68,7 @@ public class FirebaseArrayOfObjectsTest extends AndroidTestCase {
 
     @Before
     public void setUp() throws Exception {
-        FirebaseApp app = DatabaseTest.getAppInstance(getContext());
+        FirebaseApp app = ApplicationTest.getAppInstance(getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference()
                 .child("firebasearray").child("objects");
         mArray = new FirebaseArray(mRef);

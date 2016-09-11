@@ -24,11 +24,11 @@ import com.google.firebase.FirebaseOptions;
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
  */
-public class DatabaseTest extends ApplicationTestCase<Application> {
+public class ApplicationTest extends ApplicationTestCase<Application> {
 
     private static final String APP_NAME = "firebaseui-tests";
 
-    public DatabaseTest() {
+    public ApplicationTest() {
         super(Application.class);
     }
 
