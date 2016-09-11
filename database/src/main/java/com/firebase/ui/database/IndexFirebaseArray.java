@@ -117,21 +117,18 @@ class IndexFirebaseArray extends FirebaseArray {
                     // We don't care because the key's value shouldn't matter.
                     break;
                 case Removed:
-                    DatabaseReference rmRef = mRef.child(internalGetItem(index).getKey());
+                    DatabaseReference rmRef = mRef.child(mSnapshots.get(index).getKey());
                     rmRef.removeEventListener(mValueEventListeners.get(rmRef));
                     mValueEventListeners.remove(rmRef);
+                    mSnapshots.remove(index);
 
-                    mListener.onChanged(OnChangedListener.EventType.Removed,
-                                        index,
-                                        -1);
+                    mListener.onChanged(OnChangedListener.EventType.Removed, index, -1);
                     break;
                 case Moved:
                     DataSnapshot tmp = mSnapshots.remove(oldIndex);
                     mSnapshots.add(index, tmp);
 
-                    mListener.onChanged(OnChangedListener.EventType.Moved,
-                                        index,
-                                        oldIndex);
+                    mListener.onChanged(OnChangedListener.EventType.Moved, index, oldIndex);
                     break;
                 default:
                     throw new IllegalStateException("Incomplete case statement");
