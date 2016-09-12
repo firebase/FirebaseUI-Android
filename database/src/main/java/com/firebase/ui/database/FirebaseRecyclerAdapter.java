@@ -70,11 +70,10 @@ import java.lang.reflect.InvocationTargetException;
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
-
-    private Class<T> mModelClass;
-    private int mModelLayout;
-    private Class<VH> mViewHolderClass;
-    private FirebaseArray mSnapshots;
+    Class<T> mModelClass;
+    int mModelLayout;
+    Class<VH> mViewHolderClass;
+    FirebaseArray mSnapshots;
 
     /**
      * @param modelClass Firebase will marshall the data at a location into an instance of a class that you provide
