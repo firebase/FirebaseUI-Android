@@ -28,7 +28,6 @@ import java.util.List;
 
 class IndexFirebaseArray extends FirebaseArray {
     private DatabaseReference mRef;
-    private OnChangedListener mListener;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
     private SimpleArrayMap<DatabaseReference, ValueEventListener> mValueEventListeners = new SimpleArrayMap<>();
 
@@ -57,67 +56,78 @@ class IndexFirebaseArray extends FirebaseArray {
         return mSnapshots.get(index);
     }
 
-    @Override
-    public void setOnChangedListener(OnChangedListener listener) {
-        mListener = listener;
+    private int getIndexForKey(String key) {
+        int index = 0;
+        for (DataSnapshot snapshot : mSnapshots) {
+            if (snapshot.getKey().equals(key)) {
+                return index;
+            }
+            index++;
+        }
+
+        throw new IllegalArgumentException("Key not found");
     }
 
     @Override
-    protected void notifyChangedListeners(OnChangedListener.EventType type, final int index, int oldIndex) {
-        if (mListener != null) {
-            switch (type) {
-                case Added:
-                    final boolean[] isNewListener = {true};
+    public void onChildAdded(DataSnapshot keySnapshot, final String previousChildKey) {
+        final boolean[] isNewListener = {true};
 
-                    ValueEventListener valueEventListener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue() != null) {
-                                if (isNewListener[0]) {
-                                    mSnapshots.add(index, dataSnapshot);
-                                    mListener.onChanged(OnChangedListener.EventType.Added, index, -1);
-
-                                    isNewListener[0] = false;
-                                } else {
-                                    int index = getIndexForKey(dataSnapshot.getKey());
-                                    mSnapshots.set(index, dataSnapshot);
-                                    mListener.onChanged(OnChangedListener.EventType.Changed, index, -1);
-                                }
-                            } else {
-                                Log.w("Firebase-UI", "Key not found at ref: " + dataSnapshot.getRef().toString());
-                            }
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.getValue() != null) {
+                    if (isNewListener[0]) {
+                        int index = 0;
+                        if (previousChildKey != null) {
+                            index = getIndexForKey(previousChildKey) + 1;
                         }
+                        mSnapshots.add(index, snapshot);
+                        notifyChangedListeners(OnChangedListener.EventType.Added, index);
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            notifyCancelledListeners(databaseError);
-                        }
-                    };
-
-                    DatabaseReference ref = mRef.child(internalGetItem(index).getKey());
-                    ref.addValueEventListener(valueEventListener);
-                    mValueEventListeners.put(ref, valueEventListener);
-                    break;
-                case Changed:
-                    // We don't care because the key's value shouldn't matter.
-                    break;
-                case Removed:
-                    DatabaseReference rmRef = mRef.child(mSnapshots.get(index).getKey());
-                    rmRef.removeEventListener(mValueEventListeners.get(rmRef));
-                    mValueEventListeners.remove(rmRef);
-                    mSnapshots.remove(index);
-
-                    mListener.onChanged(OnChangedListener.EventType.Removed, index, -1);
-                    break;
-                case Moved:
-                    DataSnapshot tmp = mSnapshots.remove(oldIndex);
-                    mSnapshots.add(index, tmp);
-
-                    mListener.onChanged(OnChangedListener.EventType.Moved, index, oldIndex);
-                    break;
-                default:
-                    throw new IllegalStateException("Incomplete case statement");
+                        isNewListener[0] = false;
+                    } else {
+                        int index = getIndexForKey(snapshot.getKey());
+                        mSnapshots.set(index, snapshot);
+                        notifyChangedListeners(OnChangedListener.EventType.Changed, index);
+                    }
+                } else {
+                    Log.w("Firebase-UI", "Key not found at ref: " + snapshot.getRef().toString());
+                }
             }
-        }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                notifyCancelledListeners(databaseError);
+            }
+        };
+
+        DatabaseReference ref = mRef.child(keySnapshot.getKey());
+        ref.addValueEventListener(valueEventListener);
+        mValueEventListeners.put(ref, valueEventListener);
+    }
+
+    @Override
+    public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
+    }
+
+    @Override
+    public void onChildRemoved(DataSnapshot snapshot) {
+        int index = getIndexForKey(snapshot.getKey());
+        DatabaseReference ref = mRef.child(snapshot.getKey());
+
+        ref.removeEventListener(mValueEventListeners.get(ref));
+        mSnapshots.remove(index);
+        mValueEventListeners.remove(ref);
+
+        notifyChangedListeners(OnChangedListener.EventType.Removed, index);
+    }
+
+    @Override
+    public void onChildMoved(DataSnapshot keySnapshot, String previousChildKey) {
+        int oldIndex = getIndexForKey(keySnapshot.getKey());
+        DataSnapshot snapshot = mSnapshots.remove(oldIndex);
+        int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
+        mSnapshots.add(newIndex, snapshot);
+        notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
     }
 }

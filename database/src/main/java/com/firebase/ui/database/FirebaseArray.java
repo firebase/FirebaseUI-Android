@@ -26,18 +26,9 @@ import java.util.List;
  * This class implements an array-like collection on top of a Firebase location.
  */
 class FirebaseArray implements ChildEventListener {
-    public interface OnChangedListener {
-        enum EventType {Added, Changed, Removed, Moved}
-
-        void onChanged(EventType type, int index, int oldIndex);
-
-        void onCancelled(DatabaseError databaseError);
-    }
-
     private Query mQuery;
     private OnChangedListener mListener;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
-
     public FirebaseArray(Query ref) {
         mQuery = ref;
         mQuery.addChildEventListener(this);
@@ -55,12 +46,7 @@ class FirebaseArray implements ChildEventListener {
         return mSnapshots.get(index);
     }
 
-    protected DataSnapshot internalGetItem(int index) {
-        // Needed for IndexFirebaseArray
-        return mSnapshots.get(index);
-    }
-
-    int getIndexForKey(String key) {
+    private int getIndexForKey(String key) {
         int index = 0;
         for (DataSnapshot snapshot : mSnapshots) {
             if (snapshot.getKey().equals(key)) {
@@ -112,11 +98,11 @@ class FirebaseArray implements ChildEventListener {
     public void onCancelled(DatabaseError databaseError) {
         notifyCancelledListeners(databaseError);
     }
-    // [END] of ChildEventListener methods
 
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
+    // [END] of ChildEventListener methods
 
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
@@ -132,5 +118,13 @@ class FirebaseArray implements ChildEventListener {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
         }
+    }
+
+    public interface OnChangedListener {
+        void onChanged(EventType type, int index, int oldIndex);
+
+        void onCancelled(DatabaseError databaseError);
+
+        enum EventType {Added, Changed, Removed, Moved}
     }
 }
