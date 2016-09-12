@@ -29,6 +29,7 @@ import java.util.List;
 class IndexFirebaseArray extends FirebaseArray {
     private DatabaseReference mRef;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
+    private List<DataSnapshot> mNullableSnapshots = new ArrayList<>();
     private SimpleArrayMap<DatabaseReference, ValueEventListener> mValueEventListeners = new SimpleArrayMap<>();
 
     public IndexFirebaseArray(Query keyRef, DatabaseReference dataRef) {
@@ -65,7 +66,41 @@ class IndexFirebaseArray extends FirebaseArray {
                 index++;
             }
         }
+
+        // Searching through non-null snapshots failed. We now need to look through the nullable snapshots.
+
+        return getNullableSnapshotIndex(key) - getNullsBeforeInclusiveIndex(index);
+    }
+
+    private int getNullableSnapshotIndex(String key) {
+        int index = 0;
+        for (DataSnapshot snapshot : mNullableSnapshots) {
+            if (snapshot.getKey().equals(key)) {
+                return index;
+            } else {
+                index++;
+            }
+        }
         throw new IllegalArgumentException("Key not found");
+    }
+
+    private int getNullsBeforeInclusiveIndex(int index) {
+        int total = 0;
+        for (int i = 0; i <= index; i++) {
+            if (mNullableSnapshots.get(i).getValue() == null) {
+                total++;
+            }
+        }
+        return total;
+    }
+
+    private boolean containsKey(String key) {
+        for (DataSnapshot snapshot : mNullableSnapshots) {
+            if (snapshot.getKey().equals(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -81,17 +116,25 @@ class IndexFirebaseArray extends FirebaseArray {
                         if (previousChildKey != null) {
                             index = getIndexForKey(previousChildKey) + 1;
                         }
-                        mSnapshots.add(index, snapshot);
+                        add(index, snapshot);
                         notifyChangedListeners(OnChangedListener.EventType.Added, index);
 
                         isNewListener[0] = false;
                     } else {
                         int index = getIndexForKey(snapshot.getKey());
-                        mSnapshots.set(index, snapshot);
+                        set(index, snapshot);
                         notifyChangedListeners(OnChangedListener.EventType.Changed, index);
                     }
                 } else {
                     Log.w("Firebase-UI", "Key not found at ref: " + snapshot.getRef().toString());
+
+                    if (!containsKey(snapshot.getKey())) {
+                        int index = 0;
+                        if (previousChildKey != null) {
+                            index = getIndexForKey(previousChildKey) + 1;
+                        }
+                        mNullableSnapshots.add(index, snapshot);
+                    }
                 }
             }
 
@@ -116,7 +159,7 @@ class IndexFirebaseArray extends FirebaseArray {
         DatabaseReference ref = mRef.child(snapshot.getKey());
 
         ref.removeEventListener(mValueEventListeners.get(ref));
-        mSnapshots.remove(index);
+        remove(index);
         mValueEventListeners.remove(ref);
 
         notifyChangedListeners(OnChangedListener.EventType.Removed, index);
@@ -125,9 +168,24 @@ class IndexFirebaseArray extends FirebaseArray {
     @Override
     public void onChildMoved(DataSnapshot keySnapshot, String previousChildKey) {
         int oldIndex = getIndexForKey(keySnapshot.getKey());
-        DataSnapshot snapshot = mSnapshots.remove(oldIndex);
-        int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
-        mSnapshots.add(newIndex, snapshot);
+        DataSnapshot snapshot = remove(oldIndex);
+        int newIndex = previousChildKey == null ? 0 : getIndexForKey(previousChildKey) + 1;
+        add(newIndex, snapshot);
         notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
+    }
+
+    private void add(int index, DataSnapshot snapshot) {
+        mSnapshots.add(index, snapshot);
+        mNullableSnapshots.add(index, snapshot);
+    }
+
+    private DataSnapshot set(int index, DataSnapshot snapshot) {
+        mNullableSnapshots.set(index, snapshot);
+        return mSnapshots.set(index, snapshot);
+    }
+
+    private DataSnapshot remove(int index) {
+        mNullableSnapshots.remove(index);
+        return mSnapshots.remove(index);
     }
 }

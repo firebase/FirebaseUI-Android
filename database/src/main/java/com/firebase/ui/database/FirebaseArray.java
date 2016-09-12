@@ -26,18 +26,9 @@ import java.util.List;
  * This class implements an array-like collection on top of a Firebase location.
  */
 class FirebaseArray implements ChildEventListener {
-    public interface OnChangedListener {
-        void onChanged(EventType type, int index, int oldIndex);
-
-        void onCancelled(DatabaseError databaseError);
-
-        enum EventType {Added, Changed, Removed, Moved}
-    }
-    
     private Query mQuery;
     private OnChangedListener mListener;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
-
     public FirebaseArray(Query ref) {
         mQuery = ref;
         mQuery.addChildEventListener(this);
@@ -64,7 +55,6 @@ class FirebaseArray implements ChildEventListener {
                 index++;
             }
         }
-
         throw new IllegalArgumentException("Key not found");
     }
 
@@ -111,11 +101,11 @@ class FirebaseArray implements ChildEventListener {
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
-    // [END] of ChildEventListener methods
 
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
+    // [END] of ChildEventListener methods
 
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
@@ -127,5 +117,13 @@ class FirebaseArray implements ChildEventListener {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
         }
+    }
+
+    public interface OnChangedListener {
+        void onChanged(EventType type, int index, int oldIndex);
+
+        void onCancelled(DatabaseError databaseError);
+
+        enum EventType {Added, Changed, Removed, Moved}
     }
 }
