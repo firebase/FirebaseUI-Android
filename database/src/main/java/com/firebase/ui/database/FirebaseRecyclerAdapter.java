@@ -68,6 +68,8 @@ import java.lang.reflect.InvocationTargetException;
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+    private static final String TAG = FirebaseRecyclerAdapter.class.getSimpleName();
+
     protected int mModelLayout;
     Class<T> mModelClass;
     Class<VH> mViewHolderClass;
@@ -113,7 +115,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      *                        instance of the corresponding view with the data from an instance of modelClass.
      * @param viewHolderClass The class that hold references to all sub-views in an instance modelLayout.
      * @param ref             The Firebase location to watch for data changes. Can also be a slice of a location, using some
-     *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}
+     *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
     public FirebaseRecyclerAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref) {
         this(modelClass, modelLayout, viewHolderClass, new FirebaseArray(ref));
@@ -125,10 +127,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      *                        instance of the corresponding view with the data from an instance of modelClass.
      * @param viewHolderClass The class that hold references to all sub-views in an instance modelLayout.
      * @param ref             The Firebase location to watch for data changes. Can also be a slice of a location, using some
-     *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}
+     *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
     public FirebaseRecyclerAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, DatabaseReference ref) {
-        this(modelClass, modelLayout, viewHolderClass, (Query) ref);
+        this(modelClass, modelLayout, viewHolderClass, new FirebaseArray(ref));
     }
 
     public void cleanup() {
@@ -200,7 +202,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * @param databaseError A description of the error that occurred
      */
     protected void onCancelled(DatabaseError databaseError) {
-        Log.w("FirebaseRecyclerAdapter", databaseError.toException());
+        Log.w(TAG, databaseError.toException());
     }
 
     /**

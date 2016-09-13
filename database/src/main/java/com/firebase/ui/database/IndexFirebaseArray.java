@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class IndexFirebaseArray extends FirebaseArray {
+    private static final String TAG = IndexFirebaseArray.class.getSimpleName();
+
     private DatabaseReference mRef;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
     private List<DataSnapshot> mNullableSnapshots = new ArrayList<>();
@@ -40,7 +42,6 @@ class IndexFirebaseArray extends FirebaseArray {
     @Override
     public void cleanup() {
         super.cleanup();
-
         for (int i = 0; i < mValueEventListeners.size(); i++) {
             DatabaseReference ref = mValueEventListeners.keyAt(i);
             ref.removeEventListener(mValueEventListeners.get(ref));
@@ -67,7 +68,7 @@ class IndexFirebaseArray extends FirebaseArray {
             }
         }
 
-        // Searching through non-null snapshots failed. We now need to look through the nullable snapshots.
+        // Searching through non-null snapshots failed. We need to look through the nullable snapshots.
 
         return getNullableSnapshotIndex(key) - getNullsBeforeInclusiveIndex(index);
     }
@@ -126,12 +127,12 @@ class IndexFirebaseArray extends FirebaseArray {
                         notifyChangedListeners(OnChangedListener.EventType.Changed, index);
                     }
                 } else {
-                    Log.w("Firebase-UI", "Key not found at ref: " + snapshot.getRef().toString());
+                    Log.w(TAG, "Key not found at ref: " + snapshot.getRef().toString());
 
                     if (!containsKey(snapshot.getKey())) {
                         int index = 0;
                         if (previousChildKey != null) {
-                            index = getIndexForKey(previousChildKey) + 1;
+                            index = getNullableSnapshotIndex(previousChildKey) + 1;
                         }
                         mNullableSnapshots.add(index, snapshot);
                     }
@@ -151,6 +152,7 @@ class IndexFirebaseArray extends FirebaseArray {
 
     @Override
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
+        // Do nothing. At the moment, there isn't a need to watch for changes at the keyRef's location.
     }
 
     @Override
@@ -158,8 +160,8 @@ class IndexFirebaseArray extends FirebaseArray {
         int index = getIndexForKey(snapshot.getKey());
         DatabaseReference ref = mRef.child(snapshot.getKey());
 
-        ref.removeEventListener(mValueEventListeners.get(ref));
         remove(index);
+        ref.removeEventListener(mValueEventListeners.get(ref));
         mValueEventListeners.remove(ref);
 
         notifyChangedListeners(OnChangedListener.EventType.Removed, index);
@@ -175,8 +177,8 @@ class IndexFirebaseArray extends FirebaseArray {
     }
 
     private void add(int index, DataSnapshot snapshot) {
-        mSnapshots.add(index, snapshot);
         mNullableSnapshots.add(index, snapshot);
+        mSnapshots.add(index, snapshot);
     }
 
     private DataSnapshot set(int index, DataSnapshot snapshot) {

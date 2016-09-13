@@ -65,7 +65,6 @@ class FirebaseArray implements ChildEventListener {
         if (previousChildKey != null) {
             index = getIndexForKey(previousChildKey) + 1;
         }
-
         mSnapshots.add(index, snapshot);
         notifyChangedListeners(OnChangedListener.EventType.Added, index);
     }
@@ -88,7 +87,7 @@ class FirebaseArray implements ChildEventListener {
     public void onChildMoved(DataSnapshot snapshot, String previousChildKey) {
         int oldIndex = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(oldIndex);
-        int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
+        int newIndex = previousChildKey == null ? 0 : getIndexForKey(previousChildKey) + 1;
         mSnapshots.add(newIndex, snapshot);
         notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
     }
@@ -101,11 +100,11 @@ class FirebaseArray implements ChildEventListener {
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
+    // [END] of ChildEventListener methods
 
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
-    // [END] of ChildEventListener methods
 
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {

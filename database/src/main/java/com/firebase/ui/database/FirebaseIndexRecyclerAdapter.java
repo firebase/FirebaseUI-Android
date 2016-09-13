@@ -66,7 +66,7 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
      * @param viewHolderClass The class that hold references to all sub-views in an instance modelLayout.
      * @param keyRef          The Firebase location containing the list of keys to be found in {@code dataRef}.
      *                        Can also be a slice of a location, using some
-     *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}
+     *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      * @param dataRef         The Firebase location to watch for data changes.
      *                        Each key key found in {@code keyRef}'s location represents a list item in the {@code RecyclerView}.
      */
@@ -85,7 +85,7 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
      * @param viewHolderClass The class that hold references to all sub-views in an instance modelLayout.
      * @param keyRef          The Firebase location containing the list of keys to be found in {@code dataRef}.
      *                        Can also be a slice of a location, using some
-     *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}
+     *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      * @param dataRef         The Firebase location to watch for data changes.
      *                        Each key key found in {@code keyRef}'s location represents a list item in the {@code RecyclerView}.
      */
@@ -94,6 +94,6 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
                                         Class<VH> viewHolderClass,
                                         DatabaseReference keyRef,
                                         DatabaseReference dataRef) {
-        this(modelClass, modelLayout, viewHolderClass, (Query) keyRef, dataRef);
+        super(modelClass, modelLayout, viewHolderClass, new IndexFirebaseArray(keyRef, dataRef));
     }
 }

@@ -36,9 +36,9 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
      *                    instance of the corresponding view with the data from an instance of modelClass.
      * @param keyRef      The Firebase location containing the list of keys to be found in {@code dataRef}.
      *                    Can also be a slice of a location, using some
-     *                    combination of {@code limit()}, {@code startAt()}, and {@code endAt()}
+     *                    combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      * @param dataRef     The Firebase location to watch for data changes.
-     *                    Each key key found in {@code keyRef}'s location represents a list item in the {@code RecyclerView}.
+     *                    Each key key found in {@code keyRef}'s location represents a list item in the {@code ListView}.
      */
     public FirebaseIndexListAdapter(Activity activity,
                                     Class<T> modelClass,
@@ -55,15 +55,15 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
      *                    instance of the corresponding view with the data from an instance of modelClass.
      * @param keyRef      The Firebase location containing the list of keys to be found in {@code dataRef}.
      *                    Can also be a slice of a location, using some
-     *                    combination of {@code limit()}, {@code startAt()}, and {@code endAt()}
+     *                    combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      * @param dataRef     The Firebase location to watch for data changes.
-     *                    Each key key found in {@code keyRef}'s location represents a list item in the {@code RecyclerView}.
+     *                    Each key key found in {@code keyRef}'s location represents a list item in the {@code ListView}.
      */
     public FirebaseIndexListAdapter(Activity activity,
                                     Class<T> modelClass,
                                     int modelLayout,
                                     DatabaseReference keyRef,
                                     DatabaseReference dataRef) {
-        this(activity, modelClass, modelLayout, (Query) keyRef, dataRef);
+        super(activity, modelClass, modelLayout, new IndexFirebaseArray(keyRef, dataRef));
     }
 }
