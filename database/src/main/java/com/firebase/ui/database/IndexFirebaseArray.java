@@ -34,7 +34,7 @@ class IndexFirebaseArray extends FirebaseArray {
     private List<DataSnapshot> mNullableSnapshots = new ArrayList<>();
     private SimpleArrayMap<DatabaseReference, ValueEventListener> mValueEventListeners = new SimpleArrayMap<>();
 
-    public IndexFirebaseArray(Query keyRef, DatabaseReference dataRef) {
+    IndexFirebaseArray(Query keyRef, DatabaseReference dataRef) {
         super(keyRef);
         mRef = dataRef;
     }
