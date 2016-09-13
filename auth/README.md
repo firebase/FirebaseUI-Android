@@ -262,6 +262,32 @@ public void onClick(View v) {
 }
 ```
 
+### Deleting accounts
+
+With the integrations provided by FirebaseUI Auth, deleting a user is a multi-stage process:
+
+1. The user must be deleted from Firebase Auth.
+2. SmartLock for Passwords must be told to delete any existing Credentials for the user, so
+   that they are not automatically prompted to sign in with a saved credential in the future.
+   
+This process is encapsulated by the `AuthUI.delete()` method, which returns a `Task` representing
+the entire operation:
+
+```java
+AuthUI.getInstance()
+        .delete(this)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    // Deletion succeeded
+                } else {
+                    // Deletion failed
+                }
+            }
+        });
+```
+
 ### Authentication flow chart
 
 The authentication flow implemented on Android is more complex than on other
