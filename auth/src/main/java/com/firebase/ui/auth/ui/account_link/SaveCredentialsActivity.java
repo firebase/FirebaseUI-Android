@@ -42,6 +42,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 public class SaveCredentialsActivity extends AppCompatBase
         implements GoogleApiClient.ConnectionCallbacks, ResultCallback<Status>,
@@ -117,7 +118,10 @@ public class SaveCredentialsActivity extends AppCompatBase
                     translatedProvider = IdentityProviders.GOOGLE;
                 } else if (mProvider.equals(FacebookAuthProvider.PROVIDER_ID)) {
                     translatedProvider = IdentityProviders.FACEBOOK;
+                } else if (mProvider.equals(TwitterAuthProvider.PROVIDER_ID)) {
+                    translatedProvider = IdentityProviders.TWITTER;
                 }
+
                 if (translatedProvider != null) {
                     builder.setAccountType(translatedProvider);
                 }
