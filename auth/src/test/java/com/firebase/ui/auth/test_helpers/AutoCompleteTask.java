@@ -108,7 +108,7 @@ public class AutoCompleteTask<TResult> extends Task {
     @NonNull
     @Override
     public Task addOnFailureListener(@NonNull Activity activity, @NonNull OnFailureListener onFailureListener) {
-        throw new RuntimeException("Method not implemented");
+        return addOnFailureListener(onFailureListener);
     }
 
     @Override

@@ -16,8 +16,8 @@ package com.firebase.ui.database;
 
 import android.test.AndroidTestCase;
 
-import com.firebase.ui.ApplicationTest;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -143,8 +143,13 @@ public class FirebaseArrayTest extends AndroidTestCase {
     public static void runAndWaitUntil(final FirebaseArray array, Query ref, Runnable task, Callable<Boolean> done) throws InterruptedException {
         final java.util.concurrent.Semaphore semaphore = new java.util.concurrent.Semaphore(0);
         array.setOnChangedListener(new FirebaseArray.OnChangedListener() {
-            public void onChanged(FirebaseArray.OnChangedListener.EventType type, int index, int oldIndex) {
+            public void onChanged(EventType type, int index, int oldIndex) {
                 semaphore.release();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                throw new IllegalStateException(databaseError.toException());
             }
         });
         task.run();

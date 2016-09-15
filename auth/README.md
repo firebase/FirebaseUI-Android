@@ -41,20 +41,20 @@ Firebase: see the
 Then, add the FirebaseUI auth library dependency. If your project uses
 Gradle, add:
 
-```
+```groovy
 dependencies {
   // ...
-  compile 'com.firebaseui:firebase-ui-auth:0.5.1'
+  compile 'com.firebaseui:firebase-ui-auth:0.5.3'
 }
 ```
 
 If instead your project uses Maven, add:
 
-```
+```xml
 <dependency>
   <groupId>com.firebaseui</groupId>
   <artifactId>firebase-ui-auth</artifactId>
-  <version>0.5.1</version>
+  <version>0.5.3</version>
 </dependency>
 ```
 
@@ -70,7 +70,7 @@ If support for Facebook Sign-in is also required, define the
 resource string `facebook_application_id` to match the application ID in
 the [Facebook developer dashboard](https://developers.facebook.com):
 
-```
+```xml
 <resources>
   <!-- ... -->
   <string name="facebook_application_id" translatable="false">APPID</string>
@@ -95,7 +95,7 @@ Before invoking the FirebaseUI authentication flow, your app should check
 whether a
 [user is already signed in](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user) from a previous session:
 
-```
+```java
 FirebaseAuth auth = FirebaseAuth.getInstance();
 if (auth.getCurrentUser() != null) {
   // already signed in
@@ -127,7 +127,7 @@ The builder provides the following customization options for the authentication 
   a link in the small-print of the account creation step for new users. If no
   terms of service URL is provided, the associated small-print is omitted.
 
-- A custom theme can specified for the flow, which is applied to all the
+- A custom theme can be specified for the flow, which is applied to all the
   activities in the flow for consistent customization of colors and typography.
 
 #### Sign-in examples
@@ -135,7 +135,7 @@ The builder provides the following customization options for the authentication 
 If no customization is required, and only email authentication is required, the sign-in flow
 can be started as follows:
 
-```
+```java
 startActivityForResult(
     // Get an instance of AuthUI based on the default app
     AuthUI.getInstance().createSignInIntentBuilder().build(),
@@ -145,7 +145,7 @@ startActivityForResult(
 You can enable sign-in providers like Google Sign-In or Facebook Log In by calling the
 `setProviders` method:
 
-```
+```java
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
@@ -159,7 +159,7 @@ startActivityForResult(
 
 If a terms of service URL and a custom theme are required:
 
-```
+```java
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
@@ -176,7 +176,7 @@ Using SmartLock is recommended to provide the best user experience, but in some 
 to disable SmartLock for testing or development.  To disable SmartLock, you can use the 
 `setIsSmartLockEnabled` method when building your sign-in Intent:
 
-```
+```java
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
@@ -188,7 +188,7 @@ startActivityForResult(
 It is often desirable to disable SmartLock in development but enable it in production. To achieve
 this, you can use the `BuildConfig.DEBUG` flag to control SmartLock:
 
-```
+```java
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
@@ -206,7 +206,7 @@ typically useful; the only recourse for most apps if sign in fails is to ask
 the user to sign in again later, or proceed with an anonymous account if
 supported.
 
-```
+```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
    super.onActivityResult(requestCode, resultCode, data);
    if (requestCode == RC_SIGN_IN) {
@@ -246,7 +246,7 @@ In order to make this process easier, AuthUI provides a simple `signOut` method
 to encapsulate this behavior. The method returns a `Task` which is marked
 completed once all necessary sign-out operations are completed:
 
-```
+```java
 public void onClick(View v) {
   if (v.getId() == R.id.sign_out) {
       AuthUI.getInstance()
@@ -303,7 +303,7 @@ the flow, a new theme can be declared. Standard material design color
 and typography properties will take effect as expected. For example, to define
 a green theme:
 
-```
+```xml
 <style name="GreenTheme" parent="FirebaseUI">
     <item name="colorPrimary">@color/material_green_500</item>
     <item name="colorPrimaryDark">@color/material_green_700</item>
@@ -317,7 +317,7 @@ a green theme:
 
 With associated colors:
 
-```
+```xml
 <color name="material_green_50">#E8F5E9</color>
 <color name="material_green_500">#4CAF50</color>
 <color name="material_green_700">#388E3C</color>
@@ -328,7 +328,7 @@ With associated colors:
 
 This would then be used in the construction of the sign-in intent:
 
-```
+```java
 startActivityForResult(
     AuthUI.getInstance(this).createSignInIntentBuilder()
         // ...
@@ -344,7 +344,7 @@ easily overridden by name in your application. See
 [the built-in strings.xml](src/main/res/values/strings.xml) and simply
 redefine a string to change it, for example:
 
-```
+```java
 <resources>
   <!-- was "Signing up..." -->
   <string name="progress_dialog_signing_up">Creating your shiny new account...</string>
@@ -353,24 +353,37 @@ redefine a string to change it, for example:
 
 ### OAuth Scope Customization
 
+#### Google
+By default, FirebaseUI requests the `email` and `profile` scopes when using Google Sign In. If you
+would like to request additional scopes from the user, add a string array resource named 
+`google_permissions` to your `strings.xml` file like this:
+
+```xml
+<!--
+    For a list of all scopes, see:
+    https://developers.google.com/identity/protocols/googlescopes
+-->
+<string-array name="google_permissions">
+    <!-- Request permission to read the user's Google Drive files -->
+    <item>https://www.googleapis.com/auth/drive.readonly</item>
+</string-array>
+```
+
+
 #### Facebook
 
 By default, FirebaseUI requests the `email` and `public_profile` permissions when initiating
-Facebook Login.  If you would like to override these scopes, add a string array resource
-to your application like this:
+Facebook Login.  If you would like to override these scopes, a string array resource named 
+`facebook_permissions` to your `strings.xml` file like this:
 
-```
+```xml
 <!--
     See:
     https://developers.facebook.com/docs/facebook-login/android
     https://developers.facebook.com/docs/facebook-login/permissions
 -->
-<array name="facebook_permissions">
-    <item>public_profile</item>
-    <item>email</item>
-    <!-- ... -->
-</array>
+<string-array name="facebook_permissions">
+    <!-- Request permission to know the user's birthday -->
+    <item>user_birthday</item>
+</string-array>
 ```
-
-Note that if you do not include at least the `email` and `public_profile` scopes, FirebaseUI
-will not work properly.

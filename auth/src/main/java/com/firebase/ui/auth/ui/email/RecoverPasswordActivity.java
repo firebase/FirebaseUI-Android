@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
@@ -30,13 +29,18 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
+/**
+ * Activity to initiate the "forgot password" flow by asking for the user's email.
+ */
 public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "RecoverPasswordActivity";
     private static final int RC_CONFIRM = 3;
+
     private EditText mEmailEditText;
     private EmailFieldValidator mEmailFieldValidator;
 
@@ -46,16 +50,15 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         setContentView(R.layout.forgot_password_layout);
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
-        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
-                .email_layout));
+        mEmailFieldValidator = new EmailFieldValidator(
+                (TextInputLayout) findViewById(R.id.email_layout));
 
         mEmailEditText = (EditText) findViewById(R.id.email);
-        Button nextButton = (Button) findViewById(R.id.button_done);
-
         if (email != null) {
             mEmailEditText.setText(email);
         }
-        nextButton.setOnClickListener(this);
+
+        findViewById(R.id.button_done).setOnClickListener(this);
     }
 
     private void next(final String email) {
@@ -63,16 +66,27 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         firebaseAuth.sendPasswordResetEmail(email)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Error sending password reset email"))
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public void onSuccess(Void aVoid) {
                         mActivityHelper.dismissDialog();
+
                         Intent confirmIntent = ConfirmRecoverPasswordActivity.createIntent(
                                 RecoverPasswordActivity.this,
                                 mActivityHelper.getFlowParams(),
-                                task.isSuccessful(),
                                 email);
                         startActivityForResult(confirmIntent, RC_CONFIRM);
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        mActivityHelper.dismissDialog();
+
+                        if (e instanceof FirebaseAuthInvalidUserException) {
+                            // No FirebaseUser exists with this email address, show error.
+                            mEmailEditText.setError(getString(R.string.error_email_does_not_exist));
+                        }
                     }
                 });
     }

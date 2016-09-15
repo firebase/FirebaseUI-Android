@@ -31,6 +31,7 @@ import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -207,7 +208,8 @@ public class ChooseAccountActivity extends ActivityBase {
                             mCredentialsApi.getPasswordFromCredential(),
                             mCredentialsApi.getAccountTypeFromCredential()
                     );
-                } else if (resultCode == RESULT_CANCELED) {
+                } else if (resultCode == RESULT_CANCELED
+                        || resultCode == CredentialsApi.ACTIVITY_RESULT_OTHER_ACCOUNT) {
                     // Smart lock selector cancelled, go to the AuthMethodPicker screen
                     startAuthMethodChoice(mActivityHelper);
                 } else if (resultCode == RESULT_FIRST_USER) {

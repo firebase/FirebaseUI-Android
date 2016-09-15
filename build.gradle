@@ -46,9 +46,6 @@ allprojects { project ->
     def isLibrary = 'library'.equals(project.name)
     def isSubmodule = project.ext.submodules.contains(project.name)
 
-    // Only applies to submodules, not the library module
-    def pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication";
-
     if (isSubmodule || isLibrary) {
 
         // So that we can resolve 'android' variable
@@ -165,9 +162,6 @@ allprojects { project ->
     }
 
     if (isSubmodule) {
-        // Convenience task to prepare everything we need for releases
-        task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
-
         publishing {
 
             // Define a publication for each submodule
@@ -276,5 +270,20 @@ allprojects { project ->
                 }
             }
         }
+    }
+}
+
+allprojects {
+    afterEvaluate { project ->
+        def isSubmodule = project.ext.submodules.contains(project.name)
+
+        if (isSubmodule) {
+            // Only applies to submodules, not the library module
+            def pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication";
+
+            // Convenience task to prepare everything we need for releases
+            task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
+        }
+
     }
 }

@@ -17,17 +17,21 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 
-public class ConfirmRecoverPasswordActivity extends android.support.v7.app.AppCompatActivity
+/**
+ * Dialog activity to confirm successful email sending in {@link RecoverPasswordActivity}.
+ */
+public class ConfirmRecoverPasswordActivity extends AppCompatActivity
         implements View.OnClickListener {
+
     private ActivityHelper mActivityHelper;
 
     @Override
@@ -38,17 +42,12 @@ public class ConfirmRecoverPasswordActivity extends android.support.v7.app.AppCo
 
         setContentView(R.layout.confirm_recovery_layout);
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
-        boolean isSuccess = getIntent().getBooleanExtra(ExtraConstants.EXTRA_SUCCESS, true);
 
-        if (isSuccess) {
-            String text = String.format(
-                    getResources().getString(R.string.confirm_recovery_body),
-                    email
-            );
-            ((TextView) findViewById(R.id.body_text)).setText(text);
-        } else {
-            ((TextView) findViewById(R.id.body_text)).setText(R.string.recovery_fail_body);
-        }
+        String text = String.format(
+                getResources().getString(R.string.confirm_recovery_body),
+                email);
+        ((TextView) findViewById(R.id.body_text)).setText(text);
+
         findViewById(R.id.button_done).setOnClickListener(this);
     }
 
@@ -62,11 +61,9 @@ public class ConfirmRecoverPasswordActivity extends android.support.v7.app.AppCo
     public static Intent createIntent(
             Context context,
             FlowParameters flowParams,
-            boolean success,
             String email) {
         return ActivityHelper.createBaseIntent(context, ConfirmRecoverPasswordActivity.class,
                 flowParams)
-                .putExtra(ExtraConstants.EXTRA_SUCCESS, success)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 
