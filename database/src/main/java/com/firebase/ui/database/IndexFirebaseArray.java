@@ -14,11 +14,9 @@ package com.firebase.ui.database;
  * limitations under the License.
  */
 
-import android.support.v4.util.SimpleArrayMap;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
@@ -26,13 +24,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-class IndexFirebaseArray extends FirebaseArray {
-    private static final String TAG = IndexFirebaseArray.class.getSimpleName();
+class IndexFirebaseArray extends FirebaseArray implements ValueEventListener {
 
     private DatabaseReference mRef;
-    private List<DataSnapshot> mSnapshots = new ArrayList<>();
-    private List<DataSnapshot> mNullableSnapshots = new ArrayList<>();
-    private SimpleArrayMap<DatabaseReference, ValueEventListener> mValueEventListeners = new SimpleArrayMap<>();
+    private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
+    private OnChangedListener mListener;
 
     IndexFirebaseArray(Query keyRef, DatabaseReference dataRef) {
         super(keyRef);
@@ -42,152 +38,110 @@ class IndexFirebaseArray extends FirebaseArray {
     @Override
     public void cleanup() {
         super.cleanup();
-        for (int i = 0; i < mValueEventListeners.size(); i++) {
-            DatabaseReference ref = mValueEventListeners.keyAt(i);
-            ref.removeEventListener(mValueEventListeners.get(ref));
+        for (DataSnapshot dataSnapshot : mDataSnapshots) {
+            dataSnapshot.getRef().removeEventListener((ValueEventListener)this);
         }
     }
 
     @Override
     public int getCount() {
-        return mSnapshots.size();
+        return mDataSnapshots.size();
     }
 
     @Override
     public DataSnapshot getItem(int index) {
-        return mSnapshots.get(index);
+        return mDataSnapshots.get(index);
     }
 
     private int getIndexForKey(String key) {
-        int index = 0;
-        for (DataSnapshot snapshot : mSnapshots) {
-            if (snapshot.getKey().equals(key)) {
-                return index;
-            } else {
-                index++;
+        final int keysCount = super.getCount();
+        final int dataCount = getCount();
+        int keyIndex = 0;
+        int dataIndex = 0;
+        while (dataIndex < dataCount && keyIndex < keysCount) {
+            DataSnapshot keySnapshot = super.getItem(keyIndex);
+            if (keySnapshot.getKey().equals(key)) {
+                break;
+            } else if (getItem(dataIndex).getKey().equals(keySnapshot.getKey())) {
+                ++dataIndex;
             }
+            ++keyIndex;
         }
-
-        // Searching through non-null snapshots failed. We need to look through the nullable snapshots.
-
-        return getNullableSnapshotIndex(key) - getNullsBeforeInclusiveIndex(index);
-    }
-
-    private int getNullableSnapshotIndex(String key) {
-        int index = 0;
-        for (DataSnapshot snapshot : mNullableSnapshots) {
-            if (snapshot.getKey().equals(key)) {
-                return index;
-            } else {
-                index++;
-            }
-        }
-        throw new IllegalArgumentException("Key not found");
-    }
-
-    private int getNullsBeforeInclusiveIndex(int index) {
-        int total = 0;
-        for (int i = 0; i <= index; i++) {
-            if (mNullableSnapshots.get(i).getValue() == null) {
-                total++;
-            }
-        }
-        return total;
-    }
-
-    private boolean containsKey(String key) {
-        for (DataSnapshot snapshot : mNullableSnapshots) {
-            if (snapshot.getKey().equals(key)) {
-                return true;
-            }
-        }
-        return false;
+        return dataIndex;
     }
 
     @Override
-    public void onChildAdded(DataSnapshot keySnapshot, final String previousChildKey) {
-        final boolean[] isNewListener = {true};
-
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.getValue() != null) {
-                    if (isNewListener[0]) {
-                        int index = 0;
-                        if (previousChildKey != null) {
-                            index = getIndexForKey(previousChildKey) + 1;
-                        }
-                        add(index, snapshot);
-                        notifyChangedListeners(OnChangedListener.EventType.Added, index);
-
-                        isNewListener[0] = false;
-                    } else {
-                        int index = getIndexForKey(snapshot.getKey());
-                        set(index, snapshot);
-                        notifyChangedListeners(OnChangedListener.EventType.Changed, index);
-                    }
-                } else {
-                    Log.w(TAG, "Key not found at ref: " + snapshot.getRef().toString());
-
-                    if (!containsKey(snapshot.getKey())) {
-                        int index = 0;
-                        if (previousChildKey != null) {
-                            index = getNullableSnapshotIndex(previousChildKey) + 1;
-                        }
-                        mNullableSnapshots.add(index, snapshot);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                notifyCancelledListeners(databaseError);
-            }
-        };
-
-        DatabaseReference ref = mRef.child(keySnapshot.getKey());
-        ref.addValueEventListener(valueEventListener);
-        mValueEventListeners.put(ref, valueEventListener);
+    public void setOnChangedListener(OnChangedListener listener) {
+        this.mListener = listener;
+        super.setOnChangedListener(listener);
     }
 
     @Override
-    public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
-        // Do nothing. At the moment, there isn't a need to watch for changes at the keyRef's location.
+    public void onChildAdded(DataSnapshot keySnapshot, String previousChildKey) {
+        super.setOnChangedListener(null);
+        super.onChildAdded(keySnapshot, previousChildKey);
+        super.setOnChangedListener(mListener);
+        mRef.child(keySnapshot.getKey()).addValueEventListener(this);
     }
 
     @Override
-    public void onChildRemoved(DataSnapshot snapshot) {
-        int index = getIndexForKey(snapshot.getKey());
-        DatabaseReference ref = mRef.child(snapshot.getKey());
+    public void onChildChanged(DataSnapshot keySnapshot, String previousChildKey) {
+        super.setOnChangedListener(null);
+        super.onChildChanged(keySnapshot, previousChildKey);
+        super.setOnChangedListener(mListener);
+    }
 
-        remove(index);
-        ref.removeEventListener(mValueEventListeners.get(ref));
-        mValueEventListeners.remove(ref);
+    @Override
+    public void onChildRemoved(DataSnapshot keySnapshot) {
+        super.setOnChangedListener(null);
+        super.onChildRemoved(keySnapshot);
+        super.setOnChangedListener(mListener);
 
-        notifyChangedListeners(OnChangedListener.EventType.Removed, index);
+        String key = keySnapshot.getKey();
+        mRef.child(key).removeEventListener((ValueEventListener)this);
+
+        int index = getIndexForKey(key);
+        if (doesItemAtIndexHaveKey(index, key)) {
+            mDataSnapshots.remove(index);
+            notifyChangedListeners(OnChangedListener.EventType.Removed, index);
+        }
     }
 
     @Override
     public void onChildMoved(DataSnapshot keySnapshot, String previousChildKey) {
-        int oldIndex = getIndexForKey(keySnapshot.getKey());
-        DataSnapshot snapshot = remove(oldIndex);
-        int newIndex = previousChildKey == null ? 0 : getIndexForKey(previousChildKey) + 1;
-        add(newIndex, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
+        String key = keySnapshot.getKey();
+        int oldIndex = getIndexForKey(key);
+
+        super.setOnChangedListener(null);
+        super.onChildMoved(keySnapshot, previousChildKey);
+        super.setOnChangedListener(mListener);
+
+        if (doesItemAtIndexHaveKey(oldIndex, key)) {
+            DataSnapshot dataSnapshot = mDataSnapshots.remove(oldIndex);
+            int newIndex = getIndexForKey(key);
+            mDataSnapshots.add(newIndex, dataSnapshot);
+            notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
+        }
     }
 
-    private void add(int index, DataSnapshot snapshot) {
-        mNullableSnapshots.add(index, snapshot);
-        mSnapshots.add(index, snapshot);
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        String key = dataSnapshot.getKey();
+        int index = getIndexForKey(key);
+
+        if (doesItemAtIndexHaveKey(index, key)) {
+            mDataSnapshots.set(index, dataSnapshot);
+            notifyChangedListeners(OnChangedListener.EventType.Changed, index);
+        } else {
+            mDataSnapshots.add(index, dataSnapshot);
+            notifyChangedListeners(OnChangedListener.EventType.Added, index);
+        }
     }
 
-    private DataSnapshot set(int index, DataSnapshot snapshot) {
-        mNullableSnapshots.set(index, snapshot);
-        return mSnapshots.set(index, snapshot);
-    }
-
-    private DataSnapshot remove(int index) {
-        mNullableSnapshots.remove(index);
-        return mSnapshots.remove(index);
+    private boolean doesItemAtIndexHaveKey(int index, @NonNull String key) {
+        if (index < 0 || index >= getCount()) {
+            return false;
+        }
+        return getItem(index).getKey().equals(key);
     }
 }
