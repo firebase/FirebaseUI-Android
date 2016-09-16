@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui;
+package com.firebase.ui.database;
 
 import android.app.Application;
 import android.content.Context;
