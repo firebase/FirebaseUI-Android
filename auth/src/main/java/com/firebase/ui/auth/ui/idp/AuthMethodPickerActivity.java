@@ -19,7 +19,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -72,8 +71,7 @@ public class AuthMethodPickerActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
 
-        Button emailButton = (Button) findViewById(R.id.email_provider);
-        emailButton.setOnClickListener(this);
+        findViewById(R.id.email_provider).setOnClickListener(this);
 
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);
 
@@ -109,6 +107,7 @@ public class AuthMethodPickerActivity
                     }
             }
         }
+
         LinearLayout btnHolder = (LinearLayout) findViewById(R.id.btn_holder);
         for (final IDPProvider provider: mIdpProviders) {
             View loginButton = null;

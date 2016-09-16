@@ -33,6 +33,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 
@@ -59,6 +60,12 @@ public class GoogleProvider implements
                 .DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestIdToken(mClientId);
+
+        // Add additional scopes
+        String[] extraScopes = mActivity.getResources().getStringArray(R.array.google_permissions);
+        for (String scopeString : extraScopes) {
+            builder.requestScopes(new Scope(scopeString));
+        }
 
         if (!TextUtils.isEmpty(email)) {
             builder.setAccountName(email);

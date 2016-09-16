@@ -14,9 +14,6 @@
 
 package com.firebase.ui.auth.test_helpers;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -28,6 +25,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 @Implements(GoogleProvider.class)
