@@ -42,7 +42,9 @@ class IndexFirebaseArray extends FirebaseArray {
     @Override
     public void cleanup() {
         super.cleanup();
-        for (int i = 0; i < mValueEventListeners.size(); i++) {
+
+        int size = mValueEventListeners.size();
+        for (int i = 0; i < size; i++) {
             DatabaseReference ref = mValueEventListeners.keyAt(i);
             ref.removeEventListener(mValueEventListeners.get(ref));
         }
@@ -127,7 +129,7 @@ class IndexFirebaseArray extends FirebaseArray {
                         notifyChangedListeners(OnChangedListener.EventType.Changed, index);
                     }
                 } else {
-                    Log.w(TAG, "Key not found at ref: " + snapshot.getRef().toString());
+                    Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
 
                     if (!containsKey(snapshot.getKey())) {
                         int index = 0;
