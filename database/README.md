@@ -274,14 +274,14 @@ Like before, we get a custom RecyclerView populated with data from Firebase by s
 ## Using FirebaseUI with indexed data
 If your data is [properly indexed](https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure), change your adapter initalization like so:
 
-For the `FirebaseRecyclerAdapter`:
+For a `RecyclerView`, use `FirebaseIndexRecyclerAdapter` instead of `FirebaseRecyclerAdapter`:
 ```java
-new FirebaseRecyclerAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, keyRef, dataRef)
+new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, keyRef, dataRef)
 ```
 
-And the `FirebaseListAdapter`;
+And for a `ListView`, use `FirebaseIndexListAdapter`;
 ```java
-new FirebaseListAdapter<Chat>(this, Chat.class, android.R.layout.two_line_list_item, keyRef, dataRef)
+new FirebaseIndexListAdapter<Chat>(this, Chat.class, android.R.layout.two_line_list_item, keyRef, dataRef)
 ```
 
-`keyRef` is the location of your keys, and `dataRef` is the location of your data. Scale with ease!
+`keyRef` is the location of your keys, and `dataRef` is the location of your data.
