@@ -12,15 +12,26 @@ need to be sure of various other things—for instance that you'll tell us if yo
 know that your code infringes on other people's patents. You don't have to sign
 the CLA until after you've submitted your code for review and a member has
 approved it, but you must do it before we can put your code into our codebase.
+
+### Adding new features
+
 Before you start working on a larger contribution, you should get in touch with
 us first through the issue tracker with your idea so that we can help out and
 possibly guide you. Coordinating up front makes it much easier to avoid
 frustration later on.
 
+If this has been discussed in an issue, make sure to mention the issue number.
+If not, go file an issue about this to make sure this is a desirable change.
+
+If this is a new feature please co-ordinate with someone on [FirebaseUI-iOS](https://github.com/firebase/FirebaseUI-iOS)
+to make sure that we can implement this on both platforms and maintain feature parity.
+Feature parity (where it makes sense) is a strict requirement for feature development in FirebaseUI.
+
 ### Code reviews
 
 All submissions, including submissions by project members, require review. We
-use GitHub pull requests for this purpose.
+use Github pull requests for this purpose. We adhere to the
+[Google Java style guide](https://google.github.io/styleguide/javaguide.html).
 
 ### The small print
 
