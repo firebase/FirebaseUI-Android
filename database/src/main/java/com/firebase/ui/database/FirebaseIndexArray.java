@@ -26,15 +26,15 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-class IndexFirebaseArray extends FirebaseArray {
-    private static final String TAG = IndexFirebaseArray.class.getSimpleName();
+class FirebaseIndexArray extends FirebaseArray {
+    private static final String TAG = FirebaseIndexArray.class.getSimpleName();
 
     private DatabaseReference mRef;
-    private List<DataSnapshot> mSnapshots = new ArrayList<>();
+    private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
     private List<DataSnapshot> mNullableSnapshots = new ArrayList<>();
     private SimpleArrayMap<DatabaseReference, ValueEventListener> mValueEventListeners = new SimpleArrayMap<>();
 
-    IndexFirebaseArray(Query keyRef, DatabaseReference dataRef) {
+    FirebaseIndexArray(Query keyRef, DatabaseReference dataRef) {
         super(keyRef);
         mRef = dataRef;
     }
@@ -52,17 +52,17 @@ class IndexFirebaseArray extends FirebaseArray {
 
     @Override
     public int getCount() {
-        return mSnapshots.size();
+        return mDataSnapshots.size();
     }
 
     @Override
     public DataSnapshot getItem(int index) {
-        return mSnapshots.get(index);
+        return mDataSnapshots.get(index);
     }
 
     private int getIndexForKey(String key) {
         int index = 0;
-        for (DataSnapshot snapshot : mSnapshots) {
+        for (DataSnapshot snapshot : mDataSnapshots) {
             if (snapshot.getKey().equals(key)) {
                 return index;
             } else {
@@ -180,16 +180,16 @@ class IndexFirebaseArray extends FirebaseArray {
 
     private void add(int index, DataSnapshot snapshot) {
         mNullableSnapshots.add(index, snapshot);
-        mSnapshots.add(index, snapshot);
+        mDataSnapshots.add(index, snapshot);
     }
 
     private DataSnapshot set(int index, DataSnapshot snapshot) {
         mNullableSnapshots.set(index, snapshot);
-        return mSnapshots.set(index, snapshot);
+        return mDataSnapshots.set(index, snapshot);
     }
 
     private DataSnapshot remove(int index) {
         mNullableSnapshots.remove(index);
-        return mSnapshots.remove(index);
+        return mDataSnapshots.remove(index);
     }
 }
