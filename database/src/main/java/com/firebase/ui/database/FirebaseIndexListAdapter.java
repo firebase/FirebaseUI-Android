@@ -45,7 +45,7 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
                                     int modelLayout,
                                     Query keyRef,
                                     DatabaseReference dataRef) {
-        super(activity, modelClass, modelLayout, new IndexFirebaseArray(keyRef, dataRef));
+        super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef, dataRef));
     }
 
     /**
@@ -64,6 +64,6 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
                                     int modelLayout,
                                     DatabaseReference keyRef,
                                     DatabaseReference dataRef) {
-        super(activity, modelClass, modelLayout, new IndexFirebaseArray(keyRef, dataRef));
+        super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef, dataRef));
     }
 }
