@@ -67,7 +67,6 @@ class FirebaseArray implements ChildEventListener {
         throw new IllegalArgumentException("Key not found");
     }
 
-    // [START] of ChildEventListener methods
     @Override
     public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
         int index = 0;
@@ -109,7 +108,6 @@ class FirebaseArray implements ChildEventListener {
     public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
-    // [END] of ChildEventListener methods
 
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
