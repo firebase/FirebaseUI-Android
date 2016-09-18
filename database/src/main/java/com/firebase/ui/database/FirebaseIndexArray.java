@@ -86,16 +86,16 @@ class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
         if (snapshot.getValue() != null) {
             if (!isMatch(index, key)) {
                 mDataSnapshots.add(index, snapshot);
-                mListener.onChanged(OnChangedListener.EventType.Added, index, -1);
+                notify(OnChangedListener.EventType.Added, index, -1);
             } else {
                 mDataSnapshots.set(index, snapshot);
-                mListener.onChanged(OnChangedListener.EventType.Changed, index, -1);
+                notify(OnChangedListener.EventType.Changed, index, -1);
             }
         } else {
             Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
             if (isMatch(index, key)) {
                 mDataSnapshots.remove(index);
-                mListener.onChanged(OnChangedListener.EventType.Removed, index, -1);
+                notify(OnChangedListener.EventType.Removed, index, -1);
             }
         }
     }
@@ -105,11 +105,11 @@ class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
         String key = keySnapshot.getKey();
         int index = getIndexForKey(key);
         mRef.child(key).removeEventListener((ValueEventListener) this);
+        super.onChildRemoved(keySnapshot);
         if (isMatch(index, key)) {
             mDataSnapshots.remove(index);
-            mListener.onChanged(OnChangedListener.EventType.Removed, index, -1);
+            notify(OnChangedListener.EventType.Removed, index, -1);
         }
-        super.onChildRemoved(keySnapshot);
     }
 
     @Override
@@ -122,7 +122,7 @@ class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            mListener.onChanged(OnChangedListener.EventType.Moved, newIndex, oldIndex);
+            notify(OnChangedListener.EventType.Moved, newIndex, oldIndex);
         }
     }
 
@@ -131,9 +131,11 @@ class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
         mListener = listener;
     }
 
-    @Override
-    protected void notifyChangedListeners(OnChangedListener.EventType type,
+    private void notify(OnChangedListener.EventType type,
                                           int index,
                                           int oldIndex) {
+        if (mListener != null) {
+            mListener.onChanged(type, index, oldIndex);
+        }
     }
 }
