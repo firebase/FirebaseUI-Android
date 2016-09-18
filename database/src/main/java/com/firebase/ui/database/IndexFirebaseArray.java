@@ -24,13 +24,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-class IndexFirebaseArray extends FirebaseArray implements ValueEventListener {
+class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
 
     private DatabaseReference mRef;
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
     private OnChangedListener mListener;
 
-    IndexFirebaseArray(Query keyRef, DatabaseReference dataRef) {
+    FirebaseIndexArray(Query keyRef, DatabaseReference dataRef) {
         super(keyRef);
         mRef = dataRef;
     }
@@ -72,7 +72,7 @@ class IndexFirebaseArray extends FirebaseArray implements ValueEventListener {
 
     @Override
     public void setOnChangedListener(OnChangedListener listener) {
-        this.mListener = listener;
+        mListener = listener;
         super.setOnChangedListener(listener);
     }
 
