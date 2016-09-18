@@ -14,7 +14,7 @@ package com.firebase.ui.database;
  * limitations under the License.
  */
 
-import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
+    private static final String TAG = FirebaseIndexArray.class.getSimpleName();
 
     private DatabaseReference mRef;
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
@@ -38,8 +39,8 @@ class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
     @Override
     public void cleanup() {
         super.cleanup();
-        for (DataSnapshot dataSnapshot : mDataSnapshots) {
-            dataSnapshot.getRef().removeEventListener((ValueEventListener)this);
+        for (DataSnapshot snapshot : mDataSnapshots) {
+            snapshot.getRef().removeEventListener((ValueEventListener) this);
         }
     }
 
@@ -54,99 +55,85 @@ class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
     }
 
     private int getIndexForKey(String key) {
-        final int keysCount = super.getCount();
-        final int dataCount = getCount();
-        int keyIndex = 0;
-        int dataIndex = 0;
-        while (dataIndex < dataCount && keyIndex < keysCount) {
-            DataSnapshot keySnapshot = super.getItem(keyIndex);
-            if (keySnapshot.getKey().equals(key)) {
+        int dataCount = getCount();
+        int index = 0;
+        for (int keyIndex = 0; index < dataCount; keyIndex++) {
+            String superKey = super.getItem(keyIndex).getKey();
+            if (key.equals(superKey)) {
                 break;
-            } else if (getItem(dataIndex).getKey().equals(keySnapshot.getKey())) {
-                ++dataIndex;
+            } else if (getItem(index).getKey().equals(superKey)) {
+                index++;
             }
-            ++keyIndex;
         }
-        return dataIndex;
+        return index;
     }
 
-    @Override
-    public void setOnChangedListener(OnChangedListener listener) {
-        mListener = listener;
-        super.setOnChangedListener(listener);
+    private boolean isMatch(int index, String key) {
+        return index > 0 && index < getCount() && getItem(index).getKey().equals(key);
     }
 
     @Override
     public void onChildAdded(DataSnapshot keySnapshot, String previousChildKey) {
-        super.setOnChangedListener(null);
         super.onChildAdded(keySnapshot, previousChildKey);
-        super.setOnChangedListener(mListener);
         mRef.child(keySnapshot.getKey()).addValueEventListener(this);
     }
 
     @Override
-    public void onChildChanged(DataSnapshot keySnapshot, String previousChildKey) {
-        super.setOnChangedListener(null);
-        super.onChildChanged(keySnapshot, previousChildKey);
-        super.setOnChangedListener(mListener);
+    public void onDataChange(DataSnapshot snapshot) {
+        String key = snapshot.getKey();
+        int index = getIndexForKey(key);
+
+        if (snapshot.getValue() != null) {
+            if (!isMatch(index, key)) {
+                mDataSnapshots.add(index, snapshot);
+                mListener.onChanged(OnChangedListener.EventType.Added, index, -1);
+            } else {
+                mDataSnapshots.set(index, snapshot);
+                mListener.onChanged(OnChangedListener.EventType.Changed, index, -1);
+            }
+        } else {
+            Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
+            if (isMatch(index, key)) {
+                mDataSnapshots.remove(index);
+                mListener.onChanged(OnChangedListener.EventType.Removed, index, -1);
+            }
+        }
     }
 
     @Override
     public void onChildRemoved(DataSnapshot keySnapshot) {
-        super.setOnChangedListener(null);
-        super.onChildRemoved(keySnapshot);
-        super.setOnChangedListener(mListener);
-
         String key = keySnapshot.getKey();
-        mRef.child(key).removeEventListener((ValueEventListener)this);
-
         int index = getIndexForKey(key);
-        if (doesItemAtIndexHaveKey(index, key)) {
+        mRef.child(key).removeEventListener((ValueEventListener) this);
+        if (isMatch(index, key)) {
             mDataSnapshots.remove(index);
-            notifyChangedListeners(OnChangedListener.EventType.Removed, index);
+            mListener.onChanged(OnChangedListener.EventType.Removed, index, -1);
         }
+        super.onChildRemoved(keySnapshot);
     }
 
     @Override
     public void onChildMoved(DataSnapshot keySnapshot, String previousChildKey) {
         String key = keySnapshot.getKey();
         int oldIndex = getIndexForKey(key);
-
-        super.setOnChangedListener(null);
         super.onChildMoved(keySnapshot, previousChildKey);
-        super.setOnChangedListener(mListener);
 
-        if (doesItemAtIndexHaveKey(oldIndex, key)) {
-            DataSnapshot dataSnapshot = mDataSnapshots.remove(oldIndex);
+        if (isMatch(oldIndex, key)) {
+            DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
-            mDataSnapshots.add(newIndex, dataSnapshot);
-            notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
+            mDataSnapshots.add(newIndex, snapshot);
+            mListener.onChanged(OnChangedListener.EventType.Moved, newIndex, oldIndex);
         }
     }
 
     @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        String key = dataSnapshot.getKey();
-        int index = getIndexForKey(key);
-        boolean hasAnyValue = dataSnapshot.getValue() != null;
-        if (doesItemAtIndexHaveKey(index, key)) {
-            if (hasAnyValue) {
-                mDataSnapshots.set(index, dataSnapshot);
-                notifyChangedListeners(OnChangedListener.EventType.Changed, index);
-            } else {
-                mDataSnapshots.remove(index);
-                notifyChangedListeners(OnChangedListener.EventType.Removed, index);
-            }
-        } else if (hasAnyValue){
-            mDataSnapshots.add(index, dataSnapshot);
-            notifyChangedListeners(OnChangedListener.EventType.Added, index);
-        }
+    public void setOnChangedListener(OnChangedListener listener) {
+        mListener = listener;
     }
 
-    private boolean doesItemAtIndexHaveKey(int index, @NonNull String key) {
-        if (index < 0 || index >= getCount()) {
-            return false;
-        }
-        return getItem(index).getKey().equals(key);
+    @Override
+    protected void notifyChangedListeners(OnChangedListener.EventType type,
+                                          int index,
+                                          int oldIndex) {
     }
 }
