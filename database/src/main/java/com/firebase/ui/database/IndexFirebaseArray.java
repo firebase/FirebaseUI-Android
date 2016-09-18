@@ -128,11 +128,16 @@ class IndexFirebaseArray extends FirebaseArray implements ValueEventListener {
     public void onDataChange(DataSnapshot dataSnapshot) {
         String key = dataSnapshot.getKey();
         int index = getIndexForKey(key);
-
+        boolean hasAnyValue = dataSnapshot.getValue() != null;
         if (doesItemAtIndexHaveKey(index, key)) {
-            mDataSnapshots.set(index, dataSnapshot);
-            notifyChangedListeners(OnChangedListener.EventType.Changed, index);
-        } else {
+            if (hasAnyValue) {
+                mDataSnapshots.set(index, dataSnapshot);
+                notifyChangedListeners(OnChangedListener.EventType.Changed, index);
+            } else {
+                mDataSnapshots.remove(index);
+                notifyChangedListeners(OnChangedListener.EventType.Removed, index);
+            }
+        } else if (hasAnyValue){
             mDataSnapshots.add(index, dataSnapshot);
             notifyChangedListeners(OnChangedListener.EventType.Added, index);
         }
