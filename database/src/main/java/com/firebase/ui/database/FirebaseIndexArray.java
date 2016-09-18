@@ -69,7 +69,7 @@ class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
     }
 
     private boolean isMatch(int index, String key) {
-        return index > 0 && index < getCount() && getItem(index).getKey().equals(key);
+        return index >= 0 && index < getCount() && getItem(index).getKey().equals(key);
     }
 
     @Override
