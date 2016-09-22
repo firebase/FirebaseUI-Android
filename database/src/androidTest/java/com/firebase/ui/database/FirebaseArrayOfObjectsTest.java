@@ -14,7 +14,9 @@
 
 package com.firebase.ui.database;
 
-import android.test.AndroidTestCase;
+import android.support.test.runner.AndroidJUnit4;
+import android.test.InstrumentationTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseError;
@@ -27,37 +29,80 @@ import junit.framework.AssertionFailedError;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-public class FirebaseArrayTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+@SmallTest
+public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
+    public static class Bean {
+        int number;
+        String text;
+        boolean bool;
+
+        public Bean() {
+            // necessary for Jackson
+        }
+
+        public Bean(int number, String text, boolean bool) {
+            this.number = number;
+            this.text = text;
+            this.bool = bool;
+        }
+        public Bean(int index) {
+            this(index, "Text "+index, index % 2 == 0);
+        }
+
+        public int getNumber() {
+            return number;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public boolean isBool() {
+            return bool;
+        }
+    }
+
     private DatabaseReference mRef;
     private FirebaseArray mArray;
 
     @Before
     public void setUp() throws Exception {
-        FirebaseApp app = ApplicationTest.getAppInstance(getContext());
-        mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
+        FirebaseApp app = ApplicationTest.getAppInstance(getInstrumentation().getContext());
+        mRef = FirebaseDatabase.getInstance(app).getReference()
+                .child("firebasearray").child("objects");
         mArray = new FirebaseArray(mRef);
         mRef.removeValue();
         runAndWaitUntil(mArray, mRef, new Runnable() {
-            public void run() {
-                for (int i = 1; i <= 3; i++) {
-                    mRef.push().setValue(i, i);
+                    @Override
+                    public void run() {
+                        for (int i = 1; i <= 3; i++) {
+                            mRef.push().setValue(new Bean(i, "Text " + i, i % 2 == 0 ? true : false), i);
+                        }
+                    }
+                }, new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return mArray.getCount() == 3;
+                    }
                 }
-            }
-        }, new Callable<Boolean>() {
-            public Boolean call() throws Exception {
-                return mArray.getCount() == 3;
-            }
-        });
+        );
     }
 
     @After
     public void tearDown() throws Exception {
-        mArray.cleanup();
-        mRef.removeValue();
+        if (mRef != null) {
+            mRef.removeValue();
+        }
+
+        if (mArray != null) {
+            mArray.cleanup();
+        }
     }
 
     @Test
@@ -70,7 +115,7 @@ public class FirebaseArrayTest extends AndroidTestCase {
         assertEquals(3, mArray.getCount());
         runAndWaitUntil(mArray, mRef, new Runnable() {
             public void run() {
-                mRef.push().setValue(4);
+                mRef.push().setValue(new Bean(4));
             }
         }, new Callable<Boolean>() {
             @Override
@@ -83,12 +128,12 @@ public class FirebaseArrayTest extends AndroidTestCase {
     public void testPushAppends() throws Exception {
         runAndWaitUntil(mArray, mRef, new Runnable() {
             public void run() {
-                mRef.push().setValue(4, 4);
+                mRef.push().setValue(new Bean(4), 4);
             }
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.getItem(3).getValue(Integer.class).equals(4);
+                return mArray.getItem(3).getValue(Bean.class).getNumber() == 4;
             }
         });
     }
@@ -97,11 +142,11 @@ public class FirebaseArrayTest extends AndroidTestCase {
     public void testAddValueWithPriority() throws Exception {
         runAndWaitUntil(mArray, mRef, new Runnable() {
             public void run() {
-                mRef.push().setValue(4, 0.5);
+                mRef.push().setValue(new Bean(4), 0.5);
             }
         }, new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                return mArray.getItem(3).getValue(Integer.class).equals(3) && mArray.getItem(0).getValue(Integer.class).equals(4);
+                return mArray.getItem(3).getValue(Bean.class).getNumber() == 3 && mArray.getItem(0).getValue(Bean.class).getNumber() == 4;
             }
         });
     }
@@ -114,7 +159,8 @@ public class FirebaseArrayTest extends AndroidTestCase {
             }
         }, new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                return isValuesEqual(mArray, new int[]{3, 1, 2});
+                return getBean(mArray, 0).getNumber() == 3 && getBean(mArray, 1).getNumber() == 1 && getBean(mArray, 2).getNumber() == 2;
+                //return isValuesEqual(mArray, new int[]{3, 1, 2});
             }
         });
     }
@@ -129,15 +175,8 @@ public class FirebaseArrayTest extends AndroidTestCase {
         return true;
     }
 
-    private Integer getIntValue(FirebaseArray array, int index) {
-        return array.getItem(index).getValue(Integer.class);
-    }
-
-    private static void print(FirebaseArray array) {
-        for (int i=0; i < array.getCount(); i++) {
-            System.out.println(i+": key="+array.getItem(i).getKey()+" value="+array.getItem(i).getValue());
-
-        }
+    private Bean getBean(FirebaseArray array, int index) {
+        return array.getItem(index).getValue(Bean.class);
     }
 
     public static void runAndWaitUntil(final FirebaseArray array, Query ref, Runnable task, Callable<Boolean> done) throws InterruptedException {
@@ -168,5 +207,4 @@ public class FirebaseArrayTest extends AndroidTestCase {
             throw new AssertionFailedError();
         }
         array.setOnChangedListener(null);
-    }
-}
+    }}

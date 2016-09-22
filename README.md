@@ -28,13 +28,13 @@ libraries.
 ```groovy
 dependencies {
     // Single target that includes all FirebaseUI libraries
-    compile 'com.firebaseui:firebase-ui:0.5.3'
+    compile 'com.firebaseui:firebase-ui:0.5.4'
 
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:0.5.3'
+    compile 'com.firebaseui:firebase-ui-database:0.5.4'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:0.5.3'
+    compile 'com.firebaseui:firebase-ui-auth:0.5.4'
 }
 ```
 
@@ -61,6 +61,7 @@ For convenience, here are some examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 0.5.4              | 9.6.0                          |
 | 0.5.3              | 9.4.0                          |
 | 0.4.4              | 9.4.0                          |
 | 0.4.3              | 9.2.1                          |

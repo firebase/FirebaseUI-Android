@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,4 +24,9 @@ dependencies {
     compile "com.android.support:recyclerview-v7:${project.ext.support_library_version}"
 
     compile "com.google.firebase:firebase-database:${project.ext.firebase_version}"
+
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile "com.android.support:support-annotations:${project.ext.support_library_version}"
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:rules:0.5'
 }
