@@ -14,7 +14,9 @@
 
 package com.firebase.ui.database;
 
-import android.test.AndroidTestCase;
+import android.support.test.runner.AndroidJUnit4;
+import android.test.InstrumentationTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseError;
@@ -27,11 +29,14 @@ import junit.framework.AssertionFailedError;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-public class FirebaseArrayOfObjectsTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+@SmallTest
+public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
     public static class Bean {
         int number;
         String text;
@@ -68,7 +73,7 @@ public class FirebaseArrayOfObjectsTest extends AndroidTestCase {
 
     @Before
     public void setUp() throws Exception {
-        FirebaseApp app = ApplicationTest.getAppInstance(getContext());
+        FirebaseApp app = ApplicationTest.getAppInstance(getInstrumentation().getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference()
                 .child("firebasearray").child("objects");
         mArray = new FirebaseArray(mRef);
@@ -91,8 +96,13 @@ public class FirebaseArrayOfObjectsTest extends AndroidTestCase {
 
     @After
     public void tearDown() throws Exception {
-        mRef.removeValue();
-        mArray.cleanup();
+        if (mRef != null) {
+            mRef.getRoot().removeValue();
+        }
+
+        if (mArray != null) {
+            mArray.cleanup();
+        }
     }
 
     @Test
