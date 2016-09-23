@@ -97,7 +97,7 @@ public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
     @After
     public void tearDown() throws Exception {
         if (mRef != null) {
-            mRef.removeValue();
+            mRef.getRoot().removeValue();
         }
 
         if (mArray != null) {
