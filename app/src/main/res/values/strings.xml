@@ -33,6 +33,7 @@
     <string name="ok_label">OK</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
+    <string name="no_internet_connection">No internet connection</string>
     <string name="signed_in_header">You are signed in!</string>
     <string name="sign_out">Sign out</string>
     <string name="delete_account_label">Delete account</string>
