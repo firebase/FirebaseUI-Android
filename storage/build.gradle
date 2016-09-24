@@ -24,6 +24,5 @@ dependencies {
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
 
-    compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"
     compile "com.google.firebase:firebase-storage:${project.ext.firebase_version}"
 }

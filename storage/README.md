@@ -2,9 +2,15 @@
 
 ## Using FirebaseUI to download and display images
 
-FirebaseUI provides bindings to download an image file from a `StorageReference` and display it
-using the popular `Glide` library. This technique allows you to get all of Glide's performance
-benefits while leveraging Firebase Storage's authenticated hosting capabilities.
+[Firebase Storage](firebase-storage) provides secure file uploads and downloads for your Firebase apps,
+regardless of network quality. You can use it to store images, audio, video, or other
+user-generated content. Firebase Storage is backed by Google Cloud Storage, a powerful, simple,
+and cost-effective object storage service.
+
+FirebaseUI provides bindings to download an image file stored in Firebase Storage
+from a [`StorageReference`](storage-reference) and display it using the popular
+[Glide](glide) library. This technique allows you to get all of Glide's performance
+benefits while leveraging Firebase Storage's authenticated storage capabilities.
 
 To load an image from a `StorageReference`, simply use the `FirebaseImageLoader` class:
 
@@ -23,7 +29,8 @@ To load an image from a `StorageReference`, simply use the `FirebaseImageLoader`
 ```
 
 Images displayed using `FirebaseImageLoader` are cached by their path in Firebase Storage, so
-repeated loads will be fast and conserve bandwidth.
+repeated loads will be fast and conserve bandwidth. For more information on caching in Glide,
+see [this guide](glide-caching)
 
 ## Known Issues
 
@@ -49,3 +56,8 @@ ProGuard configuration (`proguard-rules.pro`):
 This will disable calls to `Log.w()`, `Log.d()`, and `Log.v()` but preserve log calls at the
 `INFO` and `ERROR` levels. Note that this will only be effective when using
 `proguard-android-optimize.txt` as the default ProGuard file in `build.gradle`.
+
+[firebase-storage]: https://firebase.google.com/docs/storage/
+[glide]: https://github.com/bumptech/glide
+[storage-reference]: https://firebase.google.com/docs/reference/android/com/google/firebase/storage/StorageReference
+[glide-caching]: https://github.com/bumptech/glide/wiki/Caching-and-Cache-Invalidation

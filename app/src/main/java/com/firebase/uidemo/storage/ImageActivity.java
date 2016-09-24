@@ -57,7 +57,9 @@ public class ImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image);
         ButterKnife.bind(this);
 
-        // Authenticate so that uploading/downloading works
+        // By default, Firebase Storage files require authentication to read or write.
+        // For this sample to function correctly, enable Anonymous Auth in the Firebase console:
+        // https://console.firebase.google.com/project/_/authentication/providers
         FirebaseAuth.getInstance().signInAnonymously()
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -65,8 +67,10 @@ public class ImageActivity extends AppCompatActivity {
                         Log.d(TAG, "signInAnonymously:" + task.isSuccessful());
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInAnonymously", task.getException());
+                            Log.w(TAG, getString(R.string.anonymous_auth_failed_msg));
+
                             Toast.makeText(ImageActivity.this,
-                                    "Authentication failed, uploads and downloads will not work.",
+                                    getString(R.string.anonymous_auth_failed_toast),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }

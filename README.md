@@ -55,7 +55,6 @@ firebase-ui-database
 |--- com.google.firebase:firebase-database
 
 firebase-ui-storage
-|--- com.google.firebase:firebase-auth
 |--- com.google.firebase:firebase-storage
 ```
 
