@@ -37,7 +37,7 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-auth:0.6.0'
 
     // FirebaseUI Storage only
-    compile 'com.firebasui:firebase-ui-storage:0.6.0'
+    compile 'com.firebaseui:firebase-ui-storage:0.6.0'
 }
 ```
 
