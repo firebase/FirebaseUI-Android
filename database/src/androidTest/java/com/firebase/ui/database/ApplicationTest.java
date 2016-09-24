@@ -14,23 +14,19 @@
 
 package com.firebase.ui.database;
 
-import android.app.Application;
 import android.content.Context;
-import android.test.ApplicationTestCase;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
 /**
- * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
+ * Helpers for testing.
  */
-public class ApplicationTest extends ApplicationTestCase<Application> {
+public class ApplicationTest {
 
     private static final String APP_NAME = "firebaseui-tests";
 
-    public ApplicationTest() {
-        super(Application.class);
-    }
+    public ApplicationTest() {}
 
     public static FirebaseApp getAppInstance(Context context) {
         try {
@@ -42,8 +38,8 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
     public static FirebaseApp initializeApp(Context context) {
         return FirebaseApp.initializeApp(context, new FirebaseOptions.Builder()
-                .setApplicationId("foo-bar")
-                .setDatabaseUrl("https://firebaseui-tests.firebaseio-demo.com/")
+                .setApplicationId("fir-ui-tests")
+                .setDatabaseUrl("https://fir-ui-tests.firebaseio.com/")
                 .build(), APP_NAME);
     }
 }

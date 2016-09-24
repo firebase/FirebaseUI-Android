@@ -5,12 +5,11 @@ android {
     buildToolsVersion "${project.ext.buildtools}"
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion 11
         targetSdkVersion project.ext.targetSdk
         versionCode 1
         versionName "1.0"
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -21,12 +20,9 @@ android {
 
 dependencies {
     compile "com.android.support:appcompat-v7:${project.ext.support_library_version}"
-    compile "com.android.support:recyclerview-v7:${project.ext.support_library_version}"
+    compile "com.android.support:palette-v7:${project.ext.support_library_version}"
 
-    compile "com.google.firebase:firebase-database:${project.ext.firebase_version}"
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile "com.android.support:support-annotations:${project.ext.support_library_version}"
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
+    compile "com.google.firebase:firebase-storage:${project.ext.firebase_version}"
 }

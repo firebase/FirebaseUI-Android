@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # By default, the flags in this file are appended to flags specified
-# in /Users/puf/Library/Android/sdk/tools/proguard/proguard-android.txt
+# in /usr/local/google/home/samstern/android-sdk-linux/tools/proguard/proguard-android.txt
 # You can edit the include path and order by changing the proguardFiles
 # directive in build.gradle.
 #
@@ -15,16 +15,3 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
-# See:
-# https://firebase-dot-devsite.googleplex.com/docs/auth/android/start/#proguard
--keepattributes Signature
--keepattributes *Annotation*
-
-# See:
-# storage/README.md
--assumenosideeffects class android.util.Log {
-    public static *** w(...);
-    public static *** d(...);
-    public static *** v(...);
-}

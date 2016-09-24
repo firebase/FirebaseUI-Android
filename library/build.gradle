@@ -22,8 +22,6 @@ android {
 dependencies {
     compile project(':database')
     compile project(':auth')
-
-    androidTestCompile 'junit:junit:4.12'
 }
 
 /**
@@ -61,7 +59,7 @@ def bintrayUploadTasks() {
  */
 def testTasks() {
     return project.ext.submodules.collect { name ->
-        ":${name}:test"
+        ":${name}:testDebugUnitTest"
     }.toArray()
 }
 
