@@ -16,8 +16,12 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            // For the purposes of the sample, allow testing of a proguarded release build
+            // using the debug key
+            signingConfig signingConfigs.debug
         }
     }
 
@@ -32,9 +36,11 @@ dependencies {
 
     compile project(path: ':auth')
     compile project(path: ':database')
+    compile project(path: ':storage')
 
     compile "com.google.firebase:firebase-database:${project.ext.firebase_version}"
     compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"
+    compile "com.google.firebase:firebase-storage:${project.ext.firebase_version}"
     compile "com.google.android.gms:play-services-auth:${project.ext.firebase_version}"
 
     // The following dependencies are not required to use the Firebase UI library.
@@ -42,6 +48,7 @@ dependencies {
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
     compile 'com.jakewharton:butterknife:8.0.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'pub.devrel:easypermissions:0.2.0'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
 }
 
