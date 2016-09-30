@@ -15,11 +15,13 @@
 package com.firebase.ui.database;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
@@ -108,6 +110,11 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                         throw new IllegalStateException("Incomplete case statement");
                 }
             }
+            
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                FirebaseRecyclerAdapter.this.onCancelled(databaseError);
+            }
         });
     }
 
@@ -180,6 +187,16 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @Override
     public int getItemViewType(int position) {
         return mModelLayout;
+    }
+    
+    /**
+     * This method will be triggered in the event that this listener either failed at the server,
+     * or is removed as a result of the security and Firebase Database rules.
+     *
+     * @param databaseError A description of the error that occurred
+     */
+    protected void onCancelled(DatabaseError databaseError) {
+        Log.w("FirebaseRecyclerAdapter", databaseError.toException());
     }
 
     /**

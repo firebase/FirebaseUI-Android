@@ -14,10 +14,12 @@
 
 package com.firebase.ui.database;
 
-import android.test.AndroidTestCase;
+import android.support.test.runner.AndroidJUnit4;
+import android.test.InstrumentationTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
-import com.firebase.ui.ApplicationTest;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -27,17 +29,23 @@ import junit.framework.AssertionFailedError;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-public class FirebaseArrayTest extends AndroidTestCase {
+@RunWith(AndroidJUnit4.class)
+@SmallTest
+public class FirebaseArrayTest extends InstrumentationTestCase {
+
+    private static final int TIMEOUT = 5000;
+
     private DatabaseReference mRef;
     private FirebaseArray mArray;
 
     @Before
     public void setUp() throws Exception {
-        FirebaseApp app = ApplicationTest.getAppInstance(getContext());
+        FirebaseApp app = ApplicationTest.getAppInstance(getInstrumentation().getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
         mArray = new FirebaseArray(mRef);
         mRef.removeValue();
@@ -56,8 +64,13 @@ public class FirebaseArrayTest extends AndroidTestCase {
 
     @After
     public void tearDown() throws Exception {
-        mArray.cleanup();
-        mRef.removeValue();
+        if (mRef != null) {
+            mRef.getRoot().removeValue();
+        }
+
+        if (mArray != null) {
+            mArray.cleanup();
+        }
     }
 
     @Test
@@ -143,14 +156,19 @@ public class FirebaseArrayTest extends AndroidTestCase {
     public static void runAndWaitUntil(final FirebaseArray array, Query ref, Runnable task, Callable<Boolean> done) throws InterruptedException {
         final java.util.concurrent.Semaphore semaphore = new java.util.concurrent.Semaphore(0);
         array.setOnChangedListener(new FirebaseArray.OnChangedListener() {
-            public void onChanged(FirebaseArray.OnChangedListener.EventType type, int index, int oldIndex) {
+            public void onChanged(EventType type, int index, int oldIndex) {
                 semaphore.release();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                throw new IllegalStateException(databaseError.toException());
             }
         });
         task.run();
         boolean isDone = false;
         long startedAt = System.currentTimeMillis();
-        while (!isDone && System.currentTimeMillis() - startedAt < 5000) {
+        while (!isDone && System.currentTimeMillis() - startedAt < TIMEOUT) {
             semaphore.tryAcquire(1, TimeUnit.SECONDS);
             try {
                 isDone = done.call();

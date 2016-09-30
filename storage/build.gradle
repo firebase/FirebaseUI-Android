@@ -1,0 +1,28 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion project.ext.compileSdk
+    buildToolsVersion "${project.ext.buildtools}"
+
+    defaultConfig {
+        minSdkVersion 11
+        targetSdkVersion project.ext.targetSdk
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile "com.android.support:appcompat-v7:${project.ext.support_library_version}"
+    compile "com.android.support:palette-v7:${project.ext.support_library_version}"
+
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    compile "com.google.firebase:firebase-storage:${project.ext.firebase_version}"
+}

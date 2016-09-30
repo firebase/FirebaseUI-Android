@@ -29,6 +29,7 @@ import com.firebase.ui.auth.test_helpers.FacebookProviderShadow;
 import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.test_helpers.GoogleProviderShadow;
+import com.firebase.ui.auth.test_helpers.LoginManagerShadow;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -63,7 +64,8 @@ import static org.mockito.Mockito.when;
         shadows = {
                 FirebaseAuthWrapperImplShadow.class,
                 GoogleProviderShadow.class,
-                FacebookProviderShadow.class
+                FacebookProviderShadow.class,
+                LoginManagerShadow.class
         }, sdk = 21)
 public class AuthMethodPickerActivityTest {
 
@@ -81,6 +83,7 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity =
                 createActivity(providers);
+
         assertEquals(providers.size(),
                 ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
                         .getChildCount());

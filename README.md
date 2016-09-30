@@ -25,16 +25,19 @@ those separately in your app.
 In your `app/build.gradle` file add a dependency on one of the FirebaseUI
 libraries.
 
-```
+```groovy
 dependencies {
     // Single target that includes all FirebaseUI libraries
-    compile 'com.firebaseui:firebase-ui:0.5.1'
+    compile 'com.firebaseui:firebase-ui:0.6.0'
 
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:0.5.1'
+    compile 'com.firebaseui:firebase-ui-database:0.6.0'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:0.5.1'
+    compile 'com.firebaseui:firebase-ui-auth:0.6.0'
+
+    // FirebaseUI Storage only
+    compile 'com.firebaseui:firebase-ui-storage:0.6.0'
 }
 ```
 
@@ -50,6 +53,9 @@ firebase-ui-auth
 
 firebase-ui-database
 |--- com.google.firebase:firebase-database
+
+firebase-ui-storage
+|--- com.google.firebase:firebase-storage
 ```
 
 Each version of FirebaseUI has dependency on a fixed version of these libraries, defined as the variable `firebase_version`
@@ -61,7 +67,8 @@ For convenience, here are some examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
-| 0.5.1              | 9.4.0                          |
+| 0.6.0              | 9.6.0                          |
+| 0.5.3              | 9.4.0                          |
 | 0.4.4              | 9.4.0                          |
 | 0.4.3              | 9.2.1                          |
 | 0.4.2              | 9.2.0                          |
@@ -72,6 +79,7 @@ For convenience, here are some examples:
 
   * [firebase-ui-database](database/README.md)
   * [firebase-ui-auth](auth/README.md)
+  * [firebase-ui-storage](storage/README.md)
 
 ## Sample App
 

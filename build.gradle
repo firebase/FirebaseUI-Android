@@ -6,7 +6,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.2.0'
         classpath 'com.google.gms:google-services:3.0.0'
 
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
@@ -43,9 +43,6 @@ allprojects { project ->
 
     def isLibrary = 'library'.equals(project.name)
     def isSubmodule = project.ext.submodules.contains(project.name)
-
-    // Only applies to submodules, not the library module
-    def pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication";
 
     if (isSubmodule || isLibrary) {
 
@@ -163,9 +160,6 @@ allprojects { project ->
     }
 
     if (isSubmodule) {
-        // Convenience task to prepare everything we need for releases
-        task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
-
         publishing {
 
             // Define a publication for each submodule
@@ -274,5 +268,20 @@ allprojects { project ->
                 }
             }
         }
+    }
+}
+
+allprojects {
+    afterEvaluate { project ->
+        def isSubmodule = project.ext.submodules.contains(project.name)
+
+        if (isSubmodule) {
+            // Only applies to submodules, not the library module
+            def pomTask = "generatePomFileFor${project.name.capitalize()}LibraryPublication";
+
+            // Convenience task to prepare everything we need for releases
+            task prepareArtifacts(dependsOn: [javadocJar, sourcesJar, assembleRelease, pomTask]) {}
+        }
+
     }
 }
