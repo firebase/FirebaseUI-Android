@@ -26,7 +26,7 @@ import java.util.ArrayList;
  */
 class FirebaseArray implements ChildEventListener {
     public interface OnChangedListener {
-        enum EventType { Added, Changed, Removed, Moved }
+        enum EventType {ADDED, CHANGED, REMOVED, MOVED}
         void onChanged(EventType type, int index, int oldIndex);
         void onCancelled(DatabaseError databaseError);
     }
@@ -72,19 +72,19 @@ class FirebaseArray implements ChildEventListener {
             index = getIndexForKey(previousChildKey) + 1;
         }
         mSnapshots.add(index, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.Added, index);
+        notifyChangedListeners(OnChangedListener.EventType.ADDED, index);
     }
 
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.set(index, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.Changed, index);
+        notifyChangedListeners(OnChangedListener.EventType.CHANGED, index);
     }
 
     public void onChildRemoved(DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
-        notifyChangedListeners(OnChangedListener.EventType.Removed, index);
+        notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
     }
 
     public void onChildMoved(DataSnapshot snapshot, String previousChildKey) {
@@ -92,7 +92,7 @@ class FirebaseArray implements ChildEventListener {
         mSnapshots.remove(oldIndex);
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
+        notifyChangedListeners(OnChangedListener.EventType.MOVED, newIndex, oldIndex);
     }
 
     public void onCancelled(DatabaseError databaseError) {
