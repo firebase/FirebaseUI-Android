@@ -1,0 +1,54 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="email_hint">Correo electrónico</string>
+    <string name="sign_in_no_password_title">Escribe un correo electrónico para iniciar sesión</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="button_password_recovery_text">Problemas al recordar tu contraseña</string>
+    <string name="name_hint">Nombre y apellidos</string>
+    <string name="password_recovery_title">Contraseña olvidada</string>
+    <string name="password_recovery_body">Obtén instrucciones enviadas a este correo para restablecer tu contraseña.</string>
+    <string name="create_account_title">Crear cuenta</string>
+    <string name="required_field">No puedes dejar esto en blanco.</string>
+    <string name="password_length">Las contraseñas seguras tienen al menos %1$d caracteres y una mezcla de números y letras</string>
+    <string name="invalid_email_address">Esa dirección de correo electrónico no es correcta</string>
+    <string name="missing_email_address">Introduce tu dirección de correo para continuar</string>
+    <string name="error_weak_password">La contraseña no es lo suficientemente segura. Usa al menos 6 caracteres y una mezcla de números y letras.</string>
+    <string name="error_user_collision">Ya existe una cuenta con este correo electrónico.</string>
+    <string name="button_text_send">Enviar</string>
+    <string name="button_text_save">Guardar</string>
+    <string name="require_email_text">Por favor, introduce el correo electrónico</string>
+    <string name="confirm_recovery_body">Sigue las instrucciones enviadas a %1$s para recuperar tu contraseña.</string>
+    <string name="error_email_does_not_exist">Esa dirección de correo no coincide con una cuenta existente</string>
+    <string name="account_welcomeback">Bienvenido de nuevo</string>
+    <string name="finding_credential">Buscando una credencial…</string>
+    <string name="do_delete">Borrar</string>
+    <string name="welcome_back">¡Bienvenido de nuevo!</string>
+    <string name="next">Siguiente</string>
+    <string name="trouble_signing_in">¿Problemas al iniciar sesión?</string>
+    <string name="sign_in">Iniciar sesión</string>
+    <string name="sign_in_with_google">Iniciar sesión con Google</string>
+    <string name="sign_in_with_facebook">Iniciar sesión con Facebook</string>
+    <string name="button_done">Hecho</string>
+    <string name="check_your_email">Comprueba tu correo electrónico</string>
+    <string name="recover_password_title">Recuperar contraseña</string>
+    <string name="welcome_back_idp_header">Ya tienes una cuenta</string>
+    <string name="welcome_back_idp_prompt">
+        Ya has usado <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
+        Inicia sesión con <xliff:g id="provider_name" example="Google">%2$s</xliff:g> para continuar.
+    </string>
+    <string name="welcome_back_password_prompt_body">Ya has usado
+        <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g> para iniciar sesión. Introduce
+        tu contraseña para esta cuenta.</string>
+    <string name="password_word">Contraseña</string>
+    <string name="create_account_preamble">"Al pulsar en GUARDAR indicas que estás de acuerdo con los "</string>
+    <string name="terms_of_service">Términos de Servicio</string>
+    <string name="sign_in_with_email">Inicia sesión con correo electrónico</string>
+    <string name="login_error">Error al iniciar sesión</string>
+    <string name="email_account_creation_error">Error al crear cuenta con correo electrónico</string>
+    <string name="missing_password_email_toast">Falta el correo o la contraseña</string>
+
+    <string name="progress_dialog_loading">Cargando…</string>
+    <string name="progress_dialog_sending">Enviando…</string>
+    <string name="progress_dialog_signing_in">Iniciando sesión…</string>
+    <string name="progress_dialog_signing_up">Registrándose…</string>
+</resources>
