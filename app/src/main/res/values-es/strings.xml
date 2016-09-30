@@ -1,0 +1,39 @@
+<resources>
+    <string name="desc_chat">Muestra cómo usar el FirebaseRecyclerAdapter para cargar datos desde Firebase Database en un RecyclerView para una aplicación de chat básica.</string>
+    <string name="desc_auth_ui">Muestra el flujo de Firebase Auth UI, con opciones de personalización.</string>
+    <string name="desc_image">Enseña cómo mostrar una imagen de Firebase Storage usando Glide.</string>
+
+    <!-- strings for Auth UI demo activities -->
+    <eat-comment />
+    <string name="sign_in">Empezar</string>
+    <string name="green_theme">Tema verde</string>
+    <string name="purple_theme">Tema morado</string>
+    <string name="use_theme_header">Usar tema:</string>
+    <string name="logo_header">Logo:</string>
+    <string name="no_logo_label">Ninguno</string>
+    <string name="auth_providers_header">Usar proveedores de autenticación:</string>
+    <string name="email_label">Correo electrónico</string>
+    <string name="facebook_label_missing_config">Facebook - falta la configuración</string>
+    <string name="google_label_missing_config">Google - falta la configuración</string>
+    <string name="google_tos_label">Términos de Servicio de Google</string>
+    <string name="firebase_tos_label">Términos de Servicio de Firebase</string>
+    <string name="tos_header">Enlace de los Términos de Servicio:</string>
+    <string name="unknown_response">Código de respuesta de onActivityResult desconocido</string>
+    <string name="unknown_sign_in_response">Respuesta desconocida desde el inicio de sesión de AuthUI</string>
+    <string name="sign_in_cancelled">Inicio de sesión cancelado</string>
+    <string name="signed_in_header">¡Ya has iniciado sesión!</string>
+    <string name="sign_out">Cerrar sesión</string>
+    <string name="delete_account_label">Borrar cuenta</string>
+    <string name="sign_out_failed">Error al cerrar sesión</string>
+    <string name="delete_account_failed">Error al borrar cuenta</string>
+    <string name="user_profile_header">Perfil de usuario:</string>
+    <string name="profile_picture_content_desc">Foto de perfil</string>
+    <string name="default_theme">Tema predeterminado</string>
+    <string name="configuration_required">Se requiere configuración - mira el README.md</string>
+    <string name="other_options_header">Otras opciones:</string>
+    <string name="enable_smartlock">Activar SmartLock para Contraseñas</string>
+    <string name="rational_image_perm">Este ejemplo leerá una imagen del almacenamiento local para subirla a Firebase Storage.</string>
+
+    <string name="anonymous_auth_failed_toast">Error al autenticar, las descargas y subidas no funcionarán.</string>
+    <string name="anonymous_auth_failed_msg">Error al autenticar de forma anónima. Comprueba que tu dispositivo está en línea y que el inicio de sesión anónimo está configurado en tu proyecto de Firebase (https://console.firebase.google.com/project/_/authentication/providers)</string>
+</resources>
