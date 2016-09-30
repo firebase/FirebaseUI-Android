@@ -122,6 +122,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         TextInputLayout passwordInput =
                                 (TextInputLayout) findViewById(R.id.password_layout);
                         passwordInput.setError(getString(R.string.login_error));
+                        mActivityHelper.dismissDialog();
                     }
                 });
     }
