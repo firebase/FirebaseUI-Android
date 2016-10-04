@@ -24,8 +24,8 @@ import java.util.ArrayList;
 /**
  * This class implements an array-like collection on top of a Firebase location.
  */
-class FirebaseArray implements ChildEventListener {
-    interface OnChangedListener {
+public class FirebaseArray implements ChildEventListener {
+    protected interface OnChangedListener {
         enum EventType { Added, Changed, Removed, Moved }
         void onChanged(EventType type, int index, int oldIndex);
         void onCancelled(DatabaseError databaseError);
@@ -35,21 +35,21 @@ class FirebaseArray implements ChildEventListener {
     private OnChangedListener mListener;
     private ArrayList<DataSnapshot> mSnapshots;
 
-    FirebaseArray(Query ref) {
+    protected FirebaseArray(Query ref) {
         mQuery = ref;
         mSnapshots = new ArrayList<DataSnapshot>();
         mQuery.addChildEventListener(this);
     }
 
-    void cleanup() {
+    protected void cleanup() {
         mQuery.removeEventListener(this);
     }
 
-    int getCount() {
+    protected int getCount() {
         return mSnapshots.size();
 
     }
-    DataSnapshot getItem(int index) {
+    protected DataSnapshot getItem(int index) {
         return mSnapshots.get(index);
     }
 
@@ -100,21 +100,21 @@ class FirebaseArray implements ChildEventListener {
     }
     // End of ChildEventListener methods
 
-    void setOnChangedListener(OnChangedListener listener) {
+    protected void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
     
-    void notifyChangedListeners(OnChangedListener.EventType type, int index) {
+    protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
     
-    void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
+    protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChanged(type, index, oldIndex);
         }
     }
     
-    void notifyCancelledListeners(DatabaseError databaseError) {
+    protected void notifyCancelledListeners(DatabaseError databaseError) {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
         }
