@@ -100,21 +100,21 @@ public class FirebaseArray implements ChildEventListener {
     }
     // End of ChildEventListener methods
 
-    public void setOnChangedListener(OnChangedListener listener) {
+    protected void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
 
-    public void notifyChangedListeners(OnChangedListener.EventType type, int index) {
+    protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
 
-    public void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
+    protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChanged(type, index, oldIndex);
         }
     }
 
-    public void notifyCancelledListeners(DatabaseError databaseError) {
+    protected void notifyCancelledListeners(DatabaseError databaseError) {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
         }
