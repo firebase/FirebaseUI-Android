@@ -100,7 +100,7 @@ public class FirebaseArray implements ChildEventListener {
     }
     // End of ChildEventListener methods
 
-    protected void setOnChangedListener(OnChangedListener listener) {
+    public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
 
