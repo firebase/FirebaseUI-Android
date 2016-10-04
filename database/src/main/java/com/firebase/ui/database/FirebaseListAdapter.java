@@ -50,10 +50,10 @@ import com.google.firebase.database.Query;
  * @param <T> The class type to use as a model for the data contained in the children of the given Firebase location
  */
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
-    Activity mActivity;
-    final Class<T> mModelClass;
-    int mLayout;
-    FirebaseArray mSnapshots;
+    protected Activity mActivity;
+    protected final Class<T> mModelClass;
+    protected int mLayout;
+    protected FirebaseArray mSnapshots;
 
 
     /**
