@@ -41,15 +41,15 @@ public class FirebaseArray implements ChildEventListener {
         mQuery.addChildEventListener(this);
     }
 
-    protected void cleanup() {
+    public void cleanup() {
         mQuery.removeEventListener(this);
     }
 
-    protected int getCount() {
+    public int getCount() {
         return mSnapshots.size();
 
     }
-    protected DataSnapshot getItem(int index) {
+    public DataSnapshot getItem(int index) {
         return mSnapshots.get(index);
     }
 
@@ -100,21 +100,21 @@ public class FirebaseArray implements ChildEventListener {
     }
     // End of ChildEventListener methods
 
-    protected void setOnChangedListener(OnChangedListener listener) {
+    public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
-    
-    protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
+
+    public void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
-    
-    protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
+
+    public void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChanged(type, index, oldIndex);
         }
     }
-    
-    protected void notifyCancelledListeners(DatabaseError databaseError) {
+
+    public void notifyCancelledListeners(DatabaseError databaseError) {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
         }
