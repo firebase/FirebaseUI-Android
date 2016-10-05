@@ -148,7 +148,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * @param databaseError A description of the error that occurred
      */
     protected void onCancelled(DatabaseError databaseError) {
-        Log.w("FirebaseRecyclerAdapter", databaseError.toException());
+        Log.w("FirebaseListAdapter", databaseError.toException());
     }
 
     /**
