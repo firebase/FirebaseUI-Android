@@ -19,34 +19,6 @@
     -->
     <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
 
-
-    <!--
-    The facebook permissions that this Android Application will request from the
-    user. Users of FirebaseUI auth can add additional items with the additional
-    permissions they want to request.
-
-    See:
-    https://developers.facebook.com/docs/facebook-login/android
-    https://developers.facebook.com/docs/facebook-login/permissions
-    -->
-    <string-array name="facebook_permissions">
-    </string-array>
-
-    <!--
-    The additional Google scopes that this application will request from the user. Users of
-    FirebaseUI can override this array to customize. Note that the 'email' and 'profile' scopes are
-    always requested.
-
-    For example to add the permission to read the user's files in Google Drive:
-    <item>https://www.googleapis.com/auth/drive.readonly</item>
-
-    For a list of all scopes, see:
-    https://developers.google.com/identity/protocols/googlescopes
-    -->
-    <string-array name="google_permissions">
-    </string-array>
-
-
     <!--
     The Google web client ID associated with this Android application. The
     google-services gradle plugin will automatically provide this value.

@@ -23,6 +23,7 @@ import android.support.annotation.StyleRes;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.util.Preconditions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,19 +49,27 @@ public class FlowParameters implements Parcelable {
 
     public final boolean smartLockEnabled;
 
+    public final List<String> additionalFacebookPermissions;
+
+    public final List<String> additionalGooglePermissions;
+
     public FlowParameters(
             @NonNull String appName,
             @NonNull List<IDPProviderParcel> providerInfo,
             @StyleRes int themeId,
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
-            boolean smartLockEnabled) {
+            boolean smartLockEnabled,
+            List<String> additionalFacebookPermissions,
+            List<String> additionalGooglePermissions) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null");
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
         this.smartLockEnabled = smartLockEnabled;
+        this.additionalFacebookPermissions = additionalFacebookPermissions;
+        this.additionalGooglePermissions = additionalGooglePermissions;
     }
 
     @Override
@@ -71,6 +80,8 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
         dest.writeInt(smartLockEnabled ? 1 : 0);
+        dest.writeStringList(additionalFacebookPermissions);
+        dest.writeStringList(additionalGooglePermissions);
     }
 
     @Override
@@ -89,9 +100,19 @@ public class FlowParameters implements Parcelable {
             String termsOfServiceUrl = in.readString();
             int smartLockEnabledInt = in.readInt();
             boolean smartLockEnabled = (smartLockEnabledInt != 0);
-
+            List<String> additionalFacebookPermissions = new ArrayList<>();
+            in.readStringList(additionalFacebookPermissions);
+            List<String> additionalGooglePermissions = new ArrayList<>();
+            in.readStringList(additionalGooglePermissions);
             return new FlowParameters(
-                    appName, providerInfo, themeId, logoId, termsOfServiceUrl, smartLockEnabled);
+                    appName,
+                    providerInfo,
+                    themeId,
+                    logoId,
+                    termsOfServiceUrl,
+                    smartLockEnabled,
+                    additionalFacebookPermissions,
+                    additionalGooglePermissions);
         }
 
         @Override

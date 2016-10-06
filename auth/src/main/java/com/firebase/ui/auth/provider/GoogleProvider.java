@@ -36,6 +36,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
+import java.util.List;
 
 public class GoogleProvider implements
         IDPProvider, OnClickListener, GoogleApiClient.OnConnectionFailedListener {
@@ -51,7 +52,11 @@ public class GoogleProvider implements
     private Activity mActivity;
     private IDPCallback mIDPCallback;
 
-    public GoogleProvider(FragmentActivity activity, IDPProviderParcel parcel, @Nullable String email) {
+    public GoogleProvider(
+            FragmentActivity activity,
+            IDPProviderParcel parcel,
+            @Nullable String email,
+            List<String> scopes) {
         mActivity = activity;
         String mClientId = parcel.getProviderExtra().getString(CLIENT_ID_KEY);
         GoogleSignInOptions googleSignInOptions;
@@ -62,8 +67,7 @@ public class GoogleProvider implements
                 .requestIdToken(mClientId);
 
         // Add additional scopes
-        String[] extraScopes = mActivity.getResources().getStringArray(R.array.google_permissions);
-        for (String scopeString : extraScopes) {
+        for (String scopeString : scopes) {
             builder.requestScopes(new Scope(scopeString));
         }
 

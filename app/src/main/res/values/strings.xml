@@ -48,7 +48,11 @@
     <string name="other_options_header">Other Options:</string>
     <string name="enable_smartlock">Enable SmartLock for Passwords</string>
     <string name="rational_image_perm">This sample will read an image from local storage to upload to Firebase Storage.</string>
-
     <string name="anonymous_auth_failed_toast">Authentication failed, uploads and downloads will not work.</string>
     <string name="anonymous_auth_failed_msg">Anonymous authentication failed. Make sure your device is online and that Anonymous Auth is configured in your Firebase project(https://console.firebase.google.com/project/_/authentication/providers)</string>
+    <string name="extra_google_scopes">Example extra Google scopes</string>
+    <string name="games">Games</string>
+    <string name="extra_facebook_scopes">Example extra Facebook scopes</string>
+    <string name="friends">Friends</string>
+    <string name="photos">Photos</string>
 </resources>

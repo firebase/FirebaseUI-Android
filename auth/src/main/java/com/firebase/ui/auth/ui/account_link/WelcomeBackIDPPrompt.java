@@ -60,6 +60,8 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         super.onCreate(savedInstanceState);
         mProviderId = getProviderIdFromIntent();
         mPrevIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        FlowParameters flowParameters =
+                getIntent().getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         mIdpProvider = null;
@@ -70,10 +72,12 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
                         mIdpProvider = new GoogleProvider(
                                 this,
                                 providerParcel,
-                                getEmailFromIntent());
+                                getEmailFromIntent(),
+                                flowParameters.additionalGooglePermissions);
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new FacebookProvider(this, providerParcel);
+                        mIdpProvider = new FacebookProvider(
+                            this, providerParcel, flowParameters.additionalFacebookPermissions);
                         break;
                     default:
                         Log.w(TAG, "Unknown provider: " + mProviderId);

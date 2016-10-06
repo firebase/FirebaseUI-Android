@@ -37,7 +37,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResult> {
@@ -51,12 +50,17 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
 
+    private final List<String> mScopes;
     private CallbackManager mCallbackManager;
     private IDPCallback mCallbackObject;
 
-    public FacebookProvider (Context appContext, IDPProviderParcel facebookParcel) {
+    public FacebookProvider (
+            Context appContext,
+            IDPProviderParcel facebookParcel,
+            List<String> scopes) {
         mCallbackManager = CallbackManager.Factory.create();
         String applicationId = facebookParcel.getProviderExtra().getString(APPLICATION_ID);
+        mScopes = scopes;
         FacebookSdk.sdkInitialize(appContext);
         FacebookSdk.setApplicationId(applicationId);
     }
@@ -83,8 +87,7 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
         LoginManager loginManager = LoginManager.getInstance();
         loginManager.registerCallback(mCallbackManager, this);
 
-        String[] permissions = activity.getResources().getStringArray(R.array.facebook_permissions);
-        List<String> permissionsList = new ArrayList<>(Arrays.asList(permissions));
+        List<String> permissionsList = new ArrayList<>(mScopes);
 
         // Ensure we have email and public_profile scopes
         if (!permissionsList.contains(EMAIL)) {

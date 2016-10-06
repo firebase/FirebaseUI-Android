@@ -412,6 +412,8 @@ public class AuthUI {
         private List<String> mProviders = Collections.singletonList(EMAIL_PROVIDER);
         private String mTosUrl;
         private boolean mIsSmartLockEnabled = true;
+        private List<String> mAdditonalGooglePermissions;
+        private List<String> mAdditonalFacebookPermissions;
 
         private SignInIntentBuilder() {}
 
@@ -477,6 +479,31 @@ public class AuthUI {
             return this;
         }
 
+        /**
+         * Specifies additional Google scopes that this application will request from the user.
+         * Note that {@link com.google.android.gms.common.Scopes.EMAIL} and
+         * {@link com.google.android.gms.common.Scopes.PROFILE} are alawys requested.
+         *
+         * For a list of all scopes, see:
+         * https://developers.google.com/identity/protocols/googlescopes
+         */
+        public SignInIntentBuilder setAdditonalGooglePermissions(List<String> permissions) {
+            mAdditonalGooglePermissions = permissions;
+            return this;
+        }
+
+        /**
+         * Specifies the Facebook permissions that this application will request from the user.
+         *
+         * See:
+         * https://developers.facebook.com/docs/facebook-login/android
+         * https://developers.facebook.com/docs/facebook-login/permissions
+         */
+        public SignInIntentBuilder setAdditonalFacebookPermissions(List<String> permissions) {
+            mAdditonalFacebookPermissions = permissions;
+            return this;
+        }
+
         public Intent build() {
             Context context = mApp.getApplicationContext();
             return build(context);
@@ -494,7 +521,9 @@ public class AuthUI {
                             mTheme,
                             mLogo,
                             mTosUrl,
-                            mIsSmartLockEnabled));
+                            mIsSmartLockEnabled,
+                            mAdditonalFacebookPermissions,
+                            mAdditonalGooglePermissions));
         }
     }
 }

@@ -32,6 +32,7 @@ import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
@@ -65,10 +66,12 @@ public class AuthMethodPickerActivity
     private static final int RC_SAVE_CREDENTIAL = 4;
     private static final String TAG = "AuthMethodPicker";
     private ArrayList<IDPProvider> mIdpProviders;
+    private FlowParameters mFlowParameters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFlowParameters = getIntent().getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
         setContentView(R.layout.auth_method_picker_layout);
 
         findViewById(R.id.email_provider).setOnClickListener(this);
@@ -89,10 +92,12 @@ public class AuthMethodPickerActivity
         for (IDPProviderParcel providerParcel : providers) {
             switch (providerParcel.getProviderType()) {
                 case FacebookAuthProvider.PROVIDER_ID :
-                    mIdpProviders.add(new FacebookProvider(this, providerParcel));
+                    mIdpProviders.add(new FacebookProvider(
+                            this, providerParcel, mFlowParameters.additionalFacebookPermissions));
                     break;
                 case GoogleAuthProvider.PROVIDER_ID:
-                    mIdpProviders.add(new GoogleProvider(this, providerParcel, null));
+                    mIdpProviders.add(new GoogleProvider(
+                            this, providerParcel, null, mFlowParameters.additionalGooglePermissions));
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
                     findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
