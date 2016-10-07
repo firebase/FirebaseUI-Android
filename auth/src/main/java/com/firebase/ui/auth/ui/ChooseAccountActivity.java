@@ -113,7 +113,7 @@ public class ChooseAccountActivity extends ActivityBase {
     }
 
     /**
-     * Called when the Credentials API connects.
+     * Called when the SmartLock API connects.
      */
     public void onCredentialsApiConnected(
             CredentialsAPI credentialsApi,

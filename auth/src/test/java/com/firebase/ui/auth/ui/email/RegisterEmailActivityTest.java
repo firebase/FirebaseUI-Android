@@ -30,7 +30,7 @@ import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
+import com.firebase.ui.auth.util.SmartLock;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -134,7 +134,7 @@ public class RegisterEmailActivityTest {
         assertNotNull(nextIntent);
         assertEquals(
                 nextIntent.intent.getComponent().getClassName(),
-                SaveCredentialsActivity.class.getName());
+                SmartLock.class.getName());
         assertEquals(
                 TestConstants.EMAIL,
                 nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));

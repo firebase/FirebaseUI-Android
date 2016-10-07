@@ -34,7 +34,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.SmartlockUtil;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -44,7 +44,8 @@ import com.google.firebase.auth.AuthResult;
  */
 public class SignInActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "SignInActivity";
-    private static final int RC_CREDENTIAL_SAVE = 101;
+
+    private SmartLock mSmartLock;
 
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
@@ -82,7 +83,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         mPasswordValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id
                 .password_layout));
         Button signInButton = (Button) findViewById(R.id.button_done);
-        TextView recoveryButton =  (TextView) findViewById(R.id.trouble_signing_in);
+        TextView recoveryButton = (TextView) findViewById(R.id.trouble_signing_in);
 
         if (email != null) {
             mEmailEditText.setText(email);
@@ -93,7 +94,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     }
 
     @Override
-    public void onBackPressed () {
+    public void onBackPressed() {
         super.onBackPressed();
     }
 
@@ -105,12 +106,9 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        mActivityHelper.dismissDialog();
-
                         // Save credential in SmartLock (if enabled)
-                        SmartlockUtil.saveCredentialOrFinish(
+                        mSmartLock = SmartLock.saveCredentialOrFinish(
                                 SignInActivity.this,
-                                RC_CREDENTIAL_SAVE,
                                 mActivityHelper.getFlowParams(),
                                 authResult.getUser(),
                                 password,
@@ -134,8 +132,8 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_CREDENTIAL_SAVE) {
-            finish(RESULT_OK, new Intent());
+        if (mSmartLock != null) {
+            mSmartLock.onActivityResult(requestCode, resultCode);
         }
     }
 

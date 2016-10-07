@@ -36,5 +36,4 @@ public class AppCompatBase extends android.support.v7.app.AppCompatActivity {
     public void finish(int resultCode, Intent intent) {
         mActivityHelper.finish(resultCode, intent);
     }
-
 }

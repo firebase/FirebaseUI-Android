@@ -29,7 +29,7 @@ import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
+import com.firebase.ui.auth.util.SmartLock;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -123,7 +123,7 @@ public class SignInActivityTest {
         ShadowActivity.IntentForResult nextIntent =
                 Shadows.shadowOf(signInActivity).getNextStartedActivityForResult();
         assertEquals(
-                SaveCredentialsActivity.class.getName(),
+                SmartLock.class.getName(),
                 nextIntent.intent.getComponent().getClassName()
         );
         assertEquals(

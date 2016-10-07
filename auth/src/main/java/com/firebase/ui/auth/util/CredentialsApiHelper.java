@@ -144,7 +144,7 @@ public class CredentialsApiHelper {
     }
 
     public static CredentialsApiHelper getInstance(Activity activity) {
-        // Get a task helper with the Credentials Api
+        // Get a task helper with the SmartLock Api
         GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
         taskHelper.getBuilder()
                 .addApi(Auth.CREDENTIALS_API);

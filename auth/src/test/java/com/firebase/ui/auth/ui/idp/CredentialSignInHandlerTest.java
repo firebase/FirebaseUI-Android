@@ -32,7 +32,7 @@ import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
+import com.firebase.ui.auth.util.SmartLock;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.CredentialsAPI;
@@ -121,7 +121,7 @@ public class CredentialSignInHandlerTest {
         Intent capturedIntent = intentCaptor.getValue();
         assertEquals(RC_SAVE_CREDENTIALS, (int) intCaptor.getValue());
         assertEquals(
-                SaveCredentialsActivity.class.getName(),
+                SmartLock.class.getName(),
                 capturedIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,

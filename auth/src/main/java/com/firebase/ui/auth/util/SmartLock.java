@@ -12,10 +12,9 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.account_link;
+package com.firebase.ui.auth.util;
 
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
@@ -25,12 +24,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -43,13 +38,15 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class SaveCredentialsActivity extends AppCompatBase
-        implements GoogleApiClient.ConnectionCallbacks, ResultCallback<Status>,
+import static android.app.Activity.RESULT_OK;
+
+public class SmartLock implements GoogleApiClient.ConnectionCallbacks, ResultCallback<Status>,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "CredentialsSaveBase";
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
 
+    private AppCompatBase mActivity;
     private String mName;
     private String mEmail;
     private String mPassword;
@@ -57,29 +54,24 @@ public class SaveCredentialsActivity extends AppCompatBase
     private String mProfilePictureUri;
     private GoogleApiClient mCredentialsApiClient;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.save_credentials_layout);
+    public SmartLock(AppCompatBase activity,
+                     String name,
+                     String email,
+                     String password,
+                     String provider,
+                     String profilePictureUri) {
+        mActivity = activity;
+        mName = name;
+        mEmail = email;
+        mPassword = password;
+        mProvider = provider;
+        mProfilePictureUri = profilePictureUri;
 
-        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mActivityHelper.getAppName())
-                .isPlayServicesAvailable(this)) {
-            finish(RESULT_FIRST_USER, getIntent());
-            return;
-        }
-
-        mName = getIntent().getStringExtra(ExtraConstants.EXTRA_NAME);
-        mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
-        mPassword = getIntent().getStringExtra(ExtraConstants.EXTRA_PASSWORD);
-        mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
-        mProfilePictureUri = getIntent()
-                .getStringExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI);
-
-        mCredentialsApiClient = new GoogleApiClient.Builder(this)
+        mCredentialsApiClient = new GoogleApiClient.Builder(mActivity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(this, this)
+                .enableAutoManage(mActivity, this)
                 .build();
     }
 
@@ -87,9 +79,10 @@ public class SaveCredentialsActivity extends AppCompatBase
     public void onConnected(@Nullable Bundle bundle) {
         if (mEmail == null) {
             Log.e(TAG, "Unable to save null credential!");
-            finish(RESULT_FIRST_USER, getIntent());
+            mActivity.finish(RESULT_OK, mActivity.getIntent());
             return;
         }
+
         Credential.Builder builder = new Credential.Builder(mEmail);
         builder.setPassword(mPassword);
         if (mPassword == null) {
@@ -107,13 +100,16 @@ public class SaveCredentialsActivity extends AppCompatBase
                 }
             }
         }
+
         if (mName != null) {
             builder.setName(mName);
         }
+
         if (mProfilePictureUri != null) {
             builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
         }
-        mActivityHelper.getCredentialsApi()
+
+        Auth.CredentialsApi
                 .save(mCredentialsApiClient, builder.build())
                 .setResultCallback(this);
     }
@@ -133,13 +129,20 @@ public class SaveCredentialsActivity extends AppCompatBase
                     + " and code: " + connectionResult.getErrorCode());
         }
         PendingIntent resolution =
-                GoogleApiAvailability.getInstance().getErrorResolutionPendingIntent(this,
-                        connectionResult.getErrorCode(), RC_UPDATE_SERVICE);
+                GoogleApiAvailability.getInstance().getErrorResolutionPendingIntent(mActivity,
+                                                                                    connectionResult
+                                                                                            .getErrorCode(),
+                                                                                    RC_UPDATE_SERVICE);
         try {
-            startIntentSenderForResult(resolution.getIntentSender(), RC_UPDATE_SERVICE, null, 0, 0, 0);
+            mActivity.startIntentSenderForResult(resolution.getIntentSender(),
+                                                 RC_UPDATE_SERVICE,
+                                                 null,
+                                                 0,
+                                                 0,
+                                                 0);
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
-            finish(RESULT_FIRST_USER, getIntent());
+            mActivity.finish(RESULT_OK, mActivity.getIntent());
         }
     }
 
@@ -147,63 +150,89 @@ public class SaveCredentialsActivity extends AppCompatBase
     @Override
     public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
-            finish(RESULT_OK, getIntent());
+            mActivity.finish(RESULT_OK, mActivity.getIntent());
         } else {
             if (status.hasResolution()) {
                 // Try to resolve the save request. This will prompt the user if
                 // the credential is new.
                 try {
-                    status.startResolutionForResult(this, RC_SAVE);
+                    status.startResolutionForResult(mActivity, RC_SAVE);
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
-                    finish(RESULT_FIRST_USER, getIntent());
+                    mActivity.finish(RESULT_OK, mActivity.getIntent());
                 }
             } else {
-                finish(RESULT_FIRST_USER, getIntent());
+                mActivity.finish(RESULT_OK, mActivity.getIntent());
             }
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onActivityResult(int requestCode, int resultCode) {
         if (requestCode == RC_SAVE) {
             if (resultCode == RESULT_OK) {
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "SAVE: OK");
                 }
-                finish(RESULT_OK, getIntent());
+                mActivity.finish(RESULT_OK, new Intent());
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish(RESULT_FIRST_USER, getIntent());
+                mActivity.finish(RESULT_OK, new Intent());
             }
         } else if (requestCode == RC_UPDATE_SERVICE) {
             if (resultCode == RESULT_OK) {
-                Credential credential = new Credential.Builder(mEmail).setPassword(mPassword).build();
-                mActivityHelper.getCredentialsApi()
+                Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
+                        .build();
+                Auth.CredentialsApi
                         .save(mCredentialsApiClient, credential)
                         .setResultCallback(this);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish(RESULT_FIRST_USER, getIntent());
+                mActivity.finish(RESULT_OK, new Intent());
             }
         }
     }
 
-    public static Intent createIntent(
-            Context context,
-            FlowParameters flowParams,
-            FirebaseUser user,
-            @Nullable String password,
-            @Nullable String provider) {
+    /**
+     * If SmartLock is enabled and Google Play Services is available, save the credentials.
+     * Otherwise, finish the calling Activity with RESULT_OK.
+     *
+     * @param activity     the calling Activity.
+     * @param parameters   calling Activity flow parameters.
+     * @param firebaseUser Firebase user to save in Credential.
+     * @param password     (optional) password for email credential.
+     * @param provider     (optional) provider string for provider credential.
+     */
+    public static SmartLock saveCredentialOrFinish(AppCompatBase activity,
+                                                   FlowParameters parameters,
+                                                   FirebaseUser firebaseUser,
+                                                   @Nullable String password,
+                                                   @Nullable String provider) {
+        // If SmartLock is disabled, finish the Activity
+        if (!parameters.smartLockEnabled) {
+            activity.finish(RESULT_OK, new Intent());
+            return null;
+        }
 
-        String photoUrl = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
-        return ActivityHelper.createBaseIntent(context, SaveCredentialsActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_NAME, user.getDisplayName())
-                .putExtra(ExtraConstants.EXTRA_EMAIL, user.getEmail())
-                .putExtra(ExtraConstants.EXTRA_PASSWORD, password)
-                .putExtra(ExtraConstants.EXTRA_PROVIDER, provider)
-                .putExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI, photoUrl);
+        // If Play Services is not available, finish the Activity
+        if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
+            activity.finish(RESULT_OK, new Intent());
+            return null;
+        }
+
+        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
+                .isPlayServicesAvailable(activity)) {
+            activity.finish(RESULT_OK, activity.getIntent());
+            return null;
+        }
+
+        // Save credentials
+        return new SmartLock(activity,
+                             firebaseUser.getDisplayName(),
+                             firebaseUser.getEmail(),
+                             password,
+                             provider,
+                             firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
+                                         .toString() : null);
     }
 }

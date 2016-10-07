@@ -265,13 +265,13 @@ public class AuthUI {
      * ({@code !result.isSuccess()}).
      */
     public Task<Void> signOut(@NonNull Activity activity) {
-        // Get helper for Google Sign In and Credentials API
+        // Get helper for Google Sign In and SmartLock API
         GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
         taskHelper.getBuilder()
                 .addApi(Auth.CREDENTIALS_API)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN);
 
-        // Get Credentials Helper
+        // Get SmartLock Helper
         CredentialsApiHelper credentialsHelper = CredentialsApiHelper.getInstance(taskHelper);
 
         // Firebase Sign out

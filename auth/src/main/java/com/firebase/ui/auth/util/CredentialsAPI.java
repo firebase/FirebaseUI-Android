@@ -71,7 +71,7 @@ public class CredentialsAPI implements
     }
 
     public boolean isCredentialsAvailable() {
-        // TODO: (serikb) find the way to check if Credentials is available on top of play services
+        // TODO: (serikb) find the way to check if SmartLock is available on top of play services
         return true;
     }
 
@@ -96,7 +96,7 @@ public class CredentialsAPI implements
             try {
                 status.startResolutionForResult(activity, RC_CREDENTIALS_READ);
             } catch (IntentSender.SendIntentException e) {
-                Log.e(TAG, "Failed to send Credentials intent.", e);
+                Log.e(TAG, "Failed to send SmartLock intent.", e);
             }
         }
     }

@@ -35,6 +35,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.EmailFlowUtil;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -57,12 +58,12 @@ import java.util.List;
 public class AuthMethodPickerActivity
         extends IDPBaseActivity
         implements IDPProvider.IDPCallback, View.OnClickListener {
-
     private static final int RC_EMAIL_FLOW = 2;
     private static final int RC_ACCOUNT_LINK = 3;
-    private static final int RC_SAVE_CREDENTIAL = 4;
     private static final String TAG = "AuthMethodPicker";
+
     private ArrayList<IDPProvider> mIdpProviders;
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,8 +140,8 @@ public class AuthMethodPickerActivity
             if (resultCode == RESULT_OK) {
                 finish(RESULT_OK, new Intent());
             }
-        } else if (requestCode == RC_SAVE_CREDENTIAL) {
-            finish(RESULT_OK, new Intent());
+        } else if (mSmartLock != null) {
+            mSmartLock.onActivityResult(requestCode, resultCode);
         } else if (requestCode == RC_ACCOUNT_LINK) {
             finish(resultCode, new Intent());
         } else {
@@ -163,8 +164,8 @@ public class AuthMethodPickerActivity
                         AuthMethodPickerActivity.this,
                         mActivityHelper,
                         RC_ACCOUNT_LINK,
-                        RC_SAVE_CREDENTIAL,
-                        response));
+                        response,
+                        mSmartLock));
     }
 
     @Override

@@ -33,7 +33,7 @@ import com.firebase.ui.auth.test_helpers.LoginManagerShadow;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
+import com.firebase.ui.auth.util.SmartLock;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthCredential;
@@ -181,7 +181,7 @@ public class AuthMethodPickerActivityTest {
             ShadowActivity.IntentForResult nextIntent,
             String provider) {
         assertEquals(
-                SaveCredentialsActivity.class.getName(),
+                SmartLock.class.getName(),
                 nextIntent.intent.getComponent().getClassName());
         assertEquals(
                 nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL),
