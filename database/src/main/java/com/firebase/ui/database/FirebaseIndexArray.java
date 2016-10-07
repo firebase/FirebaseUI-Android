@@ -88,16 +88,16 @@ class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
         if (snapshot.getValue() != null) {
             if (!isMatch(index, key)) {
                 mDataSnapshots.add(index, snapshot);
-                notifyChangedListeners(OnChangedListener.EventType.Added, index);
+                notifyChangedListeners(OnChangedListener.EventType.ADDED, index);
             } else {
                 mDataSnapshots.set(index, snapshot);
-                notifyChangedListeners(OnChangedListener.EventType.Changed, index);
+                notifyChangedListeners(OnChangedListener.EventType.CHANGED, index);
             }
         } else {
             Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
             if (isMatch(index, key)) {
                 mDataSnapshots.remove(index);
-                notifyChangedListeners(OnChangedListener.EventType.Removed, index);
+                notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
             }
         }
     }
@@ -121,7 +121,7 @@ class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
 
         if (isMatch(index, key)) {
             mDataSnapshots.remove(index);
-            notifyChangedListeners(OnChangedListener.EventType.Removed, index);
+            notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
         }
     }
 
@@ -138,7 +138,7 @@ class FirebaseIndexArray extends FirebaseArray implements ValueEventListener {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
+            notifyChangedListeners(OnChangedListener.EventType.MOVED, newIndex, oldIndex);
         }
     }
 
