@@ -74,7 +74,6 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         });
     }
 
-
     /**
      * @param activity    The activity containing the ListView
      * @param modelClass  Firebase will marshall the data at a location into an instance of a class that you provide

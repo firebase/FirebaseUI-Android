@@ -31,7 +31,7 @@ class FirebaseArray implements ChildEventListener {
 
         void onCancelled(DatabaseError databaseError);
 
-        enum EventType {Added, Changed, Removed, Moved}
+        enum EventType {ADDED, CHANGED, REMOVED, MOVED}
     }
 
     private Query mQuery;
@@ -74,21 +74,21 @@ class FirebaseArray implements ChildEventListener {
             index = getIndexForKey(previousChildKey) + 1;
         }
         mSnapshots.add(index, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.Added, index);
+        notifyChangedListeners(OnChangedListener.EventType.ADDED, index);
     }
 
     @Override
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.set(index, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.Changed, index);
+        notifyChangedListeners(OnChangedListener.EventType.CHANGED, index);
     }
 
     @Override
     public void onChildRemoved(DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
-        notifyChangedListeners(OnChangedListener.EventType.Removed, index);
+        notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
     }
 
     @Override
@@ -97,7 +97,7 @@ class FirebaseArray implements ChildEventListener {
         mSnapshots.remove(oldIndex);
         int newIndex = previousChildKey == null ? 0 : getIndexForKey(previousChildKey) + 1;
         mSnapshots.add(newIndex, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.Moved, newIndex, oldIndex);
+        notifyChangedListeners(OnChangedListener.EventType.MOVED, newIndex, oldIndex);
     }
 
     @Override
