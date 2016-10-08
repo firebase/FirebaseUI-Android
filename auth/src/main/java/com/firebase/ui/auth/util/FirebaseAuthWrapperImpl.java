@@ -14,12 +14,14 @@
 
 package com.firebase.ui.auth.util;
 
+import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
@@ -29,6 +31,7 @@ import com.google.android.gms.auth.api.credentials.HintRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
@@ -153,17 +156,22 @@ public class FirebaseAuthWrapperImpl
     }
 
     @Override
-    public PendingIntent getEmailHintIntent(Context context) {
-        if (!isPlayServicesAvailable(context, GoogleApiAvailability.getInstance())) {
+    public PendingIntent getEmailHintIntent(FragmentActivity fragmentActivity) {
+        if (!isPlayServicesAvailable(fragmentActivity, GoogleApiAvailability.getInstance())) {
             return null;
         }
 
-        GoogleApiClient client = new GoogleApiClient.Builder(context)
+        GoogleApiClient client = new GoogleApiClient.Builder(fragmentActivity)
                 .addConnectionCallbacks(this)
                 .addApi(Auth.CREDENTIALS_API)
+                .enableAutoManage(fragmentActivity, new OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                        Log.e(TAG,
+                            "Client connection failed: " + connectionResult.getErrorMessage());
+                    }
+                })
                 .build();
-
-        client.connect();
 
         HintRequest hintRequest = new HintRequest.Builder()
                 .setHintPickerConfig(new CredentialPickerConfig.Builder()
