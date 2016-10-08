@@ -18,10 +18,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
@@ -49,28 +49,26 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         super.onCreate(savedInstanceState);
         mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
         mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
-        FlowParameters flowParameters =
-            getIntent().getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
-        IDPProviderParcel providerParcel = null;
-        for (IDPProviderParcel parcel : mActivityHelper.getFlowParams().providerInfo) {
-            if (parcel.getProviderType().equalsIgnoreCase(mProvider)) {
-                providerParcel = parcel;
+        IdpConfig providerConfig = null;
+        for (IdpConfig config : mActivityHelper.getFlowParams().providerInfo) {
+            if (config.getProviderId().equalsIgnoreCase(mProvider)) {
+                providerConfig = config;
                 break;
             }
         }
-        if (providerParcel == null) {
+        if (providerConfig == null) {
             // we don't have a provider to handle this
             finish(RESULT_CANCELED, new Intent());
             return;
         }
         if (mProvider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
             mIDPProvider = new FacebookProvider(
-                this, providerParcel, flowParameters.additionalFacebookPermissions);
+                this, providerConfig.getScopes());
         } else if (mProvider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
             mIDPProvider = new GoogleProvider(
-                this, providerParcel, mEmail, flowParameters.additionalGooglePermissions);
+                this, mEmail, providerConfig.getScopes());
         } else if (mProvider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new TwitterProvider(this, providerParcel);
+            mIDPProvider = new TwitterProvider(this);
         }
         mIDPProvider.setAuthenticationCallback(this);
         mIDPProvider.startLogin(this);

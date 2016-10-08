@@ -17,8 +17,8 @@ package com.firebase.ui.auth.test_helpers;
 import android.content.Context;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.util.ProviderHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.FirebaseApp;
@@ -51,16 +51,18 @@ public class TestHelper {
         }
     }
 
-    public static FlowParameters getFlowParameters(Context context, List<String> providerIds) {
+    public static FlowParameters getFlowParameters(List<String> providerIds) {
+        List<IdpConfig> idpConfigs = new ArrayList<>();
+        for (String providerId : providerIds) {
+            idpConfigs.add(new IdpConfig.Builder(providerId).build());
+        }
         return new FlowParameters(
                 FIREBASE_APP_NAME,
-                ProviderHelper.getProviderParcels(context, providerIds),
+                idpConfigs,
                 AuthUI.getDefaultTheme(),
                 AuthUI.NO_LOGO,
                 null,
-                true,
-                new ArrayList<String>(),
-                new ArrayList<String>());
+                true);
     }
 
     public static FirebaseUser makeMockFirebaseUser() {

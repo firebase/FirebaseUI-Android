@@ -60,7 +60,6 @@ public class RegisterEmailActivityTest {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
                         Arrays.asList(AuthUI.EMAIL_PROVIDER)),
                 email);
         return Robolectric.buildActivity(RegisterEmailActivity.class)

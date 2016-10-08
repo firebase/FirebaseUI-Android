@@ -47,18 +47,16 @@ public class GoogleProvider implements
     private static final int AUTO_MANAGE_ID = 1;
     private static final int RC_SIGN_IN = 20;
     private static final String ERROR_KEY = "error";
-    private static final String CLIENT_ID_KEY = "client_id_key";
     private GoogleApiClient mGoogleApiClient;
     private Activity mActivity;
     private IDPCallback mIDPCallback;
 
     public GoogleProvider(
             FragmentActivity activity,
-            IDPProviderParcel parcel,
             @Nullable String email,
             List<String> scopes) {
         mActivity = activity;
-        String mClientId = parcel.getProviderExtra().getString(CLIENT_ID_KEY);
+        String mClientId = activity.getString(R.string.default_web_client_id);
         GoogleSignInOptions googleSignInOptions;
 
         GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(GoogleSignInOptions
@@ -91,11 +89,6 @@ public class GoogleProvider implements
         return GoogleAuthProvider.PROVIDER_ID;
     }
 
-    public static IDPProviderParcel createParcel(String clientId) {
-        Bundle extra = new Bundle();
-        extra.putString(CLIENT_ID_KEY, clientId);
-        return new IDPProviderParcel(GoogleAuthProvider.PROVIDER_ID, extra);
-    }
 
     public static AuthCredential createAuthCredential(IDPResponse response) {
         Bundle bundle = response.getResponse();

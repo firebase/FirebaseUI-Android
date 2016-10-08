@@ -53,7 +53,6 @@ public class RecoverPasswordActivityTest {
         Intent startIntent = RecoverPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
                         Collections.<String>emptyList()),
                 TestConstants.EMAIL);
         return Robolectric.buildActivity(RecoverPasswordActivity.class).withIntent(startIntent)

@@ -32,6 +32,7 @@ import android.widget.RadioButton;
 
 import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.uidemo.R;
 import com.google.android.gms.common.Scopes;
@@ -184,8 +185,6 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setLogo(getSelectedLogo())
                         .setProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
-                        .setAdditonalFacebookPermissions(getFacebookPermissions())
-                        .setAdditonalGooglePermissions(getGooglePermissions())
                         .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
                         .build(),
                 RC_SIGN_IN);
@@ -264,26 +263,32 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @MainThread
-    private String[] getSelectedProviders() {
-        ArrayList<String> selectedProviders = new ArrayList<>();
+    private List<IdpConfig> getSelectedProviders() {
+        List<IdpConfig> selectedProviders = new ArrayList<>();
 
         if (mUseEmailProvider.isChecked()) {
-            selectedProviders.add(AuthUI.EMAIL_PROVIDER);
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
         }
 
         if (mUseFacebookProvider.isChecked()) {
-            selectedProviders.add(AuthUI.FACEBOOK_PROVIDER);
+            selectedProviders.add(
+                    new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
+                            .setPermissions(getFacebookPermissions())
+                            .build());
         }
 
         if (mUseGoogleProvider.isChecked()) {
-            selectedProviders.add(AuthUI.GOOGLE_PROVIDER);
+            selectedProviders.add(
+                    new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
+                            .setPermissions(getGooglePermissions())
+                            .build());
         }
 
         if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(AuthUI.TWITTER_PROVIDER);
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
         }
 
-        return selectedProviders.toArray(new String[selectedProviders.size()]);
+        return selectedProviders;
     }
 
     @MainThread

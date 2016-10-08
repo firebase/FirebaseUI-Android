@@ -20,7 +20,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 
-import com.firebase.ui.auth.provider.IDPProviderParcel;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.Preconditions;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class FlowParameters implements Parcelable {
     public final String appName;
 
     @NonNull
-    public final List<IDPProviderParcel> providerInfo;
+    public final List<IdpConfig> providerInfo;
 
     @StyleRes
     public final int themeId;
@@ -49,27 +49,19 @@ public class FlowParameters implements Parcelable {
 
     public final boolean smartLockEnabled;
 
-    public final List<String> additionalFacebookPermissions;
-
-    public final List<String> additionalGooglePermissions;
-
     public FlowParameters(
             @NonNull String appName,
-            @NonNull List<IDPProviderParcel> providerInfo,
+            @NonNull List<IdpConfig> providerInfo,
             @StyleRes int themeId,
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
-            boolean smartLockEnabled,
-            List<String> additionalFacebookPermissions,
-            List<String> additionalGooglePermissions) {
+            boolean smartLockEnabled) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null");
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
         this.smartLockEnabled = smartLockEnabled;
-        this.additionalFacebookPermissions = additionalFacebookPermissions;
-        this.additionalGooglePermissions = additionalGooglePermissions;
     }
 
     @Override
@@ -80,8 +72,6 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
         dest.writeInt(smartLockEnabled ? 1 : 0);
-        dest.writeStringList(additionalFacebookPermissions);
-        dest.writeStringList(additionalGooglePermissions);
     }
 
     @Override
@@ -93,8 +83,7 @@ public class FlowParameters implements Parcelable {
         @Override
         public FlowParameters createFromParcel(Parcel in) {
             String appName = in.readString();
-            List<IDPProviderParcel> providerInfo =
-                    in.createTypedArrayList(IDPProviderParcel.CREATOR);
+            List<IdpConfig> providerInfo = in.createTypedArrayList(IdpConfig.CREATOR);
             int themeId = in.readInt();
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
@@ -110,9 +99,7 @@ public class FlowParameters implements Parcelable {
                     themeId,
                     logoId,
                     termsOfServiceUrl,
-                    smartLockEnabled,
-                    additionalFacebookPermissions,
-                    additionalGooglePermissions);
+                    smartLockEnabled);
         }
 
         @Override

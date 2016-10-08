@@ -21,24 +21,15 @@ import io.fabric.sdk.android.Fabric;
 public class TwitterProvider extends Callback<TwitterSession> implements IDPProvider {
     public static final String EXTRA_AUTH_TOKEN = "extra_auth_token";
     public static final String EXTRA_AUTH_SECRET = "extra_auth_secret";
-    private static final String EXTRA_CONSUMER_KEY = "extra_consumer_key";
-    private static final String EXTRA_CONSUMER_SECRET = "extra_consumer_secret";
     private IDPCallback mCallbackObject;
     private TwitterAuthClient mTwitterAuthClient;
 
-    public TwitterProvider(Context appContext, IDPProviderParcel twitterParcel) {
+    public TwitterProvider(Context appContext) {
         TwitterAuthConfig authConfig = new TwitterAuthConfig(
                 appContext.getString(R.string.twitter_consumer_key),
                 appContext.getString(R.string.twitter_consumer_secret));
         Fabric.with(appContext, new Twitter(authConfig));
         mTwitterAuthClient = new TwitterAuthClient();
-    }
-
-    public static IDPProviderParcel createTwitterParcel(String consumerKey, String consumerSecret) {
-        Bundle extra = new Bundle();
-        extra.putString(EXTRA_CONSUMER_KEY, consumerKey);
-        extra.putString(EXTRA_CONSUMER_SECRET, consumerSecret);
-        return new IDPProviderParcel(TwitterAuthProvider.PROVIDER_ID, extra);
     }
 
     @Override

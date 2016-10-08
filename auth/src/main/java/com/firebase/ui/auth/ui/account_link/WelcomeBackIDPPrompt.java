@@ -21,14 +21,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -65,19 +65,18 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         mIdpProvider = null;
-        for (IDPProviderParcel providerParcel: mActivityHelper.getFlowParams().providerInfo) {
-            if (mProviderId.equals(providerParcel.getProviderType())) {
+        for (IdpConfig idpConfig: mActivityHelper.getFlowParams().providerInfo) {
+            if (mProviderId.equals(idpConfig.getProviderId())) {
                 switch (mProviderId) {
                     case GoogleAuthProvider.PROVIDER_ID:
                         mIdpProvider = new GoogleProvider(
                                 this,
-                                providerParcel,
                                 getEmailFromIntent(),
-                                flowParameters.additionalGooglePermissions);
+                                idpConfig.getScopes());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         mIdpProvider = new FacebookProvider(
-                            this, providerParcel, flowParameters.additionalFacebookPermissions);
+                            this, idpConfig.getScopes());
                         break;
                     default:
                         Log.w(TAG, "Unknown provider: " + mProviderId);
@@ -103,7 +102,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
                 .setText(getIdpPromptString(getEmailFromIntent()));
 
         mIdpProvider.setAuthenticationCallback(this);
-        findViewById(R.id.welcome_back_idp_button).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);

@@ -46,7 +46,6 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
     protected static final String ERROR_MSG = "err_msg";
 
     private static final String TAG = "FacebookProvider";
-    private static final String APPLICATION_ID = "application_id";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
 
@@ -56,19 +55,16 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
 
     public FacebookProvider (
             Context appContext,
-            IDPProviderParcel facebookParcel,
             List<String> scopes) {
         mCallbackManager = CallbackManager.Factory.create();
-        String applicationId = facebookParcel.getProviderExtra().getString(APPLICATION_ID);
-        mScopes = scopes;
+        if (scopes == null) {
+            mScopes = new ArrayList<>();
+        } else {
+            mScopes = scopes;
+        }
+        String applicationId = appContext.getString(R.string.facebook_application_id);
         FacebookSdk.sdkInitialize(appContext);
         FacebookSdk.setApplicationId(applicationId);
-    }
-
-    public static IDPProviderParcel createFacebookParcel(String applicationId) {
-        Bundle extra = new Bundle();
-        extra.putString(APPLICATION_ID, applicationId);
-        return new IDPProviderParcel(FacebookAuthProvider.PROVIDER_ID, extra);
     }
 
     @Override

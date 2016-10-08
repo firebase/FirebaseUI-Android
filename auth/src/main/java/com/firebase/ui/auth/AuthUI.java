@@ -17,22 +17,21 @@ package com.firebase.ui.auth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.annotation.VisibleForTesting;
-
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
-import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.ChooseAccountActivity;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
-import com.firebase.ui.auth.util.ProviderHelper;
 import com.firebase.ui.auth.util.SmartlockUtil;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -45,7 +44,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -105,7 +103,13 @@ import java.util.Set;
  * startActivityForResult(
  *     AuthUI.getInstance()
  *         .createSignInIntentBuilder()
- *         .setProviders(AuthUI.EMAIL_PROVIDER, AuthUI.GOOGLE_PROVIDER, AuthUI.FACEBOOK_PROVIDER)
+ *         .setProviders(
+ *              Arrays.asList(
+ *                  new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+ *                  new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+ *                  new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()
+ *              )
+ *         )
  *         .build(),
  *     RC_SIGN_IN);
  * }
@@ -403,19 +407,111 @@ public class AuthUI {
         return R.style.FirebaseUI;
     }
 
+
+    /**
+     * Configuration for an identity provider.
+     *
+     * In the simplest case, you can supply the provider ID and build the config like this:
+     * {@code new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()}
+     */
+    public static class IdpConfig implements Parcelable {
+        private final String mProviderId;
+        private final List<String> mScopes;
+
+        private IdpConfig(@NonNull String providerId, List<String> scopes) {
+            mScopes = scopes;
+            mProviderId = providerId;
+        }
+
+        public String getProviderId() {
+            return mProviderId;
+        }
+
+        public List<String> getScopes() {
+            return mScopes;
+        }
+
+        protected IdpConfig(Parcel in) {
+            mProviderId = in.readString();
+            mScopes = in.createStringArrayList();
+        }
+
+        public static final Creator<IdpConfig> CREATOR = new Creator<IdpConfig>() {
+            @Override
+            public IdpConfig createFromParcel(Parcel in) {
+                return new IdpConfig(in);
+            }
+
+            @Override
+            public IdpConfig[] newArray(int size) {
+                return new IdpConfig[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+            parcel.writeString(mProviderId);
+            parcel.writeStringList(mScopes);
+        }
+
+        public static class Builder {
+            private String mProviderId;
+            private List<String> mScopes;
+
+
+            /**
+             * Builds the configuration parameters for an identity provider.
+             * @param providerId An ID of one of the supported identity providers. e.g.
+             * {@link AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for the
+             * complete list of supported Identity providers
+             */
+            public Builder(@NonNull String providerId) {
+                if (!SUPPORTED_PROVIDERS.contains(providerId)) {
+                    throw new IllegalArgumentException("Unkown provider: " + providerId);
+                }
+                mProviderId = providerId;
+            }
+
+            /**
+             * Specifies the additional permissions that the application will request for this
+             * identity provider.
+             *
+             * For Facebook permissions see:
+             * https://developers.facebook.com/docs/facebook-login/android
+             * https://developers.facebook.com/docs/facebook-login/permissions
+             *
+             * For Google permissions see:
+             * https://developers.google.com/identity/protocols/googlescopes
+             */
+            public Builder setPermissions(List<String> permissions) {
+                mScopes = permissions;
+                return this;
+            }
+
+            public IdpConfig build() {
+                return new IdpConfig(mProviderId, mScopes);
+            }
+        }
+    }
+
     /**
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder {
         private int mLogo = NO_LOGO;
         private int mTheme = getDefaultTheme();
-        private List<String> mProviders = Collections.singletonList(EMAIL_PROVIDER);
+        private List<IdpConfig> mProviders = new ArrayList<>();
         private String mTosUrl;
         private boolean mIsSmartLockEnabled = true;
-        private List<String> mAdditonalGooglePermissions;
-        private List<String> mAdditonalFacebookPermissions;
 
-        private SignInIntentBuilder() {}
+        private SignInIntentBuilder() {
+            mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+        }
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified,
@@ -448,9 +544,33 @@ public class AuthUI {
         }
 
         /**
+         * Specified the set of supported authentication providers. At least one provider must
+         * be specified. There may only be one instance of each provider.
+         *
+         * <p>If no providers are explicitly specified by calling this method, then the email
+         * provider is the default supported provider.
+         *
+         * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains
+         * the configuration parameters for the IDP.
+         *
+         * @see IdpConfig
+         */
+        public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
+            Set<String> configuredProviders = new HashSet<>();
+            for (IdpConfig idpConfig : idpConfigs) {
+                if (!configuredProviders.add(idpConfig.getProviderId())) {
+                    throw new IllegalArgumentException("Each provider can only be set once. "
+                            + idpConfig.getProviderId() + " was set twice.");
+                }
+            }
+            mProviders = idpConfigs;
+            return this;
+        }
+
+        /**
          * Specifies the set of supported authentication providers. At least one provider
          * must be specified, and the set of providers must be a subset of
-         * {@link #SUPPORTED_PROVIDERS}.
+         * {@link #SUPPORTED_PROVIDERS}. There may only be one instance of each provider.
          *
          * <p>If no providers are explicitly specified by calling this method, then
          * {@link #EMAIL_PROVIDER email} is the default supported provider.
@@ -459,12 +579,14 @@ public class AuthUI {
          * @see #FACEBOOK_PROVIDER
          * @see #GOOGLE_PROVIDER
          */
+        @Deprecated
         public SignInIntentBuilder setProviders(@NonNull String... providers) {
-            mProviders = Arrays.asList(providers);
-            for (String provider : mProviders) {
-                if (!SUPPORTED_PROVIDERS.contains(provider)) {
-                    throw new IllegalArgumentException("Unknown provider: " + provider);
+            mProviders.clear(); // clear the default email provider
+            for (String provider : providers) {
+                if (isIdpAlreadyConfigured(provider)) {
+                    throw new IllegalArgumentException("Provider already configured: " + provider);
                 }
+                mProviders.add(new IdpConfig.Builder(provider).build());
             }
             return this;
         }
@@ -479,31 +601,6 @@ public class AuthUI {
             return this;
         }
 
-        /**
-         * Specifies additional Google scopes that this application will request from the user.
-         * Note that {@link com.google.android.gms.common.Scopes.EMAIL} and
-         * {@link com.google.android.gms.common.Scopes.PROFILE} are alawys requested.
-         *
-         * For a list of all scopes, see:
-         * https://developers.google.com/identity/protocols/googlescopes
-         */
-        public SignInIntentBuilder setAdditonalGooglePermissions(List<String> permissions) {
-            mAdditonalGooglePermissions = permissions;
-            return this;
-        }
-
-        /**
-         * Specifies the Facebook permissions that this application will request from the user.
-         *
-         * See:
-         * https://developers.facebook.com/docs/facebook-login/android
-         * https://developers.facebook.com/docs/facebook-login/permissions
-         */
-        public SignInIntentBuilder setAdditonalFacebookPermissions(List<String> permissions) {
-            mAdditonalFacebookPermissions = permissions;
-            return this;
-        }
-
         public Intent build() {
             Context context = mApp.getApplicationContext();
             return build(context);
@@ -511,19 +608,24 @@ public class AuthUI {
 
         @VisibleForTesting
         public Intent build(Context context) {
-            List<IDPProviderParcel> providerInfo =
-                    ProviderHelper.getProviderParcels(context, mProviders);
             return ChooseAccountActivity.createIntent(
                     context,
                     new FlowParameters(
                             mApp.getName(),
-                            providerInfo,
+                            mProviders,
                             mTheme,
                             mLogo,
                             mTosUrl,
-                            mIsSmartLockEnabled,
-                            mAdditonalFacebookPermissions,
-                            mAdditonalGooglePermissions));
+                            mIsSmartLockEnabled));
+        }
+
+        private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
+            for (IdpConfig config : mProviders) {
+                if (config.getProviderId().equals(providerId)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
