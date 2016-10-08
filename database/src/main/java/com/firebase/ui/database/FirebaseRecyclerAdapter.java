@@ -169,7 +169,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     @Override
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewGroup view = (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         try {
             Constructor<VH> constructor = mViewHolderClass.getConstructor(View.class);
             return constructor.newInstance(view);
