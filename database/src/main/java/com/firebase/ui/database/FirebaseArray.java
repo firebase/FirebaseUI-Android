@@ -27,11 +27,11 @@ import java.util.List;
  */
 class FirebaseArray implements ChildEventListener {
     public interface OnChangedListener {
+        enum EventType {ADDED, CHANGED, REMOVED, MOVED}
+
         void onChanged(EventType type, int index, int oldIndex);
 
         void onCancelled(DatabaseError databaseError);
-
-        enum EventType {ADDED, CHANGED, REMOVED, MOVED}
     }
 
     private Query mQuery;
