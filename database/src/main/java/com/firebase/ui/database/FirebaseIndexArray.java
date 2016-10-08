@@ -1,5 +1,3 @@
-package com.firebase.ui.database;
-
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
@@ -13,6 +11,8 @@ package com.firebase.ui.database;
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.firebase.ui.database;
 
 import android.util.Log;
 
