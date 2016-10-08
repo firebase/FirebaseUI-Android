@@ -44,7 +44,7 @@ Gradle, add:
 ```groovy
 dependencies {
   // ...
-  compile 'com.firebaseui:firebase-ui-auth:0.5.3'
+  compile 'com.firebaseui:firebase-ui-auth:0.6.0'
 }
 ```
 
@@ -54,7 +54,7 @@ If instead your project uses Maven, add:
 <dependency>
   <groupId>com.firebaseui</groupId>
   <artifactId>firebase-ui-auth</artifactId>
-  <version>0.5.3</version>
+  <version>0.6.0</version>
 </dependency>
 ```
 

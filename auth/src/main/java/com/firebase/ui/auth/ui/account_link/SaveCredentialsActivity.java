@@ -80,25 +80,9 @@ public class SaveCredentialsActivity extends AppCompatBase
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
+                .enableAutoManage(this, this)
                 .build();
-        mCredentialsApiClient.connect();
     }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mCredentialsApiClient.connect();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mCredentialsApiClient != null) {
-            mCredentialsApiClient.disconnect();
-        }
-    }
-
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
