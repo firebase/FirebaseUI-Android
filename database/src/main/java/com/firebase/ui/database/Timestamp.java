@@ -10,7 +10,7 @@ public class Timestamp {
     private long mTimestamp;
 
     @PropertyName("timestamp")
-    private Map<String, String> getServerValue() {
+    protected Map<String, String> getServerValue() {
         return ServerValue.TIMESTAMP;
     }
 
@@ -19,7 +19,7 @@ public class Timestamp {
         return mTimestamp;
     }
 
-    private void setTimestamp(long time) {
+    protected void setTimestamp(long time) {
         mTimestamp = time;
     }
 }
