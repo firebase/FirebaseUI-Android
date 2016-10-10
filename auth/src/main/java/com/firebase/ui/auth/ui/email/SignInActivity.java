@@ -105,6 +105,8 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
+                        mActivityHelper.dismissDialog();
+
                         // Save credential in SmartLock (if enabled)
                         SmartlockUtil.saveCredentialOrFinish(
                                 SignInActivity.this,
@@ -118,10 +120,13 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        mActivityHelper.dismissDialog();
+
                         // Show error message
                         TextInputLayout passwordInput =
                                 (TextInputLayout) findViewById(R.id.password_layout);
                         passwordInput.setError(getString(R.string.login_error));
+                        mActivityHelper.dismissDialog();
                     }
                 });
     }
