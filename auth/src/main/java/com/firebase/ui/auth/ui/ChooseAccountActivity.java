@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -46,6 +47,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.List;
 
+import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
+
 /**
  * Attempts to acquire a credential from Smart Lock for Passwords to sign in
  * an existing account. If this succeeds, an attempt is made to sign the user in
@@ -57,6 +60,7 @@ import java.util.List;
  */
 public class ChooseAccountActivity extends ActivityBase {
     private static final String TAG = "ChooseAccountActivity";
+
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
@@ -69,6 +73,13 @@ public class ChooseAccountActivity extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+
+        if (!hasNetworkConnection()) {
+            Log.d(TAG, "No network connection");
+
+            finish(RESULT_NO_NETWORK, new Intent());
+            return;
+        }
 
         // Make Google Play Services available at the correct version, if possible
         mPlayServicesHelper = PlayServicesHelper.getInstance(this);
@@ -110,6 +121,18 @@ public class ChooseAccountActivity extends ActivityBase {
         if (mCredentialsApi != null) {
             mCredentialsApi.onStop();
         }
+    }
+
+    /**
+     * Check if there is an active or soon-to-be-active network connection.
+     */
+    private boolean hasNetworkConnection() {
+        ConnectivityManager manager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return manager != null
+                && manager.getActiveNetworkInfo() != null
+                && manager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
     /**

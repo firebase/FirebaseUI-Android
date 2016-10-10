@@ -29,6 +29,7 @@ import android.widget.CheckBox;
 import android.widget.RadioButton;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.uidemo.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -169,6 +170,11 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_CANCELED) {
             showSnackbar(R.string.sign_in_cancelled);
+            return;
+        }
+
+        if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
+            showSnackbar(R.string.no_internet_connection);
             return;
         }
 
