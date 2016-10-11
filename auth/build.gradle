@@ -36,7 +36,6 @@ dependencies {
     // See https://github.com/robolectric/robolectric/issues/1932#issuecomment-219796474
     testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
     
-    compile "com.android.support:appcompat-v7:${project.ext.support_library_version}"
     compile 'com.facebook.android:facebook-android-sdk:4.14.1'
     compile "com.android.support:design:${project.ext.support_library_version}"
 
