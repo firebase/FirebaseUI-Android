@@ -14,21 +14,18 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
+import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeProviderQueryResult;
-import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -47,9 +44,12 @@ import org.robolectric.shadows.ShadowActivity;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+@Config(constants = BuildConfig.class, sdk = 23)
 public class SignInNoPasswordActivityTest {
     @Before
     public void setUp() {
