@@ -41,8 +41,8 @@ public static class Chat {
     }
     
     public String getText() {
-            return text;
-        }
+        return text;
+    }
 }
 ```
 A few things to note here:
