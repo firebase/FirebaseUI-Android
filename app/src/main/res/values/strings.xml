@@ -24,6 +24,8 @@
     <string name="email_label">Email</string>
     <string name="facebook_label">Facebook</string>
     <string name="facebook_label_missing_config">Facebook - configuration missing</string>
+    <string name="twitter_label">Twitter</string>
+    <string name="twitter_label_missing_config">Twitter - configuration missing</string>
     <string name="google_label">Google</string>
     <string name="google_label_missing_config">Google - configuration missing</string>
     <string name="google_tos_label">Google TOS</string>
@@ -33,6 +35,7 @@
     <string name="ok_label">OK</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
+    <string name="no_internet_connection">No internet connection</string>
     <string name="signed_in_header">You are signed in!</string>
     <string name="sign_out">Sign out</string>
     <string name="delete_account_label">Delete account</string>

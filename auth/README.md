@@ -60,7 +60,7 @@ If instead your project uses Maven, add:
 
 ### Identity provider configuration
 
-In order to use either Google or Facebook accounts with your app, ensure that
+In order to use either Google, Facebook or Twitter accounts with your app, ensure that
 these authentication methods are first configured in the Firebase console.
 
 FirebaseUI client-side configuration for Google sign-in is then provided
@@ -75,6 +75,18 @@ the [Facebook developer dashboard](https://developers.facebook.com):
   <!-- ... -->
   <string name="facebook_application_id" translatable="false">APPID</string>
 </resources>
+```
+
+If support for Twitter Sign-in is also required, define the resource strings
+twitter_consumer_key and twitter_consumer_secret to match the values of your Twitter app as
+reported by the [Twitter application manager](https://dev.twitter.com/apps).
+
+```
+<resources>
+  <string name="twitter_consumer_key" translatable="false">YOURCONSUMERKEY</string>
+  <string name="twitter_consumer_secret" translatable="false">YOURCONSUMERSECRET</string>
+</resources>
+
 ```
 
 ## Using FirebaseUI for Authentication
@@ -248,6 +260,32 @@ public void onClick(View v) {
           });
   }
 }
+```
+
+### Deleting accounts
+
+With the integrations provided by FirebaseUI Auth, deleting a user is a multi-stage process:
+
+1. The user must be deleted from Firebase Auth.
+2. SmartLock for Passwords must be told to delete any existing Credentials for the user, so
+   that they are not automatically prompted to sign in with a saved credential in the future.
+   
+This process is encapsulated by the `AuthUI.delete()` method, which returns a `Task` representing
+the entire operation:
+
+```java
+AuthUI.getInstance()
+        .delete(this)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    // Deletion succeeded
+                } else {
+                    // Deletion failed
+                }
+            }
+        });
 ```
 
 ### Authentication flow chart

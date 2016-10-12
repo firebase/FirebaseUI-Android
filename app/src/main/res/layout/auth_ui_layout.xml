@@ -91,6 +91,12 @@
             android:layout_height="wrap_content"
             android:text="@string/google_label" />
 
+        <CheckBox
+            android:id="@+id/twitter_provider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/twitter_label" />
+
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"

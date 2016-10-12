@@ -30,6 +30,7 @@ import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProvider;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
@@ -40,6 +41,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +97,9 @@ public class AuthMethodPickerActivity
                 case EmailAuthProvider.PROVIDER_ID:
                     findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
                     break;
+                case TwitterAuthProvider.PROVIDER_ID:
+                    mIdpProviders.add(new TwitterProvider(this, providerParcel));
+                    break;
                 default:
                     if (BuildConfig.DEBUG) {
                         Log.d(TAG, "Encountered unknown IDPProvider parcel with type: "
@@ -114,6 +119,10 @@ public class AuthMethodPickerActivity
                 case FacebookAuthProvider.PROVIDER_ID:
                     loginButton = getLayoutInflater()
                             .inflate(R.layout.idp_button_facebook, btnHolder, false);
+                    break;
+                case TwitterAuthProvider.PROVIDER_ID:
+                    loginButton = getLayoutInflater()
+                            .inflate(R.layout.idp_button_twitter, btnHolder, false);
                     break;
                 default:
                     Log.e(TAG, "No button for provider " + provider.getProviderId());

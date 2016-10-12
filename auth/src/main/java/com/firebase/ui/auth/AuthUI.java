@@ -33,7 +33,9 @@ import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.ProviderHelper;
+import com.firebase.ui.auth.util.SmartlockUtil;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
@@ -42,7 +44,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -231,6 +235,11 @@ public class AuthUI {
     public static final String FACEBOOK_PROVIDER = "facebook";
 
     /**
+     * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setProviders}.
+     */
+    public static final String TWITTER_PROVIDER = "twitter";
+
+    /**
      * Default value for logo resource, omits the logo from the
      * {@link AuthMethodPickerActivity}
      */
@@ -243,7 +252,8 @@ public class AuthUI {
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     EMAIL_PROVIDER,
                     GOOGLE_PROVIDER,
-                    FACEBOOK_PROVIDER
+                    FACEBOOK_PROVIDER,
+                    TWITTER_PROVIDER
             )));
 
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
@@ -299,6 +309,56 @@ public class AuthUI {
 
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, googleSignOutTask);
+    }
+
+    /**
+     * Delete the use from FirebaseAuth and delete any associated credentials from the Credentials
+     * API. Returns a {@code Task} that succeeds if the Firebase Auth user deletion succeeds and
+     * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
+     * silently.
+     * @param activity the calling {@link Activity}.
+     */
+    public Task<Void> delete(@NonNull Activity activity) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser == null) {
+            // If the current user is null, return a failed task immediately
+            return Tasks.forException(new Exception("No currently signed in user."));
+        }
+
+        // Delete the Firebase user
+        Task<Void> deleteUserTask = firebaseUser.delete();
+
+        // Initialize SmartLock helper
+        GoogleApiClientTaskHelper gacHelper = GoogleApiClientTaskHelper.getInstance(activity);
+        gacHelper.getBuilder().addApi(Auth.CREDENTIALS_API);
+        CredentialsApiHelper credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
+
+        // Get all SmartLock credentials associated with the user
+        List<Credential> credentials = SmartlockUtil.credentialsFromFirebaseUser(firebaseUser);
+
+        // For each Credential in the list, create a task to delete it.
+        List<Task<?>> credentialTasks = new ArrayList<>();
+        for (Credential credential : credentials) {
+            credentialTasks.add(credentialHelper.delete(credential));
+        }
+
+        // Create a combined task that will succeed when all credential delete operations
+        // have completed (even if they fail).
+        final Task<Void> combinedCredentialTask = Tasks.whenAll(credentialTasks);
+
+        // Chain the Firebase Auth delete task with the combined Credentials task
+        // and return.
+        return deleteUserTask.continueWithTask(new Continuation<Void, Task<Void>>() {
+            @Override
+            public Task<Void> then(@NonNull Task<Void> task) throws Exception {
+                // Call getResult() to propagate failure by throwing an exception
+                // if there was one.
+                task.getResult(Exception.class);
+
+                // Return the combined credential task
+                return combinedCredentialTask;
+            }
+        });
     }
 
     /**
