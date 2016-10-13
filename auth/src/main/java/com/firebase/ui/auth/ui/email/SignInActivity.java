@@ -50,7 +50,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     private EditText mPasswordEditText;
     private EmailFieldValidator mEmailValidator;
     private RequiredFieldValidator mPasswordValidator;
-    private ImageView mTogglePasswordImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +67,15 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        mTogglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
+        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
+        ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
-                mTogglePasswordImage,
+                togglePasswordImage,
                 visibleIcon.getFloat(),
                 slightlyVisibleIcon.getFloat()));
 
-        mTogglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
+        togglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
 
         mEmailValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
                 .email_layout));

@@ -39,6 +39,5 @@ class ImageFocusTransparencyChanger implements View.OnFocusChangeListener {
         } else {
             mTogglePasswordImage.setAlpha(mSlightlyVisible);
         }
-
     }
 }
