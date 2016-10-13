@@ -49,8 +49,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * The entry point to the AuthUI authentication flow, and related utility methods.
@@ -487,6 +490,8 @@ public class AuthUI {
              *
              * For Google permissions see:
              * https://developers.google.com/identity/protocols/googlescopes
+             *
+             * Twitter scopes are only configurable through the Twitter developer console.
              */
             public Builder setPermissions(List<String> permissions) {
                 mScopes = permissions;
@@ -505,7 +510,7 @@ public class AuthUI {
     public final class SignInIntentBuilder {
         private int mLogo = NO_LOGO;
         private int mTheme = getDefaultTheme();
-        private List<IdpConfig> mProviders = new ArrayList<>();
+        private LinkedHashSet<IdpConfig> mProviders = new LinkedHashSet<>();
         private String mTosUrl;
         private boolean mIsSmartLockEnabled = true;
 
@@ -558,12 +563,12 @@ public class AuthUI {
         public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
             Set<String> configuredProviders = new HashSet<>();
             for (IdpConfig idpConfig : idpConfigs) {
-                if (!configuredProviders.add(idpConfig.getProviderId())) {
+                if (configuredProviders.contains(idpConfig.getProviderId())) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
                             + idpConfig.getProviderId() + " was set twice.");
                 }
+                mProviders.add(idpConfig);
             }
-            mProviders = idpConfigs;
             return this;
         }
 
@@ -612,7 +617,7 @@ public class AuthUI {
                     context,
                     new FlowParameters(
                             mApp.getName(),
-                            mProviders,
+                            new ArrayList<>(mProviders),
                             mTheme,
                             mLogo,
                             mTosUrl,

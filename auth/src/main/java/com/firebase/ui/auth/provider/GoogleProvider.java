@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -51,21 +52,25 @@ public class GoogleProvider implements
     private Activity mActivity;
     private IDPCallback mIDPCallback;
 
-    public GoogleProvider(
-            FragmentActivity activity,
-            @Nullable String email,
-            List<String> scopes) {
+    public GoogleProvider(FragmentActivity activity, @Nullable String email, IdpConfig idpConfig) {
         mActivity = activity;
         String mClientId = activity.getString(R.string.default_web_client_id);
         GoogleSignInOptions googleSignInOptions;
 
-        GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(GoogleSignInOptions
-                .DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestIdToken(mClientId);
+        GoogleSignInOptions.Builder builder =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .requestIdToken(mClientId);
+
+        if (activity.getResources().getIdentifier(
+                "google_permissions", "array", activity.getPackageName()) != 0){
+            Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.google_permissions but that is"
+                    + " no longer respected as of FirebaseUI 1.0.0. Please see README for IDP scope"
+                    + " configuraton instructions.");
+        }
 
         // Add additional scopes
-        for (String scopeString : scopes) {
+        for (String scopeString : idpConfig.getScopes()) {
             builder.requestScopes(new Scope(scopeString));
         }
 

@@ -62,13 +62,16 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
             return;
         }
         if (mProvider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new FacebookProvider(
-                this, providerConfig.getScopes());
+            mIDPProvider = new FacebookProvider(this, providerConfig);
         } else if (mProvider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
+<<<<<<< 48668b80abe39d7e46b5704f3a3b11ee926acd37
             mIDPProvider = new GoogleProvider(
                 this, mEmail, providerConfig.getScopes());
         } else if (mProvider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
             mIDPProvider = new TwitterProvider(this);
+=======
+            mIDPProvider = new GoogleProvider(this, mEmail, providerConfig);
+>>>>>>> review feedback
         }
         mIDPProvider.setAuthenticationCallback(this);
         mIDPProvider.startLogin(this);

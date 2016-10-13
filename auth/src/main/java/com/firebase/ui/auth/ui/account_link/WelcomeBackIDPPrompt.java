@@ -69,14 +69,10 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             if (mProviderId.equals(idpConfig.getProviderId())) {
                 switch (mProviderId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new GoogleProvider(
-                                this,
-                                getEmailFromIntent(),
-                                idpConfig.getScopes());
+                        mIdpProvider = new GoogleProvider(this, getEmailFromIntent(), idpConfig);
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new FacebookProvider(
-                            this, idpConfig.getScopes());
+                        mIdpProvider = new FacebookProvider(this, idpConfig);
                         break;
                     default:
                         Log.w(TAG, "Unknown provider: " + mProviderId);

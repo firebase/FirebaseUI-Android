@@ -88,10 +88,10 @@ public class AuthMethodPickerActivity
         for (IdpConfig idpConfig : providers) {
             switch (idpConfig.getProviderId()) {
                 case AuthUI.FACEBOOK_PROVIDER :
-                    mIdpProviders.add(new FacebookProvider(this, idpConfig.getScopes()));
+                    mIdpProviders.add(new FacebookProvider(this, idpConfig));
                     break;
                 case AuthUI.GOOGLE_PROVIDER:
-                    mIdpProviders.add(new GoogleProvider(this, null, idpConfig.getScopes()));
+                    mIdpProviders.add(new GoogleProvider(this, null, idpConfig));
                     break;
                 case AuthUI.EMAIL_PROVIDER:
                     findViewById(R.id.email_provider).setVisibility(View.VISIBLE);

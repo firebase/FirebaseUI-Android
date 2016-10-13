@@ -28,6 +28,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
@@ -53,10 +54,17 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
     private CallbackManager mCallbackManager;
     private IDPCallback mCallbackObject;
 
-    public FacebookProvider (
-            Context appContext,
-            List<String> scopes) {
+    public FacebookProvider(Context appContext, IdpConfig idpConfig) {
         mCallbackManager = CallbackManager.Factory.create();
+
+        if (appContext.getResources().getIdentifier(
+                "google_permissions", "array", appContext.getPackageName()) != 0) {
+            Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.facebook_permissions but that"
+                    + " is no longer respected as of FirebaseUI 1.0.0. Please see README for IDP"
+                    + " scope configuraton instructions.");
+        }
+
+        List<String> scopes = idpConfig.getScopes();
         if (scopes == null) {
             mScopes = new ArrayList<>();
         } else {
