@@ -58,10 +58,10 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
         mCallbackManager = CallbackManager.Factory.create();
 
         if (appContext.getResources().getIdentifier(
-                "google_permissions", "array", appContext.getPackageName()) != 0) {
+                "facebook_permissions", "array", appContext.getPackageName()) != 0) {
             Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.facebook_permissions but that"
                     + " is no longer respected as of FirebaseUI 1.0.0. Please see README for IDP"
-                    + " scope configuraton instructions.");
+                    + " scope configuration instructions.");
         }
 
         List<String> scopes = idpConfig.getScopes();

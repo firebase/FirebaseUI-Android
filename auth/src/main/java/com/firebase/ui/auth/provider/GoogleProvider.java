@@ -66,7 +66,7 @@ public class GoogleProvider implements
                 "google_permissions", "array", activity.getPackageName()) != 0){
             Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.google_permissions but that is"
                     + " no longer respected as of FirebaseUI 1.0.0. Please see README for IDP scope"
-                    + " configuraton instructions.");
+                    + " configuration instructions.");
         }
 
         // Add additional scopes
