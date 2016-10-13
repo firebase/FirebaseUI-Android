@@ -82,6 +82,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         TextView bodyTextView = ((TextView) findViewById(R.id.welcome_back_password_body));
         bodyTextView.setText(spannableStringBuilder);
 
+        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
+
         // Click listeners
         findViewById(R.id.button_done).setOnClickListener(this);
         findViewById(R.id.toggle_visibility).setOnClickListener(

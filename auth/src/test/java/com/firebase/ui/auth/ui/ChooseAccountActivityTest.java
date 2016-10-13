@@ -53,7 +53,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ActivityHelperShadow.class}, sdk = 21)
+@Config(constants = BuildConfig.class, shadows = {ActivityHelperShadow.class}, sdk = 23)
 public class ChooseAccountActivityTest {
     private FirebaseApp mFirebaseApp;
     @Mock private CredentialsAPI mCredentialsAPI;

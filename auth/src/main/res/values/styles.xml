@@ -160,7 +160,7 @@
         <item name="android:inputType">textPassword</item>
     </style>
 
-    <style name="FirebaseUI.ImageView"></style>
+    <style name="FirebaseUI.ImageView"/>
 
     <style name="FirebaseUI.ImageView.VisibilityToggle">
         <item name="android:layout_marginBottom">12dp</item>

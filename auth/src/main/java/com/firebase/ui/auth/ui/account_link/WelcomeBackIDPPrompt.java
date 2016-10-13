@@ -90,8 +90,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         if (mIdpProvider == null) {
             getIntent().putExtra(
                     ExtraConstants.EXTRA_ERROR_MESSAGE,
-                    "Firebase login successful. Account linking failed due to provider not "
-                            + "enabled by application");
+                    "Firebase login successful. Account linking failed due to provider not enabled by application");
             finish(RESULT_CANCELED, getIntent());
             return;
         }
