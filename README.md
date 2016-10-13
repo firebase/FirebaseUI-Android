@@ -27,17 +27,17 @@ libraries.
 
 ```groovy
 dependencies {
-    // Single target that includes all FirebaseUI libraries
-    compile 'com.firebaseui:firebase-ui:0.6.0'
-
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:0.6.0'
+    compile 'com.firebaseui:firebase-ui-database:0.6.1'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:0.6.0'
+    compile 'com.firebaseui:firebase-ui-auth:0.6.1'
 
     // FirebaseUI Storage only
-    compile 'com.firebaseui:firebase-ui-storage:0.6.0'
+    compile 'com.firebaseui:firebase-ui-storage:0.6.1'
+
+    // Single target that includes all FirebaseUI libraries above
+    compile 'com.firebaseui:firebase-ui:0.6.1'
 }
 ```
 
@@ -59,7 +59,7 @@ firebase-ui-storage
 ```
 
 Each version of FirebaseUI has dependency on a fixed version of these libraries, defined as the variable `firebase_version`
-in `common/constants.gradle`.  If you are using any dependencies in your app of the form 
+in `common/constants.gradle`.  If you are using any dependencies in your app of the form
 `compile 'com.google.firebase:firebase-*:x.y.z'` or `compile 'com.google.android.gms:play-services-*:x.y.z'`
 you need to make sure that you use the same version that your chosen version of FirebaseUI requires.
 
@@ -67,6 +67,7 @@ For convenience, here are some examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 0.6.1              | 9.6.1                          |
 | 0.6.0              | 9.6.0                          |
 | 0.5.3              | 9.4.0                          |
 | 0.4.4              | 9.4.0                          |
