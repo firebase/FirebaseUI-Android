@@ -34,7 +34,7 @@ see [this guide][glide-caching].
 
 ## Known Issues
 
-There is a bug in `com.google.firebase:firebase-storage:9.6.0` and earlier that results in
+There is a bug in `com.google.firebase:firebase-storage:9.6.1` and earlier that results in
 excessive logging when downloading images. You may see messages in your logs like this:
 
 ```
