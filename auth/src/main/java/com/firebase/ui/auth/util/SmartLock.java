@@ -198,7 +198,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                                         @Nullable String password,
                                         @Nullable String provider) {
         // If SmartLock is disabled, finish the Activity
-        if (!mFlowParameters.smartLockEnabled) {
+        if (!parameters.smartLockEnabled) {
             activity.finish(RESULT_OK, activity.getIntent());
             return;
         }
@@ -209,7 +209,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
             return;
         }
 
-        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mFlowParameters.appName)
+        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
                 .isPlayServicesAvailable(activity)) {
             activity.finish(RESULT_OK, activity.getIntent());
             return;
