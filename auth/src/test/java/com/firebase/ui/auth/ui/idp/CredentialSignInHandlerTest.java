@@ -72,7 +72,8 @@ public class CredentialSignInHandlerTest {
     private static final String LINKING_ERROR = "ERROR_TEST_LINKING";
     private static final String LINKING_EXPLANATION = "Test explanation";
 
-    @Mock private CredentialsAPI mCredentialsAPI;
+    @Mock
+    private CredentialsAPI mCredentialsAPI;
     private FirebaseApp mFirebaseApp;
 
     @Before
@@ -106,7 +107,9 @@ public class CredentialSignInHandlerTest {
 
         // Build basic flow parameters
         FlowParameters flowParams = AuthUI.getInstance(mFirebaseApp)
-                .createSignInIntentBuilder().build()
+                .createSignInIntentBuilder()
+                .setIsSmartLockEnabled(false)
+                .build()
                 .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
 
         Task signInTask = Tasks.forResult(new FakeAuthResult(mockFirebaseUser));
@@ -115,9 +118,6 @@ public class CredentialSignInHandlerTest {
         credentialSignInHandler.onComplete(signInTask);
 
         Intent smartLockIntent = smartLock.getIntentForTest();
-        assertEquals(
-                SmartLock.class.getName(),
-                smartLockIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
                 smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
@@ -138,11 +138,12 @@ public class CredentialSignInHandlerTest {
                 GoogleAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
                 new Bundle());
-        CredentialSignInHandler credentialSignInHandler = null;/*new CredentialSignInHandler(
+        CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
+                new SmartLock(),
                 RC_ACCOUNT_LINK,
-                idpResponse);*/
+                idpResponse);
 
         Context mockContext = mock(Context.class);
         FlowParameters mockFlowParams = mock(FlowParameters.class);
@@ -186,11 +187,12 @@ public class CredentialSignInHandlerTest {
                 GoogleAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
                 new Bundle());
-        CredentialSignInHandler credentialSignInHandler = null;/*new CredentialSignInHandler(
+        CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
+                new SmartLock(),
                 RC_ACCOUNT_LINK,
-                idpResponse);*/
+                idpResponse);
 
         Context mockContext = mock(Context.class);
         Task mockTask = mock(Task.class);
@@ -221,7 +223,9 @@ public class CredentialSignInHandlerTest {
                 capturedIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
-                ((IDPResponse) capturedIntent.getExtras().getParcelable(ExtraConstants
-                        .EXTRA_IDP_RESPONSE)).getEmail());
+                ((IDPResponse) capturedIntent
+                        .getExtras()
+                        .getParcelable(ExtraConstants.EXTRA_IDP_RESPONSE))
+                        .getEmail());
     }
 }

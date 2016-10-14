@@ -197,6 +197,14 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
+        mFlowParameters = parameters;
+        mName = firebaseUser.getDisplayName();
+        mEmail = firebaseUser.getEmail();
+        mPassword = password;
+        mProvider = provider;
+        mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
+                .toString() : null;
+
         // If SmartLock is disabled, finish the Activity
         if (!parameters.smartLockEnabled) {
             activity.finish(RESULT_OK, activity.getIntent());
@@ -216,14 +224,6 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
         }
 
         mActivity = activity;
-        mFlowParameters = parameters;
-        mName = firebaseUser.getDisplayName();
-        mEmail = firebaseUser.getEmail();
-        mPassword = password;
-        mProvider = provider;
-        mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
-                .toString() : null;
-
         mCredentialsApiClient = new GoogleApiClient.Builder(activity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -233,7 +233,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     }
 
     public Intent getIntentForTest() {
-        return mActivity.getIntent()
+        return new Intent()
                 .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS, mFlowParameters)
                 .putExtra(ExtraConstants.EXTRA_NAME, mName)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, mEmail)

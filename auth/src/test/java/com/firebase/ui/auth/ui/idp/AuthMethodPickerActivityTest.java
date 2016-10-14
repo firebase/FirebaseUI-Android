@@ -179,9 +179,6 @@ public class AuthMethodPickerActivityTest {
             Intent smartLockIntent,
             String provider) {
         assertEquals(
-                SmartLock.class.getName(),
-                smartLockIntent.getComponent().getClassName());
-        assertEquals(
                 smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL),
                 TestConstants.EMAIL);
         assertEquals(

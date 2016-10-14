@@ -29,7 +29,9 @@ import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -39,13 +41,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 
@@ -88,8 +89,8 @@ public class RegisterEmailActivityTest {
         assertEquals(
                 passwordLayout.getError().toString(),
                 String.format(registerEmailActivity.getString(R.string.password_length),
-                        registerEmailActivity.getResources().getInteger(
-                                R.integer.min_password_length)));
+                              registerEmailActivity.getResources().getInteger(
+                                      R.integer.min_password_length)));
     }
 
     @Test
@@ -110,36 +111,29 @@ public class RegisterEmailActivityTest {
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
         when(ActivityHelperShadow.firebaseAuth
-                .createUserWithEmailAndPassword(
-                        TestConstants.EMAIL,
-                        TestConstants.PASSWORD))
-                .thenReturn(
-                        new AutoCompleteTask<>(
-                                new FakeAuthResult(mockFirebaseUser),
-                                true,
-                                null));
+                     .createUserWithEmailAndPassword(
+                             TestConstants.EMAIL,
+                             TestConstants.PASSWORD))
+                .thenReturn(new AutoCompleteTask<>(
+                        new FakeAuthResult(mockFirebaseUser),
+                        true,
+                        null));
 
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
-        ShadowActivity shadowActivity = Shadows.shadowOf(registerEmailActivity);
+        Intent smartLockIntent = SmartLock.getInstance(registerEmailActivity).getIntentForTest();
 
-        ShadowActivity.IntentForResult nextIntent =
-                shadowActivity.getNextStartedActivityForResult();
-
-//        assertNotNull(nextIntent);
-//        assertEquals(
-//                nextIntent.intent.getComponent().getClassName(),
-//                SmartLock.class.getName());
-//        assertEquals(
-//                TestConstants.EMAIL,
-//                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
-//        assertEquals(
-//                TestConstants.PASSWORD,
-//                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD));
-//        assertEquals(
-//                TestConstants.NAME,
-//                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_NAME));
+        assertNotNull(smartLockIntent);
+        assertEquals(
+                TestConstants.EMAIL,
+                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
+        assertEquals(
+                TestConstants.PASSWORD,
+                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD));
+        assertEquals(
+                TestConstants.NAME,
+                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_NAME));
     }
 }
