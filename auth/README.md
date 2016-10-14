@@ -150,9 +150,9 @@ startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setProviders(
-            AuthUI.EMAIL_PROVIDER,
-            AuthUI.GOOGLE_PROVIDER,
-            AuthUI.FACEBOOK_PROVIDER)
+            new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+            new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+            new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build())
         .build(),
     RC_SIGN_IN);
 ```
@@ -367,35 +367,55 @@ redefine a string to change it, for example:
 
 #### Google
 By default, FirebaseUI requests the `email` and `profile` scopes when using Google Sign In. If you
-would like to request additional scopes from the user, add a string array resource named 
-`google_permissions` to your `strings.xml` file like this:
+would like to request additional scopes from the user, call `setPermissions` on the
+`AuthUI.IdpConfig.Builder` when initializing FirebaseUI.
 
-```xml
-<!--
-    For a list of all scopes, see:
-    https://developers.google.com/identity/protocols/googlescopes
--->
-<string-array name="google_permissions">
-    <!-- Request permission to read the user's Google Drive files -->
-    <item>https://www.googleapis.com/auth/drive.readonly</item>
-</string-array>
+
+```java
+// For a list of all scopes, see:
+// https://developers.google.com/identity/protocols/googlescopes
+AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
+          .setPermissions(Arrays.asList(Scopes.GAMES))
+          .build();
+
+startActivityForResult(
+    AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setProviders(
+            new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+            googleIdp,
+            new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build())
+        .build(),
+    RC_SIGN_IN);
 ```
 
 
 #### Facebook
 
 By default, FirebaseUI requests the `email` and `public_profile` permissions when initiating
-Facebook Login.  If you would like to override these scopes, a string array resource named 
-`facebook_permissions` to your `strings.xml` file like this:
+Facebook Login.  If you would like to request additional permissions from the user, call
+`setPermissions` on the `AuthUI.IdpConfig.Builder` when initializing FirebaseUI.
 
-```xml
-<!--
-    See:
-    https://developers.facebook.com/docs/facebook-login/android
-    https://developers.facebook.com/docs/facebook-login/permissions
--->
-<string-array name="facebook_permissions">
-    <!-- Request permission to know the user's birthday -->
-    <item>user_birthday</item>
-</string-array>
+```java
+// For a list of permissions see:
+// https://developers.facebook.com/docs/facebook-login/android
+// https://developers.facebook.com/docs/facebook-login/permissions
+
+AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
+          .setPermissions(Arrays.asList("user_friends"))
+          .build();
+
+startActivityForResult(
+    AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setProviders(
+            new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+            new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+            facebookIdp)
+        .build(),
+    RC_SIGN_IN);
 ```
+
+#### Twitter
+
+Twitter permissions can only be configured through Twitter's developer console.

@@ -496,7 +496,7 @@ public class AuthUI {
              * For Google permissions see:
              * https://developers.google.com/identity/protocols/googlescopes
              *
-             * Twitter scopes are only configurable through the Twitter developer console.
+             * Twitter permissions are only configurable through the Twitter developer console.
              */
             public Builder setPermissions(List<String> permissions) {
                 mScopes = permissions;
