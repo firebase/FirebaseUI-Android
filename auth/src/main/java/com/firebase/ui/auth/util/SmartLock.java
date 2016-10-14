@@ -219,7 +219,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
      * @param password     (optional) password for email credential.
      * @param provider     (optional) provider string for provider credential.
      */
-    public static SmartLock getInstance(AppCompatBase activity,
+    public static void newInstance(AppCompatBase activity,
                                         FlowParameters parameters,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
@@ -234,6 +234,9 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
         smartLock.mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
-        return smartLock;
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .add(smartLock, TAG)
+                .commit();
     }
 }

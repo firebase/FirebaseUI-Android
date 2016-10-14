@@ -129,15 +129,12 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                         new OnSuccessListener<AuthResult>() {
                                             @Override
                                             public void onSuccess(AuthResult authResult) {
-                                                getSupportFragmentManager()
-                                                        .beginTransaction()
-                                                        .add(SmartLock.getInstance(
-                                                                WelcomeBackPasswordPrompt.this,
-                                                                mActivityHelper.getFlowParams(),
-                                                                authResult.getUser(),
-                                                                password,
-                                                                null /* provider */), TAG)
-                                                        .commit();
+                                                SmartLock.newInstance(
+                                                        WelcomeBackPasswordPrompt.this,
+                                                        mActivityHelper.getFlowParams(),
+                                                        authResult.getUser(),
+                                                        password,
+                                                        null /* provider */);
                                             }
                                         });
                     }

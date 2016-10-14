@@ -60,15 +60,12 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             mActivityHelper.dismissDialog();
 
             FirebaseUser firebaseUser = task.getResult().getUser();
-            mActivity.getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(SmartLock.getInstance(
-                            mActivity,
-                            mActivityHelper.getFlowParams(),
-                            firebaseUser,
-                            null /* password */,
-                            mResponse.getProviderType()), TAG)
-                    .commit();
+            SmartLock.newInstance(
+                    mActivity,
+                    mActivityHelper.getFlowParams(),
+                    firebaseUser,
+                    null /* password */,
+                    mResponse.getProviderType());
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 final String email = mResponse.getEmail();
