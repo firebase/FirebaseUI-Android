@@ -52,8 +52,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     private static final String TAG = "WelcomeBackPassword";
     private static final StyleSpan BOLD = new StyleSpan(Typeface.BOLD);
 
-    private SmartLock mSmartLock;
-
     private String mEmail;
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
@@ -106,14 +104,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (mSmartLock != null) {
-            mSmartLock.onActivityResult(requestCode, resultCode);
-        }
-    }
-
     private void next(String email, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
 
@@ -139,12 +129,21 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                         new OnSuccessListener<AuthResult>() {
                                             @Override
                                             public void onSuccess(AuthResult authResult) {
-                                                mSmartLock = SmartLock.saveCredentialOrFinish(
-                                                        WelcomeBackPasswordPrompt.this,
-                                                        mActivityHelper.getFlowParams(),
-                                                        authResult.getUser(),
-                                                        password,
-                                                        null /* provider */);
+                                                getSupportFragmentManager()
+                                                        .beginTransaction()
+                                                        .add(SmartLock.getInstance(
+                                                                WelcomeBackPasswordPrompt.this,
+                                                                mActivityHelper.getFlowParams(),
+                                                                authResult.getUser(),
+                                                                password,
+                                                                null /* provider */), "test")
+                                                        .commit();
+//                                                SmartLock.saveCredentialOrFinish(
+//                                                        WelcomeBackPasswordPrompt.this,
+//                                                        mActivityHelper.getFlowParams(),
+//                                                        authResult.getUser(),
+//                                                        password,
+//                                                        null /* provider */);
                                             }
                                         });
                     }

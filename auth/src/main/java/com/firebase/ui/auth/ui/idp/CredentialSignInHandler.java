@@ -41,19 +41,16 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private AppCompatBase mActivity;
     private ActivityHelper mActivityHelper;
     private IDPResponse mResponse;
-    private SmartLock mSmartLock;
 
     public CredentialSignInHandler(
             AppCompatBase activity,
             ActivityHelper activityHelper,
             int accountLinkResultCode,
-            IDPResponse response,
-            SmartLock smartLock) {
+            IDPResponse response) {
         mActivity = activity;
         mAccountLinkResultCode = accountLinkResultCode;
         mActivityHelper = activityHelper;
         mResponse = response;
-        mSmartLock = smartLock;
     }
 
     @Override
@@ -62,11 +59,20 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             mActivityHelper.dismissDialog();
 
             FirebaseUser firebaseUser = task.getResult().getUser();
-            mSmartLock = SmartLock.saveCredentialOrFinish(mActivity,
-                                             mActivityHelper.getFlowParams(),
-                                             firebaseUser,
-                                             null /* password */,
-                                             mResponse.getProviderType());
+            mActivity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(SmartLock.getInstance(
+                            mActivity,
+                            mActivityHelper.getFlowParams(),
+                            firebaseUser,
+                            null /* password */,
+                            mResponse.getProviderType()), "test")
+                    .commit();
+//            SmartLock.saveCredentialOrFinish(mActivity,
+//                                             mActivityHelper.getFlowParams(),
+//                                             firebaseUser,
+//                                             null /* password */,
+//                                             mResponse.getProviderType());
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 final String email = mResponse.getEmail();

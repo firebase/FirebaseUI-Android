@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
@@ -40,13 +41,14 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SmartLock implements GoogleApiClient.ConnectionCallbacks, ResultCallback<Status>,
+public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCallbacks, ResultCallback<Status>,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "CredentialsSaveBase";
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
 
     private AppCompatBase mActivity;
+    private FlowParameters mFlowParameters;
     private String mName;
     private String mEmail;
     private String mPassword;
@@ -54,18 +56,27 @@ public class SmartLock implements GoogleApiClient.ConnectionCallbacks, ResultCal
     private String mProfilePictureUri;
     private GoogleApiClient mCredentialsApiClient;
 
-    public SmartLock(AppCompatBase activity,
-                     String name,
-                     String email,
-                     String password,
-                     String provider,
-                     String profilePictureUri) {
-        mActivity = activity;
-        mName = name;
-        mEmail = email;
-        mPassword = password;
-        mProvider = provider;
-        mProfilePictureUri = profilePictureUri;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // If SmartLock is disabled, finish the Activity
+        if (!mFlowParameters.smartLockEnabled) {
+            mActivity.finish(RESULT_OK, mActivity.getIntent());
+            return;
+        }
+
+        // If Play Services is not available, finish the Activity
+        if (!PlayServicesHelper.getInstance(mActivity).isPlayServicesAvailable()) {
+            mActivity.finish(RESULT_OK, mActivity.getIntent());
+            return;
+        }
+
+        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mFlowParameters.appName)
+                .isPlayServicesAvailable(mActivity)) {
+            mActivity.finish(RESULT_OK, mActivity.getIntent());
+            return;
+        }
 
         mCredentialsApiClient = new GoogleApiClient.Builder(mActivity)
                 .addConnectionCallbacks(this)
@@ -129,17 +140,19 @@ public class SmartLock implements GoogleApiClient.ConnectionCallbacks, ResultCal
                     + " and code: " + connectionResult.getErrorCode());
         }
         PendingIntent resolution =
-                GoogleApiAvailability.getInstance().getErrorResolutionPendingIntent(mActivity,
-                                                                                    connectionResult
-                                                                                            .getErrorCode(),
-                                                                                    RC_UPDATE_SERVICE);
+                GoogleApiAvailability
+                        .getInstance()
+                        .getErrorResolutionPendingIntent(mActivity,
+                                                         connectionResult.getErrorCode(),
+                                                         RC_UPDATE_SERVICE);
         try {
-            mActivity.startIntentSenderForResult(resolution.getIntentSender(),
-                                                 RC_UPDATE_SERVICE,
-                                                 null,
-                                                 0,
-                                                 0,
-                                                 0);
+            startIntentSenderForResult(resolution.getIntentSender(),
+                                       RC_UPDATE_SERVICE,
+                                       null,
+                                       0,
+                                       0,
+                                       0,
+                                       null);
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
             mActivity.finish(RESULT_OK, mActivity.getIntent());
@@ -168,7 +181,10 @@ public class SmartLock implements GoogleApiClient.ConnectionCallbacks, ResultCal
         }
     }
 
-    public void onActivityResult(int requestCode, int resultCode) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == RC_SAVE) {
             if (resultCode == RESULT_OK) {
                 if (BuildConfig.DEBUG) {
@@ -193,6 +209,40 @@ public class SmartLock implements GoogleApiClient.ConnectionCallbacks, ResultCal
         }
     }
 
+
+//    public static void saveCredentialOrFinish(AppCompatBase activity,
+//                                              FlowParameters parameters,
+//                                              FirebaseUser firebaseUser,
+//                                              @Nullable String password,
+//                                              @Nullable String provider) {
+//        // If SmartLock is disabled, finish the Activity
+//        if (!parameters.smartLockEnabled) {
+//            activity.finish(RESULT_OK, activity.getIntent());
+//            return;
+//        }
+//
+//        // If Play Services is not available, finish the Activity
+//        if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
+//            activity.finish(RESULT_OK, activity.getIntent());
+//            return;
+//        }
+//
+//        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
+//                .isPlayServicesAvailable(activity)) {
+//            activity.finish(RESULT_OK, activity.getIntent());
+//            return;
+//        }
+//
+//        // Save credentials
+//        new SmartLock(activity,
+//                      firebaseUser.getDisplayName(),
+//                      firebaseUser.getEmail(),
+//                      password,
+//                      provider,
+//                      firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
+//                              .toString() : null);
+//    }
+
     /**
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise, finish the calling Activity with RESULT_OK.
@@ -203,36 +253,21 @@ public class SmartLock implements GoogleApiClient.ConnectionCallbacks, ResultCal
      * @param password     (optional) password for email credential.
      * @param provider     (optional) provider string for provider credential.
      */
-    public static SmartLock saveCredentialOrFinish(AppCompatBase activity,
-                                                   FlowParameters parameters,
-                                                   FirebaseUser firebaseUser,
-                                                   @Nullable String password,
-                                                   @Nullable String provider) {
-        // If SmartLock is disabled, finish the Activity
-        if (!parameters.smartLockEnabled) {
-            activity.finish(RESULT_OK, new Intent());
-            return null;
-        }
+    public static SmartLock getInstance(AppCompatBase activity,
+                                        FlowParameters parameters,
+                                        FirebaseUser firebaseUser,
+                                        @Nullable String password,
+                                        @Nullable String provider) {
+        SmartLock smartLock = new SmartLock();
+        smartLock.mActivity = activity;
+        smartLock.mFlowParameters = parameters;
+        smartLock.mName = firebaseUser.getDisplayName();
+        smartLock.mEmail = firebaseUser.getEmail();
+        smartLock.mPassword = password;
+        smartLock.mProvider = provider;
+        smartLock.mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
+                .toString() : null;
 
-        // If Play Services is not available, finish the Activity
-        if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
-            activity.finish(RESULT_OK, new Intent());
-            return null;
-        }
-
-        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
-                .isPlayServicesAvailable(activity)) {
-            activity.finish(RESULT_OK, activity.getIntent());
-            return null;
-        }
-
-        // Save credentials
-        return new SmartLock(activity,
-                             firebaseUser.getDisplayName(),
-                             firebaseUser.getEmail(),
-                             password,
-                             provider,
-                             firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
-                                         .toString() : null);
+        return smartLock;
     }
 }

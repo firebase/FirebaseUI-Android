@@ -35,7 +35,6 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.EmailFlowUtil;
-import com.firebase.ui.auth.util.SmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -63,7 +62,6 @@ public class AuthMethodPickerActivity
     private static final String TAG = "AuthMethodPicker";
 
     private ArrayList<IDPProvider> mIdpProviders;
-    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,8 +138,6 @@ public class AuthMethodPickerActivity
             if (resultCode == RESULT_OK) {
                 finish(RESULT_OK, new Intent());
             }
-        } else if (mSmartLock != null) {
-            mSmartLock.onActivityResult(requestCode, resultCode);
         } else if (requestCode == RC_ACCOUNT_LINK) {
             finish(resultCode, new Intent());
         } else {
@@ -164,8 +160,7 @@ public class AuthMethodPickerActivity
                         AuthMethodPickerActivity.this,
                         mActivityHelper,
                         RC_ACCOUNT_LINK,
-                        response,
-                        mSmartLock));
+                        response));
     }
 
     @Override

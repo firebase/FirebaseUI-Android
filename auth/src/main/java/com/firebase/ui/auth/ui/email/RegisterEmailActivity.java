@@ -58,8 +58,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "RegisterEmailActivity";
 
-    private SmartLock mSmartLock;
-
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mNameEditText;
@@ -160,12 +158,21 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
-                                        mSmartLock = SmartLock.saveCredentialOrFinish(
-                                                RegisterEmailActivity.this,
-                                                mActivityHelper.getFlowParams(),
-                                                firebaseUser,
-                                                password,
-                                                null /* provider */);
+                                        getSupportFragmentManager()
+                                                .beginTransaction()
+                                                .add(SmartLock.getInstance(
+                                                        RegisterEmailActivity.this,
+                                                        mActivityHelper.getFlowParams(),
+                                                        firebaseUser,
+                                                        password,
+                                                        null /* provider */), "test")
+                                                .commit();
+//                                        mSmartLock = SmartLock.saveCredentialOrFinish(
+//                                                RegisterEmailActivity.this,
+//                                                mActivityHelper.getFlowParams(),
+//                                                firebaseUser,
+//                                                password,
+//                                                null /* provider */);
                                     }
                                 });
                     }
@@ -196,14 +203,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                         }
                     }
                 });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (mSmartLock != null) {
-            mSmartLock.onActivityResult(requestCode, resultCode);
-        }
     }
 
     @Override

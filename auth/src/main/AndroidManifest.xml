@@ -33,10 +33,6 @@
             android:label="@string/title_sign_in_activity"
             android:theme="@style/FirebaseUI" />
         <activity
-            android:name=".util.SmartLock"
-            android:label="@string/default_toolbar_title"
-            android:theme="@style/FirebaseUI.Translucent" />
-        <activity
             android:name="com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt"
             android:label="@string/title_welcome_back_idp_prompt"
             android:theme="@style/FirebaseUI" />
