@@ -34,7 +34,7 @@
         android:layout_height="wrap_content">
 
         <EditText
-            style="@style/FirebaseUI.EditText"
+            style="@style/FirebaseUI.EditText.PasswordField"
             android:id="@+id/password"
             android:hint="@string/password_hint"
             />

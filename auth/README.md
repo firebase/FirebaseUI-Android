@@ -43,8 +43,8 @@ Gradle, add:
 
 ```groovy
 dependencies {
-  // ...
-  compile 'com.firebaseui:firebase-ui-auth:0.6.0'
+    // ...
+    compile 'com.firebaseui:firebase-ui-auth:0.6.1'
 }
 ```
 
@@ -52,9 +52,9 @@ If instead your project uses Maven, add:
 
 ```xml
 <dependency>
-  <groupId>com.firebaseui</groupId>
-  <artifactId>firebase-ui-auth</artifactId>
-  <version>0.6.0</version>
+    <groupId>com.firebaseui</groupId>
+    <artifactId>firebase-ui-auth</artifactId>
+    <version>0.6.1</version>
 </dependency>
 ```
 
@@ -72,8 +72,8 @@ the [Facebook developer dashboard](https://developers.facebook.com):
 
 ```xml
 <resources>
-  <!-- ... -->
-  <string name="facebook_application_id" translatable="false">APPID</string>
+    <!-- ... -->
+    <string name="facebook_application_id" translatable="false">APPID</string>
 </resources>
 ```
 
@@ -86,9 +86,9 @@ whether a
 ```java
 FirebaseAuth auth = FirebaseAuth.getInstance();
 if (auth.getCurrentUser() != null) {
-  // already signed in
+    // already signed in
 } else {
-  // not signed in
+    // not signed in
 }
 ```
 
@@ -196,18 +196,18 @@ supported.
 
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-   super.onActivityResult(requestCode, resultCode, data);
-   if (requestCode == RC_SIGN_IN) {
-     if (resultCode == RESULT_OK) {
-       // user is signed in!
-       startActivity(new Intent(this, WelcomeBackActivity.class));
-       finish();
-     } else {
-       // user is not signed in. Maybe just wait for the user to press
-       // "sign in" again, or show a message
-     }
-   }
- }
+super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == RC_SIGN_IN) {
+        if (resultCode == RESULT_OK) {
+            // user is signed in!
+            startActivity(new Intent(this, WelcomeBackActivity.class));
+            finish();
+        } else {
+            // user is not signed in. Maybe just wait for the user to press
+            // "sign in" again, or show a message
+        }
+    }
+}
 ```
 
 Alternatively, you can register a listener for authentication state changes;
@@ -236,17 +236,17 @@ completed once all necessary sign-out operations are completed:
 
 ```java
 public void onClick(View v) {
-  if (v.getId() == R.id.sign_out) {
-      AuthUI.getInstance()
-          .signOut(this)
-          .addOnCompleteListener(new OnCompleteListener<Void>() {
+if (v.getId() == R.id.sign_out) {
+    AuthUI.getInstance()
+        .signOut(this)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
             public void onComplete(@NonNull Task<Void> task) {
-              // user is now signed out
-              startActivity(new Intent(MyActivity.this, SignInActivity.class));
-              finish();
+                // user is now signed out
+                startActivity(new Intent(MyActivity.this, SignInActivity.class));
+                finish();
             }
-          });
-  }
+        });
+    }
 }
 ```
 
@@ -308,8 +308,8 @@ redefine a string to change it, for example:
 
 ```java
 <resources>
-  <!-- was "Signing up..." -->
-  <string name="progress_dialog_signing_up">Creating your shiny new account...</string>
+    <!-- was "Signing up..." -->
+    <string name="progress_dialog_signing_up">Creating your shiny new account...</string>
 </resources>
 ```
 

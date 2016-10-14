@@ -66,7 +66,7 @@ import static org.mockito.Mockito.when;
                 GoogleProviderShadow.class,
                 FacebookProviderShadow.class,
                 LoginManagerShadow.class
-        }, sdk = 21)
+        }, sdk = 23)
 public class AuthMethodPickerActivityTest {
 
     @Before

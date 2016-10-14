@@ -66,7 +66,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
     private EmailFieldValidator mEmailFieldValidator;
     private PasswordFieldValidator mPasswordFieldValidator;
     private RequiredFieldValidator mNameValidator;
-    private ImageView mTogglePasswordImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,14 +82,15 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        mTogglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
+        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
+        ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
-                mTogglePasswordImage,
+                togglePasswordImage,
                 visibleIcon.getFloat(),
                 slightlyVisibleIcon.getFloat()));
 
-        mTogglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
+        togglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
 
         mNameEditText = (EditText) findViewById(R.id.name);
 

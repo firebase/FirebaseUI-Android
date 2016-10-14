@@ -66,7 +66,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21, shadows = {ActivityHelperShadow.class})
+@Config(constants = BuildConfig.class, sdk = 23, shadows = {ActivityHelperShadow.class})
 public class CredentialSignInHandlerTest {
     private static final int RC_ACCOUNT_LINK = 3;
     private static final int RC_SAVE_CREDENTIALS = 4;
