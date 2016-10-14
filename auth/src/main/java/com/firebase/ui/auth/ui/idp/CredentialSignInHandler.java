@@ -60,8 +60,6 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     @Override
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
-            mActivityHelper.dismissDialog();
-
             FirebaseUser firebaseUser = task.getResult().getUser();
             mSmartLock.saveCredentialsOrFinish(
                     mActivity,

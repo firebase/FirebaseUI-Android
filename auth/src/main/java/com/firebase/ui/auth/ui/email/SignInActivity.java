@@ -69,8 +69,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(
-                false);
+        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
         ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
@@ -80,10 +79,8 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
 
         togglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
 
-        mEmailValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
-                                                                                         .email_layout));
-        mPasswordValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id
-                                                                                               .password_layout));
+        mEmailValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
+        mPasswordValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.password_layout));
         Button signInButton = (Button) findViewById(R.id.button_done);
         TextView recoveryButton = (TextView) findViewById(R.id.trouble_signing_in);
 
@@ -92,11 +89,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         }
         signInButton.setOnClickListener(this);
         recoveryButton.setOnClickListener(this);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     private void signIn(String email, final String password) {

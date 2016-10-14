@@ -156,8 +156,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        mActivityHelper.dismissDialog();
-
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).

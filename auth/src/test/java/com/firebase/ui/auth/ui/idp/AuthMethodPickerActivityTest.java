@@ -156,8 +156,7 @@ public class AuthMethodPickerActivityTest {
     public void testGoogleLoginFlow() {
         List<String> providers = Arrays.asList(AuthUI.GOOGLE_PROVIDER);
 
-        AuthMethodPickerActivity authMethodPickerActivity =
-                createActivity(providers);
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
         when(mockFirebaseUser.getProviders())
