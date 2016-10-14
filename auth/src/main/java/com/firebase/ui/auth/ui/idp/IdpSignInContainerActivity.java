@@ -17,12 +17,13 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.IdpProvider;
+import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.provider.IdpResponse;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -31,16 +32,14 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
-public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPProvider.IDPCallback {
+public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCallback {
     private static final String TAG = "IDPSignInContainer";
     private static final int RC_WELCOME_BACK_IDP = 4;
     private static final int RC_SAVE_CREDENTIALS = 5;
-    private IDPProvider mIDPProvider;
+    private IdpProvider mIDPProvider;
     private String mProvider;
     private String mEmail;
 
@@ -61,9 +60,9 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
             finish(RESULT_CANCELED, new Intent());
             return;
         }
-        if (mProvider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
+        if (mProvider.equalsIgnoreCase(AuthUI.FACEBOOK_PROVIDER)) {
             mIDPProvider = new FacebookProvider(this, providerConfig);
-        } else if (mProvider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
+        } else if (mProvider.equalsIgnoreCase(AuthUI.GOOGLE_PROVIDER)) {
             mIDPProvider = new GoogleProvider(this, providerConfig, mEmail);
         } else if (mProvider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
             mIDPProvider = new TwitterProvider(this);
@@ -73,7 +72,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
     }
 
     @Override
-    public void onSuccess(final IDPResponse response) {
+    public void onSuccess(final IdpResponse response) {
         Intent data = new Intent();
         data.putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
         AuthCredential credential = createCredential(response);
@@ -83,7 +82,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Failure authenticating with credential"))
                 .addOnCompleteListener(new CredentialSignInHandler(
-                        IDPSignInContainerActivity.this,
+                        IdpSignInContainerActivity.this,
                         mActivityHelper,
                         RC_WELCOME_BACK_IDP,
                         RC_SAVE_CREDENTIALS,
@@ -99,9 +98,9 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_WELCOME_BACK_IDP) {
-            finish(resultCode, new Intent());
+            finish(resultCode, data);
         } else if (requestCode == RC_SAVE_CREDENTIALS) {
-            finish(RESULT_OK, new Intent());
+            finish(RESULT_OK, data);
         } else {
             mIDPProvider.onActivityResult(requestCode, resultCode, data);
         }
@@ -114,7 +113,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
             String email) {
         return ActivityHelper.createBaseIntent(
                 context,
-                IDPSignInContainerActivity.class,
+                IdpSignInContainerActivity.class,
                 flowParams)
                 .putExtra(ExtraConstants.EXTRA_PROVIDER, provider)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);

@@ -14,35 +14,49 @@
 
 package com.firebase.ui.auth.provider;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
-public class IDPResponse implements Parcelable {
+public class IdpResponse implements Parcelable {
 
     private final String mProviderId;
     private final String mEmail;
-    private final Bundle mResponseBundle;
+    private final String mToken;
+    private final String mSecret;
 
-    public IDPResponse(String providerId, String email, Bundle response) {
-        mProviderId = providerId;
-        mEmail = email;
-        mResponseBundle = response;
+    public IdpResponse(
+            String providerId, String email) {
+        this(providerId, email, null, null);
     }
 
-    public static final Creator<IDPResponse> CREATOR = new Creator<IDPResponse>() {
+    public IdpResponse(
+            String providerId, String email, @Nullable String token) {
+        this(providerId, email, token, null);
+    }
+
+    public IdpResponse(
+            String providerId, String email, @Nullable String token, @Nullable String secret) {
+        mProviderId = providerId;
+        mEmail = email;
+        mToken = token;
+        mSecret = secret;
+    }
+
+    public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
         @Override
-        public IDPResponse createFromParcel(Parcel in) {
-            return new IDPResponse(
+        public IdpResponse createFromParcel(Parcel in) {
+            return new IdpResponse(
                     in.readString(),
                     in.readString(),
-                    in.readBundle()
+                    in.readString(),
+                    in.readString()
             );
         }
 
         @Override
-        public IDPResponse[] newArray(int size) {
-            return new IDPResponse[size];
+        public IdpResponse[] newArray(int size) {
+            return new IdpResponse[size];
         }
     };
 
@@ -50,8 +64,14 @@ public class IDPResponse implements Parcelable {
         return mProviderId;
     }
 
-    public Bundle getResponse() {
-        return mResponseBundle;
+    @Nullable
+    public String getIdpToken() {
+        return mToken;
+    }
+
+    @Nullable
+    public String getIdpSecret() {
+        return mSecret;
     }
 
     public String getEmail() {
@@ -67,6 +87,7 @@ public class IDPResponse implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mProviderId);
         dest.writeString(mEmail);
-        dest.writeBundle(mResponseBundle);
+        dest.writeString(mToken);
+        dest.writeString(mSecret);
     }
 }

@@ -19,7 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-public interface IDPProvider {
+public interface IdpProvider {
 
     /**
      * Retrieves the name of the IDP, for display on-screen.
@@ -28,14 +28,14 @@ public interface IDPProvider {
 
     String getProviderId();
 
-    void setAuthenticationCallback(IDPCallback callback);
+    void setAuthenticationCallback(IdpCallback callback);
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
     void startLogin(Activity activity);
 
-    public interface IDPCallback {
-        public void onSuccess(IDPResponse idpResponse);
+    public interface IdpCallback {
+        public void onSuccess(IdpResponse idpResponse);
         public void onFailure(Bundle extra);
     }
 }

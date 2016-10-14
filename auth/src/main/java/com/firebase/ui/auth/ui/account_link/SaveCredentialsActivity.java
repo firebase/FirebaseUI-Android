@@ -26,6 +26,7 @@ import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.provider.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -54,7 +55,7 @@ public class SaveCredentialsActivity extends AppCompatBase
     private String mName;
     private String mEmail;
     private String mPassword;
-    private String mProvider;
+    private IdpResponse mIdpResponse;
     private String mProfilePictureUri;
     private GoogleApiClient mCredentialsApiClient;
 
@@ -72,7 +73,7 @@ public class SaveCredentialsActivity extends AppCompatBase
         mName = getIntent().getStringExtra(ExtraConstants.EXTRA_NAME);
         mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mPassword = getIntent().getStringExtra(ExtraConstants.EXTRA_PASSWORD);
-        mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
+        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
         mProfilePictureUri = getIntent()
                 .getStringExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI);
 
@@ -95,14 +96,15 @@ public class SaveCredentialsActivity extends AppCompatBase
         builder.setPassword(mPassword);
         if (mPassword == null) {
             // only password OR provider can be set, not both
-            if (mProvider != null) {
+            String provider = mIdpResponse.getProviderType();
+            if (provider != null) {
                 String translatedProvider = null;
                 // translate the google.com/facebook.com provider strings into full URIs
-                if (mProvider.equals(GoogleAuthProvider.PROVIDER_ID)) {
+                if (provider.equals(GoogleAuthProvider.PROVIDER_ID)) {
                     translatedProvider = IdentityProviders.GOOGLE;
-                } else if (mProvider.equals(FacebookAuthProvider.PROVIDER_ID)) {
+                } else if (provider.equals(FacebookAuthProvider.PROVIDER_ID)) {
                     translatedProvider = IdentityProviders.FACEBOOK;
-                } else if (mProvider.equals(TwitterAuthProvider.PROVIDER_ID)) {
+                } else if (provider.equals(TwitterAuthProvider.PROVIDER_ID)) {
                     translatedProvider = IdentityProviders.TWITTER;
                 }
 
@@ -204,14 +206,14 @@ public class SaveCredentialsActivity extends AppCompatBase
             FlowParameters flowParams,
             FirebaseUser user,
             @Nullable String password,
-            @Nullable String provider) {
+            @Nullable IdpResponse idpResponse) {
 
         String photoUrl = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
         return ActivityHelper.createBaseIntent(context, SaveCredentialsActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_NAME, user.getDisplayName())
                 .putExtra(ExtraConstants.EXTRA_EMAIL, user.getEmail())
                 .putExtra(ExtraConstants.EXTRA_PASSWORD, password)
-                .putExtra(ExtraConstants.EXTRA_PROVIDER, provider)
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, idpResponse)
                 .putExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI, photoUrl);
     }
 }

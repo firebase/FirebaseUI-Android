@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.firebase.ui.auth.provider.IdpResponse;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -37,30 +39,30 @@ public class SmartlockUtil {
      * @param parameters calling Activity flow parameters.
      * @param firebaseUser Firebase user to save in Credential.
      * @param password (optional) password for email credential.
-     * @param provider (optional) provider string for provider credential.
+     * @param idpResponse (optional) response from signing in with a credential.
      */
     public static void saveCredentialOrFinish(Activity activity,
                                               int requestCode,
                                               FlowParameters parameters,
                                               FirebaseUser firebaseUser,
                                               @Nullable String password,
-                                              @Nullable String provider) {
+                                              @Nullable IdpResponse idpResponse) {
 
         // If SmartLock is disabled, finish the Activity
         if (!parameters.smartLockEnabled) {
-            finishActivity(activity);
+            finishActivity(activity, idpResponse);
             return;
         }
 
         // If Play Services is not available, finish the Activity
         if(!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
-            finishActivity(activity);
+            finishActivity(activity, idpResponse);
             return;
         }
 
         // Launch save activity
         Intent saveCredentialIntent = SaveCredentialsActivity.createIntent(activity, parameters,
-                firebaseUser, password, provider);
+                firebaseUser, password, idpResponse);
         activity.startActivityForResult(saveCredentialIntent, requestCode);
     }
 
@@ -118,8 +120,10 @@ public class SmartlockUtil {
         return credentials;
     }
 
-    private static void finishActivity(Activity activity) {
-        activity.setResult(Activity.RESULT_OK, new Intent());
+    private static void finishActivity(Activity activity, IdpResponse idpResponse) {
+        activity.setResult(
+                Activity.RESULT_OK,
+                new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, idpResponse));
         activity.finish();
     }
 

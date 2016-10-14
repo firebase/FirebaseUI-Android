@@ -37,12 +37,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
-import java.util.List;
 
 public class GoogleProvider implements
-        IDPProvider, OnClickListener, GoogleApiClient.OnConnectionFailedListener {
-
-    public static final String TOKEN_KEY = "token_key";
+        IdpProvider, OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "GoogleProvider";
     private static final int AUTO_MANAGE_ID = 1;
@@ -50,7 +47,7 @@ public class GoogleProvider implements
     private static final String ERROR_KEY = "error";
     private GoogleApiClient mGoogleApiClient;
     private Activity mActivity;
-    private IDPCallback mIDPCallback;
+    private IdpCallback mIDPCallback;
 
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig) {
         this(activity, idpConfig, null);
@@ -99,13 +96,13 @@ public class GoogleProvider implements
     }
 
 
-    public static AuthCredential createAuthCredential(IDPResponse response) {
-        Bundle bundle = response.getResponse();
-        return GoogleAuthProvider.getCredential(bundle.getString(TOKEN_KEY), null);
+    public static AuthCredential createAuthCredential(IdpResponse response) {
+        return GoogleAuthProvider.getCredential(
+                response.getIdpToken(), null);
     }
 
     @Override
-    public void setAuthenticationCallback(IDPCallback callback) {
+    public void setAuthenticationCallback(IdpCallback callback) {
         mIDPCallback = callback;
     }
 
@@ -116,10 +113,9 @@ public class GoogleProvider implements
         }
     }
 
-    private IDPResponse createIDPResponse(GoogleSignInAccount account) {
-        Bundle response = new Bundle();
-        response.putString(TOKEN_KEY, account.getIdToken());
-        return new IDPResponse(GoogleAuthProvider.PROVIDER_ID, account.getEmail(), response);
+    private IdpResponse createIDPResponse(GoogleSignInAccount account) {
+        return new IdpResponse(
+                GoogleAuthProvider.PROVIDER_ID, account.getEmail(), account.getIdToken());
     }
 
     @Override

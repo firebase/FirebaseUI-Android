@@ -55,4 +55,6 @@
     <string name="extra_facebook_scopes">Example extra Facebook scopes</string>
     <string name="friends">Friends</string>
     <string name="photos">Photos</string>
+    <string name="idp_token">IDP Token</string>
+    <string name="idp_secret">IDP Secret</string>
 </resources>

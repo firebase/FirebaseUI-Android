@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -33,16 +32,12 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResult> {
-    public static final String ACCESS_TOKEN = "facebook_access_token";
-
+public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
     protected static final String ERROR = "err";
     protected static final String ERROR_MSG = "err_msg";
 
@@ -52,7 +47,7 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
 
     private final List<String> mScopes;
     private CallbackManager mCallbackManager;
-    private IDPCallback mCallbackObject;
+    private IdpCallback mCallbackObject;
 
     public FacebookProvider(Context appContext, IdpConfig idpConfig) {
         mCallbackManager = CallbackManager.Factory.create();
@@ -107,7 +102,7 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
     }
 
     @Override
-    public void setAuthenticationCallback(IDPCallback callback) {
+    public void setAuthenticationCallback(IdpCallback callback) {
         this.mCallbackObject = callback;
     }
 
@@ -144,18 +139,20 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
         request.executeAsync();
     }
 
-    private IDPResponse createIDPResponse(LoginResult loginResult, String email) {
-        Bundle response = new Bundle();
-        response.putString(ACCESS_TOKEN, loginResult.getAccessToken().getToken());
-        return new IDPResponse(FacebookAuthProvider.PROVIDER_ID, email, response);
+    private IdpResponse createIDPResponse(LoginResult loginResult, String email) {
+        return new IdpResponse(
+                FacebookAuthProvider.PROVIDER_ID,
+                email,
+                loginResult.getAccessToken().getToken(),
+                null);
     }
 
-    public static AuthCredential createAuthCredential(IDPResponse response) {
+    public static AuthCredential createAuthCredential(IdpResponse response) {
         if (!response.getProviderType().equals(FacebookAuthProvider.PROVIDER_ID)) {
             return null;
         }
         return FacebookAuthProvider
-                .getCredential(response.getResponse().getString(ACCESS_TOKEN));
+                .getCredential(response.getIdpToken());
     }
 
     @Override

@@ -18,10 +18,10 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
+import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.SmartlockUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,14 +41,14 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private int mSaveCredentialsResultCode;
     private Activity mActivity;
     private ActivityHelper mActivityHelper;
-    private IDPResponse mResponse;
+    private IdpResponse mResponse;
 
     public CredentialSignInHandler(
             Activity activity,
             ActivityHelper activityHelper,
             int accountLinkResultCode,
             int saveCredentialsResultCode,
-            IDPResponse response) {
+            IdpResponse response) {
         mActivity = activity;
         mAccountLinkResultCode = accountLinkResultCode;
         mSaveCredentialsResultCode = saveCredentialsResultCode;
@@ -85,7 +85,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             FirebaseUser firebaseUser = task.getResult().getUser();
             SmartlockUtil.saveCredentialOrFinish(mActivity, mSaveCredentialsResultCode,
                     mActivityHelper.getFlowParams(), firebaseUser,
-                    null /* password */, mResponse.getProviderType());
+                    null /* password */, mResponse);
         }
     }
 
@@ -113,7 +113,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             } else {
                 // Start IDP welcome back flow
                 mActivity.startActivityForResult(
-                        WelcomeBackIDPPrompt.createIntent(
+                        WelcomeBackIdpPrompt.createIntent(
                                 mActivityHelper.getApplicationContext(),
                                 mActivityHelper.getFlowParams(),
                                 result.getProviders().get(0),

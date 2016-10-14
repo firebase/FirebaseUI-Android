@@ -28,8 +28,9 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.IdpProvider;
+import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.provider.IdpResponse;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -47,7 +48,7 @@ import java.util.List;
 
 /**
  * Presents the list of authentication options for this app to the user. If an
- * identity provider option is selected, a {@link IDPSignInContainerActivity container activity}
+ * identity provider option is selected, a {@link IdpSignInContainerActivity container activity}
  * is launched to manage the IDP-specific sign-in flow. If email authentication is chosen,
  * the {@link EmailHintContainerActivity root email flow activity} is started.
  *
@@ -57,13 +58,13 @@ import java.util.List;
  */
 public class AuthMethodPickerActivity
         extends IDPBaseActivity
-        implements IDPProvider.IDPCallback, View.OnClickListener {
+        implements IdpCallback, View.OnClickListener {
 
     private static final int RC_EMAIL_FLOW = 2;
     private static final int RC_ACCOUNT_LINK = 3;
     private static final int RC_SAVE_CREDENTIAL = 4;
     private static final String TAG = "AuthMethodPicker";
-    private ArrayList<IDPProvider> mIdpProviders;
+    private ArrayList<IdpProvider> mIdpProviders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +109,7 @@ public class AuthMethodPickerActivity
         }
 
         LinearLayout btnHolder = (LinearLayout) findViewById(R.id.btn_holder);
-        for (final IDPProvider provider: mIdpProviders) {
+        for (final IdpProvider provider: mIdpProviders) {
             View loginButton = null;
             switch (provider.getProviderId()) {
                 case GoogleAuthProvider.PROVIDER_ID:
@@ -148,18 +149,18 @@ public class AuthMethodPickerActivity
                 finish(RESULT_OK, new Intent());
             }
         } else if (requestCode == RC_SAVE_CREDENTIAL) {
-            finish(RESULT_OK, new Intent());
+            finish(RESULT_OK, data);
         } else if (requestCode == RC_ACCOUNT_LINK) {
-            finish(resultCode, new Intent());
+            finish(resultCode, data);
         } else {
-            for(IDPProvider provider : mIdpProviders) {
+            for(IdpProvider provider : mIdpProviders) {
                 provider.onActivityResult(requestCode, resultCode, data);
             }
         }
     }
 
     @Override
-    public void onSuccess(final IDPResponse response) {
+    public void onSuccess(final IdpResponse response) {
         AuthCredential credential = createCredential(response);
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
 
@@ -195,7 +196,7 @@ public class AuthMethodPickerActivity
     protected void onDestroy() {
         super.onDestroy();
         if (mIdpProviders != null) {
-            for (final IDPProvider provider : mIdpProviders) {
+            for (final IdpProvider provider : mIdpProviders) {
                 if (provider instanceof GoogleProvider) {
                     ((GoogleProvider) provider).disconnect();
                 }

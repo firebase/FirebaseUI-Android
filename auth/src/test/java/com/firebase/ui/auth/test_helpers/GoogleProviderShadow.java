@@ -15,12 +15,11 @@
 package com.firebase.ui.auth.test_helpers;
 
 import android.app.Activity;
-import android.os.Bundle;
 
 import android.support.v4.app.FragmentActivity;
 import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.provider.IdpResponse;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.List;
@@ -34,27 +33,21 @@ import static org.mockito.Mockito.when;
 @Implements(GoogleProvider.class)
 public class GoogleProviderShadow {
     private static final String FAKE_TOKEN = "fake_token";
-    private IDPResponse mMockIdpResponse;
-    private Bundle mMockIdpResponseBundle;
-    private IDPProvider.IDPCallback mCallback;
+    private IdpResponse mMockIdpResponse;
+    private IdpCallback mCallback;
 
     public GoogleProviderShadow() {
-        if(mMockIdpResponseBundle == null) {
-            mMockIdpResponseBundle = mock(Bundle.class);
-        }
         if (mMockIdpResponse == null) {
-            mMockIdpResponse = mock(IDPResponse.class);
+            mMockIdpResponse = mock(IdpResponse.class);
             when(mMockIdpResponse.getProviderType()).thenReturn(GoogleAuthProvider.PROVIDER_ID);
-            when(mMockIdpResponse.getResponse()).thenReturn(mMockIdpResponseBundle);
-            when(mMockIdpResponseBundle
-                    .getString(GoogleProvider.TOKEN_KEY)).thenReturn(FAKE_TOKEN);
+            when(mMockIdpResponse.getIdpToken()).thenReturn(FAKE_TOKEN);
         }
     }
     public void __constructor__(FragmentActivity activity, String email, List<String> scopes) {}
 
 
     @Implementation
-    public void setAuthenticationCallback(IDPProvider.IDPCallback idpCallback) {
+    public void setAuthenticationCallback(IdpCallback idpCallback) {
         mCallback = idpCallback;
     }
 
