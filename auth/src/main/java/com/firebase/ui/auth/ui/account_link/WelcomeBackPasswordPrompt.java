@@ -56,11 +56,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
     private IDPResponse mIdpResponse;
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_back_password_prompt_layout);
+
+        mSmartLock = SmartLock.getInstance(this);
 
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
@@ -129,7 +132,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                         new OnSuccessListener<AuthResult>() {
                                             @Override
                                             public void onSuccess(AuthResult authResult) {
-                                                SmartLock.newInstance(
+                                                mSmartLock.saveCredentialsOrFinish(
                                                         WelcomeBackPasswordPrompt.this,
                                                         mActivityHelper.getFlowParams(),
                                                         authResult.getUser(),

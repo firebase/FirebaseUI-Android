@@ -38,19 +38,22 @@ import com.google.firebase.auth.ProviderQueryResult;
 public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private final static String TAG = "CredentialSignInHandler";
 
-    private int mAccountLinkResultCode;
     private AppCompatBase mActivity;
     private ActivityHelper mActivityHelper;
+    private SmartLock mSmartLock;
+    private int mAccountLinkResultCode;
     private IDPResponse mResponse;
 
     public CredentialSignInHandler(
             AppCompatBase activity,
             ActivityHelper activityHelper,
+            SmartLock smartLock,
             int accountLinkResultCode,
             IDPResponse response) {
         mActivity = activity;
-        mAccountLinkResultCode = accountLinkResultCode;
         mActivityHelper = activityHelper;
+        mSmartLock = smartLock;
+        mAccountLinkResultCode = accountLinkResultCode;
         mResponse = response;
     }
 
@@ -60,7 +63,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             mActivityHelper.dismissDialog();
 
             FirebaseUser firebaseUser = task.getResult().getUser();
-            SmartLock.newInstance(
+            mSmartLock.saveCredentialsOrFinish(
                     mActivity,
                     mActivityHelper.getFlowParams(),
                     firebaseUser,

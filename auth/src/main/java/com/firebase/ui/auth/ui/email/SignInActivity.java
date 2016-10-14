@@ -45,6 +45,7 @@ import com.google.firebase.auth.AuthResult;
 public class SignInActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "SignInActivity";
 
+    private SmartLock mSmartLock;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EmailFieldValidator mEmailValidator;
@@ -54,6 +55,8 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in_layout);
+
+        mSmartLock = SmartLock.getInstance(this);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
@@ -105,7 +108,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         // Save credential in SmartLock (if enabled)
-                        SmartLock.newInstance(
+                        mSmartLock.saveCredentialsOrFinish(
                                 SignInActivity.this,
                                 mActivityHelper.getFlowParams(),
                                 authResult.getUser(),

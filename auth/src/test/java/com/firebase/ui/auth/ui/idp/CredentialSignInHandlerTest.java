@@ -64,7 +64,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23, shadows = {ActivityHelperShadow.class})
 public class CredentialSignInHandlerTest {
@@ -96,9 +95,11 @@ public class CredentialSignInHandlerTest {
                 GoogleAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
                 new Bundle());
+        SmartLock smartLock = new SmartLock();
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
+                smartLock,
                 RC_ACCOUNT_LINK,
                 idpResponse);
         Context mockContext = mock(Context.class);
@@ -113,24 +114,19 @@ public class CredentialSignInHandlerTest {
         when(mockActivityHelper.getFlowParams()).thenReturn(flowParams);
         credentialSignInHandler.onComplete(signInTask);
 
-        ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
-        ArgumentCaptor<Integer> intCaptor = ArgumentCaptor.forClass(Integer.class);
-        verify(mockActivity).startActivityForResult(intentCaptor.capture(), intCaptor.capture());
-
-        Intent capturedIntent = intentCaptor.getValue();
-        assertEquals(RC_SAVE_CREDENTIALS, (int) intCaptor.getValue());
+        Intent smartLockIntent = smartLock.getIntentForTest();
         assertEquals(
                 SmartLock.class.getName(),
-                capturedIntent.getComponent().getClassName());
+                smartLockIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
-                capturedIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
+                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
         assertEquals(
                 TestConstants.NAME,
-                capturedIntent.getExtras().getString(ExtraConstants.EXTRA_NAME));
+                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_NAME));
         assertEquals(
                 TestConstants.PHOTO_URL,
-                capturedIntent.getExtras().getString(ExtraConstants.EXTRA_PROFILE_PICTURE_URI));
+                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_PROFILE_PICTURE_URI));
     }
 
     @Test
@@ -142,11 +138,11 @@ public class CredentialSignInHandlerTest {
                 GoogleAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
                 new Bundle());
-        CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
+        CredentialSignInHandler credentialSignInHandler = null;/*new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
                 RC_ACCOUNT_LINK,
-                idpResponse);
+                idpResponse);*/
 
         Context mockContext = mock(Context.class);
         FlowParameters mockFlowParams = mock(FlowParameters.class);
@@ -181,7 +177,6 @@ public class CredentialSignInHandlerTest {
 
     }
 
-
     @Test
     public void testSignInFailed_withPasswordAccountAlreadyLinked() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
@@ -191,11 +186,11 @@ public class CredentialSignInHandlerTest {
                 GoogleAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
                 new Bundle());
-        CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
+        CredentialSignInHandler credentialSignInHandler = null;/*new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
                 RC_ACCOUNT_LINK,
-                idpResponse);
+                idpResponse);*/
 
         Context mockContext = mock(Context.class);
         Task mockTask = mock(Task.class);

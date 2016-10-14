@@ -22,10 +22,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -55,36 +58,6 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     private String mProvider;
     private String mProfilePictureUri;
     private GoogleApiClient mCredentialsApiClient;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // If SmartLock is disabled, finish the Activity
-        if (!mFlowParameters.smartLockEnabled) {
-            mActivity.finish(RESULT_OK, mActivity.getIntent());
-            return;
-        }
-
-        // If Play Services is not available, finish the Activity
-        if (!PlayServicesHelper.getInstance(mActivity).isPlayServicesAvailable()) {
-            mActivity.finish(RESULT_OK, mActivity.getIntent());
-            return;
-        }
-
-        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mFlowParameters.appName)
-                .isPlayServicesAvailable(mActivity)) {
-            mActivity.finish(RESULT_OK, mActivity.getIntent());
-            return;
-        }
-
-        mCredentialsApiClient = new GoogleApiClient.Builder(mActivity)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(mActivity, this)
-                .build();
-    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -219,24 +192,70 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
      * @param password     (optional) password for email credential.
      * @param provider     (optional) provider string for provider credential.
      */
-    public static void newInstance(AppCompatBase activity,
+    public void saveCredentialsOrFinish(AppCompatBase activity,
                                         FlowParameters parameters,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
-        SmartLock smartLock = new SmartLock();
-        smartLock.mActivity = activity;
-        smartLock.mFlowParameters = parameters;
-        smartLock.mName = firebaseUser.getDisplayName();
-        smartLock.mEmail = firebaseUser.getEmail();
-        smartLock.mPassword = password;
-        smartLock.mProvider = provider;
-        smartLock.mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
+        // If SmartLock is disabled, finish the Activity
+        if (!mFlowParameters.smartLockEnabled) {
+            activity.finish(RESULT_OK, activity.getIntent());
+            return;
+        }
+
+        // If Play Services is not available, finish the Activity
+        if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
+            activity.finish(RESULT_OK, activity.getIntent());
+            return;
+        }
+
+        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mFlowParameters.appName)
+                .isPlayServicesAvailable(activity)) {
+            activity.finish(RESULT_OK, activity.getIntent());
+            return;
+        }
+
+        mActivity = activity;
+        mFlowParameters = parameters;
+        mName = firebaseUser.getDisplayName();
+        mEmail = firebaseUser.getEmail();
+        mPassword = password;
+        mProvider = provider;
+        mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
-        activity.getSupportFragmentManager()
-                .beginTransaction()
-                .add(smartLock, TAG)
-                .commit();
+        mCredentialsApiClient = new GoogleApiClient.Builder(activity)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Auth.CREDENTIALS_API)
+                .enableAutoManage(activity, this)
+                .build();
+    }
+
+    public Intent getIntentForTest() {
+        return mActivity.getIntent()
+                .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS, mFlowParameters)
+                .putExtra(ExtraConstants.EXTRA_NAME, mName)
+                .putExtra(ExtraConstants.EXTRA_EMAIL, mEmail)
+                .putExtra(ExtraConstants.EXTRA_PASSWORD, mPassword)
+                .putExtra(ExtraConstants.EXTRA_PROVIDER, mProvider)
+                .putExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI, mProfilePictureUri);
+    }
+
+    public static SmartLock getInstance(AppCompatBase activity) {
+        SmartLock result;
+
+        FragmentManager fm = activity.getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        Fragment fragment = fm.findFragmentByTag(TAG);
+        if (fragment == null || !(fragment instanceof SmartLock)) {
+            result = new SmartLock();
+            ft.add(result, TAG).disallowAddToBackStack().commit();
+        } else {
+            result = (SmartLock) fragment;
+        }
+
+        return result;
     }
 }
