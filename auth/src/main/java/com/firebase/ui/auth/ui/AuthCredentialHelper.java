@@ -18,7 +18,7 @@ import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.IdpResponse;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;

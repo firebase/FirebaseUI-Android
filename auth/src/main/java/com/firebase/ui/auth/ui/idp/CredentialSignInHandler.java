@@ -18,7 +18,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.firebase.ui.auth.provider.IdpResponse;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;

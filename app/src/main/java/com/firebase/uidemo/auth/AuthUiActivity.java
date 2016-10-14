@@ -33,7 +33,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
-import com.firebase.ui.auth.provider.IdpResponse;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.uidemo.R;
@@ -221,15 +221,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            if (extras != null) {
-                startActivity(SignedInActivity.createIntent(
-                        this,
-                        (IdpResponse) data.getExtras()
-                                .getParcelable(ExtraConstants.EXTRA_IDP_RESPONSE)));
-            } else {
-                startActivity(SignedInActivity.createIntent(this, null));
-            }
+            startActivity(SignedInActivity.createIntent(
+                    this,
+                    IdpResponse.fromResultIntent(data)));
             finish();
             return;
         }

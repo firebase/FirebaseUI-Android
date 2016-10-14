@@ -16,7 +16,7 @@ package com.firebase.ui.auth.ui.idp;
 
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.IdpResponse;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.firebase.auth.AuthCredential;

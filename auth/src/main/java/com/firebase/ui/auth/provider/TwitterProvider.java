@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.TwitterAuthProvider;

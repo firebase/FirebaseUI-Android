@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.provider.IdpResponse;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

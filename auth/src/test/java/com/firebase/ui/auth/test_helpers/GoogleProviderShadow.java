@@ -19,7 +19,7 @@ import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
-import com.firebase.ui.auth.provider.IdpResponse;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.List;

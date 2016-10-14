@@ -12,12 +12,17 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.provider;
+package com.firebase.ui.auth;
 
+import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import com.firebase.ui.auth.ui.ExtraConstants;
 
+/**
+ * The result of authenticating with an Identity Provider.
+ */
 public class IdpResponse implements Parcelable {
 
     private final String mProviderId;
@@ -89,5 +94,15 @@ public class IdpResponse implements Parcelable {
         dest.writeString(mEmail);
         dest.writeString(mToken);
         dest.writeString(mSecret);
+    }
+
+    /**
+     * Extract the {@link IdpResponse} from the flow's result intent.
+     * @param resultIntent The intent which {@code onActivityResult} was called with.
+     * @return
+     */
+    @Nullable
+    public static IdpResponse fromResultIntent(Intent resultIntent) {
+        return resultIntent.getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
     }
 }

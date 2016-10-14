@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;

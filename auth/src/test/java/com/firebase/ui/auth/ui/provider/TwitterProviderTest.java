@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
-import com.firebase.ui.auth.provider.IdpResponse;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FacebookProviderShadow;
