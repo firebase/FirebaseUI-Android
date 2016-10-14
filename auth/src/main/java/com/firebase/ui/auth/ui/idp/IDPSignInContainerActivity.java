@@ -78,12 +78,11 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         authResultTask
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Failure authenticating with credential"))
-                /*.addOnCompleteListener(new CredentialSignInHandler(
+                .addOnCompleteListener(new CredentialSignInHandler(
                         IDPSignInContainerActivity.this,
                         mActivityHelper,
                         RC_WELCOME_BACK_IDP,
-                        RC_SAVE_CREDENTIALS,
-                        response))*/;
+                        response));
     }
 
     @Override
@@ -96,8 +95,6 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_WELCOME_BACK_IDP) {
             finish(resultCode, new Intent());
-        } else if (requestCode == RC_SAVE_CREDENTIALS) {
-            finish(RESULT_OK, new Intent());
         } else {
             mIDPProvider.onActivityResult(requestCode, resultCode, data);
         }

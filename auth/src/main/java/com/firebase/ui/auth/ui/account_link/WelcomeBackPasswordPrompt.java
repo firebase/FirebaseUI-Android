@@ -136,14 +136,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                                                 mActivityHelper.getFlowParams(),
                                                                 authResult.getUser(),
                                                                 password,
-                                                                null /* provider */), "test")
+                                                                null /* provider */), TAG)
                                                         .commit();
-//                                                SmartLock.saveCredentialOrFinish(
-//                                                        WelcomeBackPasswordPrompt.this,
-//                                                        mActivityHelper.getFlowParams(),
-//                                                        authResult.getUser(),
-//                                                        password,
-//                                                        null /* provider */);
                                             }
                                         });
                     }

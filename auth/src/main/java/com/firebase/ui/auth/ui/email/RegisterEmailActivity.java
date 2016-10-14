@@ -165,14 +165,8 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                                         mActivityHelper.getFlowParams(),
                                                         firebaseUser,
                                                         password,
-                                                        null /* provider */), "test")
+                                                        null /* provider */), TAG)
                                                 .commit();
-//                                        mSmartLock = SmartLock.saveCredentialOrFinish(
-//                                                RegisterEmailActivity.this,
-//                                                mActivityHelper.getFlowParams(),
-//                                                firebaseUser,
-//                                                password,
-//                                                null /* provider */);
                                     }
                                 });
                     }

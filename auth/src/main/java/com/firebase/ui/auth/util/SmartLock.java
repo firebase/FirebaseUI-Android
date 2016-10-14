@@ -209,40 +209,6 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
         }
     }
 
-
-//    public static void saveCredentialOrFinish(AppCompatBase activity,
-//                                              FlowParameters parameters,
-//                                              FirebaseUser firebaseUser,
-//                                              @Nullable String password,
-//                                              @Nullable String provider) {
-//        // If SmartLock is disabled, finish the Activity
-//        if (!parameters.smartLockEnabled) {
-//            activity.finish(RESULT_OK, activity.getIntent());
-//            return;
-//        }
-//
-//        // If Play Services is not available, finish the Activity
-//        if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
-//            activity.finish(RESULT_OK, activity.getIntent());
-//            return;
-//        }
-//
-//        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
-//                .isPlayServicesAvailable(activity)) {
-//            activity.finish(RESULT_OK, activity.getIntent());
-//            return;
-//        }
-//
-//        // Save credentials
-//        new SmartLock(activity,
-//                      firebaseUser.getDisplayName(),
-//                      firebaseUser.getEmail(),
-//                      password,
-//                      provider,
-//                      firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
-//                              .toString() : null);
-//    }
-
     /**
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise, finish the calling Activity with RESULT_OK.

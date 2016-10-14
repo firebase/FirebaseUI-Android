@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,13 +29,14 @@ import com.firebase.ui.auth.test_helpers.FakeProviderQueryResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.util.SmartLock;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.CredentialsAPI;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
@@ -89,7 +89,7 @@ public class CredentialSignInHandlerTest {
 
     @Test
     public void testSignInSucceeded() {
-        Activity mockActivity = mock(Activity.class);
+        AppCompatBase mockActivity = mock(AppCompatBase.class);
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
         IDPResponse idpResponse = new IDPResponse(
@@ -100,7 +100,6 @@ public class CredentialSignInHandlerTest {
                 mockActivity,
                 mockActivityHelper,
                 RC_ACCOUNT_LINK,
-                RC_SAVE_CREDENTIALS,
                 idpResponse);
         Context mockContext = mock(Context.class);
 
@@ -136,7 +135,7 @@ public class CredentialSignInHandlerTest {
 
     @Test
     public void testSignInFailed_withFacebookAlreadyLinked() {
-        Activity mockActivity = mock(Activity.class);
+        AppCompatBase mockActivity = mock(AppCompatBase.class);
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
         IDPResponse idpResponse = new IDPResponse(
@@ -147,7 +146,6 @@ public class CredentialSignInHandlerTest {
                 mockActivity,
                 mockActivityHelper,
                 RC_ACCOUNT_LINK,
-                RC_SAVE_CREDENTIALS,
                 idpResponse);
 
         Context mockContext = mock(Context.class);
@@ -186,7 +184,7 @@ public class CredentialSignInHandlerTest {
 
     @Test
     public void testSignInFailed_withPasswordAccountAlreadyLinked() {
-        Activity mockActivity = mock(Activity.class);
+        AppCompatBase mockActivity = mock(AppCompatBase.class);
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
         IDPResponse idpResponse = new IDPResponse(
@@ -197,7 +195,6 @@ public class CredentialSignInHandlerTest {
                 mockActivity,
                 mockActivityHelper,
                 RC_ACCOUNT_LINK,
-                RC_SAVE_CREDENTIALS,
                 idpResponse);
 
         Context mockContext = mock(Context.class);

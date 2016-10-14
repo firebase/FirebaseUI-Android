@@ -37,6 +37,7 @@ import com.google.firebase.auth.ProviderQueryResult;
 
 public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private final static String TAG = "CredentialSignInHandler";
+
     private int mAccountLinkResultCode;
     private AppCompatBase mActivity;
     private ActivityHelper mActivityHelper;
@@ -66,13 +67,8 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                             mActivityHelper.getFlowParams(),
                             firebaseUser,
                             null /* password */,
-                            mResponse.getProviderType()), "test")
+                            mResponse.getProviderType()), TAG)
                     .commit();
-//            SmartLock.saveCredentialOrFinish(mActivity,
-//                                             mActivityHelper.getFlowParams(),
-//                                             firebaseUser,
-//                                             null /* password */,
-//                                             mResponse.getProviderType());
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 final String email = mResponse.getEmail();
