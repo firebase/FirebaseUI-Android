@@ -21,7 +21,7 @@ import android.support.annotation.Nullable;
 import com.firebase.ui.auth.ui.ExtraConstants;
 
 /**
- * The result of authenticating with an Identity Provider.
+ * A container that encapsulates the result of authenticating with an Identity Provider.
  */
 public class IdpResponse implements Parcelable {
 
@@ -65,20 +65,32 @@ public class IdpResponse implements Parcelable {
         }
     };
 
+    /**
+     * Get the type of provider. e.g. {@link AuthUI#GOOGLE_PROVIDER}
+     */
     public String getProviderType() {
         return mProviderId;
     }
 
+    /**
+     * Get the token received as a result of logging in with the specified IDP
+     */
     @Nullable
     public String getIdpToken() {
         return mToken;
     }
 
+    /**
+     * Twitter only. Return the token secret received as a result of logging in with Twitter.
+     */
     @Nullable
     public String getIdpSecret() {
         return mSecret;
     }
 
+    /**
+     * Get the email used to sign in.
+     */
     public String getEmail() {
         return mEmail;
     }
@@ -99,7 +111,7 @@ public class IdpResponse implements Parcelable {
     /**
      * Extract the {@link IdpResponse} from the flow's result intent.
      * @param resultIntent The intent which {@code onActivityResult} was called with.
-     * @return
+     * @return The IdpResponse containing the token(s) from signing in with the Idp
      */
     @Nullable
     public static IdpResponse fromResultIntent(Intent resultIntent) {

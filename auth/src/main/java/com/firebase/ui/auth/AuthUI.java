@@ -26,7 +26,6 @@ import android.support.annotation.StyleRes;
 import android.support.annotation.VisibleForTesting;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
-import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ChooseAccountActivity;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;

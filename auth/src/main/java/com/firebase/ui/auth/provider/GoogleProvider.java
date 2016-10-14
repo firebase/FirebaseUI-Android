@@ -98,8 +98,7 @@ public class GoogleProvider implements
 
 
     public static AuthCredential createAuthCredential(IdpResponse response) {
-        return GoogleAuthProvider.getCredential(
-                response.getIdpToken(), null);
+        return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
     }
 
     @Override

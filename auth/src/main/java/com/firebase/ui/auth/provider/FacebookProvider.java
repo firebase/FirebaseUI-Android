@@ -144,8 +144,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         return new IdpResponse(
                 FacebookAuthProvider.PROVIDER_ID,
                 email,
-                loginResult.getAccessToken().getToken(),
-                null);
+                loginResult.getAccessToken().getToken());
     }
 
     public static AuthCredential createAuthCredential(IdpResponse response) {

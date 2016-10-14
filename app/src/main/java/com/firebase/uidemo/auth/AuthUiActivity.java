@@ -34,7 +34,6 @@ import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.uidemo.R;
 import com.google.android.gms.common.Scopes;
@@ -221,9 +220,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            startActivity(SignedInActivity.createIntent(
-                    this,
-                    IdpResponse.fromResultIntent(data)));
+            startActivity(SignedInActivity.createIntent(this, IdpResponse.fromResultIntent(data)));
             finish();
             return;
         }

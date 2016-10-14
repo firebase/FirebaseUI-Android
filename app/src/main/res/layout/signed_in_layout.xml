@@ -92,7 +92,6 @@
             </LinearLayout>
         </LinearLayout>
 
-
         <LinearLayout
           android:id="@+id/idp_token_layout"
           android:layout_height="wrap_content"
