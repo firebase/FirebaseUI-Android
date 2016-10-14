@@ -89,8 +89,7 @@ public class RegisterEmailActivityTest {
         assertEquals(
                 passwordLayout.getError().toString(),
                 String.format(registerEmailActivity.getString(R.string.password_length),
-                              registerEmailActivity.getResources().getInteger(
-                                      R.integer.min_password_length)));
+                              registerEmailActivity.getResources().getInteger(R.integer.min_password_length)));
     }
 
     @Test
@@ -114,17 +113,15 @@ public class RegisterEmailActivityTest {
                      .createUserWithEmailAndPassword(
                              TestConstants.EMAIL,
                              TestConstants.PASSWORD))
-                .thenReturn(new AutoCompleteTask<>(
-                        new FakeAuthResult(mockFirebaseUser),
-                        true,
-                        null));
+                .thenReturn(new AutoCompleteTask<>(new FakeAuthResult(mockFirebaseUser),
+                                                   true,
+                                                   null));
 
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
         Intent smartLockIntent = SmartLock.getInstance(registerEmailActivity).getIntentForTest();
-
         assertNotNull(smartLockIntent);
         assertEquals(
                 TestConstants.EMAIL,

@@ -146,9 +146,8 @@ public class AuthMethodPickerActivityTest {
         assertNotNull(facebookButton);
         facebookButton.performClick();
 
-        ShadowActivity.IntentForResult nextIntent =
-                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
-//        verifySaveCredentialIntent(nextIntent, FacebookAuthProvider.PROVIDER_ID);
+        Intent smartLockIntent = SmartLock.getInstance(authMethodPickerActivity).getIntentForTest();
+        verifySaveCredentialIntent(smartLockIntent, FacebookAuthProvider.PROVIDER_ID);
     }
 
     @Test
@@ -175,9 +174,7 @@ public class AuthMethodPickerActivityTest {
         verifySaveCredentialIntent(smartLockIntent, GoogleAuthProvider.PROVIDER_ID);
     }
 
-    private static void verifySaveCredentialIntent(
-            Intent smartLockIntent,
-            String provider) {
+    private static void verifySaveCredentialIntent(Intent smartLockIntent, String provider) {
         assertEquals(
                 smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL),
                 TestConstants.EMAIL);

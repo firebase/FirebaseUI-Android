@@ -121,7 +121,6 @@ public class SignInActivityTest {
                 TestConstants.PASSWORD);
 
         Intent intent = SmartLock.getInstance(signInActivity).getIntentForTest();
-
         assertEquals(
                 TestConstants.EMAIL,
                 intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL)
