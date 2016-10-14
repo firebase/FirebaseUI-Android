@@ -69,7 +69,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             if (mProviderId.equals(idpConfig.getProviderId())) {
                 switch (mProviderId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new GoogleProvider(this, getEmailFromIntent(), idpConfig);
+                        mIdpProvider = new GoogleProvider(this, idpConfig, getEmailFromIntent());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         mIdpProvider = new FacebookProvider(this, idpConfig);

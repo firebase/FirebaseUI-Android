@@ -91,7 +91,7 @@ public class AuthMethodPickerActivity
                     mIdpProviders.add(new FacebookProvider(this, idpConfig));
                     break;
                 case AuthUI.GOOGLE_PROVIDER:
-                    mIdpProviders.add(new GoogleProvider(this, null, idpConfig));
+                    mIdpProviders.add(new GoogleProvider(this, idpConfig));
                     break;
                 case AuthUI.EMAIL_PROVIDER:
                     findViewById(R.id.email_provider).setVisibility(View.VISIBLE);

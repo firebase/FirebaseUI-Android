@@ -26,6 +26,7 @@ import android.support.annotation.StyleRes;
 import android.support.annotation.VisibleForTesting;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ChooseAccountActivity;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
@@ -42,8 +43,12 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -229,22 +234,22 @@ public class AuthUI {
      * Provider identifier for email and password credentials, for use with
      * {@link SignInIntentBuilder#setProviders}.
      */
-    public static final String EMAIL_PROVIDER = "email";
+    public static final String EMAIL_PROVIDER = EmailAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Google, for use with {@link SignInIntentBuilder#setProviders}.
      */
-    public static final String GOOGLE_PROVIDER = "google";
+    public static final String GOOGLE_PROVIDER = GoogleAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Facebook, for use with {@link SignInIntentBuilder#setProviders}.
      */
-    public static final String FACEBOOK_PROVIDER = "facebook";
+    public static final String FACEBOOK_PROVIDER = FacebookAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setProviders}.
      */
-    public static final String TWITTER_PROVIDER = "twitter";
+    public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
     /**
      * Default value for logo resource, omits the logo from the
@@ -464,7 +469,7 @@ public class AuthUI {
 
         public static class Builder {
             private String mProviderId;
-            private List<String> mScopes;
+            private List<String> mScopes = new ArrayList<>();
 
 
             /**
@@ -561,12 +566,14 @@ public class AuthUI {
          * @see IdpConfig
          */
         public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
+            mProviders.clear();
             Set<String> configuredProviders = new HashSet<>();
             for (IdpConfig idpConfig : idpConfigs) {
                 if (configuredProviders.contains(idpConfig.getProviderId())) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
                             + idpConfig.getProviderId() + " was set twice.");
                 }
+                configuredProviders.add(idpConfig.getProviderId());
                 mProviders.add(idpConfig);
             }
             return this;

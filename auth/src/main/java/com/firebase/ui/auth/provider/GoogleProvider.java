@@ -52,7 +52,11 @@ public class GoogleProvider implements
     private Activity mActivity;
     private IDPCallback mIDPCallback;
 
-    public GoogleProvider(FragmentActivity activity, @Nullable String email, IdpConfig idpConfig) {
+    public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig) {
+        this(activity, idpConfig, null);
+    }
+
+    public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig, @Nullable String email) {
         mActivity = activity;
         String mClientId = activity.getString(R.string.default_web_client_id);
         GoogleSignInOptions googleSignInOptions;
