@@ -75,7 +75,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     Class<VH> mViewHolderClass;
     FirebaseArray mSnapshots;
 
-    FirebaseRecyclerAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, FirebaseArray snapshots) {
+    FirebaseRecyclerAdapter(Class<T> modelClass,
+                            int modelLayout,
+                            Class<VH> viewHolderClass,
+                            FirebaseArray snapshots) {
         mModelClass = modelClass;
         mModelLayout = modelLayout;
         mViewHolderClass = viewHolderClass;
@@ -117,7 +120,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * @param ref             The Firebase location to watch for data changes. Can also be a slice of a location, using some
      *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
-    public FirebaseRecyclerAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, Query ref) {
+    public FirebaseRecyclerAdapter(Class<T> modelClass,
+                                   int modelLayout,
+                                   Class<VH> viewHolderClass,
+                                   Query ref) {
         this(modelClass, modelLayout, viewHolderClass, new FirebaseArray(ref));
     }
 
@@ -129,7 +135,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * @param ref             The Firebase location to watch for data changes. Can also be a slice of a location, using some
      *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
-    public FirebaseRecyclerAdapter(Class<T> modelClass, int modelLayout, Class<VH> viewHolderClass, DatabaseReference ref) {
+    public FirebaseRecyclerAdapter(Class<T> modelClass,
+                                   int modelLayout,
+                                   Class<VH> viewHolderClass,
+                                   DatabaseReference ref) {
         this(modelClass, modelLayout, viewHolderClass, new FirebaseArray(ref));
     }
 
@@ -199,10 +208,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * This method will be triggered in the event that this listener either failed at the server,
      * or is removed as a result of the security and Firebase Database rules.
      *
-     * @param databaseError A description of the error that occurred
+     * @param error A description of the error that occurred
      */
-    protected void onCancelled(DatabaseError databaseError) {
-        Log.w(TAG, databaseError.toException());
+    protected void onCancelled(DatabaseError error) {
+        Log.w(TAG, error.toException());
     }
 
     /**

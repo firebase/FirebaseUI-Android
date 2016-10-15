@@ -101,8 +101,8 @@ class FirebaseArray implements ChildEventListener {
     }
 
     @Override
-    public void onCancelled(DatabaseError databaseError) {
-        notifyCancelledListeners(databaseError);
+    public void onCancelled(DatabaseError error) {
+        notifyCancelledListeners(error);
     }
 
     public void setOnChangedListener(OnChangedListener listener) {

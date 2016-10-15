@@ -55,7 +55,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     protected Activity mActivity;
     FirebaseArray mSnapshots;
 
-    FirebaseListAdapter(Activity activity, Class<T> modelClass, int modelLayout, FirebaseArray snapshots) {
+    FirebaseListAdapter(Activity activity,
+                        Class<T> modelClass,
+                        int modelLayout,
+                        FirebaseArray snapshots) {
         mModelClass = modelClass;
         mLayout = modelLayout;
         mActivity = activity;
@@ -82,7 +85,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * @param ref         The Firebase location to watch for data changes. Can also be a slice of a location, using some
      *                    combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
-    public FirebaseListAdapter(Activity activity, Class<T> modelClass, int modelLayout, Query ref) {
+    public FirebaseListAdapter(Activity activity,
+                               Class<T> modelClass,
+                               int modelLayout,
+                               Query ref) {
         this(activity, modelClass, modelLayout, new FirebaseArray(ref));
     }
 
@@ -94,7 +100,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * @param ref         The Firebase location to watch for data changes. Can also be a slice of a location, using some
      *                    combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
-    public FirebaseListAdapter(Activity activity, Class<T> modelClass, int modelLayout, DatabaseReference ref) {
+    public FirebaseListAdapter(Activity activity,
+                               Class<T> modelClass,
+                               int modelLayout,
+                               DatabaseReference ref) {
         this(activity, modelClass, modelLayout, new FirebaseArray(ref));
     }
 
@@ -150,10 +159,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * This method will be triggered in the event that this listener either failed at the server,
      * or is removed as a result of the security and Firebase Database rules.
      *
-     * @param databaseError A description of the error that occurred
+     * @param error A description of the error that occurred
      */
-    protected void onCancelled(DatabaseError databaseError) {
-        Log.w(TAG, databaseError.toException());
+    protected void onCancelled(DatabaseError error) {
+        Log.w(TAG, error.toException());
     }
 
     /**

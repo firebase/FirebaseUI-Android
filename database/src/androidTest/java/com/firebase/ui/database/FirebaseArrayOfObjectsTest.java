@@ -82,7 +82,7 @@ public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
                     @Override
                     public void run() {
                         for (int i = 1; i <= 3; i++) {
-                            mRef.push().setValue(new Bean(i, "Text " + i, i % 2 == 0 ? true : false), i);
+                            mRef.push().setValue(new Bean(i, "Text " + i, i % 2 == 0), i);
                         }
                     }
                 }, new Callable<Boolean>() {
