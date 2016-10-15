@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.idp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
@@ -33,9 +34,9 @@ import com.firebase.ui.auth.test_helpers.LoginManagerShadow;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.util.SmartLock;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -156,6 +157,7 @@ public class AuthMethodPickerActivityTest {
         List<String> providers = Arrays.asList(AuthUI.GOOGLE_PROVIDER);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
+        TestHelper.initializeApp(authMethodPickerActivity);
 
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
         when(mockFirebaseUser.getProviders())
@@ -169,9 +171,10 @@ public class AuthMethodPickerActivityTest {
 
         assertNotNull(googleButton);
         googleButton.performClick();
-        Intent smartLockIntent = SmartLock.getInstance(authMethodPickerActivity).getIntentForTest();
 
-        verifySaveCredentialIntent(smartLockIntent, GoogleAuthProvider.PROVIDER_ID);
+        assertEquals(
+                Shadows.shadowOf(authMethodPickerActivity).getResultCode(),
+                Activity.RESULT_OK);
     }
 
     private static void verifySaveCredentialIntent(Intent smartLockIntent, String provider) {

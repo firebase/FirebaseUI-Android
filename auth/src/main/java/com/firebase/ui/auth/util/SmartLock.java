@@ -28,7 +28,6 @@ import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -51,7 +50,6 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     private static final int RC_UPDATE_SERVICE = 28;
 
     private AppCompatBase mActivity;
-    private FlowParameters mFlowParameters;
     private String mName;
     private String mEmail;
     private String mPassword;
@@ -63,7 +61,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     public void onConnected(@Nullable Bundle bundle) {
         if (mEmail == null) {
             Log.e(TAG, "Unable to save null credential!");
-            mActivity.finish(RESULT_OK, mActivity.getIntent());
+            finish();
             return;
         }
 
@@ -105,7 +103,6 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
         }
     }
 
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         if (BuildConfig.DEBUG) {
@@ -128,7 +125,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                                        null);
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
-            mActivity.finish(RESULT_OK, mActivity.getIntent());
+            finish();
         }
     }
 
@@ -136,7 +133,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     @Override
     public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
-            mActivity.finish(RESULT_OK, mActivity.getIntent());
+            finish();
         } else {
             if (status.hasResolution()) {
                 // Try to resolve the save request. This will prompt the user if
@@ -146,10 +143,10 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
-                    mActivity.finish(RESULT_OK, mActivity.getIntent());
+                    finish();
                 }
             } else {
-                mActivity.finish(RESULT_OK, mActivity.getIntent());
+                finish();
             }
         }
     }
@@ -163,10 +160,10 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "SAVE: OK");
                 }
-                mActivity.finish(RESULT_OK, new Intent());
+                finish();
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                mActivity.finish(RESULT_OK, new Intent());
+                finish();
             }
         } else if (requestCode == RC_UPDATE_SERVICE) {
             if (resultCode == RESULT_OK) {
@@ -177,9 +174,16 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                         .setResultCallback(this);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                mActivity.finish(RESULT_OK, new Intent());
+                finish();
             }
         }
+    }
+
+    private void finish() {
+        // For tests
+        mActivity.setResult(RESULT_OK);
+
+        mActivity.finish(RESULT_OK, mActivity.getIntent());
     }
 
     /**
@@ -197,7 +201,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
-        mFlowParameters = parameters;
+        mActivity = activity;
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
@@ -207,39 +211,28 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
 
         // If SmartLock is disabled, finish the Activity
         if (!parameters.smartLockEnabled) {
-            activity.finish(RESULT_OK, activity.getIntent());
+            finish();
             return;
         }
 
         // If Play Services is not available, finish the Activity
         if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
-            activity.finish(RESULT_OK, activity.getIntent());
+            finish();
             return;
         }
 
         if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
                 .isPlayServicesAvailable(activity)) {
-            activity.finish(RESULT_OK, activity.getIntent());
+            finish();
             return;
         }
 
-        mActivity = activity;
         mCredentialsApiClient = new GoogleApiClient.Builder(activity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
                 .enableAutoManage(activity, this)
                 .build();
-    }
-
-    public Intent getIntentForTest() {
-        return new Intent()
-                .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS, mFlowParameters)
-                .putExtra(ExtraConstants.EXTRA_NAME, mName)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, mEmail)
-                .putExtra(ExtraConstants.EXTRA_PASSWORD, mPassword)
-                .putExtra(ExtraConstants.EXTRA_PROVIDER, mProvider)
-                .putExtra(ExtraConstants.EXTRA_PROFILE_PICTURE_URI, mProfilePictureUri);
     }
 
     public static SmartLock getInstance(AppCompatBase activity) {
