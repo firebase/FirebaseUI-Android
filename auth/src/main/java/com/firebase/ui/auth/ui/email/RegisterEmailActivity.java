@@ -39,7 +39,7 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,7 +58,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "RegisterEmailActivity";
 
-    private SmartLock mSmartLock;
+    private SaveSmartLock mSmartLock;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mNameEditText;
@@ -71,7 +71,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_email_layout);
 
-        mSmartLock = SmartLock.getInstance(this);
+        mSmartLock = SaveSmartLock.getInstance(this);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);
@@ -161,7 +161,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // the credential to SmartLock (if enabled).
                                         mSmartLock.saveCredentialsOrFinish(
                                                 RegisterEmailActivity.this,
-                                                mActivityHelper.getFlowParams(),
+                                                mActivityHelper,
                                                 firebaseUser,
                                                 password,
                                                 null /* provider */);

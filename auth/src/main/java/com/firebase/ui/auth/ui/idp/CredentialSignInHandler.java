@@ -23,7 +23,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,14 +40,14 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
 
     private AppCompatBase mActivity;
     private ActivityHelper mActivityHelper;
-    private SmartLock mSmartLock;
+    private SaveSmartLock mSmartLock;
     private int mAccountLinkResultCode;
     private IDPResponse mResponse;
 
     public CredentialSignInHandler(
             AppCompatBase activity,
             ActivityHelper activityHelper,
-            SmartLock smartLock,
+            SaveSmartLock smartLock,
             int accountLinkResultCode,
             IDPResponse response) {
         mActivity = activity;
@@ -63,7 +63,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             FirebaseUser firebaseUser = task.getResult().getUser();
             mSmartLock.saveCredentialsOrFinish(
                     mActivity,
-                    mActivityHelper.getFlowParams(),
+                    mActivityHelper,
                     firebaseUser,
                     null /* password */,
                     mResponse.getProviderType());

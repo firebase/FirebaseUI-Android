@@ -37,7 +37,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
@@ -56,14 +56,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
     private IDPResponse mIdpResponse;
-    private SmartLock mSmartLock;
+    private SaveSmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_back_password_prompt_layout);
 
-        mSmartLock = SmartLock.getInstance(this);
+        mSmartLock = SaveSmartLock.getInstance(this);
 
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
@@ -134,7 +134,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                             public void onSuccess(AuthResult authResult) {
                                                 mSmartLock.saveCredentialsOrFinish(
                                                         WelcomeBackPasswordPrompt.this,
-                                                        mActivityHelper.getFlowParams(),
+                                                        mActivityHelper,
                                                         authResult.getUser(),
                                                         password,
                                                         null /* provider */);

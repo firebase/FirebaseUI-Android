@@ -35,7 +35,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.EmailFlowUtil;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -62,7 +62,7 @@ public class AuthMethodPickerActivity
     private static final int RC_ACCOUNT_LINK = 3;
     private static final String TAG = "AuthMethodPicker";
 
-    private SmartLock mSmartLock;
+    private SaveSmartLock mSmartLock;
     private ArrayList<IDPProvider> mIdpProviders;
 
     @Override
@@ -70,7 +70,7 @@ public class AuthMethodPickerActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
 
-        mSmartLock = SmartLock.getInstance(this);
+        mSmartLock = SaveSmartLock.getInstance(this);
 
         findViewById(R.id.email_provider).setOnClickListener(this);
 
