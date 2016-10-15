@@ -27,6 +27,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.android.gms.auth.api.Auth;
@@ -50,6 +51,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     private static final int RC_UPDATE_SERVICE = 28;
 
     private AppCompatBase mActivity;
+    private ActivityHelper mActivityHelper;
     private String mName;
     private String mEmail;
     private String mPassword;
@@ -91,7 +93,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
             builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
         }
 
-        Auth.CredentialsApi
+        mActivityHelper.getCredentialsApi()
                 .save(mCredentialsApiClient, builder.build())
                 .setResultCallback(this);
     }
@@ -169,7 +171,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
             if (resultCode == RESULT_OK) {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
                         .build();
-                Auth.CredentialsApi
+                mActivityHelper.getCredentialsApi()
                         .save(mCredentialsApiClient, credential)
                         .setResultCallback(this);
             } else {
@@ -197,11 +199,13 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
      * @param provider     (optional) provider string for provider credential.
      */
     public void saveCredentialsOrFinish(AppCompatBase activity,
+                                        ActivityHelper helper,
                                         FlowParameters parameters,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
         mActivity = activity;
+        mActivityHelper = helper;
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
