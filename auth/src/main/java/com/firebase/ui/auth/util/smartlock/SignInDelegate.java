@@ -82,8 +82,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                                                    new DialogInterface.OnCancelListener() {
                                                        @Override
                                                        public void onCancel(DialogInterface dialogInterface) {
-                                                           Log.w(TAG,
-                                                                 "playServices:dialog.onCancel()");
+                                                           Log.w(TAG, "playServices:dialog.onCancel()");
                                                            finish(RESULT_CANCELED, new Intent());
                                                        }
                                                    });

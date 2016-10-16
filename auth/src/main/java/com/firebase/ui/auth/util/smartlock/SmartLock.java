@@ -15,7 +15,7 @@ public abstract class SmartLock<R extends Result> extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
         ResultCallback<R>,
         GoogleApiClient.OnConnectionFailedListener {
-    private static final String TAG = "SmartLock";
+    private static final String TAG = "SmartLockBase";
 
     @Override
     public void onConnectionSuspended(int i) {
