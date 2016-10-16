@@ -72,6 +72,7 @@ public class SignInDelegate extends Fragment implements
     private FlowParameters mFlowParams;
     private AuthUI.AuthUIResult mAuthUIResult;
 
+    // TODO: 10/15/2016 make SmartLock and inherit both again if green light from firui
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
