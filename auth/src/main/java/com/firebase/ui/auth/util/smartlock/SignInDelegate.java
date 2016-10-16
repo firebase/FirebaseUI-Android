@@ -65,9 +65,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     private AuthUI.AuthUIResult mAuthUIResult;
     private FlowParameters mFlowParams;
     private ProgressDialog mProgressDialog;
-
     private GoogleApiClient mGoogleApiClient;
-    private CredentialRequestResult mCredentialRequestResult;
     private Credential mCredential;
 
     @Override
@@ -82,7 +80,8 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                                                    new DialogInterface.OnCancelListener() {
                                                        @Override
                                                        public void onCancel(DialogInterface dialogInterface) {
-                                                           Log.w(TAG, "playServices:dialog.onCancel()");
+                                                           Log.w(TAG,
+                                                                 "playServices:dialog.onCancel()");
                                                            finish(RESULT_CANCELED, new Intent());
                                                        }
                                                    });
@@ -113,24 +112,14 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
     @Override
     public void onResult(@NonNull CredentialRequestResult result) {
-        mCredentialRequestResult = result;
         Status status = result.getStatus();
 
         if (status.isSuccess()) {
             // Auto sign-in success
             handleCredential(result.getCredential());
-            delegateSignIn(true);
-        } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-            delegateSignIn(false);
-        }
-    }
+            String email = getEmailFromCredential();
+            String password = getPasswordFromCredential();
 
-    private void delegateSignIn(boolean isAutoSignInAvailable) {
-        String email = getEmailFromCredential();
-        String password = getPasswordFromCredential();
-
-        // Attempt auto-sign in using SmartLock
-        if (isAutoSignInAvailable) {
             if (TextUtils.isEmpty(password)) {
                 // log in with id/provider
                 redirectToIdpSignIn(email, getAccountTypeFromCredential());
@@ -138,11 +127,21 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 // Sign in with the email/password retrieved from SmartLock
                 signInWithEmailAndPassword(email, password);
             }
-        } else {
-            // resolve credential
-            resolveSavedEmails();
+        } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+            hideProgress();
+            // resolve saved emails
+            try {
+                startIntentSenderForResult(status.getResolution().getIntentSender(),
+                                           RC_CREDENTIALS_READ,
+                                           null,
+                                           0,
+                                           0,
+                                           0,
+                                           null);
+            } catch (IntentSender.SendIntentException e) {
+                Log.e(TAG, "Failed to send Credentials intent.", e);
+            }
         }
-        hideProgress();
     }
 
     @Override
@@ -250,26 +249,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
                 .build();
         mGoogleApiClient.connect();
-    }
-
-    private void resolveSavedEmails() {
-        if (mCredentialRequestResult == null || mCredentialRequestResult.getStatus() == null) {
-            return;
-        }
-        Status status = mCredentialRequestResult.getStatus();
-        if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-            try {
-                startIntentSenderForResult(status.getResolution().getIntentSender(),
-                                           RC_CREDENTIALS_READ,
-                                           null,
-                                           0,
-                                           0,
-                                           0,
-                                           null);
-            } catch (IntentSender.SendIntentException e) {
-                Log.e(TAG, "Failed to send Credentials intent.", e);
-            }
-        }
     }
 
     private void startAuthMethodChoice() {
@@ -394,6 +373,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
+        hideProgress();
         mAuthUIResult.onResult(resultCode, data);
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
