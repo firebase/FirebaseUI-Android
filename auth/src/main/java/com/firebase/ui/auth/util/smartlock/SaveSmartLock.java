@@ -25,7 +25,6 @@ import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,10 +32,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SaveSmartLock extends Fragment implements
-        GoogleApiClient.ConnectionCallbacks,
-        ResultCallback<Status>,
-        GoogleApiClient.OnConnectionFailedListener {
+public class SaveSmartLock extends SmartLock<Status> {
     private static final String TAG = "SaveSmartLock";
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;

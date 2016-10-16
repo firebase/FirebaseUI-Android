@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
@@ -34,10 +33,8 @@ import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -57,10 +54,7 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_FIRST_USER;
 import static android.app.Activity.RESULT_OK;
 
-public class SignInDelegate extends Fragment implements
-        GoogleApiClient.ConnectionCallbacks,
-        ResultCallback<CredentialRequestResult>,
-        GoogleApiClient.OnConnectionFailedListener {
+public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     private static final String TAG = "SignInDelegate";
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;
@@ -75,8 +69,6 @@ public class SignInDelegate extends Fragment implements
     private GoogleApiClient mGoogleApiClient;
     private CredentialRequestResult mCredentialRequestResult;
     private Credential mCredential;
-
-    // TODO: 10/15/2016 make SmartLock and inherit both again if green light from firui
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -159,22 +151,6 @@ public class SignInDelegate extends Fragment implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "Connection suspended with code " + i);
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "connection failed with " + connectionResult.getErrorMessage()
-                    + " and code: " + connectionResult.getErrorCode());
-        }
-        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
