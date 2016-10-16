@@ -186,8 +186,7 @@ public class SignInDelegate extends Fragment implements
             Log.d(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
         }
 
-        // TODO: 10/15/2016
-
+        // TODO: 10/15/2016 does work?
         hideProgress();
 
         switch (requestCode) {
@@ -292,7 +291,7 @@ public class SignInDelegate extends Fragment implements
         Status status = mCredentialRequestResult.getStatus();
         if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
             try {
-                // TODO check the mactcity stuff
+                // TODO check the mActivity stuff
                 status.startResolutionForResult(mActivity, RC_CREDENTIALS_READ);
             } catch (IntentSender.SendIntentException e) {
                 Log.e(TAG, "Failed to send Credentials intent.", e);
