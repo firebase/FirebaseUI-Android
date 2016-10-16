@@ -125,15 +125,18 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @OnClick(R.id.sign_in)
     public void signIn(View view) {
-        startActivityForResult(
-                AuthUI.getInstance().createSignInIntentBuilder()
-                        .setTheme(getSelectedTheme())
-                        .setLogo(getSelectedLogo())
-                        .setProviders(getSelectedProviders())
-                        .setTosUrl(getSelectedTosUrl())
-                        .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
-                        .build(),
-                RC_SIGN_IN);
+        AuthUI.getInstance().createSignInIntentBuilder()
+                .setTheme(getSelectedTheme())
+                .setLogo(getSelectedLogo())
+                .setProviders(getSelectedProviders())
+                .setTosUrl(getSelectedTosUrl())
+                .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
+                .build(this, new AuthUI.AuthUIResult() {
+                    @Override
+                    public void onResult(int resultCode, Intent data) {
+                        handleSignInResponse(resultCode, data);
+                    }
+                });
     }
 
     @Override

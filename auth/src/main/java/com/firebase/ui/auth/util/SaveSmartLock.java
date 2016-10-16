@@ -1,5 +1,6 @@
-package com.firebase.ui.auth.util.smartlock;
+package com.firebase.ui.auth.util;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.ui.ActivityHelper;
@@ -28,12 +30,44 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SaveSmartLock extends SmartLock {
+public class SaveSmartLock extends Fragment implements
+        GoogleApiClient.ConnectionCallbacks,
+        com.google.android.gms.common.api.ResultCallback<Status>,
+        GoogleApiClient.OnConnectionFailedListener {
+    private static final String TAG = "SaveSmartLock";
+    private static final int RC_SAVE = 100;
+    private static final int RC_UPDATE_SERVICE = 28;
+
+    private AppCompatBase mActivity;
+    private ActivityHelper mActivityHelper;
+    private GoogleApiClient mGoogleApiClient;
+    private String mName;
+    private String mEmail;
+    private String mPassword;
+    private String mProvider;
+    private String mProfilePictureUri;
+
+    @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
     @Override
     public void onConnected(Bundle bundle) {
         if (mEmail == null) {
             Log.e(TAG, "Unable to save null credential!");
-            finishOk();
+            finish();
             return;
         }
 
@@ -64,13 +98,24 @@ public class SaveSmartLock extends SmartLock {
         }
 
         mActivityHelper.getCredentialsApi()
-                .save(mCredentialsApiClient, builder.build())
+                .save(mGoogleApiClient, builder.build())
                 .setResultCallback(this);
     }
 
     @Override
+    public void onConnectionSuspended(int i) {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "Connection suspended with code " + i);
+        }
+    }
+
+    @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        super.onConnectionFailed(connectionResult);
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "connection failed with " + connectionResult.getErrorMessage()
+                    + " and code: " + connectionResult.getErrorCode());
+        }
+        Toast.makeText(mActivity, "An error has occurred.", Toast.LENGTH_SHORT).show();
 
         PendingIntent resolution =
                 GoogleApiAvailability
@@ -88,27 +133,28 @@ public class SaveSmartLock extends SmartLock {
                                        null);
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
-            finishOk();
+            finish();
         }
     }
 
     @Override
     public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
-            finishOk();
+            finish();
         } else {
             if (status.hasResolution()) {
                 // Try to resolve the save request. This will prompt the user if
                 // the credential is new.
                 try {
+                    // TODO force behavior to see if this works
                     status.startResolutionForResult(mActivity, RC_SAVE);
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
-                    finishOk();
+                    finish();
                 }
             } else {
-                finishOk();
+                finish();
             }
         }
     }
@@ -122,23 +168,28 @@ public class SaveSmartLock extends SmartLock {
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "SAVE: OK");
                 }
-                finishOk();
+                finish();
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finishOk();
+                finish();
             }
         } else if (requestCode == RC_UPDATE_SERVICE) {
             if (resultCode == RESULT_OK) {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
                         .build();
                 mActivityHelper.getCredentialsApi()
-                        .save(mCredentialsApiClient, credential)
+                        .save(mGoogleApiClient, credential)
                         .setResultCallback(this);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finishOk();
+                finish();
             }
         }
+    }
+
+    private void finish() {
+        mActivity.setResult(Activity.RESULT_OK, mActivity.getIntent());
+        mActivity.finish();
     }
 
     /**
@@ -156,15 +207,24 @@ public class SaveSmartLock extends SmartLock {
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
-        if (!initializeAndContinue(activity,
-                                   helper,
-                                   firebaseUser,
-                                   password,
-                                   provider)) {
+        if (!helper.getFlowParams().smartLockEnabled
+                || !PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()
+                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(helper.getFlowParams().appName)
+                .isPlayServicesAvailable(activity)) {
+            finish();
             return;
         }
 
-        mCredentialsApiClient = new GoogleApiClient.Builder(activity)
+        mActivity = activity;
+        mActivityHelper = helper;
+        mName = firebaseUser.getDisplayName();
+        mEmail = firebaseUser.getEmail();
+        mPassword = password;
+        mProvider = provider;
+        mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
+                .toString() : null;
+
+        mGoogleApiClient = new GoogleApiClient.Builder(activity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
