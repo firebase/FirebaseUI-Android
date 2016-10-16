@@ -294,7 +294,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                     RC_EMAIL_FLOW);
         } else {
             startActivityForResult(
-                    // TODO test this getcontext stuff
                     AuthMethodPickerActivity.createIntent(
                             getContext(),
                             mFlowParams),
