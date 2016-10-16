@@ -2,7 +2,6 @@ language: android
 jdk: oraclejdk8
 # See https://github.com/travis-ci/travis-ci/issues/5582
 sudo: required
-dist: trusty
 cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/gradle/caches/
