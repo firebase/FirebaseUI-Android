@@ -141,7 +141,13 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                 // Try to resolve the save request. This will prompt the user if
                 // the credential is new.
                 try {
-                    status.startResolutionForResult(mActivity, RC_SAVE);
+                    startIntentSenderForResult(status.getResolution().getIntentSender(),
+                                               RC_SAVE,
+                                               null,
+                                               0,
+                                               0,
+                                               0,
+                                               null);
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
