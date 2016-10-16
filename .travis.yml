@@ -1,6 +1,12 @@
 language: android
-jdk:
-  - oraclejdk8
+jdk: oraclejdk8
+# See https://github.com/travis-ci/travis-ci/issues/5582
+sudo: required
+dist: trusty
+cache:
+  directories:
+    - ${TRAVIS_BUILD_DIR}/gradle/caches/
+    - ${TRAVIS_BUILD_DIR}/gradle/wrapper/dists/
 android:
   components:
     - platform-tools
@@ -13,5 +19,4 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis-google-24
-script:
-  - ./gradlew clean :library:testAll :library:prepareArtifacts
+script: ./gradlew clean :library:testAll :library:prepareArtifacts
