@@ -75,10 +75,6 @@ public class SignInDelegate extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-
         // Make Google Play Services available at the correct version, if possible
         boolean madeAvailable =
                 PlayServicesHelper
@@ -112,7 +108,8 @@ public class SignInDelegate extends Fragment implements
                     .request(mGoogleApiClient,
                              new CredentialRequest.Builder()
                                      .setPasswordLoginSupported(true)
-                                     .setAccountTypes(IdentityProviders.GOOGLE).build())
+                                     .setAccountTypes(IdentityProviders.GOOGLE)
+                                     .build())
                     .setResultCallback(this);
         }
     }
@@ -121,12 +118,8 @@ public class SignInDelegate extends Fragment implements
     public void onDestroy() {
         super.onDestroy();
         if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
+            mGoogleApiClient.disconnect();
         }
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
     }
 
     @Override
@@ -141,7 +134,6 @@ public class SignInDelegate extends Fragment implements
         } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
             delegateSignIn(false, true);
         }
-        hideProgress();
     }
 
     private void delegateSignIn(boolean isAutoSignInAvailable, boolean isSignInResolutionNeeded) {
@@ -164,6 +156,11 @@ public class SignInDelegate extends Fragment implements
         } else {
             startAuthMethodChoice();
         }
+        hideProgress();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
     }
 
     @Override
@@ -276,11 +273,16 @@ public class SignInDelegate extends Fragment implements
             gsoBuilder.setAccountName(accountName);
         }
 
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+
         mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
                 .addConnectionCallbacks(this)
                 .addApi(Auth.CREDENTIALS_API)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
                 .build();
+        mGoogleApiClient.connect();
     }
 
     private void resolveSavedEmails() {

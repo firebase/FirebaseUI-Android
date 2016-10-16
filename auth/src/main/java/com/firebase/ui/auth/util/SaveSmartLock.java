@@ -23,6 +23,7 @@ import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,7 +33,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class SaveSmartLock extends Fragment implements
         GoogleApiClient.ConnectionCallbacks,
-        com.google.android.gms.common.api.ResultCallback<Status>,
+        ResultCallback<Status>,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "SaveSmartLock";
     private static final int RC_SAVE = 100;
@@ -46,22 +47,6 @@ public class SaveSmartLock extends Fragment implements
     private String mPassword;
     private String mProvider;
     private String mProfilePictureUri;
-
-    @Override
-    public void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -146,8 +131,13 @@ public class SaveSmartLock extends Fragment implements
                 // Try to resolve the save request. This will prompt the user if
                 // the credential is new.
                 try {
-                    // TODO force behavior to see if this works
-                    status.startResolutionForResult(mActivity, RC_SAVE);
+                    startIntentSenderForResult(status.getResolution().getIntentSender(),
+                                               RC_SAVE,
+                                               null,
+                                               0,
+                                               0,
+                                               0,
+                                               null);
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
