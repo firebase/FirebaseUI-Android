@@ -23,7 +23,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.util.SaveSmartLock;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

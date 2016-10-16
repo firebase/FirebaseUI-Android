@@ -139,17 +139,6 @@ public class AuthUiActivity extends AppCompatActivity {
                 });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            handleSignInResponse(resultCode, data);
-            return;
-        }
-
-        showSnackbar(R.string.unknown_response);
-    }
-
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {

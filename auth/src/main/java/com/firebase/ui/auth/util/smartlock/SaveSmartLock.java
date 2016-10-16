@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.util;
+package com.firebase.ui.auth.util.smartlock;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;

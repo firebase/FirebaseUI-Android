@@ -21,6 +21,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.support.v7.app.AppCompatActivity;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -31,7 +32,7 @@ import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.ProviderHelper;
-import com.firebase.ui.auth.util.SignInDelegate;
+import com.firebase.ui.auth.util.smartlock.SignInDelegate;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -419,12 +420,12 @@ public class AuthUI {
             return this;
         }
 
-        public void build(Activity activity, AuthUIResult result) {
+        public void build(@NonNull AppCompatActivity activity, @NonNull AuthUIResult result) {
             Context context = mApp.getApplicationContext();
             build(context, activity, result);
         }
 
-        private void build(Context context, Activity activity, AuthUIResult result) {
+        private void build(Context context, AppCompatActivity activity, AuthUIResult result) {
             List<IDPProviderParcel> providerInfo =
                     ProviderHelper.getProviderParcels(context, mProviders);
             SignInDelegate.newInstance(activity, result,

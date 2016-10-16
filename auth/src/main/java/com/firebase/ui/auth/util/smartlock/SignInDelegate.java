@@ -1,9 +1,5 @@
-package com.firebase.ui.auth.util;
+package com.firebase.ui.auth.util.smartlock;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +7,10 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,6 +23,10 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
+import com.firebase.ui.auth.util.CredentialsApiHelper;
+import com.firebase.ui.auth.util.EmailFlowUtil;
+import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -64,39 +68,40 @@ public class SignInDelegate extends Fragment implements
     private static final int RC_EMAIL_FLOW = 5;
     private static final int RC_PLAY_SERVICES = 6;
 
-    private Activity mActivity;
-    private GoogleApiClient mGoogleApiClient;
+    private AuthUI.AuthUIResult mAuthUIResult;
+    private FlowParameters mFlowParams;
     private ProgressDialog mProgressDialog;
+
+    private GoogleApiClient mGoogleApiClient;
     private CredentialRequestResult mCredentialRequestResult;
     private Credential mCredential;
-    private FlowParameters mFlowParams;
-    private AuthUI.AuthUIResult mAuthUIResult;
 
     // TODO: 10/15/2016 make SmartLock and inherit both again if green light from firui
+
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        setRetainInstance(true);
         // Make Google Play Services available at the correct version, if possible
         boolean madeAvailable =
                 PlayServicesHelper
-                        .getInstance(mActivity)
-                        .makePlayServicesAvailable(mActivity, RC_PLAY_SERVICES,
+                        .getInstance(getActivity())
+                        .makePlayServicesAvailable(getActivity(), RC_PLAY_SERVICES,
                                                    new DialogInterface.OnCancelListener() {
                                                        @Override
                                                        public void onCancel(DialogInterface dialogInterface) {
                                                            Log.w(TAG,
                                                                  "playServices:dialog.onCancel()");
-                                                           mAuthUIResult.onResult(RESULT_CANCELED,
-                                                                                  new Intent());
+                                                           finish(RESULT_CANCELED, new Intent());
                                                        }
                                                    });
 
         if (!madeAvailable
-                || !PlayServicesHelper.getInstance(mActivity).isPlayServicesAvailable()
+                || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()
                 || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mFlowParams.appName)
-                .isPlayServicesAvailable(mActivity)) {
+                .isPlayServicesAvailable(getActivity())) {
             Log.w(TAG, "playServices: could not make available.");
-            mAuthUIResult.onResult(RESULT_CANCELED, new Intent());
+            finish(RESULT_CANCELED, new Intent());
             return;
         }
 
@@ -112,14 +117,6 @@ public class SignInDelegate extends Fragment implements
                                      .setAccountTypes(IdentityProviders.GOOGLE)
                                      .build())
                     .setResultCallback(this);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
         }
     }
 
@@ -177,7 +174,7 @@ public class SignInDelegate extends Fragment implements
             Log.d(TAG, "connection failed with " + connectionResult.getErrorMessage()
                     + " and code: " + connectionResult.getErrorCode());
         }
-        Toast.makeText(mActivity, "An error has occurred.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -186,9 +183,6 @@ public class SignInDelegate extends Fragment implements
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
         }
-
-        // TODO: 10/15/2016 does work?
-        hideProgress();
 
         switch (requestCode) {
             case RC_CREDENTIALS_READ:
@@ -219,11 +213,11 @@ public class SignInDelegate extends Fragment implements
             case RC_IDP_SIGNIN:
             case RC_AUTH_METHOD_PICKER:
             case RC_EMAIL_FLOW:
-                mAuthUIResult.onResult(resultCode, new Intent());
+                finish(resultCode, new Intent());
                 break;
             case RC_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
-                    mAuthUIResult.onResult(resultCode, new Intent());
+                    finish(resultCode, new Intent());
                 }
                 break;
         }
@@ -277,7 +271,7 @@ public class SignInDelegate extends Fragment implements
             mGoogleApiClient.disconnect();
         }
 
-        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
                 .addApi(Auth.CREDENTIALS_API)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
@@ -292,8 +286,13 @@ public class SignInDelegate extends Fragment implements
         Status status = mCredentialRequestResult.getStatus();
         if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
             try {
-                // TODO check the mActivity stuff
-                status.startResolutionForResult(mActivity, RC_CREDENTIALS_READ);
+                startIntentSenderForResult(status.getResolution().getIntentSender(),
+                                           RC_CREDENTIALS_READ,
+                                           null,
+                                           0,
+                                           0,
+                                           0,
+                                           null);
             } catch (IntentSender.SendIntentException e) {
                 Log.e(TAG, "Failed to send Credentials intent.", e);
             }
@@ -314,14 +313,14 @@ public class SignInDelegate extends Fragment implements
                 && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
             startActivityForResult(
                     EmailFlowUtil.createIntent(
-                            mActivity,
+                            getContext(),
                             mFlowParams),
                     RC_EMAIL_FLOW);
         } else {
             startActivityForResult(
                     // TODO test this getcontext stuff
                     AuthMethodPickerActivity.createIntent(
-                            mActivity,
+                            getContext(),
                             mFlowParams),
                     RC_AUTH_METHOD_PICKER);
         }
@@ -341,7 +340,7 @@ public class SignInDelegate extends Fragment implements
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        mAuthUIResult.onResult(RESULT_OK, new Intent());
+                        finish(RESULT_OK, new Intent());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -364,14 +363,14 @@ public class SignInDelegate extends Fragment implements
         switch (accountType) {
             case IdentityProviders.GOOGLE:
                 nextIntent = IDPSignInContainerActivity.createIntent(
-                        mActivity,
+                        getContext(),
                         mFlowParams,
                         GoogleAuthProvider.PROVIDER_ID,
                         email);
                 break;
             case IdentityProviders.FACEBOOK:
                 nextIntent = IDPSignInContainerActivity.createIntent(
-                        mActivity,
+                        getContext(),
                         mFlowParams,
                         FacebookAuthProvider.PROVIDER_ID,
                         email);
@@ -379,7 +378,7 @@ public class SignInDelegate extends Fragment implements
             default:
                 Log.w(TAG, "unknown provider: " + accountType);
                 nextIntent = AuthMethodPickerActivity.createIntent(
-                        mActivity,
+                        getContext(),
                         mFlowParams);
         }
         this.startActivityForResult(nextIntent, RC_IDP_SIGNIN);
@@ -396,9 +395,9 @@ public class SignInDelegate extends Fragment implements
             return;
         }
 
-        CredentialsApiHelper credentialsApiHelper = CredentialsApiHelper.getInstance(mActivity);
+        CredentialsApiHelper credentialsApiHelper = CredentialsApiHelper.getInstance(getActivity());
         credentialsApiHelper.delete(mCredential)
-                .addOnCompleteListener(mActivity, new OnCompleteListener<Status>() {
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<Status>() {
                     @Override
                     public void onComplete(@NonNull Task<Status> task) {
                         if (!task.isSuccessful()) {
@@ -411,10 +410,9 @@ public class SignInDelegate extends Fragment implements
 
     private void showProgress() {
         if (mProgressDialog == null || !mProgressDialog.isShowing()) {
-            mProgressDialog = new ProgressDialog(mActivity);
+            mProgressDialog = new ProgressDialog(getActivity());
             mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setMessage(
-                    mActivity.getString(R.string.progress_dialog_loading));
+            mProgressDialog.setMessage(getString(R.string.progress_dialog_loading));
         }
         mProgressDialog.show();
     }
@@ -425,19 +423,26 @@ public class SignInDelegate extends Fragment implements
         }
     }
 
-    public static SignInDelegate newInstance(Activity activity,
+    private void finish(int resultCode, Intent data) {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+        mAuthUIResult.onResult(resultCode, data);
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+    }
+
+    public static SignInDelegate newInstance(AppCompatActivity activity,
                                              AuthUI.AuthUIResult authUIResult,
                                              FlowParameters parameters) {
         SignInDelegate result;
 
-        FragmentManager fm = activity.getFragmentManager();
+        FragmentManager fm = activity.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
         Fragment fragment = fm.findFragmentByTag(TAG);
         if (fragment == null || !(fragment instanceof SignInDelegate)) {
             result = new SignInDelegate();
 
-            result.mActivity = activity;
             result.mAuthUIResult = authUIResult;
             result.mFlowParams = parameters;
 

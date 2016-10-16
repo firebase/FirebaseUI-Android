@@ -37,7 +37,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
-import com.firebase.ui.auth.util.SaveSmartLock;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
