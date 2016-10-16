@@ -73,78 +73,6 @@ public class SignInDelegate extends Fragment implements
     private AuthUI.AuthUIResult mAuthUIResult;
 
     @Override
-    public void onConnectionSuspended(int i) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "Connection suspended with code " + i);
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "connection failed with " + connectionResult.getErrorMessage()
-                    + " and code: " + connectionResult.getErrorCode());
-        }
-        Toast.makeText(mActivity, "An error has occurred.", Toast.LENGTH_SHORT).show();
-    }
-
-    private void initGoogleApiClient(String accountName) {
-        GoogleSignInOptions.Builder gsoBuilder = new GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail();
-
-        if (accountName != null) {
-            gsoBuilder.setAccountName(accountName);
-        }
-
-        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
-                .addConnectionCallbacks(this)
-                .addApi(Auth.CREDENTIALS_API)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
-                .build();
-    }
-
-    private void showProgress() {
-        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
-            mProgressDialog = new ProgressDialog(mActivity);
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setMessage(
-                    mActivity.getString(R.string.progress_dialog_loading));
-        }
-        mProgressDialog.show();
-    }
-
-    private void hideProgress() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-    }
-
-    public static SignInDelegate newInstance(Activity activity,
-                                             AuthUI.AuthUIResult authUIResult,
-                                             FlowParameters parameters) {
-        SignInDelegate result;
-
-        FragmentManager fm = activity.getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        Fragment fragment = fm.findFragmentByTag(TAG);
-        if (fragment == null || !(fragment instanceof SignInDelegate)) {
-            result = new SignInDelegate();
-
-            result.mActivity = activity;
-            result.mAuthUIResult = authUIResult;
-            result.mFlowParams = parameters;
-
-            ft.add(result, TAG).disallowAddToBackStack().commit();
-        } else {
-            result = (SignInDelegate) fragment;
-        }
-
-        return result;
-    }
-
-    @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
@@ -197,62 +125,6 @@ public class SignInDelegate extends Fragment implements
         }
     }
 
-    private void logInWithCredential(
-            String email,
-            String password,
-            String accountType) {
-        if (email != null) {
-            if (password != null && !password.isEmpty()) {
-                // email/password combination
-                signInWithEmailAndPassword(email, password);
-            } else {
-                // identifier/provider combination
-                redirectToIdpSignIn(email, accountType);
-            }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
-        }
-
-        // TODO: 10/15/2016
-
-        hideProgress();
-
-        switch (requestCode) {
-            case RC_CREDENTIALS_READ:
-                if (resultCode == RESULT_OK) {
-                    // credential selected from SmartLock, log in with that credential
-                    Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
-                    handleCredential(credential);
-                    logInWithCredential(getEmailFromCredential(),
-                                        getPasswordFromCredential(),
-                                        getAccountTypeFromCredential());
-                } else if (resultCode == RESULT_CANCELED
-                        || resultCode == CredentialsApi.ACTIVITY_RESULT_OTHER_ACCOUNT) {
-                    // Smart lock selector cancelled, go to the AuthMethodPicker screen
-                    startAuthMethodChoice();
-                } else if (resultCode == RESULT_FIRST_USER) {
-                    // TODO: (serikb) figure out flow
-                }
-                break;
-            case RC_IDP_SIGNIN:
-            case RC_AUTH_METHOD_PICKER:
-            case RC_EMAIL_FLOW:
-                mAuthUIResult.onResult(resultCode, new Intent());
-                break;
-            case RC_PLAY_SERVICES:
-                if (resultCode != RESULT_OK) {
-                    mAuthUIResult.onResult(resultCode, new Intent());
-                }
-                break;
-        }
-    }
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
     }
@@ -294,6 +166,123 @@ public class SignInDelegate extends Fragment implements
         }
     }
 
+    @Override
+    public void onConnectionSuspended(int i) {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "Connection suspended with code " + i);
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "connection failed with " + connectionResult.getErrorMessage()
+                    + " and code: " + connectionResult.getErrorCode());
+        }
+        Toast.makeText(mActivity, "An error has occurred.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
+        }
+
+        // TODO: 10/15/2016
+
+        hideProgress();
+
+        switch (requestCode) {
+            case RC_CREDENTIALS_READ:
+                if (resultCode == RESULT_OK) {
+                    // credential selected from SmartLock, log in with that credential
+                    Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
+                    handleCredential(credential);
+
+                    String email = getEmailFromCredential();
+                    String password = getPasswordFromCredential();
+                    if (email != null) {
+                        if (password != null && !password.isEmpty()) {
+                            // email/password combination
+                            signInWithEmailAndPassword(email, password);
+                        } else {
+                            // identifier/provider combination
+                            redirectToIdpSignIn(email, getAccountTypeFromCredential());
+                        }
+                    }
+                } else if (resultCode == RESULT_CANCELED
+                        || resultCode == CredentialsApi.ACTIVITY_RESULT_OTHER_ACCOUNT) {
+                    // Smart lock selector cancelled, go to the AuthMethodPicker screen
+                    startAuthMethodChoice();
+                } else if (resultCode == RESULT_FIRST_USER) {
+                    // TODO: (serikb) figure out flow
+                }
+                break;
+            case RC_IDP_SIGNIN:
+            case RC_AUTH_METHOD_PICKER:
+            case RC_EMAIL_FLOW:
+                mAuthUIResult.onResult(resultCode, new Intent());
+                break;
+            case RC_PLAY_SERVICES:
+                if (resultCode != RESULT_OK) {
+                    mAuthUIResult.onResult(resultCode, new Intent());
+                }
+                break;
+        }
+    }
+
+    private String getEmailFromCredential() {
+        if (mCredential == null) {
+            return null;
+        }
+        return mCredential.getId();
+    }
+
+    private String getAccountTypeFromCredential() {
+        if (mCredential == null) {
+            return null;
+        }
+        return mCredential.getAccountType();
+    }
+
+    private String getPasswordFromCredential() {
+        if (mCredential == null) {
+            return null;
+        }
+        return mCredential.getPassword();
+    }
+
+    private void handleCredential(Credential credential) {
+        mCredential = credential;
+
+        if (IdentityProviders.GOOGLE.equals(credential.getAccountType())) {
+            // Google account, rebuild GoogleApiClient to set account name and then try
+            initGoogleApiClient(credential.getId());
+            googleSilentSignIn();
+        } else {
+            // Email/password account
+            String status = String.format("Signed in as %s", credential.getId());
+            Log.d(TAG, status);
+        }
+    }
+
+    private void initGoogleApiClient(String accountName) {
+        GoogleSignInOptions.Builder gsoBuilder = new GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail();
+
+        if (accountName != null) {
+            gsoBuilder.setAccountName(accountName);
+        }
+
+        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
+                .addConnectionCallbacks(this)
+                .addApi(Auth.CREDENTIALS_API)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
+                .build();
+    }
+
     private void resolveSavedEmails() {
         if (mCredentialRequestResult == null || mCredentialRequestResult.getStatus() == null) {
             return;
@@ -309,23 +298,31 @@ public class SignInDelegate extends Fragment implements
         }
     }
 
-    private void handleCredential(Credential credential) {
-        mCredential = credential;
-
-        if (IdentityProviders.GOOGLE.equals(credential.getAccountType())) {
-            // Google account, rebuild GoogleApiClient to set account name and then try
-            initGoogleApiClient(credential.getId());
-            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        } else {
-            // Email/password account
-            String status = String.format("Signed in as %s", credential.getId());
-            Log.d(TAG, status);
-        }
-    }
-
     private void googleSilentSignIn() {
         // Try silent sign-in with Google Sign In API
         Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+    }
+
+    private void startAuthMethodChoice() {
+        List<IDPProviderParcel> providers = mFlowParams.providerInfo;
+
+        // If the only provider is Email, immediately launch the email flow. Otherwise, launch
+        // the auth method picker screen.
+        if (providers.size() == 1
+                && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
+            startActivityForResult(
+                    EmailFlowUtil.createIntent(
+                            mActivity,
+                            mFlowParams),
+                    RC_EMAIL_FLOW);
+        } else {
+            startActivityForResult(
+                    // TODO test this getcontext stuff
+                    AuthMethodPickerActivity.createIntent(
+                            mActivity,
+                            mFlowParams),
+                    RC_AUTH_METHOD_PICKER);
+        }
     }
 
     /**
@@ -360,30 +357,6 @@ public class SignInDelegate extends Fragment implements
                 });
     }
 
-    /**
-     * Delete the last credential retrieved from SmartLock and then redirect to the
-     * auth method choice flow.
-     */
-    private void deleteCredentialAndRedirect() {
-        if (mCredential == null) {
-            Log.w(TAG, "deleteCredentialAndRedirect: null credential");
-            startAuthMethodChoice();
-            return;
-        }
-
-        CredentialsApiHelper credentialsApiHelper = CredentialsApiHelper.getInstance(mActivity);
-        credentialsApiHelper.delete(mCredential)
-                .addOnCompleteListener(mActivity, new OnCompleteListener<Status>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Status> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "deleteCredential:failure", task.getException());
-                        }
-                        startAuthMethodChoice();
-                    }
-                });
-    }
-
     private void redirectToIdpSignIn(String email, String accountType) {
         Intent nextIntent;
         switch (accountType) {
@@ -410,46 +383,67 @@ public class SignInDelegate extends Fragment implements
         this.startActivityForResult(nextIntent, RC_IDP_SIGNIN);
     }
 
-    private void startAuthMethodChoice() {
-        List<IDPProviderParcel> providers = mFlowParams.providerInfo;
+    /**
+     * Delete the last credential retrieved from SmartLock and then redirect to the
+     * auth method choice flow.
+     */
+    private void deleteCredentialAndRedirect() {
+        if (mCredential == null) {
+            Log.w(TAG, "deleteCredentialAndRedirect: null credential");
+            startAuthMethodChoice();
+            return;
+        }
 
-        // If the only provider is Email, immediately launch the email flow. Otherwise, launch
-        // the auth method picker screen.
-        if (providers.size() == 1
-                && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
-            startActivityForResult(
-                    EmailFlowUtil.createIntent(
-                            mActivity,
-                            mFlowParams),
-                    RC_EMAIL_FLOW);
+        CredentialsApiHelper credentialsApiHelper = CredentialsApiHelper.getInstance(mActivity);
+        credentialsApiHelper.delete(mCredential)
+                .addOnCompleteListener(mActivity, new OnCompleteListener<Status>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Status> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "deleteCredential:failure", task.getException());
+                        }
+                        startAuthMethodChoice();
+                    }
+                });
+    }
+
+    private void showProgress() {
+        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
+            mProgressDialog = new ProgressDialog(mActivity);
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setMessage(
+                    mActivity.getString(R.string.progress_dialog_loading));
+        }
+        mProgressDialog.show();
+    }
+
+    private void hideProgress() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    public static SignInDelegate newInstance(Activity activity,
+                                             AuthUI.AuthUIResult authUIResult,
+                                             FlowParameters parameters) {
+        SignInDelegate result;
+
+        FragmentManager fm = activity.getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        Fragment fragment = fm.findFragmentByTag(TAG);
+        if (fragment == null || !(fragment instanceof SignInDelegate)) {
+            result = new SignInDelegate();
+
+            result.mActivity = activity;
+            result.mAuthUIResult = authUIResult;
+            result.mFlowParams = parameters;
+
+            ft.add(result, TAG).disallowAddToBackStack().commit();
         } else {
-            startActivityForResult(
-                    // TODO test this getcontext stuff
-                    AuthMethodPickerActivity.createIntent(
-                            mActivity,
-                            mFlowParams),
-                    RC_AUTH_METHOD_PICKER);
+            result = (SignInDelegate) fragment;
         }
-    }
 
-    private String getEmailFromCredential() {
-        if (mCredential == null) {
-            return null;
-        }
-        return mCredential.getId();
-    }
-
-    private String getAccountTypeFromCredential() {
-        if (mCredential == null) {
-            return null;
-        }
-        return mCredential.getAccountType();
-    }
-
-    private String getPasswordFromCredential() {
-        if (mCredential == null) {
-            return null;
-        }
-        return mCredential.getPassword();
+        return result;
     }
 }
