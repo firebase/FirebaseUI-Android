@@ -131,7 +131,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
         // Attempt auto-sign in using SmartLock
         if (isAutoSignInAvailable) {
-            googleSilentSignIn();
             if (TextUtils.isEmpty(password)) {
                 // log in with id/provider
                 redirectToIdpSignIn(email, getAccountTypeFromCredential());
@@ -223,7 +222,8 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         if (IdentityProviders.GOOGLE.equals(credential.getAccountType())) {
             // Google account, rebuild GoogleApiClient to set account name and then try
             initGoogleApiClient(credential.getId());
-            googleSilentSignIn();
+            // Try silent sign-in with Google Sign In API
+            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         } else {
             // Email/password account
             String status = String.format("Signed in as %s", credential.getId());
@@ -270,11 +270,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 Log.e(TAG, "Failed to send Credentials intent.", e);
             }
         }
-    }
-
-    private void googleSilentSignIn() {
-        // Try silent sign-in with Google Sign In API
-        Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
     }
 
     private void startAuthMethodChoice() {
