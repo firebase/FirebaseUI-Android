@@ -96,9 +96,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
             return;
         }
 
-        if (!mFlowParams.smartLockEnabled) {
-            startAuthMethodChoice();
-        } else {
+        if (mFlowParams.smartLockEnabled) {
             showProgress();
             initGoogleApiClient(null);
             Auth.CredentialsApi
@@ -108,6 +106,8 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                                      .setAccountTypes(IdentityProviders.GOOGLE)
                                      .build())
                     .setResultCallback(this);
+        } else {
+            startAuthMethodChoice();
         }
     }
 
@@ -119,31 +119,29 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         if (status.isSuccess()) {
             // Auto sign-in success
             handleCredential(result.getCredential());
-            delegateSignIn(true, false);
+            delegateSignIn(true);
         } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-            delegateSignIn(false, true);
+            delegateSignIn(false);
         }
     }
 
-    private void delegateSignIn(boolean isAutoSignInAvailable, boolean isSignInResolutionNeeded) {
+    private void delegateSignIn(boolean isAutoSignInAvailable) {
         String email = getEmailFromCredential();
         String password = getPasswordFromCredential();
 
         // Attempt auto-sign in using SmartLock
         if (isAutoSignInAvailable) {
             googleSilentSignIn();
-            if (!TextUtils.isEmpty(password)) {
-                // Sign in with the email/password retrieved from SmartLock
-                signInWithEmailAndPassword(email, password);
-            } else {
+            if (TextUtils.isEmpty(password)) {
                 // log in with id/provider
                 redirectToIdpSignIn(email, getAccountTypeFromCredential());
+            } else {
+                // Sign in with the email/password retrieved from SmartLock
+                signInWithEmailAndPassword(email, password);
             }
-        } else if (isSignInResolutionNeeded) {
+        } else {
             // resolve credential
             resolveSavedEmails();
-        } else {
-            startAuthMethodChoice();
         }
         hideProgress();
     }
@@ -169,12 +167,12 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                     String email = getEmailFromCredential();
                     String password = getPasswordFromCredential();
                     if (email != null) {
-                        if (password != null && !password.isEmpty()) {
-                            // email/password combination
-                            signInWithEmailAndPassword(email, password);
-                        } else {
+                        if (password == null || password.isEmpty()) {
                             // identifier/provider combination
                             redirectToIdpSignIn(email, getAccountTypeFromCredential());
+                        } else {
+                            // email/password combination
+                            signInWithEmailAndPassword(email, password);
                         }
                     }
                 } else if (resultCode == RESULT_CANCELED
