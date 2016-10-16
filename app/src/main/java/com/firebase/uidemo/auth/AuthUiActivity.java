@@ -38,7 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AuthUiActivity extends AppCompatActivity {
+public class AuthUiActivity extends AppCompatActivity implements AuthUI.AuthUIResult {
 
     private static final String TAG = "AuthUIActivity";
 
@@ -131,16 +131,12 @@ public class AuthUiActivity extends AppCompatActivity {
                 .setProviders(getSelectedProviders())
                 .setTosUrl(getSelectedTosUrl())
                 .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
-                .build(this, new AuthUI.AuthUIResult() {
-                    @Override
-                    public void onResult(int resultCode, Intent data) {
-                        handleSignInResponse(resultCode, data);
-                    }
-                });
+                .build(this, this);
     }
 
     @MainThread
-    private void handleSignInResponse(int resultCode, Intent data) {
+    @Override
+    public void onResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             startActivity(SignedInActivity.createIntent(this));
             finish();
