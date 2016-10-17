@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -48,7 +49,7 @@ public class SaveSmartLock extends SmartLock<Status> {
 
     @Override
     public void onConnected(Bundle bundle) {
-        if (mEmail == null) {
+        if (TextUtils.isEmpty(mEmail)) {
             Log.e(TAG, "Unable to save null credential!");
             finish();
             return;
