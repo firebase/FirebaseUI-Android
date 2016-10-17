@@ -63,7 +63,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     private static final int RC_EMAIL_FLOW = 5;
     private static final int RC_PLAY_SERVICES = 6;
 
-    private AuthUI.AuthUIResult mAuthUIResult;
     private FlowParameters mFlowParams;
     private ProgressDialog mProgressDialog;
     private GoogleApiClient mGoogleApiClient;
@@ -72,7 +71,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        setRetainInstance(true);
+        setRetainInstance(true); // TODO: 10/16/2016 test low mem devices
 
         mFlowParams = getArguments().getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS);
 
@@ -380,13 +379,17 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
             mGoogleApiClient.disconnect();
         }
         hideProgress();
-        mAuthUIResult.onResult(resultCode, data);
+
+        try {
+            ((AuthUI.AuthUIResult) getActivity()).onResult(resultCode, data);
+        } catch (ClassCastException e) {
+            Log.e(TAG, getActivity().toString() + " AuthUI.AuthUIResult");
+        }
+
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
-    public static SignInDelegate newInstance(AppCompatActivity activity,
-                                             AuthUI.AuthUIResult authUIResult,
-                                             FlowParameters parameters) {
+    public static SignInDelegate newInstance(AppCompatActivity activity, FlowParameters parameters) {
         SignInDelegate result;
 
         FragmentManager fm = activity.getSupportFragmentManager();
@@ -399,8 +402,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
             Bundle bundle = new Bundle();
             bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, parameters);
             result.setArguments(bundle);
-
-            result.mAuthUIResult = authUIResult;
 
             ft.add(result, TAG).disallowAddToBackStack().commit();
         } else {
