@@ -327,7 +327,7 @@ public class ChooseAccountActivity extends ActivityBase {
                         email);
                 break;
             case IdentityProviders.TWITTER:
-                nextIntent = IDPSignInContainerActivity.createIntent(
+                nextIntent = IdpSignInContainerActivity.createIntent(
                         this,
                         mActivityHelper.getFlowParams(),
                         TwitterAuthProvider.PROVIDER_ID,
