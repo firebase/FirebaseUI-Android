@@ -17,9 +17,8 @@ package com.firebase.ui.auth.util;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.support.annotation.NonNull;
-
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.provider.IDPProviderParcel;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -33,7 +32,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,11 +48,11 @@ public class CredentialsApiHelper {
         mClientHelper = gacHelper;
     }
 
-    public CredentialRequest createCredentialRequest(List<IDPProviderParcel> providers) {
+    public CredentialRequest createCredentialRequest(List<IdpConfig> providers) {
         boolean emailSupported = false;
         ArrayList<String> idps = new ArrayList<>();
-        for (IDPProviderParcel provider : providers) {
-            String providerId = provider.getProviderType();
+        for (IdpConfig provider : providers) {
+            String providerId = provider.getProviderId();
             if (AuthUI.EMAIL_PROVIDER.equals(providerId)) {
                 emailSupported = true;
             } else if (AuthUI.GOOGLE_PROVIDER.equals(providerId)) {

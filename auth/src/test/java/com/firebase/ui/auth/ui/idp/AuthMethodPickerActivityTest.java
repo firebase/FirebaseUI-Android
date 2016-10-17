@@ -232,9 +232,7 @@ public class AuthMethodPickerActivityTest {
     private AuthMethodPickerActivity createActivity(List<String> providers) {
         Intent startIntent = AuthMethodPickerActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
-                        providers));
+                TestHelper.getFlowParameters(providers));
 
         return Robolectric
                 .buildActivity(AuthMethodPickerActivity.class)

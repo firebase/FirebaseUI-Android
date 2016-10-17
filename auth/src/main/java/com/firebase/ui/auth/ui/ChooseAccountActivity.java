@@ -23,8 +23,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;
@@ -45,7 +45,6 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
-
 import java.util.List;
 
 import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
@@ -175,12 +174,12 @@ public class ChooseAccountActivity extends ActivityBase {
     }
 
     private void startAuthMethodChoice(ActivityHelper activityHelper) {
-        List<IDPProviderParcel> providers = activityHelper.getFlowParams().providerInfo;
+        List<IdpConfig> idpConfigs = activityHelper.getFlowParams().providerInfo;
 
         // If the only provider is Email, immediately launch the email flow. Otherwise, launch
         // the auth method picker screen.
-        if (providers.size() == 1
-                && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
+        if (idpConfigs.size() == 1
+                && idpConfigs.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
             startActivityForResult(
                     EmailFlowUtil.createIntent(
                             this,

@@ -20,10 +20,10 @@ import android.os.Bundle;
 import com.facebook.login.LoginResult;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.provider.IDPResponse;
 import com.google.firebase.auth.FacebookAuthProvider;
 
+import java.util.List;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
@@ -51,7 +51,7 @@ public class FacebookProviderShadow {
         }
     }
 
-    public void __constructor__(Activity activity, IDPProviderParcel parcel, String email) {}
+    public void __constructor__(Activity activity, List<String> scopes) {}
 
     @Implementation
     public void setAuthenticationCallback(IDPProvider.IDPCallback idpCallback) {

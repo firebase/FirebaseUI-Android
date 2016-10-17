@@ -33,8 +33,6 @@ import static junit.framework.Assert.assertTrue;
                 FacebookProviderShadow.class
         }, sdk = 21)
 public class TwitterProviderTest {
-    private static final String FAKE_KEY = "fakeKey";
-    private static final String FAKE_SECRET = "fakeSecret";
     private static final String FAKE_AUTH_TOKEN = "fakeAuthToken";
     private static final String FAKE_AUTH_SECRET = "fakeAuthSecret";
     private static final long FAKE_USER_ID = 555;
@@ -68,9 +66,7 @@ public class TwitterProviderTest {
 
     @Test
     public void testSuccessCallsCallback() {
-        TwitterProvider twitterProvider = new TwitterProvider(
-                RuntimeEnvironment.application,
-                TwitterProvider.createTwitterParcel(FAKE_KEY, FAKE_SECRET));
+        TwitterProvider twitterProvider = new TwitterProvider(RuntimeEnvironment.application);
 
         AssertResultCallback assertResultCallback = new AssertResultCallback(true);
         twitterProvider.setAuthenticationCallback(assertResultCallback);
@@ -93,9 +89,7 @@ public class TwitterProviderTest {
 
     @Test
     public void testFailureCallsCallback() {
-        TwitterProvider twitterProvider = new TwitterProvider(
-                RuntimeEnvironment.application,
-                TwitterProvider.createTwitterParcel(FAKE_KEY, FAKE_SECRET));
+        TwitterProvider twitterProvider = new TwitterProvider(RuntimeEnvironment.application);
 
         AssertResultCallback assertResultCallback = new AssertResultCallback(false);
         twitterProvider.setAuthenticationCallback(assertResultCallback);

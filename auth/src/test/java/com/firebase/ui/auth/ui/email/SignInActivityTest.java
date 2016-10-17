@@ -64,7 +64,6 @@ public class SignInActivityTest {
         Intent startIntent = SignInActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
                         Collections.<String>emptyList()),
                 null);
         return Robolectric.buildActivity(SignInActivity.class).withIntent(startIntent)

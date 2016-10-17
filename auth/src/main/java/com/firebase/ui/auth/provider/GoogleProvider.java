@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -36,6 +37,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
+import java.util.List;
 
 public class GoogleProvider implements
         IDPProvider, OnClickListener, GoogleApiClient.OnConnectionFailedListener {
@@ -46,24 +48,33 @@ public class GoogleProvider implements
     private static final int AUTO_MANAGE_ID = 1;
     private static final int RC_SIGN_IN = 20;
     private static final String ERROR_KEY = "error";
-    private static final String CLIENT_ID_KEY = "client_id_key";
     private GoogleApiClient mGoogleApiClient;
     private Activity mActivity;
     private IDPCallback mIDPCallback;
 
-    public GoogleProvider(FragmentActivity activity, IDPProviderParcel parcel, @Nullable String email) {
+    public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig) {
+        this(activity, idpConfig, null);
+    }
+
+    public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig, @Nullable String email) {
         mActivity = activity;
-        String mClientId = parcel.getProviderExtra().getString(CLIENT_ID_KEY);
+        String mClientId = activity.getString(R.string.default_web_client_id);
         GoogleSignInOptions googleSignInOptions;
 
-        GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(GoogleSignInOptions
-                .DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestIdToken(mClientId);
+        GoogleSignInOptions.Builder builder =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .requestIdToken(mClientId);
+
+        if (activity.getResources().getIdentifier(
+                "google_permissions", "array", activity.getPackageName()) != 0){
+            Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.google_permissions but that is"
+                    + " no longer respected as of FirebaseUI 1.0.0. Please see README for IDP scope"
+                    + " configuration instructions.");
+        }
 
         // Add additional scopes
-        String[] extraScopes = mActivity.getResources().getStringArray(R.array.google_permissions);
-        for (String scopeString : extraScopes) {
+        for (String scopeString : idpConfig.getScopes()) {
             builder.requestScopes(new Scope(scopeString));
         }
 
@@ -87,11 +98,6 @@ public class GoogleProvider implements
         return GoogleAuthProvider.PROVIDER_ID;
     }
 
-    public static IDPProviderParcel createParcel(String clientId) {
-        Bundle extra = new Bundle();
-        extra.putString(CLIENT_ID_KEY, clientId);
-        return new IDPProviderParcel(GoogleAuthProvider.PROVIDER_ID, extra);
-    }
 
     public static AuthCredential createAuthCredential(IDPResponse response) {
         Bundle bundle = response.getResponse();
