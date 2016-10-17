@@ -18,6 +18,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
@@ -72,6 +73,9 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setRetainInstance(true);
+
+        mFlowParams = getArguments().getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS);
+
         // Make Google Play Services available at the correct version, if possible
         boolean madeAvailable =
                 PlayServicesHelper
@@ -390,8 +394,11 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         if (fragment == null || !(fragment instanceof SignInDelegate)) {
             result = new SignInDelegate();
 
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, parameters);
+            result.setArguments(bundle);
+
             result.mAuthUIResult = authUIResult;
-            result.mFlowParams = parameters;
 
             ft.add(result, TAG).disallowAddToBackStack().commit();
         } else {
