@@ -108,6 +108,10 @@ public class SaveCredentialsActivity extends AppCompatBase
 
                 if (translatedProvider != null) {
                     builder.setAccountType(translatedProvider);
+                } else {
+                    Log.e(TAG, "Unable to save null credential!");
+                    finish(RESULT_FIRST_USER, getIntent());
+                    return;
                 }
             }
         }
