@@ -31,7 +31,6 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
-import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -52,7 +51,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_FIRST_USER;
 import static android.app.Activity.RESULT_OK;
 
 public class SignInDelegate extends SmartLock<CredentialRequestResult> {
@@ -178,12 +176,9 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                             signInWithEmailAndPassword(email, password);
                         }
                     }
-                } else if (resultCode == RESULT_CANCELED
-                        || resultCode == CredentialsApi.ACTIVITY_RESULT_OTHER_ACCOUNT) {
+                } else {
                     // Smart lock selector cancelled, go to the AuthMethodPicker screen
                     startAuthMethodChoice();
-                } else if (resultCode == RESULT_FIRST_USER) {
-                    // TODO: (serikb) figure out flow
                 }
                 break;
             case RC_IDP_SIGNIN:
