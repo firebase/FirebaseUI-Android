@@ -106,7 +106,9 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                     .request(mGoogleApiClient,
                              new CredentialRequest.Builder()
                                      .setPasswordLoginSupported(true)
-                                     .setAccountTypes(IdentityProviders.GOOGLE)
+                                     .setAccountTypes(IdentityProviders.GOOGLE,
+                                                      IdentityProviders.FACEBOOK,
+                                                      IdentityProviders.TWITTER)
                                      .build())
                     .setResultCallback(this);
         } else {
