@@ -328,7 +328,6 @@ public class AuthUI {
      * API. Returns a {@code Task} that succeeds if the Firebase Auth user deletion succeeds and
      * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
      * silently.
-     *
      * @param activity the calling {@link Activity}.
      */
     public Task<Void> delete(@NonNull Activity activity) {
