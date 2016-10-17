@@ -23,6 +23,7 @@ import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProvider;
 import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -33,6 +34,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPProvider.IDPCallback {
     private static final String TAG = "IDPSignInContainer";
@@ -63,6 +65,8 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
             mIDPProvider = new FacebookProvider(this, providerParcel);
         } else if (mProvider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
             mIDPProvider = new GoogleProvider(this, providerParcel, mEmail);
+        } else if (mProvider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
+            mIDPProvider = new TwitterProvider(this, providerParcel);
         }
         mIDPProvider.setAuthenticationCallback(this);
         mIDPProvider.startLogin(this);

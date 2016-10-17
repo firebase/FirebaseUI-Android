@@ -44,6 +44,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.List;
 
@@ -324,6 +325,13 @@ public class ChooseAccountActivity extends ActivityBase {
                         this,
                         mActivityHelper.getFlowParams(),
                         FacebookAuthProvider.PROVIDER_ID,
+                        email);
+                break;
+            case IdentityProviders.TWITTER:
+                nextIntent = IDPSignInContainerActivity.createIntent(
+                        this,
+                        mActivityHelper.getFlowParams(),
+                        TwitterAuthProvider.PROVIDER_ID,
                         email);
                 break;
             default:
