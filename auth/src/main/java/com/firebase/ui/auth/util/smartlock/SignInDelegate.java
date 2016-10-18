@@ -8,9 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -384,7 +384,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
-    public static SignInDelegate newInstance(AppCompatActivity activity, FlowParameters parameters) {
+    public static SignInDelegate newInstance(FragmentActivity activity, FlowParameters parameters) {
         SignInDelegate result;
 
         FragmentManager fm = activity.getSupportFragmentManager();

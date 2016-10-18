@@ -131,7 +131,7 @@ public class AuthUiActivity extends AppCompatActivity implements AuthUI.AuthUIRe
                 .setProviders(getSelectedProviders())
                 .setTosUrl(getSelectedTosUrl())
                 .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
-                .build(this, this);
+                .build(this);
     }
 
     @MainThread

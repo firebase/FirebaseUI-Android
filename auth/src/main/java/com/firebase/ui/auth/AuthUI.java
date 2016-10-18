@@ -21,7 +21,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -420,12 +420,12 @@ public class AuthUI {
             return this;
         }
 
-        public void build(@NonNull AppCompatActivity activity) {
+        public void build(@NonNull FragmentActivity activity) {
             Context context = mApp.getApplicationContext();
             build(context, activity);
         }
 
-        private void build(Context context, AppCompatActivity activity) {
+        private void build(Context context, FragmentActivity activity) {
             List<IDPProviderParcel> providerInfo =
                     ProviderHelper.getProviderParcels(context, mProviders);
             SignInDelegate.newInstance(activity,
