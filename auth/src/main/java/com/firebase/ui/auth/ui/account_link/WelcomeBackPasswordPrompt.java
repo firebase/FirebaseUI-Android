@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.EditText;
@@ -109,6 +110,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
 
     private void next(String email, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
+
+        // Check for null or empty password
+        if (TextUtils.isEmpty(password)) {
+            mPasswordField.setError(getString(R.string.required_field));
+            return;
+        } else {
+            mPasswordField.setError(null);
+        }
 
         // Sign in with known email and the password provided
         firebaseAuth.signInWithEmailAndPassword(email, password)

@@ -24,6 +24,8 @@
     <string name="email_label">Email</string>
     <string name="facebook_label">Facebook</string>
     <string name="facebook_label_missing_config">Facebook - configuration missing</string>
+    <string name="twitter_label">Twitter</string>
+    <string name="twitter_label_missing_config">Twitter - configuration missing</string>
     <string name="google_label">Google</string>
     <string name="google_label_missing_config">Google - configuration missing</string>
     <string name="google_tos_label">Google TOS</string>
@@ -33,6 +35,7 @@
     <string name="ok_label">OK</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
+    <string name="no_internet_connection">No internet connection</string>
     <string name="signed_in_header">You are signed in!</string>
     <string name="sign_out">Sign out</string>
     <string name="delete_account_label">Delete account</string>
@@ -45,7 +48,11 @@
     <string name="other_options_header">Other Options:</string>
     <string name="enable_smartlock">Enable SmartLock for Passwords</string>
     <string name="rational_image_perm">This sample will read an image from local storage to upload to Firebase Storage.</string>
-
     <string name="anonymous_auth_failed_toast">Authentication failed, uploads and downloads will not work.</string>
     <string name="anonymous_auth_failed_msg">Anonymous authentication failed. Make sure your device is online and that Anonymous Auth is configured in your Firebase project(https://console.firebase.google.com/project/_/authentication/providers)</string>
+    <string name="extra_google_scopes">Example extra Google scopes</string>
+    <string name="games">Games</string>
+    <string name="extra_facebook_scopes">Example extra Facebook scopes</string>
+    <string name="friends">Friends</string>
+    <string name="photos">Photos</string>
 </resources>

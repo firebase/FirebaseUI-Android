@@ -26,13 +26,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 
+import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.uidemo.R;
+import com.google.android.gms.common.Scopes;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,6 +77,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.facebook_provider)
     CheckBox mUseFacebookProvider;
 
+    @BindView(R.id.twitter_provider)
+    CheckBox mUseTwitterProvider;
+
     @BindView(R.id.google_tos)
     RadioButton mUseGoogleTos;
 
@@ -93,6 +104,24 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.smartlock_enabled)
     CheckBox mEnableSmartLock;
 
+    @BindView(R.id.facebook_scopes_label)
+    TextView mFacebookScopesLabel;
+
+    @BindView(R.id.facebook_scope_friends)
+    CheckBox mFacebookScopeFriends;
+
+    @BindView(R.id.facebook_scope_photos)
+    CheckBox mFacebookScopePhotos;
+
+    @BindView(R.id.google_scopes_label)
+    TextView mGoogleScopesLabel;
+
+    @BindView(R.id.google_scope_drive_file)
+    CheckBox mGoogleScopeDriveFile;
+
+    @BindView(R.id.google_scope_games)
+    CheckBox mGoogleScopeGames;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,17 +139,42 @@ public class AuthUiActivity extends AppCompatActivity {
             mUseGoogleProvider.setChecked(false);
             mUseGoogleProvider.setEnabled(false);
             mUseGoogleProvider.setText(R.string.google_label_missing_config);
+            setGoogleScopesEnabled(false);
+        } else {
+            setGoogleScopesEnabled(mUseGoogleProvider.isChecked());
+            mUseGoogleProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    setGoogleScopesEnabled(checked);
+                }
+            });
         }
 
         if (!isFacebookConfigured()) {
             mUseFacebookProvider.setChecked(false);
             mUseFacebookProvider.setEnabled(false);
             mUseFacebookProvider.setText(R.string.facebook_label_missing_config);
+            setFacebookScopesEnabled(false);
+        } else {
+            setFacebookScopesEnabled(mUseFacebookProvider.isChecked());
+            mUseFacebookProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    setFacebookScopesEnabled(checked);
+                }
+            });
         }
 
-        if (!isGoogleConfigured() || !isFacebookConfigured()) {
+        if (!isTwitterConfigured()) {
+            mUseTwitterProvider.setChecked(false);
+            mUseTwitterProvider.setEnabled(false);
+            mUseTwitterProvider.setText(R.string.twitter_label_missing_config);
+        }
+
+        if (!isGoogleConfigured() || !isFacebookConfigured() || !isTwitterConfigured()) {
             showSnackbar(R.string.configuration_required);
         }
+
     }
 
     @OnClick(R.id.sign_in)
@@ -147,6 +201,21 @@ public class AuthUiActivity extends AppCompatActivity {
         showSnackbar(R.string.unknown_response);
     }
 
+
+    @MainThread
+    private void setGoogleScopesEnabled(boolean enabled) {
+        mGoogleScopesLabel.setEnabled(enabled);
+        mGoogleScopeDriveFile.setEnabled(enabled);
+        mGoogleScopeGames.setEnabled(enabled);
+    }
+
+    @MainThread
+    private void setFacebookScopesEnabled(boolean enabled) {
+        mFacebookScopesLabel.setEnabled(enabled);
+        mFacebookScopeFriends.setEnabled(enabled);
+        mFacebookScopePhotos.setEnabled(enabled);
+    }
+
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -157,6 +226,11 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_CANCELED) {
             showSnackbar(R.string.sign_in_cancelled);
+            return;
+        }
+
+        if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
+            showSnackbar(R.string.no_internet_connection);
             return;
         }
 
@@ -189,22 +263,32 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @MainThread
-    private String[] getSelectedProviders() {
-        ArrayList<String> selectedProviders = new ArrayList<>();
+    private List<IdpConfig> getSelectedProviders() {
+        List<IdpConfig> selectedProviders = new ArrayList<>();
 
         if (mUseEmailProvider.isChecked()) {
-            selectedProviders.add(AuthUI.EMAIL_PROVIDER);
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
         }
 
         if (mUseFacebookProvider.isChecked()) {
-            selectedProviders.add(AuthUI.FACEBOOK_PROVIDER);
+            selectedProviders.add(
+                    new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
+                            .setPermissions(getFacebookPermissions())
+                            .build());
         }
 
         if (mUseGoogleProvider.isChecked()) {
-            selectedProviders.add(AuthUI.GOOGLE_PROVIDER);
+            selectedProviders.add(
+                    new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
+                            .setPermissions(getGooglePermissions())
+                            .build());
         }
 
-        return selectedProviders.toArray(new String[selectedProviders.size()]);
+        if (mUseTwitterProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+        }
+
+        return selectedProviders;
     }
 
     @MainThread
@@ -229,8 +313,42 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @MainThread
+    private boolean isTwitterConfigured() {
+        List<String> twitterConfigs = Arrays.asList(
+                getResources().getString(R.string.twitter_consumer_key),
+                getResources().getString(R.string.twitter_consumer_secret)
+        );
+
+        return !twitterConfigs.contains(UNCHANGED_CONFIG_VALUE);
+    }
+
+    @MainThread
     private void showSnackbar(@StringRes int errorMessageRes) {
         Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
+    }
+
+    @MainThread
+    private List<String> getFacebookPermissions() {
+        List<String> result = new ArrayList<>();
+        if (mFacebookScopeFriends.isChecked()) {
+            result.add("user_friends");
+        }
+        if (mFacebookScopePhotos.isChecked()) {
+            result.add("user_photos");
+        }
+        return result;
+    }
+
+    @MainThread
+    private List<String> getGooglePermissions() {
+        List<String> result = new ArrayList<>();
+        if (mGoogleScopeGames.isChecked()) {
+            result.add(Scopes.GAMES);
+        }
+        if (mGoogleScopeDriveFile.isChecked()) {
+            result.add(Scopes.DRIVE_FILE);
+        }
+        return result;
     }
 
     public static Intent createIntent(Context context) {

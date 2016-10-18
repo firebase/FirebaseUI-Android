@@ -16,6 +16,8 @@ package com.firebase.ui.auth;
 
 import android.content.Intent;
 
+import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.AuthUI.SignInIntentBuilder;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
@@ -23,6 +25,7 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.firebase.FirebaseApp;
 
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +42,41 @@ public class AuthUITest {
     @Before
     public void setUp() {
         mFirebaseApp = TestHelper.initializeApp(RuntimeEnvironment.application);
+    }
+
+    @Test
+    public void testCreateStartIntent_deprecatedSetProvidersShouldStillWork() {
+        Intent startIntent = AuthUI
+                .getInstance(mFirebaseApp)
+                .createSignInIntentBuilder()
+                .setProviders(new String[] {AuthUI.EMAIL_PROVIDER, AuthUI.TWITTER_PROVIDER})
+                .build();
+        FlowParameters flowParameters =
+                startIntent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
+        assertEquals(2, flowParameters.providerInfo.size());
+        assertEquals(AuthUI.EMAIL_PROVIDER, flowParameters.providerInfo.get(0).getProviderId());
+    }
+
+    @Test
+    public void testCreateStartIntent_shouldHaveEmailAsDefaultProvider() {
+        Intent startIntent = AuthUI
+                .getInstance(mFirebaseApp)
+                .createSignInIntentBuilder()
+                .build();
+        FlowParameters flowParameters =
+                startIntent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
+        assertEquals(1, flowParameters.providerInfo.size());
+        assertEquals(AuthUI.EMAIL_PROVIDER, flowParameters.providerInfo.get(0).getProviderId());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
+        SignInIntentBuilder startIntent =
+                AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder();
+        startIntent.setProviders(
+                Arrays.asList(
+                        new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                        new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()));
     }
 
     @Test

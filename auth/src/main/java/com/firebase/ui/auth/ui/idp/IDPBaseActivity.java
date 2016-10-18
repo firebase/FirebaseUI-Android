@@ -17,10 +17,12 @@ package com.firebase.ui.auth.ui.idp;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 public class IDPBaseActivity extends AppCompatBase {
     protected AuthCredential createCredential(IDPResponse idpSignInResponse) {
@@ -29,6 +31,10 @@ public class IDPBaseActivity extends AppCompatBase {
         } else if (idpSignInResponse.getProviderType().equalsIgnoreCase(GoogleAuthProvider
                 .PROVIDER_ID)) {
             return GoogleProvider.createAuthCredential(idpSignInResponse);
+        } else if (idpSignInResponse
+                .getProviderType()
+                .equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
+            return TwitterProvider.createAuthCredential(idpSignInResponse);
         }
         return null;
     }

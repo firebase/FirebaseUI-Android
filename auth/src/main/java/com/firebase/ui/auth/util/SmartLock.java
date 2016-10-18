@@ -40,6 +40,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_FIRST_USER;
@@ -84,9 +85,16 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                     translatedProvider = IdentityProviders.GOOGLE;
                 } else if (mProvider.equals(FacebookAuthProvider.PROVIDER_ID)) {
                     translatedProvider = IdentityProviders.FACEBOOK;
+                } else if (mProvider.equals(TwitterAuthProvider.PROVIDER_ID)) {
+                    translatedProvider = IdentityProviders.TWITTER;
                 }
+
                 if (translatedProvider != null) {
                     builder.setAccountType(translatedProvider);
+                } else {
+                    Log.e(TAG, "Unable to save null credential!");
+                    finish(RESULT_FIRST_USER, getIntent());
+                    return;
                 }
             }
         }

@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +33,7 @@ import com.firebase.ui.auth.test_helpers.LoginManagerShadow;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthCredential;
@@ -41,6 +41,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +57,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
 
@@ -146,8 +148,9 @@ public class AuthMethodPickerActivityTest {
         assertNotNull(facebookButton);
         facebookButton.performClick();
 
-//        Intent smartLockIntent = SmartLock.getInstance(authMethodPickerActivity).getIntentForTest();
-//        verifySaveCredentialIntent(smartLockIntent, FacebookAuthProvider.PROVIDER_ID);
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
+        verifySaveCredentialIntent(nextIntent, FacebookAuthProvider.PROVIDER_ID);
     }
 
     @Test
@@ -155,8 +158,8 @@ public class AuthMethodPickerActivityTest {
     public void testGoogleLoginFlow() {
         List<String> providers = Arrays.asList(AuthUI.GOOGLE_PROVIDER);
 
-        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
-        TestHelper.initializeApp(authMethodPickerActivity);
+        AuthMethodPickerActivity authMethodPickerActivity =
+                createActivity(providers);
 
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
         when(mockFirebaseUser.getProviders())
@@ -170,36 +173,66 @@ public class AuthMethodPickerActivityTest {
 
         assertNotNull(googleButton);
         googleButton.performClick();
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
 
-        assertEquals(
-                Shadows.shadowOf(authMethodPickerActivity).getResultCode(),
-                Activity.RESULT_OK);
+        verifySaveCredentialIntent(nextIntent, GoogleAuthProvider.PROVIDER_ID);
     }
 
-    private static void verifySaveCredentialIntent(Intent smartLockIntent, String provider) {
+    @Test
+    @Config(shadows = {ActivityHelperShadow.class})
+    public void testTwitterLoginFlowStarts() {
+        List<String> providers = Arrays.asList(AuthUI.TWITTER_PROVIDER);
+
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
+
+        FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
+
+        when(mockFirebaseUser.getProviders())
+                .thenReturn(Arrays.asList(TwitterAuthProvider.PROVIDER_ID));
+
+        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) anyObject()))
+                .thenReturn(new AutoCompleteTask<AuthResult>(
+                        new FakeAuthResult(mockFirebaseUser), true, null));
+        Button twitterButton =
+                (Button) authMethodPickerActivity.findViewById(R.id.twitter_button);
+
+        assertNotNull(twitterButton);
+        twitterButton.performClick();
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
+
+        assertTrue(nextIntent.intent.getComponent().getClassName().contains("com.twitter.sdk"));
+    }
+
+
+    private static void verifySaveCredentialIntent(
+            ShadowActivity.IntentForResult nextIntent,
+            String provider) {
         assertEquals(
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL),
+                SaveCredentialsActivity.class.getName(),
+                nextIntent.intent.getComponent().getClassName());
+        assertEquals(
+                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL),
                 TestConstants.EMAIL);
         assertEquals(
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_NAME),
+                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_NAME),
                 TestConstants.NAME);
         assertEquals(
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_PROFILE_PICTURE_URI),
+                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PROFILE_PICTURE_URI),
                 TestConstants.PHOTO_URL);
         assertEquals(
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_PROVIDER),
+                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PROVIDER),
                 provider);
         assertEquals(
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD),
+                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD),
                 null);
     }
 
     private AuthMethodPickerActivity createActivity(List<String> providers) {
         Intent startIntent = AuthMethodPickerActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
-                        providers));
+                TestHelper.getFlowParameters(providers));
 
         return Robolectric
                 .buildActivity(AuthMethodPickerActivity.class)

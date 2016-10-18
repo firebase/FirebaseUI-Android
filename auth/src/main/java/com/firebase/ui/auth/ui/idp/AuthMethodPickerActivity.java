@@ -23,13 +23,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
@@ -37,10 +38,10 @@ import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.SmartLock;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,23 +86,26 @@ public class AuthMethodPickerActivity
         }
     }
 
-    private void populateIdpList(List<IDPProviderParcel> providers) {
+    private void populateIdpList(List<IdpConfig> providers) {
         mIdpProviders = new ArrayList<>();
-        for (IDPProviderParcel providerParcel : providers) {
-            switch (providerParcel.getProviderType()) {
-                case FacebookAuthProvider.PROVIDER_ID :
-                    mIdpProviders.add(new FacebookProvider(this, providerParcel));
+        for (IdpConfig idpConfig : providers) {
+            switch (idpConfig.getProviderId()) {
+                case AuthUI.FACEBOOK_PROVIDER :
+                    mIdpProviders.add(new FacebookProvider(this, idpConfig));
                     break;
-                case GoogleAuthProvider.PROVIDER_ID:
-                    mIdpProviders.add(new GoogleProvider(this, providerParcel, null));
+                case AuthUI.GOOGLE_PROVIDER:
+                    mIdpProviders.add(new GoogleProvider(this, idpConfig));
                     break;
-                case EmailAuthProvider.PROVIDER_ID:
+                case AuthUI.EMAIL_PROVIDER:
                     findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
+                    break;
+                case AuthUI.TWITTER_PROVIDER:
+                    mIdpProviders.add(new TwitterProvider(this));
                     break;
                 default:
                     if (BuildConfig.DEBUG) {
                         Log.d(TAG, "Encountered unknown IDPProvider parcel with type: "
-                                + providerParcel.getProviderType());
+                                + idpConfig.getProviderId());
                     }
             }
         }
@@ -117,6 +121,10 @@ public class AuthMethodPickerActivity
                 case FacebookAuthProvider.PROVIDER_ID:
                     loginButton = getLayoutInflater()
                             .inflate(R.layout.idp_button_facebook, btnHolder, false);
+                    break;
+                case TwitterAuthProvider.PROVIDER_ID:
+                    loginButton = getLayoutInflater()
+                            .inflate(R.layout.idp_button_twitter, btnHolder, false);
                     break;
                 default:
                     Log.e(TAG, "No button for provider " + provider.getProviderId());

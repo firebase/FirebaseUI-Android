@@ -243,4 +243,12 @@
         <item name="android:background">@drawable/idp_button_background_facebook</item>
         <item name="android:textColor">@color/com_facebook_button_text_color</item>
     </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.TwitterButton">
+        <item name="android:drawableLeft">@drawable/tw__ic_logo_default</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:background">@drawable/idp_button_background_twitter</item>
+        <item name="android:textColor">@color/tw__solid_white</item>
+    </style>
 </resources>

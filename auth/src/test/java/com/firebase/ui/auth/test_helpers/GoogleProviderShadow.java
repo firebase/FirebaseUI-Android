@@ -17,12 +17,13 @@ package com.firebase.ui.auth.test_helpers;
 import android.app.Activity;
 import android.os.Bundle;
 
+import android.support.v4.app.FragmentActivity;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPProviderParcel;
 import com.firebase.ui.auth.provider.IDPResponse;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.List;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
@@ -49,8 +50,7 @@ public class GoogleProviderShadow {
                     .getString(GoogleProvider.TOKEN_KEY)).thenReturn(FAKE_TOKEN);
         }
     }
-
-    public void __constructor__(Activity activity, IDPProviderParcel parcel, String email) {}
+    public void __constructor__(FragmentActivity activity, String email, List<String> scopes) {}
 
 
     @Implementation
