@@ -79,7 +79,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     private IdpResponse createIDPResponse(TwitterSession twitterSession) {
         return new IdpResponse(
                 TwitterAuthProvider.PROVIDER_ID,
-                twitterSession.getUserName(),
+                null,
                 twitterSession.getAuthToken().token,
                 twitterSession.getAuthToken().secret);
     }

@@ -169,7 +169,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                                 .signInWithCredential(mPrevCredential)
                                 .addOnFailureListener(new TaskFailureLogger(
                                         TAG, "Error signing in with previous credential"))
-                                .addOnCompleteListener(new FinishListener());
+                                .addOnCompleteListener(new FinishListener(newIdpResponse));
                     } else {
                         mActivityHelper.dismissDialog();
                         finish(Activity.RESULT_OK, new Intent().putExtra(
@@ -184,7 +184,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
             authResultTask
                     .addOnFailureListener(
                             new TaskFailureLogger(TAG, "Error linking with credential"))
-                    .addOnCompleteListener(new FinishListener());
+                    .addOnCompleteListener(new FinishListener(newIdpResponse));
         }
     }
 
@@ -201,10 +201,15 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
     }
 
     private class FinishListener implements OnCompleteListener {
-        @Override
+        private final IdpResponse mIdpResponse;
+
+        FinishListener(IdpResponse idpResponse) {
+            mIdpResponse = idpResponse;
+        }
         public void onComplete(@NonNull Task task) {
             mActivityHelper.dismissDialog();
-            finish(Activity.RESULT_OK, new Intent());
+            finish(Activity.RESULT_OK,
+                    new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mIdpResponse));
         }
     }
 }

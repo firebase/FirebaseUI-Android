@@ -26,22 +26,24 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 public class IdpResponse implements Parcelable {
 
     private final String mProviderId;
-    private final String mEmail;
+    @Nullable private final String mEmail;
     private final String mToken;
     private final String mSecret;
 
-    public IdpResponse(
-            String providerId, String email) {
+    public IdpResponse(String providerId, @Nullable String email) {
         this(providerId, email, null, null);
     }
 
     public IdpResponse(
-            String providerId, String email, @Nullable String token) {
+            String providerId, @Nullable String email, @Nullable String token) {
         this(providerId, email, token, null);
     }
 
     public IdpResponse(
-            String providerId, String email, @Nullable String token, @Nullable String secret) {
+            String providerId,
+            @Nullable String email,
+            @Nullable String token,
+            @Nullable String secret) {
         mProviderId = providerId;
         mEmail = email;
         mToken = token;
@@ -91,6 +93,7 @@ public class IdpResponse implements Parcelable {
     /**
      * Get the email used to sign in.
      */
+    @Nullable
     public String getEmail() {
         return mEmail;
     }

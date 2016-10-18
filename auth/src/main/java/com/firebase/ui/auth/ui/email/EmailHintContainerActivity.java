@@ -49,7 +49,6 @@ public class EmailHintContainerActivity extends AppCompatBase {
             }
         }
         finish(RESULT_CANCELED, new Intent());
-        return;
     }
 
     @Override

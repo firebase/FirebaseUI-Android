@@ -146,7 +146,7 @@ public class AuthMethodPickerActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_EMAIL_FLOW) {
             if (resultCode == RESULT_OK) {
-                finish(RESULT_OK, new Intent());
+                finish(RESULT_OK, data);
             }
         } else if (requestCode == RC_SAVE_CREDENTIAL) {
             finish(RESULT_OK, data);
