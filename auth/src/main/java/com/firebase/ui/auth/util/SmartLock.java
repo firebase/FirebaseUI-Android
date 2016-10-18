@@ -70,7 +70,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     public void onConnected(@Nullable Bundle bundle) {
         if (mEmail == null) {
             Log.e(TAG, "Unable to save null credential!");
-            finish(RESULT_CANCELED);
+            finish(RESULT_FIRST_USER);
             return;
         }
 
@@ -93,7 +93,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                     builder.setAccountType(translatedProvider);
                 } else {
                     Log.e(TAG, "Unable to save null credential!");
-                    finish(RESULT_FIRST_USER, getIntent());
+                    mListener.onCredentialsSaved(RESULT_FIRST_USER);
                     return;
                 }
             }
