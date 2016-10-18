@@ -55,7 +55,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 /**
  * Activity displaying a form to create a new email/password account.
  */
-public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener {
+public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener, SmartLock.SmartLockResultListener {
     private static final String TAG = "RegisterEmailActivity";
 
     private SmartLock mSmartLock;
@@ -161,7 +161,8 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // the credential to SmartLock (if enabled).
                                         mSmartLock.saveCredentialsOrFinish(
                                                 RegisterEmailActivity.this,
-                                                mActivityHelper.getFlowParams(),
+                                                mActivityHelper,
+                                                RegisterEmailActivity.this,
                                                 firebaseUser,
                                                 password,
                                                 null /* provider */);
@@ -195,6 +196,11 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                         }
                     }
                 });
+    }
+
+    @Override
+    public void onCredentialsSaved(int resultCode) {
+        finish(RESULT_OK, getIntent());
     }
 
     @Override

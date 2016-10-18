@@ -48,7 +48,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming
  * the password before initiating a link.
  */
-public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
+public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener, SmartLock.SmartLockResultListener {
     private static final String TAG = "WelcomeBackPassword";
     private static final StyleSpan BOLD = new StyleSpan(Typeface.BOLD);
 
@@ -134,7 +134,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                             public void onSuccess(AuthResult authResult) {
                                                 mSmartLock.saveCredentialsOrFinish(
                                                         WelcomeBackPasswordPrompt.this,
-                                                        mActivityHelper.getFlowParams(),
+                                                        mActivityHelper,
+                                                        WelcomeBackPasswordPrompt.this,
                                                         authResult.getUser(),
                                                         password,
                                                         null /* provider */);
@@ -149,6 +150,11 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                         mPasswordLayout.setError(error);
                     }
                 });
+    }
+
+    @Override
+    public void onCredentialsSaved(int resultCode) {
+        finish(RESULT_OK, getIntent());
     }
 
     public static Intent createIntent(

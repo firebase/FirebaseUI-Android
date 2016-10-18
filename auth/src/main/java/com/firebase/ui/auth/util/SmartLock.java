@@ -29,7 +29,6 @@ import android.util.Log;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -42,16 +41,23 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_FIRST_USER;
 import static android.app.Activity.RESULT_OK;
 
 public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCallbacks, ResultCallback<Status>,
         GoogleApiClient.OnConnectionFailedListener {
+    public interface SmartLockResultListener {
+        void onCredentialsSaved(int resultCode);
+    }
+
     private static final String TAG = "CredentialsSaveBase";
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
 
     private AppCompatBase mActivity;
     private ActivityHelper mActivityHelper;
+    private SmartLockResultListener mListener;
     private String mName;
     private String mEmail;
     private String mPassword;
@@ -63,7 +69,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     public void onConnected(@Nullable Bundle bundle) {
         if (mEmail == null) {
             Log.e(TAG, "Unable to save null credential!");
-            finish(RESULT_OK);
+            finish(RESULT_CANCELED);
             return;
         }
 
@@ -127,7 +133,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                                        null);
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
-            finish(RESULT_OK);
+            finish(RESULT_CANCELED);
         }
     }
 
@@ -151,10 +157,10 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
-                    finish(RESULT_OK);
+                    finish(RESULT_CANCELED);
                 }
             } else {
-                finish(RESULT_OK);
+                finish(RESULT_CANCELED);
             }
         }
     }
@@ -171,7 +177,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                 finish(RESULT_OK);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish(RESULT_OK);
+                finish(RESULT_FIRST_USER);
             }
         } else if (requestCode == RC_UPDATE_SERVICE) {
             if (resultCode == RESULT_OK) {
@@ -182,13 +188,13 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                         .setResultCallback(this);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish(RESULT_OK);
+                finish(RESULT_FIRST_USER);
             }
         }
     }
 
     private void finish(int resultCode) {
-        mActivity.finish(resultCode, mActivity.getIntent());
+        mListener.onCredentialsSaved(resultCode);
     }
 
     /**
@@ -196,19 +202,19 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
      * Otherwise, finish the calling Activity with RESULT_OK.
      *
      * @param activity     the calling Activity.
-     * @param parameters   calling Activity flow parameters.
      * @param firebaseUser Firebase user to save in Credential.
      * @param password     (optional) password for email credential.
      * @param provider     (optional) provider string for provider credential.
      */
     public void saveCredentialsOrFinish(AppCompatBase activity,
                                         ActivityHelper helper,
-                                        FlowParameters parameters,
+                                        SmartLockResultListener listener,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
         mActivity = activity;
         mActivityHelper = helper;
+        mListener = listener;
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
@@ -217,20 +223,20 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                 .toString() : null;
 
         // If SmartLock is disabled, finish the Activity
-        if (!parameters.smartLockEnabled) {
-            finish(RESULT_OK);
+        if (!helper.getFlowParams().smartLockEnabled) {
+            finish(RESULT_CANCELED);
             return;
         }
 
         // If Play Services is not available, finish the Activity
         if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
-            finish(RESULT_OK);
+            finish(RESULT_CANCELED);
             return;
         }
 
-        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
+        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(helper.getFlowParams().appName)
                 .isPlayServicesAvailable(activity)) {
-            finish(RESULT_OK);
+            finish(RESULT_CANCELED);
             return;
         }
 

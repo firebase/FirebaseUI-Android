@@ -42,7 +42,7 @@ import com.google.firebase.auth.AuthResult;
 /**
  * Activity to sign in with email and password.
  */
-public class SignInActivity extends AppCompatBase implements View.OnClickListener {
+public class SignInActivity extends AppCompatBase implements View.OnClickListener, SmartLock.SmartLockResultListener {
     private static final String TAG = "SignInActivity";
 
     private SmartLock mSmartLock;
@@ -102,7 +102,8 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         // Save credential in SmartLock (if enabled)
                         mSmartLock.saveCredentialsOrFinish(
                                 SignInActivity.this,
-                                mActivityHelper.getFlowParams(),
+                                mActivityHelper,
+                                SignInActivity.this,
                                 authResult.getUser(),
                                 password,
                                 null /* provider */);
@@ -120,6 +121,11 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         mActivityHelper.dismissDialog();
                     }
                 });
+    }
+
+    @Override
+    public void onCredentialsSaved(int resultCode) {
+        finish(RESULT_OK, getIntent());
     }
 
     @Override
