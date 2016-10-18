@@ -63,7 +63,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     public void onConnected(@Nullable Bundle bundle) {
         if (mEmail == null) {
             Log.e(TAG, "Unable to save null credential!");
-            finish();
+            finish(RESULT_OK);
             return;
         }
 
@@ -127,7 +127,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                                        null);
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
-            finish();
+            finish(RESULT_OK);
         }
     }
 
@@ -135,7 +135,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     @Override
     public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
-            finish();
+            finish(RESULT_OK);
         } else {
             if (status.hasResolution()) {
                 // Try to resolve the save request. This will prompt the user if
@@ -151,10 +151,10 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
-                    finish();
+                    finish(RESULT_OK);
                 }
             } else {
-                finish();
+                finish(RESULT_OK);
             }
         }
     }
@@ -168,10 +168,10 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "SAVE: OK");
                 }
-                finish();
+                finish(RESULT_OK);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish();
+                finish(RESULT_OK);
             }
         } else if (requestCode == RC_UPDATE_SERVICE) {
             if (resultCode == RESULT_OK) {
@@ -182,16 +182,13 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                         .setResultCallback(this);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish();
+                finish(RESULT_OK);
             }
         }
     }
 
-    private void finish() {
-        // For tests
-        mActivity.setResult(RESULT_OK);
-
-        mActivity.finish(RESULT_OK, mActivity.getIntent());
+    private void finish(int resultCode) {
+        mActivity.finish(resultCode, mActivity.getIntent());
     }
 
     /**
@@ -221,19 +218,19 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
 
         // If SmartLock is disabled, finish the Activity
         if (!parameters.smartLockEnabled) {
-            finish();
+            finish(RESULT_OK);
             return;
         }
 
         // If Play Services is not available, finish the Activity
         if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
-            finish();
+            finish(RESULT_OK);
             return;
         }
 
         if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
                 .isPlayServicesAvailable(activity)) {
-            finish();
+            finish(RESULT_OK);
             return;
         }
 
