@@ -19,9 +19,11 @@ import android.support.annotation.Nullable;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 public class AuthCredentialHelper {
 
@@ -32,6 +34,8 @@ public class AuthCredentialHelper {
                 return GoogleProvider.createAuthCredential(idpResponse);
             case FacebookAuthProvider.PROVIDER_ID:
                 return FacebookProvider.createAuthCredential(idpResponse);
+            case TwitterAuthProvider.PROVIDER_ID:
+                return TwitterProvider.createAuthCredential(idpResponse);
             default:
                 return null;
         }

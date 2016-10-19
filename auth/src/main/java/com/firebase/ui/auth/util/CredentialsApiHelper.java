@@ -59,6 +59,8 @@ public class CredentialsApiHelper {
                 idps.add(IdentityProviders.GOOGLE);
             } else if (AuthUI.FACEBOOK_PROVIDER.equals(providerId)) {
                 idps.add(IdentityProviders.FACEBOOK);
+            } else if (AuthUI.TWITTER_PROVIDER.equals(providerId)) {
+                idps.add(IdentityProviders.TWITTER);
             }
         }
 
