@@ -108,7 +108,7 @@ public class SignInActivityTest {
         when(ActivityHelperShadow.firebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
-                new AutoCompleteTask<>(new FakeAuthResult(mockFirebaseUser), true, null));
+                    new AutoCompleteTask<>(new FakeAuthResult(mockFirebaseUser), true, null));
         when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
         when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
 

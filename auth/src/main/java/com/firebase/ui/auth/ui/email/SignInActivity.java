@@ -99,12 +99,11 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                     public void onSuccess(AuthResult authResult) {
                         // Save credential in SmartLock (if enabled)
                         SmartLock.getInstance(SignInActivity.this, TAG)
-                                .saveCredentialsOrFinish(
-                                        SignInActivity.this,
-                                        mActivityHelper,
-                                        authResult.getUser(),
-                                        password,
-                                        null /* provider */);
+                                .saveCredentialsOrFinish(SignInActivity.this,
+                                                         mActivityHelper,
+                                                         authResult.getUser(),
+                                                         password,
+                                                         null /* provider */);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

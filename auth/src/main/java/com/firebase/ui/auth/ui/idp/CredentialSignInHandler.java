@@ -53,8 +53,8 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
         mActivity = activity;
         mActivityHelper = activityHelper;
         mSmartLock = smartLock;
-        mAccountLinkResultCode = accountLinkResultCode;
         mResponse = response;
+        mAccountLinkResultCode = accountLinkResultCode;
     }
 
     @Override

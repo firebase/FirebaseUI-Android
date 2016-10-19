@@ -46,8 +46,10 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_FIRST_USER;
 import static android.app.Activity.RESULT_OK;
 
-public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCallbacks, ResultCallback<Status>,
-        GoogleApiClient.OnConnectionFailedListener {
+public class SmartLock extends Fragment
+        implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        ResultCallback<Status> {
     private static final String TAG = "CredentialsSaveBase";
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
@@ -65,7 +67,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     public void onConnected(@Nullable Bundle bundle) {
         if (mEmail == null) {
             Log.e(TAG, "Unable to save null credential!");
-            finish(RESULT_FIRST_USER);
+            finish(RESULT_CANCELED);
             return;
         }
 
@@ -88,7 +90,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                         break;
                     default:
                         Log.e(TAG, "Unable to save null credential!");
-                        finish(RESULT_FIRST_USER);
+                        finish(RESULT_CANCELED);
                         return;
                 }
 
@@ -237,7 +239,8 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
             return;
         }
 
-        if (!FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(helper.getFlowParams().appName)
+        if (!FirebaseAuthWrapperFactory
+                .getFirebaseAuthWrapper(helper.getFlowParams().appName)
                 .isPlayServicesAvailable(activity)) {
             finish(RESULT_CANCELED);
             return;

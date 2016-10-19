@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Helper class to deal with Smartlock Flows.
  */
-public class SmartlockUtil {
+public class SmartLockUtil {
     private static final String TAG = "SmartLockUtil";
 
     /**

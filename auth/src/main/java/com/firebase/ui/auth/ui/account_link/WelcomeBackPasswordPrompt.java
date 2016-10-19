@@ -80,8 +80,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         TextView bodyTextView = ((TextView) findViewById(R.id.welcome_back_password_body));
         bodyTextView.setText(spannableStringBuilder);
 
-        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(
-                false);
+        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
 
         // Click listeners
         findViewById(R.id.button_done).setOnClickListener(this);
@@ -134,8 +133,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                         // Sign in with the credential
                         firebaseAuth.signInWithCredential(authCredential)
                                 .addOnFailureListener(
-                                        new TaskFailureLogger(TAG,
-                                                              "Error signing in with credential"))
+                                        new TaskFailureLogger(TAG, "Error signing in with credential"))
                                 .addOnSuccessListener(
                                         new OnSuccessListener<AuthResult>() {
                                             @Override

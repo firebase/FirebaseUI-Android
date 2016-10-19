@@ -95,10 +95,8 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         mPasswordFieldValidator = new PasswordFieldValidator((TextInputLayout)
                 findViewById(R.id.password_layout),
                 getResources().getInteger(R.integer.min_password_length));
-        mNameValidator = new RequiredFieldValidator((TextInputLayout)
-                findViewById(R.id.name_layout));
-        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
-                .email_layout));
+        mNameValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.name_layout));
+        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
 
         if (email != null) {
             mEmailEditText.setText(email);
@@ -157,12 +155,11 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
                                         SmartLock.getInstance(RegisterEmailActivity.this, TAG)
-                                                .saveCredentialsOrFinish(
-                                                        RegisterEmailActivity.this,
-                                                        mActivityHelper,
-                                                        firebaseUser,
-                                                        password,
-                                                        null /* provider */);
+                                                .saveCredentialsOrFinish(RegisterEmailActivity.this,
+                                                                         mActivityHelper,
+                                                                         firebaseUser,
+                                                                         password,
+                                                                         null /* provider */);
                                     }
                                 });
                     }
