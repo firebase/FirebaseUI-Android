@@ -131,6 +131,8 @@ class FirebaseIndexArray extends FirebaseArray {
 
     @Override
     public void onCancelled(DatabaseError error) {
+        Log.e(TAG, "A fatal error occur retrieving keys.");
+        super.onCancelled(error);
     }
 
     @Override
