@@ -68,7 +68,7 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
      *                        Can also be a slice of a location, using some
      *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      * @param dataRef         The Firebase location to watch for data changes.
-     *                        Each key key found in {@code keyRef}'s location represents a list item in the {@code RecyclerView}.
+     *                        Each key key found at {@code keyRef}'s location represents a list item in the {@code RecyclerView}.
      */
     public FirebaseIndexRecyclerAdapter(Class<T> modelClass,
                                         int modelLayout,
@@ -87,7 +87,7 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
      *                        Can also be a slice of a location, using some
      *                        combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      * @param dataRef         The Firebase location to watch for data changes.
-     *                        Each key key found in {@code keyRef}'s location represents a list item in the {@code RecyclerView}.
+     *                        Each key key found at {@code keyRef}'s location represents a list item in the {@code RecyclerView}.
      */
     public FirebaseIndexRecyclerAdapter(Class<T> modelClass,
                                         int modelLayout,

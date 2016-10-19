@@ -275,7 +275,11 @@ If your data is [properly indexed](https://firebase.google.com/docs/database/and
 
 For a `RecyclerView`, use `FirebaseIndexRecyclerAdapter` instead of `FirebaseRecyclerAdapter`:
 ```java
-new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, keyRef, dataRef)
+new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(Chat.class,
+                                                   android.R.layout.two_line_list_item,
+                                                   ChatHolder.class,
+                                                   keyRef, // The Firebase location containing the list of keys to be found in dataRef.
+                                                   dataRef) //The Firebase location to watch for data changes. Each key key found at keyRef's location represents a list item in the RecyclerView.
 ```
 
 And for a `ListView`, use `FirebaseIndexListAdapter`;
