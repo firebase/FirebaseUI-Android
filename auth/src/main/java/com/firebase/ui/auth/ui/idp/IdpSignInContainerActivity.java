@@ -64,14 +64,14 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
             return;
         }
         if (mProvider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new FacebookProvider(this, providerConfig);
+            mIdpProvider = new FacebookProvider(this, providerConfig);
         } else if (mProvider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new GoogleProvider(this, providerConfig, mEmail);
+            mIdpProvider = new GoogleProvider(this, providerConfig, mEmail);
         } else if (mProvider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new TwitterProvider(this);
+            mIdpProvider = new TwitterProvider(this);
         }
-        mIDPProvider.setAuthenticationCallback(this);
-        mIDPProvider.startLogin(this);
+        mIdpProvider.setAuthenticationCallback(this);
+        mIdpProvider.startLogin(this);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
                 .addOnCompleteListener(new CredentialSignInHandler(
                         IdpSignInContainerActivity.this,
                         mActivityHelper,
-                        SmartLock.getInstance(IDPSignInContainerActivity.this, TAG),
+                        SmartLock.getInstance(IdpSignInContainerActivity.this, TAG),
                         RC_WELCOME_BACK_IDP,
                         response));
     }
@@ -103,7 +103,7 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
         if (requestCode == RC_WELCOME_BACK_IDP) {
             finish(resultCode, data);
         } else {
-            mIDPProvider.onActivityResult(requestCode, resultCode, data);
+            mIdpProvider.onActivityResult(requestCode, resultCode, data);
         }
     }
 
