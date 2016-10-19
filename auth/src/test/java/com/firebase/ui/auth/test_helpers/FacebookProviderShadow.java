@@ -15,12 +15,11 @@
 package com.firebase.ui.auth.test_helpers;
 
 import android.app.Activity;
-import android.os.Bundle;
 
 import com.facebook.login.LoginResult;
 import com.firebase.ui.auth.provider.FacebookProvider;
-import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 import java.util.List;
@@ -34,27 +33,21 @@ import static org.mockito.Mockito.when;
 @Implements(FacebookProvider.class)
 public class FacebookProviderShadow {
     private static final String FAKE_ACCESS_TOKEN = "fake_access_token";
-    private IDPResponse mMockIdpResponse;
-    private Bundle mMockIdpResponseBundle;
-    private IDPProvider.IDPCallback mCallback;
+    private IdpResponse mMockIdpResponse;
+    private IdpCallback mCallback;
 
     public FacebookProviderShadow() {
-        if(mMockIdpResponseBundle == null) {
-            mMockIdpResponseBundle = mock(Bundle.class);
-        }
         if (mMockIdpResponse == null) {
-            mMockIdpResponse = mock(IDPResponse.class);
+            mMockIdpResponse = mock(IdpResponse.class);
             when(mMockIdpResponse.getProviderType()).thenReturn(FacebookAuthProvider.PROVIDER_ID);
-            when(mMockIdpResponse.getResponse()).thenReturn(mMockIdpResponseBundle);
-            when(mMockIdpResponseBundle
-                    .getString(FacebookProvider.ACCESS_TOKEN)).thenReturn(FAKE_ACCESS_TOKEN);
+            when(mMockIdpResponse.getIdpToken()).thenReturn(FAKE_ACCESS_TOKEN);
         }
     }
 
     public void __constructor__(Activity activity, List<String> scopes) {}
 
     @Implementation
-    public void setAuthenticationCallback(IDPProvider.IDPCallback idpCallback) {
+    public void setAuthenticationCallback(IdpCallback idpCallback) {
         mCallback = idpCallback;
     }
 

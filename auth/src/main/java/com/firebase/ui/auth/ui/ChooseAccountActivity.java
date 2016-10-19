@@ -26,7 +26,7 @@ import android.util.Log;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
+import com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
@@ -241,7 +241,7 @@ public class ChooseAccountActivity extends ActivityBase {
             case RC_IDP_SIGNIN:
             case RC_AUTH_METHOD_PICKER:
             case RC_EMAIL_FLOW:
-                finish(resultCode, new Intent());
+                finish(resultCode, data);
                 break;
             case RC_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
@@ -311,21 +311,21 @@ public class ChooseAccountActivity extends ActivityBase {
         Intent nextIntent;
         switch (accountType) {
             case IdentityProviders.GOOGLE:
-                nextIntent = IDPSignInContainerActivity.createIntent(
+                nextIntent = IdpSignInContainerActivity.createIntent(
                         this,
                         mActivityHelper.getFlowParams(),
                         GoogleAuthProvider.PROVIDER_ID,
                         email);
                 break;
             case IdentityProviders.FACEBOOK:
-                nextIntent = IDPSignInContainerActivity.createIntent(
+                nextIntent = IdpSignInContainerActivity.createIntent(
                         this,
                         mActivityHelper.getFlowParams(),
                         FacebookAuthProvider.PROVIDER_ID,
                         email);
                 break;
             case IdentityProviders.TWITTER:
-                nextIntent = IDPSignInContainerActivity.createIntent(
+                nextIntent = IdpSignInContainerActivity.createIntent(
                         this,
                         mActivityHelper.getFlowParams(),
                         TwitterAuthProvider.PROVIDER_ID,

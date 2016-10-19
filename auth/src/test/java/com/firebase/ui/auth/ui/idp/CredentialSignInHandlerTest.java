@@ -16,11 +16,10 @@ package com.firebase.ui.auth.ui.idp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
@@ -32,7 +31,8 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
+import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
+import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.CredentialsAPI;
 import com.firebase.ui.auth.util.PlayServicesHelper;
@@ -91,10 +91,9 @@ public class CredentialSignInHandlerTest {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
-        IDPResponse idpResponse = new IDPResponse(
+        IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL,
-                new Bundle());
+                TestConstants.EMAIL);
         SmartLock smartLock = mock(SmartLock.class);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
@@ -127,10 +126,9 @@ public class CredentialSignInHandlerTest {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
-        IDPResponse idpResponse = new IDPResponse(
+        IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL,
-                new Bundle());
+                TestConstants.EMAIL);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
@@ -160,7 +158,7 @@ public class CredentialSignInHandlerTest {
         Intent capturedIntent = intentCaptor.getValue();
         assertEquals(RC_ACCOUNT_LINK, (int) intCaptor.getValue());
         assertEquals(
-                WelcomeBackIDPPrompt.class.getName(),
+                WelcomeBackIdpPrompt.class.getName(),
                 capturedIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
@@ -176,10 +174,9 @@ public class CredentialSignInHandlerTest {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
-        IDPResponse idpResponse = new IDPResponse(
+        IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL,
-                new Bundle());
+                TestConstants.EMAIL);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
@@ -216,7 +213,7 @@ public class CredentialSignInHandlerTest {
                 capturedIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
-                ((IDPResponse) capturedIntent
+                ((IdpResponse) capturedIntent
                         .getExtras()
                         .getParcelable(ExtraConstants.EXTRA_IDP_RESPONSE))
                         .getEmail());

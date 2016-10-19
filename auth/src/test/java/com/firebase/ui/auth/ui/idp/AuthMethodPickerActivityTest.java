@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
@@ -85,8 +86,8 @@ public class AuthMethodPickerActivityTest {
                 createActivity(providers);
 
         assertEquals(providers.size(),
-                     ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
-                             .getChildCount());
+                ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
+                        .getChildCount());
         Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
         assertEquals(View.VISIBLE, emailButton.getVisibility());
     }
@@ -102,8 +103,8 @@ public class AuthMethodPickerActivityTest {
                 createActivity(providers);
 
         assertEquals(providers.size() + 1, // plus one due to the invisible email button
-                     ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
-                             .getChildCount());
+                ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
+                        .getChildCount());
         Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
         assertEquals(View.GONE, emailButton.getVisibility());
     }

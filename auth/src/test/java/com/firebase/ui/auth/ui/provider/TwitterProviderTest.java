@@ -3,8 +3,8 @@ package com.firebase.ui.auth.ui.provider;
 import android.os.Bundle;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FacebookProviderShadow;
@@ -38,7 +38,7 @@ public class TwitterProviderTest {
     private static final long FAKE_USER_ID = 555;
     private static final String FAKE_USER_NAME = "testAccountName";
 
-    private static class AssertResultCallback implements IDPProvider.IDPCallback {
+    private static class AssertResultCallback implements IdpCallback {
         private CountDownLatch mCountDownLatch;
         private boolean mAssertSuccess;
 
@@ -52,7 +52,7 @@ public class TwitterProviderTest {
         }
 
         @Override
-        public void onSuccess(IDPResponse idpResponse) {
+        public void onSuccess(IdpResponse idpResponse) {
             assertTrue(mAssertSuccess);
             mCountDownLatch.countDown();
         }

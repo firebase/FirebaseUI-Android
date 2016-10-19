@@ -27,6 +27,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.google.android.gms.auth.api.Auth;
@@ -57,7 +59,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     private String mName;
     private String mEmail;
     private String mPassword;
-    private String mProvider;
+    private IdpResponse mIdpResponse;
     private String mProfilePictureUri;
     private GoogleApiClient mCredentialsApiClient;
 
@@ -73,14 +75,15 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
         builder.setPassword(mPassword);
         if (mPassword == null) {
             // only password OR provider can be set, not both
-            if (mProvider != null) {
+            String provider = mIdpResponse.getProviderType();
+            if (provider != null) {
                 String translatedProvider = null;
                 // translate the google.com/facebook.com provider strings into full URIs
-                if (mProvider.equals(GoogleAuthProvider.PROVIDER_ID)) {
+                if (provider.equals(GoogleAuthProvider.PROVIDER_ID)) {
                     translatedProvider = IdentityProviders.GOOGLE;
-                } else if (mProvider.equals(FacebookAuthProvider.PROVIDER_ID)) {
+                } else if (provider.equals(FacebookAuthProvider.PROVIDER_ID)) {
                     translatedProvider = IdentityProviders.FACEBOOK;
-                } else if (mProvider.equals(TwitterAuthProvider.PROVIDER_ID)) {
+                } else if (provider.equals(TwitterAuthProvider.PROVIDER_ID)) {
                     translatedProvider = IdentityProviders.TWITTER;
                 }
 
