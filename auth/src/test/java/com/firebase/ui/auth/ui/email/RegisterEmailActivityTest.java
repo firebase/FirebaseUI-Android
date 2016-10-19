@@ -118,7 +118,7 @@ public class RegisterEmailActivityTest {
 
         SmartLockResult result = SmartLockResult.newInstance(registerEmailActivity,
                                                              "RegisterEmailActivity",
-                                                             TestConstants.PHOTO_URL,
+                                                             TestConstants.PASSWORD,
                                                              GoogleAuthProvider.PROVIDER_ID);
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
