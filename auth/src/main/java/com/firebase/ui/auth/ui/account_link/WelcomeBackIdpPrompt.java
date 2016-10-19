@@ -31,6 +31,7 @@ import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.AuthCredentialHelper;
@@ -45,6 +46,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 public class WelcomeBackIdpPrompt extends AppCompatBase
         implements View.OnClickListener, IdpCallback {
@@ -72,6 +74,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         mIdpProvider = new FacebookProvider(this, idpConfig);
+                        break;
+                    case TwitterAuthProvider.PROVIDER_ID:
+                        mIdpProvider = new TwitterProvider(this);
                         break;
                     default:
                         Log.w(TAG, "Unknown provider: " + mProviderId);

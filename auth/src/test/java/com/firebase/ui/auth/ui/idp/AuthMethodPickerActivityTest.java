@@ -82,6 +82,7 @@ public class AuthMethodPickerActivityTest {
         List<String> providers = Arrays.asList(
                 AuthUI.FACEBOOK_PROVIDER,
                 AuthUI.GOOGLE_PROVIDER,
+                AuthUI.TWITTER_PROVIDER,
                 AuthUI.EMAIL_PROVIDER);
 
         AuthMethodPickerActivity authMethodPickerActivity =
