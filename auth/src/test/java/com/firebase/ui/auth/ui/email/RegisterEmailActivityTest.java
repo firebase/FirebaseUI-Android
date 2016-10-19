@@ -98,7 +98,7 @@ public class RegisterEmailActivityTest {
 
     @Test
     @Config(shadows = {ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
-    public void testSignupButton_successfulRegisterationShouldContinueToSaveCredentials() {
+    public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
         TestHelper.initializeApp(RuntimeEnvironment.application);
         RegisterEmailActivity registerEmailActivity = createActivity(TestConstants.EMAIL);
 
