@@ -1,11 +1,11 @@
-package com.firebase.ui.auth.util;
+package com.firebase.ui.auth.test_helpers;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 
-import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.CountDownLatch;
@@ -29,16 +29,17 @@ public class SmartLockResult extends SmartLock {
                                         @Nullable String provider) {
         assertEquals(firebaseUser.getEmail(), TestConstants.EMAIL);
         assertEquals(firebaseUser.getDisplayName(), TestConstants.NAME);
-        assertEquals(firebaseUser.getPhotoUrl().toString(), TestConstants.PHOTO_URL);
+        assertEquals(firebaseUser.getPhotoUrl() != null
+                             ? firebaseUser.getPhotoUrl().toString() : null, TestConstants.PHOTO_URL);
         assertEquals(password, mPassword);
         assertEquals(provider, mProvider);
         mCountDownLatch.countDown();
     }
 
-    public static SmartLockResult assertSmartLockResult(FragmentActivity activity,
-                                             String tag,
-                                             String password,
-                                             String provider) {
+    public static SmartLockResult newInstance(FragmentActivity activity,
+                                              String tag,
+                                              String password,
+                                              String provider) {
         SmartLockResult result = new SmartLockResult();
 
         result.mCountDownLatch = new CountDownLatch(1);

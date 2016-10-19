@@ -27,10 +27,12 @@ import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
+import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.junit.Before;
@@ -43,6 +45,7 @@ import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
 
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -103,7 +106,7 @@ public class RegisterEmailActivityTest {
         when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
         when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
         when(mockFirebaseUser.updateProfile((UserProfileChangeRequest) Mockito.anyObject()))
-                .thenReturn(new AutoCompleteTask<Void>(null, true, null));
+                .thenReturn(new AutoCompleteTask<>(TestConstants.PHOTO_URL, true, null));
 
         when(ActivityHelperShadow.firebaseAuth
                      .createUserWithEmailAndPassword(
@@ -113,8 +116,18 @@ public class RegisterEmailActivityTest {
                                                    true,
                                                    null));
 
+        SmartLockResult result = SmartLockResult.newInstance(registerEmailActivity,
+                                                             "RegisterEmailActivity",
+                                                             TestConstants.PHOTO_URL,
+                                                             GoogleAuthProvider.PROVIDER_ID);
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
+
+        try {
+            result.await();
+        } catch (InterruptedException e) {
+            assertTrue("Interrupted waiting for result", false);
+        }
     }
 }

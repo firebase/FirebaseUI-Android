@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
@@ -34,7 +33,7 @@ import com.firebase.ui.auth.test_helpers.LoginManagerShadow;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
-import com.firebase.ui.auth.util.SmartLockResult;
+import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -142,10 +141,22 @@ public class AuthMethodPickerActivityTest {
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         new FakeAuthResult(mockFirebaseUser), true, null));
 
+
+        SmartLockResult result = SmartLockResult.newInstance(authMethodPickerActivity,
+                                                             "AuthMethodPicker",
+                                                             null,
+                                                             FacebookAuthProvider.PROVIDER_ID);
+
         Button facebookButton =
                 (Button) authMethodPickerActivity.findViewById(R.id.facebook_button);
         assertNotNull(facebookButton);
         facebookButton.performClick();
+
+        try {
+            result.await();
+        } catch (InterruptedException e) {
+            assertTrue("Interrupted waiting for result", false);
+        }
     }
 
     @Test
@@ -164,10 +175,10 @@ public class AuthMethodPickerActivityTest {
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         new FakeAuthResult(mockFirebaseUser), true, null));
 
-        SmartLockResult result = SmartLockResult.assertSmartLockResult(authMethodPickerActivity,
-                                                                       "AuthMethodPicker",
-                                                                       null,
-                                                                       GoogleAuthProvider.PROVIDER_ID);
+        SmartLockResult result = SmartLockResult.newInstance(authMethodPickerActivity,
+                                                             "AuthMethodPicker",
+                                                             null,
+                                                             GoogleAuthProvider.PROVIDER_ID);
 
         Button googleButton =
                 (Button) authMethodPickerActivity.findViewById(R.id.google_button);
