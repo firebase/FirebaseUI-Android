@@ -32,7 +32,6 @@ import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.junit.Before;
@@ -105,8 +104,9 @@ public class RegisterEmailActivityTest {
         FirebaseUser mockFirebaseUser = Mockito.mock(FirebaseUser.class);
         when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
         when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
-        when(mockFirebaseUser.updateProfile((UserProfileChangeRequest) Mockito.anyObject()))
-                .thenReturn(new AutoCompleteTask<>(TestConstants.PHOTO_URL, true, null));
+        when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
+        when(mockFirebaseUser.updateProfile((UserProfileChangeRequest) Mockito.any()))
+                .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
         when(ActivityHelperShadow.firebaseAuth
                      .createUserWithEmailAndPassword(
@@ -119,7 +119,7 @@ public class RegisterEmailActivityTest {
         SmartLockResult result = SmartLockResult.newInstance(registerEmailActivity,
                                                              "RegisterEmailActivity",
                                                              TestConstants.PASSWORD,
-                                                             GoogleAuthProvider.PROVIDER_ID);
+                                                             null);
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();

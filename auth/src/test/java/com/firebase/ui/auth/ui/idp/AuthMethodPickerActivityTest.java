@@ -30,10 +30,10 @@ import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.test_helpers.GoogleProviderShadow;
 import com.firebase.ui.auth.test_helpers.LoginManagerShadow;
+import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
-import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -44,6 +44,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
@@ -56,7 +57,6 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.when;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
@@ -137,7 +137,7 @@ public class AuthMethodPickerActivityTest {
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
         when(mockFirebaseUser.getProviders())
                 .thenReturn(Arrays.asList(FacebookAuthProvider.PROVIDER_ID));
-        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) anyObject()))
+        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) Mockito.any()))
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         new FakeAuthResult(mockFirebaseUser), true, null));
 
@@ -171,7 +171,7 @@ public class AuthMethodPickerActivityTest {
         when(mockFirebaseUser.getProviders())
                 .thenReturn(Arrays.asList(GoogleAuthProvider.PROVIDER_ID));
 
-        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) anyObject()))
+        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) Mockito.any()))
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         new FakeAuthResult(mockFirebaseUser), true, null));
 
@@ -205,7 +205,7 @@ public class AuthMethodPickerActivityTest {
         when(mockFirebaseUser.getProviders())
                 .thenReturn(Arrays.asList(TwitterAuthProvider.PROVIDER_ID));
 
-        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) anyObject()))
+        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) Mockito.any()))
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         new FakeAuthResult(mockFirebaseUser), true, null));
         Button twitterButton =
