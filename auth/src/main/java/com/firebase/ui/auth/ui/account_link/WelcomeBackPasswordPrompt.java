@@ -28,8 +28,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.AuthCredentialHelper;
@@ -58,7 +58,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     private String mEmail;
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
-    private IDPResponse mIdpResponse;
+    private IdpResponse mIdpResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,7 +172,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     public static Intent createIntent(
             Context context,
             FlowParameters flowParams,
-            IDPResponse response) {
+            IdpResponse response) {
         return ActivityHelper.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }

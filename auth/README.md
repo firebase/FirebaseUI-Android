@@ -199,6 +199,7 @@ startActivityForResult(
 
 #### Handling the sign-in response
 
+#####Response codes
 The authentication flow only provides three response codes:
 `Activity.RESULT_OK` if a user is signed in, `Activity.RESULT_CANCELLED` if
 sign in failed, and `ResultCodes.RESULT_NO_NETWORK` if sign in failed due to a lack of network connectivity.
@@ -238,6 +239,23 @@ Alternatively, you can register a listener for authentication state changes;
 see the
 [Firebase Auth documentation](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user)
 for more information.
+
+##### ID Tokens
+To retrieve the ID token that the IDP returned, you can extract an `IdpResponse` from the result
+Intent.
+
+```java
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (resultCode == RESULT_OK) {
+        IdpResponse idpResponse = IdpResponse.fromResultIntent(data);
+        startActivity(new Intent(this, WelcomeBackActivity.class)
+                .putExtra("my_token". idpResponse.getIdpToken()));
+    }
+}
+```
+
+Twitter also returns an AuthToken Secret which can be accessed with `idpResponse.getIdpSecret()`.
 
 ### Sign out
 

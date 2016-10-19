@@ -28,8 +28,9 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.IdpProvider;
+import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.AuthCredentialHelper;
@@ -45,13 +46,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class WelcomeBackIDPPrompt extends AppCompatBase
-        implements View.OnClickListener, IDPProvider.IDPCallback {
+public class WelcomeBackIdpPrompt extends AppCompatBase
+        implements View.OnClickListener, IdpCallback {
 
     private static final String TAG = "WelcomeBackIDPPrompt";
-    private IDPProvider mIdpProvider;
+    private IdpProvider mIdpProvider;
     private String mProviderId;
-    private IDPResponse mPrevIdpResponse;
+    private IdpResponse mPrevIdpResponse;
     private AuthCredential mPrevCredential;
 
 
@@ -60,8 +61,6 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         super.onCreate(savedInstanceState);
         mProviderId = getProviderIdFromIntent();
         mPrevIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
-        FlowParameters flowParameters =
-                getIntent().getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         mIdpProvider = null;
@@ -102,7 +101,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             @Override
             public void onClick(View view) {
                 mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
-                mIdpProvider.startLogin(WelcomeBackIDPPrompt.this);
+                mIdpProvider.startLogin(WelcomeBackIdpPrompt.this);
             }
         });
     }
@@ -124,7 +123,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
     }
 
     @Override
-    public void onSuccess(IDPResponse idpResponse) {
+    public void onSuccess(IdpResponse idpResponse) {
         next(idpResponse);
     }
 
@@ -142,7 +141,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
         return getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
     }
 
-    private void next(IDPResponse newIdpResponse) {
+    private void next(final IdpResponse newIdpResponse) {
         if (newIdpResponse == null) {
             return; // do nothing
         }
@@ -170,10 +169,11 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
                                 .signInWithCredential(mPrevCredential)
                                 .addOnFailureListener(new TaskFailureLogger(
                                         TAG, "Error signing in with previous credential"))
-                                .addOnCompleteListener(new FinishListener());
+                                .addOnCompleteListener(new FinishListener(newIdpResponse));
                     } else {
                         mActivityHelper.dismissDialog();
-                        finish(Activity.RESULT_OK, new Intent());
+                        finish(Activity.RESULT_OK, new Intent().putExtra(
+                                ExtraConstants.EXTRA_IDP_RESPONSE, newIdpResponse));
                     }
                 }
             }).addOnFailureListener(
@@ -184,7 +184,7 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             authResultTask
                     .addOnFailureListener(
                             new TaskFailureLogger(TAG, "Error linking with credential"))
-                    .addOnCompleteListener(new FinishListener());
+                    .addOnCompleteListener(new FinishListener(newIdpResponse));
         }
     }
 
@@ -192,19 +192,24 @@ public class WelcomeBackIDPPrompt extends AppCompatBase
             Context context,
             FlowParameters flowParams,
             String providerId,
-            IDPResponse idpResponse,
+            IdpResponse idpResponse,
             String email) {
-        return ActivityHelper.createBaseIntent(context, WelcomeBackIDPPrompt.class, flowParams)
+        return ActivityHelper.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_PROVIDER, providerId)
                 .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, idpResponse)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 
     private class FinishListener implements OnCompleteListener {
-        @Override
+        private final IdpResponse mIdpResponse;
+
+        FinishListener(IdpResponse idpResponse) {
+            mIdpResponse = idpResponse;
+        }
         public void onComplete(@NonNull Task task) {
             mActivityHelper.dismissDialog();
-            finish(Activity.RESULT_OK, new Intent());
+            finish(Activity.RESULT_OK,
+                    new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mIdpResponse));
         }
     }
 }

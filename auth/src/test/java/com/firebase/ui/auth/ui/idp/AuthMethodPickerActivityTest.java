@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
@@ -222,7 +223,10 @@ public class AuthMethodPickerActivityTest {
                 nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PROFILE_PICTURE_URI),
                 TestConstants.PHOTO_URL);
         assertEquals(
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PROVIDER),
+                ((IdpResponse) nextIntent
+                        .intent
+                        .getExtras()
+                        .getParcelable(ExtraConstants.EXTRA_IDP_RESPONSE)).getProviderType(),
                 provider);
         assertEquals(
                 nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD),
