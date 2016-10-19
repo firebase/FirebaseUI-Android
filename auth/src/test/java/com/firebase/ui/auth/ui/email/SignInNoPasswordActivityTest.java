@@ -76,8 +76,8 @@ public class SignInNoPasswordActivityTest {
                 .findViewById(R.id.input_layout_email);
 
         assertEquals(
-                emailLayout.getError().toString(),
-                noPasswordActivity.getString(R.string.invalid_email_address));
+                noPasswordActivity.getString(R.string.invalid_email_address),
+                emailLayout.getError().toString());
     }
 
     private SignInNoPasswordActivity createActivity(String email) {
@@ -136,8 +136,8 @@ public class SignInNoPasswordActivityTest {
         ShadowActivity.IntentForResult nextIntent =
                 shadowActivity.getNextStartedActivityForResult();
         assertEquals(
-                nextIntent.intent.getComponent().getClassName(),
-                SignInActivity.class.getName());
+                SignInActivity.class.getName(),
+                nextIntent.intent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
                 nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));

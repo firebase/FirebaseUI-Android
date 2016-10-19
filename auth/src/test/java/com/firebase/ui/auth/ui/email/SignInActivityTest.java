@@ -30,6 +30,7 @@ import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.junit.Before;
@@ -110,7 +111,7 @@ public class SignInActivityTest {
         when(ActivityHelperShadow.firebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
-                    new AutoCompleteTask<>(new FakeAuthResult(mockFirebaseUser), true, null));
+                    new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser), true, null));
         when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
         when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
         when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);

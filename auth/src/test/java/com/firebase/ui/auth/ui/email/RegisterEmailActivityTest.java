@@ -31,6 +31,7 @@ import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -82,17 +83,19 @@ public class RegisterEmailActivityTest {
                 .findViewById(R.id.password_layout);
 
         assertEquals(
-                nameLayout.getError().toString(),
-                registerEmailActivity.getString(R.string.required_field));
+                registerEmailActivity.getString(R.string.required_field),
+                nameLayout.getError().toString());
         assertEquals(
-                passwordLayout.getError().toString(),
-                String.format(registerEmailActivity.getString(R.string.password_length),
-                              registerEmailActivity.getResources().getInteger(R.integer.min_password_length)));
+                String.format(
+                        registerEmailActivity.getString(R.string.password_length),
+                        registerEmailActivity.getResources().getInteger(R.integer.min_password_length)
+                ),
+                passwordLayout.getError().toString());
     }
 
     @Test
     @Config(shadows = {ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
-    public void testSignupButton_successfulRegisterationShouldContinueToSaveCredentials() {
+    public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
         TestHelper.initializeApp(RuntimeEnvironment.application);
         RegisterEmailActivity registerEmailActivity = createActivity(TestConstants.EMAIL);
 
@@ -112,7 +115,7 @@ public class RegisterEmailActivityTest {
                      .createUserWithEmailAndPassword(
                              TestConstants.EMAIL,
                              TestConstants.PASSWORD))
-                .thenReturn(new AutoCompleteTask<>(new FakeAuthResult(mockFirebaseUser),
+                .thenReturn(new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser),
                                                    true,
                                                    null));
 
