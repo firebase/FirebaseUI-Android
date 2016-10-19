@@ -33,6 +33,7 @@ import com.firebase.ui.auth.test_helpers.LoginManagerShadow;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.firebase.ui.auth.util.SmartLockResult;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -84,8 +85,8 @@ public class AuthMethodPickerActivityTest {
                 createActivity(providers);
 
         assertEquals(providers.size(),
-                ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
-                        .getChildCount());
+                     ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
+                             .getChildCount());
         Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
         assertEquals(View.VISIBLE, emailButton.getVisibility());
     }
@@ -101,8 +102,8 @@ public class AuthMethodPickerActivityTest {
                 createActivity(providers);
 
         assertEquals(providers.size() + 1, // plus one due to the invisible email button
-                ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
-                        .getChildCount());
+                     ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
+                             .getChildCount());
         Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
         assertEquals(View.GONE, emailButton.getVisibility());
     }
@@ -144,10 +145,6 @@ public class AuthMethodPickerActivityTest {
                 (Button) authMethodPickerActivity.findViewById(R.id.facebook_button);
         assertNotNull(facebookButton);
         facebookButton.performClick();
-
-        ShadowActivity.IntentForResult nextIntent =
-                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
-        verifySaveCredentialIntent(nextIntent, FacebookAuthProvider.PROVIDER_ID);
     }
 
     @Test
@@ -165,15 +162,23 @@ public class AuthMethodPickerActivityTest {
         when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) anyObject()))
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         new FakeAuthResult(mockFirebaseUser), true, null));
+
+        SmartLockResult result = SmartLockResult.assertSmartLockResult(authMethodPickerActivity,
+                                                                       "CredentialSignInHandler",
+                                                                       null,
+                                                                       GoogleAuthProvider.PROVIDER_ID);
+
         Button googleButton =
                 (Button) authMethodPickerActivity.findViewById(R.id.google_button);
 
         assertNotNull(googleButton);
         googleButton.performClick();
-        ShadowActivity.IntentForResult nextIntent =
-                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
 
-        verifySaveCredentialIntent(nextIntent, GoogleAuthProvider.PROVIDER_ID);
+        try {
+            result.await();
+        } catch (InterruptedException e) {
+            assertTrue("Interrupted waiting for result", false);
+        }
     }
 
     @Test
@@ -200,30 +205,6 @@ public class AuthMethodPickerActivityTest {
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
 
         assertTrue(nextIntent.intent.getComponent().getClassName().contains("com.twitter.sdk"));
-    }
-
-
-    private static void verifySaveCredentialIntent(
-            ShadowActivity.IntentForResult nextIntent,
-            String provider) {
-//        assertEquals(
-//                SaveCredentialsActivity.class.getName(),
-//                nextIntent.intent.getComponent().getClassName());
-//        assertEquals(
-//                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL),
-//                TestConstants.EMAIL);
-//        assertEquals(
-//                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_NAME),
-//                TestConstants.NAME);
-//        assertEquals(
-//                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PROFILE_PICTURE_URI),
-//                TestConstants.PHOTO_URL);
-//        assertEquals(
-//                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PROVIDER),
-//                provider);
-//        assertEquals(
-//                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD),
-//                null);
     }
 
     private AuthMethodPickerActivity createActivity(List<String> providers) {

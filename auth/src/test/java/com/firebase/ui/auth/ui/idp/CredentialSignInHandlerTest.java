@@ -99,7 +99,6 @@ public class CredentialSignInHandlerTest {
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
-                smartLock,
                 RC_ACCOUNT_LINK,
                 idpResponse);
         Context mockContext = mock(Context.class);
@@ -117,7 +116,6 @@ public class CredentialSignInHandlerTest {
 
         verify(smartLock).saveCredentialsOrFinish(mockActivity,
                                                   mockActivityHelper,
-                                                  credentialSignInHandler,
                                                   mockFirebaseUser,
                                                   null,
                                                   GoogleAuthProvider.PROVIDER_ID);
@@ -135,7 +133,6 @@ public class CredentialSignInHandlerTest {
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
-                new SmartLock(),
                 RC_ACCOUNT_LINK,
                 idpResponse);
 
@@ -184,7 +181,6 @@ public class CredentialSignInHandlerTest {
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
-                new SmartLock(),
                 RC_ACCOUNT_LINK,
                 idpResponse);
 

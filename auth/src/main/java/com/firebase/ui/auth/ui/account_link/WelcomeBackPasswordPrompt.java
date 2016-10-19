@@ -49,7 +49,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming
  * the password before initiating a link.
  */
-public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener, SmartLock.SmartLockResultListener {
+public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "WelcomeBackPassword";
     private static final StyleSpan BOLD = new StyleSpan(Typeface.BOLD);
 
@@ -64,7 +64,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_back_password_prompt_layout);
 
-        mSmartLock = SmartLock.getInstance(this);
+//        mSmartLock = SmartLock.getInstance(this);
 
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
@@ -144,7 +144,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                                 mSmartLock.saveCredentialsOrFinish(
                                                         WelcomeBackPasswordPrompt.this,
                                                         mActivityHelper,
-                                                        WelcomeBackPasswordPrompt.this,
                                                         authResult.getUser(),
                                                         password,
                                                         null /* provider */);
@@ -159,11 +158,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                         mPasswordLayout.setError(error);
                     }
                 });
-    }
-
-    @Override
-    public void onCredentialsSaved(int resultCode) {
-        finish(RESULT_OK, getIntent());
     }
 
     public static Intent createIntent(

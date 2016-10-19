@@ -116,17 +116,5 @@ public class RegisterEmailActivityTest {
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
-
-//        Intent smartLockIntent = SmartLock.getInstance(registerEmailActivity).getIntentForTest();
-//        assertNotNull(smartLockIntent);
-//        assertEquals(
-//                TestConstants.EMAIL,
-//                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
-//        assertEquals(
-//                TestConstants.PASSWORD,
-//                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD));
-//        assertEquals(
-//                TestConstants.NAME,
-//                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_NAME));
     }
 }

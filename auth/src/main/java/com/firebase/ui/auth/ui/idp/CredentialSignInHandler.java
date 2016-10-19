@@ -35,26 +35,21 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.ProviderQueryResult;
 
-import static android.app.Activity.RESULT_OK;
-
-public class CredentialSignInHandler implements OnCompleteListener<AuthResult>, SmartLock.SmartLockResultListener {
+public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private final static String TAG = "CredentialSignInHandler";
 
     private AppCompatBase mActivity;
     private ActivityHelper mActivityHelper;
-    private SmartLock mSmartLock;
     private int mAccountLinkResultCode;
     private IDPResponse mResponse;
 
     public CredentialSignInHandler(
             AppCompatBase activity,
             ActivityHelper activityHelper,
-            SmartLock smartLock,
             int accountLinkResultCode,
             IDPResponse response) {
         mActivity = activity;
         mActivityHelper = activityHelper;
-        mSmartLock = smartLock;
         mAccountLinkResultCode = accountLinkResultCode;
         mResponse = response;
     }
@@ -63,12 +58,11 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult>, 
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
             FirebaseUser firebaseUser = task.getResult().getUser();
-            mSmartLock.saveCredentialsOrFinish(mActivity,
-                                               mActivityHelper,
-                                               this,
-                                               firebaseUser,
-                                               null /* password */,
-                                               mResponse.getProviderType());
+            SmartLock.getInstance(mActivity, TAG).saveCredentialsOrFinish(mActivity,
+                                                                          mActivityHelper,
+                                                                          firebaseUser,
+                                                                          null /* password */,
+                                                                          mResponse.getProviderType());
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 final String email = mResponse.getEmail();
@@ -91,11 +85,6 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult>, 
                       task.getException());
             }
         }
-    }
-
-    @Override
-    public void onCredentialsSaved(int resultCode) {
-        mActivity.finish(RESULT_OK, mActivity.getIntent());
     }
 
     private class StartWelcomeBackFlow implements OnSuccessListener<ProviderQueryResult> {

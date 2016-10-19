@@ -48,17 +48,12 @@ import static android.app.Activity.RESULT_OK;
 
 public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCallbacks, ResultCallback<Status>,
         GoogleApiClient.OnConnectionFailedListener {
-    public interface SmartLockResultListener {
-        void onCredentialsSaved(int resultCode);
-    }
-
     private static final String TAG = "CredentialsSaveBase";
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
 
     private AppCompatBase mActivity;
     private ActivityHelper mActivityHelper;
-    private SmartLockResultListener mListener;
     private String mName;
     private String mEmail;
     private String mPassword;
@@ -93,7 +88,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                     builder.setAccountType(translatedProvider);
                 } else {
                     Log.e(TAG, "Unable to save null credential!");
-                    mListener.onCredentialsSaved(RESULT_FIRST_USER);
+                    finish(RESULT_FIRST_USER);
                     return;
                 }
             }
@@ -202,7 +197,7 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
     }
 
     private void finish(int resultCode) {
-        mListener.onCredentialsSaved(resultCode);
+        mActivity.finish(RESULT_OK, mActivity.getIntent());
     }
 
     /**
@@ -216,13 +211,11 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
      */
     public void saveCredentialsOrFinish(AppCompatBase activity,
                                         ActivityHelper helper,
-                                        SmartLockResultListener listener,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
         mActivity = activity;
         mActivityHelper = helper;
-        mListener = listener;
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
@@ -256,16 +249,16 @@ public class SmartLock extends Fragment implements GoogleApiClient.ConnectionCal
                 .build();
     }
 
-    public static SmartLock getInstance(AppCompatBase activity) {
+    public static SmartLock getInstance(AppCompatBase activity, String tag) {
         SmartLock result;
 
         FragmentManager fm = activity.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        Fragment fragment = fm.findFragmentByTag(TAG);
+        Fragment fragment = fm.findFragmentByTag(tag);
         if (fragment == null || !(fragment instanceof SmartLock)) {
             result = new SmartLock();
-            ft.add(result, TAG).disallowAddToBackStack().commit();
+            ft.add(result, tag).disallowAddToBackStack().commit();
         } else {
             result = (SmartLock) fragment;
         }

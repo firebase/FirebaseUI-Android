@@ -42,10 +42,9 @@ import com.google.firebase.auth.AuthResult;
 /**
  * Activity to sign in with email and password.
  */
-public class SignInActivity extends AppCompatBase implements View.OnClickListener, SmartLock.SmartLockResultListener {
+public class SignInActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "SignInActivity";
 
-    private SmartLock mSmartLock;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EmailFieldValidator mEmailValidator;
@@ -55,8 +54,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in_layout);
-
-        mSmartLock = SmartLock.getInstance(this);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
@@ -69,7 +66,8 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
+        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(
+                false);
         ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
@@ -100,13 +98,13 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         // Save credential in SmartLock (if enabled)
-                        SmartLock.getInstance(SignInActivity.this).saveCredentialsOrFinish(
-                                SignInActivity.this,
-                                mActivityHelper,
-                                SignInActivity.this,
-                                authResult.getUser(),
-                                password,
-                                null /* provider */);
+                        SmartLock.getInstance(SignInActivity.this, TAG)
+                                .saveCredentialsOrFinish(
+                                        SignInActivity.this,
+                                        mActivityHelper,
+                                        authResult.getUser(),
+                                        password,
+                                        null /* provider */);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -121,11 +119,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         mActivityHelper.dismissDialog();
                     }
                 });
-    }
-
-    @Override
-    public void onCredentialsSaved(int resultCode) {
-        finish(RESULT_OK, getIntent());
     }
 
     @Override

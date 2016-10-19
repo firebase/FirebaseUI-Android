@@ -36,7 +36,6 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.EmailFlowUtil;
-import com.firebase.ui.auth.util.SmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,19 +58,16 @@ import java.util.List;
 public class AuthMethodPickerActivity
         extends IDPBaseActivity
         implements IDPProvider.IDPCallback, View.OnClickListener {
+    private static final String TAG = "AuthMethodPicker";
     private static final int RC_EMAIL_FLOW = 2;
     private static final int RC_ACCOUNT_LINK = 3;
-    private static final String TAG = "AuthMethodPicker";
 
-    private SmartLock mSmartLock;
     private ArrayList<IDPProvider> mIdpProviders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
-
-        mSmartLock = SmartLock.getInstance(this);
 
         findViewById(R.id.email_provider).setOnClickListener(this);
 
@@ -90,7 +86,7 @@ public class AuthMethodPickerActivity
         mIdpProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providers) {
             switch (idpConfig.getProviderId()) {
-                case AuthUI.FACEBOOK_PROVIDER :
+                case AuthUI.FACEBOOK_PROVIDER:
                     mIdpProviders.add(new FacebookProvider(this, idpConfig));
                     break;
                 case AuthUI.GOOGLE_PROVIDER:
@@ -111,7 +107,7 @@ public class AuthMethodPickerActivity
         }
 
         LinearLayout btnHolder = (LinearLayout) findViewById(R.id.btn_holder);
-        for (final IDPProvider provider: mIdpProviders) {
+        for (final IDPProvider provider : mIdpProviders) {
             View loginButton = null;
             switch (provider.getProviderId()) {
                 case GoogleAuthProvider.PROVIDER_ID:
@@ -153,7 +149,7 @@ public class AuthMethodPickerActivity
         } else if (requestCode == RC_ACCOUNT_LINK) {
             finish(resultCode, new Intent());
         } else {
-            for(IDPProvider provider : mIdpProviders) {
+            for (IDPProvider provider : mIdpProviders) {
                 provider.onActivityResult(requestCode, resultCode, data);
             }
         }
@@ -171,7 +167,6 @@ public class AuthMethodPickerActivity
                 .addOnCompleteListener(new CredentialSignInHandler(
                         AuthMethodPickerActivity.this,
                         mActivityHelper,
-                        mSmartLock,
                         RC_ACCOUNT_LINK,
                         response));
     }

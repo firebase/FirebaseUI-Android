@@ -21,7 +21,6 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.util.CredentialsAPI;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperImpl;
-import com.firebase.ui.auth.util.SmartLock;
 
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricTestRunner;
@@ -44,7 +43,6 @@ public class CustomRobolectricGradleTestRunner extends RobolectricTestRunner {
         builder.addInstrumentedClass(FacebookProvider.class.getName());
         builder.addInstrumentedClass(GoogleProvider.class.getName());
         builder.addInstrumentedClass(LoginManager.class.getName());
-        builder.addInstrumentedClass(SmartLock.class.getName());
 
         return builder.build();
     }
