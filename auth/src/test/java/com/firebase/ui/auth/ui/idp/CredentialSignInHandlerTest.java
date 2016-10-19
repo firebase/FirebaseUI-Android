@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,7 +34,6 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.ui.email.SignInActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.firebase.ui.auth.util.SmartLock;
@@ -55,21 +53,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -78,7 +68,6 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 23, shadows = {ActivityHelperShadow.class})
 public class CredentialSignInHandlerTest {
     private static final int RC_ACCOUNT_LINK = 3;
-    private static final int RC_SAVE_CREDENTIALS = 4;
     private static final String LINKING_ERROR = "ERROR_TEST_LINKING";
     private static final String LINKING_EXPLANATION = "Test explanation";
 
@@ -126,48 +115,12 @@ public class CredentialSignInHandlerTest {
         when(mockActivityHelper.getFlowParams()).thenReturn(flowParams);
         credentialSignInHandler.onComplete(signInTask);
 
-        verify(smartLock).saveCredentialsOrFinish(mockActivity, mockActivityHelper, credentialSignInHandler, mockFirebaseUser, null, GoogleAuthProvider.PROVIDER_ID);
-
-        SmartLock smart = new SmartLock();
-        SmartLock.SmartLockResultListener resultListener = mock(SmartLock.SmartLockResultListener.class);
-
-        final CountDownLatch latch = new CountDownLatch(1);
-        Mockito.doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                latch.countDown();
-                return null;
-            }
-        }).when(resultListener).onCredentialsSaved(Activity.RESULT_OK);
-
-
-        SignInActivity s = createActivity();
-
-        try {
-            smart.saveCredentialsOrFinish(s,
-                                          new ActivityHelper(mockActivity, mockActivity.getIntent()),
-                                          resultListener,
-                                          mockFirebaseUser,
-                                          TestConstants.PASSWORD,
-                                          GoogleAuthProvider.PROVIDER_ID);
-            assertTrue(latch.await(10, TimeUnit.SECONDS));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    private SignInActivity createActivity() {
-        Intent startIntent = SignInActivity.createIntent(
-                RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(
-                        Collections.<String>emptyList()),
-                null);
-        return Robolectric
-                .buildActivity(SignInActivity.class)
-                .withIntent(startIntent)
-                .create()
-                .visible()
-                .get();
+        verify(smartLock).saveCredentialsOrFinish(mockActivity,
+                                                  mockActivityHelper,
+                                                  credentialSignInHandler,
+                                                  mockFirebaseUser,
+                                                  null,
+                                                  GoogleAuthProvider.PROVIDER_ID);
     }
 
     @Test

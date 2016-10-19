@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
@@ -29,18 +28,12 @@ import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
-import com.firebase.ui.auth.util.SmartLock;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
@@ -48,12 +41,9 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Collections;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,7 +51,6 @@ import static org.mockito.Mockito.when;
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23)
 public class SignInActivityTest {
-
     @Before
     public void setUp() {
         TestHelper.initializeApp(RuntimeEnvironment.application);
@@ -129,29 +118,5 @@ public class SignInActivityTest {
         verify(ActivityHelperShadow.firebaseAuth).signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
-
-        SmartLock smart = new SmartLock();
-        SmartLock.SmartLockResultListener resultListener = mock(SmartLock.SmartLockResultListener.class);
-
-        final CountDownLatch latch = new CountDownLatch(1);
-        Mockito.doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                latch.countDown();
-                return null;
-            }
-        }).when(resultListener).onCredentialsSaved(Activity.RESULT_OK);
-
-        try {
-            smart.saveCredentialsOrFinish(signInActivity,
-                                          new ActivityHelper(signInActivity, signInActivity.getIntent()),
-                                          resultListener,
-                                          mockFirebaseUser,
-                                          TestConstants.PASSWORD,
-                                          GoogleAuthProvider.PROVIDER_ID);
-            assertTrue(latch.await(10, TimeUnit.SECONDS));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
     }
 }
