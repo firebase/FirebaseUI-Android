@@ -32,6 +32,7 @@ import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -117,7 +118,7 @@ public class RegisterEmailActivityTest {
                         TestConstants.EMAIL,
                         TestConstants.PASSWORD))
                 .thenReturn(
-                        new AutoCompleteTask<>(
+                        new AutoCompleteTask<AuthResult>(
                                 new FakeAuthResult(mockFirebaseUser),
                                 true,
                                 null));
