@@ -25,12 +25,13 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.firebase.FirebaseApp;
 
-import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+
+import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -89,9 +90,9 @@ public class AuthUITest {
         FlowParameters flowParameters = startIntent.getParcelableExtra(
                 ExtraConstants.EXTRA_FLOW_PARAMS);
 
-        assertEquals(flowParameters.providerInfo.size(), 2);
-        assertEquals(flowParameters.appName, mFirebaseApp.getName());
-        assertEquals(flowParameters.termsOfServiceUrl, TestConstants.TOS_URL);
-        assertEquals(flowParameters.themeId, AuthUI.getDefaultTheme());
+        assertEquals(2, flowParameters.providerInfo.size());
+        assertEquals(mFirebaseApp.getName(), flowParameters.appName);
+        assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
+        assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);
     }
 }

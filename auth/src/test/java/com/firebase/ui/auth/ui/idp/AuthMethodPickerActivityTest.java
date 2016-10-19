@@ -214,23 +214,23 @@ public class AuthMethodPickerActivityTest {
                 SaveCredentialsActivity.class.getName(),
                 nextIntent.intent.getComponent().getClassName());
         assertEquals(
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL),
-                TestConstants.EMAIL);
+                TestConstants.EMAIL,
+                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
         assertEquals(
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_NAME),
-                TestConstants.NAME);
+                TestConstants.NAME,
+                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_NAME));
         assertEquals(
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PROFILE_PICTURE_URI),
-                TestConstants.PHOTO_URL);
+                TestConstants.PHOTO_URL,
+                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PROFILE_PICTURE_URI));
         assertEquals(
+                provider,
                 ((IdpResponse) nextIntent
                         .intent
                         .getExtras()
-                        .getParcelable(ExtraConstants.EXTRA_IDP_RESPONSE)).getProviderType(),
-                provider);
+                        .getParcelable(ExtraConstants.EXTRA_IDP_RESPONSE)).getProviderType());
         assertEquals(
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD),
-                null);
+                null,
+                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD));
     }
 
     private AuthMethodPickerActivity createActivity(List<String> providers) {
