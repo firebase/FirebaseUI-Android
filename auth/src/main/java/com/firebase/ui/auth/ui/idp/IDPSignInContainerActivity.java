@@ -28,6 +28,7 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -86,6 +87,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
                 .addOnCompleteListener(new CredentialSignInHandler(
                         IDPSignInContainerActivity.this,
                         mActivityHelper,
+                        SmartLock.getInstance(IDPSignInContainerActivity.this, TAG),
                         RC_WELCOME_BACK_IDP,
                         response));
     }

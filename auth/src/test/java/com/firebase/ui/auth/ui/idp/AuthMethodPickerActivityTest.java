@@ -164,7 +164,7 @@ public class AuthMethodPickerActivityTest {
                         new FakeAuthResult(mockFirebaseUser), true, null));
 
         SmartLockResult result = SmartLockResult.assertSmartLockResult(authMethodPickerActivity,
-                                                                       "CredentialSignInHandler",
+                                                                       "AuthMethodPicker",
                                                                        null,
                                                                        GoogleAuthProvider.PROVIDER_ID);
 

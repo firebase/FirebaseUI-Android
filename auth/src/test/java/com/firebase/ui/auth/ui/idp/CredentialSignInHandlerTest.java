@@ -99,6 +99,7 @@ public class CredentialSignInHandlerTest {
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
+                smartLock,
                 RC_ACCOUNT_LINK,
                 idpResponse);
         Context mockContext = mock(Context.class);
@@ -133,6 +134,7 @@ public class CredentialSignInHandlerTest {
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
+                null,
                 RC_ACCOUNT_LINK,
                 idpResponse);
 
@@ -181,6 +183,7 @@ public class CredentialSignInHandlerTest {
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
+                null,
                 RC_ACCOUNT_LINK,
                 idpResponse);
 

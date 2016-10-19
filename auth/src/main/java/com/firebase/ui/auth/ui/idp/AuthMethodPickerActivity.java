@@ -36,6 +36,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.EmailFlowUtil;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -167,6 +168,7 @@ public class AuthMethodPickerActivity
                 .addOnCompleteListener(new CredentialSignInHandler(
                         AuthMethodPickerActivity.this,
                         mActivityHelper,
+                        SmartLock.getInstance(AuthMethodPickerActivity.this, TAG),
                         RC_ACCOUNT_LINK,
                         response));
     }

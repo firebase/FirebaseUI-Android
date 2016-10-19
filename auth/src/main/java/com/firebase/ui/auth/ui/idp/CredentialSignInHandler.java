@@ -40,16 +40,19 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
 
     private AppCompatBase mActivity;
     private ActivityHelper mActivityHelper;
+    private SmartLock mSmartLock;
     private int mAccountLinkResultCode;
     private IDPResponse mResponse;
 
     public CredentialSignInHandler(
             AppCompatBase activity,
             ActivityHelper activityHelper,
+            SmartLock smartLock,
             int accountLinkResultCode,
             IDPResponse response) {
         mActivity = activity;
         mActivityHelper = activityHelper;
+        mSmartLock = smartLock;
         mAccountLinkResultCode = accountLinkResultCode;
         mResponse = response;
     }
@@ -58,11 +61,11 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
             FirebaseUser firebaseUser = task.getResult().getUser();
-            SmartLock.getInstance(mActivity, TAG).saveCredentialsOrFinish(mActivity,
-                                                                          mActivityHelper,
-                                                                          firebaseUser,
-                                                                          null /* password */,
-                                                                          mResponse.getProviderType());
+            mSmartLock.saveCredentialsOrFinish(mActivity,
+                                               mActivityHelper,
+                                               firebaseUser,
+                                               null /* password */,
+                                               mResponse.getProviderType());
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 final String email = mResponse.getEmail();
