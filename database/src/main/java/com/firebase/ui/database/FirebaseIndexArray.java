@@ -18,7 +18,6 @@ import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -32,21 +31,21 @@ import java.util.Set;
 class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = FirebaseIndexArray.class.getSimpleName();
 
-    private DatabaseReference mRef;
-    private Map<DatabaseReference, ValueEventListener> mRefs = new HashMap<>();
+    private Query mQuery;
+    private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
     private OnChangedListener mListener;
 
-    FirebaseIndexArray(Query keyRef, DatabaseReference dataRef) {
+    FirebaseIndexArray(Query keyRef, Query dataRef) {
         super(keyRef);
-        mRef = dataRef;
+        mQuery = dataRef;
     }
 
     @Override
     public void cleanup() {
         super.cleanup();
-        Set<DatabaseReference> refs = new HashSet<>(mRefs.keySet());
-        for (DatabaseReference ref : refs) {
+        Set<Query> refs = new HashSet<>(mRefs.keySet());
+        for (Query ref : refs) {
             ref.removeEventListener(mRefs.remove(ref));
         }
     }
@@ -85,7 +84,7 @@ class FirebaseIndexArray extends FirebaseArray {
         super.onChildAdded(keySnapshot, previousChildKey);
         super.setOnChangedListener(mListener);
 
-        DatabaseReference ref = mRef.child(keySnapshot.getKey());
+        Query ref = mQuery.getRef().child(keySnapshot.getKey());
         mRefs.put(ref, ref.addValueEventListener(new DataRefSnapshot()));
     }
 
@@ -100,7 +99,7 @@ class FirebaseIndexArray extends FirebaseArray {
     public void onChildRemoved(DataSnapshot keySnapshot) {
         String key = keySnapshot.getKey();
         int index = getIndexForKey(key);
-        mRef.child(key).removeEventListener(mRefs.remove(mRef.child(key)));
+        mQuery.getRef().child(key).removeEventListener(mRefs.remove(mQuery.getRef().child(key)));
 
         super.setOnChangedListener(null);
         super.onChildRemoved(keySnapshot);

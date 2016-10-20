@@ -2,7 +2,6 @@ package com.firebase.ui.database;
 
 import android.app.Activity;
 
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
 /**
@@ -44,26 +43,7 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
                                     Class<T> modelClass,
                                     int modelLayout,
                                     Query keyRef,
-                                    DatabaseReference dataRef) {
-        super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef, dataRef));
-    }
-
-    /**
-     * @param activity    The activity containing the ListView
-     * @param modelClass  Firebase will marshall the data at a location into an instance of a class that you provide
-     * @param modelLayout This is the layout used to represent a single list item. You will be responsible for populating an
-     *                    instance of the corresponding view with the data from an instance of modelClass.
-     * @param keyRef      The Firebase location containing the list of keys to be found in {@code dataRef}.
-     *                    Can also be a slice of a location, using some
-     *                    combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
-     * @param dataRef     The Firebase location to watch for data changes.
-     *                    Each key key found in {@code keyRef}'s location represents a list item in the {@code ListView}.
-     */
-    public FirebaseIndexListAdapter(Activity activity,
-                                    Class<T> modelClass,
-                                    int modelLayout,
-                                    DatabaseReference keyRef,
-                                    DatabaseReference dataRef) {
+                                    Query dataRef) {
         super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef, dataRef));
     }
 }
