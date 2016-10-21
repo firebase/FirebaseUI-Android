@@ -18,6 +18,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.firebase.ui.database.utils.Bean;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.Callable;
 
 import static com.firebase.ui.database.TestUtils.getAppInstance;
+import static com.firebase.ui.database.TestUtils.getBean;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
 
 @RunWith(AndroidJUnit4.class)
@@ -90,7 +92,6 @@ public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
                 return mArray.getCount() == 4;
             }
         });
-        assertTrue(false);
     }
 
     @Test
@@ -130,47 +131,11 @@ public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
             }
         }, new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                return getBean(mArray, 0).getNumber() == 3 && getBean(mArray,
-                                                                      1).getNumber() == 1 && getBean(
-                        mArray,
-                        2).getNumber() == 2;
+                return getBean(mArray, 0).getNumber() == 3
+                        && getBean(mArray, 1).getNumber() == 1
+                        && getBean(mArray, 2).getNumber() == 2;
                 //return isValuesEqual(mArray, new int[]{3, 1, 2});
             }
         });
-    }
-
-    private Bean getBean(FirebaseArray array, int index) {
-        return array.getItem(index).getValue(Bean.class);
-    }
-
-    private static class Bean {
-        private int number;
-        private String text;
-        private boolean bool;
-
-        public Bean() {
-        }
-
-        public Bean(int number, String text, boolean bool) {
-            this.number = number;
-            this.text = text;
-            this.bool = bool;
-        }
-
-        public Bean(int index) {
-            this(index, "Text " + index, index % 2 == 0);
-        }
-
-        public int getNumber() {
-            return number;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public boolean isBool() {
-            return bool;
-        }
     }
 }

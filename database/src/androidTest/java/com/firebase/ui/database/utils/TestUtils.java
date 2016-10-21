@@ -2,6 +2,7 @@ package com.firebase.ui.database;
 
 import android.content.Context;
 
+import com.firebase.ui.database.utils.Bean;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DatabaseError;
@@ -72,5 +73,9 @@ public class TestUtils {
             }
         }
         return true;
+    }
+
+    public static Bean getBean(FirebaseArray array, int index) {
+        return array.getItem(index).getValue(Bean.class);
     }
 }
