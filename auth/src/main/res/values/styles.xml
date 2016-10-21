@@ -175,6 +175,13 @@
     <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">?android:textColor</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.BodyTextNoColor" parent="FirebaseUI.Text.T08">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">16dp</item>
     </style>
 
