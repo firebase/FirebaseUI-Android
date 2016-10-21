@@ -1,9 +1,11 @@
 package com.firebase.ui.auth.util.smartlock;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +24,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
@@ -46,11 +49,13 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
 
 /**
  * Attempts to acquire a credential from Smart Lock for Passwords to sign in
@@ -78,6 +83,13 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setRetainInstance(true); // TODO: 10/16/2016 test low mem devices
+
+        if (!hasNetworkConnection()) {
+            Log.d(TAG, "No network connection");
+
+            finish(RESULT_NO_NETWORK, new Intent());
+            return;
+        }
 
         mFlowParams = getArguments().getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS);
 
@@ -192,11 +204,11 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
             case RC_IDP_SIGNIN:
             case RC_AUTH_METHOD_PICKER:
             case RC_EMAIL_FLOW:
-                finish(resultCode, new Intent());
+                finish(resultCode, data);
                 break;
             case RC_PLAY_SERVICES:
                 if (resultCode != RESULT_OK) {
-                    finish(resultCode, new Intent());
+                    finish(resultCode, data);
                 }
                 break;
         }
@@ -255,17 +267,18 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 .addConnectionCallbacks(this)
                 .addApi(Auth.CREDENTIALS_API)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
+                /*.enableAutoManage(getActivity(), this)*/ // TODO: 10/21/2016 @samstern am I connecting things correctly or should I use automanage?
                 .build();
         mGoogleApiClient.connect();
     }
 
     private void startAuthMethodChoice() {
-        List<IDPProviderParcel> providers = mFlowParams.providerInfo;
+        List<AuthUI.IdpConfig> providers = mFlowParams.providerInfo;
 
         // If the only provider is Email, immediately launch the email flow. Otherwise, launch
         // the auth method picker screen.
         if (providers.size() == 1
-                && providers.get(0).getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
+                && providers.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
             startActivityForResult(
                     EmailFlowUtil.createIntent(
                             getContext(),
@@ -312,32 +325,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 });
     }
 
-    private void redirectToIdpSignIn(String email, String accountType) {
-        Intent nextIntent;
-        switch (accountType) {
-            case IdentityProviders.GOOGLE:
-                nextIntent = IDPSignInContainerActivity.createIntent(
-                        getContext(),
-                        mFlowParams,
-                        GoogleAuthProvider.PROVIDER_ID,
-                        email);
-                break;
-            case IdentityProviders.FACEBOOK:
-                nextIntent = IDPSignInContainerActivity.createIntent(
-                        getContext(),
-                        mFlowParams,
-                        FacebookAuthProvider.PROVIDER_ID,
-                        email);
-                break;
-            default:
-                Log.w(TAG, "unknown provider: " + accountType);
-                nextIntent = AuthMethodPickerActivity.createIntent(
-                        getContext(),
-                        mFlowParams);
-        }
-        this.startActivityForResult(nextIntent, RC_IDP_SIGNIN);
-    }
-
     /**
      * Delete the last credential retrieved from SmartLock and then redirect to the
      * auth method choice flow.
@@ -351,7 +338,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
         CredentialsApiHelper credentialsApiHelper = CredentialsApiHelper.getInstance(getActivity());
         credentialsApiHelper.delete(mCredential)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<Status>() {
+                .addOnCompleteListener(new OnCompleteListener<Status>() {
                     @Override
                     public void onComplete(@NonNull Task<Status> task) {
                         if (!task.isSuccessful()) {
@@ -360,6 +347,39 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                         startAuthMethodChoice();
                     }
                 });
+    }
+
+    private void redirectToIdpSignIn(String email, String accountType) {
+        Intent nextIntent;
+        switch (accountType) {
+            case IdentityProviders.GOOGLE:
+                nextIntent = IdpSignInContainerActivity.createIntent(
+                        getContext(),
+                        mFlowParams,
+                        GoogleAuthProvider.PROVIDER_ID,
+                        email);
+                break;
+            case IdentityProviders.FACEBOOK:
+                nextIntent = IdpSignInContainerActivity.createIntent(
+                        getContext(),
+                        mFlowParams,
+                        FacebookAuthProvider.PROVIDER_ID,
+                        email);
+                break;
+            case IdentityProviders.TWITTER:
+                nextIntent = IdpSignInContainerActivity.createIntent(
+                        getContext(),
+                        mFlowParams,
+                        TwitterAuthProvider.PROVIDER_ID,
+                        email);
+                break;
+            default:
+                Log.w(TAG, "unknown provider: " + accountType);
+                nextIntent = AuthMethodPickerActivity.createIntent(
+                        getContext(),
+                        mFlowParams);
+        }
+        startActivityForResult(nextIntent, RC_IDP_SIGNIN);
     }
 
     private void showProgress() {
@@ -386,10 +406,23 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         try {
             ((AuthUI.AuthUIResult) getActivity()).onResult(resultCode, data);
         } catch (ClassCastException e) {
-            Log.e(TAG, getActivity().toString() + " AuthUI.AuthUIResult");
+            Log.e(TAG, getActivity().toString()
+                    + " must implement AuthUI.AuthUIResult to receive sign in results");
         }
 
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+    }
+
+    /**
+     * Check if there is an active or soon-to-be-active network connection.
+     */
+    private boolean hasNetworkConnection() {
+        ConnectivityManager manager =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return manager != null
+                && manager.getActiveNetworkInfo() != null
+                && manager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
     public static SignInDelegate newInstance(FragmentActivity activity, FlowParameters parameters) {

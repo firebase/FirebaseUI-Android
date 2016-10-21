@@ -32,6 +32,7 @@ import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.smartlock.SignInDelegate;
+import com.firebase.ui.auth.util.smartlock.SmartLock;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -346,7 +347,7 @@ public class AuthUI {
         CredentialsApiHelper credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
 
         // Get all SmartLock credentials associated with the user
-        List<Credential> credentials = SmartLockUtil.credentialsFromFirebaseUser(firebaseUser);
+        List<Credential> credentials = SmartLock.credentialsFromFirebaseUser(firebaseUser);
 
         // For each Credential in the list, create a task to delete it.
         List<Task<?>> credentialTasks = new ArrayList<>();
