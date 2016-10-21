@@ -15,7 +15,6 @@
 package com.firebase.ui.auth;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -32,7 +31,7 @@ import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
-import com.firebase.ui.auth.util.ProviderHelper;
+import com.firebase.ui.auth.util.SmartLockUtil;
 import com.firebase.ui.auth.util.smartlock.SignInDelegate;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -49,6 +48,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -626,17 +626,10 @@ public class AuthUI {
         }
 
         public void build(@NonNull FragmentActivity activity) {
-            Context context = mApp.getApplicationContext();
-            build(context, activity);
-        }
-
-        private void build(Context context, FragmentActivity activity) {
-            List<IDPProviderParcel> providerInfo =
-                    ProviderHelper.getProviderParcels(context, mProviders);
             SignInDelegate.newInstance(activity,
                                        new FlowParameters(
                                                mApp.getName(),
-                                               new ArrayList<>(mProviders),,
+                                               new ArrayList<>(mProviders),
                                                mTheme,
                                                mLogo,
                                                mTosUrl,
