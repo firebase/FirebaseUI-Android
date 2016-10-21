@@ -22,6 +22,7 @@ import android.util.Log;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookRequestError;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -125,12 +126,24 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        try {
-                            String email = object.getString("email");
-                            mCallbackObject.onSuccess(createIDPResponse(loginResult, email));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        FacebookRequestError requestError = response.getError();
+                        if(requestError != null) {
+                            Log.e(TAG,
+                                    "Received Facebook error: " + requestError.getErrorMessage());
                             mCallbackObject.onFailure(new Bundle());
+                            return;
+                        }
+                        if (object == null) {
+                            Log.w(TAG, "Received null response from Facebook GraphRequest");
+                            mCallbackObject.onFailure(new Bundle());
+                        } else {
+                            try {
+                                String email = object.getString("email");
+                                mCallbackObject.onSuccess(createIDPResponse(loginResult, email));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                mCallbackObject.onFailure(new Bundle());
+                            }
                         }
                     }
                 });
