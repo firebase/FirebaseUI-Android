@@ -90,6 +90,7 @@ public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
                 return mArray.getCount() == 4;
             }
         });
+        assertTrue(false);
     }
 
     @Test
