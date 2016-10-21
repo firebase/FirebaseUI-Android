@@ -16,6 +16,8 @@ package com.firebase.ui.auth;
 
 import android.content.Intent;
 
+import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.AuthUI.SignInIntentBuilder;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
@@ -28,6 +30,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+
+import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -42,6 +46,41 @@ public class AuthUITest {
     }
 
     @Test
+    public void testCreateStartIntent_deprecatedSetProvidersShouldStillWork() {
+        Intent startIntent = AuthUI
+                .getInstance(mFirebaseApp)
+                .createSignInIntentBuilder()
+                .setProviders(new String[] {AuthUI.EMAIL_PROVIDER, AuthUI.TWITTER_PROVIDER})
+                .build();
+        FlowParameters flowParameters =
+                startIntent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
+        assertEquals(2, flowParameters.providerInfo.size());
+        assertEquals(AuthUI.EMAIL_PROVIDER, flowParameters.providerInfo.get(0).getProviderId());
+    }
+
+    @Test
+    public void testCreateStartIntent_shouldHaveEmailAsDefaultProvider() {
+        Intent startIntent = AuthUI
+                .getInstance(mFirebaseApp)
+                .createSignInIntentBuilder()
+                .build();
+        FlowParameters flowParameters =
+                startIntent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
+        assertEquals(1, flowParameters.providerInfo.size());
+        assertEquals(AuthUI.EMAIL_PROVIDER, flowParameters.providerInfo.get(0).getProviderId());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
+        SignInIntentBuilder startIntent =
+                AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder();
+        startIntent.setProviders(
+                Arrays.asList(
+                        new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                        new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()));
+    }
+
+    @Test
     public void testCreatingStartIntent() {
         Intent startIntent = AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder()
                 .setProviders(AuthUI.EMAIL_PROVIDER, AuthUI.GOOGLE_PROVIDER)
@@ -51,9 +90,9 @@ public class AuthUITest {
         FlowParameters flowParameters = startIntent.getParcelableExtra(
                 ExtraConstants.EXTRA_FLOW_PARAMS);
 
-        assertEquals(flowParameters.providerInfo.size(), 2);
-        assertEquals(flowParameters.appName, mFirebaseApp.getName());
-        assertEquals(flowParameters.termsOfServiceUrl, TestConstants.TOS_URL);
-        assertEquals(flowParameters.themeId, AuthUI.getDefaultTheme());
+        assertEquals(2, flowParameters.providerInfo.size());
+        assertEquals(mFirebaseApp.getName(), flowParameters.appName);
+        assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
+        assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);
     }
 }

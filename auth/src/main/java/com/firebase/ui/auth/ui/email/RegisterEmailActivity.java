@@ -58,7 +58,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "RegisterEmailActivity";
 
-    private SaveSmartLock mSmartLock;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mNameEditText;
@@ -70,8 +69,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_email_layout);
-
-        mSmartLock = SaveSmartLock.getInstance(this);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);
@@ -98,10 +95,8 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         mPasswordFieldValidator = new PasswordFieldValidator((TextInputLayout)
                 findViewById(R.id.password_layout),
                 getResources().getInteger(R.integer.min_password_length));
-        mNameValidator = new RequiredFieldValidator((TextInputLayout)
-                findViewById(R.id.name_layout));
-        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
-                .email_layout));
+        mNameValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.name_layout));
+        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
 
         if (email != null) {
             mEmailEditText.setText(email);
@@ -159,12 +154,12 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
-                                        mSmartLock.saveCredentialsOrFinish(
-                                                RegisterEmailActivity.this,
-                                                mActivityHelper,
-                                                firebaseUser,
-                                                password,
-                                                null /* provider */);
+                                        SmartLock.getInstance(RegisterEmailActivity.this, TAG)
+                                                .saveCredentialsOrFinish(RegisterEmailActivity.this,
+                                                                         mActivityHelper,
+                                                                         firebaseUser,
+                                                                         password,
+                                                                         null /* provider */);
                                     }
                                 });
                     }

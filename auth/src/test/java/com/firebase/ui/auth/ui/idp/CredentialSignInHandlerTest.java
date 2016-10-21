@@ -16,11 +16,10 @@ package com.firebase.ui.auth.ui.idp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
@@ -32,7 +31,7 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.account_link.WelcomeBackIDPPrompt;
+import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.tasks.Task;
@@ -66,7 +65,6 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 23, shadows = {ActivityHelperShadow.class})
 public class CredentialSignInHandlerTest {
     private static final int RC_ACCOUNT_LINK = 3;
-    private static final int RC_SAVE_CREDENTIALS = 4;
     private static final String LINKING_ERROR = "ERROR_TEST_LINKING";
     private static final String LINKING_EXPLANATION = "Test explanation";
 
@@ -90,11 +88,10 @@ public class CredentialSignInHandlerTest {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
-        IDPResponse idpResponse = new IDPResponse(
+        IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL,
-                new Bundle());
-        SmartLock smartLock = new SmartLock();
+                TestConstants.EMAIL);
+        SmartLock smartLock = mock(SmartLock.class);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
@@ -106,7 +103,6 @@ public class CredentialSignInHandlerTest {
         // Build basic flow parameters
         FlowParameters flowParams = AuthUI.getInstance(mFirebaseApp)
                 .createSignInIntentBuilder()
-                .setIsSmartLockEnabled(false)
                 .build()
                 .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
 
@@ -115,16 +111,11 @@ public class CredentialSignInHandlerTest {
         when(mockActivityHelper.getFlowParams()).thenReturn(flowParams);
         credentialSignInHandler.onComplete(signInTask);
 
-        Intent smartLockIntent = smartLock.getIntentForTest();
-        assertEquals(
-                TestConstants.EMAIL,
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
-        assertEquals(
-                TestConstants.NAME,
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_NAME));
-        assertEquals(
-                TestConstants.PHOTO_URL,
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_PROFILE_PICTURE_URI));
+        verify(smartLock).saveCredentialsOrFinish(mockActivity,
+                                                  mockActivityHelper,
+                                                  mockFirebaseUser,
+                                                  null,
+                                                  GoogleAuthProvider.PROVIDER_ID);
     }
 
     @Test
@@ -132,14 +123,13 @@ public class CredentialSignInHandlerTest {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
-        IDPResponse idpResponse = new IDPResponse(
+        IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL,
-                new Bundle());
+                TestConstants.EMAIL);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
-                new SmartLock(),
+                null,
                 RC_ACCOUNT_LINK,
                 idpResponse);
 
@@ -165,7 +155,7 @@ public class CredentialSignInHandlerTest {
         Intent capturedIntent = intentCaptor.getValue();
         assertEquals(RC_ACCOUNT_LINK, (int) intCaptor.getValue());
         assertEquals(
-                WelcomeBackIDPPrompt.class.getName(),
+                WelcomeBackIdpPrompt.class.getName(),
                 capturedIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
@@ -181,14 +171,13 @@ public class CredentialSignInHandlerTest {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
-        IDPResponse idpResponse = new IDPResponse(
+        IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL,
-                new Bundle());
+                TestConstants.EMAIL);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
-                new SmartLock(),
+                null,
                 RC_ACCOUNT_LINK,
                 idpResponse);
 
@@ -221,7 +210,7 @@ public class CredentialSignInHandlerTest {
                 capturedIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
-                ((IDPResponse) capturedIntent
+                ((IdpResponse) capturedIntent
                         .getExtras()
                         .getParcelable(ExtraConstants.EXTRA_IDP_RESPONSE))
                         .getEmail());

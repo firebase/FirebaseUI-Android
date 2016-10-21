@@ -34,7 +34,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -45,7 +45,6 @@ import com.google.firebase.auth.AuthResult;
 public class SignInActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "SignInActivity";
 
-    private SaveSmartLock mSmartLock;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EmailFieldValidator mEmailValidator;
@@ -55,8 +54,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in_layout);
-
-        mSmartLock = SaveSmartLock.getInstance(this);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
@@ -100,12 +97,12 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         // Save credential in SmartLock (if enabled)
-                        mSmartLock.saveCredentialsOrFinish(
-                                SignInActivity.this,
-                                mActivityHelper,
-                                authResult.getUser(),
-                                password,
-                                null /* provider */);
+                        SmartLock.getInstance(SignInActivity.this, TAG)
+                                .saveCredentialsOrFinish(SignInActivity.this,
+                                                         mActivityHelper,
+                                                         authResult.getUser(),
+                                                         password,
+                                                         null /* provider */);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -1,6 +1,19 @@
+/*
+ * Copyright 2016 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.firebase.ui.auth.util.smartlock;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -30,7 +43,10 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_FIRST_USER;
 import static android.app.Activity.RESULT_OK;
 
 public class SaveSmartLock extends SmartLock<Status> {
@@ -51,7 +67,7 @@ public class SaveSmartLock extends SmartLock<Status> {
     public void onConnected(Bundle bundle) {
         if (TextUtils.isEmpty(mEmail)) {
             Log.e(TAG, "Unable to save null credential!");
-            finish();
+            finish(RESULT_CANCELED);
             return;
         }
 
@@ -62,14 +78,23 @@ public class SaveSmartLock extends SmartLock<Status> {
             if (mProvider != null) {
                 String translatedProvider = null;
                 // translate the google.com/facebook.com provider strings into full URIs
-                if (mProvider.equals(GoogleAuthProvider.PROVIDER_ID)) {
-                    translatedProvider = IdentityProviders.GOOGLE;
-                } else if (mProvider.equals(FacebookAuthProvider.PROVIDER_ID)) {
-                    translatedProvider = IdentityProviders.FACEBOOK;
+                switch (mProvider) {
+                    case GoogleAuthProvider.PROVIDER_ID:
+                        translatedProvider = IdentityProviders.GOOGLE;
+                        break;
+                    case FacebookAuthProvider.PROVIDER_ID:
+                        translatedProvider = IdentityProviders.FACEBOOK;
+                        break;
+                    case TwitterAuthProvider.PROVIDER_ID:
+                        translatedProvider = IdentityProviders.TWITTER;
+                        break;
+                    default:
+                        Log.e(TAG, "Unable to save null credential!");
+                        finish(RESULT_CANCELED);
+                        return;
                 }
-                if (translatedProvider != null) {
-                    builder.setAccountType(translatedProvider);
-                }
+
+                builder.setAccountType(translatedProvider);
             }
         }
 
@@ -117,14 +142,14 @@ public class SaveSmartLock extends SmartLock<Status> {
                                        null);
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
-            finish();
+            finish(RESULT_CANCELED);
         }
     }
 
     @Override
     public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
-            finish();
+            finish(RESULT_OK);
         } else {
             if (status.hasResolution()) {
                 // Try to resolve the save request. This will prompt the user if
@@ -140,10 +165,10 @@ public class SaveSmartLock extends SmartLock<Status> {
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
-                    finish();
+                    finish(RESULT_CANCELED);
                 }
             } else {
-                finish();
+                finish(RESULT_CANCELED);
             }
         }
     }
@@ -157,10 +182,10 @@ public class SaveSmartLock extends SmartLock<Status> {
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "SAVE: OK");
                 }
-                finish();
+                finish(RESULT_OK);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish();
+                finish(RESULT_FIRST_USER);
             }
         } else if (requestCode == RC_UPDATE_SERVICE) {
             if (resultCode == RESULT_OK) {
@@ -171,14 +196,13 @@ public class SaveSmartLock extends SmartLock<Status> {
                         .setResultCallback(this);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish();
+                finish(RESULT_FIRST_USER);
             }
         }
     }
 
-    private void finish() {
-        mActivity.setResult(Activity.RESULT_OK, mActivity.getIntent());
-        mActivity.finish();
+    private void finish(int resultCode) {
+        mActivity.finish(RESULT_OK, mActivity.getIntent());
     }
 
     /**
@@ -186,7 +210,6 @@ public class SaveSmartLock extends SmartLock<Status> {
      * Otherwise, finish the calling Activity with RESULT_OK.
      *
      * @param activity     the calling Activity.
-     * @param helper       activity helper.
      * @param firebaseUser Firebase user to save in Credential.
      * @param password     (optional) password for email credential.
      * @param provider     (optional) provider string for provider credential.
@@ -221,16 +244,16 @@ public class SaveSmartLock extends SmartLock<Status> {
                 .build();
     }
 
-    public static SaveSmartLock getInstance(AppCompatBase activity) {
+    public static SaveSmartLock getInstance(AppCompatBase activity, String tag) {
         SaveSmartLock result;
 
         FragmentManager fm = activity.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
-        Fragment fragment = fm.findFragmentByTag(TAG);
+        Fragment fragment = fm.findFragmentByTag(tag);
         if (fragment == null || !(fragment instanceof SaveSmartLock)) {
             result = new SaveSmartLock();
-            ft.add(result, TAG).disallowAddToBackStack().commit();
+            ft.add(result, tag).disallowAddToBackStack().commit();
         } else {
             result = (SaveSmartLock) fragment;
         }

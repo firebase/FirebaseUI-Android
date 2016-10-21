@@ -22,13 +22,14 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.provider.IDPResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.AuthCredentialHelper;
@@ -55,15 +56,12 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     private String mEmail;
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
-    private IDPResponse mIdpResponse;
-    private SaveSmartLock mSmartLock;
+    private IdpResponse mIdpResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_back_password_prompt_layout);
-
-        mSmartLock = SaveSmartLock.getInstance(this);
 
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
@@ -110,6 +108,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     private void next(String email, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
 
+        // Check for null or empty password
+        if (TextUtils.isEmpty(password)) {
+            mPasswordField.setError(getString(R.string.required_field));
+            return;
+        } else {
+            mPasswordField.setError(null);
+        }
+
         // Sign in with known email and the password provided
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(
@@ -132,12 +138,15 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                         new OnSuccessListener<AuthResult>() {
                                             @Override
                                             public void onSuccess(AuthResult authResult) {
-                                                mSmartLock.saveCredentialsOrFinish(
-                                                        WelcomeBackPasswordPrompt.this,
-                                                        mActivityHelper,
-                                                        authResult.getUser(),
-                                                        password,
-                                                        null /* provider */);
+                                                SmartLock
+                                                        .getInstance(WelcomeBackPasswordPrompt.this,
+                                                                     TAG)
+                                                        .saveCredentialsOrFinish(
+                                                                WelcomeBackPasswordPrompt.this,
+                                                                mActivityHelper,
+                                                                authResult.getUser(),
+                                                                password,
+                                                                null /* provider */);
                                             }
                                         });
                     }
@@ -154,7 +163,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     public static Intent createIntent(
             Context context,
             FlowParameters flowParams,
-            IDPResponse response) {
+            IdpResponse response) {
         return ActivityHelper.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }

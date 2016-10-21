@@ -26,10 +26,11 @@ import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
+import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
-import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.junit.Before;
@@ -43,6 +44,7 @@ import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Collections;
 
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
@@ -52,7 +54,6 @@ import static org.mockito.Mockito.when;
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23)
 public class SignInActivityTest {
-
     @Before
     public void setUp() {
         TestHelper.initializeApp(RuntimeEnvironment.application);
@@ -63,12 +64,14 @@ public class SignInActivityTest {
         Intent startIntent = SignInActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
                         Collections.<String>emptyList()),
                 null);
-        return Robolectric.buildActivity(SignInActivity.class).withIntent(startIntent)
-                .create().visible().get();
-
+        return Robolectric
+                .buildActivity(SignInActivity.class)
+                .withIntent(startIntent)
+                .create()
+                .visible()
+                .get();
     }
 
     @Test
@@ -108,9 +111,15 @@ public class SignInActivityTest {
         when(ActivityHelperShadow.firebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
-                    new AutoCompleteTask<>(new FakeAuthResult(mockFirebaseUser), true, null));
+                    new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser), true, null));
         when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
         when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
+        when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
+
+        SmartLockResult result = SmartLockResult.newInstance(signInActivity,
+                                                             "SignInActivity",
+                                                             TestConstants.PASSWORD,
+                                                             null);
 
         Button signIn = (Button) signInActivity.findViewById(R.id.button_done);
         signIn.performClick();
@@ -119,18 +128,10 @@ public class SignInActivityTest {
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 
-        Intent intent = SmartLock.getInstance(signInActivity).getIntentForTest();
-        assertEquals(
-                TestConstants.EMAIL,
-                intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL)
-        );
-        assertEquals(
-                TestConstants.PASSWORD,
-                intent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD)
-        );
-        assertEquals(
-                TestConstants.NAME,
-                intent.getExtras().getString(ExtraConstants.EXTRA_NAME)
-        );
+        try {
+            result.await();
+        } catch (InterruptedException e) {
+            assertTrue("Interrupted waiting for result", false);
+        }
     }
 }

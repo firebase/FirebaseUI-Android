@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
@@ -31,9 +30,8 @@ import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.test_helpers.GoogleProviderShadow;
 import com.firebase.ui.auth.test_helpers.LoginManagerShadow;
-import com.firebase.ui.auth.test_helpers.TestConstants;
+import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.firebase.ui.auth.test_helpers.TestHelper;
-import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthCredential;
@@ -41,10 +39,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
@@ -56,7 +56,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static org.mockito.Matchers.anyObject;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
@@ -137,17 +137,26 @@ public class AuthMethodPickerActivityTest {
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
         when(mockFirebaseUser.getProviders())
                 .thenReturn(Arrays.asList(FacebookAuthProvider.PROVIDER_ID));
-        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) anyObject()))
+        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) Mockito.any()))
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         new FakeAuthResult(mockFirebaseUser), true, null));
+
+
+        SmartLockResult result = SmartLockResult.newInstance(authMethodPickerActivity,
+                                                             "AuthMethodPicker",
+                                                             null,
+                                                             FacebookAuthProvider.PROVIDER_ID);
 
         Button facebookButton =
                 (Button) authMethodPickerActivity.findViewById(R.id.facebook_button);
         assertNotNull(facebookButton);
         facebookButton.performClick();
 
-        Intent smartLockIntent = SmartLock.getInstance(authMethodPickerActivity).getIntentForTest();
-        verifySaveCredentialIntent(smartLockIntent, FacebookAuthProvider.PROVIDER_ID);
+        try {
+            result.await();
+        } catch (InterruptedException e) {
+            assertTrue("Interrupted waiting for result", false);
+        }
     }
 
     @Test
@@ -155,51 +164,65 @@ public class AuthMethodPickerActivityTest {
     public void testGoogleLoginFlow() {
         List<String> providers = Arrays.asList(AuthUI.GOOGLE_PROVIDER);
 
-        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
-        TestHelper.initializeApp(authMethodPickerActivity);
+        AuthMethodPickerActivity authMethodPickerActivity =
+                createActivity(providers);
 
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
         when(mockFirebaseUser.getProviders())
                 .thenReturn(Arrays.asList(GoogleAuthProvider.PROVIDER_ID));
 
-        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) anyObject()))
+        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) Mockito.any()))
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         new FakeAuthResult(mockFirebaseUser), true, null));
+
+        SmartLockResult result = SmartLockResult.newInstance(authMethodPickerActivity,
+                                                             "AuthMethodPicker",
+                                                             null,
+                                                             GoogleAuthProvider.PROVIDER_ID);
+
         Button googleButton =
                 (Button) authMethodPickerActivity.findViewById(R.id.google_button);
 
         assertNotNull(googleButton);
         googleButton.performClick();
 
-        assertEquals(
-                Shadows.shadowOf(authMethodPickerActivity).getResultCode(),
-                Activity.RESULT_OK);
+        try {
+            result.await();
+        } catch (InterruptedException e) {
+            assertTrue("Interrupted waiting for result", false);
+        }
     }
 
-    private static void verifySaveCredentialIntent(Intent smartLockIntent, String provider) {
-        assertEquals(
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL),
-                TestConstants.EMAIL);
-        assertEquals(
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_NAME),
-                TestConstants.NAME);
-        assertEquals(
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_PROFILE_PICTURE_URI),
-                TestConstants.PHOTO_URL);
-        assertEquals(
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_PROVIDER),
-                provider);
-        assertEquals(
-                smartLockIntent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD),
-                null);
+    @Test
+    @Config(shadows = {ActivityHelperShadow.class})
+    public void testTwitterLoginFlowStarts() {
+        List<String> providers = Arrays.asList(AuthUI.TWITTER_PROVIDER);
+
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
+
+        FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
+
+        when(mockFirebaseUser.getProviders())
+                .thenReturn(Arrays.asList(TwitterAuthProvider.PROVIDER_ID));
+
+        when(ActivityHelperShadow.firebaseAuth.signInWithCredential((AuthCredential) Mockito.any()))
+                .thenReturn(new AutoCompleteTask<AuthResult>(
+                        new FakeAuthResult(mockFirebaseUser), true, null));
+        Button twitterButton =
+                (Button) authMethodPickerActivity.findViewById(R.id.twitter_button);
+
+        assertNotNull(twitterButton);
+        twitterButton.performClick();
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
+
+        assertTrue(nextIntent.intent.getComponent().getClassName().contains("com.twitter.sdk"));
     }
 
     private AuthMethodPickerActivity createActivity(List<String> providers) {
         Intent startIntent = AuthMethodPickerActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
-                        providers));
+                TestHelper.getFlowParameters(providers));
 
         return Robolectric
                 .buildActivity(AuthMethodPickerActivity.class)

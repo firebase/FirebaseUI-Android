@@ -17,12 +17,13 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
+import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.IDPProvider;
-import com.firebase.ui.auth.provider.IDPProviderParcel;
-import com.firebase.ui.auth.provider.IDPResponse;
+import com.firebase.ui.auth.provider.IdpProvider;
+import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -33,14 +34,14 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPProvider.IDPCallback {
+public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCallback {
     private static final String TAG = "IDPSignInContainer";
     private static final int RC_WELCOME_BACK_IDP = 4;
 
-    private SaveSmartLock mSmartLock;
-    private IDPProvider mIDPProvider;
+    private IdpProvider mIdpProvider;
     private String mProvider;
     private String mEmail;
 
@@ -48,33 +49,33 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mSmartLock = SaveSmartLock.getInstance(this);
-
         mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
         mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
-        IDPProviderParcel providerParcel = null;
-        for (IDPProviderParcel parcel : mActivityHelper.getFlowParams().providerInfo) {
-            if (parcel.getProviderType().equalsIgnoreCase(mProvider)) {
-                providerParcel = parcel;
+        IdpConfig providerConfig = null;
+        for (IdpConfig config : mActivityHelper.getFlowParams().providerInfo) {
+            if (config.getProviderId().equalsIgnoreCase(mProvider)) {
+                providerConfig = config;
                 break;
             }
         }
-        if (providerParcel == null) {
+        if (providerConfig == null) {
             // we don't have a provider to handle this
             finish(RESULT_CANCELED, new Intent());
             return;
         }
         if (mProvider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new FacebookProvider(this, providerParcel);
+            mIdpProvider = new FacebookProvider(this, providerConfig);
         } else if (mProvider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new GoogleProvider(this, providerParcel, mEmail);
+            mIdpProvider = new GoogleProvider(this, providerConfig, mEmail);
+        } else if (mProvider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
+            mIdpProvider = new TwitterProvider(this);
         }
-        mIDPProvider.setAuthenticationCallback(this);
-        mIDPProvider.startLogin(this);
+        mIdpProvider.setAuthenticationCallback(this);
+        mIdpProvider.startLogin(this);
     }
 
     @Override
-    public void onSuccess(final IDPResponse response) {
+    public void onSuccess(final IdpResponse response) {
         Intent data = new Intent();
         data.putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
         AuthCredential credential = createCredential(response);
@@ -84,9 +85,9 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Failure authenticating with credential"))
                 .addOnCompleteListener(new CredentialSignInHandler(
-                        IDPSignInContainerActivity.this,
+                        IdpSignInContainerActivity.this,
                         mActivityHelper,
-                        mSmartLock,
+                        SmartLock.getInstance(IdpSignInContainerActivity.this, TAG),
                         RC_WELCOME_BACK_IDP,
                         response));
     }
@@ -100,9 +101,9 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_WELCOME_BACK_IDP) {
-            finish(resultCode, new Intent());
+            finish(resultCode, data);
         } else {
-            mIDPProvider.onActivityResult(requestCode, resultCode, data);
+            mIdpProvider.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -113,7 +114,7 @@ public class IDPSignInContainerActivity extends IDPBaseActivity implements IDPPr
             String email) {
         return ActivityHelper.createBaseIntent(
                 context,
-                IDPSignInContainerActivity.class,
+                IdpSignInContainerActivity.class,
                 flowParams)
                 .putExtra(ExtraConstants.EXTRA_PROVIDER, provider)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
