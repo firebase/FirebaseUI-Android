@@ -38,5 +38,4 @@ public class IDPBaseActivity extends AppCompatBase {
         }
         return null;
     }
-
 }

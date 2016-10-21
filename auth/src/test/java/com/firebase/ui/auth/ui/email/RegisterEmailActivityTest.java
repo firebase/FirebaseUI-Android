@@ -27,10 +27,9 @@ import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
+import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,14 +41,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Arrays;
 
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 
@@ -110,40 +107,30 @@ public class RegisterEmailActivityTest {
         FirebaseUser mockFirebaseUser = Mockito.mock(FirebaseUser.class);
         when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
         when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
-        when(mockFirebaseUser.updateProfile((UserProfileChangeRequest) Mockito.anyObject()))
+        when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
+        when(mockFirebaseUser.updateProfile((UserProfileChangeRequest) Mockito.any()))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
         when(ActivityHelperShadow.firebaseAuth
-                .createUserWithEmailAndPassword(
-                        TestConstants.EMAIL,
-                        TestConstants.PASSWORD))
-                .thenReturn(
-                        new AutoCompleteTask<AuthResult>(
-                                new FakeAuthResult(mockFirebaseUser),
-                                true,
-                                null));
+                     .createUserWithEmailAndPassword(
+                             TestConstants.EMAIL,
+                             TestConstants.PASSWORD))
+                .thenReturn(new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser),
+                                                   true,
+                                                   null));
 
+        SmartLockResult result = SmartLockResult.newInstance(registerEmailActivity,
+                                                             "RegisterEmailActivity",
+                                                             TestConstants.PASSWORD,
+                                                             null);
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
-        ShadowActivity shadowActivity = Shadows.shadowOf(registerEmailActivity);
-
-        ShadowActivity.IntentForResult nextIntent =
-                shadowActivity.getNextStartedActivityForResult();
-
-        assertNotNull(nextIntent);
-        assertEquals(
-                SaveCredentialsActivity.class.getName(),
-                nextIntent.intent.getComponent().getClassName());
-        assertEquals(
-                TestConstants.EMAIL,
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
-        assertEquals(
-                TestConstants.PASSWORD,
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD));
-        assertEquals(
-                TestConstants.NAME,
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_NAME));
+        try {
+            result.await();
+        } catch (InterruptedException e) {
+            assertTrue("Interrupted waiting for result", false);
+        }
     }
 }

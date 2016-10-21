@@ -38,7 +38,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
-import com.firebase.ui.auth.util.SmartlockUtil;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
@@ -50,8 +50,6 @@ import com.google.firebase.auth.FirebaseAuth;
  * the password before initiating a link.
  */
 public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
-
-    private static final int RC_CREDENTIAL_SAVE = 3;
     private static final String TAG = "WelcomeBackPassword";
     private static final StyleSpan BOLD = new StyleSpan(Typeface.BOLD);
 
@@ -107,14 +105,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_CREDENTIAL_SAVE) {
-            finish(RESULT_OK, new Intent());
-        }
-    }
-
     private void next(String email, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
 
@@ -148,14 +138,15 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                         new OnSuccessListener<AuthResult>() {
                                             @Override
                                             public void onSuccess(AuthResult authResult) {
-                                                mActivityHelper.dismissDialog();
-                                                SmartlockUtil.saveCredentialOrFinish(
-                                                        WelcomeBackPasswordPrompt.this,
-                                                        RC_CREDENTIAL_SAVE,
-                                                        mActivityHelper.getFlowParams(),
-                                                        authResult.getUser(),
-                                                        password,
-                                                        null /* provider */);
+                                                SmartLock
+                                                        .getInstance(WelcomeBackPasswordPrompt.this,
+                                                                     TAG)
+                                                        .saveCredentialsOrFinish(
+                                                                WelcomeBackPasswordPrompt.this,
+                                                                mActivityHelper,
+                                                                authResult.getUser(),
+                                                                password,
+                                                                null /* provider */);
                                             }
                                         });
                     }

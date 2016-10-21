@@ -34,7 +34,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.SmartlockUtil;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -44,7 +44,6 @@ import com.google.firebase.auth.AuthResult;
  */
 public class SignInActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "SignInActivity";
-    private static final int RC_CREDENTIAL_SAVE = 101;
 
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
@@ -67,7 +66,8 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
+        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(
+                false);
         ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
@@ -77,24 +77,16 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
 
         togglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
 
-        mEmailValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
-                .email_layout));
-        mPasswordValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id
-                .password_layout));
+        mEmailValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
+        mPasswordValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.password_layout));
         Button signInButton = (Button) findViewById(R.id.button_done);
-        TextView recoveryButton =  (TextView) findViewById(R.id.trouble_signing_in);
+        TextView recoveryButton = (TextView) findViewById(R.id.trouble_signing_in);
 
         if (email != null) {
             mEmailEditText.setText(email);
         }
         signInButton.setOnClickListener(this);
         recoveryButton.setOnClickListener(this);
-
-    }
-
-    @Override
-    public void onBackPressed () {
-        super.onBackPressed();
     }
 
     private void signIn(String email, final String password) {
@@ -105,16 +97,13 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        mActivityHelper.dismissDialog();
-
                         // Save credential in SmartLock (if enabled)
-                        SmartlockUtil.saveCredentialOrFinish(
-                                SignInActivity.this,
-                                RC_CREDENTIAL_SAVE,
-                                mActivityHelper.getFlowParams(),
-                                authResult.getUser(),
-                                password,
-                                null /* provider */);
+                        SmartLock.getInstance(SignInActivity.this, TAG)
+                                .saveCredentialsOrFinish(SignInActivity.this,
+                                                         mActivityHelper,
+                                                         authResult.getUser(),
+                                                         password,
+                                                         null /* provider */);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -132,31 +121,19 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_CREDENTIAL_SAVE) {
-            finish(RESULT_OK, new Intent());
-        }
-    }
-
-    @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button_done) {
             boolean emailValid = mEmailValidator.validate(mEmailEditText.getText());
             boolean passwordValid = mPasswordValidator.validate(mPasswordEditText.getText());
-            if (!emailValid || !passwordValid) {
-                return;
-            } else {
+            if (emailValid && passwordValid) {
                 mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
                 signIn(mEmailEditText.getText().toString(), mPasswordEditText.getText().toString());
-                return;
             }
         } else if (view.getId() == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
                     this,
                     mActivityHelper.getFlowParams(),
                     mEmailEditText.getText().toString()));
-            return;
         }
     }
 

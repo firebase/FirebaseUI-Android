@@ -28,6 +28,7 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -39,14 +40,15 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCallback {
     private static final String TAG = "IDPSignInContainer";
     private static final int RC_WELCOME_BACK_IDP = 4;
-    private static final int RC_SAVE_CREDENTIALS = 5;
-    private IdpProvider mIDPProvider;
+
+    private IdpProvider mIdpProvider;
     private String mProvider;
     private String mEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
         mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         IdpConfig providerConfig = null;
@@ -62,14 +64,14 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
             return;
         }
         if (mProvider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new FacebookProvider(this, providerConfig);
+            mIdpProvider = new FacebookProvider(this, providerConfig);
         } else if (mProvider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new GoogleProvider(this, providerConfig, mEmail);
+            mIdpProvider = new GoogleProvider(this, providerConfig, mEmail);
         } else if (mProvider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
-            mIDPProvider = new TwitterProvider(this);
+            mIdpProvider = new TwitterProvider(this);
         }
-        mIDPProvider.setAuthenticationCallback(this);
-        mIDPProvider.startLogin(this);
+        mIdpProvider.setAuthenticationCallback(this);
+        mIdpProvider.startLogin(this);
     }
 
     @Override
@@ -85,8 +87,8 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
                 .addOnCompleteListener(new CredentialSignInHandler(
                         IdpSignInContainerActivity.this,
                         mActivityHelper,
+                        SmartLock.getInstance(IdpSignInContainerActivity.this, TAG),
                         RC_WELCOME_BACK_IDP,
-                        RC_SAVE_CREDENTIALS,
                         response));
     }
 
@@ -100,10 +102,8 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_WELCOME_BACK_IDP) {
             finish(resultCode, data);
-        } else if (requestCode == RC_SAVE_CREDENTIALS) {
-            finish(RESULT_OK, data);
         } else {
-            mIDPProvider.onActivityResult(requestCode, resultCode, data);
+            mIdpProvider.onActivityResult(requestCode, resultCode, data);
         }
     }
 

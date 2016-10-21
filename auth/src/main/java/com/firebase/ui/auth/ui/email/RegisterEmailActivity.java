@@ -39,7 +39,7 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.SmartlockUtil;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,8 +56,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
  * Activity displaying a form to create a new email/password account.
  */
 public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener {
-
-    private static final int RC_SAVE_CREDENTIAL = 3;
     private static final String TAG = "RegisterEmailActivity";
 
     private EditText mEmailEditText;
@@ -97,10 +95,8 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         mPasswordFieldValidator = new PasswordFieldValidator((TextInputLayout)
                 findViewById(R.id.password_layout),
                 getResources().getInteger(R.integer.min_password_length));
-        mNameValidator = new RequiredFieldValidator((TextInputLayout)
-                findViewById(R.id.name_layout));
-        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
-                .email_layout));
+        mNameValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.name_layout));
+        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
 
         if (email != null) {
             mEmailEditText.setText(email);
@@ -155,18 +151,15 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        mActivityHelper.dismissDialog();
-
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
-                                        SmartlockUtil.saveCredentialOrFinish(
-                                                RegisterEmailActivity.this,
-                                                RC_SAVE_CREDENTIAL,
-                                                mActivityHelper.getFlowParams(),
-                                                firebaseUser,
-                                                password,
-                                                null /* provider */);
+                                        SmartLock.getInstance(RegisterEmailActivity.this, TAG)
+                                                .saveCredentialsOrFinish(RegisterEmailActivity.this,
+                                                                         mActivityHelper,
+                                                                         firebaseUser,
+                                                                         password,
+                                                                         null /* provider */);
                                     }
                                 });
                     }
@@ -197,14 +190,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                         }
                     }
                 });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SAVE_CREDENTIAL) {
-            finish(RESULT_OK, new Intent());
-        }
     }
 
     @Override

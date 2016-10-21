@@ -141,7 +141,6 @@ public class ChooseAccountActivity extends ActivityBase {
     public void onCredentialsApiConnected(
             CredentialsAPI credentialsApi,
             ActivityHelper activityHelper) {
-
         String email = credentialsApi.getEmailFromCredential();
         String password = credentialsApi.getPasswordFromCredential();
         String accountType = credentialsApi.getAccountTypeFromCredential();
@@ -249,7 +248,6 @@ public class ChooseAccountActivity extends ActivityBase {
                     finish(resultCode, new Intent());
                 }
                 break;
-
         }
     }
 
