@@ -69,6 +69,9 @@ public class AuthUiActivity extends AppCompatActivity implements AuthUI.AuthUIRe
     @BindView(R.id.purple_theme)
     RadioButton mUsePurpleTheme;
 
+    @BindView(R.id.dark_theme)
+    RadioButton mUseDarkTheme;
+
     @BindView(R.id.email_provider)
     CheckBox mUseEmailProvider;
 
@@ -235,6 +238,10 @@ public class AuthUiActivity extends AppCompatActivity implements AuthUI.AuthUIRe
 
         if (mUsePurpleTheme.isChecked()) {
             return R.style.PurpleTheme;
+        }
+
+        if (mUseDarkTheme.isChecked()) {
+            return R.style.DarkTheme;
         }
 
         return R.style.GreenTheme;

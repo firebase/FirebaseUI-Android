@@ -62,6 +62,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/green_theme" />
+
+            <RadioButton
+                android:id="@+id/dark_theme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dark_theme" />
         </RadioGroup>
 
         <TextView

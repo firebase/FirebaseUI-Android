@@ -15,6 +15,7 @@
     <string name="sign_in">Start</string>
     <string name="green_theme">Green Theme</string>
     <string name="purple_theme">Purple Theme</string>
+    <string name="dark_theme">Dark Theme</string>
     <string name="use_theme_header">Use theme:</string>
     <string name="logo_header">Logo:</string>
     <string name="firebase_logo_label">Firebase Auth</string>
