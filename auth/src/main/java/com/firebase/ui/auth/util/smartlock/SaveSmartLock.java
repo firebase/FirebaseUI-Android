@@ -76,8 +76,8 @@ public class SaveSmartLock extends SmartLock<Status> {
         if (mPassword == null) {
             // only password OR provider can be set, not both
             if (mProvider != null) {
-                String translatedProvider = null;
-                // translate the google.com/facebook.com provider strings into full URIs
+                String translatedProvider;
+                // translate the google.com/facebook.com/twitter.com provider strings into full URIs
                 switch (mProvider) {
                     case GoogleAuthProvider.PROVIDER_ID:
                         translatedProvider = IdentityProviders.GOOGLE;
@@ -223,7 +223,7 @@ public class SaveSmartLock extends SmartLock<Status> {
                 || !PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()
                 || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(helper.getFlowParams().appName)
                 .isPlayServicesAvailable(activity)) {
-            finish();
+            finish(RESULT_CANCELED);
             return;
         }
 

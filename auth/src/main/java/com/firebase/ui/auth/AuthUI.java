@@ -31,7 +31,7 @@ import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
-import com.firebase.ui.auth.util.SmartLockUtil;
+import com.firebase.ui.auth.util.smartlock.SignInDelegate;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
