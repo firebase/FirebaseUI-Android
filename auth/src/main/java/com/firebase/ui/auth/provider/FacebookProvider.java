@@ -178,6 +178,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void onError(FacebookException error) {
+        Log.e(TAG, "Error logging in with Facebook. " + error.getMessage());
         Bundle extra = new Bundle();
         extra.putString(ERROR, "error");
         extra.putString(ERROR_MSG, error.getMessage());
