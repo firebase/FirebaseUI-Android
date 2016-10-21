@@ -3,7 +3,7 @@
     android:orientation="vertical"
     style="@style/FirebaseUI.WrapperStyle">
     <TextView
-        style="@style/FirebaseUI.Text.BodyText"
+        style="@style/FirebaseUI.Text.BodyTextNoColor"
         android:id="@+id/body_text"/>
     <Button
         style="@style/FirebaseUI.Button.AlertButton"
