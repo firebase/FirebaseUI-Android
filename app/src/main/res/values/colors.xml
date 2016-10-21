@@ -23,4 +23,9 @@
     <color name="material_purple_a700">#AA00FF</color>
 
     <color name="material_red_a200">#FF5252</color>
+
+    <color name="material_grey_200">#EEEEEE</color>
+    <color name="material_grey_400">#BDBDBD</color>
+    <color name="material_grey_500">#9E9E9E</color>
+    <color name="material_grey_700">#616161</color>
 </resources>
