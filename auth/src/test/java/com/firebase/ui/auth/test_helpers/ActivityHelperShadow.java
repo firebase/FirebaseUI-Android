@@ -14,7 +14,7 @@
 
 package com.firebase.ui.auth.test_helpers;
 
-import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.util.BaseHelper;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -22,7 +22,7 @@ import org.mockito.Mockito;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
-@Implements(ActivityHelper.class)
+@Implements(BaseHelper.class)
 public class ActivityHelperShadow {
     public static FirebaseAuth firebaseAuth;
     public static CredentialsApi credentialsApi;

@@ -144,6 +144,7 @@ public class AuthMethodPickerActivityTest {
 
 
         SmartLockResult result = SmartLockResult.newInstance(authMethodPickerActivity,
+                                                             TestHelper.getFlowParameters(Arrays.asList(AuthUI.EMAIL_PROVIDER)),
                                                              "AuthMethodPicker",
                                                              null,
                                                              FacebookAuthProvider.PROVIDER_ID);
@@ -165,8 +166,7 @@ public class AuthMethodPickerActivityTest {
     public void testGoogleLoginFlow() {
         List<String> providers = Arrays.asList(AuthUI.GOOGLE_PROVIDER);
 
-        AuthMethodPickerActivity authMethodPickerActivity =
-                createActivity(providers);
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
         when(mockFirebaseUser.getProviders())
@@ -177,6 +177,7 @@ public class AuthMethodPickerActivityTest {
                         new FakeAuthResult(mockFirebaseUser), true, null));
 
         SmartLockResult result = SmartLockResult.newInstance(authMethodPickerActivity,
+                                                             TestHelper.getFlowParameters(Arrays.asList(AuthUI.EMAIL_PROVIDER)),
                                                              "AuthMethodPicker",
                                                              null,
                                                              GoogleAuthProvider.PROVIDER_ID);
