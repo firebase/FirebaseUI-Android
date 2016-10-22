@@ -229,6 +229,7 @@ import java.util.Set;
 public class AuthUI {
     public interface AuthUISignInResult {
         void onSignInSuccessful(Intent data);
+
         void onSignInFailed(int resultCode);
     }
 
@@ -330,6 +331,7 @@ public class AuthUI {
      * API. Returns a {@code Task} that succeeds if the Firebase Auth user deletion succeeds and
      * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
      * silently.
+     *
      * @param activity the calling {@link Activity}.
      */
     public Task<Void> delete(@NonNull Activity activity) {
@@ -478,6 +480,7 @@ public class AuthUI {
 
             /**
              * Builds the configuration parameters for an identity provider.
+             *
              * @param providerId An ID of one of the supported identity providers. e.g.
              * {@link AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for the
              * complete list of supported Identity providers
@@ -575,7 +578,8 @@ public class AuthUI {
             for (IdpConfig idpConfig : idpConfigs) {
                 if (configuredProviders.contains(idpConfig.getProviderId())) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                            + idpConfig.getProviderId() + " was set twice.");
+                                                               + idpConfig.getProviderId()
+                                                               + " was set twice.");
                 }
                 configuredProviders.add(idpConfig.getProviderId());
                 mProviders.add(idpConfig);
@@ -628,13 +632,12 @@ public class AuthUI {
 
         public void build(@NonNull FragmentActivity activity) {
             SignInDelegate.newInstance(activity,
-                                       new FlowParameters(
-                                               mApp.getName(),
-                                               new ArrayList<>(mProviders),
-                                               mTheme,
-                                               mLogo,
-                                               mTosUrl,
-                                               mIsSmartLockEnabled));
+                                       new FlowParameters(mApp.getName(),
+                                                          new ArrayList<>(mProviders),
+                                                          mTheme,
+                                                          mLogo,
+                                                          mTosUrl,
+                                                          mIsSmartLockEnabled));
         }
     }
 }

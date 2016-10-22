@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.firebase.ui.auth.ui.AcquireEmailHelper;
 import com.firebase.ui.auth.ui.ActivityHelper;
@@ -45,7 +46,7 @@ public class EmailHintContainerActivity extends AppCompatBase {
                 startIntentSenderForResult(hintIntent.getIntentSender(), RC_HINT, null, 0, 0, 0);
                 return;
             } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
+                Log.e("EmailHintContainer", "An error occurred sending the smart lock resolution intent", e);
             }
         }
         finish(RESULT_CANCELED, new Intent());

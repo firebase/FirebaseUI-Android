@@ -54,9 +54,8 @@ public class SaveSmartLock extends SmartLock<Status> {
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
 
-    private AppCompatBase mActivity;
-    private ActivityHelper mActivityHelper;
     private GoogleApiClient mGoogleApiClient;
+    private ActivityHelper mActivityHelper;
     private String mName;
     private String mEmail;
     private String mPassword;
@@ -124,12 +123,12 @@ public class SaveSmartLock extends SmartLock<Status> {
             Log.d(TAG, "connection failed with " + connectionResult.getErrorMessage()
                     + " and code: " + connectionResult.getErrorCode());
         }
-        Toast.makeText(mActivity, "An error has occurred.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "An error has occurred.", Toast.LENGTH_SHORT).show();
 
         PendingIntent resolution =
                 GoogleApiAvailability
                         .getInstance()
-                        .getErrorResolutionPendingIntent(mActivity,
+                        .getErrorResolutionPendingIntent(getActivity(),
                                                          connectionResult.getErrorCode(),
                                                          RC_UPDATE_SERVICE);
         try {
@@ -141,7 +140,7 @@ public class SaveSmartLock extends SmartLock<Status> {
                                        0,
                                        null);
         } catch (IntentSender.SendIntentException e) {
-            e.printStackTrace();
+            Log.e(TAG, "An error occurred sending the smart lock resolution intent", e);
             finish(RESULT_CANCELED);
         }
     }
@@ -202,7 +201,7 @@ public class SaveSmartLock extends SmartLock<Status> {
     }
 
     private void finish(int resultCode) {
-        mActivity.finish(RESULT_OK, mActivity.getIntent());
+        ((AppCompatBase) getActivity()).finish(RESULT_OK, getActivity().getIntent());
     }
 
     /**
@@ -227,7 +226,6 @@ public class SaveSmartLock extends SmartLock<Status> {
             return;
         }
 
-        mActivity = activity;
         mActivityHelper = helper;
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
