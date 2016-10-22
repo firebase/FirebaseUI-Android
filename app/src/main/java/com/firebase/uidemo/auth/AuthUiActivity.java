@@ -47,7 +47,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AuthUiActivity extends AppCompatActivity implements AuthUI.AuthUIResult {
+public class AuthUiActivity extends AppCompatActivity implements AuthUI.AuthUISignInResult {
 
     private static final String TAG = "AuthUIActivity";
 
@@ -57,8 +57,6 @@ public class AuthUiActivity extends AppCompatActivity implements AuthUI.AuthUIRe
             "https://www.google.com/policies/terms/";
     private static final String FIREBASE_TOS_URL =
             "https://www.firebase.com/terms/terms-of-service.html";
-
-    private static final int RC_SIGN_IN = 100;
 
     @BindView(R.id.default_theme)
     RadioButton mUseDefaultTheme;
@@ -209,7 +207,7 @@ public class AuthUiActivity extends AppCompatActivity implements AuthUI.AuthUIRe
 
     @MainThread
     @Override
-    public void onResult(int resultCode, Intent data) {
+    public void onSignInResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             startActivity(SignedInActivity.createIntent(this, IdpResponse.fromResultIntent(data)));
             finish();

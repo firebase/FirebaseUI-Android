@@ -227,8 +227,8 @@ import java.util.Set;
  * </ul>
  */
 public class AuthUI {
-    public interface AuthUIResult {
-        void onResult(int resultCode, Intent data);
+    public interface AuthUISignInResult {
+        void onSignInResult(int resultCode, Intent data);
     }
 
     /**
