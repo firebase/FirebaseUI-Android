@@ -383,9 +383,9 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
         try {
             if (resultCode == RESULT_OK) {
-                ((AuthUI.AuthUISignInResult) getActivity()).onSignInSuccessful(data);
+                ((AuthUI.SignInResult) getActivity()).onSignInSuccessful(data);
             } else {
-                ((AuthUI.AuthUISignInResult) getActivity()).onSignInFailed(resultCode);
+                ((AuthUI.SignInResult) getActivity()).onSignInFailed(resultCode);
             }
         } catch (ClassCastException e) {
             Log.e(TAG, getActivity().toString()
