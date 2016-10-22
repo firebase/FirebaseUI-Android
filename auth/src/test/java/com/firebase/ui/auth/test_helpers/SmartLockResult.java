@@ -1,10 +1,11 @@
 package com.firebase.ui.auth.test_helpers;
 
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 
-import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -22,9 +23,7 @@ public class SmartLockResult extends SaveSmartLock {
     }
 
     @Override
-    public void saveCredentialsOrFinish(AppCompatBase activity,
-                                        ActivityHelper helper,
-                                        FirebaseUser firebaseUser,
+    public void saveCredentialsOrFinish(FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
         assertEquals(firebaseUser.getEmail(), TestConstants.EMAIL);
@@ -37,10 +36,15 @@ public class SmartLockResult extends SaveSmartLock {
     }
 
     public static SmartLockResult newInstance(FragmentActivity activity,
+                                              FlowParameters parameters,
                                               String tag,
                                               String password,
                                               String provider) {
         SmartLockResult result = new SmartLockResult();
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, parameters);
+        result.setArguments(bundle);
 
         result.mCountDownLatch = new CountDownLatch(1);
         result.mPassword = password;
