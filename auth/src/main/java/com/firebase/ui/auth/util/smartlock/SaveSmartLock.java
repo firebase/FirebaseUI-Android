@@ -30,7 +30,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -58,7 +57,6 @@ public class SaveSmartLock extends SmartLock<Status> {
     private static final int RC_UPDATE_SERVICE = 28;
 
     private GoogleApiClient mGoogleApiClient;
-    private ActivityHelper mActivityHelper;
     private String mName;
     private String mEmail;
     private String mPassword;
@@ -108,7 +106,7 @@ public class SaveSmartLock extends SmartLock<Status> {
             builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
         }
 
-        mActivityHelper.getCredentialsApi()
+        mHelper.getCredentialsApi()
                 .save(mGoogleApiClient, builder.build())
                 .setResultCallback(this);
     }
@@ -193,7 +191,7 @@ public class SaveSmartLock extends SmartLock<Status> {
             if (resultCode == RESULT_OK) {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
                         .build();
-                mActivityHelper.getCredentialsApi()
+                mHelper.getCredentialsApi()
                         .save(mGoogleApiClient, credential)
                         .setResultCallback(this);
             } else {
