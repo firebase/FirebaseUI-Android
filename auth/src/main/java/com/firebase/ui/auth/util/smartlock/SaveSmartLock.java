@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -31,6 +32,8 @@ import android.widget.Toast;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -211,25 +214,21 @@ public class SaveSmartLock extends SmartLock<Status> {
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise, finish the calling Activity with RESULT_OK.
      *
-     * @param activity     the calling Activity.
      * @param firebaseUser Firebase user to save in Credential.
      * @param password     (optional) password for email credential.
      * @param provider     (optional) provider string for provider credential.
      */
-    public void saveCredentialsOrFinish(AppCompatBase activity,
-                                        ActivityHelper helper,
-                                        FirebaseUser firebaseUser,
+    public void saveCredentialsOrFinish(FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
-        if (!helper.getFlowParams().smartLockEnabled
-                || !PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()
-                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(helper.getFlowParams().appName)
-                .isPlayServicesAvailable(activity)) {
+        if (!mHelper.getFlowParams().smartLockEnabled
+                || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()
+                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mHelper.getFlowParams().appName)
+                .isPlayServicesAvailable(getActivity())) {
             finish(RESULT_CANCELED);
             return;
         }
 
-        mActivityHelper = helper;
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
@@ -237,7 +236,7 @@ public class SaveSmartLock extends SmartLock<Status> {
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
-        mGoogleApiClient = new GoogleApiClient.Builder(activity)
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
@@ -245,7 +244,9 @@ public class SaveSmartLock extends SmartLock<Status> {
         mGoogleApiClient.connect();
     }
 
-    public static SaveSmartLock getInstance(AppCompatBase activity, String tag) {
+    public static SaveSmartLock getInstance(FragmentActivity activity,
+                                            FlowParameters parameters,
+                                            String tag) {
         SaveSmartLock result;
 
         FragmentManager fm = activity.getSupportFragmentManager();
@@ -254,6 +255,11 @@ public class SaveSmartLock extends SmartLock<Status> {
         Fragment fragment = fm.findFragmentByTag(tag);
         if (fragment == null || !(fragment instanceof SaveSmartLock)) {
             result = new SaveSmartLock();
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, parameters);
+            result.setArguments(bundle);
+
             ft.add(result, tag).disallowAddToBackStack().commit();
         } else {
             result = (SaveSmartLock) fragment;

@@ -24,7 +24,6 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
@@ -42,11 +41,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -105,17 +102,17 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
         if (!madeAvailable
                 || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()
-                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(getFlowParams().appName)
+                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mHelper.getAppName())
                 .isPlayServicesAvailable(getActivity())) {
             Log.w(TAG, "playServices: could not make available.");
             finish(RESULT_CANCELED, new Intent());
             return;
         }
 
-        if (getFlowParams().smartLockEnabled) {
-            showProgress();
+        if (mHelper.getFlowParams().smartLockEnabled) {
+            mHelper.showLoadingDialog(R.string.progress_dialog_loading);
             initGoogleApiClient(null);
-            Auth.CredentialsApi
+            mHelper.getCredentialsApi()
                     .request(mGoogleApiClient,
                              new CredentialRequest.Builder()
                                      .setPasswordLoginSupported(true)
@@ -147,7 +144,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 signInWithEmailAndPassword(email, password);
             }
         } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-            hideProgress();
+            mHelper.dismissDialog(); // TODO: 10/22/2016  
             // resolve saved emails
             try {
                 startIntentSenderForResult(status.getResolution().getIntentSender(),
@@ -268,7 +265,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     }
 
     private void startAuthMethodChoice() {
-        List<AuthUI.IdpConfig> providers = getFlowParams().providerInfo;
+        List<AuthUI.IdpConfig> providers = mHelper.getFlowParams().providerInfo;
 
         // If the only provider is Email, immediately launch the email flow. Otherwise, launch
         // the auth method picker screen.
@@ -277,13 +274,13 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
             startActivityForResult(
                     EmailFlowUtil.createIntent(
                             getContext(),
-                            getFlowParams()),
+                            mHelper.getFlowParams()),
                     RC_EMAIL_FLOW);
         } else {
             startActivityForResult(
                     AuthMethodPickerActivity.createIntent(
                             getContext(),
-                            getFlowParams()),
+                            mHelper.getFlowParams()),
                     RC_AUTH_METHOD_PICKER);
         }
     }
@@ -295,7 +292,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
      * auth method picker flow.
      */
     private void signInWithEmailAndPassword(String email, String password) {
-        FirebaseAuth.getInstance(FirebaseApp.getInstance(getFlowParams().appName))
+        mHelper.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(
                         TAG, "Error signing in with email and password"))
@@ -350,21 +347,21 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
             case IdentityProviders.GOOGLE:
                 nextIntent = IdpSignInContainerActivity.createIntent(
                         getContext(),
-                        getFlowParams(),
+                        mHelper.getFlowParams(),
                         GoogleAuthProvider.PROVIDER_ID,
                         email);
                 break;
             case IdentityProviders.FACEBOOK:
                 nextIntent = IdpSignInContainerActivity.createIntent(
                         getContext(),
-                        getFlowParams(),
+                        mHelper.getFlowParams(),
                         FacebookAuthProvider.PROVIDER_ID,
                         email);
                 break;
             case IdentityProviders.TWITTER:
                 nextIntent = IdpSignInContainerActivity.createIntent(
                         getContext(),
-                        getFlowParams(),
+                        mHelper.getFlowParams(),
                         TwitterAuthProvider.PROVIDER_ID,
                         email);
                 break;
@@ -372,31 +369,16 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 Log.w(TAG, "unknown provider: " + accountType);
                 nextIntent = AuthMethodPickerActivity.createIntent(
                         getContext(),
-                        getFlowParams());
+                        mHelper.getFlowParams());
         }
         startActivityForResult(nextIntent, RC_IDP_SIGNIN);
-    }
-
-    private void showProgress() {
-        if (mProgressDialog == null || !mProgressDialog.isShowing()) {
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setMessage(getString(R.string.progress_dialog_loading));
-        }
-        mProgressDialog.show();
-    }
-
-    private void hideProgress() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
     }
 
     private void finish(int resultCode, Intent data) {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
-        hideProgress();
+        mHelper.dismissDialog();
 
         try {
             if (resultCode == RESULT_OK) {
@@ -410,10 +392,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         }
 
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-    }
-
-    public FlowParameters getFlowParams() {
-        return getArguments().getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS);
     }
 
     /**
