@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.util;
 
-import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Bundle;

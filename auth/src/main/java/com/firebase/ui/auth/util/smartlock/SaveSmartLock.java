@@ -240,7 +240,6 @@ public class SaveSmartLock extends SmartLock<Status> {
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(activity, this)
                 .build();
     }
 

@@ -82,7 +82,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        setRetainInstance(true); // TODO: 10/16/2016 test low mem devices
 
         if (!hasNetworkConnection()) {
             Log.d(TAG, "No network connection");
@@ -267,7 +266,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 .addConnectionCallbacks(this)
                 .addApi(Auth.CREDENTIALS_API)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
-                /*.enableAutoManage(getActivity(), this)*/ // TODO: 10/21/2016 @samstern am I connecting things correctly or should I use automanage?
                 .build();
         mGoogleApiClient.connect();
     }
