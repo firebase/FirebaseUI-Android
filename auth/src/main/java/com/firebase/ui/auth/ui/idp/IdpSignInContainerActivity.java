@@ -87,7 +87,7 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
                 .addOnCompleteListener(new CredentialSignInHandler(
                         IdpSignInContainerActivity.this,
                         mActivityHelper,
-                        SmartLock.getInstance(IdpSignInContainerActivity.this, TAG),
+                        SaveSmartLock.getInstance(IdpSignInContainerActivity.this, TAG),
                         RC_WELCOME_BACK_IDP,
                         response));
     }

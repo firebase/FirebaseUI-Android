@@ -154,7 +154,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
-                                        SmartLock.getInstance(RegisterEmailActivity.this, TAG)
+                                        SaveSmartLock.getInstance(RegisterEmailActivity.this, TAG)
                                                 .saveCredentialsOrFinish(RegisterEmailActivity.this,
                                                                          mActivityHelper,
                                                                          firebaseUser,

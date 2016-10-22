@@ -25,12 +25,12 @@ import android.widget.LinearLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -63,7 +63,7 @@ public class AuthMethodPickerActivity extends IDPBaseActivity
     private static final int RC_EMAIL_FLOW = 2;
     private static final int RC_ACCOUNT_LINK = 3;
 
-    private ArrayList<IDPProvider> mIdpProviders;
+    private ArrayList<IdpProvider> mIdpProviders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,7 +168,7 @@ public class AuthMethodPickerActivity extends IDPBaseActivity
                 .addOnCompleteListener(new CredentialSignInHandler(
                         AuthMethodPickerActivity.this,
                         mActivityHelper,
-                        SmartLock.getInstance(AuthMethodPickerActivity.this, TAG),
+                        SaveSmartLock.getInstance(AuthMethodPickerActivity.this, TAG),
                         RC_ACCOUNT_LINK,
                         response));
     }
