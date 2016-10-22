@@ -270,13 +270,18 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
         // If the only provider is Email, immediately launch the email flow. Otherwise, launch
         // the auth method picker screen.
-        if (providers.size() == 1
-                && providers.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
-            startActivityForResult(
-                    EmailFlowUtil.createIntent(
-                            getContext(),
-                            mHelper.getFlowParams()),
-                    RC_EMAIL_FLOW);
+        if (providers.size() == 1) {
+            if (providers.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
+                startActivityForResult(
+                        EmailFlowUtil.createIntent(
+                                getContext(),
+                                mHelper.getFlowParams()),
+                        RC_EMAIL_FLOW);
+            } else {
+                redirectToIdpSignIn(null,
+                                    SmartLock.providerIdToAccountType(
+                                            providers.get(0).getProviderId()));
+            }
         } else {
             startActivityForResult(
                     AuthMethodPickerActivity.createIntent(
@@ -383,9 +388,9 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
         try {
             if (resultCode == RESULT_OK) {
-                ((AuthUI.AuthUISignInResult) getActivity()).onSignInSuccessful(data);
+                ((AuthUI.SignInResult) getActivity()).onSignInSuccessful(data);
             } else {
-                ((AuthUI.AuthUISignInResult) getActivity()).onSignInFailed(resultCode);
+                ((AuthUI.SignInResult) getActivity()).onSignInFailed(resultCode);
             }
         } catch (ClassCastException e) {
             Log.e(TAG, getActivity().toString()

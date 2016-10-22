@@ -37,15 +37,11 @@ import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_FIRST_USER;
@@ -76,25 +72,15 @@ public class SaveSmartLock extends SmartLock<Status> {
         if (mPassword == null) {
             // only password OR provider can be set, not both
             if (mProvider != null) {
-                String translatedProvider;
-                // translate the google.com/facebook.com/twitter.com provider strings into full URIs
-                switch (mProvider) {
-                    case GoogleAuthProvider.PROVIDER_ID:
-                        translatedProvider = IdentityProviders.GOOGLE;
-                        break;
-                    case FacebookAuthProvider.PROVIDER_ID:
-                        translatedProvider = IdentityProviders.FACEBOOK;
-                        break;
-                    case TwitterAuthProvider.PROVIDER_ID:
-                        translatedProvider = IdentityProviders.TWITTER;
-                        break;
-                    default:
-                        Log.e(TAG, "Unable to save null credential!");
-                        finish(RESULT_CANCELED);
-                        return;
-                }
+                String translatedProvider = SmartLock.providerIdToAccountType(mProvider);
 
-                builder.setAccountType(translatedProvider);
+                if (translatedProvider != null) {
+                    builder.setAccountType(translatedProvider);
+                } else {
+                    Log.e(TAG, "Unable to save null credential!");
+                    finish(RESULT_CANCELED);
+                    return;
+                }
             }
         }
 
@@ -203,7 +189,7 @@ public class SaveSmartLock extends SmartLock<Status> {
 
     private void finish(int resultCode) {
         if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
+            mGoogleApiClient.disconnect();
         }
         ((AppCompatBase) getActivity()).finish(RESULT_OK, getActivity().getIntent());
     }
