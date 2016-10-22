@@ -201,6 +201,9 @@ public class SaveSmartLock extends SmartLock<Status> {
     }
 
     private void finish(int resultCode) {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
         ((AppCompatBase) getActivity()).finish(RESULT_OK, getActivity().getIntent());
     }
 
@@ -239,6 +242,7 @@ public class SaveSmartLock extends SmartLock<Status> {
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
                 .build();
+        mGoogleApiClient.connect();
     }
 
     public static SaveSmartLock getInstance(AppCompatBase activity, String tag) {
