@@ -631,13 +631,16 @@ public class AuthUI {
         }
 
         public void build(@NonNull FragmentActivity activity) {
-            SignInDelegate.newInstance(activity,
-                                       new FlowParameters(mApp.getName(),
-                                                          new ArrayList<>(mProviders),
-                                                          mTheme,
-                                                          mLogo,
-                                                          mTosUrl,
-                                                          mIsSmartLockEnabled));
+            SignInDelegate.newInstance(activity, getFlowParams());
+        }
+
+        public FlowParameters getFlowParams() {
+            return new FlowParameters(mApp.getName(),
+                                      new ArrayList<>(mProviders),
+                                      mTheme,
+                                      mLogo,
+                                      mTosUrl,
+                                      mIsSmartLockEnabled);
         }
     }
 }

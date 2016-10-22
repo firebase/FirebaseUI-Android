@@ -45,6 +45,8 @@ import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 
+import java.util.Arrays;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -55,7 +57,6 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, shadows = {ActivityHelperShadow.class}, sdk = 23)
 public class ChooseAccountActivityTest {
     private FirebaseApp mFirebaseApp;
-    @Mock private CredentialsAPI mCredentialsAPI;
     @Mock private FirebaseAuth mFirebaseAuth;
     @Mock private ActivityHelper mActivityHelper;
 
@@ -70,10 +71,12 @@ public class ChooseAccountActivityTest {
         when(mCredentialsAPI.isAutoSignInAvailable()).thenReturn(true);
     }
 
-    private Intent createStartIntent() {
+    private Intent getSignInDelegate() {
         return AuthUI.getInstance(mFirebaseApp)
                 .createSignInIntentBuilder()
-                .setProviders(AuthUI.EMAIL_PROVIDER, AuthUI.GOOGLE_PROVIDER)
+                .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
                 .setIsSmartLockEnabled(true)
                 .build(RuntimeEnvironment.application);
     }

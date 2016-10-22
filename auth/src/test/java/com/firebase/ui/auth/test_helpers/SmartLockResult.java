@@ -5,14 +5,14 @@ import android.support.v4.app.FragmentActivity;
 
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.Assert.assertEquals;
 
-public class SmartLockResult extends SmartLock {
+public class SmartLockResult extends SaveSmartLock {
     private CountDownLatch mCountDownLatch;
     private String mPassword;
     private String mProvider;

@@ -36,7 +36,6 @@ public class CustomRobolectricGradleTestRunner extends RobolectricTestRunner {
         InstrumentationConfiguration.Builder builder = InstrumentationConfiguration.newBuilder();
 
         builder.addInstrumentedClass(FirebaseAuthWrapperFactory.class.getName());
-        builder.addInstrumentedClass(CredentialsAPI.class.getName());
         builder.addInstrumentedClass(ActivityHelper.class.getName());
         builder.addInstrumentedClass(FirebaseAuthWrapperImpl.class.getName());
         builder.addInstrumentedClass(FacebookProvider.class.getName());
