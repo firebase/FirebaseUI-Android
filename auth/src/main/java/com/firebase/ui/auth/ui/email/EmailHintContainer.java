@@ -29,7 +29,7 @@ import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.google.android.gms.auth.api.credentials.Credential;
 
-public class EmailHintContainerActivity extends AppCompatBase {
+public class EmailHintContainer extends AppCompatBase {
     private static final int RC_HINT = 13;
     private AcquireEmailHelper mAcquireEmailHelper;
 

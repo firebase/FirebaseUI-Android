@@ -43,6 +43,10 @@
             android:label="@string/default_toolbar_title"
             android:theme="@style/FirebaseUI" />
         <activity
+            android:name="com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity"
+            android:label="@string/default_toolbar_title"
+            android:theme="@style/FirebaseUI.FacebookTranslucent" />
+        <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
