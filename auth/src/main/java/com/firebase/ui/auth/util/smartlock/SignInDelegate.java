@@ -24,6 +24,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;

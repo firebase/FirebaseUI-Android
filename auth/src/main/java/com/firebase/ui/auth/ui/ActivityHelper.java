@@ -27,6 +27,10 @@ public class ActivityHelper extends BaseHelper {
         mActivity = activity;
     }
 
+    public void startActivityForResult(Intent intent, int requestCode) {
+        mActivity.startActivityForResult(intent, requestCode);
+    }
+
     public void finish(int resultCode, Intent intent) {
         mActivity.setResult(resultCode, intent);
         mActivity.finish();
