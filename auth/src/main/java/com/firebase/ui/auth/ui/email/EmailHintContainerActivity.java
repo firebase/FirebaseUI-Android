@@ -46,7 +46,7 @@ public class EmailHintContainerActivity extends AppCompatBase {
                 startIntentSenderForResult(hintIntent.getIntentSender(), RC_HINT, null, 0, 0, 0);
                 return;
             } catch (IntentSender.SendIntentException e) {
-                Log.e("EmailHintContainer", "An error occurred sending the smart lock resolution intent", e);
+                Log.e("EmailHintContainer", "Failed to send Credentials intent.", e);
             }
         }
         finish(RESULT_CANCELED, new Intent());

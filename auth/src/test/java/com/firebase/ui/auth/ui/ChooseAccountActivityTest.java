@@ -14,7 +14,9 @@
 
 package com.firebase.ui.auth.ui;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
@@ -26,6 +28,7 @@ import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.firebase.ui.auth.util.smartlock.SignInDelegate;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
@@ -57,8 +60,10 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, shadows = {ActivityHelperShadow.class}, sdk = 23)
 public class ChooseAccountActivityTest {
     private FirebaseApp mFirebaseApp;
-    @Mock private FirebaseAuth mFirebaseAuth;
-    @Mock private ActivityHelper mActivityHelper;
+    @Mock
+    private FirebaseAuth mFirebaseAuth;
+    @Mock
+    private ActivityHelper mActivityHelper;
 
     @Before
     public void setUp() {
@@ -66,87 +71,48 @@ public class ChooseAccountActivityTest {
         mFirebaseApp = TestHelper.initializeApp(RuntimeEnvironment.application);
         PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
 
-        when(mCredentialsAPI.isPlayServicesAvailable()).thenReturn(true);
-        when(mCredentialsAPI.isCredentialsAvailable()).thenReturn(true);
-        when(mCredentialsAPI.isAutoSignInAvailable()).thenReturn(true);
-    }
-
-    private Intent getSignInDelegate() {
-        return AuthUI.getInstance(mFirebaseApp)
-                .createSignInIntentBuilder()
-                .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
-                .setIsSmartLockEnabled(true)
-                .build(RuntimeEnvironment.application);
+//        when(mCredentialsAPI.isPlayServicesAvailable()).thenReturn(true);
+//        when(mCredentialsAPI.isCredentialsAvailable()).thenReturn(true);
+//        when(mCredentialsAPI.isAutoSignInAvailable()).thenReturn(true);
     }
 
     @Test
     public void testAutoSignInWithSavedUsernameAndPassword_signsIn() {
-        Intent startIntent = createStartIntent();
-        ChooseAccountActivity chooseAccountActivity =
-                Robolectric.buildActivity(ChooseAccountActivity.class)
-                        .withIntent(startIntent)
-                        .create()
-                        .get();
-
-        when(mCredentialsAPI.getEmailFromCredential()).thenReturn(TestConstants.EMAIL);
-        when(mCredentialsAPI.getPasswordFromCredential()).thenReturn(TestConstants.PASSWORD);
-        when(mCredentialsAPI.getAccountTypeFromCredential()).thenReturn(
-                EmailAuthProvider.PROVIDER_ID);
+        SignInDelegate signInDelegate = mock(SignInDelegate.class);
 
         when(mActivityHelper.getFirebaseAuth()).thenReturn(mFirebaseAuth);
-        when(mActivityHelper.getFlowParams()).thenReturn(
-                (FlowParameters) startIntent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS));
 
         when(mFirebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD))
-                .thenReturn(
-                        new AutoCompleteTask<AuthResult>(
-                                new FakeAuthResult(mock(FirebaseUser.class)), true, null));
+                .thenReturn(new AutoCompleteTask<AuthResult>(
+                        new FakeAuthResult(mock(FirebaseUser.class)), true, null));
 
-        chooseAccountActivity.onCredentialsApiConnected(mCredentialsAPI, mActivityHelper);
+        signInDelegate.redirectToIdpOrSignInWithEmailAndPassword(TestConstants.EMAIL,
+                                                                 TestConstants.PASSWORD,
+                                                                 EmailAuthProvider.PROVIDER_ID);
 
         verify(mFirebaseAuth).signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 
-        assertTrue(Shadows.shadowOf(chooseAccountActivity).isFinishing());
+        verify(signInDelegate).finish(100, new Intent());
     }
 
     @Test
     public void testAutoSignInWithSavedIdp_redirectsToIdpSignIn() {
-        Intent startIntent = createStartIntent();
-        ChooseAccountActivity chooseAccountActivity =
-                Robolectric.buildActivity(ChooseAccountActivity.class)
-                        .withIntent(startIntent)
-                        .create()
-                        .get();
+        SignInDelegate signInDelegate = mock(DummySignInDelegate.class);
 
-        when(mCredentialsAPI.getEmailFromCredential()).thenReturn(TestConstants.EMAIL);
-        when(mCredentialsAPI.getPasswordFromCredential()).thenReturn(null);
-        when(mCredentialsAPI.getAccountTypeFromCredential()).thenReturn(
-                IdentityProviders.GOOGLE);
-        when(mActivityHelper.getFlowParams()).thenReturn(
-                (FlowParameters) startIntent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS));
+        signInDelegate.redirectToIdpOrSignInWithEmailAndPassword(TestConstants.EMAIL,
+                                                                 null,
+                                                                 IdentityProviders.GOOGLE);
+    }
 
-        chooseAccountActivity.onCredentialsApiConnected(mCredentialsAPI, mActivityHelper);
-
-        ShadowActivity.IntentForResult nextIntent = Shadows
-                .shadowOf(chooseAccountActivity)
-                .getNextStartedActivityForResult();
-
-        assertEquals(
-                IdpSignInContainerActivity.class.getName(),
-                nextIntent.intent.getComponent().getClassName()
-        );
-        assertEquals(
-                TestConstants.EMAIL,
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
-        assertEquals(
-                GoogleAuthProvider.PROVIDER_ID,
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PROVIDER)
-        );
+    private class DummySignInDelegate extends SignInDelegate {
+        @Override
+        public void finish(int resultCode, Intent data) {
+            assertEquals(2121, resultCode);
+            assertEquals(new Intent(), data);
+        }
     }
 }

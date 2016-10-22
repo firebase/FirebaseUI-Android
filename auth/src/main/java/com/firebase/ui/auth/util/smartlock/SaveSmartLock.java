@@ -140,7 +140,7 @@ public class SaveSmartLock extends SmartLock<Status> {
                                        0,
                                        null);
         } catch (IntentSender.SendIntentException e) {
-            Log.e(TAG, "An error occurred sending the smart lock resolution intent", e);
+            Log.e(TAG, "STATUS: Failed to send resolution.", e);
             finish(RESULT_CANCELED);
         }
     }

@@ -68,9 +68,8 @@ public class AuthUITest {
         SignInIntentBuilder startIntent =
                 AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder();
         startIntent.setProviders(
-                Arrays.asList(
-                        new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                        new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()));
+                Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                              new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()));
     }
 
     @Test
@@ -82,7 +81,7 @@ public class AuthUITest {
                 .setTosUrl(TestConstants.TOS_URL)
                 .getFlowParams();
 
-        assertEquals(2, flowParameters.providerInfo.size());
+        assertEquals(3, flowParameters.providerInfo.size());
         assertEquals(mFirebaseApp.getName(), flowParameters.appName);
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
         assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);
