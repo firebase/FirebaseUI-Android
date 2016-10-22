@@ -402,7 +402,11 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         hideProgress();
 
         try {
-            ((AuthUI.AuthUISignInResult) getActivity()).onSignInResult(resultCode, data);
+            if (resultCode == RESULT_OK) {
+                ((AuthUI.AuthUISignInResult) getActivity()).onSignInSuccessful(data);
+            } else {
+                ((AuthUI.AuthUISignInResult) getActivity()).onSignInFailed(resultCode);
+            }
         } catch (ClassCastException e) {
             Log.e(TAG, getActivity().toString()
                     + " must implement AuthUI.AuthUIResult to receive sign in results");

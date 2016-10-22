@@ -29,8 +29,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
-
 import android.widget.TextView;
+
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
@@ -207,13 +207,13 @@ public class AuthUiActivity extends AppCompatActivity implements AuthUI.AuthUISi
 
     @MainThread
     @Override
-    public void onSignInResult(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            startActivity(SignedInActivity.createIntent(this, IdpResponse.fromResultIntent(data)));
-            finish();
-            return;
-        }
+    public void onSignInSuccessful(Intent data) {
+        startActivity(SignedInActivity.createIntent(this, IdpResponse.fromResultIntent(data)));
+        finish();
+    }
 
+    @Override
+    public void onSignInFailed(int resultCode) {
         if (resultCode == RESULT_CANCELED) {
             showSnackbar(R.string.sign_in_cancelled);
             return;

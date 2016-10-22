@@ -228,7 +228,8 @@ import java.util.Set;
  */
 public class AuthUI {
     public interface AuthUISignInResult {
-        void onSignInResult(int resultCode, Intent data);
+        void onSignInSuccessful(Intent data);
+        void onSignInFailed(int resultCode);
     }
 
     /**
