@@ -36,7 +36,6 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
@@ -52,7 +51,7 @@ import java.util.List;
  * Presents the list of authentication options for this app to the user. If an
  * identity provider option is selected, a {@link IdpSignInContainerActivity container activity}
  * is launched to manage the IDP-specific sign-in flow. If email authentication is chosen,
- * the {@link EmailHintContainerActivity root email flow activity} is started.
+ * the {@link EmailHintContainer root email flow activity} is started.
  *
  * <p style="text-align: center">
  * <img alt="Authentication picker activity rendered with all authentication options and default settings"
@@ -183,10 +182,11 @@ public class AuthMethodPickerActivity extends AppCompatBase
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.email_provider) {
-            Intent intent = EmailFlowUtil.createIntent(
-                    this,
-                    mActivityHelper.getFlowParams());
-            startActivityForResult(intent, RC_EMAIL_FLOW);
+            EmailFlowUtil.startEmailFlow(this,
+                                         null,
+                                         mActivityHelper.getFlowParams(),
+                                         TAG,
+                                         RC_EMAIL_FLOW);
         }
     }
 

@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
-public class BaseHelper {
+public abstract class BaseHelper {
     private ProgressDialog mProgressDialog;
     private Context mContext;
     private final FlowParameters mFlowParams;
@@ -50,6 +50,10 @@ public class BaseHelper {
             mProgressDialog = null;
         }
     }
+
+    public abstract void startActivityForResult(Intent intent, int requestCode);
+
+    public abstract void finish(int resultCode, Intent intent);
 
     public Context getApplicationContext() {
         return mContext.getApplicationContext();

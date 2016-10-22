@@ -27,6 +27,7 @@ public class ActivityHelper extends BaseHelper {
         mActivity = activity;
     }
 
+    @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         mActivity.startActivityForResult(intent, requestCode);
     }

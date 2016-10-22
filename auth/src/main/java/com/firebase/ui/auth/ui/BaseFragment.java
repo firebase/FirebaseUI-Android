@@ -16,8 +16,8 @@ public class BaseFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mHelper = new BaseHelper(getContext(),
-                                 (FlowParameters) getArguments()
-                                         .getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS));
+        mHelper = new FragmentHelper(this,
+                                     (FlowParameters) getArguments()
+                                             .getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS));
     }
 }

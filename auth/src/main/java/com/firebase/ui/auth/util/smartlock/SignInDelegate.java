@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.util.smartlock;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -65,14 +64,13 @@ import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
  * is started.
  */
 public class SignInDelegate extends SmartLock<CredentialRequestResult> {
-    private static final String TAG = "SignInDelegate";
+    public static final String TAG = "SignInDelegate";
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
     private static final int RC_EMAIL_FLOW = 5;
     private static final int RC_PLAY_SERVICES = 6;
 
-    private ProgressDialog mProgressDialog;
     private GoogleApiClient mGoogleApiClient;
     private Credential mCredential;
 
@@ -272,11 +270,11 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         // the auth method picker screen.
         if (providers.size() == 1) {
             if (providers.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
-                startActivityForResult(
-                        EmailFlowUtil.createIntent(
-                                getContext(),
-                                mHelper.getFlowParams()),
-                        RC_EMAIL_FLOW);
+                EmailFlowUtil.startEmailFlow(getActivity(),
+                                             this,
+                                             mHelper.getFlowParams(),
+                                             TAG,
+                                             RC_EMAIL_FLOW);
             } else {
                 redirectToIdpSignIn(null,
                                     SmartLock.providerIdToAccountType(
@@ -380,7 +378,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         startActivityForResult(nextIntent, RC_IDP_SIGNIN);
     }
 
-    private void finish(int resultCode, Intent data) {
+    public void finish(int resultCode, Intent data) {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
