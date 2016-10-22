@@ -136,9 +136,16 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         if (status.isSuccess()) {
             // Auto sign-in success
             handleCredential(result.getCredential());
-            redirectToIdpOrSignInWithEmailAndPassword(getEmailFromCredential(),
-                                                      getPasswordFromCredential(),
-                                                      getAccountTypeFromCredential());
+            String email = getEmailFromCredential();
+            String password = getPasswordFromCredential();
+
+            if (TextUtils.isEmpty(password)) {
+                // log in with id/provider
+                redirectToIdpSignIn(email, getAccountTypeFromCredential());
+            } else {
+                // Sign in with the email/password retrieved from SmartLock
+                signInWithEmailAndPassword(email, password);
+            }
         } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
             hideProgress();
             // resolve saved emails
@@ -153,16 +160,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
             } catch (IntentSender.SendIntentException e) {
                 Log.e(TAG, "Failed to send Credentials intent.", e);
             }
-        }
-    }
-
-    public void redirectToIdpOrSignInWithEmailAndPassword(String email, String password, String provider) {
-        if (TextUtils.isEmpty(password)) {
-            // log in with id/provider
-            redirectToIdpSignIn(email, provider);
-        } else {
-            // Sign in with the email/password retrieved from SmartLock
-            signInWithEmailAndPassword(email, password);
         }
     }
 
@@ -395,7 +392,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         }
     }
 
-    public void finish(int resultCode, Intent data) {
+    private void finish(int resultCode, Intent data) {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
