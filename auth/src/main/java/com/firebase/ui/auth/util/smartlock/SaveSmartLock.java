@@ -60,6 +60,25 @@ public class SaveSmartLock extends SmartLock<Status> {
     private String mProfilePictureUri;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (!mHelper.getFlowParams().smartLockEnabled
+                || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()
+                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mHelper.getFlowParams().appName)
+                .isPlayServicesAvailable(getActivity())) {
+            finish(RESULT_CANCELED);
+            return;
+        }
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Auth.CREDENTIALS_API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
     public void onConnected(Bundle bundle) {
         if (TextUtils.isEmpty(mEmail)) {
             Log.e(TAG, "Unable to save null credential!");
@@ -205,27 +224,12 @@ public class SaveSmartLock extends SmartLock<Status> {
     public void saveCredentialsOrFinish(FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
-        if (!mHelper.getFlowParams().smartLockEnabled
-                || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()
-                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mHelper.getFlowParams().appName)
-                .isPlayServicesAvailable(getActivity())) {
-            finish(RESULT_CANCELED);
-            return;
-        }
-
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
         mProvider = provider;
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
-
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Auth.CREDENTIALS_API)
-                .build();
-        mGoogleApiClient.connect();
     }
 
     public static SaveSmartLock getInstance(FragmentActivity activity,
