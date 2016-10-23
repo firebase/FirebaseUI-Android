@@ -209,9 +209,9 @@ public class SaveSmartLock extends SmartLock<Status> {
                                         @Nullable String password,
                                         @Nullable String provider) {
         if (!parameters.smartLockEnabled
-                || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()
+                || !PlayServicesHelper.getInstance(context).isPlayServicesAvailable()
                 || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
-                .isPlayServicesAvailable(getActivity())) {
+                .isPlayServicesAvailable(context)) {
             finish(RESULT_CANCELED);
             return;
         }
