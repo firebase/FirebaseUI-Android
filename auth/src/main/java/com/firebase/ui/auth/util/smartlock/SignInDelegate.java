@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.util.smartlock;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -72,7 +71,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     private static final int RC_EMAIL_FLOW = 5;
     private static final int RC_PLAY_SERVICES = 6;
 
-    private ProgressDialog mProgressDialog;
     private GoogleApiClient mGoogleApiClient;
     private Credential mCredential;
 
