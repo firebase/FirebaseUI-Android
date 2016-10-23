@@ -108,7 +108,9 @@ public class CredentialSignInHandlerTest {
         when(mockActivityHelper.getFlowParams()).thenReturn(flowParams);
         credentialSignInHandler.onComplete(signInTask);
 
-        verify(smartLock).saveCredentialsOrFinish(mockFirebaseUser,
+        verify(smartLock).saveCredentialsOrFinish(mockActivity,
+                                                  mockActivityHelper.getFlowParams(),
+                                                  mockFirebaseUser,
                                                   null,
                                                   GoogleAuthProvider.PROVIDER_ID);
     }

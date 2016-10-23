@@ -30,7 +30,6 @@ import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
@@ -54,12 +53,12 @@ import static org.mockito.Mockito.when;
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23)
 public class RegisterEmailActivityTest {
-    private FlowParameters mParameters;
 
     private RegisterEmailActivity createActivity(String email) {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(Arrays.asList(AuthUI.EMAIL_PROVIDER)),
+                TestHelper.getFlowParameters(
+                        Arrays.asList(AuthUI.EMAIL_PROVIDER)),
                 email);
         return Robolectric.buildActivity(RegisterEmailActivity.class)
                 .withIntent(startIntent).create().visible().get();
@@ -67,9 +66,7 @@ public class RegisterEmailActivityTest {
 
     @Before
     public void setUp() {
-        mParameters = AuthUI.getInstance(TestHelper.initializeApp(RuntimeEnvironment.application))
-                .createSignInIntentBuilder()
-                .getFlowParams();
+        TestHelper.initializeApp(RuntimeEnvironment.application);
         PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
     }
 
@@ -91,8 +88,7 @@ public class RegisterEmailActivityTest {
         assertEquals(
                 String.format(
                         registerEmailActivity.getString(R.string.password_length),
-                        registerEmailActivity.getResources()
-                                .getInteger(R.integer.min_password_length)
+                        registerEmailActivity.getResources().getInteger(R.integer.min_password_length)
                 ),
                 passwordLayout.getError().toString());
     }

@@ -144,7 +144,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                                         .getInstance(WelcomeBackPasswordPrompt.this,
                                                                      mActivityHelper.getFlowParams(),
                                                                      TAG)
-                                                        .saveCredentialsOrFinish(authResult.getUser(),
+                                                        .saveCredentialsOrFinish(WelcomeBackPasswordPrompt.this,
+                                                                                 mActivityHelper.getFlowParams(),
+                                                                                 authResult.getUser(),
                                                                                  password,
                                                                                  null /* provider */);
                                             }
