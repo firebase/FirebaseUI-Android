@@ -145,7 +145,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 signInWithEmailAndPassword(email, password);
             }
         } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-            mHelper.dismissDialog(); // TODO: 10/22/2016  
             // resolve saved emails
             try {
                 startIntentSenderForResult(status.getResolution().getIntentSender(),
