@@ -14,15 +14,12 @@
 
 package com.firebase.ui.auth.test_helpers;
 
-import android.app.Activity;
-
 import com.facebook.login.LoginResult;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FacebookAuthProvider;
 
-import java.util.List;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
@@ -43,8 +40,6 @@ public class FacebookProviderShadow {
             when(mMockIdpResponse.getIdpToken()).thenReturn(FAKE_ACCESS_TOKEN);
         }
     }
-
-    public void __constructor__(Activity activity, List<String> scopes) {}
 
     @Implementation
     public void setAuthenticationCallback(IdpCallback idpCallback) {

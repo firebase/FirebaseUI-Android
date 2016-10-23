@@ -42,18 +42,16 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
     private static final int RC_WELCOME_BACK_IDP = 4;
 
     private IdpProvider mIdpProvider;
-    private String mProvider;
-    private String mEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
-        mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
+        String provider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         IdpConfig providerConfig = null;
         for (IdpConfig config : mActivityHelper.getFlowParams().providerInfo) {
-            if (config.getProviderId().equalsIgnoreCase(mProvider)) {
+            if (config.getProviderId().equalsIgnoreCase(provider)) {
                 providerConfig = config;
                 break;
             }
@@ -63,11 +61,11 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
             finish(RESULT_CANCELED, new Intent());
             return;
         }
-        if (mProvider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
+        if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new FacebookProvider(this, providerConfig);
-        } else if (mProvider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new GoogleProvider(this, providerConfig, mEmail);
-        } else if (mProvider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
+        } else if (provider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
+            mIdpProvider = new GoogleProvider(this, providerConfig, email);
+        } else if (provider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new TwitterProvider(this);
         }
         mIdpProvider.setAuthenticationCallback(this);

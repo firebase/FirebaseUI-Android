@@ -76,7 +76,8 @@
             android:id="@+id/toggle_visibility"
             android:layout_alignEnd="@id/password_layout"
             android:paddingTop="242dp"
-            android:layout_alignRight="@id/password_layout">
+            android:layout_alignRight="@id/password_layout"
+            android:contentDescription="@string/accessibility_toggle">
         </ImageView>
 
         <TextView
@@ -92,6 +93,7 @@
             style="@style/FirebaseUI.Button.NextButton"
             android:layout_below="@id/create_account_text"
             android:id="@+id/button_create"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:text="@string/button_text_save"
             />

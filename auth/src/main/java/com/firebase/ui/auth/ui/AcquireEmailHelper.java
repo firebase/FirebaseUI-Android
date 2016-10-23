@@ -32,10 +32,10 @@ import java.util.List;
 
 public class AcquireEmailHelper {
     private static final String TAG = "AcquireEmailHelper";
-    public static final int RC_REGISTER_ACCOUNT = 14;
-    public static final int RC_WELCOME_BACK_IDP = 15;
+    private static final int RC_REGISTER_ACCOUNT = 14;
+    private static final int RC_WELCOME_BACK_IDP = 15;
     public static final int RC_SIGN_IN = 16;
-    public static final List<Integer> REQUEST_CODES = Arrays.asList(
+    private static final List<Integer> REQUEST_CODES = Arrays.asList(
             RC_REGISTER_ACCOUNT,
             RC_WELCOME_BACK_IDP,
             RC_SIGN_IN
@@ -80,30 +80,22 @@ public class AcquireEmailHelper {
             mActivityHelper.startActivityForResult(registerIntent, RC_REGISTER_ACCOUNT);
         } else {
             // account does exist
-            for (String provider : providers) {
-                if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
-                    Intent signInIntent = SignInActivity.createIntent(
-                            mActivityHelper.getApplicationContext(),
-                            mActivityHelper.getFlowParams(),
-                            email);
-                    mActivityHelper.startActivityForResult(signInIntent, RC_SIGN_IN);
-                    return;
-                }
-
-                Intent intent = WelcomeBackIdpPrompt.createIntent(
+            if (providers.get(0).equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
+                Intent signInIntent = SignInActivity.createIntent(
                         mActivityHelper.getApplicationContext(),
                         mActivityHelper.getFlowParams(),
-                        provider,
-                        null,
                         email);
-                mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
+                mActivityHelper.startActivityForResult(signInIntent, RC_SIGN_IN);
                 return;
             }
 
-            Intent signInIntent = new Intent(
-                    mActivityHelper.getApplicationContext(), SignInActivity.class);
-            signInIntent.putExtra(ExtraConstants.EXTRA_EMAIL, email);
-            mActivityHelper.startActivityForResult(signInIntent, RC_SIGN_IN);
+            Intent intent = WelcomeBackIdpPrompt.createIntent(
+                    mActivityHelper.getApplicationContext(),
+                    mActivityHelper.getFlowParams(),
+                    providers.get(0),
+                    null,
+                    email);
+            mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
         }
     }
 

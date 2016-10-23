@@ -26,10 +26,10 @@ import com.google.android.gms.tasks.Task;
 import java.util.concurrent.Executor;
 
 public class AutoCompleteTask<TResult> extends Task<TResult> {
-    TResult mResult;
-    boolean mComplete;
-    boolean mSuccess;
-    Exception mException;
+    private TResult mResult;
+    private boolean mComplete;
+    private boolean mSuccess;
+    private Exception mException;
 
     public AutoCompleteTask(TResult result, boolean complete, @Nullable Exception exception) {
         mResult = result;
@@ -61,7 +61,7 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
 
     @NonNull
     @Override
-    public Task addOnCompleteListener(@NonNull OnCompleteListener onCompleteListener) {
+    public Task<TResult> addOnCompleteListener(@NonNull OnCompleteListener<TResult> onCompleteListener) {
         if (mComplete) {
             onCompleteListener.onComplete(this);
         }
@@ -70,7 +70,7 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
 
     @NonNull
     @Override
-    public Task addOnSuccessListener(@NonNull OnSuccessListener onSuccessListener) {
+    public Task<TResult> addOnSuccessListener(@NonNull OnSuccessListener<? super TResult> onSuccessListener) {
         if (mSuccess) {
             onSuccessListener.onSuccess(mResult);
         }
@@ -79,20 +79,21 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
 
     @NonNull
     @Override
-    public Task addOnSuccessListener(@NonNull Executor executor, @NonNull OnSuccessListener
+    public Task<TResult> addOnSuccessListener(@NonNull Executor executor, @NonNull OnSuccessListener
             onSuccessListener) {
         throw new RuntimeException("Method not implemented");
     }
 
     @NonNull
     @Override
-    public Task addOnSuccessListener(@NonNull Activity activity, @NonNull OnSuccessListener onSuccessListener) {
+    public Task<TResult> addOnSuccessListener(@NonNull Activity activity,
+                                              @NonNull OnSuccessListener onSuccessListener) {
         throw new RuntimeException("Method not implemented");
     }
 
     @NonNull
     @Override
-    public Task addOnFailureListener(@NonNull OnFailureListener onFailureListener) {
+    public Task<TResult> addOnFailureListener(@NonNull OnFailureListener onFailureListener) {
         if (!mSuccess) {
             onFailureListener.onFailure(mException);
         }
@@ -101,18 +102,20 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
 
     @NonNull
     @Override
-    public Task addOnFailureListener(@NonNull Executor executor, @NonNull OnFailureListener onFailureListener) {
+    public Task<TResult> addOnFailureListener(@NonNull Executor executor,
+                                              @NonNull OnFailureListener onFailureListener) {
         throw new RuntimeException("Method not implemented");
     }
 
     @NonNull
     @Override
-    public Task addOnFailureListener(@NonNull Activity activity, @NonNull OnFailureListener onFailureListener) {
+    public Task<TResult> addOnFailureListener(@NonNull Activity activity,
+                                              @NonNull OnFailureListener onFailureListener) {
         return addOnFailureListener(onFailureListener);
     }
 
     @Override
-    public Object getResult(@NonNull Class aClass) throws Throwable {
+    public TResult getResult(@NonNull Class aClass) throws Throwable {
         throw new RuntimeException("Method not implemented");
     }
 }

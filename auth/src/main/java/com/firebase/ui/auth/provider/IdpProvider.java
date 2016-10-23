@@ -35,8 +35,8 @@ public interface IdpProvider {
 
     void startLogin(Activity activity);
 
-    public interface IdpCallback {
-        public void onSuccess(IdpResponse idpResponse);
-        public void onFailure(Bundle extra);
+    interface IdpCallback {
+        void onSuccess(IdpResponse idpResponse);
+        void onFailure(Bundle extra);
     }
 }

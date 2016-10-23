@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.util;
 
-import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Bundle;
@@ -67,10 +66,7 @@ public class FirebaseAuthWrapperImpl
     @Override
     @WorkerThread
     public boolean isExistingAccount(@Nullable final String email) {
-        if (email == null) {
-            return false;
-        }
-        return hasProviders(await(mFirebaseAuth.fetchProvidersForEmail(email)));
+        return email != null && hasProviders(await(mFirebaseAuth.fetchProvidersForEmail(email)));
     }
 
     @Override

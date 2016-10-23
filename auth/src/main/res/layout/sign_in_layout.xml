@@ -20,7 +20,7 @@
             style="@style/FirebaseUI.EditText"
             android:id="@+id/email"
             android:hint="@string/email_hint"
-            />
+            android:inputType="textEmailAddress"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -45,7 +45,8 @@
         android:id="@+id/toggle_visibility"
         android:layout_alignEnd="@id/password_layout"
         android:layout_alignRight="@id/password_layout"
-        android:paddingTop="154dp">
+        android:paddingTop="154dp"
+        android:contentDescription="@string/accessibility_toggle">
     </ImageView>
 
     <LinearLayout

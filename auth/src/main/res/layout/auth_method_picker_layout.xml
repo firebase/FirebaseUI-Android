@@ -13,7 +13,8 @@
 
         <ImageView
             android:id="@+id/logo"
-            style="@style/FirebaseUI.AuthMethodPicker.Logo"/>
+            style="@style/FirebaseUI.AuthMethodPicker.Logo"
+            android:contentDescription="@string/accessibility_logo"/>
 
     </LinearLayout>
 

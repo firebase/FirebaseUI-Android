@@ -39,7 +39,7 @@ dependencies {
     
     compile 'com.facebook.android:facebook-android-sdk:4.14.1'
     compile("com.twitter.sdk.android:twitter:2.0.0@aar") {
-        transitive = true;
+        transitive = true
     }
     compile "com.android.support:design:${project.ext.support_library_version}"
 

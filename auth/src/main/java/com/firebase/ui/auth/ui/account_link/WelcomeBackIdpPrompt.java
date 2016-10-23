@@ -53,7 +53,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
 
     private static final String TAG = "WelcomeBackIDPPrompt";
     private IdpProvider mIdpProvider;
-    private String mProviderId;
     private IdpResponse mPrevIdpResponse;
     private AuthCredential mPrevCredential;
 
@@ -61,14 +60,14 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mProviderId = getProviderIdFromIntent();
+        String providerId = getProviderIdFromIntent();
         mPrevIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         mIdpProvider = null;
         for (IdpConfig idpConfig: mActivityHelper.getFlowParams().providerInfo) {
-            if (mProviderId.equals(idpConfig.getProviderId())) {
-                switch (mProviderId) {
+            if (providerId.equals(idpConfig.getProviderId())) {
+                switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
                         mIdpProvider = new GoogleProvider(this, idpConfig, getEmailFromIntent());
                         break;
@@ -79,7 +78,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                         mIdpProvider = new TwitterProvider(this);
                         break;
                     default:
-                        Log.w(TAG, "Unknown provider: " + mProviderId);
+                        Log.w(TAG, "Unknown provider: " + providerId);
                         finish(RESULT_CANCELED, getIntent());
                         return;
                 }
@@ -205,7 +204,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 
-    private class FinishListener implements OnCompleteListener {
+    private class FinishListener implements OnCompleteListener<AuthResult> {
         private final IdpResponse mIdpResponse;
 
         FinishListener(IdpResponse idpResponse) {
