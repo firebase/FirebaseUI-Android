@@ -101,7 +101,9 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         SaveSmartLock.getInstance(SignInActivity.this,
                                                   mActivityHelper.getFlowParams(),
                                                   TAG)
-                                .saveCredentialsOrFinish(authResult.getUser(),
+                                .saveCredentialsOrFinish(SignInActivity.this,
+                                                         mActivityHelper.getFlowParams(),
+                                                         authResult.getUser(),
                                                          password,
                                                          null /* provider */);
                     }

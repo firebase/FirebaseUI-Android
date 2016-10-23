@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.test_helpers;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -23,7 +24,9 @@ public class SmartLockResult extends SaveSmartLock {
     }
 
     @Override
-    public void saveCredentialsOrFinish(FirebaseUser firebaseUser,
+    public void saveCredentialsOrFinish(Context context,
+                                        FlowParameters parameters,
+                                        FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
         assertEquals(firebaseUser.getEmail(), TestConstants.EMAIL);

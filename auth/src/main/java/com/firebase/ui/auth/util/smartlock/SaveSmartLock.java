@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.util.smartlock;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
@@ -58,25 +59,6 @@ public class SaveSmartLock extends SmartLock<Status> {
     private String mPassword;
     private String mProvider;
     private String mProfilePictureUri;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (!mHelper.getFlowParams().smartLockEnabled
-                || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()
-                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mHelper.getFlowParams().appName)
-                .isPlayServicesAvailable(getActivity())) {
-            finish(RESULT_CANCELED);
-            return;
-        }
-
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Auth.CREDENTIALS_API)
-                .build();
-        mGoogleApiClient.connect();
-    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -221,15 +203,32 @@ public class SaveSmartLock extends SmartLock<Status> {
      * @param password     (optional) password for email credential.
      * @param provider     (optional) provider string for provider credential.
      */
-    public void saveCredentialsOrFinish(FirebaseUser firebaseUser,
+    public void saveCredentialsOrFinish(Context context,
+                                        FlowParameters parameters,
+                                        FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
+        if (!parameters.smartLockEnabled
+                || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()
+                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
+                .isPlayServicesAvailable(getActivity())) {
+            finish(RESULT_CANCELED);
+            return;
+        }
+
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
         mProvider = provider;
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
+
+        mGoogleApiClient = new GoogleApiClient.Builder(context)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Auth.CREDENTIALS_API)
+                .build();
+        mGoogleApiClient.connect();
     }
 
     public static SaveSmartLock getInstance(FragmentActivity activity,

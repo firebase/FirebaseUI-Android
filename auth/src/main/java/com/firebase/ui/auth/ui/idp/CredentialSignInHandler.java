@@ -62,7 +62,9 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
             FirebaseUser firebaseUser = task.getResult().getUser();
-            mSmartLock.saveCredentialsOrFinish(firebaseUser,
+            mSmartLock.saveCredentialsOrFinish(mActivity,
+                                               mHelper.getFlowParams(),
+                                               firebaseUser,
                                                null /* password */,
                                                mResponse.getProviderType());
         } else {

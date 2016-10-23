@@ -157,7 +157,9 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         SaveSmartLock.getInstance(RegisterEmailActivity.this,
                                                                   mActivityHelper.getFlowParams(),
                                                                   TAG)
-                                                .saveCredentialsOrFinish(firebaseUser,
+                                                .saveCredentialsOrFinish(RegisterEmailActivity.this,
+                                                                         mActivityHelper.getFlowParams(),
+                                                                         firebaseUser,
                                                                          password,
                                                                          null /* provider */);
                                     }
