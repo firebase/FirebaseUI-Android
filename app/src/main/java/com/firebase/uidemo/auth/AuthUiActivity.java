@@ -170,7 +170,6 @@ public class AuthUiActivity extends AppCompatActivity implements AuthUI.SignInRe
         if (!isGoogleConfigured() || !isFacebookConfigured() || !isTwitterConfigured()) {
             showSnackbar(R.string.configuration_required);
         }
-
     }
 
     @OnClick(R.id.sign_in)
