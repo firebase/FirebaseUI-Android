@@ -391,7 +391,7 @@ public class AuthUI {
      * Retrieves the {@link AuthUI} instance associated  the the specified app.
      */
     public static AuthUI getInstance(FirebaseApp app) {
-        AuthUI authUi = null;
+        AuthUI authUi;
         synchronized (INSTANCES) {
             authUi = INSTANCES.get(app);
             if (authUi == null) {
@@ -407,8 +407,6 @@ public class AuthUI {
      * customization is required.
      */
     public static @StyleRes int getDefaultTheme() {
-        // TODO(iainmgin): figure out why this works as a static method but not as a static
-        //                 final variable.
         return R.style.FirebaseUI;
     }
 
