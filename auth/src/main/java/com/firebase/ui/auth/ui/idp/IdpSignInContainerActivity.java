@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.FacebookProvider;
@@ -29,14 +30,13 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 public class IdpSignInContainerActivity extends AppCompatBase implements IdpCallback {
     private static final String TAG = "IDPSignInContainer";
@@ -88,9 +88,6 @@ public class IdpSignInContainerActivity extends AppCompatBase implements IdpCall
                 .addOnCompleteListener(new CredentialSignInHandler(
                         IdpSignInContainerActivity.this,
                         mActivityHelper,
-                        SaveSmartLock.getInstance(IdpSignInContainerActivity.this,
-                                                  mActivityHelper.getFlowParams(),
-                                                  TAG),
                         RC_WELCOME_BACK_IDP,
                         response));
     }

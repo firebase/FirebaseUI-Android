@@ -98,12 +98,13 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         // Save credential in SmartLock (if enabled)
-                        SaveSmartLock.getInstance(SignInActivity.this,
-                                                  mActivityHelper.getFlowParams(),
-                                                  TAG)
-                                .saveCredentialsOrFinish(authResult.getUser(),
-                                                         password,
-                                                         null /* provider */);
+                        SaveSmartLock.saveCredentialsOrFinish(
+                                SignInActivity.this,
+                                mActivityHelper.getFlowParams(),
+                                TAG,
+                                authResult.getUser(),
+                                password,
+                                null /* provider */);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -26,6 +26,7 @@ import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
+import com.firebase.ui.auth.util.EmailHintContainer;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -64,7 +65,7 @@ import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
  * is started.
  */
 public class SignInDelegate extends SmartLock<CredentialRequestResult> {
-    public static final String TAG = "SignInDelegate";
+    private static final String TAG = "SignInDelegate";
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
@@ -73,6 +74,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
     private GoogleApiClient mGoogleApiClient;
     private Credential mCredential;
+    private EmailHintContainer mEmailHintContainer;
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -203,6 +205,11 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                     finish(resultCode, data);
                 }
                 break;
+            default:
+                if (mEmailHintContainer != null) {
+                    mEmailHintContainer.onActivityResult(this, requestCode, resultCode, data);
+                }
+                break;
         }
     }
 
@@ -270,11 +277,10 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         // the auth method picker screen.
         if (providers.size() == 1) {
             if (providers.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
-                EmailFlowUtil.startEmailFlow(getActivity(),
-                                             this,
-                                             mHelper.getFlowParams(),
-                                             TAG,
-                                             RC_EMAIL_FLOW);
+                mEmailHintContainer = EmailFlowUtil.startEmailFlow(getActivity(),
+                                                                   this,
+                                                                   mHelper,
+                                                                   RC_EMAIL_FLOW);
             } else {
                 redirectToIdpSignIn(null,
                                     SmartLock.providerIdToAccountType(
