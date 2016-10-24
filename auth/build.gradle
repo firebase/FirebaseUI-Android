@@ -29,7 +29,6 @@ android {
     }
 }
 
-
 dependencies {
     compile "com.android.support:design:${project.ext.support_library_version}"
 
