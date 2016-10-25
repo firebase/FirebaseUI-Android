@@ -163,16 +163,15 @@ public class FirebaseAuthWrapperImpl
                 .enableAutoManage(fragmentActivity, new OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Log.e(TAG,
-                            "Client connection failed: " + connectionResult.getErrorMessage());
+                        Log.e(TAG, "Client connection failed: " + connectionResult.getErrorMessage());
                     }
                 })
                 .build();
 
         HintRequest hintRequest = new HintRequest.Builder()
                 .setHintPickerConfig(new CredentialPickerConfig.Builder()
-                        .setShowCancelButton(true)
-                        .build())
+                                             .setShowCancelButton(true)
+                                             .build())
                 .setEmailAddressIdentifierSupported(true)
                 .build();
 

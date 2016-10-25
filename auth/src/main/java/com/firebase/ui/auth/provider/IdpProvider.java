@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.firebase.ui.auth.IdpResponse;
 
 public interface IdpProvider {
@@ -37,6 +38,7 @@ public interface IdpProvider {
 
     interface IdpCallback {
         void onSuccess(IdpResponse idpResponse);
+
         void onFailure(Bundle extra);
     }
 }

@@ -57,7 +57,6 @@ public class GoogleProvider implements
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig, @Nullable String email) {
         mActivity = activity;
         String mClientId = activity.getString(R.string.default_web_client_id);
-        GoogleSignInOptions googleSignInOptions;
 
         GoogleSignInOptions.Builder builder =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -65,7 +64,7 @@ public class GoogleProvider implements
                         .requestIdToken(mClientId);
 
         if (activity.getResources().getIdentifier(
-                "google_permissions", "array", activity.getPackageName()) != 0){
+                "google_permissions", "array", activity.getPackageName()) != 0) {
             Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.google_permissions but that is"
                     + " no longer respected as of FirebaseUI 1.0.0. Please see README for IDP scope"
                     + " configuration instructions.");
@@ -79,11 +78,10 @@ public class GoogleProvider implements
         if (!TextUtils.isEmpty(email)) {
             builder.setAccountName(email);
         }
-        googleSignInOptions = builder.build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(activity)
                 .enableAutoManage(activity, AUTO_MANAGE_ID, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, builder.build())
                 .build();
     }
 

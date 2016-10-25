@@ -86,8 +86,7 @@ public class PlayServicesHelper {
 
         // Get an error dialog for the error code
         int errorCode = sApiAvailability.isGooglePlayServicesAvailable(activity);
-        Dialog dialog = sApiAvailability.getErrorDialog(activity, errorCode, requestCode,
-                cancelListener);
+        Dialog dialog = sApiAvailability.getErrorDialog(activity, errorCode, requestCode, cancelListener);
 
         // Display the dialog, if possible
         if (dialog != null) {

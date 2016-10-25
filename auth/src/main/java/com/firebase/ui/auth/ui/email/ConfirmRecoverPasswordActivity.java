@@ -63,7 +63,7 @@ public class ConfirmRecoverPasswordActivity extends AppCompatActivity
             FlowParameters flowParams,
             String email) {
         return ActivityHelper.createBaseIntent(context, ConfirmRecoverPasswordActivity.class,
-                flowParams)
+                                               flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 

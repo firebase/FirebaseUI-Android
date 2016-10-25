@@ -93,7 +93,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private class StartWelcomeBackFlow implements OnSuccessListener<ProviderQueryResult> {
         private String mEmail;
 
-        public StartWelcomeBackFlow(String email) {
+        private StartWelcomeBackFlow(String email) {
             mEmail = email;
         }
 

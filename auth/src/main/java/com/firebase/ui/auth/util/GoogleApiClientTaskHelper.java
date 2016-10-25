@@ -138,7 +138,7 @@ public class GoogleApiClientTaskHelper {
             if (mActivity == activity) {
                 GoogleApiClient client = mClientRef.get();
                 if (client != null) {
-                   client.connect();
+                    client.connect();
                 }
             }
         }

@@ -26,7 +26,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 public class AuthCredentialHelper {
-
     @Nullable
     public static AuthCredential getAuthCredential(IdpResponse idpResponse) {
         switch (idpResponse.getProviderType()) {
@@ -40,5 +39,4 @@ public class AuthCredentialHelper {
                 return null;
         }
     }
-
 }

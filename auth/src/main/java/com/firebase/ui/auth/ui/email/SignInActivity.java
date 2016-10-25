@@ -66,8 +66,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(
-                false);
+        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
         ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(

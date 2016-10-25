@@ -84,8 +84,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
 
         // Click listeners
         findViewById(R.id.button_done).setOnClickListener(this);
-        findViewById(R.id.toggle_visibility).setOnClickListener(
-                new PasswordToggler(mPasswordField));
+        findViewById(R.id.toggle_visibility).setOnClickListener(new PasswordToggler(mPasswordField));
         findViewById(R.id.trouble_signing_in).setOnClickListener(this);
     }
 

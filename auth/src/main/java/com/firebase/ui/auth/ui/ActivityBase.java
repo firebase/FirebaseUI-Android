@@ -31,5 +31,4 @@ public class ActivityBase extends Activity {
     public void finish(int resultCode, Intent intent) {
         mActivityHelper.finish(resultCode, intent);
     }
-
 }

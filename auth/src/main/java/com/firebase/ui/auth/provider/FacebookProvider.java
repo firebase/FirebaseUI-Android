@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -34,10 +35,12 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
     protected static final String ERROR = "err";
@@ -121,15 +124,15 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                     + " with Token: "
                     + loginResult.getAccessToken().getToken());
         }
+
         GraphRequest request = GraphRequest.newMeRequest(
                 loginResult.getAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         FacebookRequestError requestError = response.getError();
-                        if(requestError != null) {
-                            Log.e(TAG,
-                                    "Received Facebook error: " + requestError.getErrorMessage());
+                        if (requestError != null) {
+                            Log.e(TAG, "Received Facebook error: " + requestError.getErrorMessage());
                             mCallbackObject.onFailure(new Bundle());
                             return;
                         }
@@ -147,6 +150,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                         }
                     }
                 });
+
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id,name,email");
         request.setParameters(parameters);
