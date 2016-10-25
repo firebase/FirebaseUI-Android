@@ -1,4 +1,4 @@
-project.ext.firebase_version = '9.8.00'
+project.ext.firebase_version = '9.8.0'
 project.ext.support_library_version = '25.0.0'
 
 project.ext.submodules = ['database', 'auth', 'storage']
