@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             style="@style/FirebaseUI.EditText"
             android:id="@+id/email"
             android:hint="@string/email_hint"
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             style="@style/FirebaseUI.EditText.PasswordField"
             android:id="@+id/password"
             android:hint="@string/password_hint"/>

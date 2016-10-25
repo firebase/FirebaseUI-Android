@@ -23,7 +23,7 @@
             app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
             app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/email"
                 style="@style/FirebaseUI.EditText"
                 android:layout_width="match_parent"
@@ -43,7 +43,7 @@
             app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
             app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/name"
                 style="@style/FirebaseUI.EditText"
                 android:layout_width="match_parent"
@@ -63,7 +63,7 @@
             app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
             app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 style="@style/FirebaseUI.EditText.PasswordField"
                 android:id="@+id/password"
                 android:layout_width="match_parent"
