@@ -15,10 +15,6 @@
             android:label="@string/title_confirm_recover_password_activity"
             android:theme="@style/FirebaseUI.Dialog" />
         <activity
-            android:name="com.firebase.ui.auth.ui.email.EmailHintContainerActivity"
-            android:label="@string/default_toolbar_title"
-            android:theme="@style/FirebaseUI.Translucent" />
-        <activity
             android:name="com.firebase.ui.auth.ui.email.RecoverPasswordActivity"
             android:label="@string/title_recover_password_activity"
             android:theme="@style/FirebaseUI" />
@@ -49,17 +45,12 @@
         <activity
             android:name="com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity"
             android:label="@string/default_toolbar_title"
-            android:theme="@style/FirebaseUI.Translucent" />
-        <activity
-            android:name=".ui.ChooseAccountActivity"
-            android:label="@string/default_toolbar_title"
-            android:theme="@style/FirebaseUI.Translucent" />
-
+            android:theme="@style/FirebaseUI.FacebookTranslucent" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@style/FirebaseUI.Translucent"
+            android:theme="@style/FirebaseUI.FacebookTranslucent"
             tools:replace="android:theme" />
 
         <activity

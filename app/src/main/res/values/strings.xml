@@ -32,8 +32,6 @@
     <string name="google_tos_label">Google TOS</string>
     <string name="firebase_tos_label">Firebase TOS</string>
     <string name="tos_header">Terms of Service URL:</string>
-    <string name="unknown_response">Unexpected onActivityResult response code</string>
-    <string name="ok_label">OK</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>

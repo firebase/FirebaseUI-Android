@@ -116,10 +116,11 @@ public class RegisterEmailActivityTest {
                              TestConstants.EMAIL,
                              TestConstants.PASSWORD))
                 .thenReturn(new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser),
-                                                   true,
-                                                   null));
+                                                             true,
+                                                             null));
 
         SmartLockResult result = SmartLockResult.newInstance(registerEmailActivity,
+                                                             TestHelper.getFlowParameters(Arrays.asList(AuthUI.EMAIL_PROVIDER)),
                                                              "RegisterEmailActivity",
                                                              TestConstants.PASSWORD,
                                                              null);

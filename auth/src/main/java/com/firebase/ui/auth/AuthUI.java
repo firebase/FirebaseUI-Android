@@ -15,7 +15,6 @@
 package com.firebase.ui.auth;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -23,16 +22,17 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.support.annotation.VisibleForTesting;
+import android.support.v4.app.FragmentActivity;
+
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
-import com.firebase.ui.auth.ui.ChooseAccountActivity;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
-import com.firebase.ui.auth.util.SmartLockUtil;
+import com.firebase.ui.auth.util.smartlock.SignInDelegate;
+import com.firebase.ui.auth.util.smartlock.SmartLock;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -48,6 +48,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -226,6 +227,11 @@ import java.util.Set;
  * </ul>
  */
 public class AuthUI {
+    public interface SignInResult {
+        void onSignInSuccessful(Intent data);
+
+        void onSignInFailed(int resultCode);
+    }
 
     /**
      * Provider identifier for email and password credentials, for use with
@@ -325,6 +331,7 @@ public class AuthUI {
      * API. Returns a {@code Task} that succeeds if the Firebase Auth user deletion succeeds and
      * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
      * silently.
+     *
      * @param activity the calling {@link Activity}.
      */
     public Task<Void> delete(@NonNull Activity activity) {
@@ -343,7 +350,7 @@ public class AuthUI {
         CredentialsApiHelper credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
 
         // Get all SmartLock credentials associated with the user
-        List<Credential> credentials = SmartLockUtil.credentialsFromFirebaseUser(firebaseUser);
+        List<Credential> credentials = SmartLock.credentialsFromFirebaseUser(firebaseUser);
 
         // For each Credential in the list, create a task to delete it.
         List<Task<?>> credentialTasks = new ArrayList<>();
@@ -381,6 +388,7 @@ public class AuthUI {
     /**
      * Retrieves the {@link AuthUI} instance associated with the default app, as returned by
      * {@code FirebaseApp.getInstance()}.
+     *
      * @throws IllegalStateException if the default app is not initialized.
      */
     public static AuthUI getInstance() {
@@ -406,7 +414,8 @@ public class AuthUI {
      * Default theme used by {@link SignInIntentBuilder#setTheme(int)} if no theme
      * customization is required.
      */
-    public static @StyleRes int getDefaultTheme() {
+    @StyleRes
+    public static int getDefaultTheme() {
         // TODO(iainmgin): figure out why this works as a static method but not as a static
         //                 final variable.
         return R.style.FirebaseUI;
@@ -471,6 +480,7 @@ public class AuthUI {
 
             /**
              * Builds the configuration parameters for an identity provider.
+             *
              * @param providerId An ID of one of the supported identity providers. e.g.
              * {@link AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for the
              * complete list of supported Identity providers
@@ -568,7 +578,8 @@ public class AuthUI {
             for (IdpConfig idpConfig : idpConfigs) {
                 if (configuredProviders.contains(idpConfig.getProviderId())) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                            + idpConfig.getProviderId() + " was set twice.");
+                                                               + idpConfig.getProviderId()
+                                                               + " was set twice.");
                 }
                 configuredProviders.add(idpConfig.getProviderId());
                 mProviders.add(idpConfig);
@@ -602,30 +613,12 @@ public class AuthUI {
 
         /**
          * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
-         * 
+         *
          * <p>SmartLock is enabled by default
          */
         public SignInIntentBuilder setIsSmartLockEnabled(boolean enabled) {
             mIsSmartLockEnabled = enabled;
             return this;
-        }
-
-        public Intent build() {
-            Context context = mApp.getApplicationContext();
-            return build(context);
-        }
-
-        @VisibleForTesting
-        public Intent build(Context context) {
-            return ChooseAccountActivity.createIntent(
-                    context,
-                    new FlowParameters(
-                            mApp.getName(),
-                            new ArrayList<>(mProviders),
-                            mTheme,
-                            mLogo,
-                            mTosUrl,
-                            mIsSmartLockEnabled));
         }
 
         private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
@@ -635,6 +628,19 @@ public class AuthUI {
                 }
             }
             return false;
+        }
+
+        public void build(@NonNull FragmentActivity activity) {
+            SignInDelegate.delegateSignIn(activity, getFlowParams());
+        }
+
+        public FlowParameters getFlowParams() {
+            return new FlowParameters(mApp.getName(),
+                                      new ArrayList<>(mProviders),
+                                      mTheme,
+                                      mLogo,
+                                      mTosUrl,
+                                      mIsSmartLockEnabled);
         }
     }
 }

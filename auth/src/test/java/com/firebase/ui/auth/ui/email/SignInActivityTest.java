@@ -19,6 +19,7 @@ import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
@@ -42,6 +43,7 @@ import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static junit.framework.Assert.assertTrue;
@@ -117,6 +119,8 @@ public class SignInActivityTest {
         when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
 
         SmartLockResult result = SmartLockResult.newInstance(signInActivity,
+                                                             TestHelper.getFlowParameters(Arrays.asList(
+                                                                     AuthUI.EMAIL_PROVIDER)),
                                                              "SignInActivity",
                                                              TestConstants.PASSWORD,
                                                              null);

@@ -1,18 +1,20 @@
 package com.firebase.ui.auth.test_helpers;
 
+import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 
-import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.Assert.assertEquals;
 
-public class SmartLockResult extends SmartLock {
+public class SmartLockResult extends SaveSmartLock {
     private CountDownLatch mCountDownLatch;
     private String mPassword;
     private String mProvider;
@@ -22,8 +24,8 @@ public class SmartLockResult extends SmartLock {
     }
 
     @Override
-    public void saveCredentialsOrFinish(AppCompatBase activity,
-                                        ActivityHelper helper,
+    public void saveCredentialsOrFinish(Context context,
+                                        FlowParameters parameters,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable String provider) {
@@ -37,10 +39,15 @@ public class SmartLockResult extends SmartLock {
     }
 
     public static SmartLockResult newInstance(FragmentActivity activity,
+                                              FlowParameters parameters,
                                               String tag,
                                               String password,
                                               String provider) {
         SmartLockResult result = new SmartLockResult();
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, parameters);
+        result.setArguments(bundle);
 
         result.mCountDownLatch = new CountDownLatch(1);
         result.mPassword = password;

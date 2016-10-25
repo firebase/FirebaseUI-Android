@@ -1,11 +1,18 @@
-package com.firebase.ui.auth.util;
+package com.firebase.ui.auth.util.smartlock;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.ui.BaseFragment;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,11 +24,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Helper class to deal with Smartlock Flows.
- */
-public class SmartLockUtil {
-    private static final String TAG = "SmartLockUtil";
+public abstract class SmartLock<R extends Result> extends BaseFragment implements
+        GoogleApiClient.ConnectionCallbacks,
+        ResultCallback<R>,
+        GoogleApiClient.OnConnectionFailedListener {
+    private static final String TAG = "SmartLockBase";
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "Connection suspended with code " + i);
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "connection failed with " + connectionResult.getErrorMessage()
+                    + " and code: " + connectionResult.getErrorCode());
+        }
+        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+    }
 
     /**
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to

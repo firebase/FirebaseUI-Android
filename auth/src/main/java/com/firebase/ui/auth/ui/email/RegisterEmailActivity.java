@@ -39,7 +39,7 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -154,9 +154,11 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
-                                        SmartLock.getInstance(RegisterEmailActivity.this, TAG)
+                                        SaveSmartLock.getInstance(RegisterEmailActivity.this,
+                                                                  mActivityHelper.getFlowParams(),
+                                                                  TAG)
                                                 .saveCredentialsOrFinish(RegisterEmailActivity.this,
-                                                                         mActivityHelper,
+                                                                         mActivityHelper.getFlowParams(),
                                                                          firebaseUser,
                                                                          password,
                                                                          null /* provider */);
