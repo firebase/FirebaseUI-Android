@@ -85,7 +85,7 @@ public class SaveCredentialsActivity extends AppCompatBase
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (mEmail == null) {
+        if (mEmail == null || mEmail.equals("")) {
             Log.e(TAG, "Unable to save null credential!");
             finish(RESULT_FIRST_USER, getIntent());
             return;
