@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.util.Log;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
@@ -20,6 +21,8 @@ import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 import io.fabric.sdk.android.Fabric;
 
 public class TwitterProvider extends Callback<TwitterSession> implements IdpProvider {
+    private static final String TAG = "TwitterProvider";
+
     private IdpCallback mCallbackObject;
     private TwitterAuthClient mTwitterAuthClient;
 
@@ -63,6 +66,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
 
     @Override
     public void failure(TwitterException exception) {
+        Log.e(TAG, "Failure logging in to Twitter. " + exception.getMessage());
         mCallbackObject.onFailure(new Bundle());
     }
 
