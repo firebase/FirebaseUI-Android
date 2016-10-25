@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="FirebaseUI" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/authui_colorPrimary</item>
         <item name="colorPrimaryDark">@color/authui_colorPrimaryDark</item>
@@ -32,4 +33,5 @@
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textCursorDrawable">@null</item>
     </style>
+
 </resources>

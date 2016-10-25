@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="FirebaseUI" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:textColor">@color/authui_inputTextColorDark</item>
         <item name="android:textColorPrimary">@color/authui_inputTextColor</item>
@@ -187,7 +188,7 @@
     </style>
 
     <!-- Authentication method picker styles -->
-    <style name="FirebaseUI.AuthMethodPicker" />
+    <style name="FirebaseUI.AuthMethodPicker"/>
 
     <style name="FirebaseUI.AuthMethodPicker.Logo">
         <item name="android:layout_width">wrap_content</item>
@@ -243,4 +244,5 @@
         <item name="android:background">@drawable/idp_button_background_twitter</item>
         <item name="android:textColor">@color/tw__solid_white</item>
     </style>
+
 </resources>

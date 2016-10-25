@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/FirebaseUI.WrapperStyle">
+
     <!--
         Since the TextInputLayouts change size based on whether or not an error
         is showing we use a relative layout to position them absolutely
@@ -21,6 +22,7 @@
             android:id="@+id/email"
             android:hint="@string/email_hint"
             android:inputType="textEmailAddress"/>
+
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -36,8 +38,8 @@
         <EditText
             style="@style/FirebaseUI.EditText.PasswordField"
             android:id="@+id/password"
-            android:hint="@string/password_hint"
-            />
+            android:hint="@string/password_hint"/>
+
     </android.support.design.widget.TextInputLayout>
 
     <ImageView
@@ -52,8 +54,8 @@
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:paddingTop="248dp"
-        >
+        android:paddingTop="248dp">
+
         <TextView
             android:id="@+id/trouble_signing_in"
             android:text="@string/trouble_signing_in"
@@ -61,11 +63,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingTop="8dp"
-            style="@style/FirebaseUI.Text.Link"
-            />
+            style="@style/FirebaseUI.Text.Link"/>
+        
         <Button
             style="@style/FirebaseUI.Button"
             android:text="@string/next"
             android:id="@+id/button_done"/>
+
     </LinearLayout>
+
 </RelativeLayout>
