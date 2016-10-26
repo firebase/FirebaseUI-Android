@@ -27,8 +27,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -61,6 +63,7 @@ public class SmartLock extends Fragment
     private String mPassword;
     private String mProvider;
     private String mProfilePictureUri;
+    private IdpResponse mResponse;
     private GoogleApiClient mCredentialsApiClient;
 
     @Override
@@ -147,8 +150,9 @@ public class SmartLock extends Fragment
 
     @Override
     public void onResult(@NonNull Status status) {
+        Intent resultIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mResponse);
         if (status.isSuccess()) {
-            finish(RESULT_OK);
+            finish(RESULT_OK, resultIntent);
         } else {
             if (status.hasResolution()) {
                 // Try to resolve the save request. This will prompt the user if
@@ -164,10 +168,10 @@ public class SmartLock extends Fragment
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
-                    finish(RESULT_CANCELED);
+                    finish(RESULT_CANCELED, resultIntent);
                 }
             } else {
-                finish(RESULT_CANCELED);
+                finish(RESULT_CANCELED, resultIntent);
             }
         }
     }
@@ -201,7 +205,11 @@ public class SmartLock extends Fragment
     }
 
     private void finish(int resultCode) {
-        mActivity.finish(RESULT_OK, mActivity.getIntent());
+        mActivity.finish(resultCode, mActivity.getIntent());
+    }
+
+    private void finish(int resultCode, Intent data) {
+        mActivity.finish(resultCode, data);
     }
 
     /**
@@ -217,32 +225,34 @@ public class SmartLock extends Fragment
                                         ActivityHelper helper,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
-                                        @Nullable String provider) {
+                                        @NonNull IdpResponse response) {
         mActivity = activity;
         mActivityHelper = helper;
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
-        mProvider = provider;
+        mResponse = response;
+        mProvider = response.getProviderType();
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
         // If SmartLock is disabled, finish the Activity
+        Intent returnIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
         if (!helper.getFlowParams().smartLockEnabled) {
-            finish(RESULT_CANCELED);
+            finish(RESULT_OK, returnIntent);
             return;
         }
 
         // If Play Services is not available, finish the Activity
         if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
-            finish(RESULT_CANCELED);
+            finish(RESULT_OK, returnIntent);
             return;
         }
 
         if (!FirebaseAuthWrapperFactory
                 .getFirebaseAuthWrapper(helper.getFlowParams().appName)
                 .isPlayServicesAvailable(activity)) {
-            finish(RESULT_CANCELED);
+            finish(RESULT_OK, returnIntent);
             return;
         }
 
