@@ -3,12 +3,12 @@ apply plugin: 'checkstyle'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion project.ext.compileSdk
-    buildToolsVersion "${project.ext.buildtools}"
+    compileSdkVersion compileSdk
+    buildToolsVersion buildTools
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion project.ext.targetSdk
+        targetSdkVersion targetSdk
         versionCode 1
         versionName "1.0"
     }
@@ -30,10 +30,10 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:design:${project.ext.support_library_version}"
+    compile "com.android.support:design:${support_library_version}"
 
-    compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"
-    compile "com.google.android.gms:play-services-auth:${project.ext.firebase_version}"
+    compile "com.google.firebase:firebase-auth:${firebase_version}"
+    compile "com.google.android.gms:play-services-auth:${firebase_version}"
 
     compile 'com.facebook.android:facebook-android-sdk:4.16.1'
     compile("com.twitter.sdk.android:twitter:2.1.1@aar") {
