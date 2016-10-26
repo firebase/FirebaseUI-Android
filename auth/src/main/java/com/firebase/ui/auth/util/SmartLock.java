@@ -228,13 +228,12 @@ public class SmartLock extends Fragment
         if (response != null) {
             mProvider = response.getProviderType();
         } else {
-            mPassword = null;
+            mProvider = null;
         }
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
         // If SmartLock is disabled, finish the Activity
-        Intent returnIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
         if (!helper.getFlowParams().smartLockEnabled) {
             finish();
             return;
