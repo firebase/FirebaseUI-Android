@@ -63,12 +63,13 @@ public class AuthMethodPickerActivity extends IDPBaseActivity
     private static final int RC_EMAIL_FLOW = 2;
     private static final int RC_ACCOUNT_LINK = 3;
     private ArrayList<IdpProvider> mIdpProviders;
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
-
+        mSmartLock = SmartLock.getInstance(this, TAG);
         findViewById(R.id.email_provider).setOnClickListener(this);
 
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);
@@ -167,7 +168,7 @@ public class AuthMethodPickerActivity extends IDPBaseActivity
                 .addOnCompleteListener(new CredentialSignInHandler(
                         AuthMethodPickerActivity.this,
                         mActivityHelper,
-                        SmartLock.getInstance(AuthMethodPickerActivity.this, TAG),
+                        mSmartLock,
                         RC_ACCOUNT_LINK,
                         response));
     }

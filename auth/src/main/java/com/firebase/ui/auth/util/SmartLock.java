@@ -18,6 +18,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,6 +38,7 @@ import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -49,7 +52,7 @@ public class SmartLock extends Fragment
         implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<Status> {
-    private static final String TAG = "CredentialsSaveBase";
+    private static final String TAG = "SmartLockFragment";
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
 
@@ -252,12 +255,18 @@ public class SmartLock extends Fragment
             return;
         }
 
-        mCredentialsApiClient = new GoogleApiClient.Builder(activity)
+        if (mActivity.isFinishing()) {
+            finish();
+            return;
+        }
+
+        mCredentialsApiClient = new Builder(activity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
                 .enableAutoManage(activity, this)
                 .build();
+        mCredentialsApiClient.connect();
     }
 
     public static SmartLock getInstance(AppCompatBase activity, String tag) {
@@ -269,7 +278,11 @@ public class SmartLock extends Fragment
         Fragment fragment = fm.findFragmentByTag(tag);
         if (fragment == null || !(fragment instanceof SmartLock)) {
             result = new SmartLock();
-            ft.add(result, tag).disallowAddToBackStack().commit();
+            try {
+                ft.add(result, tag).disallowAddToBackStack().commit();
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Can not add fragment", e);
+            }
         } else {
             result = (SmartLock) fragment;
         }

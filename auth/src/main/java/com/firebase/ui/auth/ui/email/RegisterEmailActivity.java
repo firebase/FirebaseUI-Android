@@ -66,11 +66,14 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
     private EmailFieldValidator mEmailFieldValidator;
     private PasswordFieldValidator mPasswordFieldValidator;
     private RequiredFieldValidator mNameValidator;
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_email_layout);
+
+        mSmartLock = SmartLock.getInstance(this, TAG);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);
@@ -156,13 +159,12 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
-                                        SmartLock.getInstance(RegisterEmailActivity.this, TAG)
-                                                .saveCredentialsOrFinish(
-                                                        RegisterEmailActivity.this,
-                                                        mActivityHelper,
-                                                        firebaseUser,
-                                                        password,
-                                                        null);
+                                        mSmartLock.saveCredentialsOrFinish(
+                                                RegisterEmailActivity.this,
+                                                mActivityHelper,
+                                                firebaseUser,
+                                                password,
+                                                null);
                                     }
                                 });
                     }

@@ -51,11 +51,14 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     private EditText mPasswordEditText;
     private EmailFieldValidator mEmailValidator;
     private RequiredFieldValidator mPasswordValidator;
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in_layout);
+
+        mSmartLock = SmartLock.getInstance(this, TAG);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
@@ -100,7 +103,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         // Save credential in SmartLock (if enabled)
-                        SmartLock.getInstance(SignInActivity.this, TAG)
+                        mSmartLock
                                 .saveCredentialsOrFinish(SignInActivity.this,
                                                          mActivityHelper,
                                                          authResult.getUser(),

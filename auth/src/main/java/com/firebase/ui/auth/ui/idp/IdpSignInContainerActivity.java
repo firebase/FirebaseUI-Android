@@ -44,11 +44,12 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
     private IdpProvider mIdpProvider;
     private String mProvider;
     private String mEmail;
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mSmartLock = SmartLock.getInstance(this, TAG);
         mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
         mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         IdpConfig providerConfig = null;
@@ -87,7 +88,7 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
                 .addOnCompleteListener(new CredentialSignInHandler(
                         IdpSignInContainerActivity.this,
                         mActivityHelper,
-                        SmartLock.getInstance(IdpSignInContainerActivity.this, TAG),
+                        mSmartLock,
                         RC_WELCOME_BACK_IDP,
                         response));
     }
