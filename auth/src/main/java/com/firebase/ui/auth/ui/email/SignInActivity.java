@@ -105,9 +105,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                                                          mActivityHelper,
                                                          authResult.getUser(),
                                                          password,
-                                                         new IdpResponse(
-                                                                 AuthUI.EMAIL_PROVIDER,
-                                                                 email));
+                                                         null);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

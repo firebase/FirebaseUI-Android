@@ -162,9 +162,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                                         mActivityHelper,
                                                         firebaseUser,
                                                         password,
-                                                        new IdpResponse(
-                                                                AuthUI.EMAIL_PROVIDER,
-                                                                email));
+                                                        null);
                                     }
                                 });
                     }

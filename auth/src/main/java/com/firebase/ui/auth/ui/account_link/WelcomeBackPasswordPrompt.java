@@ -147,9 +147,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                                                 mActivityHelper,
                                                                 authResult.getUser(),
                                                                 password,
-                                                                new IdpResponse(
-                                                                        AuthUI.EMAIL_PROVIDER,
-                                                                        email));
+                                                                null);
                                             }
                                         });
                     }

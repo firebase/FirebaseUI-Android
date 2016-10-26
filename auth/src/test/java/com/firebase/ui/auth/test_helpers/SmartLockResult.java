@@ -3,6 +3,7 @@ package com.firebase.ui.auth.test_helpers;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.SmartLock;
@@ -26,13 +27,17 @@ public class SmartLockResult extends SmartLock {
                                         ActivityHelper helper,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
-                                        @Nullable String provider) {
-        assertEquals(firebaseUser.getEmail(), TestConstants.EMAIL);
-        assertEquals(firebaseUser.getDisplayName(), TestConstants.NAME);
-        assertEquals(firebaseUser.getPhotoUrl() != null
-                             ? firebaseUser.getPhotoUrl().toString() : null, TestConstants.PHOTO_URL);
-        assertEquals(password, mPassword);
-        assertEquals(provider, mProvider);
+                                        @Nullable IdpResponse idpResponse) {
+        assertEquals(TestConstants.EMAIL, firebaseUser.getEmail());
+        assertEquals(TestConstants.NAME, firebaseUser.getDisplayName());
+        assertEquals(TestConstants.PHOTO_URL, firebaseUser.getPhotoUrl() != null
+                             ? firebaseUser.getPhotoUrl().toString() : null);
+        assertEquals(mPassword, password);
+        String provider = null;
+        if (idpResponse != null) {
+            provider = idpResponse.getProviderType();
+        }
+        assertEquals(mProvider, provider);
         mCountDownLatch.countDown();
     }
 
