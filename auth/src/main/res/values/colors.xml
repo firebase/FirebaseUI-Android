@@ -5,6 +5,7 @@
     <color name="authui_colorAccent">#3E50B4</color>
     <color name="authui_inputTextColor">#FFFFFF</color>
     <color name="authui_inputTextColorDark">#000000</color>
+
     <color name="errorColor">#DD2C00</color>
     <color name="linkColor">#4285F4</color>
 </resources>

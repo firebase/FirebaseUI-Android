@@ -10,6 +10,7 @@
             android:targetPackage="com.firebase.uidemo"
             android:targetClass="com.firebase.uidemo.storage.ImageActivity" />
     </shortcut>
+
     <shortcut
         android:shortcutId="auth"
         android:enabled="true"
@@ -20,6 +21,7 @@
             android:targetPackage="com.firebase.uidemo"
             android:targetClass="com.firebase.uidemo.auth.AuthUiActivity" />
     </shortcut>
+
     <shortcut
         android:shortcutId="database"
         android:enabled="true"

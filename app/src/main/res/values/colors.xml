@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <color name="colorPrimary">#039BE5</color>
     <color name="colorPrimaryDark">#0288D1</color>
     <color name="colorAccent">#FFA000</color>
@@ -22,5 +22,4 @@
     <color name="material_purple_a700">#AA00FF</color>
 
     <color name="material_red_a200">#FF5252</color>
-
 </resources>
