@@ -69,7 +69,7 @@ public class AuthMethodPickerActivity extends IDPBaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
-        mSmartLock = SmartLock.getInstance(this, TAG);
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
         findViewById(R.id.email_provider).setOnClickListener(this);
 
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);

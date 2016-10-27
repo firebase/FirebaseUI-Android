@@ -58,7 +58,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in_layout);
 
-        mSmartLock = SmartLock.getInstance(this, TAG);
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 

@@ -73,7 +73,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_email_layout);
 
-        mSmartLock = SmartLock.getInstance(this, TAG);
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);

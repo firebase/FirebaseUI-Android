@@ -49,7 +49,7 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSmartLock = SmartLock.getInstance(this, TAG);
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
         mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
         mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         IdpConfig providerConfig = null;
