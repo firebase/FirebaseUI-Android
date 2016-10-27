@@ -149,10 +149,10 @@ You can enable sign-in providers like Google Sign-In or Facebook Log In by calli
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(
-            new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-            new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-            new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build())
+        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
         .build(),
     RC_SIGN_IN);
 ```
@@ -399,10 +399,9 @@ AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(
-            new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-            googleIdp,
-            new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build())
+        .setProviders(Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                    googleIdp,
+                                    new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
         .build(),
     RC_SIGN_IN);
 ```
@@ -426,10 +425,8 @@ AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROV
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(
-            new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-            new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-            facebookIdp)
+        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                    facebookIdp))
         .build(),
     RC_SIGN_IN);
 ```

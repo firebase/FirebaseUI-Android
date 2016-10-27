@@ -26,6 +26,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -88,7 +90,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         recoveryButton.setOnClickListener(this);
     }
 
-    private void signIn(String email, final String password) {
+    private void signIn(final String email, final String password) {
         mActivityHelper.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(
@@ -102,7 +104,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                                                          mActivityHelper,
                                                          authResult.getUser(),
                                                          password,
-                                                         null /* provider */);
+                                                         null);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

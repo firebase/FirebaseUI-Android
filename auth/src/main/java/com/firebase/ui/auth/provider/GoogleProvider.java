@@ -124,7 +124,7 @@ public class GoogleProvider implements
                 if (result.isSuccess()) {
                     mIDPCallback.onSuccess(createIDPResponse(result.getSignInAccount()));
                 } else {
-                    onError(result.getStatus().getStatusMessage());
+                    onError(result);
                 }
             } else {
                 onError("No result found in intent");
@@ -138,7 +138,13 @@ public class GoogleProvider implements
         activity.startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    private void onError(GoogleSignInResult result) {
+        String errorMessage = result.getStatus().getStatusMessage();
+        onError(String.valueOf(result.getStatus().getStatusCode()) + " " + errorMessage);
+    }
+
     private void onError(String errorMessage) {
+        Log.e(TAG, "Error logging in with Google. " + errorMessage);
         Bundle extra = new Bundle();
         extra.putString(ERROR_KEY, errorMessage);
         mIDPCallback.onFailure(extra);

@@ -117,7 +117,7 @@ public class CredentialSignInHandlerTest {
                                                   mockActivityHelper,
                                                   mockFirebaseUser,
                                                   null,
-                                                  GoogleAuthProvider.PROVIDER_ID);
+                                                  idpResponse);
     }
 
     @Test

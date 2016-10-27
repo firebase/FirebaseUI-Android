@@ -25,10 +25,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -42,8 +43,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_FIRST_USER;
 import static android.app.Activity.RESULT_OK;
 
 public class SmartLock extends Fragment
@@ -61,13 +60,14 @@ public class SmartLock extends Fragment
     private String mPassword;
     private String mProvider;
     private String mProfilePictureUri;
+    private IdpResponse mResponse;
     private GoogleApiClient mCredentialsApiClient;
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (mEmail == null) {
             Log.e(TAG, "Unable to save null credential!");
-            finish(RESULT_CANCELED);
+            finish();
             return;
         }
 
@@ -90,7 +90,7 @@ public class SmartLock extends Fragment
                         break;
                     default:
                         Log.e(TAG, "Unable to save null credential!");
-                        finish(RESULT_CANCELED);
+                        finish();
                         return;
                 }
 
@@ -140,7 +140,7 @@ public class SmartLock extends Fragment
                                        null);
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
-            finish(RESULT_CANCELED);
+            finish();
         }
     }
 
@@ -148,7 +148,7 @@ public class SmartLock extends Fragment
     @Override
     public void onResult(@NonNull Status status) {
         if (status.isSuccess()) {
-            finish(RESULT_OK);
+            finish();
         } else {
             if (status.hasResolution()) {
                 // Try to resolve the save request. This will prompt the user if
@@ -164,10 +164,10 @@ public class SmartLock extends Fragment
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
-                    finish(RESULT_CANCELED);
+                    finish();
                 }
             } else {
-                finish(RESULT_CANCELED);
+                finish();
             }
         }
     }
@@ -181,10 +181,10 @@ public class SmartLock extends Fragment
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "SAVE: OK");
                 }
-                finish(RESULT_OK);
+                finish();
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish(RESULT_FIRST_USER);
+                finish();
             }
         } else if (requestCode == RC_UPDATE_SERVICE) {
             if (resultCode == RESULT_OK) {
@@ -195,13 +195,14 @@ public class SmartLock extends Fragment
                         .setResultCallback(this);
             } else {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish(RESULT_FIRST_USER);
+                finish();
             }
         }
     }
 
-    private void finish(int resultCode) {
-        mActivity.finish(RESULT_OK, mActivity.getIntent());
+    private void finish() {
+        Intent resultIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mResponse);
+        mActivity.finish(RESULT_OK, resultIntent);
     }
 
     /**
@@ -217,32 +218,37 @@ public class SmartLock extends Fragment
                                         ActivityHelper helper,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
-                                        @Nullable String provider) {
+                                        @Nullable IdpResponse response) {
         mActivity = activity;
         mActivityHelper = helper;
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
-        mProvider = provider;
+        mResponse = response;
+        if (response != null) {
+            mProvider = response.getProviderType();
+        } else {
+            mProvider = null;
+        }
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
         // If SmartLock is disabled, finish the Activity
         if (!helper.getFlowParams().smartLockEnabled) {
-            finish(RESULT_CANCELED);
+            finish();
             return;
         }
 
         // If Play Services is not available, finish the Activity
         if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
-            finish(RESULT_CANCELED);
+            finish();
             return;
         }
 
         if (!FirebaseAuthWrapperFactory
                 .getFirebaseAuthWrapper(helper.getFlowParams().appName)
                 .isPlayServicesAvailable(activity)) {
-            finish(RESULT_CANCELED);
+            finish();
             return;
         }
 

@@ -30,6 +30,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -132,7 +134,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         });
     }
 
-    private void registerUser(String email, final String name, final String password) {
+    private void registerUser(final String email, final String name, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         // create the user
         firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -156,11 +158,12 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
                                         SmartLock.getInstance(RegisterEmailActivity.this, TAG)
-                                                .saveCredentialsOrFinish(RegisterEmailActivity.this,
-                                                                         mActivityHelper,
-                                                                         firebaseUser,
-                                                                         password,
-                                                                         null /* provider */);
+                                                .saveCredentialsOrFinish(
+                                                        RegisterEmailActivity.this,
+                                                        mActivityHelper,
+                                                        firebaseUser,
+                                                        password,
+                                                        null);
                                     }
                                 });
                     }

@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ActivityHelper;
@@ -104,7 +105,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         }
     }
 
-    private void next(String email, final String password) {
+    private void next(final String email, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
 
         // Check for null or empty password
@@ -145,7 +146,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                                                 mActivityHelper,
                                                                 authResult.getUser(),
                                                                 password,
-                                                                null /* provider */);
+                                                                null);
                                             }
                                         });
                     }
@@ -153,6 +154,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        mActivityHelper.dismissDialog();
                         String error = e.getLocalizedMessage();
                         mPasswordLayout.setError(error);
                     }

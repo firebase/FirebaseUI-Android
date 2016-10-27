@@ -21,6 +21,10 @@
 
     <!--
     Your Twitter Consumer Secret
+
+    WARNING: By obtaining your Consumer Key and Consumer Secret other programs can perform API
+    operations as your app. Embedding the Consumer Key and Consumer Secret in your app, no matter
+    how obfuscated, makes it vulnerable to being stolen.
     -->
     <string name="twitter_consumer_secret" translatable="false">CHANGE-ME</string>
 </resources>
