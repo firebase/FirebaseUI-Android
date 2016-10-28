@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.CDATASection;
 
 public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
     protected static final String ERROR = "err";
@@ -46,14 +47,12 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private static final String TAG = "FacebookProvider";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
+    private static final CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
     private final List<String> mScopes;
-    private CallbackManager mCallbackManager;
     private IdpCallback mCallbackObject;
 
     public FacebookProvider(Context appContext, IdpConfig idpConfig) {
-        mCallbackManager = CallbackManager.Factory.create();
-
         if (appContext.getResources().getIdentifier(
                 "facebook_permissions", "array", appContext.getPackageName()) != 0) {
             Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.facebook_permissions but that"
@@ -84,7 +83,6 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void startLogin(Activity activity) {
-        mCallbackManager = CallbackManager.Factory.create();
         LoginManager loginManager = LoginManager.getInstance();
         loginManager.registerCallback(mCallbackManager, this);
 
