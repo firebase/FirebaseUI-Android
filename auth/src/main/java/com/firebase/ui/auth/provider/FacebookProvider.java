@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.CDATASection;
 
 public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
     protected static final String ERROR = "err";
