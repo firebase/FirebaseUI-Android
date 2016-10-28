@@ -20,13 +20,13 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:${support_library_version}"
-    compile "com.android.support:recyclerview-v7:${support_library_version}"
+    compile "com.android.support:appcompat-v7:$support_library_version"
+    compile "com.android.support:recyclerview-v7:$support_library_version"
 
-    compile "com.google.firebase:firebase-database:${firebase_version}"
+    compile "com.google.firebase:firebase-database:$firebase_version"
 
     androidTestCompile 'junit:junit:4.12'
-    androidTestCompile "com.android.support:support-annotations:${support_library_version}"
+    androidTestCompile "com.android.support:support-annotations:$support_library_version"
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
 }
