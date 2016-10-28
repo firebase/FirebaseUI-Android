@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.support.annotation.Nullable;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.FacebookProvider;
@@ -45,11 +46,16 @@ public class IdpSignInContainerActivity extends AppCompatBase implements IdpCall
     private static final int RC_WELCOME_BACK_IDP = 4;
 
     private IdpProvider mIdpProvider;
+    private String mProvider;
+    private String mEmail;
+    @Nullable
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
         String provider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         IdpConfig providerConfig = null;
@@ -91,7 +97,7 @@ public class IdpSignInContainerActivity extends AppCompatBase implements IdpCall
                 .addOnCompleteListener(new CredentialSignInHandler(
                         IdpSignInContainerActivity.this,
                         mActivityHelper,
-                        SmartLock.getInstance(IdpSignInContainerActivity.this, TAG),
+                        mSmartLock,
                         RC_WELCOME_BACK_IDP,
                         response));
     }

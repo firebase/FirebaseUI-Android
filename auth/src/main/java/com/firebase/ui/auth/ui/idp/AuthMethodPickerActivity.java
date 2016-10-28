@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -65,12 +66,14 @@ public class AuthMethodPickerActivity extends AppCompatBase
     private static final int RC_EMAIL_FLOW = 2;
     private static final int RC_ACCOUNT_LINK = 3;
     private ArrayList<IdpProvider> mIdpProviders;
+    @Nullable
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
-
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
         findViewById(R.id.email_provider).setOnClickListener(this);
 
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);
@@ -170,7 +173,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
                 .addOnCompleteListener(new CredentialSignInHandler(
                         AuthMethodPickerActivity.this,
                         mActivityHelper,
-                        SmartLock.getInstance(AuthMethodPickerActivity.this, TAG),
+                        mSmartLock,
                         RC_ACCOUNT_LINK,
                         response));
     }

@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -28,7 +29,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ActivityHelper;
@@ -58,12 +58,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
     private IdpResponse mIdpResponse;
+    @Nullable
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_back_password_prompt_layout);
-
+        mSmartLock = SmartLock.getInstance(WelcomeBackPasswordPrompt.this, TAG);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 
@@ -138,15 +140,11 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                         new OnSuccessListener<AuthResult>() {
                                             @Override
                                             public void onSuccess(AuthResult authResult) {
-                                                SmartLock
-                                                        .getInstance(WelcomeBackPasswordPrompt.this,
-                                                                     TAG)
-                                                        .saveCredentialsOrFinish(
-                                                                WelcomeBackPasswordPrompt.this,
-                                                                mActivityHelper,
-                                                                authResult.getUser(),
-                                                                password,
-                                                                null);
+                                                mActivityHelper.saveCredentialsOrFinish(
+                                                        mSmartLock,
+                                                        WelcomeBackPasswordPrompt.this,
+                                                        authResult.getUser(),
+                                                        password);
                                             }
                                         });
                     }
