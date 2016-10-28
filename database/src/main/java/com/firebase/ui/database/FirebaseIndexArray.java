@@ -130,7 +130,7 @@ class FirebaseIndexArray extends FirebaseArray {
 
     @Override
     public void onCancelled(DatabaseError error) {
-        Log.e(TAG, "A fatal error occur retrieving the necessary keys to populate your adapter");
+        Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
         super.onCancelled(error);
     }
 
