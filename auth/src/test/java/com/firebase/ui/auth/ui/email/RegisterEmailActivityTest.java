@@ -27,7 +27,6 @@ import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
-import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
@@ -45,8 +44,8 @@ import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
 
-import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 
@@ -96,6 +95,10 @@ public class RegisterEmailActivityTest {
     @Test
     @Config(shadows = {ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
     public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
+        // init mocks
+        new ActivityHelperShadow();
+        reset(ActivityHelperShadow.smartLock);
+        
         TestHelper.initializeApp(RuntimeEnvironment.application);
         RegisterEmailActivity registerEmailActivity = createActivity(TestConstants.EMAIL);
 
@@ -115,22 +118,14 @@ public class RegisterEmailActivityTest {
                      .createUserWithEmailAndPassword(
                              TestConstants.EMAIL,
                              TestConstants.PASSWORD))
-                .thenReturn(new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser),
-                                                   true,
-                                                   null));
-
-        SmartLockResult result = SmartLockResult.newInstance(registerEmailActivity,
-                                                             "RegisterEmailActivity",
-                                                             TestConstants.PASSWORD,
-                                                             null);
+                .thenReturn(new AutoCompleteTask<AuthResult>(
+                        new FakeAuthResult(mockFirebaseUser),
+                        true,
+                        null));
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
-        try {
-            result.await();
-        } catch (InterruptedException e) {
-            assertTrue("Interrupted waiting for result", false);
-        }
+        TestHelper.verifySmartLockSave(null, TestConstants.EMAIL, TestConstants.PASSWORD);
     }
 }

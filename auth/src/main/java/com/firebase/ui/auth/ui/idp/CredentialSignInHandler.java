@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.idp;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -40,14 +41,14 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
 
     private AppCompatBase mActivity;
     private ActivityHelper mActivityHelper;
-    private SmartLock mSmartLock;
+    @Nullable private SmartLock mSmartLock;
     private IdpResponse mResponse;
     private int mAccountLinkResultCode;
 
     public CredentialSignInHandler(
             AppCompatBase activity,
             ActivityHelper activityHelper,
-            SmartLock smartLock,
+            @Nullable SmartLock smartLock,
             int accountLinkResultCode,
             IdpResponse response) {
         mActivity = activity;
@@ -61,11 +62,11 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
             FirebaseUser firebaseUser = task.getResult().getUser();
-            mSmartLock.saveCredentialsOrFinish(mActivity,
-                                               mActivityHelper,
-                                               firebaseUser,
-                                               null /* password */,
-                                               mResponse);
+            mActivityHelper.saveCredentialsOrFinish(
+                    mSmartLock,
+                    mActivity,
+                    firebaseUser,
+                    mResponse);
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 final String email = mResponse.getEmail();
