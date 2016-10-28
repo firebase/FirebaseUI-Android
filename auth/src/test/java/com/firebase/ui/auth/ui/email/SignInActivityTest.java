@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.email;
 
 import static com.firebase.ui.auth.test_helpers.TestHelper.verifySmartLockSave;
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;

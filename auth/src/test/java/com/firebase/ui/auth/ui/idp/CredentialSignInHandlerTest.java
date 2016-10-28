@@ -113,11 +113,11 @@ public class CredentialSignInHandlerTest {
         when(mockActivityHelper.getFlowParams()).thenReturn(flowParams);
         credentialSignInHandler.onComplete(signInTask);
 
-        verify(smartLock).saveCredentialsOrFinish(mockActivity,
-                                                  mockActivityHelper,
-                                                  mockFirebaseUser,
-                                                  null,
-                                                  idpResponse);
+        verify(mockActivityHelper).saveCredentialsOrFinish(
+                smartLock,
+                mockActivity,
+                mockFirebaseUser,
+                idpResponse);
     }
 
     @Test
