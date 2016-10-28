@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.FacebookProvider;
@@ -44,6 +45,7 @@ public class IdpSignInContainerActivity extends IDPBaseActivity implements IdpCa
     private IdpProvider mIdpProvider;
     private String mProvider;
     private String mEmail;
+    @Nullable
     private SmartLock mSmartLock;
 
     @Override

@@ -18,19 +18,17 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -56,7 +54,7 @@ public class SmartLock extends Fragment
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
 
-    private AppCompatBase mActivity;
+    private AppCompatActivity mActivity;
     private ActivityHelper mActivityHelper;
     private String mName;
     private String mEmail;
@@ -205,7 +203,8 @@ public class SmartLock extends Fragment
 
     private void finish() {
         Intent resultIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mResponse);
-        mActivity.finish(RESULT_OK, resultIntent);
+        mActivity.setResult(RESULT_OK, resultIntent);
+        mActivity.finish();
     }
 
     /**
@@ -215,9 +214,9 @@ public class SmartLock extends Fragment
      * @param activity     the calling Activity.
      * @param firebaseUser Firebase user to save in Credential.
      * @param password     (optional) password for email credential.
-     * @param provider     (optional) provider string for provider credential.
+     * @param response     (optional) an {@link IdpResponse} representing the result of signing in.
      */
-    public void saveCredentialsOrFinish(AppCompatBase activity,
+    public void saveCredentialsOrFinish(AppCompatActivity activity,
                                         ActivityHelper helper,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
@@ -269,7 +268,8 @@ public class SmartLock extends Fragment
         mCredentialsApiClient.connect();
     }
 
-    public static SmartLock getInstance(AppCompatBase activity, String tag) {
+    @Nullable
+    public static SmartLock getInstance(AppCompatActivity activity, String tag) {
         SmartLock result;
 
         FragmentManager fm = activity.getSupportFragmentManager();
@@ -282,6 +282,7 @@ public class SmartLock extends Fragment
                 ft.add(result, tag).disallowAddToBackStack().commit();
             } catch (IllegalStateException e) {
                 Log.e(TAG, "Can not add fragment", e);
+                return null;
             }
         } else {
             result = (SmartLock) fragment;
