@@ -85,7 +85,7 @@ class FirebaseIndexArray extends FirebaseArray {
         super.setOnChangedListener(mListener);
 
         Query ref = mQuery.getRef().child(keySnapshot.getKey());
-        mRefs.put(ref, ref.addValueEventListener(new DataRefSnapshot()));
+        mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
     }
 
     @Override
@@ -140,7 +140,7 @@ class FirebaseIndexArray extends FirebaseArray {
         mListener = listener;
     }
 
-    private class DataRefSnapshot implements ValueEventListener {
+    private class DataRefListener implements ValueEventListener {
         @Override
         public void onDataChange(DataSnapshot snapshot) {
             String key = snapshot.getKey();
