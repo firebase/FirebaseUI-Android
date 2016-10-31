@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">Firebase UI</string>
+
+    <string name="name_chat">ChatActivity</string>
+    <string name="name_auth_ui">Auth UI demo</string>
+    <string name="name_image">Storage Imagem Demo</string>
+
+    <string name="desc_chat">Demonstra como usar FirebaseRecyclerAdapter para carregar dados do Firebase Database em um RecyclerView para uma aplicação basica de chat.</string>
+    <string name="desc_auth_ui">Demonstra o fluxo de Auth, com opções customizadas.</string>
+    <string name="desc_image">Demonstra como exibir uma image do Firebase Storage usando Glide.</string>
+
+    <!-- strings for Auth UI demo activities -->
+    <eat-comment />
+    <string name="launch_title">FirebaseUI Auth Demo</string>
+    <string name="sign_in">Iniciar</string>
+    <string name="green_theme">Tema verde</string>
+    <string name="purple_theme">Tema roxo</string>
+    <string name="use_theme_header">Usar tema:</string>
+    <string name="logo_header">Logo:</string>
+    <string name="firebase_logo_label">Firebase Auth</string>
+    <string name="google_logo_label">Google</string>
+    <string name="no_logo_label">Nenhum</string>
+    <string name="auth_providers_header">Usar provedores de autenticação:</string>
+    <string name="email_label">Email</string>
+    <string name="facebook_label">Facebook</string>
+    <string name="facebook_label_missing_config">Facebook - configuração inexistente</string>
+    <string name="google_label">Google</string>
+    <string name="google_label_missing_config">Google - configuração inexistente</string>
+    <string name="google_tos_label">Google TS</string>
+    <string name="firebase_tos_label">Firebase TS</string>
+    <string name="tos_header">URL do Termos de serviço:</string>
+    <string name="unknown_response">código de resposta onActivityResult inesperada</string>
+    <string name="ok_label">OK</string>
+    <string name="unknown_sign_in_response">Resposta desconhecida de AuthUI sign-in</string>
+    <string name="sign_in_cancelled">Login cancelado</string>
+    <string name="signed_in_header">Você está conectado(a)</string>
+    <string name="sign_out">Sair</string>
+    <string name="delete_account_label">Apagar conta</string>
+    <string name="sign_out_failed">Sair falhou</string>
+    <string name="delete_account_failed">Apagar conta falhou</string>
+    <string name="user_profile_header">Perfil do usuário:</string>
+    <string name="profile_picture_content_desc">Foto do perfil</string>
+    <string name="default_theme">Tema padrão</string>
+    <string name="configuration_required">Configuração necessária - leia o README.md</string>
+    <string name="other_options_header">Outras opções:</string>
+    <string name="enable_smartlock">Ativar Smart Lock para senhas</string>
+    <string name="rational_image_perm">Este exemplo irá ler uma imagem local para fazer o upload para Firebase Storage.</string>
+
+    <string name="anonymous_auth_failed_toast">Falha na autenticação, uploads e downloads não vão funcionar.</string>
+    <string name="anonymous_auth_failed_msg">A autenticação anônima falhou. Verifique se o seu dispositivo está on-line e que Anonymous Auth está habilitada no seu projeto Firebase (https://console.firebase.google.com/project/_/authentication/providers)</string>
+</resources>
