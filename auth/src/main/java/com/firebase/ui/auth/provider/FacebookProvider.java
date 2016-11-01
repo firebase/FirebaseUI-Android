@@ -46,7 +46,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private static final String TAG = "FacebookProvider";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
-    private static final CallbackManager mCallbackManager = CallbackManager.Factory.create();
+    private static final CallbackManager sCallbackManager = CallbackManager.Factory.create();
 
     private final List<String> mScopes;
     private IdpCallback mCallbackObject;
@@ -83,7 +83,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     @Override
     public void startLogin(Activity activity) {
         LoginManager loginManager = LoginManager.getInstance();
-        loginManager.registerCallback(mCallbackManager, this);
+        loginManager.registerCallback(sCallbackManager, this);
 
         List<String> permissionsList = new ArrayList<>(mScopes);
 
@@ -107,7 +107,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        sCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
