@@ -179,7 +179,10 @@ public class CredentialsAPI implements
                 .setPasswordLoginSupported(true);
 
         if (!onlyPasswords) {
-            crBuilder.setAccountTypes(IdentityProviders.GOOGLE);
+            crBuilder.setAccountTypes(
+                    IdentityProviders.GOOGLE,
+                    IdentityProviders.TWITTER,
+                    IdentityProviders.FACEBOOK);
         }
 
         showProgress();

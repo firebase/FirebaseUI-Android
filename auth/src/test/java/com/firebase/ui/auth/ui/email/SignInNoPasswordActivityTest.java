@@ -60,7 +60,7 @@ public class SignInNoPasswordActivityTest {
     public void testNextButton_withInvalidEmailAddress() {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(RuntimeEnvironment.application, Arrays.asList(AuthUI
+                TestHelper.getFlowParameters(Arrays.asList(AuthUI
                         .EMAIL_PROVIDER)),
                 null);
 
@@ -76,15 +76,14 @@ public class SignInNoPasswordActivityTest {
                 .findViewById(R.id.input_layout_email);
 
         assertEquals(
-                emailLayout.getError().toString(),
-                noPasswordActivity.getString(R.string.invalid_email_address));
+                noPasswordActivity.getString(R.string.invalid_email_address),
+                emailLayout.getError().toString());
     }
 
     private SignInNoPasswordActivity createActivity(String email) {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
                         Arrays.asList(AuthUI.EMAIL_PROVIDER)),
                 email);
         return Robolectric.buildActivity(SignInNoPasswordActivity.class)
@@ -137,8 +136,8 @@ public class SignInNoPasswordActivityTest {
         ShadowActivity.IntentForResult nextIntent =
                 shadowActivity.getNextStartedActivityForResult();
         assertEquals(
-                nextIntent.intent.getComponent().getClassName(),
-                SignInActivity.class.getName());
+                SignInActivity.class.getName(),
+                nextIntent.intent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
                 nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));

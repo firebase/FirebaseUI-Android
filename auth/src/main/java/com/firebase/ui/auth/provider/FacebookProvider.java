@@ -19,52 +19,55 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookRequestError;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResult> {
-    public static final String ACCESS_TOKEN = "facebook_access_token";
-
+public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
     protected static final String ERROR = "err";
     protected static final String ERROR_MSG = "err_msg";
 
     private static final String TAG = "FacebookProvider";
-    private static final String APPLICATION_ID = "application_id";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
+    private static final CallbackManager sCallbackManager = CallbackManager.Factory.create();
 
-    private CallbackManager mCallbackManager;
-    private IDPCallback mCallbackObject;
+    private final List<String> mScopes;
+    private IdpCallback mCallbackObject;
 
-    public FacebookProvider (Context appContext, IDPProviderParcel facebookParcel) {
-        mCallbackManager = CallbackManager.Factory.create();
-        String applicationId = facebookParcel.getProviderExtra().getString(APPLICATION_ID);
+    public FacebookProvider(Context appContext, IdpConfig idpConfig) {
+        if (appContext.getResources().getIdentifier(
+                "facebook_permissions", "array", appContext.getPackageName()) != 0) {
+            Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.facebook_permissions but that"
+                    + " is no longer respected as of FirebaseUI 1.0.0. Please see README for IDP"
+                    + " scope configuration instructions.");
+        }
+
+        List<String> scopes = idpConfig.getScopes();
+        if (scopes == null) {
+            mScopes = new ArrayList<>();
+        } else {
+            mScopes = scopes;
+        }
+        String applicationId = appContext.getString(R.string.facebook_application_id);
         FacebookSdk.sdkInitialize(appContext);
         FacebookSdk.setApplicationId(applicationId);
-    }
-
-    public static IDPProviderParcel createFacebookParcel(String applicationId) {
-        Bundle extra = new Bundle();
-        extra.putString(APPLICATION_ID, applicationId);
-        return new IDPProviderParcel(FacebookAuthProvider.PROVIDER_ID, extra);
     }
 
     @Override
@@ -79,12 +82,10 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
 
     @Override
     public void startLogin(Activity activity) {
-        mCallbackManager = CallbackManager.Factory.create();
         LoginManager loginManager = LoginManager.getInstance();
-        loginManager.registerCallback(mCallbackManager, this);
+        loginManager.registerCallback(sCallbackManager, this);
 
-        String[] permissions = activity.getResources().getStringArray(R.array.facebook_permissions);
-        List<String> permissionsList = new ArrayList<>(Arrays.asList(permissions));
+        List<String> permissionsList = new ArrayList<>(mScopes);
 
         // Ensure we have email and public_profile scopes
         if (!permissionsList.contains(EMAIL)) {
@@ -100,13 +101,13 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
     }
 
     @Override
-    public void setAuthenticationCallback(IDPCallback callback) {
+    public void setAuthenticationCallback(IdpCallback callback) {
         this.mCallbackObject = callback;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        sCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -122,12 +123,24 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        try {
-                            String email = object.getString("email");
-                            mCallbackObject.onSuccess(createIDPResponse(loginResult, email));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        FacebookRequestError requestError = response.getError();
+                        if(requestError != null) {
+                            Log.e(TAG,
+                                    "Received Facebook error: " + requestError.getErrorMessage());
                             mCallbackObject.onFailure(new Bundle());
+                            return;
+                        }
+                        if (object == null) {
+                            Log.w(TAG, "Received null response from Facebook GraphRequest");
+                            mCallbackObject.onFailure(new Bundle());
+                        } else {
+                            try {
+                                String email = object.getString("email");
+                                mCallbackObject.onSuccess(createIDPResponse(loginResult, email));
+                            } catch (JSONException e) {
+                                Log.e(TAG, "JSON Exception reading from Facebook GraphRequest", e);
+                                mCallbackObject.onFailure(new Bundle());
+                            }
                         }
                     }
                 });
@@ -137,18 +150,19 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
         request.executeAsync();
     }
 
-    private IDPResponse createIDPResponse(LoginResult loginResult, String email) {
-        Bundle response = new Bundle();
-        response.putString(ACCESS_TOKEN, loginResult.getAccessToken().getToken());
-        return new IDPResponse(FacebookAuthProvider.PROVIDER_ID, email, response);
+    private IdpResponse createIDPResponse(LoginResult loginResult, String email) {
+        return new IdpResponse(
+                FacebookAuthProvider.PROVIDER_ID,
+                email,
+                loginResult.getAccessToken().getToken());
     }
 
-    public static AuthCredential createAuthCredential(IDPResponse response) {
+    public static AuthCredential createAuthCredential(IdpResponse response) {
         if (!response.getProviderType().equals(FacebookAuthProvider.PROVIDER_ID)) {
             return null;
         }
         return FacebookAuthProvider
-                .getCredential(response.getResponse().getString(ACCESS_TOKEN));
+                .getCredential(response.getIdpToken());
     }
 
     @Override
@@ -161,6 +175,7 @@ public class FacebookProvider implements IDPProvider, FacebookCallback<LoginResu
 
     @Override
     public void onError(FacebookException error) {
+        Log.e(TAG, "Error logging in with Facebook. " + error.getMessage());
         Bundle extra = new Bundle();
         extra.putString(ERROR, "error");
         extra.putString(ERROR_MSG, error.getMessage());

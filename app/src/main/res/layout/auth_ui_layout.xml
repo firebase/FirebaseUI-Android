@@ -62,6 +62,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/green_theme" />
+
+            <RadioButton
+                android:id="@+id/dark_theme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dark_theme" />
         </RadioGroup>
 
         <TextView
@@ -90,6 +96,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/google_label" />
+
+        <CheckBox
+            android:id="@+id/twitter_provider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/twitter_label" />
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Subhead"
@@ -150,6 +162,52 @@
                 android:layout_height="wrap_content"
                 android:text="@string/no_logo_label" />
         </RadioGroup>
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:id="@+id/facebook_scopes_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/extra_facebook_scopes" />
+
+        <CheckBox
+            android:id="@+id/facebook_scope_friends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/friends" />
+
+        <CheckBox
+            android:id="@+id/facebook_scope_photos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/photos" />
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:id="@+id/google_scopes_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/extra_google_scopes" />
+
+        <CheckBox
+            android:id="@+id/google_scope_games"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/games" />
+
+        <CheckBox
+            android:id="@+id/google_scope_drive_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="Drive File" />
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Subhead"
