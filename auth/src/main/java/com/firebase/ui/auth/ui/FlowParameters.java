@@ -89,10 +89,7 @@ public class FlowParameters implements Parcelable {
             String termsOfServiceUrl = in.readString();
             int smartLockEnabledInt = in.readInt();
             boolean smartLockEnabled = (smartLockEnabledInt != 0);
-            List<String> additionalFacebookPermissions = new ArrayList<>();
-            in.readStringList(additionalFacebookPermissions);
-            List<String> additionalGooglePermissions = new ArrayList<>();
-            in.readStringList(additionalGooglePermissions);
+
             return new FlowParameters(
                     appName,
                     providerInfo,

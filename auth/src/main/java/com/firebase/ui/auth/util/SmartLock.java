@@ -168,6 +168,7 @@ public class SmartLock extends Fragment
                     finish();
                 }
             } else {
+                Log.w(TAG, status.getStatusMessage());
                 finish();
             }
         }
