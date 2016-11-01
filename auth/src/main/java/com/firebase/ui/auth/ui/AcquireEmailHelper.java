@@ -17,7 +17,6 @@ package com.firebase.ui.auth.ui;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import android.util.Log;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
@@ -90,11 +89,11 @@ public class AcquireEmailHelper {
                 mActivityHelper.startActivityForResult(signInIntent, RC_SIGN_IN);
             } else {
                 Intent intent = WelcomeBackIdpPrompt.createIntent(
-                    mActivityHelper.getApplicationContext(),
-                    mActivityHelper.getFlowParams(),
-                    provider,
-                    null,
-                    email);
+                        mActivityHelper.getApplicationContext(),
+                        mActivityHelper.getFlowParams(),
+                        provider,
+                        null,
+                        email);
                 mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
             }
         }
