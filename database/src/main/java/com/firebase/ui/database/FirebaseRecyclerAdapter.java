@@ -72,7 +72,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     private FirebaseArray mSnapshots;
     private Class<T> mModelClass;
-    private Class<VH> mViewHolderClass;
+    protected Class<VH> mViewHolderClass;
     protected int mModelLayout;
 
     FirebaseRecyclerAdapter(Class<T> modelClass,

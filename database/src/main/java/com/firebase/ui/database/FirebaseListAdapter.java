@@ -59,9 +59,9 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
                         Class<T> modelClass,
                         int modelLayout,
                         FirebaseArray snapshots) {
+        mActivity = activity;
         mModelClass = modelClass;
         mLayout = modelLayout;
-        mActivity = activity;
         mSnapshots = snapshots;
 
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
