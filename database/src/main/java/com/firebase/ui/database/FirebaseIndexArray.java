@@ -32,17 +32,17 @@ class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = FirebaseIndexArray.class.getSimpleName();
 
     private Query mQuery;
+    private OnChangedListener mListener;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
-    private OnChangedListener mListener;
 
-    FirebaseIndexArray(Query keyRef, Query dataRef) {
+    protected FirebaseIndexArray(Query keyRef, Query dataRef) {
         super(keyRef);
         mQuery = dataRef;
     }
 
     @Override
-    public void cleanup() {
+    protected void cleanup() {
         super.cleanup();
         Set<Query> refs = new HashSet<>(mRefs.keySet());
         for (Query ref : refs) {
@@ -51,12 +51,12 @@ class FirebaseIndexArray extends FirebaseArray {
     }
 
     @Override
-    public int getCount() {
+    protected int getCount() {
         return mDataSnapshots.size();
     }
 
     @Override
-    public DataSnapshot getItem(int index) {
+    protected DataSnapshot getItem(int index) {
         return mDataSnapshots.get(index);
     }
 
@@ -135,7 +135,7 @@ class FirebaseIndexArray extends FirebaseArray {
     }
 
     @Override
-    public void setOnChangedListener(OnChangedListener listener) {
+    protected void setOnChangedListener(OnChangedListener listener) {
         super.setOnChangedListener(listener);
         mListener = listener;
     }
