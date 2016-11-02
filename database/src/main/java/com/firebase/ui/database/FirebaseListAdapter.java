@@ -20,22 +20,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
 /**
  * This class is a generic way of backing an Android ListView with a Firebase location.
  * It handles all of the child events at the given Firebase location. It marshals received data into the given
- * class type. Extend this class and provide an implementation of <code>populateView</code>, which will be given an
+ * class type. Extend this class and provide an implementation of {@code populateView}, which will be given an
  * instance of your list item mLayout and an instance your class that holds your data. Simply populate the view however
  * you like and this class will handle updating the list as the data changes.
- *
- * <blockquote><pre>
- * {@code
+ * <p>
+ * <pre>
  *     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
- *     ListAdapter adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, mRef)
+ *     ListAdapter adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, android.R.layout.two_line_list_item, ref)
  *     {
  *         protected void populateView(View view, ChatMessage chatMessage, int position)
  *         {
@@ -44,31 +43,27 @@ import com.google.firebase.database.Query;
  *         }
  *     };
  *     listView.setListAdapter(adapter);
- * }
- * </pre></blockquote>
+ * </pre>
  *
  * @param <T> The class type to use as a model for the data contained in the children of the given Firebase location
  */
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
-    protected Activity mActivity;
-    private final Class<T> mModelClass;
-    protected int mLayout;
+    private static final String TAG = FirebaseListAdapter.class.getSimpleName();
+
     private FirebaseArray mSnapshots;
+    private final Class<T> mModelClass;
+    protected Activity mActivity;
+    protected int mLayout;
 
-
-    /**
-     * @param activity    The activity containing the ListView
-     * @param modelClass  Firebase will marshall the data at a location into an instance of a class that you provide
-     * @param modelLayout This is the layout used to represent a single list item. You will be responsible for populating an
-     *                    instance of the corresponding view with the data from an instance of modelClass.
-     * @param ref         The Firebase location to watch for data changes. Can also be a slice of a location, using some
-     *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
-     */
-    public FirebaseListAdapter(Activity activity, Class<T> modelClass, int modelLayout, Query ref) {
+    FirebaseListAdapter(Activity activity,
+                        Class<T> modelClass,
+                        int modelLayout,
+                        FirebaseArray snapshots) {
         mModelClass = modelClass;
         mLayout = modelLayout;
         mActivity = activity;
-        mSnapshots = new FirebaseArray(ref);
+        mSnapshots = snapshots;
+
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
             @Override
             public void onChanged(EventType type, int index, int oldIndex) {
@@ -81,20 +76,23 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             }
         });
     }
+
     /**
      * @param activity    The activity containing the ListView
      * @param modelClass  Firebase will marshall the data at a location into an instance of a class that you provide
      * @param modelLayout This is the layout used to represent a single list item. You will be responsible for populating an
      *                    instance of the corresponding view with the data from an instance of modelClass.
      * @param ref         The Firebase location to watch for data changes. Can also be a slice of a location, using some
-     *                    combination of <code>limit()</code>, <code>startAt()</code>, and <code>endAt()</code>,
+     *                    combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
-    public FirebaseListAdapter(Activity activity, Class<T> modelClass, int modelLayout, DatabaseReference ref) {
-        this(activity, modelClass, modelLayout, (Query) ref);
+    public FirebaseListAdapter(Activity activity,
+                               Class<T> modelClass,
+                               int modelLayout,
+                               Query ref) {
+        this(activity, modelClass, modelLayout, new FirebaseArray(ref));
     }
 
     public void cleanup() {
-        // We're being destroyed, let go of our mListener and forget about all of the mModels
         mSnapshots.cleanup();
     }
 
@@ -119,7 +117,9 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         return snapshot.getValue(mModelClass);
     }
 
-    public DatabaseReference getRef(int position) { return mSnapshots.getItem(position).getRef(); }
+    public DatabaseReference getRef(int position) {
+        return mSnapshots.getItem(position).getRef();
+    }
 
     @Override
     public long getItemId(int i) {
@@ -139,15 +139,15 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         populateView(view, model, position);
         return view;
     }
-    
+
     /**
      * This method will be triggered in the event that this listener either failed at the server,
      * or is removed as a result of the security and Firebase Database rules.
      *
-     * @param databaseError A description of the error that occurred
+     * @param error A description of the error that occurred
      */
-    protected void onCancelled(DatabaseError databaseError) {
-        Log.w("FirebaseRecyclerAdapter", databaseError.toException());
+    protected void onCancelled(DatabaseError error) {
+        Log.w(TAG, error.toException());
     }
 
     /**
@@ -157,9 +157,9 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * <p>
      * Your implementation should populate the view using the data contained in the model.
      *
-     * @param v         The view to populate
-     * @param model     The object containing the data used to populate the view
-     * @param position  The position in the list of the view being populated
+     * @param v        The view to populate
+     * @param model    The object containing the data used to populate the view
+     * @param position The position in the list of the view being populated
      */
     abstract protected void populateView(View v, T model, int position);
 }

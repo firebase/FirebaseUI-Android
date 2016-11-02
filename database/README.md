@@ -19,31 +19,30 @@ We can represent a chat message with this Java class:
 
 ```java
 public static class Chat {
+    private String name;
+    private String text;
+    private String uid;
 
-        String name;
-        String text;
-        String uid;
+    public Chat() {
+    }
 
-        public Chat() {
-        }
+    public Chat(String name, String uid, String message) {
+        this.name = name;
+        this.text = message;
+        this.uid = uid;
+    }
 
-        public Chat(String name, String uid, String message) {
-            this.name = name;
-            this.text = message;
-            this.uid = uid;
-        }
+    public String getName() {
+        return name;
+    }
 
-        public String getName() {
-            return name;
-        }
+    public String getUid() {
+        return uid;
+    }
 
-        public String getUid() {
-            return uid;
-        }
-
-        public String getText() {
-            return text;
-        }
+    public String getText() {
+        return text;
+    }
 }
 ```
 A few things to note here:
@@ -270,3 +269,22 @@ recycler.setAdapter(mAdapter);
 ```
 
 Like before, we get a custom RecyclerView populated with data from Firebase by setting the properties to the correct fields.
+
+## Using FirebaseUI with indexed data
+If your data is [properly indexed](https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure), change your adapter initalization like so:
+
+For a `RecyclerView`, use `FirebaseIndexRecyclerAdapter` instead of `FirebaseRecyclerAdapter`:
+```java
+new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(Chat.class,
+                                                   android.R.layout.two_line_list_item,
+                                                   ChatHolder.class,
+                                                   keyRef, // The Firebase location containing the list of keys to be found in dataRef.
+                                                   dataRef) //The Firebase location to watch for data changes. Each key key found at keyRef's location represents a list item in the RecyclerView.
+```
+
+And for a `ListView`, use `FirebaseIndexListAdapter`;
+```java
+new FirebaseIndexListAdapter<Chat>(this, Chat.class, android.R.layout.two_line_list_item, keyRef, dataRef)
+```
+
+`keyRef` is the location of your keys, and `dataRef` is the location of your data.

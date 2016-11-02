@@ -14,18 +14,14 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import android.content.Intent;
 import android.widget.Button;
 
+import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
-import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -40,8 +36,12 @@ import org.robolectric.annotation.Config;
 
 import java.util.Collections;
 
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+@Config(constants = BuildConfig.class, sdk = 23)
 public class RecoverPasswordActivityTest {
 
     @Before
@@ -53,7 +53,6 @@ public class RecoverPasswordActivityTest {
         Intent startIntent = RecoverPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
                         Collections.<String>emptyList()),
                 TestConstants.EMAIL);
         return Robolectric.buildActivity(RecoverPasswordActivity.class).withIntent(startIntent)

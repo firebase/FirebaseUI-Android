@@ -19,14 +19,18 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import static android.app.Activity.RESULT_OK;
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
 public class ActivityHelper {
@@ -105,5 +109,43 @@ public class ActivityHelper {
                 checkNotNull(target, "target activity cannot be null"))
                 .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS,
                         checkNotNull(flowParams, "flowParams cannot be null"));
+    }
+
+    public SmartLock getSmartLockInstance(AppCompatBase activity, String tag) {
+        return SmartLock.getInstance(activity, tag);
+    }
+
+    public void saveCredentialsOrFinish(
+            @Nullable SmartLock smartLock,
+            AppCompatBase activity,
+            FirebaseUser firebaseUser,
+            @NonNull IdpResponse response) {
+        saveCredentialsOrFinish(smartLock, activity, firebaseUser, null, response);
+    }
+
+    public void saveCredentialsOrFinish(
+            @Nullable SmartLock smartLock,
+            AppCompatBase activity,
+            FirebaseUser firebaseUser,
+            @NonNull String password) {
+        saveCredentialsOrFinish(smartLock, activity, firebaseUser, password, null);
+    }
+
+    private void saveCredentialsOrFinish(
+            @Nullable SmartLock smartLock,
+            AppCompatBase activity,
+            FirebaseUser firebaseUser,
+            @Nullable String password,
+            @Nullable IdpResponse response) {
+        if (smartLock == null) {
+            activity.finish(RESULT_OK, new Intent());
+        } else {
+            smartLock.saveCredentialsOrFinish(
+                    activity,
+                    this,
+                    firebaseUser,
+                    password,
+                    response);
+        }
     }
 }

@@ -15,6 +15,8 @@
 package com.firebase.ui.auth.test_helpers;
 
 import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -26,6 +28,7 @@ import org.robolectric.annotation.Implements;
 public class ActivityHelperShadow {
     public static FirebaseAuth firebaseAuth;
     public static CredentialsApi credentialsApi;
+    public static SmartLock smartLock;
 
     public ActivityHelperShadow() {
         if (firebaseAuth == null) {
@@ -33,6 +36,9 @@ public class ActivityHelperShadow {
         }
         if (credentialsApi == null) {
             credentialsApi = Mockito.mock(CredentialsApi.class);
+        }
+        if (smartLock == null) {
+            smartLock = Mockito.mock(SmartLock.class);
         }
     }
 
@@ -44,5 +50,10 @@ public class ActivityHelperShadow {
     @Implementation
     public CredentialsApi getCredentialsApi() {
         return credentialsApi;
+    }
+
+    @Implementation
+    public SmartLock getSmartLockInstance(AppCompatBase activity, String tag) {
+        return smartLock;
     }
 }

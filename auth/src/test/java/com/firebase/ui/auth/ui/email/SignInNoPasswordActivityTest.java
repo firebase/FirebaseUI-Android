@@ -14,21 +14,18 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
+import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeProviderQueryResult;
-import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -47,9 +44,12 @@ import org.robolectric.shadows.ShadowActivity;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+@Config(constants = BuildConfig.class, sdk = 23)
 public class SignInNoPasswordActivityTest {
     @Before
     public void setUp() {
@@ -60,7 +60,7 @@ public class SignInNoPasswordActivityTest {
     public void testNextButton_withInvalidEmailAddress() {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(RuntimeEnvironment.application, Arrays.asList(AuthUI
+                TestHelper.getFlowParameters(Arrays.asList(AuthUI
                         .EMAIL_PROVIDER)),
                 null);
 
@@ -76,15 +76,14 @@ public class SignInNoPasswordActivityTest {
                 .findViewById(R.id.input_layout_email);
 
         assertEquals(
-                emailLayout.getError().toString(),
-                noPasswordActivity.getString(R.string.invalid_email_address));
+                noPasswordActivity.getString(R.string.invalid_email_address),
+                emailLayout.getError().toString());
     }
 
     private SignInNoPasswordActivity createActivity(String email) {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
                         Arrays.asList(AuthUI.EMAIL_PROVIDER)),
                 email);
         return Robolectric.buildActivity(SignInNoPasswordActivity.class)
@@ -137,8 +136,8 @@ public class SignInNoPasswordActivityTest {
         ShadowActivity.IntentForResult nextIntent =
                 shadowActivity.getNextStartedActivityForResult();
         assertEquals(
-                nextIntent.intent.getComponent().getClassName(),
-                SignInActivity.class.getName());
+                SignInActivity.class.getName(),
+                nextIntent.intent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
                 nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));

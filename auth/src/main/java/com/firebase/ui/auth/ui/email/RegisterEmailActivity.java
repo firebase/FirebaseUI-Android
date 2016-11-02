@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
@@ -39,7 +40,7 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.SmartlockUtil;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,8 +57,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
  * Activity displaying a form to create a new email/password account.
  */
 public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener {
-
-    private static final int RC_SAVE_CREDENTIAL = 3;
     private static final String TAG = "RegisterEmailActivity";
 
     private EditText mEmailEditText;
@@ -66,12 +65,15 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
     private EmailFieldValidator mEmailFieldValidator;
     private PasswordFieldValidator mPasswordFieldValidator;
     private RequiredFieldValidator mNameValidator;
-    private ImageView mTogglePasswordImage;
+    @Nullable
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_email_layout);
+
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);
@@ -83,24 +85,23 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        mTogglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
+        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
+        ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
-                mTogglePasswordImage,
+                togglePasswordImage,
                 visibleIcon.getFloat(),
                 slightlyVisibleIcon.getFloat()));
 
-        mTogglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
+        togglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
 
         mNameEditText = (EditText) findViewById(R.id.name);
 
         mPasswordFieldValidator = new PasswordFieldValidator((TextInputLayout)
                 findViewById(R.id.password_layout),
                 getResources().getInteger(R.integer.min_password_length));
-        mNameValidator = new RequiredFieldValidator((TextInputLayout)
-                findViewById(R.id.name_layout));
-        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id
-                .email_layout));
+        mNameValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.name_layout));
+        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
 
         if (email != null) {
             mEmailEditText.setText(email);
@@ -135,7 +136,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         });
     }
 
-    private void registerUser(String email, final String name, final String password) {
+    private void registerUser(final String email, final String name, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         // create the user
         firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -155,18 +156,14 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        mActivityHelper.dismissDialog();
-
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
-                                        SmartlockUtil.saveCredentialOrFinish(
+                                        mActivityHelper.saveCredentialsOrFinish(
+                                                mSmartLock,
                                                 RegisterEmailActivity.this,
-                                                RC_SAVE_CREDENTIAL,
-                                                mActivityHelper.getFlowParams(),
                                                 firebaseUser,
-                                                password,
-                                                null /* provider */);
+                                                password);
                                     }
                                 });
                     }
@@ -197,14 +194,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                         }
                     }
                 });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SAVE_CREDENTIAL) {
-            finish(RESULT_OK, new Intent());
-        }
     }
 
     @Override

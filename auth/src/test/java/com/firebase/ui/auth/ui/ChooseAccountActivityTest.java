@@ -24,7 +24,7 @@ import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
-import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
+import com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -53,7 +53,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ActivityHelperShadow.class}, sdk = 21)
+@Config(constants = BuildConfig.class, shadows = {ActivityHelperShadow.class}, sdk = 23)
 public class ChooseAccountActivityTest {
     private FirebaseApp mFirebaseApp;
     @Mock private CredentialsAPI mCredentialsAPI;
@@ -136,7 +136,7 @@ public class ChooseAccountActivityTest {
                 .getNextStartedActivityForResult();
 
         assertEquals(
-                IDPSignInContainerActivity.class.getName(),
+                IdpSignInContainerActivity.class.getName(),
                 nextIntent.intent.getComponent().getClassName()
         );
         assertEquals(
