@@ -38,20 +38,20 @@ class FirebaseArray implements ChildEventListener {
     private OnChangedListener mListener;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
-    protected FirebaseArray(Query ref) {
+    public FirebaseArray(Query ref) {
         mQuery = ref;
         mQuery.addChildEventListener(this);
     }
 
-    protected void cleanup() {
+    public void cleanup() {
         mQuery.removeEventListener(this);
     }
 
-    protected int getCount() {
+    public int getCount() {
         return mSnapshots.size();
     }
 
-    protected DataSnapshot getItem(int index) {
+    public DataSnapshot getItem(int index) {
         return mSnapshots.get(index);
     }
 
@@ -105,7 +105,7 @@ class FirebaseArray implements ChildEventListener {
         notifyCancelledListeners(error);
     }
 
-    protected void setOnChangedListener(OnChangedListener listener) {
+    public void setOnChangedListener(OnChangedListener listener) {
         mListener = listener;
     }
 
