@@ -49,14 +49,12 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private static final String TAG = "FacebookProvider";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
+    private static final CallbackManager sCallbackManager = CallbackManager.Factory.create();
 
     private final List<String> mScopes;
-    private CallbackManager mCallbackManager;
     private IdpCallback mCallbackObject;
 
     public FacebookProvider(Context appContext, IdpConfig idpConfig) {
-        mCallbackManager = CallbackManager.Factory.create();
-
         if (appContext.getResources().getIdentifier(
                 "facebook_permissions", "array", appContext.getPackageName()) != 0) {
             Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.facebook_permissions but that"
@@ -87,9 +85,8 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void startLogin(Activity activity) {
-        mCallbackManager = CallbackManager.Factory.create();
         LoginManager loginManager = LoginManager.getInstance();
-        loginManager.registerCallback(mCallbackManager, this);
+        loginManager.registerCallback(sCallbackManager, this);
 
         List<String> permissionsList = new ArrayList<>(mScopes);
 
@@ -113,7 +110,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        sCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

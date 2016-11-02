@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 
+import android.util.Log;
 import com.firebase.ui.auth.ui.AcquireEmailHelper;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -29,6 +30,7 @@ import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.google.android.gms.auth.api.credentials.Credential;
 
 public class EmailHintContainerActivity extends AppCompatBase {
+    private static final String TAG = "EmailHintContainer";
     private static final int RC_HINT = 13;
     private AcquireEmailHelper mAcquireEmailHelper;
 
@@ -45,7 +47,7 @@ public class EmailHintContainerActivity extends AppCompatBase {
                 startIntentSenderForResult(hintIntent.getIntentSender(), RC_HINT, null, 0, 0, 0);
                 return;
             } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Unable to start hint intent", e);
             }
         }
         finish(RESULT_CANCELED, new Intent());
