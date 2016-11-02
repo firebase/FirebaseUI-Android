@@ -113,9 +113,7 @@ class FirebaseArray implements ChildEventListener {
         notifyChangedListeners(type, index, -1);
     }
 
-    protected void notifyChangedListeners(OnChangedListener.EventType type,
-                                          int index,
-                                          int oldIndex) {
+    protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChanged(type, index, oldIndex);
         }
