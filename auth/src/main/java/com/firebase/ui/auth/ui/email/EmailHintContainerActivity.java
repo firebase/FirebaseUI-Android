@@ -21,7 +21,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 
 import android.util.Log;
-import com.firebase.ui.auth.ui.AcquireEmailHelper;
+
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.FlowParameters;

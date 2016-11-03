@@ -12,15 +12,15 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
-import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
-import com.firebase.ui.auth.ui.email.SignInActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -34,7 +34,7 @@ public class AcquireEmailHelper {
     private static final String TAG = "AcquireEmailHelper";
     private static final int RC_REGISTER_ACCOUNT = 14;
     private static final int RC_WELCOME_BACK_IDP = 15;
-    public static final int RC_SIGN_IN = 16;
+    static final int RC_SIGN_IN = 16;
     private static final List<Integer> REQUEST_CODES = Arrays.asList(
             RC_REGISTER_ACCOUNT,
             RC_WELCOME_BACK_IDP,
