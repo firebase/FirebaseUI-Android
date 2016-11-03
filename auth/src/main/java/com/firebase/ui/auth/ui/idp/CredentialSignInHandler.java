@@ -94,7 +94,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private class StartWelcomeBackFlow implements OnSuccessListener<ProviderQueryResult> {
         private String mEmail;
 
-        private StartWelcomeBackFlow(String email) {
+        public StartWelcomeBackFlow(String email) {
             mEmail = email;
         }
 
