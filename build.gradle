@@ -237,6 +237,7 @@ allprojects { project ->
         project.apply plugin: 'com.jfrog.bintray'
 
         def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
+        def publicationName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
         def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"
 
         group = project.ext.group
@@ -247,6 +248,7 @@ allprojects { project ->
         bintray {
             user = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
             key = hasProperty('BINTRAY_KEY') ? getProperty('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
+            publications = [ publicationName ]
 
             filesSpec {
                 from pomLoc

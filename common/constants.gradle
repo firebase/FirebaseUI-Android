@@ -1,4 +1,4 @@
-project.ext.firebase_version = '9.6.1'
+project.ext.firebase_version = '9.8.0'
 // use caution when updating support library version, v25.0.0 caused issues
 // with the Facebook SDK. (NoSuchMethodError startActivity)
 project.ext.support_library_version = '24.2.1'
