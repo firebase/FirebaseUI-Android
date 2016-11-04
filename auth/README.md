@@ -39,7 +39,7 @@ As a pre-requisite, ensure your application is configured for use with
 Firebase: see the
 [Firebase documentation](https://firebase.google.com/docs/android/setup).
 Then, add the FirebaseUI auth library dependency. If your project uses
-Gradle, add:
+Gradle, add the dependency:
 
 ```groovy
 dependencies {
@@ -48,14 +48,13 @@ dependencies {
 }
 ```
 
-If instead your project uses Maven, add:
+and add the Fabric repository
 
-```xml
-<dependency>
-    <groupId>com.firebaseui</groupId>
-    <artifactId>firebase-ui-auth</artifactId>
-    <version>1.0.0</version>
-</dependency>
+```groovy
+repositories {
+    // ...
+    maven { url 'https://maven.fabric.io/public' }
+}
 ```
 
 ### Identity provider configuration
