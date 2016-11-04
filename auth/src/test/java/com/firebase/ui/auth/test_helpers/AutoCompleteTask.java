@@ -25,7 +25,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.concurrent.Executor;
 
-public class AutoCompleteTask<TResult> extends Task {
+public class AutoCompleteTask<TResult> extends Task<TResult> {
     TResult mResult;
     boolean mComplete;
     boolean mSuccess;
@@ -49,7 +49,7 @@ public class AutoCompleteTask<TResult> extends Task {
     }
 
     @Override
-    public Object getResult() {
+    public TResult getResult() {
         return mResult;
     }
 

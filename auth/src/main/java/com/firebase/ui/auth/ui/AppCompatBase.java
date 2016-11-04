@@ -16,8 +16,9 @@ package com.firebase.ui.auth.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-public class AppCompatBase extends android.support.v7.app.AppCompatActivity {
+public class AppCompatBase extends AppCompatActivity {
     protected ActivityHelper mActivityHelper;
 
     @Override
@@ -36,5 +37,4 @@ public class AppCompatBase extends android.support.v7.app.AppCompatActivity {
     public void finish(int resultCode, Intent intent) {
         mActivityHelper.finish(resultCode, intent);
     }
-
 }

@@ -24,7 +24,7 @@ import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
-import com.firebase.ui.auth.ui.idp.IDPSignInContainerActivity;
+import com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsAPI;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -136,7 +136,7 @@ public class ChooseAccountActivityTest {
                 .getNextStartedActivityForResult();
 
         assertEquals(
-                IDPSignInContainerActivity.class.getName(),
+                IdpSignInContainerActivity.class.getName(),
                 nextIntent.intent.getComponent().getClassName()
         );
         assertEquals(

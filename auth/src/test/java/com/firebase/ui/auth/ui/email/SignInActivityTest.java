@@ -14,11 +14,18 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import static com.firebase.ui.auth.test_helpers.TestHelper.verifySmartLockSave;
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
@@ -28,11 +35,10 @@ import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.account_link.SaveCredentialsActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
-
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,18 +48,9 @@ import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 
-import java.util.Collections;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23)
 public class SignInActivityTest {
-
     @Before
     public void setUp() {
         TestHelper.initializeApp(RuntimeEnvironment.application);
@@ -64,12 +61,14 @@ public class SignInActivityTest {
         Intent startIntent = SignInActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        RuntimeEnvironment.application,
                         Collections.<String>emptyList()),
                 null);
-        return Robolectric.buildActivity(SignInActivity.class).withIntent(startIntent)
-                .create().visible().get();
-
+        return Robolectric
+                .buildActivity(SignInActivity.class)
+                .withIntent(startIntent)
+                .create()
+                .visible()
+                .get();
     }
 
     @Test
@@ -98,6 +97,10 @@ public class SignInActivityTest {
     @Test
     @Config(shadows = {ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
     public void testSignInButton_signsInAndSavesCredentials() {
+        // initialize mocks
+        new ActivityHelperShadow();
+        reset(ActivityHelperShadow.smartLock);
+
         SignInActivity signInActivity = createActivity();
         EditText emailField = (EditText) signInActivity.findViewById(R.id.email);
         EditText passwordField = (EditText) signInActivity.findViewById(R.id.password);
@@ -109,9 +112,10 @@ public class SignInActivityTest {
         when(ActivityHelperShadow.firebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
-                    new AutoCompleteTask<>(new FakeAuthResult(mockFirebaseUser), true, null));
+                    new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser), true, null));
         when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
         when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
+        when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
 
         Button signIn = (Button) signInActivity.findViewById(R.id.button_done);
         signIn.performClick();
@@ -120,23 +124,6 @@ public class SignInActivityTest {
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 
-        ShadowActivity.IntentForResult nextIntent =
-                Shadows.shadowOf(signInActivity).getNextStartedActivityForResult();
-        assertEquals(
-                SaveCredentialsActivity.class.getName(),
-                nextIntent.intent.getComponent().getClassName()
-        );
-        assertEquals(
-                TestConstants.EMAIL,
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_EMAIL)
-        );
-        assertEquals(
-                TestConstants.PASSWORD,
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_PASSWORD)
-        );
-        assertEquals(
-                TestConstants.NAME,
-                nextIntent.intent.getExtras().getString(ExtraConstants.EXTRA_NAME)
-        );
+        verifySmartLockSave(null, TestConstants.EMAIL, TestConstants.PASSWORD);
     }
 }
