@@ -373,7 +373,7 @@ easily overridden by name in your application. See
 [the built-in strings.xml](src/main/res/values/strings.xml) and simply
 redefine a string to change it, for example:
 
-```xml
+```java
 <resources>
     <!-- was "Signing up..." -->
     <string name="progress_dialog_signing_up">Creating your shiny new account...</string>
