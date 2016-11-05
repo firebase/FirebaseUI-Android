@@ -74,7 +74,9 @@ the [Facebook developer dashboard](https://developers.facebook.com):
 ```xml
 <resources>
     <!-- ... -->
-    <string name="facebook_application_id" translatable="false">APPID</string>
+    <string name="facebook_application_id" translatable="false">APP_ID</string>
+    <!-- Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs. -->
+    <string name="facebook_login_protocol_scheme" translatable="false">fbAPP_ID</string>
 </resources>
 ```
 
@@ -375,7 +377,7 @@ easily overridden by name in your application. See
 [the built-in strings.xml](src/main/res/values/strings.xml) and simply
 redefine a string to change it, for example:
 
-```java
+```xml
 <resources>
     <!-- was "Signing up..." -->
     <string name="progress_dialog_signing_up">Creating your shiny new account...</string>
