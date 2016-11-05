@@ -24,6 +24,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.annotation.VisibleForTesting;
+
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.ui.ChooseAccountActivity;
@@ -48,6 +49,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -325,6 +327,7 @@ public class AuthUI {
      * API. Returns a {@code Task} that succeeds if the Firebase Auth user deletion succeeds and
      * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
      * silently.
+     *
      * @param activity the calling {@link Activity}.
      */
     public Task<Void> delete(@NonNull Activity activity) {
@@ -381,6 +384,7 @@ public class AuthUI {
     /**
      * Retrieves the {@link AuthUI} instance associated with the default app, as returned by
      * {@code FirebaseApp.getInstance()}.
+     *
      * @throws IllegalStateException if the default app is not initialized.
      */
     public static AuthUI getInstance() {
@@ -406,7 +410,8 @@ public class AuthUI {
      * Default theme used by {@link SignInIntentBuilder#setTheme(int)} if no theme
      * customization is required.
      */
-    public static @StyleRes int getDefaultTheme() {
+    @StyleRes
+    public static int getDefaultTheme() {
         return R.style.FirebaseUI;
     }
 
@@ -469,9 +474,10 @@ public class AuthUI {
 
             /**
              * Builds the configuration parameters for an identity provider.
+             *
              * @param providerId An ID of one of the supported identity providers. e.g.
-             * {@link AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for the
-             * complete list of supported Identity providers
+             *                   {@link AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for the
+             *                   complete list of supported Identity providers
              */
             public Builder(@NonNull String providerId) {
                 if (!SUPPORTED_PROVIDERS.contains(providerId)) {
@@ -556,8 +562,7 @@ public class AuthUI {
          * provider is the default supported provider.
          *
          * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains
-         * the configuration parameters for the IDP.
-         *
+         *                   the configuration parameters for the IDP.
          * @see IdpConfig
          */
         public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
@@ -566,7 +571,7 @@ public class AuthUI {
             for (IdpConfig idpConfig : idpConfigs) {
                 if (configuredProviders.contains(idpConfig.getProviderId())) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                            + idpConfig.getProviderId() + " was set twice.");
+                                                               + idpConfig.getProviderId() + " was set twice.");
                 }
                 configuredProviders.add(idpConfig.getProviderId());
                 mProviders.add(idpConfig);
