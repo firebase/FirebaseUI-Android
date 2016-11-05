@@ -72,7 +72,9 @@ the [Facebook developer dashboard](https://developers.facebook.com):
 ```xml
 <resources>
     <!-- ... -->
-    <string name="facebook_application_id" translatable="false">APPID</string>
+    <string name="facebook_application_id" translatable="false">APP_ID</string>
+    <!-- Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs. -->
+    <string name="facebook_login_protocol_scheme" translatable="false">fbAPP_ID</string>
 </resources>
 ```
 
