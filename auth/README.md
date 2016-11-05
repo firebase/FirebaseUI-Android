@@ -27,6 +27,8 @@ Equivalent FirebaseUI auth libraries are also available for
 [iOS](https://github.com/firebase/firebaseui-ios/)
 and [Web](https://github.com/firebase/firebaseui-web/).
 
+![FirebaseUI authentication demo on Android](demo.gif)
+
 ## Table of Content
 
 1. [Configuration](#configuration)
