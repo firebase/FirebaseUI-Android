@@ -8,13 +8,13 @@ android {
         minSdkVersion 16
         targetSdkVersion targetSdk
         versionCode 1
-        versionName "0.3.1"
+        versionName "0.0.0"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
     }
 }
@@ -22,6 +22,7 @@ android {
 dependencies {
     compile project(':database')
     compile project(':auth')
+    compile project(':storage')
 }
 
 /**

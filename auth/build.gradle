@@ -35,7 +35,7 @@ dependencies {
     compile "com.google.firebase:firebase-auth:$firebase_version"
     compile "com.google.android.gms:play-services-auth:$firebase_version"
 
-    compile 'com.facebook.android:facebook-android-sdk:4.16.1'
+    compile 'com.facebook.android:facebook-android-sdk:4.17.0'
     compile("com.twitter.sdk.android:twitter:2.1.1@aar") {
         transitive = true
     }

@@ -20,7 +20,5 @@ package com.firebase.ui;
  * does not respect that properly.
  */
 public class FirebaseUI {
-
     public static final String NAME = "FirebaseUI";
-
 }
