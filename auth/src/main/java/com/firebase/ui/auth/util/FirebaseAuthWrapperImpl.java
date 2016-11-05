@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.util;
 
-import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Bundle;
@@ -61,7 +60,7 @@ public class FirebaseAuthWrapperImpl
         if (firebaseAuth == null) {
             throw new IllegalArgumentException("firebaseAuth must not be null");
         }
-        this.mFirebaseAuth = firebaseAuth;
+        mFirebaseAuth = firebaseAuth;
     }
 
     @Override

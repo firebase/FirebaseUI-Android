@@ -156,8 +156,6 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
-To enable all supported providers in their basic configuration, use `setProviders(AuthUI.ALL_PROVIDERS)`
-
 If a terms of service URL and a custom theme are required:
 
 ```java
