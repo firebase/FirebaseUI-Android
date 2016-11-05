@@ -5,7 +5,7 @@ project.ext.support_library_version = '24.2.1'
 
 project.ext.submodules = ['database', 'auth', 'storage']
 project.ext.group = 'com.firebaseui'
-project.ext.version = '1.0.0-SNAPSHOT'
+project.ext.version = '1.0.0'
 project.ext.pomdesc = 'Firebase UI Android'
 project.ext.buildTools = '25.0.0'
 project.ext.compileSdk = 25
