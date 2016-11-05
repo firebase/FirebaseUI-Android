@@ -270,10 +270,10 @@ public class AuthUI {
      * {@link IdpConfig} form.
      */
     public static final List<IdpConfig> ALL_PROVIDERS =
-            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                          new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                          new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                          new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+            Arrays.asList(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build(),
+                          new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                          new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                          new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
 
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
 
