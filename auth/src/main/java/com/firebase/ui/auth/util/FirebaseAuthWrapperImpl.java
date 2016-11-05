@@ -60,7 +60,7 @@ public class FirebaseAuthWrapperImpl
         if (firebaseAuth == null) {
             throw new IllegalArgumentException("firebaseAuth must not be null");
         }
-        this.mFirebaseAuth = firebaseAuth;
+        mFirebaseAuth = firebaseAuth;
     }
 
     @Override

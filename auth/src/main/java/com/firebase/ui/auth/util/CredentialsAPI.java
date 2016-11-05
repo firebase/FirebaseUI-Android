@@ -233,7 +233,7 @@ public class CredentialsAPI implements
 
     public void onStop() {
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();;
+            mGoogleApiClient.disconnect();
         }
 
         hideProgress();
