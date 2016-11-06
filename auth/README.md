@@ -57,11 +57,6 @@ repositories {
 }
 ```
 
-#### Important note
-
-Firebase-UI-auth v1.0.0 is incompatible with the v25 support libraries. Please upgrade to v1.0.1
-to use the latest version of the support libraries.
-
 ### Identity provider configuration
 
 In order to use either Google, Facebook or Twitter accounts with your app, ensure that
