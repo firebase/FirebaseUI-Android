@@ -253,7 +253,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (resultCode == RESULT_OK) {
         IdpResponse idpResponse = IdpResponse.fromResultIntent(data);
         startActivity(new Intent(this, WelcomeBackActivity.class)
-                .putExtra("my_token". idpResponse.getIdpToken()));
+                .putExtra("my_token", idpResponse.getIdpToken()));
     }
 }
 ```
