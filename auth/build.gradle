@@ -38,9 +38,7 @@ dependencies {
     testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
     
     compile 'com.facebook.android:facebook-android-sdk:4.17.0'
-    compile("com.twitter.sdk.android:twitter:2.1.1@aar") {
-        transitive = true;
-    }
+    compile("com.twitter.sdk.android:twitter:2.1.1@aar") { transitive = true }
     compile "com.android.support:design:${project.ext.support_library_version}"
 
     compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"
