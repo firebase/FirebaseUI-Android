@@ -200,13 +200,13 @@ public class AuthUiActivity extends AppCompatActivity implements AuthUI.SignInRe
 
     @MainThread
     @Override
-    public void onSignInSuccessful(Intent data) {
+    public void onAuthUISuccess(Intent data) {
         startActivity(SignedInActivity.createIntent(this, IdpResponse.fromResultIntent(data)));
         finish();
     }
 
     @Override
-    public void onSignInFailed(int resultCode) {
+    public void onAuthUIFailure(int resultCode) {
         if (resultCode == RESULT_CANCELED) {
             showSnackbar(R.string.sign_in_cancelled);
             return;
