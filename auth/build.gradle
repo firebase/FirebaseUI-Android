@@ -31,20 +31,24 @@ android {
 
 
 dependencies {
+    compile "com.android.support:design:${project.ext.support_library_version}"
+    compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"
+    compile "com.google.android.gms:play-services-auth:${project.ext.firebase_version}"
+
+    compile 'com.facebook.android:facebook-android-sdk:4.17.0'
+    compile("com.twitter.sdk.android:twitter:2.1.1@aar") { transitive = true }
+
+    // The following libraries are needed to prevent incompatibilities with the facebook
+    // library when updating com.android.support libraries:
+    compile "com.android.support:customtabs:${project.ext.support_library_version}"
+    compile "com.android.support:cardview-v7:${project.ext.support_library_version}"
+
+
     testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.2.0'
+    testCompile 'org.mockito:mockito-core:2.2.2'
     testCompile 'org.robolectric:robolectric:3.1.2'
     // See https://github.com/robolectric/robolectric/issues/1932#issuecomment-219796474
     testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
-    
-    compile 'com.facebook.android:facebook-android-sdk:4.14.1'
-    compile("com.twitter.sdk.android:twitter:2.0.0@aar") {
-        transitive = true;
-    }
-    compile "com.android.support:design:${project.ext.support_library_version}"
-
-    compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"
-    compile "com.google.android.gms:play-services-auth:${project.ext.firebase_version}"
 }
 
 checkstyle {
