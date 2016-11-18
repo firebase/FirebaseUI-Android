@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,6 +35,7 @@ import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
@@ -65,12 +67,14 @@ public class AuthMethodPickerActivity extends AppCompatBase
     private static final int RC_ACCOUNT_LINK = 3;
 
     private ArrayList<IdpProvider> mIdpProviders;
+    @Nullable
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
-
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
         findViewById(R.id.email_provider).setOnClickListener(this);
 
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);
@@ -88,17 +92,17 @@ public class AuthMethodPickerActivity extends AppCompatBase
         mIdpProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providers) {
             switch (idpConfig.getProviderId()) {
-                case AuthUI.FACEBOOK_PROVIDER:
-                    mIdpProviders.add(new FacebookProvider(this, idpConfig));
-                    break;
                 case AuthUI.GOOGLE_PROVIDER:
                     mIdpProviders.add(new GoogleProvider(this, idpConfig));
                     break;
-                case AuthUI.EMAIL_PROVIDER:
-                    findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
+                case AuthUI.FACEBOOK_PROVIDER:
+                    mIdpProviders.add(new FacebookProvider(this, idpConfig));
                     break;
                 case AuthUI.TWITTER_PROVIDER:
                     mIdpProviders.add(new TwitterProvider(this));
+                    break;
+                case AuthUI.EMAIL_PROVIDER:
+                    findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
                     break;
                 default:
                     if (BuildConfig.DEBUG) {
@@ -127,6 +131,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
                 default:
                     Log.e(TAG, "No button for provider " + provider.getProviderId());
             }
+
             if (loginButton != null) {
                 loginButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -151,7 +156,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
         } else if (requestCode == RC_ACCOUNT_LINK) {
             finish(resultCode, data);
         } else {
-            for(IdpProvider provider : mIdpProviders) {
+            for (IdpProvider provider : mIdpProviders) {
                 provider.onActivityResult(requestCode, resultCode, data);
             }
         }
@@ -159,7 +164,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
 
     @Override
     public void onSuccess(final IdpResponse response) {
-        AuthCredential credential = IdpResponse.createCredential(response);
+        AuthCredential credential = AuthCredentialHelper.getAuthCredential(response);
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
 
         firebaseAuth
@@ -169,7 +174,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
                 .addOnCompleteListener(new CredentialSignInHandler(
                         AuthMethodPickerActivity.this,
                         mActivityHelper,
-                        SaveSmartLock.getInstance(AuthMethodPickerActivity.this, mActivityHelper.getFlowParams(), TAG),
+                        mSmartLock,
                         RC_ACCOUNT_LINK,
                         response));
     }

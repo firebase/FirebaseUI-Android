@@ -18,6 +18,9 @@ import android.content.Context;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -27,9 +30,13 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.mockito.ArgumentCaptor;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TestHelper {
@@ -79,5 +86,25 @@ public class TestHelper {
                 .thenReturn(ConnectionResult.SUCCESS);
 
         return availability;
+    }
+
+    public static void verifySmartLockSave(String providerId, String email, String password) {
+        ArgumentCaptor<FirebaseUser> userArgumentCaptor =
+                ArgumentCaptor.forClass(FirebaseUser.class);
+        ArgumentCaptor<IdpResponse> idpResponseArgumentCaptor =
+                ArgumentCaptor.forClass(IdpResponse.class);
+        ArgumentCaptor<String> passwordArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(ActivityHelperShadow.smartLock).saveCredentialsOrFinish(
+                any(AppCompatBase.class), any(ActivityHelper.class), userArgumentCaptor.capture(),
+                passwordArgumentCaptor.capture(), idpResponseArgumentCaptor.capture());
+        assertEquals(email, userArgumentCaptor.getValue().getEmail());
+        assertEquals(password, passwordArgumentCaptor.getValue());
+        if (providerId == null) {
+            assertNull(idpResponseArgumentCaptor.getValue());
+        } else {
+            assertEquals(
+                    providerId,
+                    idpResponseArgumentCaptor.getValue().getProviderType());
+        }
     }
 }

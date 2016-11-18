@@ -1,20 +1,20 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion project.ext.compileSdk
-    buildToolsVersion "${project.ext.buildtools}"
+    compileSdkVersion compileSdk
+    buildToolsVersion buildTools
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion project.ext.targetSdk
+        targetSdkVersion targetSdk
         versionCode 1
-        versionName "0.3.1"
+        versionName "0.0.0"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
     }
 }
@@ -22,13 +22,14 @@ android {
 dependencies {
     compile project(':database')
     compile project(':auth')
+    compile project(':storage')
 }
 
 /**
  * Returns list of tasks names that prepareArtfacts should depend on.
  */
 def prepareArtifactsTasks() {
-    return project.ext.submodules.collect { name ->
+    return submodules.collect { name ->
         ":${name}:prepareArtifacts"
     }.toArray()
 }
@@ -38,7 +39,7 @@ def prepareArtifactsTasks() {
  * @param repo relevant repository, such as 'MavenLocal' or 'CustomLocalRepository'
  */
 def publishToRepoTasks(repo) {
-    return project.ext.submodules.collect { name ->
+    return submodules.collect { name ->
         // Ex: name = database, repo = MavenLocal
         // Return: :database:publishDatabaseLibraryPublicationToMavenLocal
         ":${name}:publish${name.capitalize()}LibraryPublicationTo${repo}"
@@ -49,7 +50,7 @@ def publishToRepoTasks(repo) {
  * Returns a list of task names to upload modules to bintray.
  */
 def bintrayUploadTasks() {
-    return project.ext.submodules.collect { name ->
+    return submodules.collect { name ->
         ":${name}:bintrayUpload"
     }.toArray()
 }
@@ -58,7 +59,7 @@ def bintrayUploadTasks() {
  * Returns a list of tasks names to test submodules.
  */
 def testTasks() {
-    return project.ext.submodules.collect { name ->
+    return submodules.collect { name ->
         ":${name}:testDebugUnitTest"
     }.toArray()
 }

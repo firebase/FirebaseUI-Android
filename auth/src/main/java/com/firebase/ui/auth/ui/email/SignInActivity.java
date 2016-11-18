@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.util.TypedValue;
 import android.view.View;
@@ -49,11 +50,15 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     private EditText mPasswordEditText;
     private EmailFieldValidator mEmailValidator;
     private RequiredFieldValidator mPasswordValidator;
+    @Nullable
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in_layout);
+
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
@@ -66,8 +71,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(
-                false);
+        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
         ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
@@ -89,7 +93,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         recoveryButton.setOnClickListener(this);
     }
 
-    private void signIn(String email, final String password) {
+    private void signIn(final String email, final String password) {
         mActivityHelper.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(
@@ -98,14 +102,11 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         // Save credential in SmartLock (if enabled)
-                        SaveSmartLock.getInstance(SignInActivity.this,
-                                                  mActivityHelper.getFlowParams(),
-                                                  TAG)
-                                .saveCredentialsOrFinish(SignInActivity.this,
-                                                         mActivityHelper.getFlowParams(),
-                                                         authResult.getUser(),
-                                                         password,
-                                                         null /* provider */);
+                        mActivityHelper.saveCredentialsOrFinish(
+                                mSmartLock,
+                                SignInActivity.this,
+                                authResult.getUser(),
+                                password);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

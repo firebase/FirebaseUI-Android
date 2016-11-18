@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:drawableTop="@drawable/firebase_auth_120dp"
-            android:text="@string/signed_in_header" />
+            android:text="@string/signed_in_header"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -35,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:text="@string/sign_out" />
+                android:text="@string/sign_out"/>
 
             <Button
                 android:id="@+id/delete_account"
@@ -44,7 +45,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
                 android:text="@string/delete_account_label"
-                android:theme="@style/WarnButton" />
+                android:theme="@style/WarnButton"/>
 
         </LinearLayout>
 
@@ -67,7 +68,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="16dp"
                 android:contentDescription="@string/profile_picture_content_desc"
-                android:src="@drawable/anon_user_48dp" />
+                android:src="@drawable/anon_user_48dp"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -77,54 +78,60 @@
                 <TextView
                     android:id="@+id/user_email"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/user_display_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/user_enabled_providers"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/idp_token_layout"
-          android:layout_height="wrap_content"
-          android:layout_width="wrap_content"
-          android:orientation="vertical">
-            <TextView
-              style="@style/Base.TextAppearance.AppCompat.Subhead"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/idp_token"/>
+            android:id="@+id/idp_token_layout"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:orientation="vertical">
 
             <TextView
-              android:id="@+id/idp_token"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content" />
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/idp_token"/>
+
+            <TextView
+                android:id="@+id/idp_token"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
 
         <LinearLayout
-          android:id="@+id/idp_secret_layout"
-          android:layout_height="wrap_content"
-          android:layout_width="wrap_content"
-          android:orientation="vertical">
-            <TextView
-              style="@style/Base.TextAppearance.AppCompat.Subhead"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/idp_secret"/>
+            android:id="@+id/idp_secret_layout"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:orientation="vertical">
 
             <TextView
-              android:id="@+id/idp_secret"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content" />
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/idp_secret"/>
+
+            <TextView
+                android:id="@+id/idp_secret"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
 
     </LinearLayout>
+
 </ScrollView>

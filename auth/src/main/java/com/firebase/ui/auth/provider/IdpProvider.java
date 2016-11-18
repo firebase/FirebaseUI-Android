@@ -38,6 +38,7 @@ public interface IdpProvider {
 
     interface IdpCallback {
         void onSuccess(IdpResponse idpResponse);
+
         void onFailure(Bundle extra);
     }
 }

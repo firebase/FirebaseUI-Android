@@ -1,15 +1,16 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion project.ext.compileSdk
-    buildToolsVersion "${project.ext.buildtools}"
+    compileSdkVersion compileSdk
+    buildToolsVersion buildTools
 
     defaultConfig {
         minSdkVersion 11
-        targetSdkVersion project.ext.targetSdk
+        targetSdkVersion targetSdk
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -19,10 +20,10 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:${project.ext.support_library_version}"
-    compile "com.android.support:palette-v7:${project.ext.support_library_version}"
+    compile "com.android.support:appcompat-v7:${support_library_version}"
+    compile "com.android.support:palette-v7:${support_library_version}"
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
 
-    compile "com.google.firebase:firebase-storage:${project.ext.firebase_version}"
+    compile "com.google.firebase:firebase-storage:${firebase_version}"
 }

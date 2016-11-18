@@ -60,16 +60,13 @@ public class FirebaseAuthWrapperImpl
         if (firebaseAuth == null) {
             throw new IllegalArgumentException("firebaseAuth must not be null");
         }
-        this.mFirebaseAuth = firebaseAuth;
+        mFirebaseAuth = firebaseAuth;
     }
 
     @Override
     @WorkerThread
     public boolean isExistingAccount(@Nullable final String email) {
-        if (email == null) {
-            return false;
-        }
-        return hasProviders(await(mFirebaseAuth.fetchProvidersForEmail(email)));
+        return email != null && hasProviders(await(mFirebaseAuth.fetchProvidersForEmail(email)));
     }
 
     @Override
@@ -166,16 +163,15 @@ public class FirebaseAuthWrapperImpl
                 .enableAutoManage(fragmentActivity, new OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Log.e(TAG,
-                            "Client connection failed: " + connectionResult.getErrorMessage());
+                        Log.e(TAG, "Client connection failed: " + connectionResult.getErrorMessage());
                     }
                 })
                 .build();
 
         HintRequest hintRequest = new HintRequest.Builder()
                 .setHintPickerConfig(new CredentialPickerConfig.Builder()
-                        .setShowCancelButton(true)
-                        .build())
+                                             .setShowCancelButton(true)
+                                             .build())
                 .setEmailAddressIdentifierSupported(true)
                 .build();
 

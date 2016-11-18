@@ -28,8 +28,6 @@
     <string name="confirm_recovery_body">Follow the instructions sent to %1$s to recover your
         password.</string>
     <string name="error_email_does_not_exist">That email address doesn\'t match an existing account</string>
-    <string name="finding_credential">Finding a credential…</string>
-    <string name="do_delete">Delete</string>
     <string name="welcome_back">Welcome back!</string>
     <string name="next">Next</string>
     <string name="trouble_signing_in">Trouble signing in?</string>
@@ -61,4 +59,8 @@
     <string name="progress_dialog_sending">Sending…</string>
     <string name="progress_dialog_signing_in">Signing in…</string>
     <string name="progress_dialog_signing_up">Signing up…</string>
+
+    <!-- accessibility -->
+    <string name="accessibility_logo">App logo</string>
+    <string name="accessibility_toggle">Toggle password visibility</string>
 </resources>

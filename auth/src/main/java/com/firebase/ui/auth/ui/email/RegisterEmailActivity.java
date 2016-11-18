@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
@@ -64,11 +65,15 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
     private EmailFieldValidator mEmailFieldValidator;
     private PasswordFieldValidator mPasswordFieldValidator;
     private RequiredFieldValidator mNameValidator;
+    @Nullable
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_email_layout);
+
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);
@@ -119,6 +124,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
         int start = preamble.length();
         spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
+
         TextView agreementText = (TextView) findViewById(R.id.create_account_text);
         agreementText.setText(spannableStringBuilder);
         agreementText.setOnClickListener(new View.OnClickListener() {
@@ -131,7 +137,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         });
     }
 
-    private void registerUser(String email, final String name, final String password) {
+    private void registerUser(final String email, final String name, final String password) {
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         // create the user
         firebaseAuth.createUserWithEmailAndPassword(email, password)
@@ -154,14 +160,11 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
-                                        SaveSmartLock.getInstance(RegisterEmailActivity.this,
-                                                                  mActivityHelper.getFlowParams(),
-                                                                  TAG)
-                                                .saveCredentialsOrFinish(RegisterEmailActivity.this,
-                                                                         mActivityHelper.getFlowParams(),
-                                                                         firebaseUser,
-                                                                         password,
-                                                                         null /* provider */);
+                                        mActivityHelper.saveCredentialsOrFinish(
+                                                mSmartLock,
+                                                RegisterEmailActivity.this,
+                                                firebaseUser,
+                                                password);
                                     }
                                 });
                     }

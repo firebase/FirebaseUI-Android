@@ -12,16 +12,16 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
-import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
-import com.firebase.ui.auth.ui.email.SignInActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -33,10 +33,10 @@ import java.util.List;
 
 public class AcquireEmailHelper {
     private static final String TAG = "AcquireEmailHelper";
-    public static final int RC_REGISTER_ACCOUNT = 14;
-    public static final int RC_WELCOME_BACK_IDP = 15;
-    public static final int RC_SIGN_IN = 16;
-    public static final List<Integer> REQUEST_CODES = Arrays.asList(
+    private static final int RC_REGISTER_ACCOUNT = 14;
+    private static final int RC_WELCOME_BACK_IDP = 15;
+    static final int RC_SIGN_IN = 16;
+    private static final List<Integer> REQUEST_CODES = Arrays.asList(
             RC_REGISTER_ACCOUNT,
             RC_WELCOME_BACK_IDP,
             RC_SIGN_IN
@@ -81,16 +81,14 @@ public class AcquireEmailHelper {
             mActivityHelper.startActivityForResult(registerIntent, RC_REGISTER_ACCOUNT);
         } else {
             // account does exist
-            for (String provider : providers) {
-                if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
-                    Intent signInIntent = SignInActivity.createIntent(
-                            mActivityHelper.getApplicationContext(),
-                            mActivityHelper.getFlowParams(),
-                            email);
-                    mActivityHelper.startActivityForResult(signInIntent, RC_SIGN_IN);
-                    return;
-                }
-
+            String provider = providers.get(0);
+            if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
+                Intent signInIntent = SignInActivity.createIntent(
+                        mActivityHelper.getApplicationContext(),
+                        mActivityHelper.getFlowParams(),
+                        email);
+                mActivityHelper.startActivityForResult(signInIntent, RC_SIGN_IN);
+            } else {
                 Intent intent = WelcomeBackIdpPrompt.createIntent(
                         mActivityHelper.getApplicationContext(),
                         mActivityHelper.getFlowParams(),
@@ -98,13 +96,7 @@ public class AcquireEmailHelper {
                         null,
                         email);
                 mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
-                return;
             }
-
-            Intent signInIntent = new Intent(
-                    mActivityHelper.getApplicationContext(), SignInActivity.class);
-            signInIntent.putExtra(ExtraConstants.EXTRA_EMAIL, email);
-            mActivityHelper.startActivityForResult(signInIntent, RC_SIGN_IN);
         }
     }
 

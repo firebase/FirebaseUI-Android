@@ -57,7 +57,6 @@ public class GoogleProvider implements
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig, @Nullable String email) {
         mActivity = activity;
         String mClientId = activity.getString(R.string.default_web_client_id);
-        GoogleSignInOptions googleSignInOptions;
 
         GoogleSignInOptions.Builder builder =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -65,7 +64,7 @@ public class GoogleProvider implements
                         .requestIdToken(mClientId);
 
         if (activity.getResources().getIdentifier(
-                "google_permissions", "array", activity.getPackageName()) != 0){
+                "google_permissions", "array", activity.getPackageName()) != 0) {
             Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.google_permissions but that is"
                     + " no longer respected as of FirebaseUI 1.0.0. Please see README for IDP scope"
                     + " configuration instructions.");
@@ -79,11 +78,10 @@ public class GoogleProvider implements
         if (!TextUtils.isEmpty(email)) {
             builder.setAccountName(email);
         }
-        googleSignInOptions = builder.build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(activity)
                 .enableAutoManage(activity, AUTO_MANAGE_ID, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, builder.build())
                 .build();
     }
 
@@ -126,7 +124,7 @@ public class GoogleProvider implements
                 if (result.isSuccess()) {
                     mIDPCallback.onSuccess(createIDPResponse(result.getSignInAccount()));
                 } else {
-                    onError(result.getStatus().getStatusMessage());
+                    onError(result);
                 }
             } else {
                 onError("No result found in intent");
@@ -140,7 +138,13 @@ public class GoogleProvider implements
         activity.startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    private void onError(GoogleSignInResult result) {
+        String errorMessage = result.getStatus().getStatusMessage();
+        onError(String.valueOf(result.getStatus().getStatusCode()) + " " + errorMessage);
+    }
+
     private void onError(String errorMessage) {
+        Log.e(TAG, "Error logging in with Google. " + errorMessage);
         Bundle extra = new Bundle();
         extra.putString(ERROR_KEY, errorMessage);
         mIDPCallback.onFailure(extra);

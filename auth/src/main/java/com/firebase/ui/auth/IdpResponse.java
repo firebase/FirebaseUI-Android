@@ -19,14 +19,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.firebase.ui.auth.provider.FacebookProvider;
-import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ExtraConstants;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 /**
  * A container that encapsulates the result of authenticating with an Identity Provider.
@@ -121,25 +114,12 @@ public class IdpResponse implements Parcelable {
 
     /**
      * Extract the {@link IdpResponse} from the flow's result intent.
+     *
      * @param resultIntent The intent which {@code onActivityResult} was called with.
      * @return The IdpResponse containing the token(s) from signing in with the Idp
      */
     @Nullable
     public static IdpResponse fromResultIntent(Intent resultIntent) {
         return resultIntent.getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
-    }
-
-    public static AuthCredential createCredential(IdpResponse idpSignInResponse) {
-        if (idpSignInResponse.getProviderType().equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            return FacebookProvider.createAuthCredential(idpSignInResponse);
-        } else if (idpSignInResponse.getProviderType().equalsIgnoreCase(GoogleAuthProvider
-                                                                                .PROVIDER_ID)) {
-            return GoogleProvider.createAuthCredential(idpSignInResponse);
-        } else if (idpSignInResponse
-                .getProviderType()
-                .equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
-            return TwitterProvider.createAuthCredential(idpSignInResponse);
-        }
-        return null;
     }
 }

@@ -14,12 +14,18 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import static com.firebase.ui.auth.test_helpers.TestHelper.verifySmartLockSave;
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
@@ -27,13 +33,12 @@ import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
-import com.firebase.ui.auth.test_helpers.SmartLockResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
-
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,16 +47,6 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
-
-import java.util.Arrays;
-import java.util.Collections;
-
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23)
@@ -102,6 +97,10 @@ public class SignInActivityTest {
     @Test
     @Config(shadows = {ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
     public void testSignInButton_signsInAndSavesCredentials() {
+        // initialize mocks
+        new ActivityHelperShadow();
+        reset(ActivityHelperShadow.smartLock);
+
         SignInActivity signInActivity = createActivity();
         EditText emailField = (EditText) signInActivity.findViewById(R.id.email);
         EditText passwordField = (EditText) signInActivity.findViewById(R.id.password);
@@ -118,13 +117,6 @@ public class SignInActivityTest {
         when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
         when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
 
-        SmartLockResult result = SmartLockResult.newInstance(signInActivity,
-                                                             TestHelper.getFlowParameters(Arrays.asList(
-                                                                     AuthUI.EMAIL_PROVIDER)),
-                                                             "SignInActivity",
-                                                             TestConstants.PASSWORD,
-                                                             null);
-
         Button signIn = (Button) signInActivity.findViewById(R.id.button_done);
         signIn.performClick();
 
@@ -132,10 +124,6 @@ public class SignInActivityTest {
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 
-        try {
-            result.await();
-        } catch (InterruptedException e) {
-            assertTrue("Interrupted waiting for result", false);
-        }
+        verifySmartLockSave(null, TestConstants.EMAIL, TestConstants.PASSWORD);
     }
 }

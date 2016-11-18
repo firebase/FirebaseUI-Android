@@ -17,6 +17,8 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.FacebookProvider;
@@ -26,17 +28,18 @@ import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
+import com.firebase.ui.auth.util.SmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 public class IdpSignInContainerActivity extends AppCompatBase implements IdpCallback {
     private static final String TAG = "IDPSignInContainer";
@@ -45,32 +48,38 @@ public class IdpSignInContainerActivity extends AppCompatBase implements IdpCall
     private IdpProvider mIdpProvider;
     private String mProvider;
     private String mEmail;
+    @Nullable
+    private SmartLock mSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mProvider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
-        mEmail = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
+        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
+        String provider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         IdpConfig providerConfig = null;
         for (IdpConfig config : mActivityHelper.getFlowParams().providerInfo) {
-            if (config.getProviderId().equalsIgnoreCase(mProvider)) {
+            if (config.getProviderId().equalsIgnoreCase(provider)) {
                 providerConfig = config;
                 break;
             }
         }
+
         if (providerConfig == null) {
             // we don't have a provider to handle this
             finish(RESULT_CANCELED, new Intent());
             return;
         }
-        if (mProvider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
+
+        if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new FacebookProvider(this, providerConfig);
-        } else if (mProvider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new GoogleProvider(this, providerConfig, mEmail);
-        } else if (mProvider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
+        } else if (provider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
+            mIdpProvider = new GoogleProvider(this, providerConfig, email);
+        } else if (provider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new TwitterProvider(this);
         }
+
         mIdpProvider.setAuthenticationCallback(this);
         mIdpProvider.startLogin(this);
     }
@@ -79,7 +88,7 @@ public class IdpSignInContainerActivity extends AppCompatBase implements IdpCall
     public void onSuccess(final IdpResponse response) {
         Intent data = new Intent();
         data.putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
-        AuthCredential credential = IdpResponse.createCredential(response);
+        AuthCredential credential = AuthCredentialHelper.getAuthCredential(response);
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         Task<AuthResult> authResultTask = firebaseAuth.signInWithCredential(credential);
         authResultTask
@@ -88,9 +97,7 @@ public class IdpSignInContainerActivity extends AppCompatBase implements IdpCall
                 .addOnCompleteListener(new CredentialSignInHandler(
                         IdpSignInContainerActivity.this,
                         mActivityHelper,
-                        SaveSmartLock.getInstance(IdpSignInContainerActivity.this,
-                                                  mActivityHelper.getFlowParams(),
-                                                  TAG),
+                        mSmartLock,
                         RC_WELCOME_BACK_IDP,
                         response));
     }

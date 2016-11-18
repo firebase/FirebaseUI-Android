@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -34,10 +35,12 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
     protected static final String ERROR = "err";
@@ -46,14 +49,12 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private static final String TAG = "FacebookProvider";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
+    private static final CallbackManager sCallbackManager = CallbackManager.Factory.create();
 
     private final List<String> mScopes;
-    private CallbackManager mCallbackManager;
     private IdpCallback mCallbackObject;
 
     public FacebookProvider(Context appContext, IdpConfig idpConfig) {
-        mCallbackManager = CallbackManager.Factory.create();
-
         if (appContext.getResources().getIdentifier(
                 "facebook_permissions", "array", appContext.getPackageName()) != 0) {
             Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.facebook_permissions but that"
@@ -84,9 +85,8 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void startLogin(Activity activity) {
-        mCallbackManager = CallbackManager.Factory.create();
         LoginManager loginManager = LoginManager.getInstance();
-        loginManager.registerCallback(mCallbackManager, this);
+        loginManager.registerCallback(sCallbackManager, this);
 
         List<String> permissionsList = new ArrayList<>(mScopes);
 
@@ -110,7 +110,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        sCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -121,15 +121,15 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                     + " with Token: "
                     + loginResult.getAccessToken().getToken());
         }
+
         GraphRequest request = GraphRequest.newMeRequest(
                 loginResult.getAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         FacebookRequestError requestError = response.getError();
-                        if(requestError != null) {
-                            Log.e(TAG,
-                                    "Received Facebook error: " + requestError.getErrorMessage());
+                        if (requestError != null) {
+                            Log.e(TAG, "Received Facebook error: " + requestError.getErrorMessage());
                             mCallbackObject.onFailure(new Bundle());
                             return;
                         }
@@ -147,6 +147,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                         }
                     }
                 });
+
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id,name,email");
         request.setParameters(parameters);
@@ -178,6 +179,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void onError(FacebookException error) {
+        Log.e(TAG, "Error logging in with Facebook. " + error.getMessage());
         Bundle extra = new Bundle();
         extra.putString(ERROR, "error");
         extra.putString(ERROR_MSG, error.getMessage());

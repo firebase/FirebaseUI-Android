@@ -74,9 +74,9 @@ public class CredentialSignInHandlerTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mFirebaseApp = TestHelper.initializeApp(RuntimeEnvironment.application);
-//        when(mCredentialsAPI.isPlayServicesAvailable()).thenReturn(true);
-//        when(mCredentialsAPI.isCredentialsAvailable()).thenReturn(true);
-//        when(mCredentialsAPI.isAutoSignInAvailable()).thenReturn(true);
+        when(mCredentialsAPI.isPlayServicesAvailable()).thenReturn(true);
+        when(mCredentialsAPI.isCredentialsAvailable()).thenReturn(true);
+        when(mCredentialsAPI.isAutoSignInAvailable()).thenReturn(true);
 
         PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
     }
@@ -101,18 +101,19 @@ public class CredentialSignInHandlerTest {
         // Build basic flow parameters
         FlowParameters flowParams = AuthUI.getInstance(mFirebaseApp)
                 .createSignInIntentBuilder()
-                .getFlowParams();
+                .build()
+                .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
 
         Task signInTask = Tasks.forResult(new FakeAuthResult(mockFirebaseUser));
         when(mockActivityHelper.getApplicationContext()).thenReturn(mockContext);
         when(mockActivityHelper.getFlowParams()).thenReturn(flowParams);
         credentialSignInHandler.onComplete(signInTask);
 
-        verify(smartLock).saveCredentialsOrFinish(mockActivity,
-                                                  mockActivityHelper.getFlowParams(),
-                                                  mockFirebaseUser,
-                                                  null,
-                                                  GoogleAuthProvider.PROVIDER_ID);
+        verify(mockActivityHelper).saveCredentialsOrFinish(
+                smartLock,
+                mockActivity,
+                mockFirebaseUser,
+                idpResponse);
     }
 
     @Test

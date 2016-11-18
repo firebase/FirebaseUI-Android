@@ -399,7 +399,7 @@ public class AuthUI {
      * Retrieves the {@link AuthUI} instance associated  the the specified app.
      */
     public static AuthUI getInstance(FirebaseApp app) {
-        AuthUI authUi = null;
+        AuthUI authUi;
         synchronized (INSTANCES) {
             authUi = INSTANCES.get(app);
             if (authUi == null) {
@@ -416,8 +416,6 @@ public class AuthUI {
      */
     @StyleRes
     public static int getDefaultTheme() {
-        // TODO(iainmgin): figure out why this works as a static method but not as a static
-        //                 final variable.
         return R.style.FirebaseUI;
     }
 
@@ -482,8 +480,8 @@ public class AuthUI {
              * Builds the configuration parameters for an identity provider.
              *
              * @param providerId An ID of one of the supported identity providers. e.g.
-             * {@link AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for the
-             * complete list of supported Identity providers
+             *                   {@link AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for the
+             *                   complete list of supported Identity providers
              */
             public Builder(@NonNull String providerId) {
                 if (!SUPPORTED_PROVIDERS.contains(providerId)) {
@@ -568,8 +566,7 @@ public class AuthUI {
          * provider is the default supported provider.
          *
          * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains
-         * the configuration parameters for the IDP.
-         *
+         *                   the configuration parameters for the IDP.
          * @see IdpConfig
          */
         public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
