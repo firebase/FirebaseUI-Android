@@ -8,8 +8,9 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.firebase.uidemo"
-            android:targetClass="com.firebase.uidemo.storage.ImageActivity" />
+            android:targetClass="com.firebase.uidemo.storage.ImageActivity"/>
     </shortcut>
+
     <shortcut
         android:shortcutId="auth"
         android:enabled="true"
@@ -18,8 +19,9 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.firebase.uidemo"
-            android:targetClass="com.firebase.uidemo.auth.AuthUiActivity" />
+            android:targetClass="com.firebase.uidemo.auth.AuthUiActivity"/>
     </shortcut>
+
     <shortcut
         android:shortcutId="database"
         android:enabled="true"
@@ -28,6 +30,6 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.firebase.uidemo"
-            android:targetClass="com.firebase.uidemo.database.ChatActivity" />
+            android:targetClass="com.firebase.uidemo.database.ChatActivity"/>
     </shortcut>
 </shortcuts>

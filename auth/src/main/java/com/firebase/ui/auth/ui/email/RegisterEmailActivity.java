@@ -124,6 +124,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
         int start = preamble.length();
         spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
+
         TextView agreementText = (TextView) findViewById(R.id.create_account_text);
         agreementText.setText(spannableStringBuilder);
         agreementText.setOnClickListener(new View.OnClickListener() {

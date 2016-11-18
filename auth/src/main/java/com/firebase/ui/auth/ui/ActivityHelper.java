@@ -108,7 +108,7 @@ public class ActivityHelper {
                 checkNotNull(context, "context cannot be null"),
                 checkNotNull(target, "target activity cannot be null"))
                 .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS,
-                        checkNotNull(flowParams, "flowParams cannot be null"));
+                          checkNotNull(flowParams, "flowParams cannot be null"));
     }
 
     public SmartLock getSmartLockInstance(AppCompatBase activity, String tag) {

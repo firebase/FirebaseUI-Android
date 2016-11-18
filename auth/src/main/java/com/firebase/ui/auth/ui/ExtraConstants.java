@@ -22,8 +22,5 @@ public class ExtraConstants {
     public static final String EXTRA_ERROR_MESSAGE = "extra_error_msg";
     public static final String EXTRA_FLOW_PARAMS = "extra_flow_params";
     public static final String EXTRA_IDP_RESPONSE = "extra_idp_response";
-    public static final String EXTRA_NAME = "extra_name";
-    public static final String EXTRA_PASSWORD = "extra_password";
-    public static final String EXTRA_PROFILE_PICTURE_URI = "extra_profile_picture_uri";
     public static final String EXTRA_PROVIDER = "extra_provider";
 }

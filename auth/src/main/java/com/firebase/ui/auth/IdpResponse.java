@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+
 import com.firebase.ui.auth.ui.ExtraConstants;
 
 /**
@@ -113,6 +114,7 @@ public class IdpResponse implements Parcelable {
 
     /**
      * Extract the {@link IdpResponse} from the flow's result intent.
+     *
      * @param resultIntent The intent which {@code onActivityResult} was called with.
      * @return The IdpResponse containing the token(s) from signing in with the Idp
      */

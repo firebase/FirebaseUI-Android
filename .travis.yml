@@ -2,7 +2,6 @@ language: android
 jdk: oraclejdk8
 # See https://github.com/travis-ci/travis-ci/issues/5582
 sudo: required
-# See https://docs.travis-ci.com/user/languages/java/#Caching
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -18,8 +17,6 @@ android:
     - android-25
 
     # Extras
-    - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-    - addon-google_apis-google-24
 script: ./gradlew clean :library:testAll :library:prepareArtifacts

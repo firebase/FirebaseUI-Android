@@ -45,6 +45,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+
 import java.util.List;
 
 import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
@@ -76,7 +77,6 @@ public class ChooseAccountActivity extends ActivityBase {
 
         if (!hasNetworkConnection()) {
             Log.d(TAG, "No network connection");
-
             finish(RESULT_NO_NETWORK, new Intent());
             return;
         }
@@ -85,13 +85,13 @@ public class ChooseAccountActivity extends ActivityBase {
         mPlayServicesHelper = PlayServicesHelper.getInstance(this);
         boolean madeAvailable = mPlayServicesHelper
                 .makePlayServicesAvailable(this, RC_PLAY_SERVICES,
-                        new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialogInterface) {
-                                Log.w(TAG, "playServices:dialog.onCancel()");
-                                finish(RESULT_CANCELED, new Intent());
-                            }
-                        });
+                                           new DialogInterface.OnCancelListener() {
+                                               @Override
+                                               public void onCancel(DialogInterface dialogInterface) {
+                                                   Log.w(TAG, "playServices:dialog.onCancel()");
+                                                   finish(RESULT_CANCELED, new Intent());
+                                               }
+                                           });
 
         if (!madeAvailable) {
             Log.w(TAG, "playServices: could not make available.");
