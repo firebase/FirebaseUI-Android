@@ -30,15 +30,18 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:design:$support_library_version"
-
-    compile "com.google.firebase:firebase-auth:$firebase_version"
-    compile "com.google.android.gms:play-services-auth:$firebase_version"
+    compile "com.android.support:design:${project.ext.support_library_version}"
+    compile "com.google.firebase:firebase-auth:${project.ext.firebase_version}"
+    compile "com.google.android.gms:play-services-auth:${project.ext.firebase_version}"
 
     compile 'com.facebook.android:facebook-android-sdk:4.17.0'
-    compile("com.twitter.sdk.android:twitter:2.1.1@aar") {
-        transitive = true
-    }
+    compile("com.twitter.sdk.android:twitter:2.1.1@aar") { transitive = true }
+
+    // The following libraries are needed to prevent incompatibilities with the facebook
+    // library when updating com.android.support libraries:
+    compile "com.android.support:customtabs:${project.ext.support_library_version}"
+    compile "com.android.support:cardview-v7:${project.ext.support_library_version}"
+
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.2.6'
