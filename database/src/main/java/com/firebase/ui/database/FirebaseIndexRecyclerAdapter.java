@@ -14,6 +14,7 @@
 
 package com.firebase.ui.database;
 
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 
 import com.google.firebase.database.Query;
@@ -70,7 +71,7 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
      *                        Each key key found at {@code keyRef}'s location represents a list item in the {@code RecyclerView}.
      */
     public FirebaseIndexRecyclerAdapter(Class<T> modelClass,
-                                        int modelLayout,
+                                        @LayoutRes int modelLayout,
                                         Class<VH> viewHolderClass,
                                         Query keyRef,
                                         Query dataRef) {
