@@ -15,6 +15,7 @@
 package com.firebase.ui.database;
 
 import android.app.Activity;
+import android.support.annotation.LayoutRes;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
     FirebaseListAdapter(Activity activity,
                         Class<T> modelClass,
-                        int modelLayout,
+                        @LayoutRes int modelLayout,
                         FirebaseArray snapshots) {
         mModelClass = modelClass;
         mLayout = modelLayout;
