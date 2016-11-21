@@ -1,7 +1,6 @@
 package com.firebase.ui.database;
 
 import android.app.Activity;
-import android.support.annotation.LayoutRes;
 
 import com.google.firebase.database.Query;
 
@@ -42,7 +41,7 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
      */
     public FirebaseIndexListAdapter(Activity activity,
                                     Class<T> modelClass,
-                                    @LayoutRes int modelLayout,
+                                    int modelLayout,
                                     Query keyRef,
                                     Query dataRef) {
         super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef, dataRef));
