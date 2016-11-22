@@ -18,7 +18,7 @@ import android.util.Log;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
@@ -409,18 +409,14 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 && manager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-    public static void delegateSignIn(FragmentActivity activity, FlowParameters parameters) {
+    public static void delegate(FragmentActivity activity, FlowParameters params) {
         FragmentManager fm = activity.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
         Fragment fragment = fm.findFragmentByTag(TAG);
         if (fragment == null || !(fragment instanceof SignInDelegate)) {
             SignInDelegate result = new SignInDelegate();
-
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, parameters);
-            result.setArguments(bundle);
-
+            result.setArguments(BaseFragment.getFlowParamsBundle(params));
             ft.add(result, TAG).disallowAddToBackStack().commit();
         }
     }

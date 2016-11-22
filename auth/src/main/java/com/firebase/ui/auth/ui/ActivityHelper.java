@@ -14,15 +14,20 @@
 
 package com.firebase.ui.auth.ui;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.util.BaseHelper;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ActivityHelper extends BaseHelper {
-    private Activity mActivity;
+    private AppCompatActivity mActivity;
 
-    public ActivityHelper(Activity activity, Intent intent) {
+    public ActivityHelper(AppCompatActivity activity, Intent intent) {
         super(activity, (FlowParameters) intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS));
         mActivity = activity;
     }
@@ -34,5 +39,25 @@ public class ActivityHelper extends BaseHelper {
     public void finish(int resultCode, Intent intent) {
         mActivity.setResult(resultCode, intent);
         mActivity.finish();
+    }
+
+    public SaveSmartLock getSaveSmartLockInstance(String tag) {
+        return SaveSmartLock.getInstance(mActivity, getFlowParams(), tag);
+    }
+
+    public void saveCredentialsOrFinish(
+            @Nullable SaveSmartLock saveSmartLock,
+            AppCompatBase activity,
+            FirebaseUser firebaseUser,
+            @NonNull IdpResponse response) {
+        saveCredentialsOrFinish(saveSmartLock, activity, this, firebaseUser, null, response);
+    }
+
+    public void saveCredentialsOrFinish(
+            @Nullable SaveSmartLock saveSmartLock,
+            AppCompatBase activity,
+            FirebaseUser firebaseUser,
+            @NonNull String password) {
+        saveCredentialsOrFinish(saveSmartLock, activity, this, firebaseUser, password, null);
     }
 }

@@ -24,7 +24,6 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.util.BaseHelper;
 import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,19 +40,19 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private final static String TAG = "CredentialSignInHandler";
 
     private AppCompatBase mActivity;
-    private BaseHelper mHelper;
+    private ActivityHelper mActivityHelper;
     @Nullable private SaveSmartLock mSmartLock;
     private IdpResponse mResponse;
     private int mAccountLinkResultCode;
 
     public CredentialSignInHandler(
             AppCompatBase activity,
-            ActivityHelper helper,
+            ActivityHelper activityHelper,
             @Nullable SaveSmartLock smartLock,
             int accountLinkResultCode,
             IdpResponse response) {
         mActivity = activity;
-        mHelper = helper;
+        mActivityHelper = activityHelper;
         mSmartLock = smartLock;
         mResponse = response;
         mAccountLinkResultCode = accountLinkResultCode;
@@ -71,7 +70,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 final String email = mResponse.getEmail();
-                FirebaseAuth firebaseAuth = mHelper.getFirebaseAuth();
+                FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
                 firebaseAuth.fetchProvidersForEmail(email)
                         .addOnFailureListener(new TaskFailureLogger(
                                 TAG, "Error fetching providers for email"))
@@ -85,7 +84,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                             }
                         });
             } else {
-                mHelper.dismissDialog();
+                mActivityHelper.dismissDialog();
                 Log.e(TAG, "Unexpected exception when signing in with credential",
                       task.getException());
             }
@@ -101,23 +100,23 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
 
         @Override
         public void onSuccess(@NonNull ProviderQueryResult result) {
-            mHelper.dismissDialog();
+            mActivityHelper.dismissDialog();
 
             String provider = result.getProviders().get(0);
             if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
                 // Start email welcome back flow
                 mActivity.startActivityForResult(
                         WelcomeBackPasswordPrompt.createIntent(
-                                mHelper.getApplicationContext(),
-                                mHelper.getFlowParams(),
+                                mActivityHelper.getApplicationContext(),
+                                mActivityHelper.getFlowParams(),
                                 mResponse
                         ), mAccountLinkResultCode);
             } else {
                 // Start IDP welcome back flow
                 mActivity.startActivityForResult(
                         WelcomeBackIdpPrompt.createIntent(
-                                mHelper.getApplicationContext(),
-                                mHelper.getFlowParams(),
+                                mActivityHelper.getApplicationContext(),
+                                mActivityHelper.getFlowParams(),
                                 result.getProviders().get(0),
                                 mResponse,
                                 mEmail

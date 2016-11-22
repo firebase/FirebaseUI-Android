@@ -67,14 +67,13 @@ public class AuthMethodPickerActivity extends AppCompatBase
     private static final int RC_ACCOUNT_LINK = 3;
 
     private ArrayList<IdpProvider> mIdpProviders;
-    @Nullable
-    private SmartLock mSmartLock;
+    @Nullable private SaveSmartLock mSaveSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
-        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance(TAG);
         findViewById(R.id.email_provider).setOnClickListener(this);
 
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);
@@ -174,7 +173,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
                 .addOnCompleteListener(new CredentialSignInHandler(
                         AuthMethodPickerActivity.this,
                         mActivityHelper,
-                        mSmartLock,
+                        mSaveSmartLock,
                         RC_ACCOUNT_LINK,
                         response));
     }

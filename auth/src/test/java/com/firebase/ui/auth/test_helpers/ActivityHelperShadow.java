@@ -14,46 +14,26 @@
 
 package com.firebase.ui.auth.test_helpers;
 
-import com.firebase.ui.auth.util.BaseHelper;
-import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.util.SmartLock;
-import com.google.android.gms.auth.api.credentials.CredentialsApi;
-import com.google.firebase.auth.FirebaseAuth;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 
 import org.mockito.Mockito;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
-@Implements(BaseHelper.class)
-public class ActivityHelperShadow {
-    public static FirebaseAuth firebaseAuth;
-    public static CredentialsApi credentialsApi;
-    public static SmartLock smartLock;
+@Implements(ActivityHelper.class)
+public class ActivityHelperShadow extends BaseHelperShadow {
+    public static SaveSmartLock sSaveSmartLock;
 
     public ActivityHelperShadow() {
-        if (firebaseAuth == null) {
-            firebaseAuth = Mockito.mock(FirebaseAuth.class);
-        }
-        if (credentialsApi == null) {
-            credentialsApi = Mockito.mock(CredentialsApi.class);
-        }
-        if (smartLock == null) {
-            smartLock = Mockito.mock(SmartLock.class);
+        super();
+        if (sSaveSmartLock == null) {
+            sSaveSmartLock = Mockito.mock(SaveSmartLock.class);
         }
     }
 
     @Implementation
-    public FirebaseAuth getFirebaseAuth() {
-        return firebaseAuth;
-    }
-
-    @Implementation
-    public CredentialsApi getCredentialsApi() {
-        return credentialsApi;
-    }
-
-    @Implementation
-    public SmartLock getSmartLockInstance(AppCompatBase activity, String tag) {
-        return smartLock;
+    public SaveSmartLock getSaveSmartLockInstance(String tag) {
+        return sSaveSmartLock;
     }
 }

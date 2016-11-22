@@ -5,16 +5,22 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import static android.app.Activity.RESULT_OK;
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
 public class BaseHelper {
@@ -84,5 +90,24 @@ public class BaseHelper {
                 checkNotNull(target, "target activity cannot be null"))
                 .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS,
                           checkNotNull(flowParams, "flowParams cannot be null"));
+    }
+
+    public void saveCredentialsOrFinish(
+            @Nullable SaveSmartLock saveSmartLock,
+            AppCompatBase activity,
+            ActivityHelper helper,
+            FirebaseUser firebaseUser,
+            @Nullable String password,
+            @Nullable IdpResponse response) {
+        if (saveSmartLock == null) {
+            activity.finish(RESULT_OK, new Intent());
+        } else {
+            saveSmartLock.saveCredentialsOrFinish(
+                    activity,
+                    helper,
+                    firebaseUser,
+                    password,
+                    response);
+        }
     }
 }

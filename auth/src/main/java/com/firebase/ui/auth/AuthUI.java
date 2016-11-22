@@ -628,7 +628,7 @@ public class AuthUI {
         }
 
         public void build(@NonNull FragmentActivity activity) {
-            SignInDelegate.delegateSignIn(activity, getFlowParams());
+            SignInDelegate.delegate(activity, getFlowParams());
         }
 
         public FlowParameters getFlowParams() {

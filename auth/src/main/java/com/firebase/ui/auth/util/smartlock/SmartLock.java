@@ -1,6 +1,8 @@
 package com.firebase.ui.auth.util.smartlock;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -29,6 +31,12 @@ public abstract class SmartLock<R extends Result> extends BaseFragment implement
         ResultCallback<R>,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "SmartLockBase";
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Override
     public void onConnectionSuspended(int i) {

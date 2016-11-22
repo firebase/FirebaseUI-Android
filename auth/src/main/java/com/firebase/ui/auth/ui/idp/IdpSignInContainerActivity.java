@@ -32,7 +32,7 @@ import com.firebase.ui.auth.ui.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -46,16 +46,13 @@ public class IdpSignInContainerActivity extends AppCompatBase implements IdpCall
     private static final int RC_WELCOME_BACK_IDP = 4;
 
     private IdpProvider mIdpProvider;
-    private String mProvider;
-    private String mEmail;
-    @Nullable
-    private SmartLock mSmartLock;
+    @Nullable private SaveSmartLock mSaveSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance(TAG);
         String provider = getIntent().getStringExtra(ExtraConstants.EXTRA_PROVIDER);
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         IdpConfig providerConfig = null;
@@ -97,7 +94,7 @@ public class IdpSignInContainerActivity extends AppCompatBase implements IdpCall
                 .addOnCompleteListener(new CredentialSignInHandler(
                         IdpSignInContainerActivity.this,
                         mActivityHelper,
-                        mSmartLock,
+                        mSaveSmartLock,
                         RC_WELCOME_BACK_IDP,
                         response));
     }

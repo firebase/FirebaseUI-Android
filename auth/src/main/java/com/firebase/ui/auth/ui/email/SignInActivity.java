@@ -51,14 +51,14 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     private EmailFieldValidator mEmailValidator;
     private RequiredFieldValidator mPasswordValidator;
     @Nullable
-    private SmartLock mSmartLock;
+    private SaveSmartLock mSaveSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in_layout);
 
-        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance(TAG);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
@@ -71,7 +71,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
         ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
@@ -103,7 +102,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                     public void onSuccess(AuthResult authResult) {
                         // Save credential in SmartLock (if enabled)
                         mActivityHelper.saveCredentialsOrFinish(
-                                mSmartLock,
+                                mSaveSmartLock,
                                 SignInActivity.this,
                                 authResult.getUser(),
                                 password);

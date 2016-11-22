@@ -25,19 +25,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.Builder;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -54,7 +58,6 @@ public class SaveSmartLock extends SmartLock<Status> {
     private String mPassword;
     private String mProfilePictureUri;
     private IdpResponse mResponse;
-    private GoogleApiClient mCredentialsApiClient;
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -70,7 +73,7 @@ public class SaveSmartLock extends SmartLock<Status> {
             // only password OR provider can be set, not both
             if (mResponse != null) {
                 String translatedProvider =
-                        SmartLockUtil.providerIdToAccountType(mResponse.getProviderType());
+                        SmartLock.providerIdToAccountType(mResponse.getProviderType());
                 if (translatedProvider != null) {
                     builder.setAccountType(translatedProvider);
                 } else {
@@ -190,7 +193,7 @@ public class SaveSmartLock extends SmartLock<Status> {
             mGoogleApiClient.disconnect();
         }
         Intent resultIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mResponse);
-        mActivityHelper.finish(RESULT_OK, resultIntent);
+        ((ActivityHelper) mHelper).finish(RESULT_OK, resultIntent);
     }
 
     /**
@@ -207,12 +210,10 @@ public class SaveSmartLock extends SmartLock<Status> {
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable IdpResponse response) {
-        mActivityHelper = helper;
-                                        @Nullable String provider) {
-        if (!parameters.smartLockEnabled
-                || !PlayServicesHelper.getInstance(context).isPlayServicesAvailable()
-                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(parameters.appName)
-                .isPlayServicesAvailable(context)) {
+        mHelper = helper;
+        if (!helper.getFlowParams().smartLockEnabled
+                || !PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()
+                || activity.isFinishing()) {
             finish();
             return;
         }
@@ -224,49 +225,28 @@ public class SaveSmartLock extends SmartLock<Status> {
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
-        // If SmartLock is disabled, finish the Activity
-        if (!helper.getFlowParams().smartLockEnabled) {
-            finish();
-            return;
-        }
-
-        // If Play Services is not available, finish the Activity
-        if (!PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()) {
-            finish();
-            return;
-        }
-
-        if (!FirebaseAuthWrapperFactory
-                .getFirebaseAuthWrapper(helper.getFlowParams().appName)
-                .isPlayServicesAvailable(activity)) {
-            finish();
-            return;
-        }
-
-        if (activity.isFinishing()) {
-            finish();
-            return;
-        }
-
-        mCredentialsApiClient = new Builder(activity)
+        mGoogleApiClient = new Builder(activity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
                 .enableAutoManage(activity, this)
                 .build();
-        mCredentialsApiClient.connect();
+        mGoogleApiClient.connect();
     }
 
     @Nullable
-    public static SmartLock getInstance(AppCompatActivity activity, String tag) {
-        SmartLock result;
+    public static SaveSmartLock getInstance(AppCompatActivity activity,
+                                            FlowParameters parameters,
+                                            String tag) {
+        SaveSmartLock result;
 
         FragmentManager fm = activity.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
         Fragment fragment = fm.findFragmentByTag(tag);
-        if (fragment == null || !(fragment instanceof SmartLock)) {
-            result = new SmartLock();
+        if (fragment == null || !(fragment instanceof SaveSmartLock)) {
+            result = new SaveSmartLock();
+            result.setArguments(BaseFragment.getFlowParamsBundle(parameters));
             try {
                 ft.add(result, tag).disallowAddToBackStack().commit();
             } catch (IllegalStateException e) {

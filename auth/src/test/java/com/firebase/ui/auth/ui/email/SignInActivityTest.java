@@ -14,22 +14,16 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import static com.firebase.ui.auth.test_helpers.TestHelper.verifySmartLockSave;
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
+import com.firebase.ui.auth.test_helpers.BaseHelperShadow;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
@@ -38,7 +32,7 @@ import com.firebase.ui.auth.test_helpers.TestHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
-import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +41,16 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
+
+import java.util.Collections;
+
+import static com.firebase.ui.auth.test_helpers.TestHelper.verifySmartLockSave;
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23)
@@ -95,11 +99,11 @@ public class SignInActivityTest {
     }
 
     @Test
-    @Config(shadows = {ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
+    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
     public void testSignInButton_signsInAndSavesCredentials() {
         // initialize mocks
         new ActivityHelperShadow();
-        reset(ActivityHelperShadow.smartLock);
+        reset(ActivityHelperShadow.sSaveSmartLock);
 
         SignInActivity signInActivity = createActivity();
         EditText emailField = (EditText) signInActivity.findViewById(R.id.email);
@@ -109,7 +113,7 @@ public class SignInActivityTest {
 
         FirebaseUser mockFirebaseUser = mock(FirebaseUser.class);
 
-        when(ActivityHelperShadow.firebaseAuth.signInWithEmailAndPassword(
+        when(ActivityHelperShadow.sFirebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
                     new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser), true, null));
@@ -120,7 +124,7 @@ public class SignInActivityTest {
         Button signIn = (Button) signInActivity.findViewById(R.id.button_done);
         signIn.performClick();
 
-        verify(ActivityHelperShadow.firebaseAuth).signInWithEmailAndPassword(
+        verify(ActivityHelperShadow.sFirebaseAuth).signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 

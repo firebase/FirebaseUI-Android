@@ -28,9 +28,10 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.mockito.ArgumentCaptor;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.mockito.ArgumentCaptor;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -94,7 +95,7 @@ public class TestHelper {
         ArgumentCaptor<IdpResponse> idpResponseArgumentCaptor =
                 ArgumentCaptor.forClass(IdpResponse.class);
         ArgumentCaptor<String> passwordArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(ActivityHelperShadow.smartLock).saveCredentialsOrFinish(
+        verify(ActivityHelperShadow.sSaveSmartLock).saveCredentialsOrFinish(
                 any(AppCompatBase.class), any(ActivityHelper.class), userArgumentCaptor.capture(),
                 passwordArgumentCaptor.capture(), idpResponseArgumentCaptor.capture());
         assertEquals(email, userArgumentCaptor.getValue().getEmail());
