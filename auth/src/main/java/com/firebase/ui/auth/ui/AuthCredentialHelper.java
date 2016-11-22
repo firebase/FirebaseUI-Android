@@ -14,14 +14,12 @@
 
 package com.firebase.ui.auth.ui;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.TwitterProvider;
-import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -37,20 +35,6 @@ public class AuthCredentialHelper {
                 return FacebookProvider.createAuthCredential(idpResponse);
             case TwitterAuthProvider.PROVIDER_ID:
                 return TwitterProvider.createAuthCredential(idpResponse);
-            default:
-                return null;
-        }
-    }
-
-    @Nullable
-    public static String accountTypeToProviderId(@NonNull String accountType) {
-        switch (accountType) {
-            case IdentityProviders.GOOGLE:
-                return GoogleAuthProvider.PROVIDER_ID;
-            case IdentityProviders.FACEBOOK:
-                return FacebookAuthProvider.PROVIDER_ID;
-            case IdentityProviders.TWITTER:
-                return TwitterAuthProvider.PROVIDER_ID;
             default:
                 return null;
         }

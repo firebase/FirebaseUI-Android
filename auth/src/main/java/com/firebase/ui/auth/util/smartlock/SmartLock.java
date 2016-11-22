@@ -82,6 +82,19 @@ public abstract class SmartLock<R extends Result> extends BaseFragment implement
         }
     }
 
+    public static String accountTypeToProviderId(@NonNull String accountType) {
+        switch (accountType) {
+            case IdentityProviders.GOOGLE:
+                return GoogleAuthProvider.PROVIDER_ID;
+            case IdentityProviders.FACEBOOK:
+                return FacebookAuthProvider.PROVIDER_ID;
+            case IdentityProviders.TWITTER:
+                return TwitterAuthProvider.PROVIDER_ID;
+            default:
+                return null;
+        }
+    }
+
     /**
      * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials,
      * not for saving since we don't have access to the password.
