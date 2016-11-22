@@ -61,8 +61,7 @@ public class SignInNoPasswordActivityTest {
     public void testNextButton_withInvalidEmailAddress() {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(Arrays.asList(AuthUI
-                        .EMAIL_PROVIDER)),
+                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)),
                 null);
 
         SignInNoPasswordActivity noPasswordActivity =
@@ -84,8 +83,7 @@ public class SignInNoPasswordActivityTest {
     private SignInNoPasswordActivity createActivity(String email) {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(
-                        Arrays.asList(AuthUI.EMAIL_PROVIDER)),
+                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)),
                 email);
         return Robolectric.buildActivity(SignInNoPasswordActivity.class)
                         .withIntent(startIntent).create().visible().get();

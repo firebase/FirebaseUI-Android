@@ -170,9 +170,7 @@ public class SaveSmartLock extends SmartLock<Status> {
     }
 
     private void finish() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
+        cleanup();
         Intent resultIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mResponse);
         ((ActivityHelper) mHelper).finish(RESULT_OK, resultIntent);
     }

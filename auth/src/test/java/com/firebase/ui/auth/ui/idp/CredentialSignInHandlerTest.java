@@ -17,7 +17,6 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
@@ -55,6 +54,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -94,14 +94,10 @@ public class CredentialSignInHandlerTest {
                 idpResponse);
         Context mockContext = mock(Context.class);
 
-        // Build basic flow parameters
-        FlowParameters flowParams = AuthUI.getInstance(mFirebaseApp)
-                .createSignInIntentBuilder()
-                .getFlowParams();
-
         Task signInTask = Tasks.forResult(new FakeAuthResult(mockFirebaseUser));
         when(mockActivityHelper.getApplicationContext()).thenReturn(mockContext);
-        when(mockActivityHelper.getFlowParams()).thenReturn(flowParams);
+        when(mockActivityHelper.getFlowParams()).thenReturn(
+                TestHelper.getFlowParameters(Collections.<String>emptyList()));
         credentialSignInHandler.onComplete(signInTask);
 
         verify(mockActivityHelper).saveCredentialsOrFinish(

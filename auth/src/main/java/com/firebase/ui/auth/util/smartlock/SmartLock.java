@@ -45,6 +45,11 @@ public abstract class SmartLock<R extends Result> extends BaseFragment implement
     }
 
     @Override
+    public void onConnectionSuspended(int i) {
+        // Just wait
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         cleanup();

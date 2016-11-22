@@ -50,9 +50,9 @@ public class TestHelper {
             return FirebaseApp.initializeApp(
                     context,
                     new FirebaseOptions.Builder()
-                        .setApiKey(API_KEY)
-                        .setApplicationId(APPLICATION_ID)
-                        .build(),
+                            .setApiKey(API_KEY)
+                            .setApplicationId(APPLICATION_ID)
+                            .build(),
                     FIREBASE_APP_NAME);
         } catch (IllegalStateException e) {
             return FirebaseApp.getInstance(FIREBASE_APP_NAME);

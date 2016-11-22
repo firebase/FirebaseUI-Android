@@ -75,7 +75,6 @@ public class AuthMethodPickerActivityTest {
     @Before
     public void setUp() {
         PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
-        TestHelper.initializeApp(RuntimeEnvironment.application);
     }
 
     @Test
