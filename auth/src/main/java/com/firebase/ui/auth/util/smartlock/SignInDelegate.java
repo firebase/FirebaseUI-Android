@@ -74,7 +74,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
         if (!hasNetworkConnection()) {
             Log.d(TAG, "No network connection");
-
             finish(RESULT_NO_NETWORK, new Intent());
             return;
         }
@@ -237,12 +236,12 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     }
 
     private void startAuthMethodChoice() {
-        List<AuthUI.IdpConfig> providers = mHelper.getFlowParams().providerInfo;
+        List<AuthUI.IdpConfig> idpConfigs = mHelper.getFlowParams().providerInfo;
 
         // If the only provider is Email, immediately launch the email flow. Otherwise, launch
         // the auth method picker screen.
-        if (providers.size() == 1) {
-            if (providers.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
+        if (idpConfigs.size() == 1) {
+            if (idpConfigs.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
                 startActivityForResult(
                         EmailFlowUtil.createIntent(
                                 getContext(),
@@ -251,7 +250,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
             } else {
                 redirectToIdpSignIn(null,
                                     SmartLock.providerIdToAccountType(
-                                            providers.get(0).getProviderId()));
+                                            idpConfigs.get(0).getProviderId()));
             }
         } else {
             startActivityForResult(
