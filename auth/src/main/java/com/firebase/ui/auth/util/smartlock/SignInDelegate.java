@@ -41,7 +41,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.List;
 
@@ -105,7 +108,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
         if (mHelper.getFlowParams().smartLockEnabled) {
             mHelper.showLoadingDialog(R.string.progress_dialog_loading);
-            initGoogleApiClient(null);
+            initGoogleApiClient();
             mHelper.getCredentialsApi()
                     .request(mGoogleApiClient,
                              new CredentialRequest.Builder()
@@ -134,20 +137,36 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         if (status.isSuccess()) {
             // Auto sign-in success
             handleCredential(result.getCredential());
-        } else if (status.hasResolution()
-                && (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED
-                || status.getStatusCode() == CommonStatusCodes.SIGN_IN_REQUIRED)) {
+            return;
+        } else if (status.hasResolution()) {
+            boolean onlySupportsEmail = true;
+            for (AuthUI.IdpConfig config : mHelper.getFlowParams().providerInfo) {
+                String providerId = config.getProviderId();
+                if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
+                        || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
+                        || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
+                    onlySupportsEmail = false;
+                    break;
+                }
+            }
+
             try {
-                mHelper.startIntentSenderForResult(
-                        status.getResolution().getIntentSender(),
-                        RC_CREDENTIALS_READ);
+                if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+                    mHelper.startIntentSenderForResult(
+                            status.getResolution().getIntentSender(),
+                            RC_CREDENTIALS_READ);
+                    return;
+                } else if (!onlySupportsEmail) {
+                    mHelper.startIntentSenderForResult(
+                            status.getResolution().getIntentSender(),
+                            RC_CREDENTIALS_READ);
+                    return;
+                }
             } catch (IntentSender.SendIntentException e) {
                 Log.e(TAG, "Failed to send Credentials intent.", e);
-                startAuthMethodChoice();
             }
-        } else {
-            startAuthMethodChoice();
         }
+        startAuthMethodChoice();
     }
 
     @Override
@@ -217,14 +236,10 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         }
     }
 
-    private void initGoogleApiClient(String accountName) {
+    private void initGoogleApiClient() {
         GoogleSignInOptions.Builder gsoBuilder = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail();
-
-        if (accountName != null) {
-            gsoBuilder.setAccountName(accountName);
-        }
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
@@ -330,7 +345,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                     mHelper.getFlowParams(),
                     accountTypeToProviderId(accountType),
                     email);
-            // TODO: 11/21/2016
         } else {
             Log.w(TAG, "unknown provider: " + accountType);
             nextIntent = AuthMethodPickerActivity.createIntent(
