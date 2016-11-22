@@ -18,7 +18,6 @@ import android.util.Log;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FragmentHelper;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
@@ -72,6 +71,10 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        if (savedInstance != null) {
+            // We already have a running instance of this fragment
+            return;
+        }
 
         if (!hasNetworkConnection()) {
             Log.d(TAG, "No network connection");
@@ -115,6 +118,13 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         } else {
             startAuthMethodChoice();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // It doesn't matter what we put here, we just don't want outState to be empty
+        outState.putBoolean(TAG, true);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -242,8 +252,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                         RC_EMAIL_FLOW);
             } else {
                 redirectToIdpSignIn(null,
-                                    SmartLock.providerIdToAccountType(
-                                            idpConfigs.get(0).getProviderId()));
+                                    providerIdToAccountType(idpConfigs.get(0).getProviderId()));
             }
         } else {
             startActivityForResult(
@@ -252,6 +261,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                             mHelper.getFlowParams()),
                     RC_AUTH_METHOD_PICKER);
         }
+        mHelper.dismissDialog();
     }
 
     /**
@@ -318,8 +328,9 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
             nextIntent = IdpSignInContainerActivity.createIntent(
                     getContext(),
                     mHelper.getFlowParams(),
-                    AuthCredentialHelper.accountTypeToProviderId(accountType),
+                    accountTypeToProviderId(accountType),
                     email);
+            // TODO: 11/21/2016
         } else {
             Log.w(TAG, "unknown provider: " + accountType);
             nextIntent = AuthMethodPickerActivity.createIntent(
@@ -327,6 +338,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                     mHelper.getFlowParams());
         }
         startActivityForResult(nextIntent, RC_IDP_SIGNIN);
+        mHelper.dismissDialog();
     }
 
     private void finish(int resultCode, Intent data) {
