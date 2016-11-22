@@ -19,7 +19,6 @@ import android.content.Context;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.android.gms.common.ConnectionResult;
@@ -96,7 +95,7 @@ public class TestHelper {
                 ArgumentCaptor.forClass(IdpResponse.class);
         ArgumentCaptor<String> passwordArgumentCaptor = ArgumentCaptor.forClass(String.class);
         verify(ActivityHelperShadow.sSaveSmartLock).saveCredentialsOrFinish(
-                any(AppCompatBase.class), any(ActivityHelper.class), userArgumentCaptor.capture(),
+                any(AppCompatBase.class), userArgumentCaptor.capture(),
                 passwordArgumentCaptor.capture(), idpResponseArgumentCaptor.capture());
         assertEquals(email, userArgumentCaptor.getValue().getEmail());
         assertEquals(password, passwordArgumentCaptor.getValue());
