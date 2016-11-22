@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -24,9 +23,9 @@ import static android.app.Activity.RESULT_OK;
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
 public class BaseHelper {
-    private ProgressDialog mProgressDialog;
-    private Context mContext;
+    protected Context mContext;
     private final FlowParameters mFlowParams;
+    private ProgressDialog mProgressDialog;
 
     public BaseHelper(Context context, FlowParameters parameters) {
         mContext = context;
@@ -95,7 +94,14 @@ public class BaseHelper {
     public void saveCredentialsOrFinish(
             @Nullable SaveSmartLock saveSmartLock,
             AppCompatBase activity,
-            ActivityHelper helper,
+            FirebaseUser firebaseUser,
+            @NonNull IdpResponse response) {
+        saveCredentialsOrFinish(saveSmartLock, activity, firebaseUser, null, response);
+    }
+
+    public void saveCredentialsOrFinish(
+            @Nullable SaveSmartLock saveSmartLock,
+            AppCompatBase activity,
             FirebaseUser firebaseUser,
             @Nullable String password,
             @Nullable IdpResponse response) {
@@ -104,7 +110,6 @@ public class BaseHelper {
         } else {
             saveSmartLock.saveCredentialsOrFinish(
                     activity,
-                    helper,
                     firebaseUser,
                     password,
                     response);

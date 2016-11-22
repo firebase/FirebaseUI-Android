@@ -29,9 +29,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.FragmentHelper;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.PlayServicesHelper;
@@ -105,13 +104,7 @@ public class SaveSmartLock extends SmartLock<Status> {
                                                          connectionResult.getErrorCode(),
                                                          RC_UPDATE_SERVICE);
         try {
-            startIntentSenderForResult(resolution.getIntentSender(),
-                                       RC_UPDATE_SERVICE,
-                                       null,
-                                       0,
-                                       0,
-                                       0,
-                                       null);
+            mHelper.startIntentSenderForResult(resolution.getIntentSender(), RC_UPDATE_SERVICE);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "STATUS: Failed to send resolution.", e);
             finish();
@@ -127,13 +120,8 @@ public class SaveSmartLock extends SmartLock<Status> {
                 // Try to resolve the save request. This will prompt the user if
                 // the credential is new.
                 try {
-                    startIntentSenderForResult(status.getResolution().getIntentSender(),
-                                               RC_SAVE,
-                                               null,
-                                               0,
-                                               0,
-                                               0,
-                                               null);
+                    mHelper.startIntentSenderForResult(status.getResolution().getIntentSender(),
+                                                       RC_SAVE);
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
@@ -172,7 +160,8 @@ public class SaveSmartLock extends SmartLock<Status> {
     private void finish() {
         cleanup();
         Intent resultIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mResponse);
-        ((ActivityHelper) mHelper).finish(RESULT_OK, resultIntent);
+        getActivity().setResult(RESULT_OK, resultIntent);
+        getActivity().finish();
     }
 
     /**
@@ -185,12 +174,10 @@ public class SaveSmartLock extends SmartLock<Status> {
      * @param response     (optional) an {@link IdpResponse} representing the result of signing in.
      */
     public void saveCredentialsOrFinish(AppCompatActivity activity,
-                                        ActivityHelper helper,
                                         FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable IdpResponse response) {
-        mHelper = helper;
-        if (!helper.getFlowParams().smartLockEnabled
+        if (!mHelper.getFlowParams().smartLockEnabled
                 || !PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()
                 || activity.isFinishing()) {
             finish();
@@ -225,7 +212,7 @@ public class SaveSmartLock extends SmartLock<Status> {
         Fragment fragment = fm.findFragmentByTag(tag);
         if (fragment == null || !(fragment instanceof SaveSmartLock)) {
             result = new SaveSmartLock();
-            result.setArguments(BaseFragment.getFlowParamsBundle(parameters));
+            result.setArguments(FragmentHelper.getFlowParamsBundle(parameters));
             try {
                 ft.add(result, tag).disallowAddToBackStack().commit();
             } catch (IllegalStateException e) {

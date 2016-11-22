@@ -16,8 +16,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.FragmentHelper;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.BaseFragment;
+import com.firebase.ui.auth.ui.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
@@ -123,19 +124,19 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         if (status.isSuccess()) {
             // Auto sign-in success
             handleCredential(result.getCredential());
-        } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-            // resolve saved emails
+        } else if (status.hasResolution()
+                && (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED
+                || status.getStatusCode() == CommonStatusCodes.SIGN_IN_REQUIRED)) {
             try {
-                startIntentSenderForResult(status.getResolution().getIntentSender(),
-                                           RC_CREDENTIALS_READ,
-                                           null,
-                                           0,
-                                           0,
-                                           0,
-                                           null);
+                mHelper.startIntentSenderForResult(
+                        status.getResolution().getIntentSender(),
+                        RC_CREDENTIALS_READ);
             } catch (IntentSender.SendIntentException e) {
                 Log.e(TAG, "Failed to send Credentials intent.", e);
+                startAuthMethodChoice();
             }
+        } else {
+            startAuthMethodChoice();
         }
     }
 
@@ -193,14 +194,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
     private void handleCredential(Credential credential) {
         mCredential = credential;
-
-        if (IdentityProviders.GOOGLE.equals(credential.getAccountType())) {
-            // Google account, rebuild GoogleApiClient to set account name and then try
-            initGoogleApiClient(credential.getId());
-            // Try silent sign-in with Google Sign In API
-            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        }
-
         String email = getEmailFromCredential();
         String password = getPasswordFromCredential();
         if (!TextUtils.isEmpty(email)) {
@@ -319,11 +312,13 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
     private void redirectToIdpSignIn(String email, String accountType) {
         Intent nextIntent;
-        if (SmartLock.providerIdToAccountType(accountType) != null) {
+        if (accountType.equals(IdentityProviders.GOOGLE)
+                || accountType.equals(IdentityProviders.FACEBOOK)
+                || accountType.equals(IdentityProviders.TWITTER)) {
             nextIntent = IdpSignInContainerActivity.createIntent(
                     getContext(),
                     mHelper.getFlowParams(),
-                    SmartLock.providerIdToAccountType(accountType),
+                    AuthCredentialHelper.accountTypeToProviderId(accountType),
                     email);
         } else {
             Log.w(TAG, "unknown provider: " + accountType);
@@ -370,7 +365,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         Fragment fragment = fm.findFragmentByTag(TAG);
         if (fragment == null || !(fragment instanceof SignInDelegate)) {
             SignInDelegate result = new SignInDelegate();
-            result.setArguments(BaseFragment.getFlowParamsBundle(params));
+            result.setArguments(FragmentHelper.getFlowParamsBundle(params));
             ft.add(result, TAG).disallowAddToBackStack().commit();
         }
     }

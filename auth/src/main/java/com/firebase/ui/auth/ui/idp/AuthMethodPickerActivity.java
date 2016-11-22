@@ -33,12 +33,12 @@ import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.provider.TwitterProvider;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
+import com.firebase.ui.auth.util.BaseHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
@@ -209,6 +209,6 @@ public class AuthMethodPickerActivity extends AppCompatBase
     public static Intent createIntent(
             Context context,
             FlowParameters flowParams) {
-        return ActivityHelper.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
+        return BaseHelper.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
     }
 }

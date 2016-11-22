@@ -28,13 +28,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
+import com.firebase.ui.auth.util.BaseHelper;
 import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -103,7 +103,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         // Save credential in SmartLock (if enabled)
                         mActivityHelper.saveCredentialsOrFinish(
                                 mSaveSmartLock,
-                                SignInActivity.this,
                                 authResult.getUser(),
                                 password);
                     }
@@ -143,7 +142,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
             Context context,
             FlowParameters flowParams,
             String email) {
-        return ActivityHelper.createBaseIntent(context, SignInActivity.class, flowParams)
+        return BaseHelper.createBaseIntent(context, SignInActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

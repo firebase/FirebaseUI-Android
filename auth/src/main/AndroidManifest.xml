@@ -16,12 +16,6 @@
             android:value="@string/twitter_consumer_secret"/>
 
         <activity
-            android:name="com.firebase.ui.auth.ui.email.ConfirmRecoverPasswordActivity"
-            android:label="@string/title_confirm_recover_password_activity"
-            android:exported="false"
-            android:theme="@style/FirebaseUI.Dialog"/>
-
-        <activity
             android:name=".ui.email.EmailHintContainerActivity"
             android:label="@string/default_toolbar_title"
             android:exported="false"
