@@ -16,7 +16,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -26,7 +25,6 @@ import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
-import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -43,10 +41,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.List;
 
@@ -71,7 +66,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     private static final int RC_EMAIL_FLOW = 5;
     private static final int RC_PLAY_SERVICES = 6;
 
-    private GoogleApiClient mGoogleApiClient;
     private Credential mCredential;
 
     @Override
@@ -100,9 +94,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                                                    });
 
         if (!madeAvailable
-                || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()
-                || !FirebaseAuthWrapperFactory.getFirebaseAuthWrapper(mHelper.getAppName())
-                .isPlayServicesAvailable(getActivity())) {
+                || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()) {
             Log.w(TAG, "playServices: could not make available.");
             finish(RESULT_CANCELED, new Intent());
             return;
@@ -132,16 +124,6 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         if (status.isSuccess()) {
             // Auto sign-in success
             handleCredential(result.getCredential());
-            String email = getEmailFromCredential();
-            String password = getPasswordFromCredential();
-
-            if (TextUtils.isEmpty(password)) {
-                // log in with id/provider
-                redirectToIdpSignIn(email, getAccountTypeFromCredential());
-            } else {
-                // Sign in with the email/password retrieved from SmartLock
-                signInWithEmailAndPassword(email, password);
-            }
         } else if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
             // resolve saved emails
             try {
@@ -165,28 +147,12 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
-        }
-
         switch (requestCode) {
             case RC_CREDENTIALS_READ:
                 if (resultCode == RESULT_OK) {
                     // credential selected from SmartLock, log in with that credential
                     Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
                     handleCredential(credential);
-
-                    String email = getEmailFromCredential();
-                    String password = getPasswordFromCredential();
-                    if (email != null) {
-                        if (password == null || password.isEmpty()) {
-                            // identifier/provider combination
-                            redirectToIdpSignIn(email, getAccountTypeFromCredential());
-                        } else {
-                            // email/password combination
-                            signInWithEmailAndPassword(email, password);
-                        }
-                    }
                 } else {
                     // Smart lock selector cancelled, go to the AuthMethodPicker screen
                     startAuthMethodChoice();
@@ -234,10 +200,18 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
             initGoogleApiClient(credential.getId());
             // Try silent sign-in with Google Sign In API
             Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        } else {
-            // Email/password account
-            String status = String.format("Signed in as %s", credential.getId());
-            Log.d(TAG, status);
+        }
+
+        String email = getEmailFromCredential();
+        String password = getPasswordFromCredential();
+        if (!TextUtils.isEmpty(email)) {
+            if (TextUtils.isEmpty(password)) {
+                // log in with id/provider
+                redirectToIdpSignIn(email, getAccountTypeFromCredential());
+            } else {
+                // Sign in with the email/password retrieved from SmartLock
+                signInWithEmailAndPassword(email, password);
+            }
         }
     }
 
@@ -346,42 +320,23 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
 
     private void redirectToIdpSignIn(String email, String accountType) {
         Intent nextIntent;
-        switch (accountType) {
-            case IdentityProviders.GOOGLE:
-                nextIntent = IdpSignInContainerActivity.createIntent(
-                        getContext(),
-                        mHelper.getFlowParams(),
-                        GoogleAuthProvider.PROVIDER_ID,
-                        email);
-                break;
-            case IdentityProviders.FACEBOOK:
-                nextIntent = IdpSignInContainerActivity.createIntent(
-                        getContext(),
-                        mHelper.getFlowParams(),
-                        FacebookAuthProvider.PROVIDER_ID,
-                        email);
-                break;
-            case IdentityProviders.TWITTER:
-                nextIntent = IdpSignInContainerActivity.createIntent(
-                        getContext(),
-                        mHelper.getFlowParams(),
-                        TwitterAuthProvider.PROVIDER_ID,
-                        email);
-                break;
-            default:
-                Log.w(TAG, "unknown provider: " + accountType);
-                nextIntent = AuthMethodPickerActivity.createIntent(
-                        getContext(),
-                        mHelper.getFlowParams());
+        if (SmartLock.providerIdToAccountType(accountType) != null) {
+            nextIntent = IdpSignInContainerActivity.createIntent(
+                    getContext(),
+                    mHelper.getFlowParams(),
+                    SmartLock.providerIdToAccountType(accountType),
+                    email);
+        } else {
+            Log.w(TAG, "unknown provider: " + accountType);
+            nextIntent = AuthMethodPickerActivity.createIntent(
+                    getContext(),
+                    mHelper.getFlowParams());
         }
         startActivityForResult(nextIntent, RC_IDP_SIGNIN);
     }
 
     private void finish(int resultCode, Intent data) {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-        mHelper.dismissDialog();
+        cleanup();
 
         try {
             if (resultCode == RESULT_OK) {

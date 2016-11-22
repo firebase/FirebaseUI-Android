@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.ui.BaseFragment;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -32,6 +31,8 @@ public abstract class SmartLock<R extends Result> extends BaseFragment implement
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "SmartLockBase";
 
+    protected GoogleApiClient mGoogleApiClient;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,19 +40,21 @@ public abstract class SmartLock<R extends Result> extends BaseFragment implement
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "Connection suspended with code " + i);
-        }
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "connection failed with " + connectionResult.getErrorMessage()
-                    + " and code: " + connectionResult.getErrorCode());
+    public void onDestroy() {
+        super.onDestroy();
+        cleanup();
+    }
+
+    public void cleanup() {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
         }
-        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+        mHelper.dismissDialog();
     }
 
     /**
@@ -69,9 +72,9 @@ public abstract class SmartLock<R extends Result> extends BaseFragment implement
             case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
                 return null;
+            default:
+                return null;
         }
-
-        return null;
     }
 
     /**

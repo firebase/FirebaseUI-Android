@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.BaseFragment;
@@ -40,7 +39,6 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseUser;
@@ -52,7 +50,6 @@ public class SaveSmartLock extends SmartLock<Status> {
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
 
-    private GoogleApiClient mGoogleApiClient;
     private String mName;
     private String mEmail;
     private String mPassword;
@@ -98,18 +95,7 @@ public class SaveSmartLock extends SmartLock<Status> {
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "Connection suspended with code " + i);
-        }
-    }
-
-    @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "connection failed with " + connectionResult.getErrorMessage()
-                    + " and code: " + connectionResult.getErrorCode());
-        }
         Toast.makeText(getActivity(), "An error has occurred.", Toast.LENGTH_SHORT).show();
 
         PendingIntent resolution =
@@ -165,15 +151,10 @@ public class SaveSmartLock extends SmartLock<Status> {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SAVE) {
-            if (resultCode == RESULT_OK) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "SAVE: OK");
-                }
-                finish();
-            } else {
+            if (resultCode != RESULT_OK) {
                 Log.e(TAG, "SAVE: Canceled by user");
-                finish();
             }
+            finish();
         } else if (requestCode == RC_UPDATE_SERVICE) {
             if (resultCode == RESULT_OK) {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
