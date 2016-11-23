@@ -33,7 +33,7 @@ public class ActivityHelperShadow extends BaseHelperShadow {
     }
 
     @Implementation
-    public SaveSmartLock getSaveSmartLockInstance(String tag) {
+    public SaveSmartLock getSaveSmartLockInstance() {
         return sSaveSmartLock;
     }
 }
