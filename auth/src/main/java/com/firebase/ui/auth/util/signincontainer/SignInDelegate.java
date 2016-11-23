@@ -24,6 +24,7 @@ import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
+import com.firebase.ui.auth.util.GoogleApiConstants;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -116,7 +117,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     .addConnectionCallbacks(this)
                     .addApi(Auth.CREDENTIALS_API)
                     .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
-                    .enableAutoManage(getActivity(), this)
+                    .enableAutoManage(getActivity(), GoogleApiConstants.AUTO_MANAGE_ID1, this)
                     .build();
             mGoogleApiClient.connect();
 
@@ -336,10 +337,6 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         if (accountType.equals(IdentityProviders.GOOGLE)
                 || accountType.equals(IdentityProviders.FACEBOOK)
                 || accountType.equals(IdentityProviders.TWITTER)) {
-            // stopAutoManage to prevent IllegalStateException in SaveSmartLock
-            cleanup();
-            mGoogleApiClient.stopAutoManage(getActivity());
-
             IdpSignInContainer.signIn(
                     getActivity(),
                     mHelper.getFlowParams(),
