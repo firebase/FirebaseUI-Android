@@ -45,6 +45,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -123,9 +124,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     .request(mGoogleApiClient,
                              new CredentialRequest.Builder()
                                      .setPasswordLoginSupported(true)
-                                     .setAccountTypes(IdentityProviders.GOOGLE,
-                                                      IdentityProviders.FACEBOOK,
-                                                      IdentityProviders.TWITTER)
+                                     .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
                                      .build())
                     .setResultCallback(this);
         } else {
@@ -149,24 +148,13 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             handleCredential(result.getCredential());
             return;
         } else if (status.hasResolution()) {
-            boolean onlySupportsEmail = true;
-            for (AuthUI.IdpConfig config : mHelper.getFlowParams().providerInfo) {
-                String providerId = config.getProviderId();
-                if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
-                        || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                        || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
-                    onlySupportsEmail = false;
-                    break;
-                }
-            }
-
             try {
                 if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
                     mHelper.startIntentSenderForResult(
                             status.getResolution().getIntentSender(),
                             RC_CREDENTIALS_READ);
                     return;
-                } else if (!onlySupportsEmail) {
+                } else if (!getSupportedAccountTypes().isEmpty()) {
                     mHelper.startIntentSenderForResult(
                             status.getResolution().getIntentSender(),
                             RC_CREDENTIALS_READ);
@@ -211,6 +199,19 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     signInContainer.onActivityResult(requestCode, resultCode, data);
                 }
         }
+    }
+
+    private List<String> getSupportedAccountTypes() {
+        List<String> accounts = new ArrayList<>();
+        for (AuthUI.IdpConfig idpConfig : mHelper.getFlowParams().providerInfo) {
+            String providerId = idpConfig.getProviderId();
+            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
+                    || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
+                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
+                accounts.add(providerIdToAccountType(providerId));
+            }
+        }
+        return accounts;
     }
 
     private String getEmailFromCredential() {
@@ -335,6 +336,10 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         if (accountType.equals(IdentityProviders.GOOGLE)
                 || accountType.equals(IdentityProviders.FACEBOOK)
                 || accountType.equals(IdentityProviders.TWITTER)) {
+            // stopAutoManage to prevent IllegalStateException in SaveSmartLock
+            cleanup();
+            mGoogleApiClient.stopAutoManage(getActivity());
+
             IdpSignInContainer.signIn(
                     getActivity(),
                     mHelper.getFlowParams(),
