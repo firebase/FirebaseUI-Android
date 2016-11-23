@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.util;
+package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -10,9 +10,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
+import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.FirebaseApp;

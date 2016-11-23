@@ -22,8 +22,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.util.BaseHelper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.google.android.gms.auth.api.credentials.Credential;

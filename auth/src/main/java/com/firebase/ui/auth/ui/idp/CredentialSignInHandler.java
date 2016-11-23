@@ -20,11 +20,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.util.BaseHelper;
-import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
+import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

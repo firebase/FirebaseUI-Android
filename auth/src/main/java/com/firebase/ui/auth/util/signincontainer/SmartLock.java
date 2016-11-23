@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.util.smartlock;
+package com.firebase.ui.auth.util.signincontainer;
 
 import android.content.Intent;
 import android.os.Bundle;

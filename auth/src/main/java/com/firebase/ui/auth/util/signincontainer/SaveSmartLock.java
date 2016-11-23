@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.util.smartlock;
+package com.firebase.ui.auth.util.signincontainer;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -28,10 +28,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.FragmentHelper;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;

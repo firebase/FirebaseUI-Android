@@ -1,10 +1,14 @@
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.firebase.ui.auth.util.smartlock.SignInDelegate;
+import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.util.signincontainer.SignInDelegate;
 
 public class KickoffActivity extends AppCompatBase {
     @Override

@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.util.smartlock;
+package com.firebase.ui.auth.util.signincontainer;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,14 +15,13 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.FragmentHelper;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.ui.idp.IdpSignInContainer;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.PlayServicesHelper;

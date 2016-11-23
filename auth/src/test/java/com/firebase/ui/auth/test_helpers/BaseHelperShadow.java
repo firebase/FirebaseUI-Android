@@ -1,6 +1,6 @@
 package com.firebase.ui.auth.test_helpers;
 
-import com.firebase.ui.auth.util.BaseHelper;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.auth.FirebaseAuth;
 

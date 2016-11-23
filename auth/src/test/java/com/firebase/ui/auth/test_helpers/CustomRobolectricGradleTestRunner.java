@@ -18,7 +18,7 @@ import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.util.BaseHelper;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperImpl;
 

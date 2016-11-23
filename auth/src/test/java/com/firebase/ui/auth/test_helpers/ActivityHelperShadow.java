@@ -15,7 +15,7 @@
 package com.firebase.ui.auth.test_helpers;
 
 import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
+import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 
 import org.mockito.Mockito;
 import org.robolectric.annotation.Implementation;
