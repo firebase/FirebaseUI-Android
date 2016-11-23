@@ -69,7 +69,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                     @Override
                     public void onSuccess(Void aVoid) {
                         mActivityHelper.dismissDialog();
-                        RecoveryEmailSendDialog.show(email, getSupportFragmentManager());
+                        RecoveryEmailSentDialog.show(email, getSupportFragmentManager());
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {

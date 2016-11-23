@@ -13,8 +13,8 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.BaseDialog;
 import com.firebase.ui.auth.ui.ExtraConstants;
 
-public class RecoveryEmailSendDialog extends BaseDialog {
-    private static final String TAG = "RecoveryEmailSendDialog";
+public class RecoveryEmailSentDialog extends BaseDialog {
+    private static final String TAG = "RecoveryEmailSentDialog";
 
     @NonNull
     @Override
@@ -34,7 +34,7 @@ public class RecoveryEmailSendDialog extends BaseDialog {
     }
 
     public static void show(String email, FragmentManager manager) {
-        RecoveryEmailSendDialog result = new RecoveryEmailSendDialog();
+        RecoveryEmailSentDialog result = new RecoveryEmailSentDialog();
         Bundle bundle = new Bundle();
         bundle.putString(ExtraConstants.EXTRA_EMAIL, email);
         result.setArguments(bundle);
