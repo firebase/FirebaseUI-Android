@@ -31,7 +31,6 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
@@ -110,13 +109,9 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         if (mHelper.getFlowParams().smartLockEnabled) {
             mHelper.showLoadingDialog(R.string.progress_dialog_loading);
 
-            GoogleSignInOptions.Builder gsoBuilder = new GoogleSignInOptions
-                    .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestEmail();
             mGoogleApiClient = new GoogleApiClient.Builder(getContext().getApplicationContext())
                     .addConnectionCallbacks(this)
                     .addApi(Auth.CREDENTIALS_API)
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
                     .enableAutoManage(getActivity(), GoogleApiConstants.AUTO_MANAGE_ID1, this)
                     .build();
             mGoogleApiClient.connect();
