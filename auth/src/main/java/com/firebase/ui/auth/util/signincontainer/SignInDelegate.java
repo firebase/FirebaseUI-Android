@@ -107,7 +107,18 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         if (mHelper.getFlowParams().smartLockEnabled) {
             mHelper.showLoadingDialog(R.string.progress_dialog_loading);
-            initGoogleApiClient();
+
+            GoogleSignInOptions.Builder gsoBuilder = new GoogleSignInOptions
+                    .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail();
+            mGoogleApiClient = new GoogleApiClient.Builder(getContext().getApplicationContext())
+                    .addConnectionCallbacks(this)
+                    .addApi(Auth.CREDENTIALS_API)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
+                    .enableAutoManage(getActivity(), this)
+                    .build();
+            mGoogleApiClient.connect();
+
             mHelper.getCredentialsApi()
                     .request(mGoogleApiClient,
                              new CredentialRequest.Builder()
@@ -236,23 +247,6 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 signInWithEmailAndPassword(email, password);
             }
         }
-    }
-
-    private void initGoogleApiClient() {
-        GoogleSignInOptions.Builder gsoBuilder = new GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail();
-
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-
-        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-                .addConnectionCallbacks(this)
-                .addApi(Auth.CREDENTIALS_API)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gsoBuilder.build())
-                .build();
-        mGoogleApiClient.connect();
     }
 
     private void startAuthMethodChoice() {

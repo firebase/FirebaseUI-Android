@@ -189,7 +189,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
-        mGoogleApiClient = new Builder(getContext())
+        mGoogleApiClient = new Builder(getContext().getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
