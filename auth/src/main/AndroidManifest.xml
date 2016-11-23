@@ -19,13 +19,13 @@
             android:name=".ui.KickoffActivity"
             android:label="@string/default_toolbar_title"
             android:exported="false"
-            android:theme="@style/FirebaseUI.Translucent"/>
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <activity
             android:name=".ui.email.EmailHintContainerActivity"
             android:label="@string/default_toolbar_title"
             android:exported="false"
-            android:theme="@style/FirebaseUI.Translucent"/>
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <activity
             android:name=".ui.email.RecoverPasswordActivity"
@@ -73,7 +73,7 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@style/FirebaseUI.Translucent"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             tools:replace="android:theme"/>
 
         <activity

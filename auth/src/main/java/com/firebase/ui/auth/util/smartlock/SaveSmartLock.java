@@ -199,8 +199,7 @@ public class SaveSmartLock extends SmartLock<Status> {
     }
 
     @Nullable
-    public static SaveSmartLock getInstance(FragmentActivity activity,
-                                            FlowParameters parameters) {
+    public static SaveSmartLock getInstance(FragmentActivity activity, FlowParameters parameters) {
         SaveSmartLock result;
 
         FragmentManager fm = activity.getSupportFragmentManager();
