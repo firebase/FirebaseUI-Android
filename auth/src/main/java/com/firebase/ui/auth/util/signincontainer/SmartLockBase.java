@@ -1,11 +1,19 @@
-package com.firebase.ui.auth.util;
+package com.firebase.ui.auth.util.signincontainer;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.ui.BaseFragment;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
@@ -17,11 +25,58 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Helper class to deal with Smartlock Flows.
- */
-public class SmartLockUtil {
-    private static final String TAG = "SmartLockUtil";
+public abstract class SmartLockBase<R extends Result> extends BaseFragment implements
+        GoogleApiClient.ConnectionCallbacks,
+        ResultCallback<R>,
+        GoogleApiClient.OnConnectionFailedListener {
+    private static final String TAG = "SmartLockBase";
+
+    protected GoogleApiClient mGoogleApiClient;
+    private boolean mWasProgressDialogShowing = false;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mWasProgressDialogShowing) {
+            mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
+            mWasProgressDialogShowing = false;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mWasProgressDialogShowing = mHelper.isProgressDialogShowing();
+        mHelper.dismissDialog();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cleanup();
+    }
+
+    public void cleanup() {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // Just wait
+    }
 
     /**
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to
@@ -38,9 +93,22 @@ public class SmartLockUtil {
             case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
                 return null;
+            default:
+                return null;
         }
+    }
 
-        return null;
+    public static String accountTypeToProviderId(@NonNull String accountType) {
+        switch (accountType) {
+            case IdentityProviders.GOOGLE:
+                return GoogleAuthProvider.PROVIDER_ID;
+            case IdentityProviders.FACEBOOK:
+                return FacebookAuthProvider.PROVIDER_ID;
+            case IdentityProviders.TWITTER:
+                return TwitterAuthProvider.PROVIDER_ID;
+            default:
+                return null;
+        }
     }
 
     /**

@@ -24,6 +24,7 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
+import com.firebase.ui.auth.test_helpers.BaseHelperShadow;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeAuthResult;
 import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
@@ -42,7 +43,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.reset;
@@ -56,8 +57,7 @@ public class RegisterEmailActivityTest {
     private RegisterEmailActivity createActivity(String email) {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(
-                        Arrays.asList(AuthUI.EMAIL_PROVIDER)),
+                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)),
                 email);
         return Robolectric.buildActivity(RegisterEmailActivity.class)
                 .withIntent(startIntent).create().visible().get();
@@ -93,12 +93,12 @@ public class RegisterEmailActivityTest {
     }
 
     @Test
-    @Config(shadows = {ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
+    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
     public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
         // init mocks
         new ActivityHelperShadow();
-        reset(ActivityHelperShadow.smartLock);
-        
+        reset(ActivityHelperShadow.sSaveSmartLock);
+
         TestHelper.initializeApp(RuntimeEnvironment.application);
         RegisterEmailActivity registerEmailActivity = createActivity(TestConstants.EMAIL);
 
@@ -114,7 +114,7 @@ public class RegisterEmailActivityTest {
         when(mockFirebaseUser.updateProfile((UserProfileChangeRequest) Mockito.any()))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
-        when(ActivityHelperShadow.firebaseAuth
+        when(ActivityHelperShadow.sFirebaseAuth
                      .createUserWithEmailAndPassword(
                              TestConstants.EMAIL,
                              TestConstants.PASSWORD))

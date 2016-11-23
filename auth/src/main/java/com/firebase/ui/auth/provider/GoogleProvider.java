@@ -29,6 +29,7 @@ import android.view.View.OnClickListener;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.util.GoogleApiConstants;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -43,7 +44,6 @@ public class GoogleProvider implements
         IdpProvider, OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "GoogleProvider";
-    private static final int AUTO_MANAGE_ID = 1;
     private static final int RC_SIGN_IN = 20;
     private static final String ERROR_KEY = "error";
     private GoogleApiClient mGoogleApiClient;
@@ -56,12 +56,12 @@ public class GoogleProvider implements
 
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig, @Nullable String email) {
         mActivity = activity;
-        String mClientId = activity.getString(R.string.default_web_client_id);
+        String clientId = activity.getString(R.string.default_web_client_id);
 
         GoogleSignInOptions.Builder builder =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestEmail()
-                        .requestIdToken(mClientId);
+                        .requestIdToken(clientId);
 
         if (activity.getResources().getIdentifier(
                 "google_permissions", "array", activity.getPackageName()) != 0) {
@@ -80,7 +80,7 @@ public class GoogleProvider implements
         }
 
         mGoogleApiClient = new GoogleApiClient.Builder(activity)
-                .enableAutoManage(activity, AUTO_MANAGE_ID, this)
+                .enableAutoManage(activity, GoogleApiConstants.AUTO_MANAGE_ID0, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, builder.build())
                 .build();
     }

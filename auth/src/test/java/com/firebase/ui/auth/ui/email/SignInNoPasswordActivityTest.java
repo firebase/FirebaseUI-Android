@@ -24,6 +24,7 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
+import com.firebase.ui.auth.test_helpers.BaseHelperShadow;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.FakeProviderQueryResult;
 import com.firebase.ui.auth.test_helpers.TestConstants;
@@ -60,8 +61,7 @@ public class SignInNoPasswordActivityTest {
     public void testNextButton_withInvalidEmailAddress() {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(Arrays.asList(AuthUI
-                        .EMAIL_PROVIDER)),
+                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)),
                 null);
 
         SignInNoPasswordActivity noPasswordActivity =
@@ -83,20 +83,19 @@ public class SignInNoPasswordActivityTest {
     private SignInNoPasswordActivity createActivity(String email) {
         Intent startIntent = SignInNoPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(
-                        Arrays.asList(AuthUI.EMAIL_PROVIDER)),
+                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)),
                 email);
         return Robolectric.buildActivity(SignInNoPasswordActivity.class)
                         .withIntent(startIntent).create().visible().get();
     }
 
     @Test
-    @Config(shadows = {ActivityHelperShadow.class})
+    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
     public void testNextButton_withNewEmail() {
         SignInNoPasswordActivity noPasswordActivity = createActivity(TestConstants.EMAIL);
         Button next = (Button) noPasswordActivity.findViewById(R.id.button_ok);
 
-        when(ActivityHelperShadow.firebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL))
+        when(ActivityHelperShadow.sFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL))
                 .thenReturn(
                         new AutoCompleteTask<ProviderQueryResult>(
                                 new FakeProviderQueryResult(Collections.<String>emptyList()),
@@ -117,12 +116,12 @@ public class SignInNoPasswordActivityTest {
     }
 
     @Test
-    @Config(shadows = {ActivityHelperShadow.class})
+    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
     public void testNextButton_withExistingPasswordAccount() {
         SignInNoPasswordActivity noPasswordActivity = createActivity(TestConstants.EMAIL);
         Button next = (Button) noPasswordActivity.findViewById(R.id.button_ok);
 
-        when(ActivityHelperShadow.firebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL))
+        when(ActivityHelperShadow.sFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL))
                 .thenReturn(
                         new AutoCompleteTask<ProviderQueryResult>(
                                 new FakeProviderQueryResult(

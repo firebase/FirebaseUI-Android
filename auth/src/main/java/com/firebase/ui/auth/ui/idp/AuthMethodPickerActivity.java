@@ -28,19 +28,19 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.provider.AuthCredentialHelper;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.provider.TwitterProvider;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.AuthCredentialHelper;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.EmailFlowUtil;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,7 +52,7 @@ import java.util.List;
 
 /**
  * Presents the list of authentication options for this app to the user. If an
- * identity provider option is selected, a {@link IdpSignInContainerActivity container activity}
+ * identity provider option is selected, a {@link CredentialSignInHandler}
  * is launched to manage the IDP-specific sign-in flow. If email authentication is chosen,
  * the {@link EmailHintContainerActivity root email flow activity} is started.
  *
@@ -65,15 +65,15 @@ public class AuthMethodPickerActivity extends AppCompatBase
     private static final String TAG = "AuthMethodPicker";
     private static final int RC_EMAIL_FLOW = 2;
     private static final int RC_ACCOUNT_LINK = 3;
+
     private ArrayList<IdpProvider> mIdpProviders;
-    @Nullable
-    private SmartLock mSmartLock;
+    @Nullable private SaveSmartLock mSaveSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
-        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
         findViewById(R.id.email_provider).setOnClickListener(this);
 
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);
@@ -173,7 +173,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
                 .addOnCompleteListener(new CredentialSignInHandler(
                         AuthMethodPickerActivity.this,
                         mActivityHelper,
-                        mSmartLock,
+                        mSaveSmartLock,
                         RC_ACCOUNT_LINK,
                         response));
     }
@@ -209,6 +209,6 @@ public class AuthMethodPickerActivity extends AppCompatBase
     public static Intent createIntent(
             Context context,
             FlowParameters flowParams) {
-        return ActivityHelper.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
+        return BaseHelper.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
     }
 }
