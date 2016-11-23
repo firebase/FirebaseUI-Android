@@ -329,9 +329,9 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     }
 
     private void redirectToIdpSignIn(String email, String accountType) {
-        if (accountType.equals(IdentityProviders.GOOGLE)
+        if (accountType != null && (accountType.equals(IdentityProviders.GOOGLE)
                 || accountType.equals(IdentityProviders.FACEBOOK)
-                || accountType.equals(IdentityProviders.TWITTER)) {
+                || accountType.equals(IdentityProviders.TWITTER))) {
             IdpSignInContainer.signIn(
                     getActivity(),
                     mHelper.getFlowParams(),
