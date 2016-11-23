@@ -60,7 +60,7 @@ import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
  * {@link SignInNoPasswordActivity email sign-in flow}
  * is started.
  */
-public class SignInDelegate extends SmartLock<CredentialRequestResult> {
+public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private static final String TAG = "SignInDelegate";
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;

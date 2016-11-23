@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class SmartLock<R extends Result> extends BaseFragment implements
+public abstract class SmartLockBase<R extends Result> extends BaseFragment implements
         GoogleApiClient.ConnectionCallbacks,
         ResultCallback<R>,
         GoogleApiClient.OnConnectionFailedListener {

@@ -43,7 +43,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SaveSmartLock extends SmartLock<Status> {
+public class SaveSmartLock extends SmartLockBase<Status> {
     private static final String TAG = "SaveSmartLock";
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
