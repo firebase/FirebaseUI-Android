@@ -15,12 +15,10 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
 
@@ -71,20 +69,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                     @Override
                     public void onSuccess(Void aVoid) {
                         mActivityHelper.dismissDialog();
-                        new AlertDialog.Builder(RecoverPasswordActivity.this,
-                                                R.style.FirebaseUI_Dialog)
-                                .setTitle(R.string.title_confirm_recover_password_activity)
-                                .setMessage(String.format(
-                                        getString(R.string.confirm_recovery_body),
-                                        email))
-                                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                    @Override
-                                    public void onDismiss(DialogInterface anInterface) {
-                                        finish(RESULT_OK, new Intent());
-                                    }
-                                })
-                                .setPositiveButton(android.R.string.ok, null)
-                                .show();
+                        RecoveryEmailSendDialog.show(email, getSupportFragmentManager());
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
