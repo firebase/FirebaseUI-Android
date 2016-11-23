@@ -17,12 +17,12 @@ import android.util.Log;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FragmentHelper;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.ui.idp.IdpSignInContainerActivity;
+import com.firebase.ui.auth.ui.idp.IdpSignInContainer;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.PlayServicesHelper;
@@ -126,7 +126,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // It doesn't matter what we put here, we just don't want outState to be empty
-        outState.putBoolean(TAG, true);
+        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
         super.onSaveInstanceState(outState);
     }
 
@@ -196,7 +196,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 if (resultCode != RESULT_OK) finish(resultCode, data);
                 break;
             default:
-                IdpSignInContainerActivity signInContainer = IdpSignInContainerActivity.getInstance(getActivity());
+                IdpSignInContainer signInContainer = IdpSignInContainer.getInstance(getActivity());
                 if (signInContainer != null) {
                     signInContainer.onActivityResult(requestCode, resultCode, data);
                 }
@@ -342,7 +342,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
         if (accountType.equals(IdentityProviders.GOOGLE)
                 || accountType.equals(IdentityProviders.FACEBOOK)
                 || accountType.equals(IdentityProviders.TWITTER)) {
-            IdpSignInContainerActivity.signIn(
+            IdpSignInContainer.signIn(
                     getActivity(),
                     mHelper.getFlowParams(),
                     email,
@@ -370,7 +370,7 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 && manager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-    public static void delegate(AppCompatBase activity, FlowParameters params) {
+    public static void delegate(FragmentActivity activity, FlowParameters params) {
         FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(TAG);
         if (fragment == null || !(fragment instanceof SignInDelegate)) {

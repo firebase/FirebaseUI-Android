@@ -70,12 +70,6 @@
             android:theme="@style/FirebaseUI"/>
 
         <activity
-            android:name=".ui.idp.IdpSignInContainerActivity"
-            android:label="@string/default_toolbar_title"
-            android:exported="false"
-            android:theme="@style/FirebaseUI.Translucent"/>
-
-        <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"

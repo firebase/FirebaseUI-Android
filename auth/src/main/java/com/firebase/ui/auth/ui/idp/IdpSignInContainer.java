@@ -45,7 +45,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
-public class IdpSignInContainerActivity extends BaseFragment implements IdpCallback {
+public class IdpSignInContainer extends BaseFragment implements IdpCallback {
     private static final String TAG = "IDPSignInContainer";
     private static final int RC_WELCOME_BACK_IDP = 4;
 
@@ -124,8 +124,8 @@ public class IdpSignInContainerActivity extends BaseFragment implements IdpCallb
                               String provider) {
         FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(TAG);
-        if (fragment == null || !(fragment instanceof IdpSignInContainerActivity)) {
-            IdpSignInContainerActivity result = new IdpSignInContainerActivity();
+        if (fragment == null || !(fragment instanceof IdpSignInContainer)) {
+            IdpSignInContainer result = new IdpSignInContainer();
 
             Bundle bundle = FragmentHelper.getFlowParamsBundle(parameters);
             bundle.putString(ExtraConstants.EXTRA_EMAIL, email);
@@ -140,10 +140,10 @@ public class IdpSignInContainerActivity extends BaseFragment implements IdpCallb
         }
     }
 
-    public static IdpSignInContainerActivity getInstance(FragmentActivity activity) {
+    public static IdpSignInContainer getInstance(FragmentActivity activity) {
         Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment != null && fragment instanceof IdpSignInContainerActivity) {
-            return (IdpSignInContainerActivity) fragment;
+        if (fragment != null && fragment instanceof IdpSignInContainer) {
+            return (IdpSignInContainer) fragment;
         } else {
             return null;
         }

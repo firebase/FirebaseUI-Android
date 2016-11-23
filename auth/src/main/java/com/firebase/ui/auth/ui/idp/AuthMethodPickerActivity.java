@@ -52,7 +52,7 @@ import java.util.List;
 
 /**
  * Presents the list of authentication options for this app to the user. If an
- * identity provider option is selected, a {@link IdpSignInContainerActivity container activity}
+ * identity provider option is selected, a {@link CredentialSignInHandler}
  * is launched to manage the IDP-specific sign-in flow. If email authentication is chosen,
  * the {@link EmailHintContainerActivity root email flow activity} is started.
  *

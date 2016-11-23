@@ -10,7 +10,16 @@ public class KickoffActivity extends AppCompatBase {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        SignInDelegate.delegate(this, mActivityHelper.getFlowParams());
+        if (savedInstance == null) {
+            SignInDelegate.delegate(this, mActivityHelper.getFlowParams());
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // It doesn't matter what we put here, we just don't want outState to be empty
+        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
