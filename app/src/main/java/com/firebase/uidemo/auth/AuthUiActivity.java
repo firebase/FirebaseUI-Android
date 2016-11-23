@@ -29,8 +29,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
-
 import android.widget.TextView;
+
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
@@ -47,10 +47,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AuthUiActivity extends AppCompatActivity implements AuthUI.SignInResult {
+public class AuthUiActivity extends AppCompatActivity {
     private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
     private static final String FIREBASE_TOS_URL = "https://www.firebase.com/terms/terms-of-service.html";
+    private static final int RC_SIGN_IN = 100;
 
     @BindView(R.id.default_theme)
     RadioButton mUseDefaultTheme;
@@ -174,15 +175,48 @@ public class AuthUiActivity extends AppCompatActivity implements AuthUI.SignInRe
 
     @OnClick(R.id.sign_in)
     public void signIn(View view) {
-        AuthUI.getInstance().createSignInIntentBuilder()
-                .setTheme(getSelectedTheme())
-                .setLogo(getSelectedLogo())
-                .setProviders(getSelectedProviders())
-                .setTosUrl(getSelectedTosUrl())
-                .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
-                .build(this);
+        startActivityForResult(
+                AuthUI.getInstance().createSignInIntentBuilder()
+                        .setTheme(getSelectedTheme())
+                        .setLogo(getSelectedLogo())
+                        .setProviders(getSelectedProviders())
+                        .setTosUrl(getSelectedTosUrl())
+                        .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
+                        .build(),
+                RC_SIGN_IN);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            handleSignInResponse(resultCode, data);
+            return;
+        }
+
+        showSnackbar(R.string.unknown_response);
+    }
+
+    @MainThread
+    private void handleSignInResponse(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            startActivity(SignedInActivity.createIntent(this, IdpResponse.fromResultIntent(data)));
+            finish();
+            return;
+        }
+
+        if (resultCode == RESULT_CANCELED) {
+            showSnackbar(R.string.sign_in_cancelled);
+            return;
+        }
+
+        if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
+            showSnackbar(R.string.no_internet_connection);
+            return;
+        }
+
+        showSnackbar(R.string.unknown_sign_in_response);
+    }
 
     @MainThread
     private void setGoogleScopesEnabled(boolean enabled) {
@@ -196,28 +230,6 @@ public class AuthUiActivity extends AppCompatActivity implements AuthUI.SignInRe
         mFacebookScopesLabel.setEnabled(enabled);
         mFacebookScopeFriends.setEnabled(enabled);
         mFacebookScopePhotos.setEnabled(enabled);
-    }
-
-    @MainThread
-    @Override
-    public void onAuthUISuccess(Intent data) {
-        startActivity(SignedInActivity.createIntent(this, IdpResponse.fromResultIntent(data)));
-        finish();
-    }
-
-    @Override
-    public void onAuthUIFailure(int resultCode) {
-        if (resultCode == RESULT_CANCELED) {
-            showSnackbar(R.string.sign_in_cancelled);
-            return;
-        }
-
-        if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
-            showSnackbar(R.string.no_internet_connection);
-            return;
-        }
-
-        showSnackbar(R.string.unknown_sign_in_response);
     }
 
     @MainThread

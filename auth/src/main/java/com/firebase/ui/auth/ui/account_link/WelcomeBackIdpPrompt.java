@@ -176,7 +176,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                                         TAG, "Error signing in with previous credential"))
                                 .addOnCompleteListener(new FinishListener(newIdpResponse));
                     } else {
-                        mActivityHelper.dismissDialog();
                         finish(Activity.RESULT_OK, new Intent().putExtra(
                                 ExtraConstants.EXTRA_IDP_RESPONSE, newIdpResponse));
                     }
@@ -212,7 +211,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
         }
 
         public void onComplete(@NonNull Task task) {
-            mActivityHelper.dismissDialog();
             finish(Activity.RESULT_OK,
                    new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mIdpResponse));
         }

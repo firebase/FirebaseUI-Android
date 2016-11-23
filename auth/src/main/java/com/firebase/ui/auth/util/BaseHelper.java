@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.app.FragmentActivity;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.smartlock.SaveSmartLock;
@@ -40,6 +40,11 @@ public class BaseHelper {
         return mFlowParams;
     }
 
+    public void finishActivity(Activity activity, int resultCode, Intent intent) {
+        activity.setResult(resultCode, intent);
+        activity.finish();
+    }
+
     public void showLoadingDialog(String message) {
         dismissDialog();
         mProgressDialog = ProgressDialog.show(mContext, "", message, true);
@@ -50,10 +55,14 @@ public class BaseHelper {
     }
 
     public void dismissDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
             mProgressDialog = null;
         }
+    }
+
+    public boolean isProgressDialogShowing() {
+        return mProgressDialog != null && mProgressDialog.isShowing();
     }
 
     public Context getApplicationContext() {
@@ -91,9 +100,13 @@ public class BaseHelper {
                           checkNotNull(flowParams, "flowParams cannot be null"));
     }
 
+    public SaveSmartLock getSaveSmartLockInstance(FragmentActivity activity) {
+        return SaveSmartLock.getInstance(activity, getFlowParams());
+    }
+
     public void saveCredentialsOrFinish(
             @Nullable SaveSmartLock saveSmartLock,
-            AppCompatBase activity,
+            Activity activity,
             FirebaseUser firebaseUser,
             @NonNull IdpResponse response) {
         saveCredentialsOrFinish(saveSmartLock, activity, firebaseUser, null, response);
@@ -101,15 +114,14 @@ public class BaseHelper {
 
     public void saveCredentialsOrFinish(
             @Nullable SaveSmartLock saveSmartLock,
-            AppCompatBase activity,
+            Activity activity,
             FirebaseUser firebaseUser,
             @Nullable String password,
             @Nullable IdpResponse response) {
         if (saveSmartLock == null) {
-            activity.finish(RESULT_OK, new Intent());
+            finishActivity(activity, RESULT_OK, new Intent());
         } else {
             saveSmartLock.saveCredentialsOrFinish(
-                    activity,
                     firebaseUser,
                     password,
                     response);

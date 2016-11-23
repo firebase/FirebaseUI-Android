@@ -16,6 +16,12 @@
             android:value="@string/twitter_consumer_secret"/>
 
         <activity
+            android:name=".ui.KickoffActivity"
+            android:label="@string/default_toolbar_title"
+            android:exported="false"
+            android:theme="@style/FirebaseUI.Translucent"/>
+
+        <activity
             android:name=".ui.email.EmailHintContainerActivity"
             android:label="@string/default_toolbar_title"
             android:exported="false"

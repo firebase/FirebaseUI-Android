@@ -1,5 +1,6 @@
 package com.firebase.ui.auth;
 
+import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,10 @@ public class FragmentHelper extends BaseHelper {
         super(fragment.getContext(), (FlowParameters) fragment.getArguments()
                 .getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS));
         mFragment = fragment;
+    }
+
+    public void finish(int resultCode, Intent intent) {
+        finishActivity(mFragment.getActivity(), resultCode, intent);
     }
 
     public static Bundle getFlowParamsBundle(FlowParameters params) {

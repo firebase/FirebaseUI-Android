@@ -58,7 +58,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in_layout);
 
-        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance(TAG);
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
@@ -116,7 +116,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         TextInputLayout passwordInput =
                                 (TextInputLayout) findViewById(R.id.password_layout);
                         passwordInput.setError(getString(R.string.login_error));
-                        mActivityHelper.dismissDialog();
                     }
                 });
     }

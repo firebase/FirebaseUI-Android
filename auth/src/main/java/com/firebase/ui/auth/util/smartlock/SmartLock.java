@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.util.smartlock;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,6 +33,7 @@ public abstract class SmartLock<R extends Result> extends BaseFragment implement
     private static final String TAG = "SmartLockBase";
 
     protected GoogleApiClient mGoogleApiClient;
+    private boolean mWasProgressDialogShowing = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,13 +42,19 @@ public abstract class SmartLock<R extends Result> extends BaseFragment implement
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+    public void onStart() {
+        super.onStart();
+        if (mWasProgressDialogShowing) {
+            mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
+            mWasProgressDialogShowing = false;
+        }
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        // Just wait
+    public void onStop() {
+        super.onStop();
+        mWasProgressDialogShowing = mHelper.isProgressDialogShowing();
+        mHelper.dismissDialog();
     }
 
     @Override
@@ -59,7 +67,22 @@ public abstract class SmartLock<R extends Result> extends BaseFragment implement
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
-        mHelper.dismissDialog();
+    }
+
+    @Override
+    public void finish(int resultCode, Intent resultIntent) {
+        super.finish(resultCode, resultIntent);
+        cleanup();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // Just wait
     }
 
     /**

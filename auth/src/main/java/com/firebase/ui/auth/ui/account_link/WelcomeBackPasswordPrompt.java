@@ -64,7 +64,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_back_password_prompt_layout);
-        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance(TAG);
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 
@@ -95,7 +95,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
             mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
             next(mEmail, mPasswordField.getText().toString());
         } else if (id == R.id.trouble_signing_in) {
-            mActivityHelper.dismissDialog();
             startActivity(RecoverPasswordActivity.createIntent(
                     getApplicationContext(),
                     mActivityHelper.getFlowParams(),

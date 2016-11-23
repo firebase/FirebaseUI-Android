@@ -11,13 +11,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FragmentHelper;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
@@ -193,10 +193,13 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 finish(resultCode, data);
                 break;
             case RC_PLAY_SERVICES:
-                if (resultCode != RESULT_OK) {
-                    finish(resultCode, data);
-                }
+                if (resultCode != RESULT_OK) finish(resultCode, data);
                 break;
+            default:
+                IdpSignInContainerActivity signInContainer = IdpSignInContainerActivity.getInstance(getActivity());
+                if (signInContainer != null) {
+                    signInContainer.onActivityResult(requestCode, resultCode, data);
+                }
         }
     }
 
@@ -336,40 +339,23 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
     }
 
     private void redirectToIdpSignIn(String email, String accountType) {
-        Intent nextIntent;
         if (accountType.equals(IdentityProviders.GOOGLE)
                 || accountType.equals(IdentityProviders.FACEBOOK)
                 || accountType.equals(IdentityProviders.TWITTER)) {
-            nextIntent = IdpSignInContainerActivity.createIntent(
-                    getContext(),
+            IdpSignInContainerActivity.signIn(
+                    getActivity(),
                     mHelper.getFlowParams(),
-                    accountTypeToProviderId(accountType),
-                    email);
+                    email,
+                    accountTypeToProviderId(accountType));
         } else {
             Log.w(TAG, "unknown provider: " + accountType);
-            nextIntent = AuthMethodPickerActivity.createIntent(
-                    getContext(),
-                    mHelper.getFlowParams());
+            startActivityForResult(
+                    AuthMethodPickerActivity.createIntent(
+                            getContext(),
+                            mHelper.getFlowParams()),
+                    RC_IDP_SIGNIN);
+            mHelper.dismissDialog();
         }
-        startActivityForResult(nextIntent, RC_IDP_SIGNIN);
-        mHelper.dismissDialog();
-    }
-
-    private void finish(int resultCode, Intent data) {
-        cleanup();
-
-        try {
-            if (resultCode == RESULT_OK) {
-                ((AuthUI.SignInResult) getActivity()).onAuthUISuccess(data);
-            } else {
-                ((AuthUI.SignInResult) getActivity()).onAuthUIFailure(resultCode);
-            }
-        } catch (ClassCastException e) {
-            Log.e(TAG, getActivity().toString()
-                    + " must implement AuthUI.AuthUIResult to receive sign in results");
-        }
-
-        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
     /**
@@ -384,15 +370,22 @@ public class SignInDelegate extends SmartLock<CredentialRequestResult> {
                 && manager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-    public static void delegate(FragmentActivity activity, FlowParameters params) {
+    public static void delegate(AppCompatBase activity, FlowParameters params) {
         FragmentManager fm = activity.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
         Fragment fragment = fm.findFragmentByTag(TAG);
         if (fragment == null || !(fragment instanceof SignInDelegate)) {
             SignInDelegate result = new SignInDelegate();
             result.setArguments(FragmentHelper.getFlowParamsBundle(params));
-            ft.add(result, TAG).disallowAddToBackStack().commit();
+            fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
+        }
+    }
+
+    public static SignInDelegate getInstance(FragmentActivity activity) {
+        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
+        if (fragment != null && fragment instanceof SignInDelegate) {
+            return (SignInDelegate) fragment;
+        } else {
+            return null;
         }
     }
 }

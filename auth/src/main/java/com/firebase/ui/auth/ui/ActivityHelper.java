@@ -35,12 +35,11 @@ public class ActivityHelper extends BaseHelper {
     }
 
     public void finish(int resultCode, Intent intent) {
-        mActivity.setResult(resultCode, intent);
-        mActivity.finish();
+        finishActivity(mActivity, resultCode, intent);
     }
 
-    public SaveSmartLock getSaveSmartLockInstance(String tag) {
-        return SaveSmartLock.getInstance(mActivity, getFlowParams(), tag);
+    public SaveSmartLock getSaveSmartLockInstance() {
+        return getSaveSmartLockInstance(mActivity);
     }
 
     public void saveCredentialsOrFinish(

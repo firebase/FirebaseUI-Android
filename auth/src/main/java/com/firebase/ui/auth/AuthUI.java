@@ -23,16 +23,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
-import android.support.v4.app.FragmentActivity;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.KickoffActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
-import com.firebase.ui.auth.util.smartlock.SignInDelegate;
 import com.firebase.ui.auth.util.smartlock.SmartLock;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -228,11 +227,6 @@ import java.util.Set;
  * </ul>
  */
 public class AuthUI {
-    public interface SignInResult {
-        void onAuthUISuccess(Intent data);
-
-        void onAuthUIFailure(int resultCode);
-    }
 
     /**
      * Provider identifier for email and password credentials, for use with
@@ -628,8 +622,8 @@ public class AuthUI {
             return false;
         }
 
-        public void build(@NonNull FragmentActivity activity) {
-            SignInDelegate.delegate(activity, getFlowParams());
+        public Intent build() {
+            return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
         }
 
         @RestrictTo(RestrictTo.Scope.TESTS)

@@ -22,9 +22,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -158,28 +157,27 @@ public class SaveSmartLock extends SmartLock<Status> {
     }
 
     private void finish() {
-        cleanup();
         Intent resultIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mResponse);
-        getActivity().setResult(RESULT_OK, resultIntent);
-        getActivity().finish();
+        finish(RESULT_OK, resultIntent);
     }
 
     /**
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise, finish the calling Activity with RESULT_OK.
      *
-     * @param activity     the calling Activity.
+     * Note: saveCredentialsOrFinish cannot be called immediately after getInstance because
+     * onCreate has not yet been called.
+     *
      * @param firebaseUser Firebase user to save in Credential.
      * @param password     (optional) password for email credential.
      * @param response     (optional) an {@link IdpResponse} representing the result of signing in.
      */
-    public void saveCredentialsOrFinish(AppCompatActivity activity,
-                                        FirebaseUser firebaseUser,
+    public void saveCredentialsOrFinish(FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable IdpResponse response) {
         if (!mHelper.getFlowParams().smartLockEnabled
-                || !PlayServicesHelper.getInstance(activity).isPlayServicesAvailable()
-                || activity.isFinishing()) {
+                || !PlayServicesHelper.getInstance(getContext()).isPlayServicesAvailable()
+                || getActivity().isFinishing()) {
             finish();
             return;
         }
@@ -191,30 +189,27 @@ public class SaveSmartLock extends SmartLock<Status> {
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
-        mGoogleApiClient = new Builder(activity)
+        mGoogleApiClient = new Builder(getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(activity, this)
+                .enableAutoManage(getActivity(), this)
                 .build();
         mGoogleApiClient.connect();
     }
 
     @Nullable
-    public static SaveSmartLock getInstance(AppCompatActivity activity,
-                                            FlowParameters parameters,
-                                            String tag) {
+    public static SaveSmartLock getInstance(FragmentActivity activity,
+                                            FlowParameters parameters) {
         SaveSmartLock result;
 
         FragmentManager fm = activity.getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        Fragment fragment = fm.findFragmentByTag(tag);
+        Fragment fragment = fm.findFragmentByTag(TAG);
         if (fragment == null || !(fragment instanceof SaveSmartLock)) {
             result = new SaveSmartLock();
             result.setArguments(FragmentHelper.getFlowParamsBundle(parameters));
             try {
-                ft.add(result, tag).disallowAddToBackStack().commit();
+                fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
             } catch (IllegalStateException e) {
                 Log.e(TAG, "Cannot add fragment", e);
                 return null;

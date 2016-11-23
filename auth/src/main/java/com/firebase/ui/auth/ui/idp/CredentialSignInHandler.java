@@ -14,12 +14,12 @@
 
 package com.firebase.ui.auth.ui.idp;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
@@ -39,14 +39,14 @@ import com.google.firebase.auth.ProviderQueryResult;
 public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private final static String TAG = "CredentialSignInHandler";
 
-    private AppCompatBase mActivity;
+    private Activity mActivity;
     private BaseHelper mHelper;
     @Nullable private SaveSmartLock mSmartLock;
     private IdpResponse mResponse;
     private int mAccountLinkResultCode;
 
     public CredentialSignInHandler(
-            AppCompatBase activity,
+            Activity activity,
             BaseHelper helper,
             @Nullable SaveSmartLock smartLock,
             int accountLinkResultCode,
