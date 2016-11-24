@@ -21,6 +21,7 @@ android:
     - extra-android-m2repository
 script: ./gradlew clean check :library:prepareArtifacts
 after_failure:
+-ls
   # tests
   - app/build/reports/tests/testDebugUnitTest/index.html
   - auth/build/reports/tests/testDebugUnitTest/index.html
@@ -29,28 +30,28 @@ after_failure:
 
   # app
   - cat app/build/reports/checkstyle/checkstyle.html
-  - cat app/build/outputs/lint-results-debug.xml
-  - cat app/build/outputs/lint-results-debug.html
+  - cat app/build/reports/lint/lint-results.xml
+  - cat app/build/reports/lint/lint-results.html
   - cat app/build/reports/findbugs/findbugs.html
   - cat app/build/reports/pmd/pmd.html
 
   # auth
   - cat auth/build/reports/checkstyle/checkstyle.html
-  - cat auth/build/outputs/lint-results-debug.xml
-  - cat auth/build/outputs/lint-results-debug.html
+  - cat auth/build/reports/lint/lint-results.xml
+  - cat auth/build/reports/lint/lint-results.html
   - cat auth/build/reports/findbugs/findbugs.html
   - cat auth/build/reports/pmd/pmd.html
 
   # database
   - cat database/build/reports/checkstyle/checkstyle.html
-  - cat database/build/outputs/lint-results-debug.xml
-  - cat database/build/outputs/lint-results-debug.html
+  - cat database/build/reports/lint/lint-results.xml
+  - cat database/build/reports/lint/lint-results.html
   - cat database/build/reports/findbugs/findbugs.html
   - cat database/build/reports/pmd/pmd.html
 
   # storage
   - cat storage/build/reports/checkstyle/checkstyle.html
-  - cat storage/build/outputs/lint-results-debug.xml
-  - cat storage/build/outputs/lint-results-debug.html
+  - cat storage/build/reports/lint/lint-results.xml
+  - cat storage/build/reports/lint/lint-results.html
   - cat storage/build/reports/findbugs/findbugs.html
   - cat storage/build/reports/pmd/pmd.html
