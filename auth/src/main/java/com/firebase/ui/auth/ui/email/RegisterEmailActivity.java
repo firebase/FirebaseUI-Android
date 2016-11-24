@@ -172,10 +172,8 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
     }
 
     private void showEmailAutoCompleteHint() {
-        PendingIntent hintIntent =
-                FirebaseAuthWrapperFactory
-                        .getFirebaseAuthWrapper(mActivityHelper.getAppName())
-                        .getEmailHintIntent(this);
+        PendingIntent hintIntent = FirebaseAuthWrapperFactory
+                .getFirebaseAuthWrapper(mActivityHelper.getAppName()).getEmailHintIntent(this);
         if (hintIntent != null) {
             try {
                 startIntentSenderForResult(hintIntent.getIntentSender(), RC_HINT, null, 0, 0, 0);
