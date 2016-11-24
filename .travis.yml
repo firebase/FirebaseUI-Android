@@ -11,22 +11,21 @@ cache:
     - $HOME/.gradle/wrapper/
 android:
   components:
-    - platform-tools
-    - tools
-    - build-tools-25.0.0
     - android-25
+    - tools
+    - platform-tools-25.0.0
+    - build-tools-25.0.0
 
     # Extras
     - extra-google-m2repository
     - extra-android-m2repository
 script: ./gradlew clean check :library:prepareArtifacts
 after_failure:
-  - ls
   # tests
-  - app/build/reports/tests/testDebugUnitTest/index.html
-  - auth/build/reports/tests/testDebugUnitTest/index.html
-  - database/build/reports/tests/testDebugUnitTest/index.html
-  - storage/build/reports/tests/testDebugUnitTest/index.html
+  - cat app/build/reports/tests/testDebugUnitTest/index.html
+  - cat auth/build/reports/tests/testDebugUnitTest/index.html
+  - cat database/build/reports/tests/testDebugUnitTest/index.html
+  - cat storage/build/reports/tests/testDebugUnitTest/index.html
 
   # app
   - cat app/build/reports/checkstyle/checkstyle.html
