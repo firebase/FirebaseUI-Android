@@ -21,7 +21,7 @@ android:
     - extra-android-m2repository
 script: ./gradlew clean check :library:prepareArtifacts
 after_failure:
--ls
+  - ls
   # tests
   - app/build/reports/tests/testDebugUnitTest/index.html
   - auth/build/reports/tests/testDebugUnitTest/index.html
