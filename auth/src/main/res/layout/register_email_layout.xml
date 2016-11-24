@@ -57,7 +57,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="224dp"
             app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
-            app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
+            app:hintTextAppearance="@style/FirebaseUI.Text.HintText"
+            app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
                 style="@style/FirebaseUI.EditText.PasswordField"
@@ -66,15 +67,6 @@
                 android:layout_height="wrap_content"/>
 
         </android.support.design.widget.TextInputLayout>
-
-        <ImageView
-            style="@style/FirebaseUI.ImageView.VisibilityToggle"
-            android:id="@+id/toggle_visibility"
-            android:layout_alignEnd="@id/password_layout"
-            android:paddingTop="242dp"
-            android:layout_alignRight="@id/password_layout"
-            android:contentDescription="@string/accessibility_toggle">
-        </ImageView>
 
         <TextView
             android:id="@+id/create_account_text"

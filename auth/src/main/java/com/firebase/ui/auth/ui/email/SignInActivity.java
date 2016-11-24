@@ -20,11 +20,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
@@ -60,34 +58,17 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
 
         mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
 
-        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
-
         mEmailEditText = (EditText) findViewById(R.id.email);
-
-        TypedValue visibleIcon = new TypedValue();
-        TypedValue slightlyVisibleIcon = new TypedValue();
-
-        getResources().getValue(R.dimen.visible_icon, visibleIcon, true);
-        getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
-
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
-
-        mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
-                togglePasswordImage,
-                visibleIcon.getFloat(),
-                slightlyVisibleIcon.getFloat()));
-
-        togglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
-
         mEmailValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
         mPasswordValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.password_layout));
-        Button signInButton = (Button) findViewById(R.id.button_done);
-        TextView recoveryButton = (TextView) findViewById(R.id.trouble_signing_in);
 
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         if (email != null) {
             mEmailEditText.setText(email);
         }
+        Button signInButton = (Button) findViewById(R.id.button_done);
+        TextView recoveryButton = (TextView) findViewById(R.id.trouble_signing_in);
         signInButton.setOnClickListener(this);
         recoveryButton.setOnClickListener(this);
     }
