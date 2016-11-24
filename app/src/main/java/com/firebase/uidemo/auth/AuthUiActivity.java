@@ -29,8 +29,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
-
 import android.widget.TextView;
+
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
@@ -48,16 +48,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AuthUiActivity extends AppCompatActivity {
-
-    private static final String TAG = "AuthUIActivity";
-
     private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
-
-    private static final String GOOGLE_TOS_URL =
-            "https://www.google.com/policies/terms/";
-    private static final String FIREBASE_TOS_URL =
-            "https://www.firebase.com/terms/terms-of-service.html";
-
+    private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
+    private static final String FIREBASE_TOS_URL = "https://www.firebase.com/terms/terms-of-service.html";
     private static final int RC_SIGN_IN = 100;
 
     @BindView(R.id.default_theme)
@@ -178,7 +171,6 @@ public class AuthUiActivity extends AppCompatActivity {
         if (!isGoogleConfigured() || !isFacebookConfigured() || !isTwitterConfigured()) {
             showSnackbar(R.string.configuration_required);
         }
-
     }
 
     @OnClick(R.id.sign_in)
@@ -205,21 +197,6 @@ public class AuthUiActivity extends AppCompatActivity {
         showSnackbar(R.string.unknown_response);
     }
 
-
-    @MainThread
-    private void setGoogleScopesEnabled(boolean enabled) {
-        mGoogleScopesLabel.setEnabled(enabled);
-        mGoogleScopeDriveFile.setEnabled(enabled);
-        mGoogleScopeGames.setEnabled(enabled);
-    }
-
-    @MainThread
-    private void setFacebookScopesEnabled(boolean enabled) {
-        mFacebookScopesLabel.setEnabled(enabled);
-        mFacebookScopeFriends.setEnabled(enabled);
-        mFacebookScopePhotos.setEnabled(enabled);
-    }
-
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -239,6 +216,20 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         showSnackbar(R.string.unknown_sign_in_response);
+    }
+
+    @MainThread
+    private void setGoogleScopesEnabled(boolean enabled) {
+        mGoogleScopesLabel.setEnabled(enabled);
+        mGoogleScopeDriveFile.setEnabled(enabled);
+        mGoogleScopeGames.setEnabled(enabled);
+    }
+
+    @MainThread
+    private void setFacebookScopesEnabled(boolean enabled) {
+        mFacebookScopesLabel.setEnabled(enabled);
+        mFacebookScopeFriends.setEnabled(enabled);
+        mFacebookScopePhotos.setEnabled(enabled);
     }
 
     @MainThread

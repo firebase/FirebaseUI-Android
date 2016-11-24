@@ -15,12 +15,7 @@
         <item name="colorControlHighlight">@color/authui_colorAccent</item>
     </style>
 
-    <style name="FirebaseUI.Dialog" parent="Base.Theme.AppCompat.Light.Dialog.MinWidth">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:windowMinWidthMajor">360dp</item>
-        <item name="android:layout_height">match_parent</item>
-
-    </style>
+    <style name="FirebaseUI.Dialog" parent="Base.Theme.AppCompat.Light.Dialog"/>
 
     <style name="FirebaseUI.WrapperStyle">
         <item name="android:layout_height">match_parent</item>
@@ -28,14 +23,6 @@
         <item name="android:paddingTop">16dp</item>
         <item name="android:paddingLeft">24dp</item>
         <item name="android:paddingRight">24dp</item>
-    </style>
-
-    <style name="FirebaseUI.Translucent">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 
     <style name="FirebaseUI.Text">

@@ -14,6 +14,7 @@
 
 package com.firebase.ui.database;
 
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,7 +77,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     FirebaseArray mSnapshots;
 
     FirebaseRecyclerAdapter(Class<T> modelClass,
-                            int modelLayout,
+                            @LayoutRes int modelLayout,
                             Class<VH> viewHolderClass,
                             FirebaseArray snapshots) {
         mModelClass = modelClass;

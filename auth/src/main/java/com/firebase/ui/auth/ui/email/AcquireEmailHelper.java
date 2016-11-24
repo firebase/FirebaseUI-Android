@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ActivityHelper;
@@ -50,7 +51,7 @@ public class AcquireEmailHelper {
     public void checkAccountExists(final String email) {
         FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
-        if (email != null && !email.isEmpty()) {
+        if (!TextUtils.isEmpty(email)) {
             firebaseAuth
                     .fetchProvidersForEmail(email)
                     .addOnFailureListener(

@@ -28,14 +28,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -51,14 +51,14 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
     private EmailFieldValidator mEmailValidator;
     private RequiredFieldValidator mPasswordValidator;
     @Nullable
-    private SmartLock mSmartLock;
+    private SaveSmartLock mSaveSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in_layout);
 
-        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
@@ -71,7 +71,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
         ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
@@ -103,8 +102,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                     public void onSuccess(AuthResult authResult) {
                         // Save credential in SmartLock (if enabled)
                         mActivityHelper.saveCredentialsOrFinish(
-                                mSmartLock,
-                                SignInActivity.this,
+                                mSaveSmartLock,
                                 authResult.getUser(),
                                 password);
                     }
@@ -118,7 +116,6 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         TextInputLayout passwordInput =
                                 (TextInputLayout) findViewById(R.id.password_layout);
                         passwordInput.setError(getString(R.string.login_error));
-                        mActivityHelper.dismissDialog();
                     }
                 });
     }
@@ -144,7 +141,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
             Context context,
             FlowParameters flowParams,
             String email) {
-        return ActivityHelper.createBaseIntent(context, SignInActivity.class, flowParams)
+        return BaseHelper.createBaseIntent(context, SignInActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

@@ -14,17 +14,17 @@
 
 package com.firebase.ui.auth.ui.idp;
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,20 +39,20 @@ import com.google.firebase.auth.ProviderQueryResult;
 public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private final static String TAG = "CredentialSignInHandler";
 
-    private AppCompatBase mActivity;
-    private ActivityHelper mActivityHelper;
-    @Nullable private SmartLock mSmartLock;
+    private Activity mActivity;
+    private BaseHelper mHelper;
+    @Nullable private SaveSmartLock mSmartLock;
     private IdpResponse mResponse;
     private int mAccountLinkResultCode;
 
     public CredentialSignInHandler(
-            AppCompatBase activity,
-            ActivityHelper activityHelper,
-            @Nullable SmartLock smartLock,
+            Activity activity,
+            BaseHelper helper,
+            @Nullable SaveSmartLock smartLock,
             int accountLinkResultCode,
             IdpResponse response) {
         mActivity = activity;
-        mActivityHelper = activityHelper;
+        mHelper = helper;
         mSmartLock = smartLock;
         mResponse = response;
         mAccountLinkResultCode = accountLinkResultCode;
@@ -62,7 +62,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
             FirebaseUser firebaseUser = task.getResult().getUser();
-            mActivityHelper.saveCredentialsOrFinish(
+            mHelper.saveCredentialsOrFinish(
                     mSmartLock,
                     mActivity,
                     firebaseUser,
@@ -70,7 +70,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 final String email = mResponse.getEmail();
-                FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
+                FirebaseAuth firebaseAuth = mHelper.getFirebaseAuth();
                 firebaseAuth.fetchProvidersForEmail(email)
                         .addOnFailureListener(new TaskFailureLogger(
                                 TAG, "Error fetching providers for email"))
@@ -84,7 +84,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                             }
                         });
             } else {
-                mActivityHelper.dismissDialog();
+                mHelper.dismissDialog();
                 Log.e(TAG, "Unexpected exception when signing in with credential",
                       task.getException());
             }
@@ -100,23 +100,23 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
 
         @Override
         public void onSuccess(@NonNull ProviderQueryResult result) {
-            mActivityHelper.dismissDialog();
+            mHelper.dismissDialog();
 
             String provider = result.getProviders().get(0);
             if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
                 // Start email welcome back flow
                 mActivity.startActivityForResult(
                         WelcomeBackPasswordPrompt.createIntent(
-                                mActivityHelper.getApplicationContext(),
-                                mActivityHelper.getFlowParams(),
+                                mHelper.getApplicationContext(),
+                                mHelper.getFlowParams(),
                                 mResponse
                         ), mAccountLinkResultCode);
             } else {
                 // Start IDP welcome back flow
                 mActivity.startActivityForResult(
                         WelcomeBackIdpPrompt.createIntent(
-                                mActivityHelper.getApplicationContext(),
-                                mActivityHelper.getFlowParams(),
+                                mHelper.getApplicationContext(),
+                                mHelper.getFlowParams(),
                                 result.getProviders().get(0),
                                 mResponse,
                                 mEmail

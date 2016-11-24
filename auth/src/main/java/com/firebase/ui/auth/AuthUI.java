@@ -15,7 +15,6 @@
 package com.firebase.ui.auth;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -27,13 +26,12 @@ import android.support.annotation.VisibleForTesting;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
-import com.firebase.ui.auth.ui.ChooseAccountActivity;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.Preconditions;
-import com.firebase.ui.auth.util.SmartLockUtil;
+import com.firebase.ui.auth.util.signincontainer.SmartLockBase;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -346,7 +344,7 @@ public class AuthUI {
         CredentialsApiHelper credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
 
         // Get all SmartLock credentials associated with the user
-        List<Credential> credentials = SmartLockUtil.credentialsFromFirebaseUser(firebaseUser);
+        List<Credential> credentials = SmartLockBase.credentialsFromFirebaseUser(firebaseUser);
 
         // For each Credential in the list, create a task to delete it.
         List<Task<?>> credentialTasks = new ArrayList<>();
@@ -571,7 +569,8 @@ public class AuthUI {
             for (IdpConfig idpConfig : idpConfigs) {
                 if (configuredProviders.contains(idpConfig.getProviderId())) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                                                               + idpConfig.getProviderId() + " was set twice.");
+                                                               + idpConfig.getProviderId()
+                                                               + " was set twice.");
                 }
                 configuredProviders.add(idpConfig.getProviderId());
                 mProviders.add(idpConfig);
@@ -613,24 +612,6 @@ public class AuthUI {
             return this;
         }
 
-        public Intent build() {
-            Context context = mApp.getApplicationContext();
-            return build(context);
-        }
-
-        @VisibleForTesting
-        public Intent build(Context context) {
-            return ChooseAccountActivity.createIntent(
-                    context,
-                    new FlowParameters(
-                            mApp.getName(),
-                            new ArrayList<>(mProviders),
-                            mTheme,
-                            mLogo,
-                            mTosUrl,
-                            mIsSmartLockEnabled));
-        }
-
         private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
             for (IdpConfig config : mProviders) {
                 if (config.getProviderId().equals(providerId)) {
@@ -638,6 +619,20 @@ public class AuthUI {
                 }
             }
             return false;
+        }
+
+        public Intent build() {
+            return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
+        }
+
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        public FlowParameters getFlowParams() {
+            return new FlowParameters(mApp.getName(),
+                                      new ArrayList<>(mProviders),
+                                      mTheme,
+                                      mLogo,
+                                      mTosUrl,
+                                      mIsSmartLockEnabled);
         }
     }
 }
