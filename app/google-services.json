@@ -8,10 +8,10 @@
     {
       "client_info": {
         "mobilesdk_app_id": "",
-        "client_id": "com.firebase.uidemo",
+        "client_id": "",
         "client_type": 1,
         "android_client_info": {
-          "package_name": ""
+          "package_name": "com.firebase.uidemo"
         }
       },
       "oauth_client": [
