@@ -14,8 +14,10 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,10 +25,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,28 +40,40 @@ import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
+import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
+import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.auth.UserProfileChangeRequest;
+
+import java.util.List;
 
 /**
  * Activity displaying a form to create a new email/password account.
  */
-public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener {
+public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener, View.OnFocusChangeListener {
     private static final String TAG = "RegisterEmailActivity";
+    private static final String PREV_EMAIL = "previous_email";
+    private static final int RC_HINT = 13;
+    private static final int RC_WELCOME_BACK_IDP = 15;
+    private static final int RC_SIGN_IN = 16;
 
+    private String mPrevEmail;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mNameEditText;
@@ -74,9 +89,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         setContentView(R.layout.register_email_layout);
 
         mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
-
-        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
-        mEmailEditText = (EditText) findViewById(R.id.email);
 
         TypedValue visibleIcon = new TypedValue();
         TypedValue slightlyVisibleIcon = new TypedValue();
@@ -94,21 +106,45 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
 
         togglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
 
-        mNameEditText = (EditText) findViewById(R.id.name);
 
-        mPasswordFieldValidator = new PasswordFieldValidator((TextInputLayout)
-                findViewById(R.id.password_layout),
+        mPasswordFieldValidator = new PasswordFieldValidator(
+                (TextInputLayout) findViewById(R.id.password_layout),
                 getResources().getInteger(R.integer.min_password_length));
         mNameValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.name_layout));
         mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
 
-        if (email != null) {
-            mEmailEditText.setText(email);
-            mEmailEditText.setEnabled(false);
-        }
+        mNameEditText = (EditText) findViewById(R.id.name);
+        mEmailEditText = (EditText) findViewById(R.id.email);
+
+        mEmailEditText.setOnFocusChangeListener(this);
+        mNameEditText.setOnFocusChangeListener(this);
+        mPasswordEditText.setOnFocusChangeListener(this);
+        findViewById(R.id.button_create).setOnClickListener(this);
+
         setUpTermsOfService();
-        Button createButton = (Button) findViewById(R.id.button_create);
-        createButton.setOnClickListener(this);
+
+        // Activity rotated
+        if (savedInstanceState != null) {
+            mPrevEmail = savedInstanceState.getString(PREV_EMAIL);
+            return;
+        }
+
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
+        if (!TextUtils.isEmpty(email)) {
+            mEmailEditText.setText(email);
+            mNameEditText.requestFocus();
+            return;
+        }
+
+        if (mActivityHelper.getFlowParams().smartLockEnabled) {
+            showEmailAutoCompleteHint();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(PREV_EMAIL, mPrevEmail);
+        super.onSaveInstanceState(outState);
     }
 
     private void setUpTermsOfService() {
@@ -129,11 +165,127 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         agreementText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse
-                        (mActivityHelper.getFlowParams().termsOfServiceUrl));
-                startActivity(intent);
+                startActivity(new Intent(Intent.ACTION_VIEW).setData(
+                        Uri.parse(mActivityHelper.getFlowParams().termsOfServiceUrl)));
             }
         });
+    }
+
+    private void showEmailAutoCompleteHint() {
+        PendingIntent hintIntent =
+                FirebaseAuthWrapperFactory
+                        .getFirebaseAuthWrapper(mActivityHelper.getAppName())
+                        .getEmailHintIntent(this);
+        if (hintIntent != null) {
+            try {
+                startIntentSenderForResult(hintIntent.getIntentSender(), RC_HINT, null, 0, 0, 0);
+            } catch (IntentSender.SendIntentException e) {
+                Log.e(TAG, "Unable to start hint intent", e);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case RC_HINT:
+                if (data != null) {
+                    Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
+                    if (credential != null) {
+                        mEmailEditText.setText(credential.getId());
+                        String name = credential.getName();
+                        mNameEditText.setText(name);
+                        if (TextUtils.isEmpty(name)) {
+                            mNameEditText.requestFocus();
+                        } else {
+                            mPasswordEditText.requestFocus();
+                        }
+                    }
+                }
+                break;
+            case RC_SIGN_IN:
+            case RC_WELCOME_BACK_IDP:
+                finish(resultCode, data);
+                break;
+        }
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        if (hasFocus) return;
+        int id = view.getId();
+        if (id == R.id.email) {
+            String email = mEmailEditText.getText().toString();
+            if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
+                if (!email.equals(mPrevEmail)) {
+                    mActivityHelper.showLoadingDialog(R.string.progress_dialog_checking_accounts);
+                    checkAccountExists(email);
+                    mPrevEmail = email;
+                }
+            }
+        } else if (id == R.id.name) {
+            mNameValidator.validate(mNameEditText.getText());
+        } else if (id == R.id.password) {
+            mPasswordFieldValidator.validate(mPasswordEditText.getText());
+        }
+    }
+
+    public void checkAccountExists(final String email) {
+        if (!TextUtils.isEmpty(email)) {
+            mActivityHelper.getFirebaseAuth()
+                    .fetchProvidersForEmail(email)
+                    .addOnFailureListener(
+                            new TaskFailureLogger(TAG, "Error fetching providers for email"))
+                    .addOnCompleteListener(
+                            new OnCompleteListener<ProviderQueryResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                                    if (task.isSuccessful()) {
+                                        List<String> providers = task.getResult().getProviders();
+                                        if (providers != null && !providers.isEmpty()) {
+                                            // Account does exist
+                                            String provider = providers.get(0);
+                                            if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
+                                                Intent signInIntent = SignInActivity.createIntent(
+                                                        mActivityHelper.getApplicationContext(),
+                                                        mActivityHelper.getFlowParams(),
+                                                        email);
+                                                mActivityHelper.startActivityForResult(signInIntent,
+                                                                                       RC_SIGN_IN);
+                                            } else {
+                                                Intent intent = WelcomeBackIdpPrompt.createIntent(
+                                                        mActivityHelper.getApplicationContext(),
+                                                        mActivityHelper.getFlowParams(),
+                                                        provider,
+                                                        null,
+                                                        email);
+                                                mActivityHelper.startActivityForResult(intent,
+                                                                                       RC_WELCOME_BACK_IDP);
+                                            }
+                                        }
+                                    } // TODO: 11/23/2016 what happens if we fail?
+                                    mActivityHelper.dismissDialog();
+                                }
+                            });
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.button_create) {
+            String email = mEmailEditText.getText().toString();
+            String password = mPasswordEditText.getText().toString();
+            String name = mNameEditText.getText().toString();
+
+            boolean emailValid = mEmailFieldValidator.validate(email);
+            boolean passwordValid = mPasswordFieldValidator.validate(password);
+            boolean nameValid = mNameValidator.validate(name);
+            if (emailValid && passwordValid && nameValid) {
+                mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_up);
+                registerUser(email, name, password);
+            }
+        }
     }
 
     private void registerUser(final String email, final String name, final String password) {
@@ -195,27 +347,11 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                 });
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.button_create) {
-            String email = mEmailEditText.getText().toString();
-            String password = mPasswordEditText.getText().toString();
-            String name = mNameEditText.getText().toString();
-
-            boolean emailValid = mEmailFieldValidator.validate(email);
-            boolean passwordValid = mPasswordFieldValidator.validate(password);
-            boolean nameValid = mNameValidator.validate(name);
-            if (emailValid && passwordValid && nameValid) {
-                mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_up);
-                registerUser(email, name, password);
-            }
-        }
+    public static Intent createIntent(Context context, FlowParameters flowParams) {
+        return createIntent(context, flowParams, null);
     }
 
-    public static Intent createIntent(
-            Context context,
-            FlowParameters flowParams,
-            String email) {
+    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
         return BaseHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }

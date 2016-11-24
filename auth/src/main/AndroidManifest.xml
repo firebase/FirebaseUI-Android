@@ -22,12 +22,6 @@
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <activity
-            android:name=".ui.email.EmailHintContainerActivity"
-            android:label="@string/default_toolbar_title"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
-
-        <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/title_recover_password_activity"
             android:exported="false"
@@ -36,12 +30,6 @@
         <activity
             android:name=".ui.email.RegisterEmailActivity"
             android:label="@string/title_register_email_activity"
-            android:exported="false"
-            android:theme="@style/FirebaseUI"/>
-
-        <activity
-            android:name=".ui.email.SignInNoPasswordActivity"
-            android:label="@string/title_sign_in_no_password_activity"
             android:exported="false"
             android:theme="@style/FirebaseUI"/>
 
