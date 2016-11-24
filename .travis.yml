@@ -17,8 +17,8 @@ android:
     - build-tools-25.0.0
 
     # Extras
-    - extra-google-m2repository
     - extra-android-m2repository
+    - extra-google-m2repository
 script: ./gradlew clean check :library:prepareArtifacts
 after_failure:
   # tests
