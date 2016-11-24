@@ -19,11 +19,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-
 import android.util.Log;
-import com.firebase.ui.auth.ui.AcquireEmailHelper;
-import com.firebase.ui.auth.ui.ActivityHelper;
+
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
@@ -77,7 +76,7 @@ public class EmailHintContainerActivity extends AppCompatBase {
     public static Intent createIntent(
             Context context,
             FlowParameters flowParams) {
-        return ActivityHelper.createBaseIntent(
+        return BaseHelper.createBaseIntent(
                 context,
                 EmailHintContainerActivity.class,
                 flowParams);

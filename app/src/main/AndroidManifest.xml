@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.firebase.uidemo">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
+        android:name=".auth.LeakCatcher"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity android:name=".ChooserActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
-                       android:resource="@xml/shortcuts" />
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts"/>
         </activity>
 
         <!-- Chat demo -->
         <activity
             android:name=".database.ChatActivity"
-            android:label="@string/name_chat" />
+            android:label="@string/name_chat"/>
 
         <!-- Auth UI demo -->
         <activity
             android:name=".auth.AuthUiActivity"
-            android:label="@string/name_auth_ui" />
+            android:label="@string/name_auth_ui"/>
         <activity
             android:name=".auth.SignedInActivity"
-            android:label="@string/name_auth_ui" />
+            android:label="@string/name_auth_ui"/>
 
         <!-- Storage UI demo-->
         <activity
             android:name=".storage.ImageActivity"
-            android:label="@string/name_image" />
+            android:label="@string/name_image"/>
     </application>
 
 </manifest>

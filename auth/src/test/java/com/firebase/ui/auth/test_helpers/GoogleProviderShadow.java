@@ -15,16 +15,17 @@
 package com.firebase.ui.auth.test_helpers;
 
 import android.app.Activity;
-
 import android.support.v4.app.FragmentActivity;
+
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.util.List;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
+
+import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -43,6 +44,7 @@ public class GoogleProviderShadow {
             when(mMockIdpResponse.getIdpToken()).thenReturn(FAKE_TOKEN);
         }
     }
+
     public void __constructor__(FragmentActivity activity, String email, List<String> scopes) {}
 
 

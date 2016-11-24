@@ -17,14 +17,15 @@ package com.firebase.ui.auth.test_helpers;
 import android.app.Activity;
 
 import com.facebook.login.LoginResult;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FacebookAuthProvider;
 
-import java.util.List;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
+
+import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

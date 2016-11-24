@@ -32,15 +32,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.SmartLock;
+import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -66,14 +66,14 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
     private PasswordFieldValidator mPasswordFieldValidator;
     private RequiredFieldValidator mNameValidator;
     @Nullable
-    private SmartLock mSmartLock;
+    private SaveSmartLock mSaveSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_email_layout);
 
-        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);
@@ -85,7 +85,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
 
         mPasswordEditText = (EditText) findViewById(R.id.password);
-        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
         ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
 
         mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
@@ -124,6 +123,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
         int start = preamble.length();
         spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
+
         TextView agreementText = (TextView) findViewById(R.id.create_account_text);
         agreementText.setText(spannableStringBuilder);
         agreementText.setOnClickListener(new View.OnClickListener() {
@@ -160,8 +160,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
                                         mActivityHelper.saveCredentialsOrFinish(
-                                                mSmartLock,
-                                                RegisterEmailActivity.this,
+                                                mSaveSmartLock,
                                                 firebaseUser,
                                                 password);
                                     }
@@ -217,7 +216,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
             Context context,
             FlowParameters flowParams,
             String email) {
-        return ActivityHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
+        return BaseHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

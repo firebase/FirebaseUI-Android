@@ -10,7 +10,7 @@
     <string name="desc_image">Demonstrates displaying an image from Firebase Storage using Glide.</string>
 
     <!-- strings for Auth UI demo activities -->
-    <eat-comment />
+    <eat-comment/>
     <string name="launch_title">FirebaseUI Auth Demo</string>
     <string name="sign_in">Start</string>
     <string name="green_theme">Green Theme</string>
@@ -33,7 +33,6 @@
     <string name="firebase_tos_label">Firebase TOS</string>
     <string name="tos_header">Terms of Service URL:</string>
     <string name="unknown_response">Unexpected onActivityResult response code</string>
-    <string name="ok_label">OK</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>

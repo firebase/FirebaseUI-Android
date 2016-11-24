@@ -23,8 +23,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
@@ -39,7 +39,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
  */
 public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "RecoverPasswordActivity";
-    private static final int RC_CONFIRM = 3;
 
     private EditText mEmailEditText;
     private EmailFieldValidator mEmailFieldValidator;
@@ -70,12 +69,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                     @Override
                     public void onSuccess(Void aVoid) {
                         mActivityHelper.dismissDialog();
-
-                        Intent confirmIntent = ConfirmRecoverPasswordActivity.createIntent(
-                                RecoverPasswordActivity.this,
-                                mActivityHelper.getFlowParams(),
-                                email);
-                        startActivityForResult(confirmIntent, RC_CONFIRM);
+                        RecoveryEmailSentDialog.show(email, getSupportFragmentManager());
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
@@ -91,12 +85,6 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 });
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_CONFIRM) {
-            finish(RESULT_OK, new Intent());
-        }
-    }
-
 
     @Override
     public void onClick(View view) {
@@ -110,7 +98,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     }
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return ActivityHelper.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
+        return BaseHelper.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

@@ -21,22 +21,20 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
 import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
+import com.firebase.ui.auth.test_helpers.BaseHelperShadow;
 import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.test_helpers.TestConstants;
 import com.firebase.ui.auth.test_helpers.TestHelper;
-import com.firebase.ui.auth.ui.ExtraConstants;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 
 import java.util.Collections;
 
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,33 +50,20 @@ public class RecoverPasswordActivityTest {
     private RecoverPasswordActivity createActivity() {
         Intent startIntent = RecoverPasswordActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(
-                        Collections.<String>emptyList()),
+                TestHelper.getFlowParameters(Collections.<String>emptyList()),
                 TestConstants.EMAIL);
         return Robolectric.buildActivity(RecoverPasswordActivity.class).withIntent(startIntent)
                 .create().visible().get();
     }
 
     @Test
-    @Config(shadows = {ActivityHelperShadow.class})
+    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
     public void testNextButton_sendsEmail() {
         RecoverPasswordActivity recoverPasswordActivity = createActivity();
         Button nextButton = (Button) recoverPasswordActivity.findViewById(R.id.button_done);
-        when(ActivityHelperShadow.firebaseAuth.sendPasswordResetEmail(TestConstants.EMAIL))
+        when(ActivityHelperShadow.sFirebaseAuth.sendPasswordResetEmail(TestConstants.EMAIL))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
         nextButton.performClick();
-
-        Intent nextIntent = Shadows.shadowOf(recoverPasswordActivity)
-                .getNextStartedActivityForResult()
-                .intent;
-
-        assertEquals(
-                nextIntent.getComponent().getClassName(),
-                ConfirmRecoverPasswordActivity.class.getName());
-
-        verify(ActivityHelperShadow.firebaseAuth).sendPasswordResetEmail(TestConstants.EMAIL);
-        assertEquals(
-                TestConstants.EMAIL,
-                nextIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
+        verify(ActivityHelperShadow.sFirebaseAuth).sendPasswordResetEmail(TestConstants.EMAIL);
     }
 }

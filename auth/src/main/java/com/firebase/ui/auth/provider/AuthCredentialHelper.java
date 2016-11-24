@@ -12,21 +12,17 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth.provider;
 
 import android.support.annotation.Nullable;
 
-import com.firebase.ui.auth.provider.FacebookProvider;
-import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.provider.TwitterProvider;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 public class AuthCredentialHelper {
-
     @Nullable
     public static AuthCredential getAuthCredential(IdpResponse idpResponse) {
         switch (idpResponse.getProviderType()) {
@@ -40,5 +36,4 @@ public class AuthCredentialHelper {
                 return null;
         }
     }
-
 }

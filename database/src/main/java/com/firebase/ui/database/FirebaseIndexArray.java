@@ -67,7 +67,7 @@ class FirebaseIndexArray extends FirebaseArray {
             String superKey = super.getItem(keyIndex).getKey();
             if (key.equals(superKey)) {
                 break;
-            } else if (getItem(index).getKey().equals(superKey)) {
+            } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
                 index++;
             }
         }
@@ -75,7 +75,7 @@ class FirebaseIndexArray extends FirebaseArray {
     }
 
     private boolean isMatch(int index, String key) {
-        return index >= 0 && index < getCount() && getItem(index).getKey().equals(key);
+        return index >= 0 && index < getCount() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
     @Override
@@ -155,10 +155,11 @@ class FirebaseIndexArray extends FirebaseArray {
                     notifyChangedListeners(OnChangedListener.EventType.CHANGED, index);
                 }
             } else {
-                Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
                 if (isMatch(index, key)) {
                     mDataSnapshots.remove(index);
                     notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
+                } else {
+                    Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
                 }
             }
         }
