@@ -20,3 +20,6 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
 script: ./gradlew clean check :library:prepareArtifacts
+after_failure:
+  - cat app/build/reports/lint/lint-results.xml
+  - cat app/build/reports/lint/lint-results.html
