@@ -9,6 +9,8 @@ android {
         targetSdkVersion targetSdk
         versionCode 1
         versionName "0.0.0"
+
+        consumerProguardFiles 'consumer-proguard-rules.txt'
     }
 
     buildTypes {
