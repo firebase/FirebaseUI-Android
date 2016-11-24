@@ -1,5 +1,7 @@
 language: android
 jdk: oraclejdk8
+# See https://github.com/travis-ci/travis-ci/issues/5582
+sudo: required
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -9,10 +11,10 @@ cache:
     - $HOME/.gradle/wrapper/
 android:
   components:
-    - android-25
     - tools
-    - platform-tools
     - build-tools-25.0.1
+    - android-25
+    - platform-tools
     - extra-android-m2repository
     - extra-google-m2repository
 script: ./gradlew clean check :library:prepareArtifacts
