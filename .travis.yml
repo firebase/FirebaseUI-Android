@@ -19,4 +19,4 @@ android:
     # Extras
     - extra-google-m2repository
     - extra-android-m2repository
-script: ./gradlew clean :library:testAll :library:prepareArtifacts
+script: ./gradlew clean check :library:prepareArtifacts

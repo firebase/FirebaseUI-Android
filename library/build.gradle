@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+check.dependsOn 'testAll'
 
 android {
     compileSdkVersion compileSdk
@@ -100,7 +101,7 @@ task bintrayUploadAll(dependsOn: [
 /**
  * Test all submodules.
  */
-task testAll(dependsOn: [testTasks(), check]) {
+task testAll(dependsOn: [testTasks()]) {
 }
 
 afterEvaluate {
