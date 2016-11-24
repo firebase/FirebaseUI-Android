@@ -11,12 +11,10 @@ cache:
     - $HOME/.gradle/wrapper/
 android:
   components:
-    - platform-tools-preview
-    - tools
-    - build-tools-25.0.1
     - android-25
-
-    # Extras
+    - tools
+    - platform-tools
+    - build-tools-25.0.1
     - extra-android-m2repository
     - extra-google-m2repository
 script: ./gradlew clean check :library:prepareArtifacts
