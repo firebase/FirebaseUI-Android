@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.test_helpers;
+package com.firebase.ui.auth.testhelpers;
 
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;

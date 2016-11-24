@@ -9,6 +9,8 @@ page at http://checkstyle.sourceforge.net/config.html -->
 
 <module name="Checker">
 
+    <module name="SuppressWarningsFilter"/>
+
     <module name="FileTabCharacter">
         <!-- Checks that there are no tab characters in the file.
         -->
@@ -28,6 +30,8 @@ page at http://checkstyle.sourceforge.net/config.html -->
 
     <!-- All Java AST specific tests live under TreeWalker module. -->
     <module name="TreeWalker">
+
+        <module name="SuppressWarningsHolder"/>
 
         <!--
 
@@ -138,7 +142,7 @@ page at http://checkstyle.sourceforge.net/config.html -->
             <!-- Checks if a line is too long. -->
             <property name="max"
                       value="${com.puppycrawl.tools.checkstyle.checks.sizes.LineLength.max}"
-                      default="100"/>
+                      default="115"/>
             <property name="severity" value="error"/>
 
             <!--

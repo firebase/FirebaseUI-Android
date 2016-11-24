@@ -40,6 +40,7 @@
 
             <Button
                 android:id="@+id/delete_account"
+                style="?android:attr/buttonBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -78,17 +79,20 @@
                 <TextView
                     android:id="@+id/user_email"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="true"/>
 
                 <TextView
                     android:id="@+id/user_display_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="true"/>
 
                 <TextView
                     android:id="@+id/user_enabled_providers"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="true"/>
 
             </LinearLayout>
 
@@ -109,7 +113,8 @@
             <TextView
                 android:id="@+id/idp_token"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true"/>
 
         </LinearLayout>
 
@@ -128,7 +133,8 @@
             <TextView
                 android:id="@+id/idp_secret"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true"/>
 
         </LinearLayout>
 

@@ -43,13 +43,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
+    private static final String TAG = "FacebookProvider";
     protected static final String ERROR = "err";
     protected static final String ERROR_MSG = "err_msg";
-
-    private static final String TAG = "FacebookProvider";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
-    private static final CallbackManager sCallbackManager = CallbackManager.Factory.create();
+    private static final CallbackManager CALLBACK_MANAGER = CallbackManager.Factory.create();
 
     private final List<String> mScopes;
     private IdpCallback mCallbackObject;
@@ -86,7 +85,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     @Override
     public void startLogin(Activity activity) {
         LoginManager loginManager = LoginManager.getInstance();
-        loginManager.registerCallback(sCallbackManager, this);
+        loginManager.registerCallback(CALLBACK_MANAGER, this);
 
         List<String> permissionsList = new ArrayList<>(mScopes);
 
@@ -110,7 +109,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        sCallbackManager.onActivityResult(requestCode, resultCode, data);
+        CALLBACK_MANAGER.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

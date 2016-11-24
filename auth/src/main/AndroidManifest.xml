@@ -52,13 +52,13 @@
             android:theme="@style/FirebaseUI"/>
 
         <activity
-            android:name=".ui.account_link.WelcomeBackIdpPrompt"
+            android:name=".ui.accountlink.WelcomeBackIdpPrompt"
             android:label="@string/title_welcome_back_idp_prompt"
             android:exported="false"
             android:theme="@style/FirebaseUI"/>
 
         <activity
-            android:name=".ui.account_link.WelcomeBackPasswordPrompt"
+            android:name=".ui.accountlink.WelcomeBackPasswordPrompt"
             android:label="@string/title_welcome_back_password_prompt"
             android:exported="false"
             android:theme="@style/FirebaseUI"/>

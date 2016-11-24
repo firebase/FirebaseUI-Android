@@ -21,14 +21,14 @@ import android.widget.EditText;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
-import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
-import com.firebase.ui.auth.test_helpers.BaseHelperShadow;
-import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
-import com.firebase.ui.auth.test_helpers.FakeAuthResult;
-import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
-import com.firebase.ui.auth.test_helpers.TestConstants;
-import com.firebase.ui.auth.test_helpers.TestHelper;
+import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
+import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
+import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
+import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
+import com.firebase.ui.auth.testhelpers.FakeAuthResult;
+import com.firebase.ui.auth.testhelpers.FirebaseAuthWrapperImplShadow;
+import com.firebase.ui.auth.testhelpers.TestConstants;
+import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,7 +44,7 @@ import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Collections;
 
-import static com.firebase.ui.auth.test_helpers.TestHelper.verifySmartLockSave;
+import static com.firebase.ui.auth.testhelpers.TestHelper.verifySmartLockSave;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;

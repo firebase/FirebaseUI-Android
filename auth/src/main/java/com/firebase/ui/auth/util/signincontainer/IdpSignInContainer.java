@@ -50,14 +50,14 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
     private static final int RC_WELCOME_BACK_IDP = 4;
 
     private IdpProvider mIdpProvider;
-    @Nullable private SaveSmartLock mSaveSmartLock;
+    @Nullable
+    private SaveSmartLock mSaveSmartLock;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
-        String email = getArguments().getString(ExtraConstants.EXTRA_EMAIL);
         String provider = getArguments().getString(ExtraConstants.EXTRA_PROVIDER);
         AuthUI.IdpConfig providerConfig = null;
         for (AuthUI.IdpConfig config : mHelper.getFlowParams().providerInfo) {
@@ -76,7 +76,10 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
         if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new FacebookProvider(getContext(), providerConfig);
         } else if (provider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new GoogleProvider(getActivity(), providerConfig, email);
+            mIdpProvider = new GoogleProvider(
+                    getActivity(),
+                    providerConfig,
+                    getArguments().getString(ExtraConstants.EXTRA_EMAIL));
         } else if (provider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new TwitterProvider(getContext());
         }
@@ -124,7 +127,7 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
                               String provider) {
         FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(TAG);
-        if (fragment == null || !(fragment instanceof IdpSignInContainer)) {
+        if (!(fragment instanceof IdpSignInContainer)) {
             IdpSignInContainer result = new IdpSignInContainer();
 
             Bundle bundle = FragmentHelper.getFlowParamsBundle(parameters);
@@ -142,7 +145,7 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
 
     public static IdpSignInContainer getInstance(FragmentActivity activity) {
         Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment != null && fragment instanceof IdpSignInContainer) {
+        if (fragment instanceof IdpSignInContainer) {
             return (IdpSignInContainer) fragment;
         } else {
             return null;

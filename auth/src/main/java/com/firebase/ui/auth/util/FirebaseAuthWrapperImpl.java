@@ -160,12 +160,14 @@ public class FirebaseAuthWrapperImpl
         GoogleApiClient client = new GoogleApiClient.Builder(fragmentActivity)
                 .addConnectionCallbacks(this)
                 .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(fragmentActivity, GoogleApiConstants.AUTO_MANAGE_ID3, new OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Log.e(TAG, "Client connection failed: " + connectionResult.getErrorMessage());
-                    }
-                })
+                .enableAutoManage(fragmentActivity, GoogleApiConstants.AUTO_MANAGE_ID3,
+                                  new OnConnectionFailedListener() {
+                                      @Override
+                                      public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                                          Log.e(TAG,
+                                                "Client connection failed: " + connectionResult.getErrorMessage());
+                                      }
+                                  })
                 .build();
 
         HintRequest hintRequest = new HintRequest.Builder()
@@ -195,10 +197,12 @@ public class FirebaseAuthWrapperImpl
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {}
+    public void onConnected(@Nullable Bundle bundle) {
+    }
 
     @Override
-    public void onConnectionSuspended(int cause) {}
+    public void onConnectionSuspended(int cause) {
+    }
 
     private <T> T await(@NonNull Task<T> curTask) {
         try {

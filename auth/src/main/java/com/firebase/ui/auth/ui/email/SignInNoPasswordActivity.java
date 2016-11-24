@@ -28,7 +28,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
+import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 
 public class SignInNoPasswordActivity extends AppCompatBase implements View.OnClickListener {
     private EditText mEmailEditText;

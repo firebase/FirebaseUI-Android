@@ -210,7 +210,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:text="Drive File"/>
+            android:text="@string/drive_file"/>
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Subhead"

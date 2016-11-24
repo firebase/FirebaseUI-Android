@@ -22,6 +22,7 @@ task findbugs(type: FindBugs, dependsOn: "assembleDebug") {
     ignoreFailures = false
     effort = "max"
     reportLevel = "high"
+    excludeFilter = new File("$configDir/findbugs/findbugs-filter.xml")
     classes = files("${project.rootDir}/app/build/intermediates/classes",
             "${project.rootDir}/auth/build/intermediates/classes",
             "${project.rootDir}/storage/build/intermediates/classes",
@@ -46,7 +47,7 @@ task findbugs(type: FindBugs, dependsOn: "assembleDebug") {
 }
 
 task pmd(type: Pmd) {
-    ignoreFailures = false
+    ignoreFailures = true
     ruleSetFiles = files("$configDir/pmd/pmd-ruleset.xml")
     ruleSets = []
 

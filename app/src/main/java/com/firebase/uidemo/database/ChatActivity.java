@@ -47,11 +47,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
 public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
-
-    public static final String TAG = "RecyclerViewDemo";
+    private static final String TAG = "RecyclerViewDemo";
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mRef;
     private DatabaseReference mChatRef;
     private Button mSendButton;
     private EditText mMessageEdit;
@@ -71,8 +69,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
 
-        mRef = FirebaseDatabase.getInstance().getReference();
-        mChatRef = mRef.child("chats");
+        mChatRef = FirebaseDatabase.getInstance().getReference().child("chats");
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +143,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {
                 chatView.setName(chat.getName());
-                chatView.setText(chat.getText());
+                chatView.setText(chat.getMessage());
 
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null && chat.getUid().equals(currentUser.getUid())) {
@@ -188,7 +185,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     public boolean isSignedIn() {
-        return (mAuth.getCurrentUser() != null);
+        return mAuth.getCurrentUser() != null;
     }
 
     public void updateUI() {
@@ -198,44 +195,44 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     public static class Chat {
-
-        String name;
-        String text;
-        String uid;
+        private String mName;
+        private String mMessage;
+        private String mUid;
 
         public Chat() {
+            // Needed for Firebase
         }
 
         public Chat(String name, String uid, String message) {
-            this.name = name;
-            this.text = message;
-            this.uid = uid;
+            mName = name;
+            mMessage = message;
+            mUid = uid;
         }
 
         public String getName() {
-            return name;
+            return mName;
         }
 
         public String getUid() {
-            return uid;
+            return mUid;
         }
 
-        public String getText() {
-            return text;
+        public String getMessage() {
+            return mMessage;
         }
     }
 
     public static class ChatHolder extends RecyclerView.ViewHolder {
-        View mView;
+        private View mView;
 
         public ChatHolder(View itemView) {
             super(itemView);
             mView = itemView;
         }
 
-        public void setIsSender(Boolean isSender) {
-            FrameLayout left_arrow = (FrameLayout) mView.findViewById(R.id.left_arrow);
-            FrameLayout right_arrow = (FrameLayout) mView.findViewById(R.id.right_arrow);
+        public void setIsSender(boolean isSender) {
+            FrameLayout leftArrow = (FrameLayout) mView.findViewById(R.id.left_arrow);
+            FrameLayout rightArrow = (FrameLayout) mView.findViewById(R.id.right_arrow);
             RelativeLayout messageContainer = (RelativeLayout) mView.findViewById(R.id.message_container);
             LinearLayout message = (LinearLayout) mView.findViewById(R.id.message);
 
@@ -243,21 +240,21 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             if (isSender) {
                 color = ContextCompat.getColor(mView.getContext(), R.color.material_green_300);
 
-                left_arrow.setVisibility(View.GONE);
-                right_arrow.setVisibility(View.VISIBLE);
+                leftArrow.setVisibility(View.GONE);
+                rightArrow.setVisibility(View.VISIBLE);
                 messageContainer.setGravity(Gravity.END);
             } else {
                 color = ContextCompat.getColor(mView.getContext(), R.color.material_gray_300);
 
-                left_arrow.setVisibility(View.VISIBLE);
-                right_arrow.setVisibility(View.GONE);
+                leftArrow.setVisibility(View.VISIBLE);
+                rightArrow.setVisibility(View.GONE);
                 messageContainer.setGravity(Gravity.START);
             }
 
             ((GradientDrawable) message.getBackground()).setColor(color);
-            ((RotateDrawable) left_arrow.getBackground()).getDrawable()
+            ((RotateDrawable) leftArrow.getBackground()).getDrawable()
                     .setColorFilter(color, PorterDuff.Mode.SRC);
-            ((RotateDrawable) right_arrow.getBackground()).getDrawable()
+            ((RotateDrawable) rightArrow.getBackground()).getDrawable()
                     .setColorFilter(color, PorterDuff.Mode.SRC);
         }
 

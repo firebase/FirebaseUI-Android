@@ -12,15 +12,9 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.test_helpers;
-
-import android.net.Uri;
-
-public class TestConstants {
-    public static final String EMAIL = "test@example.com";
-    public static final String PASSWORD = "hunter2";
-    public static final String NAME = "Test Testerson";
-    public static final String PHOTO_URL = "http://example.com/profile.png";
-    public static final Uri PHOTO_URI = Uri.parse(PHOTO_URL);
-    public static final String TOS_URL = "http://www.google.com";
-}
+/**
+ * Contains utility classes for validating {@link android.widget.EditText} field contents.
+ * The contents of this package should be considered an implementation detail and not part of
+ * the main API.
+ */
+package com.firebase.ui.auth.ui.email.fieldvalidators;

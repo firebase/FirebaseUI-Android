@@ -12,9 +12,24 @@
  * limitations under the License.
  */
 
-/**
- * Contains utility classes for validating {@link android.widget.EditText} field contents.
- * The contents of this package should be considered an implementation detail and not part of
- * the main API.
- */
-package com.firebase.ui.auth.ui.email.field_validators;
+package com.firebase.ui.auth.testhelpers;
+
+import android.support.annotation.Nullable;
+
+import com.google.firebase.auth.ProviderQueryResult;
+
+import java.util.List;
+
+public class FakeProviderQueryResult implements ProviderQueryResult {
+    List<String> mProviders;
+
+    public FakeProviderQueryResult(List<String> providers) {
+        mProviders = providers;
+    }
+
+    @Nullable
+    @Override
+    public List<String> getProviders() {
+        return mProviders;
+    }
+}

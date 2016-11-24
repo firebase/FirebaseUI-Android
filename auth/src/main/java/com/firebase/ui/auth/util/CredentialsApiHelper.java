@@ -154,7 +154,7 @@ public class CredentialsApiHelper {
         return new CredentialsApiHelper(taskHelper);
     }
 
-    private static abstract class ExceptionForwardingContinuation<InT, OutT>
+    private abstract static class ExceptionForwardingContinuation<InT, OutT>
             implements Continuation<InT, Task<OutT>> {
 
         @Override

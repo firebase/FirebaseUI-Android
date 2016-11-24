@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Class name="com.firebase.ui.auth.util.PlayServicesHelper" />
+        <Field name="sApiAvailability" />
+        <Bug pattern="MS_SHOULD_BE_FINAL" />
+    </Match>
+</FindBugsFilter>

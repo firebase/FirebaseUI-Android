@@ -22,6 +22,8 @@ import android.support.annotation.StyleRes;
  * Precondition checking utility methods.
  */
 public final class Preconditions {
+    private Preconditions() {
+    }
 
     /**
      * Ensures that the provided value is not null, and throws a {@link NullPointerException}

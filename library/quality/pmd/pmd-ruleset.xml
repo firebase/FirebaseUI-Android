@@ -21,12 +21,6 @@
 
     <rule ref="rulesets/java/clone.xml"/>
 
-    <rule ref="rulesets/java/codesize.xml">
-
-        <exclude name="TooManyMethods"/> <!-- TODO remove -->
-
-    </rule>
-
     <rule ref="rulesets/java/comments.xml">
 
         <exclude name="CommentRequired"/>
@@ -34,6 +28,8 @@
         <exclude name="CommentSize"/>
 
         <exclude name="CommentRequired"/>
+
+        <exclude name="CommentDefaultAccessModifier"/>
 
     </rule>
 
@@ -49,17 +45,13 @@
 
         <exclude name="DefaultPackage"/>
 
-        <exclude name="AvoidLiteralsInIfCondition"/>
-
     </rule>
 
     <rule ref="rulesets/java/design.xml">
 
-        <exclude name="ImmutableField"/> <!-- TODO maybe remove -->
+        <exclude name="ImmutableField"/>
 
-        <exclude name="ConfusingTernary"/> <!-- TODO maybe remove -->
-
-        <exclude name="PositionLiteralsFirstInComparisons"/>
+        <exclude name="ConfusingTernary"/>
 
     </rule>
 
@@ -76,8 +68,6 @@
     </rule>
 
     <rule ref="rulesets/java/logging-java.xml"/>
-
-    <rule ref="rulesets/java/junit.xml"/>
 
     <rule ref="rulesets/java/migrating.xml"/>
 
@@ -98,6 +88,8 @@
         <exclude name="LocalVariableCouldBeFinal"/>
 
         <exclude name="MethodArgumentCouldBeFinal"/>
+
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
 
     </rule>
 
