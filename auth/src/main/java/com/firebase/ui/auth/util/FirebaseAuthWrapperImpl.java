@@ -197,12 +197,10 @@ public class FirebaseAuthWrapperImpl
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-    }
+    public void onConnected(@Nullable Bundle bundle) {}
 
     @Override
-    public void onConnectionSuspended(int cause) {
-    }
+    public void onConnectionSuspended(int cause) {}
 
     private <T> T await(@NonNull Task<T> curTask) {
         try {

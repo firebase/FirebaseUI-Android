@@ -13,8 +13,8 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginTop="16dp"
-        android:paddingBottom="32dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="32dp">
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Headline"
@@ -167,8 +167,8 @@
         </RadioGroup>
 
         <TextView
-            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:id="@+id/facebook_scopes_label"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -190,8 +190,8 @@
             android:text="@string/photos"/>
 
         <TextView
-            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:id="@+id/google_scopes_label"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"

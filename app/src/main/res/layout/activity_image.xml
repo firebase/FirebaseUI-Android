@@ -48,10 +48,10 @@
         android:id="@+id/first_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@string/accessibility_downloaded_image"
         android:scaleType="centerCrop"
         android:src="#E6E6E6"
         android:visibility="invisible"
-        tools:visibility="visible"
-        android:contentDescription="@string/accessibility_downloaded_image"/>
+        tools:visibility="visible"/>
 
 </LinearLayout>

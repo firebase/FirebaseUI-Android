@@ -23,6 +23,7 @@ import android.support.annotation.StyleRes;
  */
 public final class Preconditions {
     private Preconditions() {
+        // Helper classes shouldn't be instantiated
     }
 
     /**

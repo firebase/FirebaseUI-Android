@@ -303,7 +303,7 @@ public class AuthUI {
         Task<Void> googleSignOutTask = taskHelper.getConnectedGoogleApiClient()
                 .continueWith(new Continuation<GoogleApiClient, Void>() {
                     @Override
-                    public Void then(@NonNull Task<GoogleApiClient> task) throws Exception { // NOPMD
+                    public Void then(@NonNull Task<GoogleApiClient> task) throws Exception {
                         if (task.isSuccessful()) {
                             Auth.GoogleSignInApi.signOut(task.getResult());
                         }
@@ -360,7 +360,7 @@ public class AuthUI {
         // and return.
         return deleteUserTask.continueWithTask(new Continuation<Void, Task<Void>>() {
             @Override
-            public Task<Void> then(@NonNull Task<Void> task) throws Exception { // NOPMD
+            public Task<Void> then(@NonNull Task<Void> task) throws Exception {
                 // Call getResult() to propagate failure by throwing an exception
                 // if there was one.
                 task.getResult(Exception.class);

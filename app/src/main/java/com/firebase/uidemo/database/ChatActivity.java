@@ -203,7 +203,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             // Needed for Firebase
         }
 
-        public Chat(String name, String uid, String message) {
+        public Chat(String name, String message, String uid) {
             mName = name;
             mMessage = message;
             mUid = uid;
@@ -213,12 +213,24 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             return mName;
         }
 
-        public String getUid() {
-            return mUid;
+        public void setName(String name) {
+            mName = name;
         }
 
         public String getMessage() {
             return mMessage;
+        }
+
+        public void setMessage(String message) {
+            mMessage = message;
+        }
+
+        public String getUid() {
+            return mUid;
+        }
+
+        public void setUid(String uid) {
+            mUid = uid;
         }
     }
 

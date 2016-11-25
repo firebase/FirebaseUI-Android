@@ -11,7 +11,7 @@ checkstyle {
 }
 
 task checkstyle(type: Checkstyle) {
-    configFile file("$configDir/checkstyle/checkstyle.xml")
+    configFile file("$configDir/checkstyle.xml")
     source 'src'
     include '**/*.java'
     exclude '**/gen/**'
@@ -22,7 +22,7 @@ task findbugs(type: FindBugs, dependsOn: "assembleDebug") {
     ignoreFailures = false
     effort = "max"
     reportLevel = "high"
-    excludeFilter = new File("$configDir/findbugs/findbugs-filter.xml")
+    excludeFilter = new File("$configDir/findbugs-filter.xml")
     classes = files("${project.rootDir}/app/build/intermediates/classes",
             "${project.rootDir}/auth/build/intermediates/classes",
             "${project.rootDir}/storage/build/intermediates/classes",
@@ -36,10 +36,10 @@ task findbugs(type: FindBugs, dependsOn: "assembleDebug") {
         xml.enabled = false
         html.enabled = true
         xml {
-            destination "$reportsDir/findbugs/findbugs.xml"
+            destination "$reportsDir/findbugs.xml"
         }
         html {
-            destination "$reportsDir/findbugs/findbugs.html"
+            destination "$reportsDir/findbugs.html"
         }
     }
 
@@ -48,7 +48,7 @@ task findbugs(type: FindBugs, dependsOn: "assembleDebug") {
 
 task pmd(type: Pmd) {
     ignoreFailures = true
-    ruleSetFiles = files("$configDir/pmd/pmd-ruleset.xml")
+    ruleSetFiles = files("$configDir/pmd-ruleset.xml")
     ruleSets = []
 
     source 'src'
@@ -59,10 +59,10 @@ task pmd(type: Pmd) {
         xml.enabled = false
         html.enabled = true
         xml {
-            destination "$reportsDir/pmd/pmd.xml"
+            destination "$reportsDir/pmd.xml"
         }
         html {
-            destination "$reportsDir/pmd/pmd.html"
+            destination "$reportsDir/pmd.html"
         }
     }
 }
@@ -70,11 +70,11 @@ task pmd(type: Pmd) {
 android {
     lintOptions {
         disable 'InvalidPackage'
-        baseline file("$configDir/lint/lint-baseline.xml")
+        baseline file("$configDir/lint-baseline.xml")
         checkAllWarnings true
         warningsAsErrors true
         abortOnError true
-        htmlOutput file("$reportsDir/lint/lint-results.html")
-        xmlOutput file("$reportsDir/lint/lint-results.xml")
+        htmlOutput file("$reportsDir/lint-results.html")
+        xmlOutput file("$reportsDir/lint-results.xml")
     }
 }
