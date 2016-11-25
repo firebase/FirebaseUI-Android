@@ -17,7 +17,7 @@ android:
     - platform-tools
     - extra-android-m2repository
     - extra-google-m2repository
-script: ./gradlew clean build
+script: ./gradlew clean assembleDebug check
 after_failure:
   # tests
   - cat app/build/reports/tests/testDebugUnitTest/index.html
