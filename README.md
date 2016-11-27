@@ -8,7 +8,7 @@ APIs like the Realtime Database or Firebase Authentication.
 
 A compatible FirebaseUI client is also available for [iOS](https://github.com/firebase/firebaseui-ios).
 
-## Table of Content
+## Table of Contents
 
   1. [Installation](#installation)
   1. [Usage](#usage)
