@@ -36,6 +36,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
@@ -100,7 +101,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                     getApplicationContext(),
                     mActivityHelper.getFlowParams(),
                     mEmail));
-            finish(RESULT_OK, new Intent());
+            finish(ResultCodes.OK, new Intent());
         }
     }
 

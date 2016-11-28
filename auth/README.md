@@ -204,8 +204,8 @@ startActivityForResult(
 
 #####Response codes
 The authentication flow only provides three response codes:
-`Activity.RESULT_OK` if a user is signed in, `Activity.RESULT_CANCELLED` if
-sign in failed, and `ResultCodes.RESULT_NO_NETWORK` if sign in failed due to a lack of network connectivity.
+`ResultCodes.OK` if a user is signed in, `ResultCodes.CANCELLED` if
+sign in failed, and `ResultCodes.NO_NETWORK` if sign in failed due to a lack of network connectivity.
 No further information on failure is provided as it is not
 typically useful; the only recourse for most apps if sign in fails is to ask
 the user to sign in again later, or proceed with anonymous sign-in if
@@ -214,7 +214,7 @@ supported.
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == RESULT_OK) {
+    if (resultCode == ResultCodes.OK) {
         // user is signed in!
         startActivity(new Intent(this, WelcomeBackActivity.class));
         finish();
@@ -222,13 +222,13 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     }
 
     // Sign in canceled
-    if (resultCode == RESULT_CANCELED) {
+    if (resultCode == ResultCodes.CANCELED) {
         showSnackbar(R.string.sign_in_cancelled);
         return;
     }
 
     // No network
-    if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
+    if (resultCode == ResultCodes.NO_NETWORK) {
         showSnackbar(R.string.no_internet_connection);
         return;
     }
@@ -250,7 +250,7 @@ Intent.
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == RESULT_OK) {
+    if (resultCode == ResultCodes.OK) {
         IdpResponse idpResponse = IdpResponse.fromResultIntent(data);
         startActivity(new Intent(this, WelcomeBackActivity.class)
                 .putExtra("my_token", idpResponse.getIdpToken()));

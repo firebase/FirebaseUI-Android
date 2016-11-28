@@ -37,6 +37,7 @@ import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
 import com.firebase.ui.auth.util.EmailFlowUtil;
@@ -149,8 +150,8 @@ public class AuthMethodPickerActivity extends AppCompatBase
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_EMAIL_FLOW) {
-            if (resultCode == RESULT_OK) {
-                finish(RESULT_OK, data);
+            if (resultCode == ResultCodes.OK) {
+                finish(ResultCodes.OK, data);
             }
         } else if (requestCode == RC_ACCOUNT_LINK) {
             finish(resultCode, data);

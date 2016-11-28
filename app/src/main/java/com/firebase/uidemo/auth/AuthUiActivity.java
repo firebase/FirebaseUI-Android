@@ -199,18 +199,18 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
+        if (resultCode == ResultCodes.OK) {
             startActivity(SignedInActivity.createIntent(this, IdpResponse.fromResultIntent(data)));
             finish();
             return;
         }
 
-        if (resultCode == RESULT_CANCELED) {
+        if (resultCode == ResultCodes.CANCELED) {
             showSnackbar(R.string.sign_in_cancelled);
             return;
         }
 
-        if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
+        if (resultCode == ResultCodes.NO_NETWORK) {
             showSnackbar(R.string.no_internet_connection);
             return;
         }

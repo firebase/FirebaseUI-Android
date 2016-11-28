@@ -17,7 +17,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import static android.app.Activity.RESULT_OK;
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
 public class BaseHelper {
@@ -117,7 +116,7 @@ public class BaseHelper {
             @Nullable String password,
             @Nullable IdpResponse response) {
         if (saveSmartLock == null) {
-            finishActivity(activity, RESULT_OK, new Intent());
+            finishActivity(activity, ResultCodes.OK, new Intent());
         } else {
             saveSmartLock.saveCredentialsOrFinish(
                     firebaseUser,

@@ -19,6 +19,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
+import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
@@ -47,10 +48,6 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
-import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
 
 /**
  * Attempts to acquire a credential from Smart Lock for Passwords to sign in
@@ -81,7 +78,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         if (!hasNetworkConnection()) {
             Log.d(TAG, "No network connection");
-            finish(RESULT_NO_NETWORK, new Intent());
+            finish(ResultCodes.NO_NETWORK, new Intent());
             return;
         }
 
@@ -95,14 +92,14 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                                                        public void onCancel(DialogInterface dialogInterface) {
                                                            Log.w(TAG,
                                                                  "playServices:dialog.onCancel()");
-                                                           finish(RESULT_CANCELED, new Intent());
+                                                           finish(ResultCodes.CANCELED, new Intent());
                                                        }
                                                    });
 
         if (!madeAvailable
                 || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()) {
             Log.w(TAG, "playServices: could not make available.");
-            finish(RESULT_CANCELED, new Intent());
+            finish(ResultCodes.CANCELED, new Intent());
             return;
         }
 
@@ -172,7 +169,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_CREDENTIALS_READ:
-                if (resultCode == RESULT_OK) {
+                if (resultCode == ResultCodes.OK) {
                     // credential selected from SmartLock, log in with that credential
                     Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
                     handleCredential(credential);
@@ -187,7 +184,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 finish(resultCode, data);
                 break;
             case RC_PLAY_SERVICES:
-                if (resultCode != RESULT_OK) finish(resultCode, data);
+                if (resultCode != ResultCodes.OK) finish(resultCode, data);
                 break;
             default:
                 IdpSignInContainer signInContainer = IdpSignInContainer.getInstance(getActivity());
@@ -274,7 +271,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     /**
      * Begin sign in process with email and password from a SmartLock credential.
-     * On success, finish with {@code RESULT_OK}.
+     * On success, finish with {@link com.firebase.ui.auth.ui.ResultCodes#OK RESULT_OK}.
      * On failure, delete the credential from SmartLock (if applicable) and then launch the
      * auth method picker flow.
      */
@@ -286,7 +283,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        finish(RESULT_OK, new Intent());
+                        finish(ResultCodes.OK, new Intent());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

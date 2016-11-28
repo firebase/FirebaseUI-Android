@@ -24,6 +24,7 @@ import android.util.Log;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.ui.auth.util.FirebaseAuthWrapper;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -49,7 +50,7 @@ public class EmailHintContainerActivity extends AppCompatBase {
                 Log.e(TAG, "Unable to start hint intent", e);
             }
         }
-        finish(RESULT_CANCELED, new Intent());
+        finish(ResultCodes.CANCELED, new Intent());
     }
 
     @Override

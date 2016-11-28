@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.util.signincontainer;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -35,6 +34,7 @@ import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
+import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
 import com.google.android.gms.tasks.Task;
@@ -69,7 +69,7 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
 
         if (providerConfig == null) {
             // we don't have a provider to handle this
-            finish(Activity.RESULT_CANCELED, new Intent());
+            finish(ResultCodes.CANCELED, new Intent());
             return;
         }
 
@@ -105,7 +105,7 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
 
     @Override
     public void onFailure(Bundle extra) {
-        finish(Activity.RESULT_CANCELED, new Intent());
+        finish(ResultCodes.CANCELED, new Intent());
     }
 
     @Override
