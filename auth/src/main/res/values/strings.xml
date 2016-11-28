@@ -65,5 +65,4 @@
 
     <!-- accessibility -->
     <string name="accessibility_logo">App logo</string>
-    <string name="accessibility_toggle">Toggle password visibility</string>
 </resources>
