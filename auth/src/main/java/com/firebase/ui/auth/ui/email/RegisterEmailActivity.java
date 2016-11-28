@@ -24,11 +24,9 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
@@ -75,33 +73,17 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
 
         mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
 
-        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         mEmailEditText = (EditText) findViewById(R.id.email);
-
-        TypedValue visibleIcon = new TypedValue();
-        TypedValue slightlyVisibleIcon = new TypedValue();
-
-        getResources().getValue(R.dimen.visible_icon, visibleIcon, true);
-        getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
-
-        mPasswordEditText = (EditText) findViewById(R.id.password);
-        ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
-
-        mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
-                togglePasswordImage,
-                visibleIcon.getFloat(),
-                slightlyVisibleIcon.getFloat()));
-
-        togglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
-
         mNameEditText = (EditText) findViewById(R.id.name);
+        mPasswordEditText = (EditText) findViewById(R.id.password);
 
-        mPasswordFieldValidator = new PasswordFieldValidator((TextInputLayout)
-                findViewById(R.id.password_layout),
+        mPasswordFieldValidator = new PasswordFieldValidator(
+                (TextInputLayout) findViewById(R.id.password_layout),
                 getResources().getInteger(R.integer.min_password_length));
         mNameValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.name_layout));
         mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
 
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         if (email != null) {
             mEmailEditText.setText(email);
             mEmailEditText.setEnabled(false);
