@@ -226,49 +226,50 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     public static class ChatHolder extends RecyclerView.ViewHolder {
-        View mView;
+        private final TextView mNameField;
+        private final TextView mTextField;
+        private final FrameLayout mLeftArrow;
+        private final FrameLayout mRightArrow;
+        private final RelativeLayout mMessageContainer;
+        private final LinearLayout mMessage;
 
         public ChatHolder(View itemView) {
             super(itemView);
-            mView = itemView;
+            mNameField = (TextView) itemView.findViewById(R.id.name_text);
+            mTextField = (TextView) itemView.findViewById(R.id.message_text);
+            mLeftArrow = (FrameLayout) itemView.findViewById(R.id.left_arrow);
+            mRightArrow = (FrameLayout) itemView.findViewById(R.id.right_arrow);
+            mMessageContainer = (RelativeLayout) itemView.findViewById(R.id.message_container);
+            mMessage = (LinearLayout) itemView.findViewById(R.id.message);
         }
 
-        public void setIsSender(Boolean isSender) {
-            FrameLayout left_arrow = (FrameLayout) mView.findViewById(R.id.left_arrow);
-            FrameLayout right_arrow = (FrameLayout) mView.findViewById(R.id.right_arrow);
-            RelativeLayout messageContainer = (RelativeLayout) mView.findViewById(R.id.message_container);
-            LinearLayout message = (LinearLayout) mView.findViewById(R.id.message);
-
-            int color;
+        public void setIsSender(boolean isSender) {
+            final int color;
             if (isSender) {
-                color = ContextCompat.getColor(mView.getContext(), R.color.material_green_300);
-
-                left_arrow.setVisibility(View.GONE);
-                right_arrow.setVisibility(View.VISIBLE);
-                messageContainer.setGravity(Gravity.END);
+                color = ContextCompat.getColor(itemView.getContext(), R.color.material_green_300);
+                mLeftArrow.setVisibility(View.GONE);
+                mRightArrow.setVisibility(View.VISIBLE);
+                mMessageContainer.setGravity(Gravity.END);
             } else {
-                color = ContextCompat.getColor(mView.getContext(), R.color.material_gray_300);
-
-                left_arrow.setVisibility(View.VISIBLE);
-                right_arrow.setVisibility(View.GONE);
-                messageContainer.setGravity(Gravity.START);
+                color = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
+                mLeftArrow.setVisibility(View.VISIBLE);
+                mRightArrow.setVisibility(View.GONE);
+                mMessageContainer.setGravity(Gravity.START);
             }
 
-            ((GradientDrawable) message.getBackground()).setColor(color);
-            ((RotateDrawable) left_arrow.getBackground()).getDrawable()
+            ((GradientDrawable) mMessage.getBackground()).setColor(color);
+            ((RotateDrawable) mLeftArrow.getBackground()).getDrawable()
                     .setColorFilter(color, PorterDuff.Mode.SRC);
-            ((RotateDrawable) right_arrow.getBackground()).getDrawable()
+            ((RotateDrawable) mRightArrow.getBackground()).getDrawable()
                     .setColorFilter(color, PorterDuff.Mode.SRC);
         }
 
         public void setName(String name) {
-            TextView field = (TextView) mView.findViewById(R.id.name_text);
-            field.setText(name);
+            mNameField.setText(name);
         }
 
         public void setText(String text) {
-            TextView field = (TextView) mView.findViewById(R.id.message_text);
-            field.setText(text);
+            mTextField.setText(text);
         }
     }
 }
