@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-check.dependsOn 'testAll'
+check.dependsOn 'testAll', 'prepareArtifacts'
 
 android {
     compileSdkVersion compileSdk
