@@ -37,7 +37,6 @@ import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.PasswordToggler;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -58,7 +57,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
     private IdpResponse mIdpResponse;
-    @Nullable private SaveSmartLock mSaveSmartLock;
+    @Nullable
+    private SaveSmartLock mSaveSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,15 +76,16 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         bodyText = String.format(bodyText, mEmail);
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
-        spannableStringBuilder.setSpan(BOLD, emailStart, emailStart + mEmail.length(), Spannable
-                .SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(BOLD,
+                                       emailStart,
+                                       emailStart + mEmail.length(),
+                                       Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         TextView bodyTextView = ((TextView) findViewById(R.id.welcome_back_password_body));
         bodyTextView.setText(spannableStringBuilder);
 
         // Click listeners
         findViewById(R.id.button_done).setOnClickListener(this);
-        findViewById(R.id.toggle_visibility).setOnClickListener(new PasswordToggler(mPasswordField));
         findViewById(R.id.trouble_signing_in).setOnClickListener(this);
     }
 
@@ -131,7 +132,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                         // Sign in with the credential
                         firebaseAuth.signInWithCredential(authCredential)
                                 .addOnFailureListener(
-                                        new TaskFailureLogger(TAG, "Error signing in with credential"))
+                                        new TaskFailureLogger(TAG,
+                                                              "Error signing in with credential"))
                                 .addOnSuccessListener(
                                         new OnSuccessListener<AuthResult>() {
                                             @Override

@@ -241,10 +241,10 @@ allprojects { project ->
         def publicationName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
         def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"
 
-        group = group
-        version = version
+        group = project.ext.group
+        version = project.ext.version
 
-        def versionName = version
+        def versionName = project.ext.version
 
         bintray {
             user = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')

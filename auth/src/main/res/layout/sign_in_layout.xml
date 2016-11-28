@@ -31,22 +31,14 @@
         app:hintTextAppearance="@style/FirebaseUI.Text.HintText"
         app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true">
 
         <android.support.design.widget.TextInputEditText
             style="@style/FirebaseUI.EditText.PasswordField"
             android:id="@+id/password"/>
 
     </android.support.design.widget.TextInputLayout>
-
-    <ImageView
-        style="@style/FirebaseUI.ImageView.VisibilityToggle"
-        android:id="@+id/toggle_visibility"
-        android:layout_alignEnd="@id/password_layout"
-        android:layout_alignRight="@id/password_layout"
-        android:paddingTop="154dp"
-        android:contentDescription="@string/accessibility_toggle">
-    </ImageView>
 
     <LinearLayout
         android:layout_height="wrap_content"

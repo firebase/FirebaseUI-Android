@@ -8,7 +8,7 @@ APIs like the Realtime Database or Firebase Authentication.
 
 A compatible FirebaseUI client is also available for [iOS](https://github.com/firebase/firebaseui-ios).
 
-## Table of Content
+## Table of Contents
 
   1. [Installation](#installation)
   1. [Usage](#usage)
@@ -28,16 +28,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:1.0.0'
+    compile 'com.firebaseui:firebase-ui-database:1.0.1'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:1.0.0'
+    compile 'com.firebaseui:firebase-ui-auth:1.0.1'
 
     // FirebaseUI Storage only
-    compile 'com.firebaseui:firebase-ui-storage:1.0.0'
+    compile 'com.firebaseui:firebase-ui-storage:1.0.1'
 
     // Single target that includes all FirebaseUI libraries above
-    compile 'com.firebaseui:firebase-ui:1.0.0'
+    compile 'com.firebaseui:firebase-ui:1.0.1'
 }
 ```
 
@@ -67,6 +67,7 @@ For convenience, here are some examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 1.0.1              | 10.0.0                         |
 | 1.0.0              | 9.8.0                          |
 | 0.6.2              | 9.8.0                          |
 | 0.6.1              | 9.6.1                          |
