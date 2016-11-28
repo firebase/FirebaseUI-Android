@@ -28,7 +28,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -95,8 +94,9 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         mNameValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.name_layout));
         mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
 
-        mNameEditText = (EditText) findViewById(R.id.name);
         mEmailEditText = (EditText) findViewById(R.id.email);
+        mNameEditText = (EditText) findViewById(R.id.name);
+        mPasswordEditText = (EditText) findViewById(R.id.password);
 
         mEmailEditText.setOnFocusChangeListener(this);
         mNameEditText.setOnFocusChangeListener(this);
