@@ -232,6 +232,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         private final FrameLayout mRightArrow;
         private final RelativeLayout mMessageContainer;
         private final LinearLayout mMessage;
+        private final int mGreen300;
+        private final int mGray300;
 
         public ChatHolder(View itemView) {
             super(itemView);
@@ -241,17 +243,19 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             mRightArrow = (FrameLayout) itemView.findViewById(R.id.right_arrow);
             mMessageContainer = (RelativeLayout) itemView.findViewById(R.id.message_container);
             mMessage = (LinearLayout) itemView.findViewById(R.id.message);
+            mGreen300 = ContextCompat.getColor(itemView.getContext(), R.color.material_green_300);
+            mGray300 = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
         }
 
         public void setIsSender(boolean isSender) {
             final int color;
             if (isSender) {
-                color = ContextCompat.getColor(itemView.getContext(), R.color.material_green_300);
+                color = mGreen300;
                 mLeftArrow.setVisibility(View.GONE);
                 mRightArrow.setVisibility(View.VISIBLE);
                 mMessageContainer.setGravity(Gravity.END);
             } else {
-                color = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
+                color = mGray300;
                 mLeftArrow.setVisibility(View.VISIBLE);
                 mRightArrow.setVisibility(View.GONE);
                 mMessageContainer.setGravity(Gravity.START);
