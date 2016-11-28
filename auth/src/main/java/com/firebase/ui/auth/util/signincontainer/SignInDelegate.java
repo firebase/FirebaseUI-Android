@@ -16,10 +16,10 @@ import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
-import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
@@ -271,7 +271,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     /**
      * Begin sign in process with email and password from a SmartLock credential.
-     * On success, finish with {@link com.firebase.ui.auth.ui.ResultCodes#OK RESULT_OK}.
+     * On success, finish with {@link ResultCodes#OK RESULT_OK}.
      * On failure, delete the credential from SmartLock (if applicable) and then launch the
      * auth method picker flow.
      */

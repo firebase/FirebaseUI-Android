@@ -138,8 +138,8 @@ import java.util.Set;
  * <h3>Handling the Sign-in response</h3>
  *
  * The authentication flow provides only two response codes:
- * {@link com.firebase.ui.auth.ui.ResultCodes#OK RESULT_OK} if a user is signed in,
- * and {@link com.firebase.ui.auth.ui.ResultCodes#CANCELED RESULT_CANCELLED} if sign in
+ * {@link ResultCodes#OK RESULT_OK} if a user is signed in,
+ * and {@link ResultCodes#CANCELED RESULT_CANCELLED} if sign in
  * failed. No further information on failure is provided as it is not typically useful; the only
  * recourse for most apps if sign in fails is to ask the user to sign in again later, or proceed
  * with an anonymous account if supported.

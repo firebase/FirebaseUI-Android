@@ -9,9 +9,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.BaseDialog;
 import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.ResultCodes;
 
 public class RecoveryEmailSentDialog extends BaseDialog {
     private static final String TAG = "RecoveryEmailSentDialog";

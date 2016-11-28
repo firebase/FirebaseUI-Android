@@ -29,10 +29,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
-import com.firebase.ui.auth.ui.ResultCodes;
 import com.firebase.ui.auth.util.GoogleApiConstants;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -164,7 +164,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     /**
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise,
-     * finish the calling Activity with {@link com.firebase.ui.auth.ui.ResultCodes#OK RESULT_OK}.
+     * finish the calling Activity with {@link ResultCodes#OK RESULT_OK}.
      *
      * Note: saveCredentialsOrFinish cannot be called immediately after getInstance because
      * onCreate has not yet been called.

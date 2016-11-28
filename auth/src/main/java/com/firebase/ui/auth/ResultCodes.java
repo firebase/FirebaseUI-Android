@@ -1,8 +1,6 @@
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth;
 
 import android.app.Activity;
-
-import com.firebase.ui.auth.AuthUI;
 
 /**
  * Result codes returned when using {@link AuthUI.SignInIntentBuilder#build()} with

@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.firebase.ui.auth.ui.ResultCodes;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
