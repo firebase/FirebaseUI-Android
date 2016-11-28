@@ -17,6 +17,7 @@ android:
     - platform-tools
     - extra-android-m2repository
     - extra-google-m2repository
+before_script: mv library/google-services.json app/google-services.json
 script: ./gradlew clean assembleDebug check
 after_failure:
   # tests
