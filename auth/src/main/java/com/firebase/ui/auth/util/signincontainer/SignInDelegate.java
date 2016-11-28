@@ -92,14 +92,14 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                                                        public void onCancel(DialogInterface dialogInterface) {
                                                            Log.w(TAG,
                                                                  "playServices:dialog.onCancel()");
-                                                           finish(ResultCodes.CANCELED, new Intent());
+                                                           finish(ResultCodes.UNKNOWN_ERROR, new Intent());
                                                        }
                                                    });
 
         if (!madeAvailable
                 || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()) {
             Log.w(TAG, "playServices: could not make available.");
-            finish(ResultCodes.CANCELED, new Intent());
+            finish(ResultCodes.UNKNOWN_ERROR, new Intent());
             return;
         }
 

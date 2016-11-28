@@ -232,6 +232,12 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         showSnackbar(R.string.no_internet_connection);
         return;
     }
+    
+    
+    if (resultCode == ResultCodes.UNKNOWN_ERROR) {
+        showSnackbar(R.string.unknown_error);
+        return;
+    }
 
     // User is not signed in. Maybe just wait for the user to press
     // "sign in" again, or show a message.

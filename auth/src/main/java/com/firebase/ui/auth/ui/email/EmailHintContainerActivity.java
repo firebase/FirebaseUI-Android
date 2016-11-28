@@ -50,7 +50,7 @@ public class EmailHintContainerActivity extends AppCompatBase {
                 Log.e(TAG, "Unable to start hint intent", e);
             }
         }
-        finish(ResultCodes.CANCELED, new Intent());
+        finish(ResultCodes.UNKNOWN_ERROR, new Intent());
     }
 
     @Override

@@ -6,14 +6,18 @@ import android.app.Activity;
  * Result codes returned when using {@link AuthUI.SignInIntentBuilder#build()} with
  * {@code startActivityForResult}.
  */
-public class ResultCodes {
+public final class ResultCodes {
+    private ResultCodes() {
+        // We don't want people to initialize this class
+    }
+
     /**
      * Sign in succeeded
      **/
     public static final int OK = Activity.RESULT_OK;
 
     /**
-     * User cancelled sign in
+     * Sign in canceled by user
      **/
     public static final int CANCELED = Activity.RESULT_CANCELED;
 

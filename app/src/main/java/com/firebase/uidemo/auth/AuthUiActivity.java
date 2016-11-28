@@ -215,6 +215,11 @@ public class AuthUiActivity extends AppCompatActivity {
             return;
         }
 
+        if (resultCode == ResultCodes.UNKNOWN_ERROR) {
+            showSnackbar(R.string.unknown_error);
+            return;
+        }
+
         showSnackbar(R.string.unknown_sign_in_response);
     }
 
