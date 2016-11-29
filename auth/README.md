@@ -216,13 +216,15 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == RC_SIGN_IN) {
         IdpResponse response = data != null ? IdpResponse.fromResultIntent(data) : null;
 
+        // Successfully signed in
         if (resultCode == ResultCodes.OK) {
             startActivity(SignedInActivity.createIntent(this, response));
             finish();
             return;
         } else {
+            // Sign in failed
             if (response == null) {
-                // User pressed back button and is not signed in
+                // User pressed back button
                 showSnackbar(R.string.sign_in_cancelled);
                 return;
             }

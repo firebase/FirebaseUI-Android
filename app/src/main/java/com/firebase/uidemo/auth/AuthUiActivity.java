@@ -202,13 +202,15 @@ public class AuthUiActivity extends AppCompatActivity {
     private void handleSignInResponse(int resultCode, Intent data) {
         IdpResponse response = data != null ? IdpResponse.fromResultIntent(data) : null;
 
+        // Successfully signed in
         if (resultCode == ResultCodes.OK) {
             startActivity(SignedInActivity.createIntent(this, response));
             finish();
             return;
         } else {
+            // Sign in failed
             if (response == null) {
-                // User pressed back button and is not signed in
+                // User pressed back button
                 showSnackbar(R.string.sign_in_cancelled);
                 return;
             }
