@@ -123,7 +123,7 @@ public class CredentialSignInHandlerTest {
         assertEquals(idpResponse.getEmail(), idpResponseCaptor.getValue().getEmail());
         assertEquals(idpResponse.getIdpToken(), idpResponseCaptor.getValue().getIdpToken());
         assertEquals(idpResponse.getIdpSecret(), idpResponseCaptor.getValue().getIdpSecret());
-        assertEquals(idpResponse.isNewUser(), idpResponseCaptor.getValue().isNewUser());
+        assertEquals(idpResponse.isNewEmailUser(), idpResponseCaptor.getValue().isNewEmailUser());
     }
 
     @Test

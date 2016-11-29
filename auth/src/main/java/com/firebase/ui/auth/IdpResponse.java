@@ -113,7 +113,7 @@ public class IdpResponse implements Parcelable {
     /**
      * @return true if the user was created in the sign in flow, false if it already existed.
      */
-    public boolean isNewUser() {
+    public boolean isNewEmailUser() {
         return mIsNewUser;
     }
 

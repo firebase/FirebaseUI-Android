@@ -28,9 +28,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -42,7 +40,12 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
 import java.util.Iterator;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SignedInActivity extends AppCompatActivity {
     private static final String EXTRA_IDP_RESPONSE = "extra_idp_response";
@@ -62,6 +65,11 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_enabled_providers)
     TextView mEnabledProviders;
 
+    @BindView(R.id.user_status)
+    TextView mUserStatus;
+
+    private IdpResponse mIdpResponse;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +80,8 @@ public class SignedInActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        mIdpResponse = getIntent().getParcelableExtra(EXTRA_IDP_RESPONSE);
 
         setContentView(R.layout.signed_in_layout);
         ButterKnife.bind(this);
@@ -143,6 +153,9 @@ public class SignedInActivity extends AppCompatActivity {
                 TextUtils.isEmpty(user.getEmail()) ? "No email" : user.getEmail());
         mUserDisplayName.setText(
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
+        if (mIdpResponse != null) {
+            mUserStatus.setText(mIdpResponse.isNewEmailUser() ? "New user" : "Existing user");
+        }
 
         StringBuilder providerList = new StringBuilder();
 
@@ -174,10 +187,9 @@ public class SignedInActivity extends AppCompatActivity {
     }
 
     private void populateIdpToken() {
-        IdpResponse idpResponse = getIntent().getParcelableExtra(EXTRA_IDP_RESPONSE);
-        if (idpResponse != null) {
-            String token = idpResponse.getIdpToken();
-            String secret = idpResponse.getIdpSecret();
+        if (mIdpResponse != null) {
+            String token = mIdpResponse.getIdpToken();
+            String secret = mIdpResponse.getIdpSecret();
             if (token == null) {
                 findViewById(R.id.idp_token_layout).setVisibility(View.GONE);
             } else {
