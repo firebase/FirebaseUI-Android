@@ -200,7 +200,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         if (data == null) {
-            // User pressed back button
+            // User pressed back button and is not signed incredentsit
             showSnackbar(R.string.sign_in_cancelled);
             return;
         }
