@@ -62,7 +62,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String providerId = getProviderIdFromIntent();
-        mPrevIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        mPrevIdpResponse = IdpResponse.fromResultIntent(getIntent());
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         mIdpProvider = null;
@@ -81,7 +81,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                     default:
                         Log.w(TAG, "Unknown provider: " + providerId);
                         finish(ResultCodes.CANCELED,
-                               IdpResponse.createErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+                               IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
                         return;
                 }
             }
@@ -95,7 +95,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
             getIntent().putExtra(
                     ExtraConstants.EXTRA_ERROR_MESSAGE,
                     "Firebase login successful. Account linking failed due to provider not enabled by application");
-            finish(ResultCodes.CANCELED, IdpResponse.createErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
             return;
         }
 
@@ -136,7 +136,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
     @Override
     public void onFailure(Bundle extra) {
         Toast.makeText(getApplicationContext(), "Error signing in", Toast.LENGTH_LONG).show();
-        finish(ResultCodes.CANCELED, IdpResponse.createErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+        finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
     }
 
     private String getProviderIdFromIntent() {
@@ -155,7 +155,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
         AuthCredential newCredential = AuthCredentialHelper.getAuthCredential(newIdpResponse);
         if (newCredential == null) {
             Log.e(TAG, "No credential returned");
-            finish(ResultCodes.CANCELED, IdpResponse.createErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
             return;
         }
 
@@ -177,8 +177,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                                         TAG, "Error signing in with previous credential"))
                                 .addOnCompleteListener(new FinishListener(newIdpResponse));
                     } else {
-                        finish(ResultCodes.OK, new Intent().putExtra(
-                                ExtraConstants.EXTRA_IDP_RESPONSE, newIdpResponse));
+                        finish(ResultCodes.OK, IdpResponse.getIntent(newIdpResponse));
                     }
                 }
             }).addOnFailureListener(
@@ -212,8 +211,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
         }
 
         public void onComplete(@NonNull Task task) {
-            finish(ResultCodes.OK,
-                   new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mIdpResponse));
+            finish(ResultCodes.OK, IdpResponse.getIntent(mIdpResponse));
         }
     }
 }

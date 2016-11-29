@@ -205,9 +205,6 @@ public class CredentialSignInHandlerTest {
                 capturedIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
-                ((IdpResponse) capturedIntent
-                        .getExtras()
-                        .getParcelable(ExtraConstants.EXTRA_IDP_RESPONSE))
-                        .getEmail());
+                IdpResponse.fromResultIntent(capturedIntent).getEmail());
     }
 }

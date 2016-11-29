@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.util.GoogleApiConstants;
@@ -157,8 +156,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     }
 
     private void finish() {
-        Intent resultIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mResponse);
-        finish(ResultCodes.OK, resultIntent);
+        finish(ResultCodes.OK, IdpResponse.getIntent(mResponse));
     }
 
     /**

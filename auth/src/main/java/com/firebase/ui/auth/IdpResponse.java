@@ -148,7 +148,11 @@ public class IdpResponse implements Parcelable {
         return resultIntent.getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
     }
 
-    public static Intent createErrorCodeIntent(int errorCode) {
+    public static Intent getIntent(IdpResponse response) {
+        return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+    }
+
+    public static Intent getErrorCodeIntent(int errorCode) {
         return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, new IdpResponse(errorCode));
     }
 }
