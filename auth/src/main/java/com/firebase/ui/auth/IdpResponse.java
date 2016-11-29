@@ -30,14 +30,13 @@ public class IdpResponse implements Parcelable {
     @Nullable private final String mEmail;
     private final String mToken;
     private final String mSecret;
-    private final boolean mIsNewUser;
 
     public IdpResponse(String providerId, @Nullable String email, @Nullable String token) {
         this(providerId, email, token, null);
     }
 
-    public IdpResponse(String providerId, String email, boolean isNewUser) {
-        this(providerId, email, null, null, isNewUser);
+    public IdpResponse(String providerId, String email) {
+        this(providerId, email, null, null);
     }
 
     public IdpResponse(
@@ -45,20 +44,10 @@ public class IdpResponse implements Parcelable {
             @Nullable String email,
             @Nullable String token,
             @Nullable String secret) {
-        this(providerId, email, token, secret, false);
-    }
-
-    public IdpResponse(
-            String providerId,
-            @Nullable String email,
-            @Nullable String token,
-            @Nullable String secret,
-            boolean isNewUser) {
         mProviderId = providerId;
         mEmail = email;
         mToken = token;
         mSecret = secret;
-        mIsNewUser = isNewUser;
     }
 
     public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
@@ -68,8 +57,7 @@ public class IdpResponse implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readString(),
-                    in.readString(),
-                    in.readInt() == 1
+                    in.readString()
             );
         }
 
@@ -110,13 +98,6 @@ public class IdpResponse implements Parcelable {
         return mEmail;
     }
 
-    /**
-     * @return true if the user was created in the sign in flow, false if it already existed.
-     */
-    public boolean isNewEmailUser() {
-        return mIsNewUser;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -128,7 +109,6 @@ public class IdpResponse implements Parcelable {
         dest.writeString(mEmail);
         dest.writeString(mToken);
         dest.writeString(mSecret);
-        dest.writeInt(mIsNewUser ? 1 : 0);
     }
 
     /**

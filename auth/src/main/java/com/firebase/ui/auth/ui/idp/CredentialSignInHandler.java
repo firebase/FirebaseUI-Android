@@ -41,8 +41,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
 
     private Activity mActivity;
     private BaseHelper mHelper;
-    @Nullable
-    private SaveSmartLock mSmartLock;
+    @Nullable private SaveSmartLock mSmartLock;
     private IdpResponse mResponse;
     private int mAccountLinkResultCode;
 

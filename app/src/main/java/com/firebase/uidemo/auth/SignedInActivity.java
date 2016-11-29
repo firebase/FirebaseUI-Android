@@ -65,9 +65,6 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_enabled_providers)
     TextView mEnabledProviders;
 
-    @BindView(R.id.user_status)
-    TextView mUserStatus;
-
     private IdpResponse mIdpResponse;
 
     @Override
@@ -153,9 +150,6 @@ public class SignedInActivity extends AppCompatActivity {
                 TextUtils.isEmpty(user.getEmail()) ? "No email" : user.getEmail());
         mUserDisplayName.setText(
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
-        if (mIdpResponse != null) {
-            mUserStatus.setText(mIdpResponse.isNewEmailUser() ? "New user" : "Existing user");
-        }
 
         StringBuilder providerList = new StringBuilder();
 

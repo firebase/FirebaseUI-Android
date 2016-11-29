@@ -88,7 +88,7 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                                 mSaveSmartLock,
                                 authResult.getUser(),
                                 password,
-                                new IdpResponse(EmailAuthProvider.PROVIDER_ID, email, false));
+                                new IdpResponse(EmailAuthProvider.PROVIDER_ID, email));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
