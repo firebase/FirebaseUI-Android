@@ -115,7 +115,7 @@ public class BaseHelper {
             Activity activity,
             FirebaseUser firebaseUser,
             @Nullable String password,
-            @Nullable IdpResponse response) {
+            IdpResponse response) {
         if (saveSmartLock == null) {
             finishActivity(activity, ResultCodes.OK, new Intent());
         } else {

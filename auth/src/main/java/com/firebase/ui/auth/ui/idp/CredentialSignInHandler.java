@@ -41,7 +41,8 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
 
     private Activity mActivity;
     private BaseHelper mHelper;
-    @Nullable private SaveSmartLock mSmartLock;
+    @Nullable
+    private SaveSmartLock mSmartLock;
     private IdpResponse mResponse;
     private int mAccountLinkResultCode;
 
@@ -66,7 +67,11 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                     mSmartLock,
                     mActivity,
                     firebaseUser,
-                    mResponse);
+                    new IdpResponse(mResponse.getProviderType(),
+                                    mResponse.getEmail(),
+                                    mResponse.getIdpToken(),
+                                    mResponse.getIdpSecret(),
+                                    true));
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 final String email = mResponse.getEmail();

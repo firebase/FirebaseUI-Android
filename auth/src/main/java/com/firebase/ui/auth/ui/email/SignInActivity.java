@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
@@ -37,6 +38,7 @@ import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 
 /**
  * Activity to sign in with email and password.
@@ -85,7 +87,8 @@ public class SignInActivity extends AppCompatBase implements View.OnClickListene
                         mActivityHelper.saveCredentialsOrFinish(
                                 mSaveSmartLock,
                                 authResult.getUser(),
-                                password);
+                                password,
+                                new IdpResponse(EmailAuthProvider.PROVIDER_ID, email, false));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

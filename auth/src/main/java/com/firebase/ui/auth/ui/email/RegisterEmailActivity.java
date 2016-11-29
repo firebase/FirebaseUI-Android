@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
@@ -44,6 +45,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -144,7 +146,10 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         mActivityHelper.saveCredentialsOrFinish(
                                                 mSaveSmartLock,
                                                 firebaseUser,
-                                                password);
+                                                password,
+                                                new IdpResponse(EmailAuthProvider.PROVIDER_ID,
+                                                                email,
+                                                                true));
                                     }
                                 });
                     }

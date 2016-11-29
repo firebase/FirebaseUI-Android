@@ -142,7 +142,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                                 mActivityHelper.saveCredentialsOrFinish(
                                                         mSaveSmartLock,
                                                         authResult.getUser(),
-                                                        password);
+                                                        password,
+                                                        mIdpResponse);
                                             }
                                         });
                     }

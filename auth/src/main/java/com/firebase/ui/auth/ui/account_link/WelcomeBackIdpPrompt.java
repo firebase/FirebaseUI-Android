@@ -176,7 +176,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                                         TAG, "Error signing in with previous credential"))
                                 .addOnCompleteListener(new FinishListener(newIdpResponse));
                     } else {
-                        finish(ResultCodes.OK,new Intent().putExtra(
+                        finish(ResultCodes.OK, new Intent().putExtra(
                                 ExtraConstants.EXTRA_IDP_RESPONSE, newIdpResponse));
                     }
                 }

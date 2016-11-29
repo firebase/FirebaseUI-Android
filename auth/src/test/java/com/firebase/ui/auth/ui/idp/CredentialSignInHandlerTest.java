@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.idp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -84,7 +85,10 @@ public class CredentialSignInHandlerTest {
         FirebaseUser mockFirebaseUser = TestHelper.makeMockFirebaseUser();
         IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL);
+                TestConstants.EMAIL,
+                null,
+                null,
+                true);
         SaveSmartLock smartLock = mock(SaveSmartLock.class);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
@@ -100,11 +104,26 @@ public class CredentialSignInHandlerTest {
                 TestHelper.getFlowParameters(Collections.<String>emptyList()));
         credentialSignInHandler.onComplete(signInTask);
 
+        ArgumentCaptor<SaveSmartLock> smartLockCaptor = ArgumentCaptor.forClass(SaveSmartLock.class);
+        ArgumentCaptor<Activity> activityCaptor = ArgumentCaptor.forClass(Activity.class);
+        ArgumentCaptor<FirebaseUser> firebaseUserCaptor = ArgumentCaptor.forClass(FirebaseUser.class);
+        ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
+
         verify(mockActivityHelper).saveCredentialsOrFinish(
-                smartLock,
-                mockActivity,
-                mockFirebaseUser,
-                idpResponse);
+                smartLockCaptor.capture(),
+                activityCaptor.capture(),
+                firebaseUserCaptor.capture(),
+                idpResponseCaptor.capture());
+
+        assertEquals(smartLock, smartLockCaptor.getValue());
+        assertEquals(mockActivity, activityCaptor.getValue());
+        assertEquals(mockFirebaseUser, firebaseUserCaptor.getValue());
+
+        assertEquals(idpResponse.getProviderType(), idpResponseCaptor.getValue().getProviderType());
+        assertEquals(idpResponse.getEmail(), idpResponseCaptor.getValue().getEmail());
+        assertEquals(idpResponse.getIdpToken(), idpResponseCaptor.getValue().getIdpToken());
+        assertEquals(idpResponse.getIdpSecret(), idpResponseCaptor.getValue().getIdpSecret());
+        assertEquals(idpResponse.isNewUser(), idpResponseCaptor.getValue().isNewUser());
     }
 
     @Test
@@ -114,7 +133,10 @@ public class CredentialSignInHandlerTest {
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
         IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL);
+                TestConstants.EMAIL,
+                null,
+                null,
+                true);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
@@ -162,7 +184,10 @@ public class CredentialSignInHandlerTest {
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
         IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL);
+                TestConstants.EMAIL,
+                null,
+                null,
+                true);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
                 mockActivityHelper,
