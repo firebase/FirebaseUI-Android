@@ -31,12 +31,12 @@ public class IdpResponse implements Parcelable {
     private final String mToken;
     private final String mSecret;
 
-    public IdpResponse(String providerId, @Nullable String email, @Nullable String token) {
-        this(providerId, email, token, null);
-    }
-
     public IdpResponse(String providerId, String email) {
         this(providerId, email, null, null);
+    }
+
+    public IdpResponse(String providerId, @Nullable String email, @Nullable String token) {
+        this(providerId, email, token, null);
     }
 
     public IdpResponse(

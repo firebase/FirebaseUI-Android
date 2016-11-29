@@ -6,6 +6,7 @@ import com.firebase.ui.auth.AuthUI;
  * Result codes returned when using {@link AuthUI.SignInIntentBuilder#build()} with
  * {@code startActivityForResult}.
  */
+@Deprecated
 public class ResultCodes {
 
     /**
