@@ -213,33 +213,31 @@ the user to sign in again later, or proceed with anonymous sign-in if supported.
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == ResultCodes.OK) {
-        // user is signed in!
-        startActivity(new Intent(this, WelcomeBackActivity.class));
-        finish();
-        return;
-    }
-
-    // Sign in canceled
-    if (resultCode == ResultCodes.CANCELED) {
+    if (data == null) {
+        // User pressed back button and is not signed in
         showSnackbar(R.string.sign_in_cancelled);
         return;
     }
 
-    // No network
-    if (resultCode == ResultCodes.NO_NETWORK) {
+    IdpResponse response = IdpResponse.fromResultIntent(data);
+
+    if (resultCode == ResultCodes.OK) {
+        startActivity(SignedInActivity.createIntent(this, response));
+        finish();
+        return;
+    }
+    
+    // User is not signed in. Maybe just wait for the user to press
+    // "sign in" again, or show a message.
+
+    if (response.getErrorCode() == ResultCodes.NO_NETWORK) {
         showSnackbar(R.string.no_internet_connection);
         return;
     }
-    
-    
-    if (resultCode == ResultCodes.UNKNOWN_ERROR) {
-        showSnackbar(R.string.unknown_error);
-        return;
-    }
 
-    // User is not signed in. Maybe just wait for the user to press
-    // "sign in" again, or show a message.
+    if (response.getErrorCode() == ResultCodes.UNKNOWN_ERROR) {
+        showSnackbar(R.string.unknown_error);
+    }
  }
 ```
 
