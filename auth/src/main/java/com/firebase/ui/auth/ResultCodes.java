@@ -20,14 +20,4 @@ public final class ResultCodes {
      * Sign in canceled by user
      **/
     public static final int CANCELED = Activity.RESULT_CANCELED;
-
-    /**
-     * Sign in failed due to lack of network connection
-     **/
-    public static final int NO_NETWORK = 10;
-
-    /**
-     * An unknown error has occurred
-     **/
-    public static final int UNKNOWN_ERROR = 20;
 }

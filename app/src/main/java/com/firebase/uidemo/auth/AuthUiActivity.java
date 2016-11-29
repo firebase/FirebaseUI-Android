@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.uidemo.R;
@@ -209,12 +210,12 @@ public class AuthUiActivity extends AppCompatActivity {
             }
 
             // Sign in canceled
-            if (response.getErrorCode() == ResultCodes.NO_NETWORK) {
+            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
             }
 
-            if (response.getErrorCode() == ResultCodes.UNKNOWN_ERROR) {
+            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                 showSnackbar(R.string.unknown_error);
                 return;
             }

@@ -224,12 +224,12 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             }
 
             // Sign in canceled
-            if (response.getErrorCode() == ResultCodes.NO_NETWORK) {
+            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
             }
 
-            if (response.getErrorCode() == ResultCodes.UNKNOWN_ERROR) {
+            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
                 showSnackbar(R.string.unknown_error);
                 return;
             }

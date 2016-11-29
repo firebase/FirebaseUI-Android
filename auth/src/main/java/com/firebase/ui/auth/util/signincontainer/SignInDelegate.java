@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
@@ -79,7 +80,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         if (!hasNetworkConnection()) {
             Log.d(TAG, "No network connection");
-            finish(ResultCodes.NO_NETWORK, IdpResponse.getErrorCodeIntent(ResultCodes.NO_NETWORK));
+            finish(ErrorCodes.NO_NETWORK, IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
             return;
         }
 
@@ -94,14 +95,14 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                                                            Log.w(TAG,
                                                                  "playServices:dialog.onCancel()");
                                                            finish(ResultCodes.CANCELED,
-                                                                  IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+                                                                  IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
                                                        }
                                                    });
 
         if (!madeAvailable
                 || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()) {
             Log.w(TAG, "playServices: could not make available.");
-            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
             return;
         }
 

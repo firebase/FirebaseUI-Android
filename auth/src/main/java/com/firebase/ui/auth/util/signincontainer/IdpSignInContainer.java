@@ -23,6 +23,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.provider.AuthCredentialHelper;
@@ -66,7 +67,7 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
 
         if (providerConfig == null) {
             // we don't have a provider to handle this
-            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
             return;
         }
 
@@ -99,7 +100,7 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
 
     @Override
     public void onFailure(Bundle extra) {
-        finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+        finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
     }
 
     @Override

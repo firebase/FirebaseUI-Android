@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
@@ -81,7 +82,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                     default:
                         Log.w(TAG, "Unknown provider: " + providerId);
                         finish(ResultCodes.CANCELED,
-                               IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+                               IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
                         return;
                 }
             }
@@ -95,7 +96,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
             getIntent().putExtra(
                     ExtraConstants.EXTRA_ERROR_MESSAGE,
                     "Firebase login successful. Account linking failed due to provider not enabled by application");
-            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
             return;
         }
 
@@ -136,7 +137,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
     @Override
     public void onFailure(Bundle extra) {
         Toast.makeText(getApplicationContext(), "Error signing in", Toast.LENGTH_LONG).show();
-        finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+        finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
     }
 
     private String getProviderIdFromIntent() {
@@ -155,7 +156,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
         AuthCredential newCredential = AuthCredentialHelper.getAuthCredential(newIdpResponse);
         if (newCredential == null) {
             Log.e(TAG, "No credential returned");
-            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
             return;
         }
 

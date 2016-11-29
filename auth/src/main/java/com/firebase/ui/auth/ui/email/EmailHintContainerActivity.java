@@ -21,6 +21,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -51,7 +52,7 @@ public class EmailHintContainerActivity extends AppCompatBase {
                 Log.e(TAG, "Unable to start hint intent", e);
             }
         }
-        finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
+        finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
     }
 
     @Override
