@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -83,7 +82,7 @@ public class ImageActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_CHOOSE_PHOTO) {
-            if (resultCode == ResultCodes.OK) {
+            if (resultCode == RESULT_OK) {
                 Uri selectedImage = data.getData();
                 uploadPhoto(selectedImage);
             } else {

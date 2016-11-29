@@ -69,7 +69,7 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
 
         if (providerConfig == null) {
             // we don't have a provider to handle this
-            finish(ResultCodes.UNKNOWN_ERROR, new Intent());
+            finish(ResultCodes.CANCELED, IdpResponse.createErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
             return;
         }
 
@@ -105,7 +105,7 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
 
     @Override
     public void onFailure(Bundle extra) {
-        finish(ResultCodes.UNKNOWN_ERROR, new Intent());
+        finish(ResultCodes.CANCELED, IdpResponse.createErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
     }
 
     @Override

@@ -80,7 +80,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                         break;
                     default:
                         Log.w(TAG, "Unknown provider: " + providerId);
-                        finish(ResultCodes.UNKNOWN_ERROR, getIntent());
+                        finish(ResultCodes.CANCELED,
+                               IdpResponse.createErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
                         return;
                 }
             }
@@ -94,7 +95,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
             getIntent().putExtra(
                     ExtraConstants.EXTRA_ERROR_MESSAGE,
                     "Firebase login successful. Account linking failed due to provider not enabled by application");
-            finish(ResultCodes.UNKNOWN_ERROR, getIntent());
+            finish(ResultCodes.CANCELED, IdpResponse.createErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
             return;
         }
 
@@ -135,7 +136,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
     @Override
     public void onFailure(Bundle extra) {
         Toast.makeText(getApplicationContext(), "Error signing in", Toast.LENGTH_LONG).show();
-        finish(ResultCodes.UNKNOWN_ERROR, new Intent());
+        finish(ResultCodes.CANCELED, IdpResponse.createErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
     }
 
     private String getProviderIdFromIntent() {
@@ -154,7 +155,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
         AuthCredential newCredential = AuthCredentialHelper.getAuthCredential(newIdpResponse);
         if (newCredential == null) {
             Log.e(TAG, "No credential returned");
-            finish(ResultCodes.UNKNOWN_ERROR, new Intent());
+            finish(ResultCodes.CANCELED, IdpResponse.createErrorCodeIntent(ResultCodes.UNKNOWN_ERROR));
             return;
         }
 

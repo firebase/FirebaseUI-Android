@@ -27,9 +27,15 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 public class IdpResponse implements Parcelable {
 
     private final String mProviderId;
-    @Nullable private final String mEmail;
+    @Nullable
+    private final String mEmail;
     private final String mToken;
     private final String mSecret;
+    private final int mErrorCode;
+
+    public IdpResponse(int errorCode) {
+        this(null, null, null, null, errorCode);
+    }
 
     public IdpResponse(String providerId, String email) {
         this(providerId, email, null, null);
@@ -44,10 +50,20 @@ public class IdpResponse implements Parcelable {
             @Nullable String email,
             @Nullable String token,
             @Nullable String secret) {
+        this(providerId, email, token, secret, ResultCodes.OK);
+    }
+
+    public IdpResponse(
+            String providerId,
+            @Nullable String email,
+            @Nullable String token,
+            @Nullable String secret,
+            int errorCode) {
         mProviderId = providerId;
         mEmail = email;
         mToken = token;
         mSecret = secret;
+        mErrorCode = errorCode;
     }
 
     public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
@@ -57,7 +73,8 @@ public class IdpResponse implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readString(),
-                    in.readString()
+                    in.readString(),
+                    in.readInt()
             );
         }
 
@@ -70,6 +87,7 @@ public class IdpResponse implements Parcelable {
     /**
      * Get the type of provider. e.g. {@link AuthUI#GOOGLE_PROVIDER}
      */
+    @Nullable
     public String getProviderType() {
         return mProviderId;
     }
@@ -98,6 +116,13 @@ public class IdpResponse implements Parcelable {
         return mEmail;
     }
 
+    /**
+     * Get the error code for a failed sign in
+     */
+    public int getErrorCode() {
+        return mErrorCode;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -109,6 +134,7 @@ public class IdpResponse implements Parcelable {
         dest.writeString(mEmail);
         dest.writeString(mToken);
         dest.writeString(mSecret);
+        dest.writeInt(mErrorCode);
     }
 
     /**
@@ -120,5 +146,9 @@ public class IdpResponse implements Parcelable {
     @Nullable
     public static IdpResponse fromResultIntent(Intent resultIntent) {
         return resultIntent.getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+    }
+
+    public static Intent createErrorCodeIntent(int errorCode) {
+        return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, new IdpResponse(errorCode));
     }
 }

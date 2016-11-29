@@ -203,13 +203,12 @@ startActivityForResult(
 #### Handling the sign-in response
 
 #####Response codes
-The authentication flow only provides three response codes:
-`ResultCodes.OK` if a user is signed in, `ResultCodes.CANCELLED` if
-sign in failed, and `ResultCodes.NO_NETWORK` if sign in failed due to a lack of network connectivity.
-No further information on failure is provided as it is not
-typically useful; the only recourse for most apps if sign in fails is to ask
-the user to sign in again later, or proceed with anonymous sign-in if
-supported.
+The authentication flow provides several response codes of which the most common are as follows:
+`ResultCodes.OK` if a user is signed in, `ResultCodes.CANCELLED` if the user manually canceled the sign in,
+`ResultCodes.NO_NETWORK` if sign in failed due to a lack of network connectivity,
+and `ResultCodes.UNKNOWN_ERROR` for all other errors.
+Typically, the only recourse for most apps if sign in fails is to ask
+the user to sign in again later, or proceed with anonymous sign-in if supported.
 
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
