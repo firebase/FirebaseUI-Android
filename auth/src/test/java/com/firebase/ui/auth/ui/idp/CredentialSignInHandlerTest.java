@@ -134,8 +134,6 @@ public class CredentialSignInHandlerTest {
         IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
-                null,
-                null,
                 true);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
@@ -185,8 +183,6 @@ public class CredentialSignInHandlerTest {
         IdpResponse idpResponse = new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
-                null,
-                null,
                 true);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
