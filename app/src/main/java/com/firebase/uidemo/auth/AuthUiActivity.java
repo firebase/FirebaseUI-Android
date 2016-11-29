@@ -199,27 +199,30 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
-        if (data == null) {
-            // User pressed back button and is not signed incredentsit
+        if (data != null) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
+            if (resultCode == ResultCodes.OK) {
+                startActivity(SignedInActivity.createIntent(this, response));
+                finish();
+                return;
+            }
+
+            // Sign in canceled
+            if (response.getErrorCode() == ResultCodes.NO_NETWORK) {
+                showSnackbar(R.string.no_internet_connection);
+                return;
+            }
+
+            if (response.getErrorCode() == ResultCodes.UNKNOWN_ERROR) {
+                showSnackbar(R.string.unknown_error);
+                return;
+            }
+        }
+
+        if (resultCode == ResultCodes.CANCELED) {
+            // User pressed back button and is not signed in
             showSnackbar(R.string.sign_in_cancelled);
-            return;
-        }
-
-        IdpResponse response = IdpResponse.fromResultIntent(data);
-
-        if (resultCode == ResultCodes.OK) {
-            startActivity(SignedInActivity.createIntent(this, response));
-            finish();
-            return;
-        }
-
-        if (response.getErrorCode() == ResultCodes.NO_NETWORK) {
-            showSnackbar(R.string.no_internet_connection);
-            return;
-        }
-
-        if (response.getErrorCode() == ResultCodes.UNKNOWN_ERROR) {
-            showSnackbar(R.string.unknown_error);
             return;
         }
 
