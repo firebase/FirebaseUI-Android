@@ -214,16 +214,19 @@ the user to sign in again later, or proceed with anonymous sign-in if supported.
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == RC_SIGN_IN) {
-        if (data != null) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
+        IdpResponse response = data != null ? IdpResponse.fromResultIntent(data) : null;
 
-            if (resultCode == ResultCodes.OK) {
-                startActivity(SignedInActivity.createIntent(this, response));
-                finish();
+        if (resultCode == ResultCodes.OK) {
+            startActivity(SignedInActivity.createIntent(this, response));
+            finish();
+            return;
+        } else {
+            if (response == null) {
+                // User pressed back button and is not signed in
+                showSnackbar(R.string.sign_in_cancelled);
                 return;
             }
 
-            // Sign in canceled
             if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
@@ -233,12 +236,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 showSnackbar(R.string.unknown_error);
                 return;
             }
-        }
-
-        if (resultCode == ResultCodes.CANCELED) {
-            // User pressed back button and is not signed in
-            showSnackbar(R.string.sign_in_cancelled);
-            return;
         }
 
         showSnackbar(R.string.unknown_sign_in_response);
