@@ -32,11 +32,11 @@ class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = FirebaseIndexArray.class.getSimpleName();
 
     private Query mQuery;
+    private OnChangedListener mListener;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
-    private OnChangedListener mListener;
 
-    FirebaseIndexArray(Query keyRef, Query dataRef) {
+    public FirebaseIndexArray(Query keyRef, Query dataRef) {
         super(keyRef);
         mQuery = dataRef;
     }
