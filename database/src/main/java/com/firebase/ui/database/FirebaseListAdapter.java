@@ -51,18 +51,18 @@ import com.google.firebase.database.Query;
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     private static final String TAG = FirebaseListAdapter.class.getSimpleName();
 
+    private FirebaseArray mSnapshots;
     private final Class<T> mModelClass;
-    protected int mLayout;
     protected Activity mActivity;
-    FirebaseArray mSnapshots;
+    protected int mLayout;
 
     FirebaseListAdapter(Activity activity,
                         Class<T> modelClass,
                         @LayoutRes int modelLayout,
                         FirebaseArray snapshots) {
+        mActivity = activity;
         mModelClass = modelClass;
         mLayout = modelLayout;
-        mActivity = activity;
         mSnapshots = snapshots;
 
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
