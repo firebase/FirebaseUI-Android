@@ -34,7 +34,6 @@
     <string name="sign_in">Sign in</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
-    <string name="button_done">Done</string>
     <string name="check_your_email">Check your email</string>
     <string name="recover_password_title">Recover password</string>
     <string name="welcome_back_idp_header">You already have an account</string>
@@ -63,5 +62,4 @@
 
     <!-- accessibility -->
     <string name="accessibility_logo">App logo</string>
-    <string name="accessibility_toggle">Toggle password visibility</string>
 </resources>
