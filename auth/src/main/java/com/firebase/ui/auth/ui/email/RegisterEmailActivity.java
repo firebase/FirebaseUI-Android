@@ -228,14 +228,14 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                             String provider = providers.get(0);
                                             if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
                                                 Intent signInIntent = SignInActivity.createIntent(
-                                                        mActivityHelper.getApplicationContext(),
+                                                        RegisterEmailActivity.this,
                                                         mActivityHelper.getFlowParams(),
                                                         email);
                                                 mActivityHelper.startActivityForResult(signInIntent,
                                                                                        RC_SIGN_IN);
                                             } else {
                                                 Intent intent = WelcomeBackIdpPrompt.createIntent(
-                                                        mActivityHelper.getApplicationContext(),
+                                                        RegisterEmailActivity.this,
                                                         mActivityHelper.getFlowParams(),
                                                         provider,
                                                         null,

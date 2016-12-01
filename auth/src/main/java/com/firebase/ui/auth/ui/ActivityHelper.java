@@ -29,6 +29,10 @@ public class ActivityHelper extends BaseHelper {
         mActivity = activity;
     }
 
+    public void configureTheme() {
+        mActivity.setTheme(getFlowParams().themeId);
+    }
+
     public void startActivityForResult(Intent intent, int requestCode) {
         mActivity.startActivityForResult(intent, requestCode);
     }
