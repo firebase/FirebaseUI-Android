@@ -51,7 +51,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
@@ -118,9 +117,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
             return;
         }
 
-        if (mActivityHelper.getFlowParams().smartLockEnabled) {
-            showEmailAutoCompleteHint();
-        }
+        showEmailAutoCompleteHint();
     }
 
     @Override
@@ -194,6 +191,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
         if (hasFocus) return;
+
         int id = view.getId();
         if (id == R.id.email) {
             String email = mEmailEditText.getText().toString();
@@ -269,20 +267,18 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
     }
 
     private void registerUser(final String email, final String name, final String password) {
-        final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
-        // create the user
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
+        mActivityHelper.getFirebaseAuth()
+                .createUserWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        final FirebaseUser firebaseUser = authResult.getUser();
                         UserProfileChangeRequest changeNameRequest =
-                                new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(name).build();
+                                new UserProfileChangeRequest.Builder().setDisplayName(name).build();
 
+                        final FirebaseUser user = authResult.getUser();
                         // Set display name
-                        firebaseUser.updateProfile(changeNameRequest)
+                        user.updateProfile(changeNameRequest)
                                 .addOnFailureListener(new TaskFailureLogger(
                                         TAG, "Error setting display name"))
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -293,7 +289,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         // the credential to SmartLock (if enabled).
                                         mActivityHelper.saveCredentialsOrFinish(
                                                 mSaveSmartLock,
-                                                firebaseUser,
+                                                user,
                                                 password);
                                     }
                                 });
