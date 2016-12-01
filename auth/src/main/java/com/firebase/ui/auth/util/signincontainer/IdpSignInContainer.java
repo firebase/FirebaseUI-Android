@@ -73,12 +73,12 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
             return;
         }
 
-        if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new FacebookProvider(getContext(), providerConfig);
-        } else if (provider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
+        if (provider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new GoogleProvider(getActivity(), providerConfig, email);
+        } else if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
+            mIdpProvider = new FacebookProvider(getContext().getApplicationContext(), providerConfig);
         } else if (provider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new TwitterProvider(getContext());
+            mIdpProvider = new TwitterProvider(getContext().getApplicationContext());
         }
 
         mIdpProvider.setAuthenticationCallback(this);

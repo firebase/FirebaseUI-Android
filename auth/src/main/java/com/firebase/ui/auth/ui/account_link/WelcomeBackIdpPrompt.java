@@ -73,10 +73,10 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                         mIdpProvider = new GoogleProvider(this, idpConfig, getEmailFromIntent());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new FacebookProvider(this, idpConfig);
+                        mIdpProvider = new FacebookProvider(getApplicationContext(), idpConfig);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new TwitterProvider(this);
+                        mIdpProvider = new TwitterProvider(getApplicationContext());
                         break;
                     default:
                         Log.w(TAG, "Unknown provider: " + providerId);
