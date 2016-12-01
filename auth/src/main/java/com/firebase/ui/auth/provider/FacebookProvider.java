@@ -55,6 +55,8 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private IdpCallback mCallbackObject;
 
     public FacebookProvider(Context appContext, IdpConfig idpConfig) {
+        appContext = appContext.getApplicationContext();
+
         if (appContext.getResources().getIdentifier(
                 "facebook_permissions", "array", appContext.getPackageName()) != 0) {
             Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.facebook_permissions but that"

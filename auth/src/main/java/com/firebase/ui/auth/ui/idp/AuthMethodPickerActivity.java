@@ -95,10 +95,10 @@ public class AuthMethodPickerActivity extends AppCompatBase
                     mIdpProviders.add(new GoogleProvider(this, idpConfig));
                     break;
                 case AuthUI.FACEBOOK_PROVIDER:
-                    mIdpProviders.add(new FacebookProvider(getApplicationContext(), idpConfig));
+                    mIdpProviders.add(new FacebookProvider(this, idpConfig));
                     break;
                 case AuthUI.TWITTER_PROVIDER:
-                    mIdpProviders.add(new TwitterProvider(getApplicationContext()));
+                    mIdpProviders.add(new TwitterProvider(this));
                     break;
                 case AuthUI.EMAIL_PROVIDER:
                     findViewById(R.id.email_provider).setVisibility(View.VISIBLE);

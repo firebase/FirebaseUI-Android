@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.util.Log;
+
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
@@ -30,7 +30,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         TwitterAuthConfig authConfig = new TwitterAuthConfig(
                 appContext.getString(R.string.twitter_consumer_key),
                 appContext.getString(R.string.twitter_consumer_secret));
-        Fabric.with(appContext, new Twitter(authConfig));
+        Fabric.with(appContext.getApplicationContext(), new Twitter(authConfig));
         mTwitterAuthClient = new TwitterAuthClient();
     }
 
