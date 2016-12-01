@@ -299,7 +299,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                 });
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
+                .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         mActivityHelper.dismissDialog();
@@ -318,6 +318,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                         } else if (e instanceof FirebaseAuthUserCollisionException) {
                             // Collision with existing user email
                             emailInput.setError(getString(R.string.error_user_collision));
+                            checkAccountExists(mEmailEditText.getText().toString());
                         } else {
                             // General error message, this branch should not be invoked but
                             // covers future API changes
