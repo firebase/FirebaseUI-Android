@@ -228,21 +228,21 @@ We can wrap that in a ViewHolder with:
 
 ```java
 public static class ChatHolder extends RecyclerView.ViewHolder {
-    View mView;
+    private final TextView mNameField;
+    private final TextView mTextField;
 
     public ChatHolder(View itemView) {
         super(itemView);
-        mView = itemView;
+        mNameField = (TextView) itemView.findViewById(android.R.id.text1);
+        mTextField = (TextView) itemView.findViewById(android.R.id.text2);
     }
 
     public void setName(String name) {
-        TextView field = (TextView) mView.findViewById(android.R.id.text1);
-        field.setText(name);
+        mNameField.setText(name);
     }
 
     public void setText(String text) {
-        TextView field = (TextView) mView.findViewById(android.R.id.text2);
-        field.setText(text);
+        mTextField.setText(text);
     }
 }
 ```
