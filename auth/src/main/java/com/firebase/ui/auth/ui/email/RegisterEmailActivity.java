@@ -20,14 +20,17 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -117,7 +120,9 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
             return;
         }
 
-        showEmailAutoCompleteHint();
+        if (mActivityHelper.getFlowParams().smartLockEnabled) {
+            showEmailAutoCompleteHint();
+        }
     }
 
     @Override
@@ -144,8 +149,17 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
         agreementText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Intent.ACTION_VIEW).setData(
-                        Uri.parse(mActivityHelper.getFlowParams().termsOfServiceUrl)));
+                // Getting default color
+                TypedValue typedValue = new TypedValue();
+                getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+                @ColorInt int color = typedValue.data;
+
+                new CustomTabsIntent.Builder()
+                        .setToolbarColor(color)
+                        .build()
+                        .launchUrl(
+                                RegisterEmailActivity.this,
+                                Uri.parse(mActivityHelper.getFlowParams().termsOfServiceUrl));
             }
         });
     }
@@ -190,7 +204,7 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
-        if (hasFocus) return;
+        if (hasFocus) return; // Only consider fields losing focus
 
         int id = view.getId();
         if (id == R.id.email) {
@@ -215,37 +229,43 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                     .fetchProvidersForEmail(email)
                     .addOnFailureListener(
                             new TaskFailureLogger(TAG, "Error fetching providers for email"))
-                    .addOnCompleteListener(
-                            new OnCompleteListener<ProviderQueryResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                                    if (task.isSuccessful()) {
-                                        List<String> providers = task.getResult().getProviders();
-                                        if (providers != null && !providers.isEmpty()) {
-                                            // Account does exist
-                                            String provider = providers.get(0);
-                                            if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
-                                                Intent signInIntent = SignInActivity.createIntent(
-                                                        RegisterEmailActivity.this,
-                                                        mActivityHelper.getFlowParams(),
-                                                        email);
-                                                mActivityHelper.startActivityForResult(signInIntent,
-                                                                                       RC_SIGN_IN);
-                                            } else {
-                                                Intent intent = WelcomeBackIdpPrompt.createIntent(
-                                                        RegisterEmailActivity.this,
-                                                        mActivityHelper.getFlowParams(),
-                                                        provider,
-                                                        null,
-                                                        email);
-                                                mActivityHelper.startActivityForResult(intent,
-                                                                                       RC_WELCOME_BACK_IDP);
-                                            }
-                                        }
-                                    } // TODO: 11/23/2016 what happens if we fail?
-                                    mActivityHelper.dismissDialog();
+                    .addOnCompleteListener(this, new OnCompleteListener<ProviderQueryResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                            mActivityHelper.dismissDialog();
+                        }
+                    })
+                    .addOnSuccessListener(new OnSuccessListener<ProviderQueryResult>() {
+                        @Override
+                        public void onSuccess(ProviderQueryResult result) {
+                            List<String> providers = result.getProviders();
+                            if (providers != null && !providers.isEmpty()) {
+                                // There is an account tied to this email.
+                                // If only the email provider is associated with the account,
+                                // direct the user to the email sign in flow.
+                                // Otherwise, direct the user to sign in with the IDP they previously selected.
+
+                                String provider = providers.get(0);
+                                if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
+                                    Intent signInIntent = SignInActivity.createIntent(
+                                            RegisterEmailActivity.this,
+                                            mActivityHelper.getFlowParams(),
+                                            email);
+                                    mActivityHelper.startActivityForResult(signInIntent,
+                                                                           RC_SIGN_IN);
+                                } else {
+                                    Intent intent = WelcomeBackIdpPrompt.createIntent(
+                                            RegisterEmailActivity.this,
+                                            mActivityHelper.getFlowParams(),
+                                            provider,
+                                            null,
+                                            email);
+                                    mActivityHelper.startActivityForResult(intent,
+                                                                           RC_WELCOME_BACK_IDP);
                                 }
-                            });
+                            }
+                        }
+                    });
         }
     }
 
@@ -273,11 +293,11 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
+                        // Set display name
                         UserProfileChangeRequest changeNameRequest =
                                 new UserProfileChangeRequest.Builder().setDisplayName(name).build();
 
                         final FirebaseUser user = authResult.getUser();
-                        // Set display name
                         user.updateProfile(changeNameRequest)
                                 .addOnFailureListener(new TaskFailureLogger(
                                         TAG, "Error setting display name"))

@@ -50,7 +50,7 @@ import butterknife.OnClick;
 public class AuthUiActivity extends AppCompatActivity {
     private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
-    private static final String FIREBASE_TOS_URL = "https://www.firebase.com/terms/terms-of-service.html";
+    private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
     private static final int RC_SIGN_IN = 100;
 
     @BindView(R.id.default_theme)

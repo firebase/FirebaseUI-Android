@@ -38,6 +38,8 @@ android {
 
 dependencies {
     compile "com.android.support:design:$support_library_version"
+    compile "com.android.support:customtabs:$support_library_version"
+
     compile "com.google.firebase:firebase-auth:$firebase_version"
     compile "com.google.android.gms:play-services-auth:$firebase_version"
 
@@ -46,7 +48,6 @@ dependencies {
 
     // The following libraries are needed to prevent incompatibilities with the facebook
     // library when updating com.android.support libraries:
-    compile "com.android.support:customtabs:$support_library_version"
     compile "com.android.support:cardview-v7:$support_library_version"
 
 
