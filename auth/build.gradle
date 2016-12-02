@@ -41,7 +41,7 @@ dependencies {
     compile "com.google.firebase:firebase-auth:$firebase_version"
     compile "com.google.android.gms:play-services-auth:$firebase_version"
 
-    compile 'com.facebook.android:facebook-android-sdk:4.17.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.18.0'
     compile("com.twitter.sdk.android:twitter:2.2.0@aar") { transitive = true }
 
     // The following libraries are needed to prevent incompatibilities with the facebook
