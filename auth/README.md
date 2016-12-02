@@ -227,7 +227,8 @@ supported.
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == RC_SIGN_IN) { // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow
+    // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow
+    if (requestCode == RC_SIGN_IN) {
         if (resultCode == RESULT_OK) {
             // user is signed in!
             startActivity(new Intent(this, WelcomeBackActivity.class));
