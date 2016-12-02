@@ -2,15 +2,6 @@
 <issues format="4" by="lint 2.3.0-alpha1">
 
     <issue
-        id="NewerVersionAvailable"
-        message="New version available org.mockito:mockito-core">
-        <location
-            file="build.gradle"
-            line="53"
-            column="5"/>
-    </issue>
-
-    <issue
         id="UnusedIds"
         message="The resource `R.id.facebook_button` appears to be unused"
         errorLine1="    android:id=&quot;@+id/facebook_button&quot;/>
