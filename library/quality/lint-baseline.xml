@@ -5,7 +5,7 @@
         id="NewerVersionAvailable"
         message="New version available org.mockito:mockito-core">
         <location
-            file="/home/travis/build/firebase/FirebaseUI-Android/auth/build.gradle"
+            file="build.gradle"
             line="53"
             column="5"/>
     </issue>
