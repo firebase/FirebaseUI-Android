@@ -82,8 +82,7 @@ the [Facebook developer dashboard](https://developers.facebook.com):
 
 If support for Twitter Sign-in is also required, define the resource strings
 `twitter_consumer_key` and `twitter_consumer_secret` to match the values of your
-Twitter app as reported by the
-[Twitter application manager](https://dev.twitter.com/apps).
+Twitter app as reported by the [Twitter application manager](https://apps.twitter.com/).
 
 ```
 <resources>
@@ -92,11 +91,15 @@ Twitter app as reported by the
 </resources>
 ```
 
+In addition, if you are using Smart Lock or require a user's email, you must enable the
+"Request email addresses from users" permission in the "Permissions" tab of your app.
+
 ## Using FirebaseUI for Authentication
 
 Before invoking the FirebaseUI authentication flow, your app should check
 whether a
-[user is already signed in](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user) from a previous session:
+[user is already signed in](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user)
+from a previous session:
 
 ```java
 FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -139,11 +142,21 @@ If no customization is required, and only email authentication is required, the 
 can be started as follows:
 
 ```java
+// Choose an arbitrary request code value
+private static final int RC_SIGN_IN = 123;
+
+// ...
+
 startActivityForResult(
     // Get an instance of AuthUI based on the default app
     AuthUI.getInstance().createSignInIntentBuilder().build(),
     RC_SIGN_IN);
 ```
+
+To kick off the FirebaseUI sign in flow, call startActivityForResult(...) on the sign in Intent you built.
+The second parameter (RC_SIGN_IN) is a request code you define to identify the request when the result
+is returned to your app in onActivityResult(...). See the [response codes](#response-codes) section below for more
+details on receiving the results of the sign in flow.
 
 You can enable sign-in providers like Google Sign-In or Facebook Log In by calling the
 `setProviders` method:
@@ -214,28 +227,31 @@ supported.
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == RESULT_OK) {
-        // user is signed in!
-        startActivity(new Intent(this, WelcomeBackActivity.class));
-        finish();
-        return;
-    }
+    // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow
+    if (requestCode == RC_SIGN_IN) {
+        if (resultCode == RESULT_OK) {
+            // user is signed in!
+            startActivity(new Intent(this, WelcomeBackActivity.class));
+            finish();
+            return;
+        }
 
-    // Sign in canceled
-    if (resultCode == RESULT_CANCELED) {
-        showSnackbar(R.string.sign_in_cancelled);
-        return;
-    }
+        // Sign in canceled
+        if (resultCode == RESULT_CANCELED) {
+            showSnackbar(R.string.sign_in_cancelled);
+            return;
+        }
 
-    // No network
-    if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
-        showSnackbar(R.string.no_internet_connection);
-        return;
-    }
+        // No network
+        if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
+            showSnackbar(R.string.no_internet_connection);
+            return;
+        }
 
-    // User is not signed in. Maybe just wait for the user to press
-    // "sign in" again, or show a message.
- }
+        // User is not signed in. Maybe just wait for the user to press
+        // "sign in" again, or show a message.
+    }
+}
 ```
 
 Alternatively, you can register a listener for authentication state changes;
