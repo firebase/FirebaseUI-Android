@@ -200,7 +200,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
-        IdpResponse response = data != null ? IdpResponse.fromResultIntent(data) : null;
+        IdpResponse response = IdpResponse.fromResultIntent(data);
 
         // Successfully signed in
         if (resultCode == ResultCodes.OK) {

@@ -145,7 +145,11 @@ public class IdpResponse implements Parcelable {
      */
     @Nullable
     public static IdpResponse fromResultIntent(Intent resultIntent) {
-        return resultIntent.getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        if (resultIntent != null) {
+            return resultIntent.getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        } else {
+            return null;
+        }
     }
 
     public static Intent getIntent(IdpResponse response) {

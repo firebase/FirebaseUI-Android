@@ -214,7 +214,7 @@ the user to sign in again later, or proceed with anonymous sign-in if supported.
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == RC_SIGN_IN) {
-        IdpResponse response = data != null ? IdpResponse.fromResultIntent(data) : null;
+        IdpResponse response = IdpResponse.fromResultIntent(data);
 
         // Successfully signed in
         if (resultCode == ResultCodes.OK) {
