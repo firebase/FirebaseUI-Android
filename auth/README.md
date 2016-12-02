@@ -82,8 +82,7 @@ the [Facebook developer dashboard](https://developers.facebook.com):
 
 If support for Twitter Sign-in is also required, define the resource strings
 `twitter_consumer_key` and `twitter_consumer_secret` to match the values of your
-Twitter app as reported by the
-[Twitter application manager](https://dev.twitter.com/apps).
+Twitter app as reported by the [Twitter application manager](https://apps.twitter.com/).
 
 ```
 <resources>
@@ -91,6 +90,9 @@ Twitter app as reported by the
   <string name="twitter_consumer_secret" translatable="false">YOURCONSUMERSECRET</string>
 </resources>
 ```
+
+In addition, if are using Smart Lock or require a user's email, you must enable the
+"Request email addresses from users" permission in the "Permissions" tab of your app.
 
 ## Using FirebaseUI for Authentication
 
