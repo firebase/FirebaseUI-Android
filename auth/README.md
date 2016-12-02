@@ -154,7 +154,7 @@ the sign in builder--and a request code of type `int`. For example, `REQUEST_COD
 for short is a constant defined in our activity: `private static final int RC_SIGN_IN = 100;`.
 The number you chose is arbitrary as long as it doesn't conflict with other
 `startActivityForResult` requests you might be making. In [response codes](#response-codes),
-you will see how we can use `RC_SIGN_IN` to differentiate between multiple requests `startActivityForResult`.
+you will see how we can use `RC_SIGN_IN` to differentiate between multiple `startActivityForResult` requests.
 
 You can enable sign-in providers like Google Sign-In or Facebook Log In by calling the
 `setProviders` method:
