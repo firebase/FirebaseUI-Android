@@ -142,19 +142,21 @@ If no customization is required, and only email authentication is required, the 
 can be started as follows:
 
 ```java
+// Choose an arbitrary request code value
+private static final int RC_SIGN_IN = 123;
+
+// ...
+
 startActivityForResult(
     // Get an instance of AuthUI based on the default app
     AuthUI.getInstance().createSignInIntentBuilder().build(),
     RC_SIGN_IN);
 ```
 
-<a href="https://developer.android.com/reference/android/app/Activity.html#startActivityForResult(android.content.Intent, int)">`startActivityForResult`</a>
-is part of the Android framework and takes two parameters: an Intent to start an activity--in this case,
-the sign in builder--and a request code of type `int`. For example, `REQUEST_CODE_SIGN_IN` or `RC_SIGN_IN`
-for short is a constant defined in our activity: `private static final int RC_SIGN_IN = 100;`.
-The number you chose is arbitrary as long as it doesn't conflict with other
-`startActivityForResult` requests you might be making. In [response codes](#response-codes),
-you will see how we can use `RC_SIGN_IN` to differentiate between multiple `startActivityForResult` requests.
+To kick off the FirebaseUI sign in flow, call startActivityForResult(...) on the sign in Intent you built.
+The second parameter (RC_SIGN_IN) is a request code you define to identify the request when the result
+is returned to your app in onActivityResult(...). See the [response codes](#response-codes) section below for more
+details on receiving the results of the sign in flow.
 
 You can enable sign-in providers like Google Sign-In or Facebook Log In by calling the
 `setProviders` method:
@@ -225,7 +227,7 @@ supported.
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == RC_SIGN_IN) {
+    if (requestCode == RC_SIGN_IN) { // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow
         if (resultCode == RESULT_OK) {
             // user is signed in!
             startActivity(new Intent(this, WelcomeBackActivity.class));
