@@ -91,14 +91,15 @@ Twitter app as reported by the [Twitter application manager](https://apps.twitte
 </resources>
 ```
 
-In addition, if are using Smart Lock or require a user's email, you must enable the
+In addition, if you are using Smart Lock or require a user's email, you must enable the
 "Request email addresses from users" permission in the "Permissions" tab of your app.
 
 ## Using FirebaseUI for Authentication
 
 Before invoking the FirebaseUI authentication flow, your app should check
 whether a
-[user is already signed in](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user) from a previous session:
+[user is already signed in](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user)
+from a previous session:
 
 ```java
 FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -146,6 +147,14 @@ startActivityForResult(
     AuthUI.getInstance().createSignInIntentBuilder().build(),
     RC_SIGN_IN);
 ```
+
+<a href="https://developer.android.com/reference/android/app/Activity.html#startActivityForResult(android.content.Intent, int)">`startActivityForResult`</a>
+is part of the Android framework and takes two parameters: an Intent to start an activity--in this case,
+the sign in builder--and a request code of type `int`. For example, `REQUEST_CODE_SIGN_IN` or `RC_SIGN_IN`
+for short is a constant defined in our activity: `private static final int RC_SIGN_IN = 100;`.
+The number you chose is arbitrary as long as it doesn't conflict with other
+`startActivityForResult` requests you might be making. In [response codes](#response-codes),
+you will see how we can use `RC_SIGN_IN` to differentiate between multiple requests `startActivityForResult`.
 
 You can enable sign-in providers like Google Sign-In or Facebook Log In by calling the
 `setProviders` method:
@@ -216,28 +225,30 @@ supported.
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == RESULT_OK) {
-        // user is signed in!
-        startActivity(new Intent(this, WelcomeBackActivity.class));
-        finish();
-        return;
-    }
+    if (requestCode == RC_SIGN_IN) {
+        if (resultCode == RESULT_OK) {
+            // user is signed in!
+            startActivity(new Intent(this, WelcomeBackActivity.class));
+            finish();
+            return;
+        }
 
-    // Sign in canceled
-    if (resultCode == RESULT_CANCELED) {
-        showSnackbar(R.string.sign_in_cancelled);
-        return;
-    }
+        // Sign in canceled
+        if (resultCode == RESULT_CANCELED) {
+            showSnackbar(R.string.sign_in_cancelled);
+            return;
+        }
 
-    // No network
-    if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
-        showSnackbar(R.string.no_internet_connection);
-        return;
-    }
+        // No network
+        if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
+            showSnackbar(R.string.no_internet_connection);
+            return;
+        }
 
-    // User is not signed in. Maybe just wait for the user to press
-    // "sign in" again, or show a message.
- }
+        // User is not signed in. Maybe just wait for the user to press
+        // "sign in" again, or show a message.
+    }
+}
 ```
 
 Alternatively, you can register a listener for authentication state changes;
