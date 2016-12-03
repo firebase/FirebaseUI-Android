@@ -31,7 +31,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.ProviderQueryResult;
@@ -70,8 +69,8 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 final String email = mResponse.getEmail();
-                FirebaseAuth firebaseAuth = mHelper.getFirebaseAuth();
-                firebaseAuth.fetchProvidersForEmail(email)
+                mHelper.getFirebaseAuth()
+                        .fetchProvidersForEmail(email)
                         .addOnFailureListener(new TaskFailureLogger(
                                 TAG, "Error fetching providers for email"))
                         .addOnSuccessListener(new StartWelcomeBackFlow(email))

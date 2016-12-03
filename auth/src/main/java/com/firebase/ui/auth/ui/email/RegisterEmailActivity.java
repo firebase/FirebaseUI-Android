@@ -35,6 +35,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
@@ -42,6 +43,7 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
@@ -247,12 +249,13 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
 
                                 String provider = providers.get(0);
                                 if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
-                                    Intent signInIntent = SignInActivity.createIntent(
-                                            RegisterEmailActivity.this,
-                                            mActivityHelper.getFlowParams(),
-                                            email);
-                                    mActivityHelper.startActivityForResult(signInIntent,
-                                                                           RC_SIGN_IN);
+                                    mActivityHelper.startActivityForResult(
+                                            WelcomeBackPasswordPrompt.createIntent(
+                                                    RegisterEmailActivity.this,
+                                                    mActivityHelper.getFlowParams(),
+                                                    new IdpResponse(EmailAuthProvider.PROVIDER_ID,
+                                                                    email)),
+                                            RC_SIGN_IN);
                                 } else {
                                     Intent intent = WelcomeBackIdpPrompt.createIntent(
                                             RegisterEmailActivity.this,
@@ -310,7 +313,8 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                         mActivityHelper.saveCredentialsOrFinish(
                                                 mSaveSmartLock,
                                                 user,
-                                                password);
+                                                password,
+                                                new IdpResponse(EmailAuthProvider.PROVIDER_ID, email));
                                     }
                                 });
                     }

@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -64,12 +65,13 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_back_password_prompt_layout);
-        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
-        mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
-        mPasswordField = (EditText) findViewById(R.id.password);
 
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
         mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
         mEmail = mIdpResponse.getEmail();
+
+        mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
+        mPasswordField = (EditText) findViewById(R.id.password);
 
         // Create welcome back text with email bolded
         String bodyText = getResources().getString(R.string.welcome_back_password_prompt_body);
@@ -122,28 +124,35 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        // Get the social AuthCredential from the IDPResponse object, link
-                        // it to the email/password account.
                         AuthCredential authCredential =
                                 AuthCredentialHelper.getAuthCredential(mIdpResponse);
-                        authResult.getUser().linkWithCredential(authCredential);
-                        firebaseAuth.signOut();
 
-                        // Sign in with the credential
-                        firebaseAuth.signInWithCredential(authCredential)
-                                .addOnFailureListener(
-                                        new TaskFailureLogger(TAG,
-                                                              "Error signing in with credential"))
-                                .addOnSuccessListener(
-                                        new OnSuccessListener<AuthResult>() {
-                                            @Override
-                                            public void onSuccess(AuthResult authResult) {
-                                                mActivityHelper.saveCredentialsOrFinish(
-                                                        mSaveSmartLock,
-                                                        authResult.getUser(),
-                                                        password);
-                                            }
-                                        });
+                        // If authCredential is null, the user only has an email account.
+                        // Otherwise, the user has an email account that we need to link to an idp.
+                        if (authCredential == null) {
+                            mActivityHelper.saveCredentialsOrFinish(
+                                    mSaveSmartLock,
+                                    authResult.getUser(),
+                                    password,
+                                    new IdpResponse(EmailAuthProvider.PROVIDER_ID, email));
+                        } else {
+                            authResult.getUser().linkWithCredential(authCredential);
+                            firebaseAuth.signOut();
+
+                            // Sign in with the credential
+                            firebaseAuth.signInWithCredential(authCredential)
+                                    .addOnFailureListener(new TaskFailureLogger(
+                                            TAG, "Error signing in with credential"))
+                                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                                        @Override
+                                        public void onSuccess(AuthResult authResult) {
+                                            mActivityHelper.saveCredentialsOrFinish(
+                                                    mSaveSmartLock,
+                                                    authResult.getUser(),
+                                                    mIdpResponse);
+                                        }
+                                    });
+                        }
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
