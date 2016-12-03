@@ -47,12 +47,12 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forgot_password_layout);
-        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
-        mEmailFieldValidator = new EmailFieldValidator(
-                (TextInputLayout) findViewById(R.id.email_layout));
-
+        mEmailFieldValidator =
+                new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
         mEmailEditText = (EditText) findViewById(R.id.email);
+
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         if (email != null) {
             mEmailEditText.setText(email);
         }
@@ -89,11 +89,10 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button_done) {
-            if (!mEmailFieldValidator.validate(mEmailEditText.getText())) {
-                return;
+            if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
+                mActivityHelper.showLoadingDialog(R.string.progress_dialog_sending);
+                next(mEmailEditText.getText().toString());
             }
-            mActivityHelper.showLoadingDialog(R.string.progress_dialog_sending);
-            next(mEmailEditText.getText().toString());
         }
     }
 

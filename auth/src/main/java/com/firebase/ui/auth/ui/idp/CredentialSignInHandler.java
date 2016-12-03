@@ -107,7 +107,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                 // Start email welcome back flow
                 mActivity.startActivityForResult(
                         WelcomeBackPasswordPrompt.createIntent(
-                                mHelper.getApplicationContext(),
+                                mActivity,
                                 mHelper.getFlowParams(),
                                 mResponse
                         ), mAccountLinkResultCode);
@@ -115,7 +115,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                 // Start IDP welcome back flow
                 mActivity.startActivityForResult(
                         WelcomeBackIdpPrompt.createIntent(
-                                mHelper.getApplicationContext(),
+                                mActivity,
                                 mHelper.getFlowParams(),
                                 result.getProviders().get(0),
                                 mResponse,
