@@ -71,10 +71,10 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     private static final String TAG = FirebaseRecyclerAdapter.class.getSimpleName();
 
+    private FirebaseArray mSnapshots;
+    private Class<T> mModelClass;
+    protected Class<VH> mViewHolderClass;
     protected int mModelLayout;
-    Class<T> mModelClass;
-    Class<VH> mViewHolderClass;
-    FirebaseArray mSnapshots;
 
     FirebaseRecyclerAdapter(Class<T> modelClass,
                             @LayoutRes int modelLayout,
