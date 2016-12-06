@@ -1,6 +1,5 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.firebase.ui.auth">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -77,9 +76,7 @@
         <activity
             android:name="com.facebook.FacebookActivity"
             android:label="@string/app_name"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            tools:replace="android:theme"/>
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
 
         <activity
             android:name="com.facebook.CustomTabActivity"
