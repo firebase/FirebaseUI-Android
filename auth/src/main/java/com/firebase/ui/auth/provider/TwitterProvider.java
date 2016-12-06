@@ -65,7 +65,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
             @Override
             public void success(Result<String> result) {
                 mCallbackObject.onSuccess(
-                        createIdpResponse(sessionResult.data, result.data));
+                        createIDPResponse(sessionResult.data, result.data));
             }
 
             @Override
@@ -91,7 +91,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     }
 
 
-    private IdpResponse createIdpResponse(TwitterSession twitterSession, String email) {
+    private IdpResponse createIDPResponse(TwitterSession twitterSession, String email) {
         return new IdpResponse(
                 TwitterAuthProvider.PROVIDER_ID,
                 email,

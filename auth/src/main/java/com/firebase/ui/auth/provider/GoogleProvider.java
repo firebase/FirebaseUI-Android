@@ -111,7 +111,7 @@ public class GoogleProvider implements
         }
     }
 
-    private IdpResponse createIdpResponse(GoogleSignInAccount account) {
+    private IdpResponse createIDPResponse(GoogleSignInAccount account) {
         return new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID, account.getEmail(), account.getIdToken());
     }
@@ -122,7 +122,7 @@ public class GoogleProvider implements
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result != null) {
                 if (result.isSuccess()) {
-                    mIDPCallback.onSuccess(createIdpResponse(result.getSignInAccount()));
+                    mIDPCallback.onSuccess(createIDPResponse(result.getSignInAccount()));
                 } else {
                     onError(result);
                 }

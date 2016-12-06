@@ -140,7 +140,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                         } else {
                             try {
                                 String email = object.getString("email");
-                                mCallbackObject.onSuccess(createIdpResponse(loginResult, email));
+                                mCallbackObject.onSuccess(createIDPResponse(loginResult, email));
                             } catch (JSONException e) {
                                 Log.e(TAG, "JSON Exception reading from Facebook GraphRequest", e);
                                 mCallbackObject.onFailure(new Bundle());
@@ -155,7 +155,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         request.executeAsync();
     }
 
-    private IdpResponse createIdpResponse(LoginResult loginResult, String email) {
+    private IdpResponse createIDPResponse(LoginResult loginResult, String email) {
         return new IdpResponse(
                 FacebookAuthProvider.PROVIDER_ID,
                 email,

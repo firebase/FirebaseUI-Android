@@ -71,6 +71,10 @@ import java.util.List;
 public class RegisterEmailActivity extends AppCompatBase
         implements View.OnClickListener, View.OnFocusChangeListener {
     private static final String TAG = "RegisterEmailActivity";
+    private static final String PREV_EMAIL = "previous_email";
+    private static final int RC_HINT = 13;
+    private static final int RC_WELCOME_BACK_IDP = 15;
+    private static final int RC_SIGN_IN = 16;
 
     private String mPrevEmail;
     private EditText mEmailEditText;
