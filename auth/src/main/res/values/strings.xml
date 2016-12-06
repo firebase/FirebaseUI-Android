@@ -31,7 +31,6 @@
         password.</string>
     <string name="error_email_does_not_exist">That email address doesn\'t match an existing account</string>
     <string name="welcome_back">Welcome back!</string>
-    <string name="next">Next</string>
     <string name="trouble_signing_in">Trouble signing in?</string>
     <string name="sign_in_default">Sign in</string>
     <string name="sign_in_with_google">Sign in with Google</string>
@@ -53,7 +52,6 @@
     <string name="terms_of_service">Terms of Service</string>
     <string name="sign_in_with_email">Sign in with email</string>
     <string name="sign_in_with_twitter">Sign in with Twitter</string>
-    <string name="login_error">Login unsuccessful</string>
     <string name="email_account_creation_error">Email account registration unsuccessful</string>
 
     <string name="progress_dialog_loading">Loading…</string>
