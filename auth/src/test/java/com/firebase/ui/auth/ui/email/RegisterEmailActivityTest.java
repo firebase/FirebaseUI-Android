@@ -22,16 +22,17 @@ import android.widget.EditText;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
-import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
-import com.firebase.ui.auth.test_helpers.BaseHelperShadow;
-import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
-import com.firebase.ui.auth.test_helpers.FakeAuthResult;
-import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
-import com.firebase.ui.auth.test_helpers.TestConstants;
-import com.firebase.ui.auth.test_helpers.TestHelper;
+import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
+import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
+import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
+import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
+import com.firebase.ui.auth.testhelpers.FakeAuthResult;
+import com.firebase.ui.auth.testhelpers.FirebaseAuthWrapperImplShadow;
+import com.firebase.ui.auth.testhelpers.TestConstants;
+import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -55,7 +56,7 @@ import static org.mockito.Mockito.when;
 public class RegisterEmailActivityTest {
 
     private RegisterEmailActivity createActivity(String email) {
-        Intent startIntent = SignInNoPasswordActivity.createIntent(
+        Intent startIntent = RegisterEmailActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)),
                 email);
@@ -86,7 +87,8 @@ public class RegisterEmailActivityTest {
                 nameLayout.getError().toString());
         assertEquals(
                 String.format(
-                        registerEmailActivity.getString(R.string.password_length),
+                        registerEmailActivity.getResources()
+                                .getQuantityString(R.plurals.password_length, 6),
                         registerEmailActivity.getResources().getInteger(R.integer.min_password_length)
                 ),
                 passwordLayout.getError().toString());
@@ -126,6 +128,9 @@ public class RegisterEmailActivityTest {
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
-        TestHelper.verifySmartLockSave(null, TestConstants.EMAIL, TestConstants.PASSWORD);
+        TestHelper.verifySmartLockSave(
+                EmailAuthProvider.PROVIDER_ID,
+                TestConstants.EMAIL,
+                TestConstants.PASSWORD);
     }
 }

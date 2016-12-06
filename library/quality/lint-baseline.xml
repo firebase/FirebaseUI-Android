@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="4" by="lint 2.3.0-alpha1">
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.facebook_button` appears to be unused"
+        errorLine1="    android:id=&quot;@+id/facebook_button&quot;/>
+"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src\main\res\layout\idp_button_facebook.xml"
+            line="5"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.google_button` appears to be unused"
+        errorLine1="    android:id=&quot;@+id/google_button&quot;/>
+"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src\main\res\layout\idp_button_google.xml"
+            line="5"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.twitter_button` appears to be unused"
+        errorLine1="    android:id=&quot;@+id/twitter_button&quot;/>
+"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src\main\res\layout\idp_button_twitter.xml"
+            line="5"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="SelectableText"
+        message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
+        errorLine1="        &lt;TextView
+"
+        errorLine2="        ^">
+        <location
+            file="src\main\res\layout\register_email_layout.xml"
+            line="79"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="SelectableText"
+        message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
+        errorLine1="    &lt;TextView
+"
+        errorLine2="    ^">
+        <location
+            file="src\main\res\layout\welcome_back_idp_prompt_layout.xml"
+            line="16"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="SelectableText"
+        message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
+        errorLine1="    &lt;TextView
+"
+        errorLine2="    ^">
+        <location
+            file="src\main\res\layout\welcome_back_password_prompt_layout.xml"
+            line="15"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="RtlEnabled"
+        message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
+        <location
+            file="src\main\AndroidManifest.xml"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@color/abc_primary_text_material_dark` is marked as private in com.android.support:appcompat-v7"
+        errorLine1="        &lt;item name=&quot;android:textColor&quot;>@color/abc_primary_text_material_dark&lt;/item>
+"
+        errorLine2="                                       ^">
+        <location
+            file="src\main\res\values\styles.xml"
+            line="41"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@color/abc_primary_text_material_dark` is marked as private in com.android.support:appcompat-v7"
+        errorLine1="        &lt;item name=&quot;android:textColorPrimary&quot;>@color/abc_primary_text_material_dark&lt;/item>
+"
+        errorLine2="                                              ^">
+        <location
+            file="src\main\res\values\styles.xml"
+            line="42"
+            column="47"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@color/abc_primary_text_material_light` is marked as private in com.android.support:appcompat-v7"
+        errorLine1="        &lt;item name=&quot;android:textColorPrimaryInverse&quot;>@color/abc_primary_text_material_light&lt;/item>
+"
+        errorLine2="                                                     ^">
+        <location
+            file="src\main\res\values\styles.xml"
+            line="43"
+            column="54"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@color/abc_secondary_text_material_dark` is marked as private in com.android.support:appcompat-v7"
+        errorLine1="        &lt;item name=&quot;android:textColorSecondary&quot;>@color/abc_secondary_text_material_dark&lt;/item>
+"
+        errorLine2="                                                ^">
+        <location
+            file="src\main\res\values\styles.xml"
+            line="44"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@color/abc_secondary_text_material_light` is marked as private in com.android.support:appcompat-v7"
+        errorLine1="        &lt;item name=&quot;android:textColorSecondaryInverse&quot;>@color/abc_secondary_text_material_light&lt;/item>
+"
+        errorLine2="                                                       ^">
+        <location
+            file="src\main\res\values\styles.xml"
+            line="45"
+            column="56"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@color/abc_primary_text_material_dark` is marked as private in com.android.support:appcompat-v7"
+        errorLine1="        &lt;item name=&quot;android:textColor&quot;>@color/abc_primary_text_material_dark&lt;/item>
+"
+        errorLine2="                                       ^">
+        <location
+            file="src\main\res\values-v21\styles.xml"
+            line="66"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@color/abc_primary_text_material_dark` is marked as private in com.android.support:appcompat-v7"
+        errorLine1="        &lt;item name=&quot;android:textColorPrimary&quot;>@color/abc_primary_text_material_dark&lt;/item>
+"
+        errorLine2="                                              ^">
+        <location
+            file="src\main\res\values-v21\styles.xml"
+            line="67"
+            column="47"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@color/abc_primary_text_material_light` is marked as private in com.android.support:appcompat-v7"
+        errorLine1="        &lt;item name=&quot;android:textColorPrimaryInverse&quot;>@color/abc_primary_text_material_light&lt;/item>
+"
+        errorLine2="                                                     ^">
+        <location
+            file="src\main\res\values-v21\styles.xml"
+            line="68"
+            column="54"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@color/abc_secondary_text_material_dark` is marked as private in com.android.support:appcompat-v7"
+        errorLine1="        &lt;item name=&quot;android:textColorSecondary&quot;>@color/abc_secondary_text_material_dark&lt;/item>
+"
+        errorLine2="                                                ^">
+        <location
+            file="src\main\res\values-v21\styles.xml"
+            line="69"
+            column="49"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@color/abc_secondary_text_material_light` is marked as private in com.android.support:appcompat-v7"
+        errorLine1="        &lt;item name=&quot;android:textColorSecondaryInverse&quot;>@color/abc_secondary_text_material_light&lt;/item>
+"
+        errorLine2="                                                       ^">
+        <location
+            file="src\main\res\values-v21\styles.xml"
+            line="70"
+            column="56"/>
+    </issue>
+
+    <issue
+        id="LogConditional"
+        message="The log call Log.d(...) should be conditional: surround with `if (Log.isLoggable(...))` or `if (BuildConfig.DEBUG) { ... }`"
+        errorLine1="                        Log.d(TAG, &quot;signInAnonymously:onComplete:&quot; + task.isSuccessful());
+"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src\main\java\com\firebase\uidemo\database\ChatActivity.java"
+            line="174"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="LogConditional"
+        message="The log call Log.d(...) should be conditional: surround with `if (Log.isLoggable(...))` or `if (BuildConfig.DEBUG) { ... }`"
+        errorLine1="                        Log.d(TAG, &quot;signInAnonymously:&quot; + task.isSuccessful());
+"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src\main\java\com\firebase\uidemo\storage\ImageActivity.java"
+            line="67"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="LogConditional"
+        message="The log call Log.d(...) should be conditional: surround with `if (Log.isLoggable(...))` or `if (BuildConfig.DEBUG) { ... }`"
+        errorLine1="                        Log.d(TAG, &quot;uploadPhoto:onSuccess:&quot; +
+"
+        errorLine2="                        ^">
+        <location
+            file="src\main\java\com\firebase\uidemo\storage\ImageActivity.java"
+            line="126"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.google_crash_reporting_api_key` appears to be unused"
+        errorLine1="    &lt;string name=&quot;google_crash_reporting_api_key&quot; translatable=&quot;false&quot;>AIzaSyAZYK9Jx9o0iR0XTVno_lX4a5GmhSt2sKA&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build/generated/res/google-services/release/values/values.xml"
+            line="8"
+            column="13"/>
+        <location
+            file="build/generated/res/google-services/debug/values/values.xml"
+            line="8"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="GoogleAppIndexingWarning"
+        message="App is not indexable by Google Search; consider adding at least one Activity with an ACTION-VIEW intent filter. See issue explanation for more details."
+        errorLine1="    &lt;application
+"
+        errorLine2="    ^">
+        <location
+            file="src\main\AndroidManifest.xml"
+            line="9"
+            column="5"/>
+    </issue>
+
+</issues>

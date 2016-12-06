@@ -26,12 +26,6 @@
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
         <activity
-            android:name=".ui.email.EmailHintContainerActivity"
-            android:label="@string/default_toolbar_title"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
-
-        <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/title_recover_password_activity"
             android:exported="false"
@@ -44,25 +38,19 @@
             android:theme="@style/FirebaseUI"/>
 
         <activity
-            android:name=".ui.email.SignInNoPasswordActivity"
-            android:label="@string/title_sign_in_no_password_activity"
-            android:exported="false"
-            android:theme="@style/FirebaseUI"/>
-
-        <activity
             android:name=".ui.email.SignInActivity"
             android:label="@string/title_sign_in_activity"
             android:exported="false"
             android:theme="@style/FirebaseUI"/>
 
         <activity
-            android:name=".ui.account_link.WelcomeBackIdpPrompt"
+            android:name=".ui.accountlink.WelcomeBackIdpPrompt"
             android:label="@string/title_welcome_back_idp_prompt"
             android:exported="false"
             android:theme="@style/FirebaseUI"/>
 
         <activity
-            android:name=".ui.account_link.WelcomeBackPasswordPrompt"
+            android:name=".ui.accountlink.WelcomeBackPasswordPrompt"
             android:label="@string/title_welcome_back_password_prompt"
             android:exported="false"
             android:theme="@style/FirebaseUI"/>

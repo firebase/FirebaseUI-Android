@@ -15,15 +15,17 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
+import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
-import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.GoogleApiConstants;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -48,18 +50,13 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
-import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
-
 /**
  * Attempts to acquire a credential from Smart Lock for Passwords to sign in
  * an existing account. If this succeeds, an attempt is made to sign the user in
  * with this credential. If it does not, the
  * {@link AuthMethodPickerActivity authentication method picker activity}
  * is started, unless only email is supported, in which case the
- * {@link SignInNoPasswordActivity email sign-in flow}
- * is started.
+ * {@link RegisterEmailActivity} is started.
  */
 public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private static final String TAG = "SignInDelegate";
@@ -81,7 +78,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         if (!hasNetworkConnection()) {
             Log.d(TAG, "No network connection");
-            finish(RESULT_NO_NETWORK, new Intent());
+            finish(ErrorCodes.NO_NETWORK, IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
             return;
         }
 
@@ -95,14 +92,15 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                                                        public void onCancel(DialogInterface dialogInterface) {
                                                            Log.w(TAG,
                                                                  "playServices:dialog.onCancel()");
-                                                           finish(RESULT_CANCELED, new Intent());
+                                                           finish(ResultCodes.CANCELED,
+                                                                  IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
                                                        }
                                                    });
 
         if (!madeAvailable
                 || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()) {
             Log.w(TAG, "playServices: could not make available.");
-            finish(RESULT_CANCELED, new Intent());
+            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
             return;
         }
 
@@ -165,6 +163,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        // We only care about onResult
     }
 
     @Override
@@ -172,7 +171,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_CREDENTIALS_READ:
-                if (resultCode == RESULT_OK) {
+                if (resultCode == ResultCodes.OK) {
                     // credential selected from SmartLock, log in with that credential
                     Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
                     handleCredential(credential);
@@ -187,7 +186,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 finish(resultCode, data);
                 break;
             case RC_PLAY_SERVICES:
-                if (resultCode != RESULT_OK) finish(resultCode, data);
+                if (resultCode != ResultCodes.OK) finish(resultCode, data);
                 break;
             default:
                 IdpSignInContainer signInContainer = IdpSignInContainer.getInstance(getActivity());
@@ -254,9 +253,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         if (idpConfigs.size() == 1) {
             if (idpConfigs.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
                 startActivityForResult(
-                        EmailFlowUtil.createIntent(
-                                getContext(),
-                                mHelper.getFlowParams()),
+                        RegisterEmailActivity.createIntent(getContext(), mHelper.getFlowParams()),
                         RC_EMAIL_FLOW);
             } else {
                 redirectToIdpSignIn(null,
@@ -274,7 +271,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     /**
      * Begin sign in process with email and password from a SmartLock credential.
-     * On success, finish with {@code RESULT_OK}.
+     * On success, finish with {@link ResultCodes#OK RESULT_OK}.
      * On failure, delete the credential from SmartLock (if applicable) and then launch the
      * auth method picker flow.
      */
@@ -286,7 +283,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        finish(RESULT_OK, new Intent());
+                        finish(ResultCodes.OK, new Intent());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -331,7 +328,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private void redirectToIdpSignIn(String email, String accountType) {
         if (TextUtils.isEmpty(accountType)) {
             startActivityForResult(
-                    SignInNoPasswordActivity.createIntent(
+                    RegisterEmailActivity.createIntent(
                             getContext(),
                             mHelper.getFlowParams(),
                             email),
@@ -373,7 +370,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     public static void delegate(FragmentActivity activity, FlowParameters params) {
         FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(TAG);
-        if (fragment == null || !(fragment instanceof SignInDelegate)) {
+        if (!(fragment instanceof SignInDelegate)) {
             SignInDelegate result = new SignInDelegate();
             result.setArguments(FragmentHelper.getFlowParamsBundle(params));
             fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
@@ -382,7 +379,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     public static SignInDelegate getInstance(FragmentActivity activity) {
         Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment != null && fragment instanceof SignInDelegate) {
+        if (fragment instanceof SignInDelegate) {
             return (SignInDelegate) fragment;
         } else {
             return null;

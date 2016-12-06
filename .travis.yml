@@ -11,12 +11,45 @@ cache:
     - $HOME/.gradle/wrapper/
 android:
   components:
-    - platform-tools
     - tools
     - build-tools-25.0.1
     - android-25
-
-    # Extras
-    - extra-google-m2repository
+    - platform-tools
     - extra-android-m2repository
-script: ./gradlew clean :library:testAll :library:prepareArtifacts
+    - extra-google-m2repository
+before_script: mv library/google-services.json app/google-services.json
+script: ./gradlew clean assembleDebug check
+after_failure:
+  # tests
+  - cat app/build/reports/tests/testDebugUnitTest/index.html
+  - cat auth/build/reports/tests/testDebugUnitTest/index.html
+  - cat database/build/reports/tests/testDebugUnitTest/index.html
+  - cat storage/build/reports/tests/testDebugUnitTest/index.html
+
+  # app
+  - cat app/build/reports/checkstyle.html
+  - cat app/build/reports/lint-results.xml
+  - cat app/build/reports/lint-results.html
+  - cat app/build/reports/findbugs.html
+  - cat app/build/reports/pmd.html
+
+  # auth
+  - cat auth/build/reports/checkstyle.html
+  - cat auth/build/reports/lint-results.xml
+  - cat auth/build/reports/lint-results.html
+  - cat auth/build/reports/findbugs.html
+  - cat auth/build/reports/pmd.html
+
+  # database
+  - cat database/build/reports/checkstyle.html
+  - cat database/build/reports/lint-results.xml
+  - cat database/build/reports/lint-results.html
+  - cat database/build/reports/findbugs.html
+  - cat database/build/reports/pmd.html
+
+  # storage
+  - cat storage/build/reports/checkstyle.html
+  - cat storage/build/reports/lint-results.xml
+  - cat storage/build/reports/lint-results.html
+  - cat storage/build/reports/findbugs.html
+  - cat storage/build/reports/pmd.html

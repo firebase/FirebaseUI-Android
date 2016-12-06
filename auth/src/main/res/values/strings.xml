@@ -4,7 +4,6 @@
     <string name="default_toolbar_title">@string/app_name</string>
     <string name="title_welcome_back_password_prompt">@string/sign_in</string>
     <string name="title_sign_in_activity">@string/sign_in</string>
-    <string name="title_sign_in_no_password_activity">@string/sign_in_with_email</string>
     <string name="title_welcome_back_idp_prompt">@string/sign_in</string>
     <string name="title_register_email_activity">@string/create_account_title</string>
     <string name="title_recover_password_activity">@string/recover_password_title</string>
@@ -17,8 +16,12 @@
         reset your password.</string>
     <string name="create_account_title">Create account</string>
     <string name="required_field">You can\'t leave this empty.</string>
-    <string name="password_length">Strong passwords have at least %1$d characters and a mix of letters
-        and numbers</string>
+    <plurals name="password_length">
+        <item quantity="one">Strong passwords have at least %1$d character and a mix of letters
+        and numbers</item>
+        <item quantity="other">Strong passwords have at least %1$d characters and a mix of letters
+        and numbers</item>
+    </plurals>
     <string name="invalid_email_address">That email address isn\'t correct</string>
     <string name="missing_email_address">Enter your email address to continue</string>
     <string name="error_weak_password">Password not strong enough. Use at least 6 characters and a mix of letters and numbers.</string>
@@ -34,7 +37,6 @@
     <string name="sign_in">Sign in</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
-    <string name="button_done">Done</string>
     <string name="check_your_email">Check your email</string>
     <string name="recover_password_title">Recover password</string>
     <string name="welcome_back_idp_header">You already have an account</string>
@@ -59,8 +61,8 @@
     <string name="progress_dialog_sending">Sending…</string>
     <string name="progress_dialog_signing_in">Signing in…</string>
     <string name="progress_dialog_signing_up">Signing up…</string>
+    <string name="progress_dialog_checking_accounts">Checking for existing accounts…</string>
 
     <!-- accessibility -->
     <string name="accessibility_logo">App logo</string>
-    <string name="accessibility_toggle">Toggle password visibility</string>
 </resources>

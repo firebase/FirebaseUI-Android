@@ -22,8 +22,8 @@ import android.util.Log;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
-import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,7 +37,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.ProviderQueryResult;
 
 public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
-    private final static String TAG = "CredentialSignInHandler";
+    private static final String TAG = "CredentialSignInHandler";
 
     private Activity mActivity;
     private BaseHelper mHelper;

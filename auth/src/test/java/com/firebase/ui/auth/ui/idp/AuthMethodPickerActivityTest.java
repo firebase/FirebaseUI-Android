@@ -22,18 +22,18 @@ import android.widget.LinearLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.test_helpers.ActivityHelperShadow;
-import com.firebase.ui.auth.test_helpers.AutoCompleteTask;
-import com.firebase.ui.auth.test_helpers.BaseHelperShadow;
-import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
-import com.firebase.ui.auth.test_helpers.FacebookProviderShadow;
-import com.firebase.ui.auth.test_helpers.FakeAuthResult;
-import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
-import com.firebase.ui.auth.test_helpers.GoogleProviderShadow;
-import com.firebase.ui.auth.test_helpers.LoginManagerShadow;
-import com.firebase.ui.auth.test_helpers.TestConstants;
-import com.firebase.ui.auth.test_helpers.TestHelper;
-import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
+import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
+import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
+import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
+import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
+import com.firebase.ui.auth.testhelpers.FacebookProviderShadow;
+import com.firebase.ui.auth.testhelpers.FakeAuthResult;
+import com.firebase.ui.auth.testhelpers.FirebaseAuthWrapperImplShadow;
+import com.firebase.ui.auth.testhelpers.GoogleProviderShadow;
+import com.firebase.ui.auth.testhelpers.LoginManagerShadow;
+import com.firebase.ui.auth.testhelpers.TestConstants;
+import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -54,7 +54,7 @@ import org.robolectric.shadows.ShadowActivity;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.firebase.ui.auth.test_helpers.TestHelper.verifySmartLockSave;
+import static com.firebase.ui.auth.testhelpers.TestHelper.verifySmartLockSave;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
@@ -125,7 +125,7 @@ public class AuthMethodPickerActivityTest {
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
 
         assertEquals(
-                EmailHintContainerActivity.class.getName(),
+                RegisterEmailActivity.class.getName(),
                 nextIntent.intent.getComponent().getClassName());
     }
 
@@ -148,8 +148,7 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
-        Button facebookButton =
-                (Button) authMethodPickerActivity.findViewById(R.id.facebook_button);
+        Button facebookButton = (Button) authMethodPickerActivity.findViewById(R.id.facebook_button);
         assertNotNull(facebookButton);
         facebookButton.performClick();
 
