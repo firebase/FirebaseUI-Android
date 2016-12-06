@@ -12,14 +12,14 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.email.field_validators;
+package com.firebase.ui.auth.ui.email.fieldvalidators;
 
 import android.support.design.widget.TextInputLayout;
 
 public class BaseValidator {
     protected TextInputLayout mErrorContainer;
     protected String mErrorMessage = "";
-    protected String mEmptyMessage = null;
+    protected String mEmptyMessage;
 
     public BaseValidator(TextInputLayout errorContainer) {
         mErrorContainer = errorContainer;

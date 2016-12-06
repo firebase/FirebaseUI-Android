@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<ruleset
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Android Application Rules"
+    xmlns="http://pmd.sf.net/ruleset/5.5.1"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/5.5.1 http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+    <exclude-pattern>.*/R.java</exclude-pattern>
+
+    <exclude-pattern>.*/gen/.*</exclude-pattern>
+
+    <rule ref="rulesets/java/android.xml"/>
+
+    <rule ref="rulesets/java/basic.xml"/>
+
+    <rule ref="rulesets/java/braces.xml">
+
+        <exclude name="IfStmtsMustUseBraces"/>
+
+    </rule>
+
+    <rule ref="rulesets/java/clone.xml"/>
+
+    <rule ref="rulesets/java/comments.xml">
+
+        <exclude name="CommentRequired"/>
+
+        <exclude name="CommentSize"/>
+
+        <exclude name="CommentRequired"/>
+
+        <exclude name="CommentDefaultAccessModifier"/>
+
+    </rule>
+
+    <rule ref="rulesets/java/controversial.xml">
+
+        <exclude name="OnlyOneReturn"/>
+
+        <exclude name="AvoidPrefixingMethodParameters"/>
+
+        <exclude name="AtLeastOneConstructor"/>
+
+        <exclude name="DataflowAnomalyAnalysis"/>
+
+        <exclude name="DefaultPackage"/>
+
+    </rule>
+
+    <rule ref="rulesets/java/design.xml">
+
+        <exclude name="ImmutableField"/>
+
+        <exclude name="ConfusingTernary"/>
+
+    </rule>
+
+    <rule ref="rulesets/java/empty.xml"/>
+
+    <rule ref="rulesets/java/finalizers.xml"/>
+
+    <rule ref="rulesets/java/imports.xml"/>
+
+    <rule ref="rulesets/java/javabeans.xml">
+
+        <exclude name="BeanMembersShouldSerialize"/>
+
+    </rule>
+
+    <rule ref="rulesets/java/logging-java.xml"/>
+
+    <rule ref="rulesets/java/migrating.xml"/>
+
+    <rule ref="rulesets/java/naming.xml">
+
+        <exclude name="LongVariable"/>
+
+        <exclude name="ShortClassName"/>
+
+        <exclude name="ShortVariable"/>
+
+        <exclude name="AbstractNaming"/>
+
+    </rule>
+
+    <rule ref="rulesets/java/optimizations.xml">
+
+        <exclude name="LocalVariableCouldBeFinal"/>
+
+        <exclude name="MethodArgumentCouldBeFinal"/>
+
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+
+    </rule>
+
+    <rule ref="rulesets/java/sunsecure.xml"/>
+
+    <rule ref="rulesets/java/strictexception.xml"/>
+
+    <rule ref="rulesets/java/strings.xml"/>
+
+    <rule ref="rulesets/java/unnecessary.xml"/>
+
+    <rule ref="rulesets/java/unusedcode.xml"/>
+
+</ruleset>

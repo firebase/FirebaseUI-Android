@@ -32,7 +32,7 @@ public abstract class SmartLockBase<R extends Result> extends BaseFragment imple
     private static final String TAG = "SmartLockBase";
 
     protected GoogleApiClient mGoogleApiClient;
-    private boolean mWasProgressDialogShowing = false;
+    private boolean mWasProgressDialogShowing;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

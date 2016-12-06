@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.test_helpers;
+package com.firebase.ui.auth.testhelpers;
 
 import android.app.Activity;
 

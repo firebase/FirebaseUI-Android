@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.account_link;
+package com.firebase.ui.auth.ui.accountlink;
 
 import android.app.Activity;
 import android.content.Context;
@@ -94,7 +94,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
         if (mIdpProvider == null) {
             getIntent().putExtra(
                     ExtraConstants.EXTRA_ERROR_MESSAGE,
-                    "Firebase login successful. Account linking failed due to provider not enabled by application");
+                    "Firebase login successful." +
+                            " Account linking failed due to provider not enabled by application");
             finish(RESULT_CANCELED, getIntent());
             return;
         }

@@ -19,29 +19,42 @@ We can represent a chat message with this Java class:
 
 ```java
 public static class Chat {
-    private String name;
-    private String text;
-    private String uid;
+    private String mName;
+    private String mMessage;
+    private String mUid;
 
     public Chat() {
+        // Needed for Firebase
     }
 
-    public Chat(String name, String uid, String message) {
-        this.name = name;
-        this.text = message;
-        this.uid = uid;
+    public Chat(String name, String message, String uid) {
+        mName = name;
+        mMessage = message;
+        mUid = uid;
     }
 
     public String getName() {
-        return name;
+        return mName;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public String getMessage() {
+        return mMessage;
+    }
+
+    public void setMessage(String message) {
+        mMessage = message;
     }
 
     public String getUid() {
-        return uid;
+        return mUid;
     }
 
-    public String getText() {
-        return text;
+    public void setUid(String uid) {
+        mUid = uid;
     }
 }
 ```

@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
-apply plugin: 'checkstyle'
 apply plugin: 'io.fabric'
+apply from: '../library/quality/quality.gradle'
 
 android {
     compileSdkVersion compileSdk
@@ -50,24 +50,11 @@ dependencies {
     // library when updating com.android.support libraries:
     compile "com.android.support:cardview-v7:$support_library_version"
 
-
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.2.28'
     testCompile 'org.robolectric:robolectric:3.1.4'
     // See https://github.com/robolectric/robolectric/issues/1932#issuecomment-219796474
     testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
-}
-
-checkstyle {
-    configFile file('../common/checkstyle/checkstyle.xml')
-    configProperties = ['checkstyle.java.header': file('../common/checkstyle/java.header').getAbsolutePath()]
-    toolVersion = "6.11.2"
-}
-
-task checkAllSource(type: Checkstyle) {
-    source 'src/main/java'
-    include '**/*.java'
-    classpath = files(project.configurations.compile)
 }
 
 javadoc.exclude([

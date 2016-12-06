@@ -135,7 +135,7 @@ public class GoogleApiClientTaskHelper {
 
         @Override
         public void onActivityStarted(Activity activity) {
-            if (mActivity == activity) {
+            if (mActivity.equals(activity)) {
                 GoogleApiClient client = mClientRef.get();
                 if (client != null) {
                     client.connect();
@@ -145,7 +145,7 @@ public class GoogleApiClientTaskHelper {
 
         @Override
         public void onActivityStopped(Activity activity) {
-            if (mActivity == activity) {
+            if (mActivity.equals(activity)) {
                 GoogleApiClient client = mClientRef.get();
                 if (client != null) {
                     client.disconnect();

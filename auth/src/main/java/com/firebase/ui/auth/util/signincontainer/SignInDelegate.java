@@ -163,6 +163,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        // We only care about onResult
     }
 
     @Override
@@ -369,7 +370,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     public static void delegate(FragmentActivity activity, FlowParameters params) {
         FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(TAG);
-        if (fragment == null || !(fragment instanceof SignInDelegate)) {
+        if (!(fragment instanceof SignInDelegate)) {
             SignInDelegate result = new SignInDelegate();
             result.setArguments(FragmentHelper.getFlowParamsBundle(params));
             fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
@@ -378,7 +379,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     public static SignInDelegate getInstance(FragmentActivity activity) {
         Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment != null && fragment instanceof SignInDelegate) {
+        if (fragment instanceof SignInDelegate) {
             return (SignInDelegate) fragment;
         } else {
             return null;
