@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.provider.AuthCredentialHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
@@ -67,7 +68,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         setContentView(R.layout.welcome_back_password_prompt_layout);
 
         mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
-        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
@@ -102,7 +103,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                     getApplicationContext(),
                     mActivityHelper.getFlowParams(),
                     mEmail));
-            finish(RESULT_OK, new Intent());
+            finish(ResultCodes.OK, new Intent());
         }
     }
 

@@ -137,8 +137,9 @@ import java.util.Set;
  *
  * <h3>Handling the Sign-in response</h3>
  *
- * The authentication flow provides only two response codes: {@link Activity#RESULT_OK RESULT_OK}
- * if a user is signed in, and {@link Activity#RESULT_CANCELED RESULT_CANCELLED} if sign in
+ * The authentication flow provides only two response codes:
+ * {@link ResultCodes#OK RESULT_OK} if a user is signed in,
+ * and {@link ResultCodes#CANCELED RESULT_CANCELLED} if sign in
  * failed. No further information on failure is provided as it is not typically useful; the only
  * recourse for most apps if sign in fails is to ask the user to sign in again later, or proceed
  * with an anonymous account if supported.
@@ -149,7 +150,7 @@ import java.util.Set;
  * protected void onActivityResult(int requestCode, int resultCode, Intent data) {
  *   super.onActivityResult(requestCode, resultCode, data);
  *   if (requestCode == RC_SIGN_IN) {
- *     if (resultCode == RESULT_OK) {
+ *     if (resultCode == ResultCodes.OK) {
  *       // user is signed in!
  *       startActivity(new Intent(this, WelcomeBackActivity.class));
  *       finish();

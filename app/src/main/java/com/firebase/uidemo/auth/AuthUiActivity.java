@@ -33,8 +33,9 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.ResultCodes;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.uidemo.R;
 import com.google.android.gms.common.Scopes;
 import com.google.firebase.auth.FirebaseAuth;
@@ -199,20 +200,30 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            startActivity(SignedInActivity.createIntent(this, IdpResponse.fromResultIntent(data)));
+        IdpResponse response = IdpResponse.fromResultIntent(data);
+
+        // Successfully signed in
+        if (resultCode == ResultCodes.OK) {
+            startActivity(SignedInActivity.createIntent(this, response));
             finish();
             return;
-        }
+        } else {
+            // Sign in failed
+            if (response == null) {
+                // User pressed back button
+                showSnackbar(R.string.sign_in_cancelled);
+                return;
+            }
 
-        if (resultCode == RESULT_CANCELED) {
-            showSnackbar(R.string.sign_in_cancelled);
-            return;
-        }
+            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                showSnackbar(R.string.no_internet_connection);
+                return;
+            }
 
-        if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
-            showSnackbar(R.string.no_internet_connection);
-            return;
+            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                showSnackbar(R.string.unknown_error);
+                return;
+            }
         }
 
         showSnackbar(R.string.unknown_sign_in_response);

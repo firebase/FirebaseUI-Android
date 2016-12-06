@@ -128,6 +128,9 @@ public class RegisterEmailActivityTest {
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
-        TestHelper.verifySmartLockSave(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL, TestConstants.PASSWORD);
+        TestHelper.verifySmartLockSave(
+                EmailAuthProvider.PROVIDER_ID,
+                TestConstants.EMAIL,
+                TestConstants.PASSWORD);
     }
 }

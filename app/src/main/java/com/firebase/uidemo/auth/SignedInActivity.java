@@ -65,6 +65,8 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_enabled_providers)
     TextView mEnabledProviders;
 
+    private IdpResponse mIdpResponse;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +77,8 @@ public class SignedInActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        mIdpResponse = getIntent().getParcelableExtra(EXTRA_IDP_RESPONSE);
 
         setContentView(R.layout.signed_in_layout);
         ButterKnife.bind(this);
@@ -177,10 +181,9 @@ public class SignedInActivity extends AppCompatActivity {
     }
 
     private void populateIdpToken() {
-        IdpResponse idpResponse = getIntent().getParcelableExtra(EXTRA_IDP_RESPONSE);
-        if (idpResponse != null) {
-            String token = idpResponse.getIdpToken();
-            String secret = idpResponse.getIdpSecret();
+        if (mIdpResponse != null) {
+            String token = mIdpResponse.getIdpToken();
+            String secret = mIdpResponse.getIdpSecret();
             if (token == null) {
                 findViewById(R.id.idp_token_layout).setVisibility(View.GONE);
             } else {

@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.BaseDialog;
 import com.firebase.ui.auth.ui.ExtraConstants;
 
@@ -26,7 +26,7 @@ public class RecoveryEmailSentDialog extends BaseDialog {
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface anInterface) {
-                        finish(Activity.RESULT_OK, new Intent());
+                        finish(ResultCodes.OK, new Intent());
                     }
                 })
                 .setPositiveButton(android.R.string.ok, null)
