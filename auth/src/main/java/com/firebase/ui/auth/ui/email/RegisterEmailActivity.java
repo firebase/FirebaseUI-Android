@@ -66,7 +66,8 @@ import java.util.List;
 /**
  * Activity displaying a form to create a new email/password account.
  */
-public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener, View.OnFocusChangeListener {
+public class RegisterEmailActivity extends AppCompatBase
+        implements View.OnClickListener, View.OnFocusChangeListener {
     private static final String TAG = "RegisterEmailActivity";
     private static final String PREV_EMAIL = "previous_email";
     private static final int RC_HINT = 13;
