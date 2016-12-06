@@ -29,7 +29,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.util.GoogleApiConstants;
@@ -41,8 +41,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseUser;
-
-import static android.app.Activity.RESULT_OK;
 
 public class SaveSmartLock extends SmartLockBase<Status> {
     private static final String TAG = "SaveSmartLock";
@@ -135,12 +133,12 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SAVE) {
-            if (resultCode != RESULT_OK) {
+            if (resultCode != ResultCodes.OK) {
                 Log.e(TAG, "SAVE: Canceled by user");
             }
             finish();
         } else if (requestCode == RC_UPDATE_SERVICE) {
-            if (resultCode == RESULT_OK) {
+            if (resultCode == ResultCodes.OK) {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
                         .build();
                 mHelper.getCredentialsApi()
@@ -154,13 +152,12 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     }
 
     private void finish() {
-        Intent resultIntent = new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, mResponse);
-        finish(RESULT_OK, resultIntent);
+        finish(ResultCodes.OK, IdpResponse.getIntent(mResponse));
     }
 
     /**
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
-     * Otherwise, finish the calling Activity with RESULT_OK.
+     * Otherwise, finish the calling Activity with {@link ResultCodes#OK RESULT_OK}.
      *
      * Note: saveCredentialsOrFinish cannot be called immediately after getInstance because
      * onCreate has not yet been called.

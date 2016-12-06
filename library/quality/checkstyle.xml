@@ -143,7 +143,7 @@ page at http://checkstyle.sourceforge.net/config.html -->
             <property name="max"
                       value="${com.puppycrawl.tools.checkstyle.checks.sizes.LineLength.max}"
                       default="115"/>
-            <property name="severity" value="error"/>
+            <property name="severity" value="warning"/>
 
             <!--
               The default ignore pattern exempts the following elements:

@@ -15,7 +15,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
@@ -47,10 +50,6 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
-import static com.firebase.ui.auth.ui.ResultCodes.RESULT_NO_NETWORK;
-
 /**
  * Attempts to acquire a credential from Smart Lock for Passwords to sign in
  * an existing account. If this succeeds, an attempt is made to sign the user in
@@ -79,7 +78,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         if (!hasNetworkConnection()) {
             Log.d(TAG, "No network connection");
-            finish(RESULT_NO_NETWORK, new Intent());
+            finish(ErrorCodes.NO_NETWORK, IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
             return;
         }
 
@@ -93,14 +92,15 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                                                        public void onCancel(DialogInterface dialogInterface) {
                                                            Log.w(TAG,
                                                                  "playServices:dialog.onCancel()");
-                                                           finish(RESULT_CANCELED, new Intent());
+                                                           finish(ResultCodes.CANCELED,
+                                                                  IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
                                                        }
                                                    });
 
         if (!madeAvailable
                 || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()) {
             Log.w(TAG, "playServices: could not make available.");
-            finish(RESULT_CANCELED, new Intent());
+            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
             return;
         }
 
@@ -171,7 +171,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_CREDENTIALS_READ:
-                if (resultCode == RESULT_OK) {
+                if (resultCode == ResultCodes.OK) {
                     // credential selected from SmartLock, log in with that credential
                     Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
                     handleCredential(credential);
@@ -186,7 +186,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 finish(resultCode, data);
                 break;
             case RC_PLAY_SERVICES:
-                if (resultCode != RESULT_OK) finish(resultCode, data);
+                if (resultCode != ResultCodes.OK) finish(resultCode, data);
                 break;
             default:
                 IdpSignInContainer signInContainer = IdpSignInContainer.getInstance(getActivity());
@@ -271,7 +271,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     /**
      * Begin sign in process with email and password from a SmartLock credential.
-     * On success, finish with {@code RESULT_OK}.
+     * On success, finish with {@link ResultCodes#OK RESULT_OK}.
      * On failure, delete the credential from SmartLock (if applicable) and then launch the
      * auth method picker flow.
      */
@@ -283,7 +283,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        finish(RESULT_OK, new Intent());
+                        finish(ResultCodes.OK, new Intent());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

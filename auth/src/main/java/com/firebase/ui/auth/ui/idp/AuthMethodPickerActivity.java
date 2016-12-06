@@ -28,6 +28,7 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.provider.AuthCredentialHelper;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
@@ -146,8 +147,8 @@ public class AuthMethodPickerActivity extends AppCompatBase
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_EMAIL_FLOW) {
-            if (resultCode == RESULT_OK) {
-                finish(RESULT_OK, data);
+            if (resultCode == ResultCodes.OK) {
+                finish(ResultCodes.OK, data);
             }
         } else if (requestCode == RC_ACCOUNT_LINK) {
             finish(resultCode, data);

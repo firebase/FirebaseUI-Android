@@ -35,6 +35,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
@@ -311,7 +312,9 @@ public class RegisterEmailActivity extends AppCompatBase
                                         mActivityHelper.saveCredentialsOrFinish(
                                                 mSaveSmartLock,
                                                 user,
-                                                password);
+                                                password,
+                                                new IdpResponse(EmailAuthProvider.PROVIDER_ID,
+                                                                email));
                                     }
                                 });
                     }

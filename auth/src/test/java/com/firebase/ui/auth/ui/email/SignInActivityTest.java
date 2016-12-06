@@ -31,6 +31,7 @@ import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.junit.Before;
@@ -127,6 +128,6 @@ public class SignInActivityTest {
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 
-        verifySmartLockSave(null, TestConstants.EMAIL, TestConstants.PASSWORD);
+        verifySmartLockSave(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL, TestConstants.PASSWORD);
     }
 }
