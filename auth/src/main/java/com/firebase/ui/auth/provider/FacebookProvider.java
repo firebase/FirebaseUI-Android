@@ -71,9 +71,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         } else {
             mScopes = scopes;
         }
-        String applicationId = appContext.getString(R.string.facebook_application_id);
         FacebookSdk.sdkInitialize(appContext);
-        FacebookSdk.setApplicationId(applicationId);
         FacebookSdk.setWebDialogTheme(theme);
     }
 
