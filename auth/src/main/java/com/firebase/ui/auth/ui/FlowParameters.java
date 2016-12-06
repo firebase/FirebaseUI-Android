@@ -23,7 +23,6 @@ import android.support.annotation.StyleRes;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.Preconditions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -88,7 +87,7 @@ public class FlowParameters implements Parcelable {
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
             int smartLockEnabledInt = in.readInt();
-            boolean smartLockEnabled = (smartLockEnabledInt != 0);
+            boolean smartLockEnabled = smartLockEnabledInt != 0;
 
             return new FlowParameters(
                     appName,

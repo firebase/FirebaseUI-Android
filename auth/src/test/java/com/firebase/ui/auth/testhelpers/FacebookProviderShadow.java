@@ -12,15 +12,15 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.test_helpers;
+package com.firebase.ui.auth.testhelpers;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
 
+import com.facebook.login.LoginResult;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.provider.GoogleProvider;
+import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
-import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
@@ -31,22 +31,22 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-@Implements(GoogleProvider.class)
-public class GoogleProviderShadow {
-    private static final String FAKE_TOKEN = "fake_token";
+@Implements(FacebookProvider.class)
+public class FacebookProviderShadow {
+    private static final String FAKE_ACCESS_TOKEN = "fake_access_token";
     private IdpResponse mMockIdpResponse;
     private IdpCallback mCallback;
 
-    public GoogleProviderShadow() {
+    public FacebookProviderShadow() {
         if (mMockIdpResponse == null) {
             mMockIdpResponse = mock(IdpResponse.class);
-            when(mMockIdpResponse.getProviderType()).thenReturn(GoogleAuthProvider.PROVIDER_ID);
-            when(mMockIdpResponse.getIdpToken()).thenReturn(FAKE_TOKEN);
+            when(mMockIdpResponse.getProviderType()).thenReturn(FacebookAuthProvider.PROVIDER_ID);
+            when(mMockIdpResponse.getIdpToken()).thenReturn(FAKE_ACCESS_TOKEN);
         }
     }
 
-    public void __constructor__(FragmentActivity activity, String email, List<String> scopes) {}
-
+    @SuppressWarnings("checkstyle:methodname")
+    public void __constructor__(Activity activity, List<String> scopes) {}
 
     @Implementation
     public void setAuthenticationCallback(IdpCallback idpCallback) {
@@ -54,7 +54,7 @@ public class GoogleProviderShadow {
     }
 
     @Implementation
-    public void startLogin(Activity activity) {
+    public void onSuccess(final LoginResult loginResult) {
         mCallback.onSuccess(mMockIdpResponse);
     }
 }

@@ -58,4 +58,10 @@
     <string name="idp_token">IDP Token</string>
     <string name="idp_secret">IDP Secret</string>
     <string name="unknown_error">An unknown error occurred</string>
+    <string name="send">Send</string>
+    <string name="download">Download</string>
+    <string name="upload">Upload</string>
+    <string name="choose_image">Choose Image</string>
+    <string name="accessibility_downloaded_image">Downloaded image</string>
+    <string name="drive_file">Drive File</string>
 </resources>

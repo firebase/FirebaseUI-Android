@@ -151,7 +151,7 @@ public class SignedInActivity extends AppCompatActivity {
         mUserDisplayName.setText(
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
 
-        StringBuilder providerList = new StringBuilder();
+        StringBuilder providerList = new StringBuilder(100);
 
         providerList.append("Providers used: ");
 

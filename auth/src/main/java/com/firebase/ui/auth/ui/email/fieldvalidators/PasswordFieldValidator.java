@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.email.field_validators;
+package com.firebase.ui.auth.ui.email.fieldvalidators;
 
 import android.support.design.widget.TextInputLayout;
 
@@ -24,7 +24,8 @@ public class PasswordFieldValidator extends BaseValidator {
     public PasswordFieldValidator(TextInputLayout errorContainer, int minLength) {
         super(errorContainer);
         mMinLength = minLength;
-        String template = mErrorContainer.getResources().getString(R.string.password_length);
+        String template = mErrorContainer.getResources()
+                .getQuantityString(R.plurals.password_length, minLength);
         mErrorMessage = String.format(template, mMinLength);
     }
 

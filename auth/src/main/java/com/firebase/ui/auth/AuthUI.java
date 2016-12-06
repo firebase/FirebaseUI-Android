@@ -391,7 +391,7 @@ public class AuthUI {
     }
 
     /**
-     * Retrieves the {@link AuthUI} instance associated  the the specified app.
+     * Retrieves the {@link AuthUI} instance associated the the specified app.
      */
     public static AuthUI getInstance(FirebaseApp app) {
         AuthUI authUi;

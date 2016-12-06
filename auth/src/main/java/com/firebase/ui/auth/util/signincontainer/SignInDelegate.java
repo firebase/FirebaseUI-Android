@@ -23,10 +23,9 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.SignInNoPasswordActivity;
+import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
-import com.firebase.ui.auth.util.EmailFlowUtil;
 import com.firebase.ui.auth.util.GoogleApiConstants;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -57,8 +56,7 @@ import java.util.List;
  * with this credential. If it does not, the
  * {@link AuthMethodPickerActivity authentication method picker activity}
  * is started, unless only email is supported, in which case the
- * {@link SignInNoPasswordActivity email sign-in flow}
- * is started.
+ * {@link RegisterEmailActivity} is started.
  */
 public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private static final String TAG = "SignInDelegate";
@@ -165,6 +163,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        // We only care about onResult
     }
 
     @Override
@@ -254,9 +253,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         if (idpConfigs.size() == 1) {
             if (idpConfigs.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
                 startActivityForResult(
-                        EmailFlowUtil.createIntent(
-                                getContext(),
-                                mHelper.getFlowParams()),
+                        RegisterEmailActivity.createIntent(getContext(), mHelper.getFlowParams()),
                         RC_EMAIL_FLOW);
             } else {
                 redirectToIdpSignIn(null,
@@ -331,7 +328,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private void redirectToIdpSignIn(String email, String accountType) {
         if (TextUtils.isEmpty(accountType)) {
             startActivityForResult(
-                    SignInNoPasswordActivity.createIntent(
+                    RegisterEmailActivity.createIntent(
                             getContext(),
                             mHelper.getFlowParams(),
                             email),
@@ -373,7 +370,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     public static void delegate(FragmentActivity activity, FlowParameters params) {
         FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(TAG);
-        if (fragment == null || !(fragment instanceof SignInDelegate)) {
+        if (!(fragment instanceof SignInDelegate)) {
             SignInDelegate result = new SignInDelegate();
             result.setArguments(FragmentHelper.getFlowParamsBundle(params));
             fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
@@ -382,7 +379,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     public static SignInDelegate getInstance(FragmentActivity activity) {
         Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment != null && fragment instanceof SignInDelegate) {
+        if (fragment instanceof SignInDelegate) {
             return (SignInDelegate) fragment;
         } else {
             return null;

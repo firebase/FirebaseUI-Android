@@ -42,10 +42,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class GoogleProvider implements
         IdpProvider, OnClickListener, GoogleApiClient.OnConnectionFailedListener {
-
     private static final String TAG = "GoogleProvider";
     private static final int RC_SIGN_IN = 20;
     private static final String ERROR_KEY = "error";
+
     private GoogleApiClient mGoogleApiClient;
     private Activity mActivity;
     private IdpCallback mIDPCallback;
@@ -140,7 +140,7 @@ public class GoogleProvider implements
 
     private void onError(GoogleSignInResult result) {
         String errorMessage = result.getStatus().getStatusMessage();
-        onError(String.valueOf(result.getStatus().getStatusCode()) + " " + errorMessage);
+        onError(result.getStatus().getStatusCode() + " " + errorMessage);
     }
 
     private void onError(String errorMessage) {

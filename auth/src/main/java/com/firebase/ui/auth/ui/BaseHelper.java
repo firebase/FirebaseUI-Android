@@ -22,16 +22,12 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
 public class BaseHelper {
     protected Context mContext;
+    protected ProgressDialog mProgressDialog;
     private final FlowParameters mFlowParams;
-    private ProgressDialog mProgressDialog;
 
     public BaseHelper(Context context, FlowParameters parameters) {
         mContext = context;
         mFlowParams = parameters;
-    }
-
-    public void configureTheme() {
-        mContext.setTheme(mFlowParams.themeId);
     }
 
     public FlowParameters getFlowParams() {

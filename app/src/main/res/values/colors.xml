@@ -15,6 +15,8 @@
     <color name="material_green_a200">#69F0AE</color>
 
     <color name="material_gray_300">#E0E0E0</color>
+    <color name="material_gray_850">#ff303030</color>
+    <color name="material_gray_900">#ff212121</color>
 
     <color name="material_lime_a700">#AEEA00</color>
 
@@ -22,4 +24,6 @@
     <color name="material_purple_a700">#AA00FF</color>
 
     <color name="material_red_a200">#FF5252</color>
+
+    <color name="material_deep_teal_a200">#ff80cbc4</color>
 </resources>

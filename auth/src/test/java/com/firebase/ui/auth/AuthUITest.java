@@ -16,9 +16,9 @@ package com.firebase.ui.auth;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.AuthUI.SignInIntentBuilder;
-import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
-import com.firebase.ui.auth.test_helpers.TestConstants;
-import com.firebase.ui.auth.test_helpers.TestHelper;
+import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
+import com.firebase.ui.auth.testhelpers.TestConstants;
+import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.firebase.FirebaseApp;
 
