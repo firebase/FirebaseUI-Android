@@ -4,6 +4,7 @@
     package="com.firebase.ui.auth">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application>
 
@@ -14,6 +15,10 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="@string/twitter_consumer_secret"/>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_application_id"/>
 
         <activity
             android:name=".KickoffActivity"
@@ -71,8 +76,8 @@
 
         <activity
             android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             tools:replace="android:theme"/>
 
