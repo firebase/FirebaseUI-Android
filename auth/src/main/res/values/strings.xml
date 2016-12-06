@@ -4,7 +4,6 @@
     <string name="default_toolbar_title">@string/app_name</string>
     <string name="title_welcome_back_password_prompt">@string/sign_in</string>
     <string name="title_sign_in_activity">@string/sign_in</string>
-    <string name="title_sign_in_no_password_activity">@string/sign_in_with_email</string>
     <string name="title_welcome_back_idp_prompt">@string/sign_in</string>
     <string name="title_register_email_activity">@string/create_account_title</string>
     <string name="title_recover_password_activity">@string/recover_password_title</string>
