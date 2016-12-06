@@ -62,6 +62,7 @@
     <string name="progress_dialog_sending">Sending…</string>
     <string name="progress_dialog_signing_in">Signing in…</string>
     <string name="progress_dialog_signing_up">Signing up…</string>
+    <string name="progress_dialog_checking_accounts">Checking for existing accounts…</string>
 
     <!-- accessibility -->
     <string name="accessibility_logo">App logo</string>

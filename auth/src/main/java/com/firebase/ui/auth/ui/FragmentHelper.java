@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -9,7 +10,7 @@ public class FragmentHelper extends BaseHelper {
     private Fragment mFragment;
 
     public FragmentHelper(Fragment fragment) {
-        super(fragment.getContext(), (FlowParameters) fragment.getArguments()
+        super(fragment.getContext().getApplicationContext(), (FlowParameters) fragment.getArguments()
                 .getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS));
         mFragment = fragment;
     }
@@ -18,14 +19,20 @@ public class FragmentHelper extends BaseHelper {
         finishActivity(mFragment.getActivity(), resultCode, intent);
     }
 
-    public static Bundle getFlowParamsBundle(FlowParameters params) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, params);
-        return bundle;
+    @Override
+    public void showLoadingDialog(String message) {
+        dismissDialog();
+        mProgressDialog = ProgressDialog.show(mFragment.getContext(), "", message, true);
     }
 
     public void startIntentSenderForResult(IntentSender sender, int requestCode)
             throws IntentSender.SendIntentException {
         mFragment.startIntentSenderForResult(sender, requestCode, null, 0, 0, 0, null);
+    }
+
+    public static Bundle getFlowParamsBundle(FlowParameters params) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, params);
+        return bundle;
     }
 }
