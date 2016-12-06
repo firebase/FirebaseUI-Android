@@ -174,16 +174,16 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     }
 
     private void onSuccess(String email, LoginResult loginResult) {
-        gcFbManager();
+        gcCallbackManager();
         mCallbackObject.onSuccess(createIdpResponse(email, loginResult));
     }
 
     private void onFailure(Bundle bundle) {
-        gcFbManager();
+        gcCallbackManager();
         mCallbackObject.onFailure(bundle);
     }
 
-    private void gcFbManager() {
+    private void gcCallbackManager() {
         // sCallbackManager must be static to prevent it from being destroyed if the activity
         // containing FacebookProvider dies.
         // In startLogin(Activity), LoginManager#registerCallback(CallbackManager, FacebookCallback)
