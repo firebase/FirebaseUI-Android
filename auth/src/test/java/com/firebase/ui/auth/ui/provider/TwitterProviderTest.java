@@ -3,13 +3,13 @@ package com.firebase.ui.auth.ui.provider;
 import android.os.Bundle;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.provider.TwitterProvider;
-import com.firebase.ui.auth.test_helpers.CustomRobolectricGradleTestRunner;
-import com.firebase.ui.auth.test_helpers.FacebookProviderShadow;
-import com.firebase.ui.auth.test_helpers.FirebaseAuthWrapperImplShadow;
-import com.firebase.ui.auth.test_helpers.GoogleProviderShadow;
+import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
+import com.firebase.ui.auth.testhelpers.FacebookProviderShadow;
+import com.firebase.ui.auth.testhelpers.FirebaseAuthWrapperImplShadow;
+import com.firebase.ui.auth.testhelpers.GoogleProviderShadow;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.TwitterException;

@@ -1,9 +1,9 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.firebase.ui.auth">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application>
 
@@ -14,6 +14,10 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="@string/twitter_consumer_secret"/>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_application_id"/>
 
         <activity
             android:name=".KickoffActivity"
@@ -34,13 +38,13 @@
             android:theme="@style/FirebaseUI"/>
 
         <activity
-            android:name=".ui.account_link.WelcomeBackIdpPrompt"
+            android:name=".ui.accountlink.WelcomeBackIdpPrompt"
             android:label="@string/title_welcome_back_idp_prompt"
             android:exported="false"
             android:theme="@style/FirebaseUI"/>
 
         <activity
-            android:name=".ui.account_link.WelcomeBackPasswordPrompt"
+            android:name=".ui.accountlink.WelcomeBackPasswordPrompt"
             android:label="@string/title_welcome_back_password_prompt"
             android:exported="false"
             android:theme="@style/FirebaseUI"/>
@@ -53,10 +57,8 @@
 
         <activity
             android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            tools:replace="android:theme"/>
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
 
         <activity
             android:name="com.facebook.CustomTabActivity"

@@ -15,4 +15,4 @@
 /**
  * Activities related to linking a new authentication method to an existing account.
  */
-package com.firebase.ui.auth.ui.account_link;
+package com.firebase.ui.auth.ui.accountlink;

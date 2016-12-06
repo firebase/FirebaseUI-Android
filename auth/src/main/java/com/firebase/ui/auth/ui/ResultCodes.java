@@ -7,8 +7,8 @@ import com.firebase.ui.auth.AuthUI;
  * {@code startActivityForResult}.
  */
 public class ResultCodes {
-
-    /** Sign in failed due to lack of network connection **/
+    /**
+     * Sign in failed due to lack of network connection
+     **/
     public static final int RESULT_NO_NETWORK = 10;
-
 }

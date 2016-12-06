@@ -15,8 +15,12 @@
         reset your password.</string>
     <string name="create_account_title">Create account</string>
     <string name="required_field">You can\'t leave this empty.</string>
-    <string name="password_length">Strong passwords have at least %1$d characters and a mix of letters
-        and numbers</string>
+    <plurals name="password_length">
+        <item quantity="one">Strong passwords have at least %1$d character and a mix of letters
+        and numbers</item>
+        <item quantity="other">Strong passwords have at least %1$d characters and a mix of letters
+        and numbers</item>
+    </plurals>
     <string name="invalid_email_address">That email address isn\'t correct</string>
     <string name="missing_email_address">Enter your email address to continue</string>
     <string name="error_weak_password">Password not strong enough. Use at least 6 characters and a mix of letters and numbers.</string>

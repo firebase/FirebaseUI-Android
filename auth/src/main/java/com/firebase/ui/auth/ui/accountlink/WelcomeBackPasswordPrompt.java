@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.account_link;
+package com.firebase.ui.auth.ui.accountlink;
 
 import android.content.Context;
 import android.content.Intent;
@@ -107,8 +107,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     }
 
     private void next(final String email, final String password) {
-        final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
-
         // Check for null or empty password
         if (TextUtils.isEmpty(password)) {
             mPasswordField.setError(getString(R.string.required_field));
@@ -117,6 +115,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
             mPasswordField.setError(null);
         }
 
+        final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         // Sign in with known email and the password provided
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(

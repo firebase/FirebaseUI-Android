@@ -65,18 +65,14 @@ public class SaveSmartLock extends SmartLockBase<Status> {
 
         Credential.Builder builder = new Credential.Builder(mEmail);
         builder.setPassword(mPassword);
-        if (mPassword == null) {
-            // only password OR provider can be set, not both
-            if (mResponse != null) {
-                String translatedProvider =
-                        providerIdToAccountType(mResponse.getProviderType());
-                if (translatedProvider != null) {
-                    builder.setAccountType(translatedProvider);
-                } else {
-                    Log.e(TAG, "Unable to save null credential!");
-                    finish();
-                    return;
-                }
+        if (mPassword == null && mResponse != null) {
+            String translatedProvider = providerIdToAccountType(mResponse.getProviderType());
+            if (translatedProvider != null) {
+                builder.setAccountType(translatedProvider);
+            } else {
+                Log.e(TAG, "Unable to save null credential!");
+                finish();
+                return;
             }
         }
 
@@ -205,7 +201,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
 
         FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(TAG);
-        if (fragment == null || !(fragment instanceof SaveSmartLock)) {
+        if (!(fragment instanceof SaveSmartLock)) {
             result = new SaveSmartLock();
             result.setArguments(FragmentHelper.getFlowParamsBundle(parameters));
             try {

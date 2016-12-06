@@ -42,11 +42,11 @@ import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.account_link.WelcomeBackIdpPrompt;
-import com.firebase.ui.auth.ui.account_link.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
-import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
-import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
+import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
+import com.firebase.ui.auth.ui.email.fieldvalidators.PasswordFieldValidator;
+import com.firebase.ui.auth.ui.email.fieldvalidators.RequiredFieldValidator;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -68,12 +68,9 @@ import java.util.List;
 /**
  * Activity displaying a form to create a new email/password account.
  */
-public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener, View.OnFocusChangeListener {
+public class RegisterEmailActivity extends AppCompatBase
+        implements View.OnClickListener, View.OnFocusChangeListener {
     private static final String TAG = "RegisterEmailActivity";
-    private static final String PREV_EMAIL = "previous_email";
-    private static final int RC_HINT = 13;
-    private static final int RC_WELCOME_BACK_IDP = 15;
-    private static final int RC_SIGN_IN = 16;
 
     private String mPrevEmail;
     private EditText mEmailEditText;

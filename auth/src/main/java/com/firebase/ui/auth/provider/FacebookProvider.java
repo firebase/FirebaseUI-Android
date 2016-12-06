@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StyleRes;
 import android.util.Log;
 
 import com.facebook.CallbackManager;
@@ -29,7 +30,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -43,18 +44,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
+    private static final String TAG = "FacebookProvider";
     protected static final String ERROR = "err";
     protected static final String ERROR_MSG = "err_msg";
-
-    private static final String TAG = "FacebookProvider";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
-    private static final CallbackManager sCallbackManager = CallbackManager.Factory.create();
+    private static final CallbackManager CALLBACK_MANAGER = CallbackManager.Factory.create();
 
     private final List<String> mScopes;
     private IdpCallback mCallbackObject;
 
-    public FacebookProvider(Context appContext, IdpConfig idpConfig) {
+    public FacebookProvider(Context appContext, AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
         appContext = appContext.getApplicationContext();
 
         if (appContext.getResources().getIdentifier(
@@ -70,9 +70,8 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         } else {
             mScopes = scopes;
         }
-        String applicationId = appContext.getString(R.string.facebook_application_id);
         FacebookSdk.sdkInitialize(appContext);
-        FacebookSdk.setApplicationId(applicationId);
+        FacebookSdk.setWebDialogTheme(theme);
     }
 
     @Override
@@ -88,7 +87,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     @Override
     public void startLogin(Activity activity) {
         LoginManager loginManager = LoginManager.getInstance();
-        loginManager.registerCallback(sCallbackManager, this);
+        loginManager.registerCallback(CALLBACK_MANAGER, this);
 
         List<String> permissionsList = new ArrayList<>(mScopes);
 
@@ -112,7 +111,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        sCallbackManager.onActivityResult(requestCode, resultCode, data);
+        CALLBACK_MANAGER.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

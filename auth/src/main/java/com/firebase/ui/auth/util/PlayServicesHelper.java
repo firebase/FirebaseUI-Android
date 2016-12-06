@@ -15,11 +15,11 @@ import com.google.android.gms.common.GoogleApiAvailability;
  * Helper class wrapping {@link GoogleApiAvailability}. Used internally but can also be used
  * by client application
  */
-public class PlayServicesHelper {
+public final class PlayServicesHelper {
 
     private static final String TAG = "PlayServicesHelper";
 
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     public static GoogleApiAvailability sApiAvailability = GoogleApiAvailability.getInstance();
 
     private final Context mContext;
@@ -58,7 +58,7 @@ public class PlayServicesHelper {
         // Although the API considers SERVICE_INVALID to be resolvable, it can cause crashes
         // on devices with no GmsCore installed at all (like emulators) and therefore we will
         // avoid trying to resolve it.
-        return (isUserResolvable && !(availabilityCode == ConnectionResult.SERVICE_INVALID));
+        return (isUserResolvable && availabilityCode != ConnectionResult.SERVICE_INVALID);
     }
 
     /**
