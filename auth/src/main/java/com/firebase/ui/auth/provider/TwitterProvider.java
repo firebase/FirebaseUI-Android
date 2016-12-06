@@ -61,7 +61,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
 
     @Override
     public void success(Result<TwitterSession> result) {
-        mCallbackObject.onSuccess(createIDPResponse(result.data));
+        mCallbackObject.onSuccess(createIdpResponse(result.data));
     }
 
     @Override
@@ -70,6 +70,15 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         mCallbackObject.onFailure(new Bundle());
     }
 
+    private IdpResponse createIdpResponse(TwitterSession twitterSession) {
+        return new IdpResponse(
+                TwitterAuthProvider.PROVIDER_ID,
+                null,
+                twitterSession.getAuthToken().token,
+                twitterSession.getAuthToken().secret);
+    }
+
+
     public static AuthCredential createAuthCredential(IdpResponse response) {
         if (!response.getProviderType().equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)){
             return null;
@@ -77,14 +86,5 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         return TwitterAuthProvider.getCredential(
                 response.getIdpToken(),
                 response.getIdpSecret());
-    }
-
-
-    private IdpResponse createIDPResponse(TwitterSession twitterSession) {
-        return new IdpResponse(
-                TwitterAuthProvider.PROVIDER_ID,
-                null,
-                twitterSession.getAuthToken().token,
-                twitterSession.getAuthToken().secret);
     }
 }
