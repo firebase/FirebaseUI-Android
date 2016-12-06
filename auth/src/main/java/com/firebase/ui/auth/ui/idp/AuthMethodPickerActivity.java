@@ -38,8 +38,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.EmailHintContainerActivity;
-import com.firebase.ui.auth.util.EmailFlowUtil;
+import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -54,7 +53,7 @@ import java.util.List;
  * Presents the list of authentication options for this app to the user. If an
  * identity provider option is selected, a {@link CredentialSignInHandler}
  * is launched to manage the IDP-specific sign-in flow. If email authentication is chosen,
- * the {@link EmailHintContainerActivity root email flow activity} is started.
+ * the {@link RegisterEmailActivity} is started.
  *
  * <p style="text-align: center">
  * <img alt="Authentication picker activity rendered with all authentication options and default settings"
@@ -67,7 +66,8 @@ public class AuthMethodPickerActivity extends AppCompatBase
     private static final int RC_ACCOUNT_LINK = 3;
 
     private ArrayList<IdpProvider> mIdpProviders;
-    @Nullable private SaveSmartLock mSaveSmartLock;
+    @Nullable
+    private SaveSmartLock mSaveSmartLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,10 +188,9 @@ public class AuthMethodPickerActivity extends AppCompatBase
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.email_provider) {
-            Intent intent = EmailFlowUtil.createIntent(
-                    this,
-                    mActivityHelper.getFlowParams());
-            startActivityForResult(intent, RC_EMAIL_FLOW);
+            startActivityForResult(
+                    RegisterEmailActivity.createIntent(this, mActivityHelper.getFlowParams()),
+                    RC_EMAIL_FLOW);
         }
     }
 

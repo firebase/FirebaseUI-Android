@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
 public class RegisterEmailActivityTest {
 
     private RegisterEmailActivity createActivity(String email) {
-        Intent startIntent = SignInNoPasswordActivity.createIntent(
+        Intent startIntent = RegisterEmailActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)),
                 email);

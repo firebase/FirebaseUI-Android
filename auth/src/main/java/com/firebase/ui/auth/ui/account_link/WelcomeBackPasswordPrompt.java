@@ -146,7 +146,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                         });
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
+                .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         mActivityHelper.dismissDialog();
