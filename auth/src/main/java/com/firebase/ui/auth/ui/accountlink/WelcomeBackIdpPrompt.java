@@ -73,7 +73,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase
                         mIdpProvider = new GoogleProvider(this, idpConfig, getEmailFromIntent());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new FacebookProvider(this, idpConfig);
+                        mIdpProvider = new FacebookProvider(
+                                this, idpConfig, mActivityHelper.getFlowParams().themeId);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
                         mIdpProvider = new TwitterProvider(this);

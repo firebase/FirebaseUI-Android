@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StyleRes;
 import android.util.Log;
 
 import com.facebook.CallbackManager;
@@ -29,7 +30,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -53,7 +54,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private final List<String> mScopes;
     private IdpCallback mCallbackObject;
 
-    public FacebookProvider(Context appContext, IdpConfig idpConfig) {
+    public FacebookProvider(Context appContext, AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
         appContext = appContext.getApplicationContext();
 
         if (appContext.getResources().getIdentifier(
@@ -69,9 +70,8 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         } else {
             mScopes = scopes;
         }
-        String applicationId = appContext.getString(R.string.facebook_application_id);
         FacebookSdk.sdkInitialize(appContext);
-        FacebookSdk.setApplicationId(applicationId);
+        FacebookSdk.setWebDialogTheme(theme);
     }
 
     @Override
