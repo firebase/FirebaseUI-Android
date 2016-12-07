@@ -100,7 +100,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     public void onClick(View view) {
         final int id = view.getId();
         if (id == R.id.button_done) {
-            mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
             next(mEmail, mPasswordField.getText().toString());
         } else if (id == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
@@ -114,11 +113,12 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     private void next(final String email, final String password) {
         // Check for null or empty password
         if (TextUtils.isEmpty(password)) {
-            mPasswordField.setError(getString(R.string.required_field));
+            mPasswordLayout.setError(getString(R.string.required_field));
             return;
         } else {
-            mPasswordField.setError(null);
+            mPasswordLayout.setError(null);
         }
+        mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
 
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         // Sign in with known email and the password provided

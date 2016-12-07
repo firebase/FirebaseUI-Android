@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
+import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -40,11 +41,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Collections;
 
 import static com.firebase.ui.auth.testhelpers.TestHelper.verifySmartLockSave;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -70,6 +75,24 @@ public class WelcomeBackPasswordPromptTest {
                 .create()
                 .visible()
                 .get();
+    }
+
+    @Test
+    public void testSignInButton_validatesFields() {
+        WelcomeBackPasswordPrompt welcomeBack = createActivity();
+        Button signIn = (Button) welcomeBack.findViewById(R.id.button_done);
+        signIn.performClick();
+        TextInputLayout passwordLayout =
+                (TextInputLayout) welcomeBack.findViewById(R.id.password_layout);
+
+        assertEquals(
+                welcomeBack.getString(R.string.required_field),
+                passwordLayout.getError().toString());
+
+        // should block and not start a new activity
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(welcomeBack).getNextStartedActivityForResult();
+        assertNull(nextIntent);
     }
 
     @Test
@@ -100,6 +123,8 @@ public class WelcomeBackPasswordPromptTest {
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 
-        verifySmartLockSave(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL, TestConstants.PASSWORD);
+        verifySmartLockSave(EmailAuthProvider.PROVIDER_ID,
+                            TestConstants.EMAIL,
+                            TestConstants.PASSWORD);
     }
 }
