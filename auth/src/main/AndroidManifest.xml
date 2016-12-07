@@ -33,7 +33,6 @@
 
         <activity
             android:name=".ui.email.RegisterEmailActivity"
-            android:label="@string/title_register_email_activity"
             android:exported="false"
             android:theme="@style/FirebaseUI"/>
 

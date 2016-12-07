@@ -55,13 +55,16 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 23)
 public class RegisterEmailActivityTest {
 
-    private RegisterEmailActivity createActivity(String email) {
+    private RegisterEmailActivity createActivity() {
         Intent startIntent = RegisterEmailActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)),
-                email);
+                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)));
         return Robolectric.buildActivity(RegisterEmailActivity.class)
-                .withIntent(startIntent).create().visible().get();
+                .withIntent(startIntent)
+                .create()
+                .start()
+                .visible()
+                .get();
     }
 
     @Before
@@ -71,16 +74,22 @@ public class RegisterEmailActivityTest {
     }
 
     @Test
+    @Config(shadows = {
+            FirebaseAuthWrapperImplShadow.class
+    })
     public void testSignUpButton_validatesFields() {
-        RegisterEmailActivity registerEmailActivity = createActivity(TestConstants.EMAIL);
+        RegisterEmailActivity registerEmailActivity = createActivity();
+
+        // Trigger RegisterEmailFragment (bypass check email)
+        registerEmailActivity.onNewUser(TestConstants.EMAIL, null);
+
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
-        TextInputLayout nameLayout = (TextInputLayout) registerEmailActivity
-                .findViewById(R.id.name_layout);
-
-        TextInputLayout passwordLayout = (TextInputLayout) registerEmailActivity
-                .findViewById(R.id.password_layout);
+        TextInputLayout nameLayout = (TextInputLayout)
+                registerEmailActivity.findViewById(R.id.name_layout);
+        TextInputLayout passwordLayout = (TextInputLayout)
+                registerEmailActivity.findViewById(R.id.password_layout);
 
         assertEquals(
                 registerEmailActivity.getString(R.string.required_field),
@@ -97,14 +106,21 @@ public class RegisterEmailActivityTest {
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
+    @Config(shadows = {
+            BaseHelperShadow.class,
+            ActivityHelperShadow.class,
+            FirebaseAuthWrapperImplShadow.class
+    })
     public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
         // init mocks
-        new ActivityHelperShadow();
-        reset(ActivityHelperShadow.sSaveSmartLock);
+        new BaseHelperShadow();
+        reset(BaseHelperShadow.sSaveSmartLock);
 
         TestHelper.initializeApp(RuntimeEnvironment.application);
-        RegisterEmailActivity registerEmailActivity = createActivity(TestConstants.EMAIL);
+        RegisterEmailActivity registerEmailActivity = createActivity();
+
+        // Trigger new user UI (bypassing check email)
+        registerEmailActivity.onNewUser(TestConstants.EMAIL, TestConstants.NAME);
 
         EditText name = (EditText) registerEmailActivity.findViewById(R.id.name);
         EditText password = (EditText) registerEmailActivity.findViewById(R.id.password);
@@ -118,7 +134,7 @@ public class RegisterEmailActivityTest {
         when(mockFirebaseUser.updateProfile((UserProfileChangeRequest) Mockito.any()))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
-        when(ActivityHelperShadow.sFirebaseAuth
+        when(BaseHelperShadow.sFirebaseAuth
                      .createUserWithEmailAndPassword(
                              TestConstants.EMAIL,
                              TestConstants.PASSWORD))

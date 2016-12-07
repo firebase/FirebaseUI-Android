@@ -14,18 +14,26 @@
 
 package com.firebase.ui.auth.testhelpers;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 
 import com.firebase.ui.auth.util.FirebaseAuthWrapperImpl;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
-
 @Implements(FirebaseAuthWrapperImpl.class)
 public class FirebaseAuthWrapperImplShadow {
+
     @Implementation
     public boolean isPlayServicesAvailable(Context context) {
         return true;
     }
+
+    @Implementation
+    public PendingIntent getEmailHintIntent(FragmentActivity fragmentActivity) {
+        return null;
+    }
+
 }
