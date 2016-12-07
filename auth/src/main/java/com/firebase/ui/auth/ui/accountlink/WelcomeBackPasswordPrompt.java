@@ -136,11 +136,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                     password,
                                     new IdpResponse(EmailAuthProvider.PROVIDER_ID, email));
                         } else {
-                            authResult.getUser().linkWithCredential(authCredential);
-                            firebaseAuth.signOut();
-
-                            // Sign in with the credential
-                            firebaseAuth.signInWithCredential(authCredential)
+                            authResult.getUser()
+                                    .linkWithCredential(authCredential)
                                     .addOnFailureListener(new TaskFailureLogger(
                                             TAG, "Error signing in with credential"))
                                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
