@@ -25,7 +25,6 @@ import android.widget.LinearLayout;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
@@ -101,10 +100,8 @@ public class AuthMethodPickerActivity extends AppCompatBase
                     findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
                     break;
                 default:
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Encountered unknown IDPProvider parcel with type: "
-                                + idpConfig.getProviderId());
-                    }
+                    Log.e(TAG, "Encountered unknown IDPProvider parcel with type: "
+                            + idpConfig.getProviderId());
             }
         }
 
