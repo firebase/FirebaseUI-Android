@@ -77,7 +77,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 String uid = mAuth.getCurrentUser().getUid();
                 String name = "User " + uid.substring(0, 6);
 
-                Chat chat = new Chat(name, uid, mMessageEdit.getText().toString());
+                Chat chat = new Chat(name, mMessageEdit.getText().toString(), uid);
                 mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
