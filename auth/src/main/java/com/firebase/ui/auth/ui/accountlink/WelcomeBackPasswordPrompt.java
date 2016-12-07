@@ -26,6 +26,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -66,6 +67,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_back_password_prompt_layout);
+
+        // Show keyboard
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
