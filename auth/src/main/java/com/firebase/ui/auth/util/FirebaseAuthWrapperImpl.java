@@ -23,7 +23,6 @@ import android.support.annotation.WorkerThread;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-import com.firebase.ui.auth.BuildConfig;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
@@ -207,9 +206,7 @@ public class FirebaseAuthWrapperImpl
             Tasks.await(curTask, mTimeoutMs, TimeUnit.MILLISECONDS);
             return curTask.getResult();
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            if (BuildConfig.DEBUG) {
-                Log.w(TAG, "API request dispatch failed", e);
-            }
+            Log.w(TAG, "API request dispatch failed", e);
             return null;
         }
     }
