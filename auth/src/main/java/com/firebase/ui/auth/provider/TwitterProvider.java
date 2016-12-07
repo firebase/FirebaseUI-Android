@@ -79,7 +79,6 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
                 response.getIdpSecret());
     }
 
-
     private IdpResponse createIDPResponse(TwitterSession twitterSession) {
         return new IdpResponse(
                 TwitterAuthProvider.PROVIDER_ID,
