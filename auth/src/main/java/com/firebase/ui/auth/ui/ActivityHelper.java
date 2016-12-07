@@ -53,4 +53,11 @@ public class ActivityHelper extends BaseHelper {
             IdpResponse response) {
         saveCredentialsOrFinish(saveSmartLock, mActivity, firebaseUser, password, response);
     }
+
+    public void saveCredentialsOrFinish(
+            @Nullable SaveSmartLock saveSmartLock,
+            FirebaseUser firebaseUser,
+            IdpResponse response) {
+        saveCredentialsOrFinish(saveSmartLock, mActivity, firebaseUser, null, response);
+    }
 }

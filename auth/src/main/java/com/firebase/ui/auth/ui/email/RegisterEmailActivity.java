@@ -43,6 +43,7 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.RequiredFieldValidator;
@@ -249,12 +250,13 @@ public class RegisterEmailActivity extends AppCompatBase
 
                                 String provider = providers.get(0);
                                 if (provider.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
-                                    Intent signInIntent = SignInActivity.createIntent(
-                                            RegisterEmailActivity.this,
-                                            mActivityHelper.getFlowParams(),
-                                            email);
-                                    mActivityHelper.startActivityForResult(signInIntent,
-                                                                           RC_SIGN_IN);
+                                    mActivityHelper.startActivityForResult(
+                                            WelcomeBackPasswordPrompt.createIntent(
+                                                    RegisterEmailActivity.this,
+                                                    mActivityHelper.getFlowParams(),
+                                                    new IdpResponse(EmailAuthProvider.PROVIDER_ID,
+                                                                    email)),
+                                            RC_SIGN_IN);
                                 } else {
                                     Intent intent = WelcomeBackIdpPrompt.createIntent(
                                             RegisterEmailActivity.this,
@@ -313,8 +315,7 @@ public class RegisterEmailActivity extends AppCompatBase
                                                 mSaveSmartLock,
                                                 user,
                                                 password,
-                                                new IdpResponse(EmailAuthProvider.PROVIDER_ID,
-                                                                email));
+                                                new IdpResponse(EmailAuthProvider.PROVIDER_ID, email));
                                     }
                                 });
                     }

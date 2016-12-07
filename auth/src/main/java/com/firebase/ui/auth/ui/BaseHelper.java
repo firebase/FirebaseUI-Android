@@ -59,10 +59,6 @@ public class BaseHelper {
         return mProgressDialog != null && mProgressDialog.isShowing();
     }
 
-    public Context getApplicationContext() {
-        return mContext.getApplicationContext();
-    }
-
     public String getAppName() {
         return mFlowParams.appName;
     }

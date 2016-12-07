@@ -42,7 +42,6 @@ import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -159,9 +158,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
     @Override
     public void onSuccess(final IdpResponse response) {
         AuthCredential credential = AuthCredentialHelper.getAuthCredential(response);
-        final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
-
-        firebaseAuth
+        mActivityHelper.getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Firebase sign in with credential unsuccessful"))

@@ -38,12 +38,6 @@
             android:theme="@style/FirebaseUI"/>
 
         <activity
-            android:name=".ui.email.SignInActivity"
-            android:label="@string/title_sign_in_activity"
-            android:exported="false"
-            android:theme="@style/FirebaseUI"/>
-
-        <activity
             android:name=".ui.accountlink.WelcomeBackIdpPrompt"
             android:label="@string/title_welcome_back_idp_prompt"
             android:exported="false"

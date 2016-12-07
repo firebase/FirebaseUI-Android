@@ -87,9 +87,11 @@ public class RegisterEmailActivityTest {
                 nameLayout.getError().toString());
         assertEquals(
                 String.format(
+                        registerEmailActivity.getResources().getQuantityString(
+                                R.plurals.password_length,
+                                R.integer.min_password_length),
                         registerEmailActivity.getResources()
-                                .getQuantityString(R.plurals.password_length, 6),
-                        registerEmailActivity.getResources().getInteger(R.integer.min_password_length)
+                                .getInteger(R.integer.min_password_length)
                 ),
                 passwordLayout.getError().toString());
     }

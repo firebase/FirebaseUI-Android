@@ -91,7 +91,6 @@ public class CredentialSignInHandlerTest {
         Context mockContext = mock(Context.class);
 
         Task signInTask = Tasks.forResult(new FakeAuthResult(mockFirebaseUser));
-        when(mockActivityHelper.getApplicationContext()).thenReturn(mockContext);
         when(mockActivityHelper.getFlowParams()).thenReturn(
                 TestHelper.getFlowParameters(Collections.<String>emptyList()));
         credentialSignInHandler.onComplete(signInTask);
@@ -133,7 +132,6 @@ public class CredentialSignInHandlerTest {
         Context mockContext = mock(Context.class);
         FlowParameters mockFlowParams = mock(FlowParameters.class);
         when(mockActivityHelper.getFirebaseAuth()).thenReturn(mockFirebaseAuth);
-        when(mockActivityHelper.getApplicationContext()).thenReturn(mockContext);
         when(mockActivityHelper.getFlowParams()).thenReturn(mockFlowParams);
 
         // pretend the account has Facebook linked already
@@ -184,7 +182,6 @@ public class CredentialSignInHandlerTest {
         when(mockTask.getException()).thenReturn(
                 new FirebaseAuthUserCollisionException(LINKING_ERROR, LINKING_EXPLANATION));
         when(mockActivityHelper.getFirebaseAuth()).thenReturn(mockFirebaseAuth);
-        when(mockActivityHelper.getApplicationContext()).thenReturn(mockContext);
         when(mockActivityHelper.getFlowParams()).thenReturn(mockFlowParams);
 
         // pretend the account has a Password account linked already

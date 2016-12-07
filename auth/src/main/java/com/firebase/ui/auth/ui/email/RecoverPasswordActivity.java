@@ -31,7 +31,6 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 /**
@@ -47,12 +46,12 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forgot_password_layout);
-        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
-        mEmailFieldValidator = new EmailFieldValidator(
-                (TextInputLayout) findViewById(R.id.email_layout));
-
+        mEmailFieldValidator =
+                new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
         mEmailEditText = (EditText) findViewById(R.id.email);
+
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         if (email != null) {
             mEmailEditText.setText(email);
         }
@@ -61,8 +60,8 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     }
 
     private void next(final String email) {
-        FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
-        firebaseAuth.sendPasswordResetEmail(email)
+        mActivityHelper.getFirebaseAuth()
+                .sendPasswordResetEmail(email)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Error sending password reset email"))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -89,11 +88,10 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button_done) {
-            if (!mEmailFieldValidator.validate(mEmailEditText.getText())) {
-                return;
+            if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
+                mActivityHelper.showLoadingDialog(R.string.progress_dialog_sending);
+                next(mEmailEditText.getText().toString());
             }
-            mActivityHelper.showLoadingDialog(R.string.progress_dialog_sending);
-            next(mEmailEditText.getText().toString());
         }
     }
 
