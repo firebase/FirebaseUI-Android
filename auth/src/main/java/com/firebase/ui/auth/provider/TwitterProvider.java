@@ -60,19 +60,8 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     }
 
     @Override
-    public void success(final Result<TwitterSession> sessionResult) {
-        mTwitterAuthClient.requestEmail(sessionResult.data, new Callback<String>() {
-            @Override
-            public void success(Result<String> result) {
-                mCallbackObject.onSuccess(
-                        createIDPResponse(sessionResult.data, result.data));
-            }
-
-            @Override
-            public void failure(TwitterException exception) {
-                TwitterProvider.this.failure(exception);
-            }
-        });
+    public void success(Result<TwitterSession> result) {
+        mCallbackObject.onSuccess(createIDPResponse(result.data));
     }
 
     @Override
@@ -91,10 +80,10 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     }
 
 
-    private IdpResponse createIDPResponse(TwitterSession twitterSession, String email) {
+    private IdpResponse createIDPResponse(TwitterSession twitterSession) {
         return new IdpResponse(
                 TwitterAuthProvider.PROVIDER_ID,
-                email,
+                null,
                 twitterSession.getAuthToken().token,
                 twitterSession.getAuthToken().secret);
     }
