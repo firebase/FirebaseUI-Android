@@ -72,7 +72,7 @@ import java.lang.reflect.InvocationTargetException;
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> {
+        extends RecyclerView.Adapter<VH> implements OnChangedListener {
     private static final String TAG = FirebaseRecyclerAdapter.class.getSimpleName();
 
     private FirebaseArray mSnapshots;
@@ -89,32 +89,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         mViewHolderClass = viewHolderClass;
         mSnapshots = snapshots;
 
-        mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
-            @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
-                switch (type) {
-                    case ADDED:
-                        notifyItemInserted(index);
-                        break;
-                    case CHANGED:
-                        notifyItemChanged(index);
-                        break;
-                    case REMOVED:
-                        notifyItemRemoved(index);
-                        break;
-                    case MOVED:
-                        notifyItemMoved(oldIndex, index);
-                        break;
-                    default:
-                        throw new IllegalStateException("Incomplete case statement");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                FirebaseRecyclerAdapter.this.onCancelled(databaseError);
-            }
-        });
+        mSnapshots.setOnChangedListener(this);
     }
 
     /**
@@ -196,13 +171,33 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         return mModelLayout;
     }
 
+    @Override
+    public void onChanged(EventType type, int index, int oldIndex) {
+        switch (type) {
+            case ADDED:
+                notifyItemInserted(index);
+                break;
+            case CHANGED:
+                notifyItemChanged(index);
+                break;
+            case REMOVED:
+                notifyItemRemoved(index);
+                break;
+            case MOVED:
+                notifyItemMoved(oldIndex, index);
+                break;
+            default:
+                throw new IllegalStateException("Incomplete case statement");
+        }
+    }
+
     /**
      * This method will be triggered in the event that this listener either failed at the server,
      * or is removed as a result of the security and Firebase Database rules.
      *
      * @param error A description of the error that occurred
      */
-    protected void onCancelled(DatabaseError error) {
+    public void onCancelled(DatabaseError error) {
         Log.w(TAG, error.toException());
     }
 

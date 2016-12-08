@@ -26,14 +26,6 @@ import java.util.List;
  * This class implements an array-like collection on top of a Firebase location.
  */
 class FirebaseArray implements ChildEventListener {
-    public interface OnChangedListener {
-        enum EventType {ADDED, CHANGED, REMOVED, MOVED}
-
-        void onChanged(EventType type, int index, int oldIndex);
-
-        void onCancelled(DatabaseError databaseError);
-    }
-
     private Query mQuery;
     private OnChangedListener mListener;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();

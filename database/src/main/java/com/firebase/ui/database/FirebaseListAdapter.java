@@ -50,7 +50,7 @@ import com.google.firebase.database.Query;
  * @param <T> The class type to use as a model for the data
  *           contained in the children of the given Firebase location
  */
-public abstract class FirebaseListAdapter<T> extends BaseAdapter {
+public abstract class FirebaseListAdapter<T> extends BaseAdapter implements OnChangedListener {
     private static final String TAG = FirebaseListAdapter.class.getSimpleName();
 
     private FirebaseArray mSnapshots;
@@ -67,17 +67,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mLayout = modelLayout;
         mSnapshots = snapshots;
 
-        mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
-            @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                FirebaseListAdapter.this.onCancelled(databaseError);
-            }
-        });
+        mSnapshots.setOnChangedListener(this);
     }
 
     /**
@@ -145,13 +135,18 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         return view;
     }
 
+    @Override
+    public void onChanged(EventType type, int index, int oldIndex) {
+        notifyDataSetChanged();
+    }
+
     /**
      * This method will be triggered in the event that this listener either failed at the server,
      * or is removed as a result of the security and Firebase Database rules.
      *
      * @param error A description of the error that occurred
      */
-    protected void onCancelled(DatabaseError error) {
+    public void onCancelled(DatabaseError error) {
         Log.w(TAG, error.toException());
     }
 

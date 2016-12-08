@@ -80,9 +80,9 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 Chat chat = new Chat(name, mMessageEdit.getText().toString(), uid);
                 mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
                     @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
-                        if (databaseError != null) {
-                            Log.e(TAG, "Failed to write message", databaseError.toException());
+                    public void onComplete(DatabaseError error, DatabaseReference reference) {
+                        if (error != null) {
+                            Log.e(TAG, "Failed to write message", error.toException());
                         }
                     }
                 });
@@ -92,11 +92,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         });
 
         mMessages = (RecyclerView) findViewById(R.id.messagesList);
-
         mManager = new LinearLayoutManager(this);
-        mManager.setReverseLayout(false);
-
-        mMessages.setHasFixedSize(false);
         mMessages.setLayoutManager(mManager);
     }
 
@@ -107,10 +103,10 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         // Default Database rules do not allow unauthenticated reads, so we need to
         // sign in before attaching the RecyclerView adapter otherwise the Adapter will
         // not be able to read any data from the Database.
-        if (!isSignedIn()) {
-            signInAnonymously();
-        } else {
+        if (isSignedIn()) {
             attachRecyclerViewAdapter();
+        } else {
+            signInAnonymously();
         }
     }
 
@@ -139,7 +135,6 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         Query lastFifty = mChatRef.limitToLast(50);
         mRecyclerViewAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
                 Chat.class, R.layout.message, ChatHolder.class, lastFifty) {
-
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {
                 chatView.setName(chat.getName());
@@ -158,7 +153,9 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mRecyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                mManager.smoothScrollToPosition(mMessages, null, mRecyclerViewAdapter.getItemCount());
+                mManager.smoothScrollToPosition(mMessages,
+                                                null,
+                                                mRecyclerViewAdapter.getItemCount());
             }
         });
 
@@ -173,12 +170,12 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
                         if (task.isSuccessful()) {
-                            Toast.makeText(ChatActivity.this, "Signed In",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(
+                                    ChatActivity.this, "Signed In", Toast.LENGTH_SHORT).show();
                             attachRecyclerViewAdapter();
                         } else {
-                            Toast.makeText(ChatActivity.this, "Sign In Failed",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(
+                                    ChatActivity.this, "Sign In Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
