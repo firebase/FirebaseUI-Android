@@ -34,8 +34,8 @@ import com.google.firebase.auth.EmailAuthProvider;
  * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment}
  * and {@link RegisterEmailFragment} and triggers {@link WelcomeBackPasswordPrompt}.
  */
-public class RegisterEmailActivity extends AppCompatBase
-        implements CheckEmailFragment.CheckEmailListener {
+public class RegisterEmailActivity extends AppCompatBase implements
+        CheckEmailFragment.CheckEmailListener {
 
     private static final int RC_SIGN_IN = 17;
     private static final int RC_WELCOME_BACK_IDP = 18;
@@ -76,6 +76,8 @@ public class RegisterEmailActivity extends AppCompatBase
                         mActivityHelper.getFlowParams(),
                         new IdpResponse(EmailAuthProvider.PROVIDER_ID, email)),
                 RC_SIGN_IN);
+
+        setSlideAnimation();
     }
 
     @Override
@@ -89,6 +91,8 @@ public class RegisterEmailActivity extends AppCompatBase
                 email);
         mActivityHelper.startActivityForResult(intent,
                 RC_WELCOME_BACK_IDP);
+
+        setSlideAnimation();
     }
 
     @Override
@@ -100,8 +104,14 @@ public class RegisterEmailActivity extends AppCompatBase
                 name);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG)
+                .addSharedElement(findViewById(R.id.email_layout), "email_field")
                 .disallowAddToBackStack()
                 .commit();
+    }
+
+    private void setSlideAnimation() {
+        // Make the next activity slide in
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {

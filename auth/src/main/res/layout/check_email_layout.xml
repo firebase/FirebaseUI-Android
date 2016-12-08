@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
+        android:transitionGroup="true"
+        android:transitionName="email_field"
         app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
         app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
 

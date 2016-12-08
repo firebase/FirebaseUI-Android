@@ -53,7 +53,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.2.28'
     testCompile 'org.robolectric:robolectric:3.1.4'
-    testCompile "org.robolectric:shadows-support-v4:3.1.4"
     // See https://github.com/robolectric/robolectric/issues/1932#issuecomment-219796474
     testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
 }
