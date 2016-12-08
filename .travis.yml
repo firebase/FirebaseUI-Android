@@ -1,7 +1,6 @@
 language: android
 jdk: oraclejdk8
-# See https://github.com/travis-ci/travis-ci/issues/5582
-sudo: required
+sudo: false
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
