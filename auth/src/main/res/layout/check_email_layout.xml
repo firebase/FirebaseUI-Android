@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/FirebaseUI.WrapperStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -14,7 +15,8 @@
         android:transitionGroup="true"
         android:transitionName="email_field"
         app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
-        app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
+        app:hintTextAppearance="@style/FirebaseUI.Text.HintText"
+        tools:ignore="UnusedAttribute">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/email"

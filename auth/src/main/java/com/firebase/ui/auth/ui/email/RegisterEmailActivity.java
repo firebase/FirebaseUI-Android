@@ -32,7 +32,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 
 /**
  * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment}
- * and {@link RegisterEmailFragment} and triggers {@link WelcomeBackPasswordPrompt}.
+ * and {@link RegisterEmailFragment} and triggers {@link WelcomeBackPasswordPrompt}
+ * and {@link WelcomeBackIdpPrompt}.
  */
 public class RegisterEmailActivity extends AppCompatBase implements
         CheckEmailFragment.CheckEmailListener {
