@@ -122,9 +122,10 @@ public class CheckEmailFragment extends BaseFragment implements
         // Check for email
         String email = getArguments().getString(ExtraConstants.EXTRA_EMAIL);
         if (!TextUtils.isEmpty(email)) {
+            // Use email passed in
             mEmailEditText.setText(email);
             validateAndProceed();
-        } if (mHelper.getFlowParams().smartLockEnabled) {
+        } else if (mHelper.getFlowParams().smartLockEnabled) {
             // Try SmartLock email autocomplete hint
             showEmailAutoCompleteHint();
         }
