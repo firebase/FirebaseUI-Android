@@ -91,6 +91,7 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
     }
 
     /**
+     * Called when a key in {@code keyRef} could not be found in {@code dataRef}.
      *
      * @param index The index of a {@code snapshot} in {@code keyRef} that could not be found in {@code dataRef}.
      * @param snapshot The snapshot who's key could not be found in {@code dataRef}.
