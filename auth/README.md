@@ -53,9 +53,11 @@ dependencies {
 and add the Fabric repository
 
 ```groovy
-repositories {
-    // ...
-    maven { url 'https://maven.fabric.io/public' }
+allprojects {
+    repositories {
+        // ...
+        maven { url 'https://maven.fabric.io/public' }
+    }
 }
 ```
 
