@@ -53,7 +53,7 @@ import com.google.firebase.database.Query;
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     private static final String TAG = FirebaseListAdapter.class.getSimpleName();
 
-    private FirebaseArray mSnapshots;
+    FirebaseArray mSnapshots;
     private final Class<T> mModelClass;
     protected Activity mActivity;
     protected int mLayout;

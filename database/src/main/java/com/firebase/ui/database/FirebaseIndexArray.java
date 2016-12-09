@@ -29,10 +29,11 @@ import java.util.Map;
 import java.util.Set;
 
 class FirebaseIndexArray extends FirebaseArray {
-    private static final String TAG = FirebaseIndexArray.class.getSimpleName();
+    private static final String TAG = "FirebaseIndexArray";
 
     private Query mQuery;
     private OnChangedListener mListener;
+    private OnIndexMismatchListener mIndexMismatchListener;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
@@ -130,7 +131,8 @@ class FirebaseIndexArray extends FirebaseArray {
 
     @Override
     public void onCancelled(DatabaseError error) {
-        Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
+        Log.e(TAG,
+              "A fatal error occurred retrieving the necessary keys to populate your adapter.");
         super.onCancelled(error);
     }
 
@@ -138,6 +140,16 @@ class FirebaseIndexArray extends FirebaseArray {
     public void setOnChangedListener(OnChangedListener listener) {
         super.setOnChangedListener(listener);
         mListener = listener;
+    }
+
+    public void setOnIndexMismatchListener(OnIndexMismatchListener listener) {
+        mIndexMismatchListener = listener;
+    }
+
+    protected void notifyIndexMismatchListeners(int index, DataSnapshot snapshot) {
+        if (mIndexMismatchListener != null) {
+            mIndexMismatchListener.onIndexMismatch(index, snapshot);
+        }
     }
 
     private class DataRefListener implements ValueEventListener {
@@ -159,7 +171,7 @@ class FirebaseIndexArray extends FirebaseArray {
                     mDataSnapshots.remove(index);
                     notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
                 } else {
-                    Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
+                    notifyIndexMismatchListeners(index, snapshot);
                 }
             }
         }

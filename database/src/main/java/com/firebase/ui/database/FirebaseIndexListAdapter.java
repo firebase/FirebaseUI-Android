@@ -2,7 +2,9 @@ package com.firebase.ui.database;
 
 import android.app.Activity;
 import android.support.annotation.LayoutRes;
+import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Query;
 
 /**
@@ -34,7 +36,10 @@ import com.google.firebase.database.Query;
  * @param <T> The class type to use as a model for the data
  *           contained in the children of the given Firebase location
  */
-public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T> {
+public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
+        implements OnIndexMismatchListener {
+    private static final String TAG = "IndexListAdapter";
+
     /**
      * @param activity    The activity containing the ListView
      * @param modelClass  Firebase will marshall the data at a location into
@@ -55,5 +60,16 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
                                     Query keyRef,
                                     Query dataRef) {
         super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef, dataRef));
+        ((FirebaseIndexArray) mSnapshots).setOnIndexMismatchListener(this);
+    }
+
+    /**
+     *
+     * @param index The index of a {@code snapshot} in {@code keyRef} that could not be found in {@code dataRef}.
+     * @param snapshot The snapshot who's key could not be found in {@code dataRef}.
+     */
+    @Override
+    public void onIndexMismatch(int index, DataSnapshot snapshot) {
+        Log.w(TAG, "Key not found at ref " + snapshot.getRef() + " for index " + index + ".");
     }
 }

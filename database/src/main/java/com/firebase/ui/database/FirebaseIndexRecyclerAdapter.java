@@ -16,7 +16,9 @@ package com.firebase.ui.database;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Query;
 
 /**
@@ -62,7 +64,9 @@ import com.google.firebase.database.Query;
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
 public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends FirebaseRecyclerAdapter<T, VH> {
+        extends FirebaseRecyclerAdapter<T, VH> implements OnIndexMismatchListener {
+    private static final String TAG = "IndexRecyclerAdapter";
+
     /**
      * @param modelClass      Firebase will marshall the data at a location into an instance
      *                        of a class that you provide
@@ -83,5 +87,16 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
                                         Query keyRef,
                                         Query dataRef) {
         super(modelClass, modelLayout, viewHolderClass, new FirebaseIndexArray(keyRef, dataRef));
+        ((FirebaseIndexArray) mSnapshots).setOnIndexMismatchListener(this);
+    }
+
+    /**
+     *
+     * @param index The index of a {@code snapshot} in {@code keyRef} that could not be found in {@code dataRef}.
+     * @param snapshot The snapshot who's key could not be found in {@code dataRef}.
+     */
+    @Override
+    public void onIndexMismatch(int index, DataSnapshot snapshot) {
+        Log.w(TAG, "Key not found at ref " + snapshot.getRef() + " for index " + index + ".");
     }
 }
