@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -153,7 +154,9 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mRecyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                mManager.smoothScrollToPosition(mMessages, null, mRecyclerViewAdapter.getItemCount());
+                mManager.smoothScrollToPosition(mMessages,
+                                                null,
+                                                mRecyclerViewAdapter.getItemCount());
             }
         });
 
@@ -163,15 +166,25 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private void signInAnonymously() {
         Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show();
         mAuth.signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult result) {
+                        attachRecyclerViewAdapter();
+                    }
+                })
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
                         if (task.isSuccessful()) {
-                            Toast.makeText(ChatActivity.this, "Signed In", Toast.LENGTH_SHORT).show();
-                            attachRecyclerViewAdapter();
+                            Toast.makeText(getApplicationContext(),
+                                           R.string.signed_in,
+                                           Toast.LENGTH_SHORT)
+                                    .show();
                         } else {
-                            Toast.makeText(ChatActivity.this, "Sign In Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),
+                                           R.string.sign_in_failed,
+                                           Toast.LENGTH_SHORT)
+                                    .show();
                         }
                     }
                 });

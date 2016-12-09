@@ -64,4 +64,6 @@
     <string name="choose_image">Choose Image</string>
     <string name="accessibility_downloaded_image">Downloaded image</string>
     <string name="drive_file">Drive File</string>
+    <string name="sign_in_failed">Sign In Failed</string>
+    <string name="signed_in">Signed In</string>
 </resources>
