@@ -32,7 +32,7 @@ public class IdpResponse implements Parcelable {
     private final String mSecret;
     private final int mErrorCode;
 
-    public IdpResponse(int errorCode) {
+    private IdpResponse(int errorCode) {
         this(null, null, null, null, errorCode);
     }
 
