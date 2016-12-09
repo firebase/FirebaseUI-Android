@@ -153,9 +153,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mRecyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                mManager.smoothScrollToPosition(mMessages,
-                                                null,
-                                                mRecyclerViewAdapter.getItemCount());
+                mManager.smoothScrollToPosition(mMessages, null, mRecyclerViewAdapter.getItemCount());
             }
         });
 
@@ -170,12 +168,10 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
                         if (task.isSuccessful()) {
-                            Toast.makeText(
-                                    ChatActivity.this, "Signed In", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChatActivity.this, "Signed In", Toast.LENGTH_SHORT).show();
                             attachRecyclerViewAdapter();
                         } else {
-                            Toast.makeText(
-                                    ChatActivity.this, "Sign In Failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChatActivity.this, "Sign In Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
