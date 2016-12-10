@@ -46,7 +46,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
 
     @Override
     public void setAuthenticationCallback(IdpCallback callback) {
-        this.mCallbackObject = callback;
+        mCallbackObject = callback;
     }
 
     @Override
@@ -87,7 +87,6 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
                 twitterSession.getAuthToken().token,
                 twitterSession.getAuthToken().secret);
     }
-
 
     public static AuthCredential createAuthCredential(IdpResponse response) {
         if (!response.getProviderType().equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)){
