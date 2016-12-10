@@ -113,7 +113,9 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        sCallbackManager.onActivityResult(requestCode, resultCode, data);
+        if (sCallbackManager != null) {
+            sCallbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
