@@ -36,16 +36,16 @@ public class IdpResponse implements Parcelable {
         this(null, null, null, null, errorCode);
     }
 
-    public IdpResponse(String providerId, @NonNull String email) {
+    public IdpResponse(@NonNull String providerId, @NonNull String email) {
         this(providerId, email, null, null, ResultCodes.OK);
     }
 
-    public IdpResponse(String providerId, @NonNull String email, @NonNull String token) {
+    public IdpResponse(@NonNull String providerId, @NonNull String email, @NonNull String token) {
         this(providerId, email, token, null, ResultCodes.OK);
     }
 
     public IdpResponse(
-            String providerId,
+            @NonNull String providerId,
             @NonNull String email,
             @NonNull String token,
             @NonNull String secret) {
