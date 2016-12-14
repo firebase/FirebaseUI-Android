@@ -89,7 +89,9 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         @Override
         public void failure(TwitterException exception) {
             Log.e(TAG, "Failure retrieving Twitter email. " + exception.getMessage());
-            mCallbackObject.get().onFailure(new Bundle());
+            // If retrieving the email fails, we should still be able to sign in, but Smart Lock
+            // and account linking won't work.
+            mCallbackObject.get().onSuccess(createIdpResponse(null));
         }
 
         private IdpResponse createIdpResponse(String email) {
