@@ -37,7 +37,7 @@ import com.google.firebase.database.Query;
  *           contained in the children of the given Firebase location
  */
 public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
-        implements OnIndexMismatchListener {
+        implements IndexMismatchListener {
     private static final String TAG = "IndexListAdapter";
 
     /**

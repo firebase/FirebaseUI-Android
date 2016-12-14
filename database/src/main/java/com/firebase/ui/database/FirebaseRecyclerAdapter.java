@@ -89,7 +89,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         mViewHolderClass = viewHolderClass;
         mSnapshots = snapshots;
 
-        mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
+        mSnapshots.setOnChangedListener(new FirebaseArray.ChangedListener() {
             @Override
             public void onChanged(EventType type, int index, int oldIndex) {
                 switch (type) {

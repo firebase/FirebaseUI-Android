@@ -32,8 +32,8 @@ class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = "FirebaseIndexArray";
 
     private Query mQuery;
-    private OnChangedListener mListener;
-    private OnIndexMismatchListener mIndexMismatchListener;
+    private ChangedListener mListener;
+    private IndexMismatchListener mIndexMismatchListener;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
@@ -108,7 +108,7 @@ class FirebaseIndexArray extends FirebaseArray {
 
         if (isMatch(index, key)) {
             mDataSnapshots.remove(index);
-            notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
+            notifyChangedListeners(ChangedListener.EventType.REMOVED, index);
         }
     }
 
@@ -125,7 +125,7 @@ class FirebaseIndexArray extends FirebaseArray {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            notifyChangedListeners(OnChangedListener.EventType.MOVED, newIndex, oldIndex);
+            notifyChangedListeners(ChangedListener.EventType.MOVED, newIndex, oldIndex);
         }
     }
 
@@ -137,12 +137,12 @@ class FirebaseIndexArray extends FirebaseArray {
     }
 
     @Override
-    public void setOnChangedListener(OnChangedListener listener) {
+    public void setOnChangedListener(ChangedListener listener) {
         super.setOnChangedListener(listener);
         mListener = listener;
     }
 
-    public void setOnIndexMismatchListener(OnIndexMismatchListener listener) {
+    public void setOnIndexMismatchListener(IndexMismatchListener listener) {
         mIndexMismatchListener = listener;
     }
 
@@ -161,15 +161,15 @@ class FirebaseIndexArray extends FirebaseArray {
             if (snapshot.getValue() != null) {
                 if (!isMatch(index, key)) {
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangedListeners(OnChangedListener.EventType.ADDED, index);
+                    notifyChangedListeners(ChangedListener.EventType.ADDED, index);
                 } else {
                     mDataSnapshots.set(index, snapshot);
-                    notifyChangedListeners(OnChangedListener.EventType.CHANGED, index);
+                    notifyChangedListeners(ChangedListener.EventType.CHANGED, index);
                 }
             } else {
                 if (isMatch(index, key)) {
                     mDataSnapshots.remove(index);
-                    notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
+                    notifyChangedListeners(ChangedListener.EventType.REMOVED, index);
                 } else {
                     notifyIndexMismatchListeners(index, snapshot);
                 }

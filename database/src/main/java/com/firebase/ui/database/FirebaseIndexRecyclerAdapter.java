@@ -64,7 +64,7 @@ import com.google.firebase.database.Query;
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
 public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends FirebaseRecyclerAdapter<T, VH> implements OnIndexMismatchListener {
+        extends FirebaseRecyclerAdapter<T, VH> implements IndexMismatchListener {
     private static final String TAG = "IndexRecyclerAdapter";
 
     /**
