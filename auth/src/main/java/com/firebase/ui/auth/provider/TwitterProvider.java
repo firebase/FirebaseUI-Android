@@ -10,29 +10,17 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.TwitterAuthProvider;
-import com.google.gson.GsonBuilder;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
-import com.twitter.sdk.android.core.internal.TwitterApi;
-import com.twitter.sdk.android.core.internal.network.OkHttpClientHelper;
-import com.twitter.sdk.android.core.models.BindingValues;
-import com.twitter.sdk.android.core.models.BindingValuesAdapter;
-import com.twitter.sdk.android.core.models.SafeListAdapter;
-import com.twitter.sdk.android.core.models.SafeMapAdapter;
-import com.twitter.sdk.android.core.models.User;
+
+import java.lang.ref.WeakReference;
 
 import io.fabric.sdk.android.Fabric;
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
 
 public class TwitterProvider extends Callback<TwitterSession> implements IdpProvider {
     private static final String TAG = "TwitterProvider";
@@ -74,36 +62,8 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     }
 
     @Override
-    public void success(final Result<TwitterSession> sessionResult) {
-        new Retrofit.Builder()
-                .client(getClient(sessionResult))
-                .baseUrl(new TwitterApi().getBaseHostUrl())
-                .addConverterFactory(getFactory())
-                .build()
-                .create(EmailService.class)
-                .getEmail()
-                .enqueue(new Callback<User>() {
-                    @Override
-                    public void success(Result<User> result) {
-                        String email = result.data.email;
-                        if (email == null) {
-                            TwitterProvider.this.failure(
-                                    new TwitterException("Your application may not have access to"
-                                                                 + " email addresses or the user may not have an email address. To request"
-                                                                 + " access, please visit https://support.twitter.com/forms/platform."));
-                        } else if (email.equals("")) {
-                            TwitterProvider.this.failure(
-                                    new TwitterException("This user does not have an email address."));
-                        } else {
-                            mCallbackObject.onSuccess(createIdpResponse(sessionResult.data, email));
-                        }
-                    }
-
-                    @Override
-                    public void failure(TwitterException exception) {
-                        TwitterProvider.this.failure(exception);
-                    }
-                });
+    public void success(final Result<TwitterSession> result) {
+        mTwitterAuthClient.requestEmail(result.data, new EmailCallback(result.data, mCallbackObject));
     }
 
     @Override
@@ -112,33 +72,33 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         mCallbackObject.onFailure(new Bundle());
     }
 
-    private IdpResponse createIdpResponse(TwitterSession twitterSession, String email) {
-        return new IdpResponse(
-                TwitterAuthProvider.PROVIDER_ID,
-                email,
-                twitterSession.getAuthToken().token,
-                twitterSession.getAuthToken().secret);
-    }
+    private static class EmailCallback extends Callback<String> {
+        private TwitterSession mTwitterSession;
+        private WeakReference<IdpCallback> mCallbackObject;
 
-    private OkHttpClient getClient(Result<TwitterSession> sessionResult) {
-        return OkHttpClientHelper.getOkHttpClient(
-                sessionResult.data,
-                TwitterCore.getInstance().getAuthConfig(),
-                TwitterCore.getInstance().getSSLSocketFactory());
-    }
+        public EmailCallback(TwitterSession session, IdpCallback callbackObject) {
+            mTwitterSession = session;
+            mCallbackObject = new WeakReference<>(callbackObject);
+        }
 
-    private GsonConverterFactory getFactory() {
-        return GsonConverterFactory.create(
-                new GsonBuilder()
-                        .registerTypeAdapterFactory(new SafeListAdapter())
-                        .registerTypeAdapterFactory(new SafeMapAdapter())
-                        .registerTypeAdapter(BindingValues.class, new BindingValuesAdapter())
-                        .create());
-    }
+        @Override
+        public void success(Result<String> result) {
+            mCallbackObject.get().onSuccess(createIdpResponse(result.data));
+        }
 
-    interface EmailService {
-        @GET("/1.1/account/verify_credentials.json?include_email=true?include_entities=true?skip_status=true")
-        Call<User> getEmail();
+        @Override
+        public void failure(TwitterException exception) {
+            Log.e(TAG, "Failure retrieving Twitter email. " + exception.getMessage());
+            mCallbackObject.get().onFailure(new Bundle());
+        }
+
+        private IdpResponse createIdpResponse(String email) {
+            return new IdpResponse(
+                    TwitterAuthProvider.PROVIDER_ID,
+                    email,
+                    mTwitterSession.getAuthToken().token,
+                    mTwitterSession.getAuthToken().secret);
+        }
     }
 
     public static AuthCredential createAuthCredential(IdpResponse response) {
