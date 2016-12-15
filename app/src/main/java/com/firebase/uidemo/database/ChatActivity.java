@@ -14,6 +14,7 @@
 
 package com.firebase.uidemo.database;
 
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RotateDrawable;
@@ -25,7 +26,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -60,6 +64,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private LinearLayoutManager mManager;
     private FirebaseRecyclerAdapter<Chat, ChatHolder> mRecyclerViewAdapter;
 
+    private MyTouchListener mTouchListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,23 +80,19 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mRef = FirebaseDatabase.getInstance().getReference();
         mChatRef = mRef.child("chats");
 
+        // Allow hitting our custom Send button to send the message
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uid = mAuth.getCurrentUser().getUid();
-                String name = "User " + uid.substring(0, 6);
-
-                Chat chat = new Chat(name, uid, mMessageEdit.getText().toString());
-                mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
-                        if (databaseError != null) {
-                            Log.e(TAG, "Failed to write message", databaseError.toException());
-                        }
-                    }
-                });
-
-                mMessageEdit.setText("");
+                sendCurrentMessage();
+            }
+        });
+        // Allow hitting the Send keyon the soft keyboard to send the message
+        mMessageEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) sendCurrentMessage();
+                return true;
             }
         });
 
@@ -101,19 +103,39 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         mMessages.setHasFixedSize(false);
         mMessages.setLayoutManager(mManager);
+
+        mTouchListener = new MyTouchListener();
+    }
+
+    private void sendCurrentMessage() {
+        String uid = mAuth.getCurrentUser().getUid();
+        String name = "User " + uid.substring(0, 6);
+
+        Chat chat = new Chat(name, uid, mMessageEdit.getText().toString());
+        mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
+                if (databaseError != null) {
+                    Log.e(TAG, "Failed to write message", databaseError.toException());
+                }
+            }
+        });
+
+        mMessageEdit.setText("");
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
+        // TODO: should this be done in onAuthStateChanged? ow the listeners won't be a
         // Default Database rules do not allow unauthenticated reads, so we need to
         // sign in before attaching the RecyclerView adapter otherwise the Adapter will
         // not be able to read any data from the Database.
         if (!isSignedIn()) {
             signInAnonymously();
         } else {
-            attachRecyclerViewAdapter();
+            attachRecyclerAdapter();
         }
     }
 
@@ -138,7 +160,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         updateUI();
     }
 
-    private void attachRecyclerViewAdapter() {
+    private void attachRecyclerAdapter() {
         Query lastFifty = mChatRef.limitToLast(50);
         mRecyclerViewAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
                 Chat.class, R.layout.message, ChatHolder.class, lastFifty) {
@@ -154,6 +176,14 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 } else {
                     chatView.setIsSender(false);
                 }
+                chatView.itemView.setTag(R.layout.message, chatView);
+                chatView.itemView.setTag(position);
+                chatView.itemView.setOnTouchListener(mTouchListener);
+            }
+
+            @Override
+            protected void onReady() {
+                findViewById(R.id.emptyTextView).setVisibility(mRecyclerViewAdapter.getItemCount() == 0?View.VISIBLE:View.INVISIBLE);
             }
         };
 
@@ -178,7 +208,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         if (task.isSuccessful()) {
                             Toast.makeText(ChatActivity.this, "Signed In",
                                     Toast.LENGTH_SHORT).show();
-                            attachRecyclerViewAdapter();
+                            attachRecyclerAdapter();
                         } else {
                             Toast.makeText(ChatActivity.this, "Sign In Failed",
                                     Toast.LENGTH_SHORT).show();
@@ -232,6 +262,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         private final FrameLayout mRightArrow;
         private final RelativeLayout mMessageContainer;
         private final LinearLayout mMessage;
+        private final TextView mRemoveText;
         private final int mGreen300;
         private final int mGray300;
 
@@ -243,8 +274,13 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             mRightArrow = (FrameLayout) itemView.findViewById(R.id.right_arrow);
             mMessageContainer = (RelativeLayout) itemView.findViewById(R.id.message_container);
             mMessage = (LinearLayout) itemView.findViewById(R.id.message);
+            mRemoveText = (TextView) itemView.findViewById(R.id.remove_text);
             mGreen300 = ContextCompat.getColor(itemView.getContext(), R.color.material_green_300);
             mGray300 = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mMessage.getLayoutParams();
+            layoutParams.rightMargin = 0;
+            mMessage.setLayoutParams(layoutParams);
+            hideRemoveLabel();
         }
 
         public void setIsSender(boolean isSender) {
@@ -275,5 +311,57 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         public void setText(String text) {
             mTextField.setText(text);
         }
+        public void showRemoveLabel() { mRemoveText.setVisibility(View.VISIBLE); }
+        public void hideRemoveLabel() { mRemoveText.setVisibility(View.INVISIBLE); }
+        public void slideMessage(int x, int y) {
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mMessage.getLayoutParams();
+            layoutParams.rightMargin = x;
+            mMessage.setLayoutParams(layoutParams);
+        }
+    }
+    class MyTouchListener implements View.OnTouchListener {
+        private static final int REMOVE_THRESHOLD = 75;
+
+        private int action_down_x = 0;
+        private int action_up_x = 0;
+        private int difference = 0;
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+
+            ChatHolder holder = (ChatHolder) v.getTag(R.layout.message);
+            int action = event.getAction();
+            int position = (Integer) v.getTag();
+
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    action_down_x = (int) event.getX();
+                    Log.d("action", "ACTION_DOWN - ");
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    action_up_x = (int) event.getX();
+                    difference = action_down_x - action_up_x;
+                    if (difference > REMOVE_THRESHOLD) holder.showRemoveLabel();
+                    if (difference < REMOVE_THRESHOLD) holder.hideRemoveLabel();
+                    ChatActivity.this.mRecyclerViewAdapter.notifyItemChanged(position);
+                    Log.d("action", "ACTION_MOVE - "+difference);
+                    holder.slideMessage(difference, 0);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    Log.d("action", "ACTION_UP - "+difference);
+                    if (difference > REMOVE_THRESHOLD) {
+                        ChatActivity.this.mRecyclerViewAdapter.getRef(position).removeValue();
+                    }
+                    else {
+                        action_down_x = 0;
+                        action_up_x = 0;
+                        difference = 0;
+                        holder.slideMessage(0, 0);
+                    }
+                    break;
+            }
+            return true;
+        }
+
     }
 }

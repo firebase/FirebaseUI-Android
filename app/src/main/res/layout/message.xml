@@ -55,4 +55,13 @@
         android:background="@drawable/chat_message_arrow"
         android:rotation="180"/>
 
+    <TextView
+        android:id="@+id/remove_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/material_red_a200"
+        android:text="@string/remove_text"
+        android:visibility="gone" />
+
+
 </RelativeLayout>

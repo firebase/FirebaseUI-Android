@@ -21,5 +21,5 @@
     <color name="material_purple_50">#F3E5F5</color>
     <color name="material_purple_a700">#AA00FF</color>
 
-    <color name="material_red_a200">#FF5252</color>
+    <color name="material_red_a200">#ff5252</color>
 </resources>
