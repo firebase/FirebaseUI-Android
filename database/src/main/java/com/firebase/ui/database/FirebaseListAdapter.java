@@ -61,23 +61,25 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     FirebaseListAdapter(Activity activity,
                         Class<T> modelClass,
                         @LayoutRes int modelLayout,
-                        FirebaseArray snapshots) {
+                        FirebaseArray snapshots,
+                        boolean shouldStartListening) {
         mActivity = activity;
         mModelClass = modelClass;
         mLayout = modelLayout;
         mSnapshots = snapshots;
 
-        mSnapshots.setOnChangedListener(new FirebaseArray.ChangedListener() {
+        mSnapshots.setChangeListener(new FirebaseArray.ChangeListener() {
             @Override
             public void onChanged(EventType type, int index, int oldIndex) {
                 notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                FirebaseListAdapter.this.onCancelled(databaseError);
+            public void onCancelled(DatabaseError error) {
+                FirebaseListAdapter.this.onCancelled(error);
             }
         });
+        if (shouldStartListening) mSnapshots.startListening();
     }
 
     /**
@@ -94,21 +96,21 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
                                Class<T> modelClass,
                                int modelLayout,
                                Query ref) {
-        this(activity, modelClass, modelLayout, new FirebaseArray(ref));
+        this(activity, modelClass, modelLayout, new FirebaseArray(ref), true);
     }
 
     public void cleanup() {
-        mSnapshots.cleanup();
+        mSnapshots.stopListening();
     }
 
     @Override
     public int getCount() {
-        return mSnapshots.getCount();
+        return mSnapshots.size();
     }
 
     @Override
     public T getItem(int position) {
-        return parseSnapshot(mSnapshots.getItem(position));
+        return parseSnapshot(mSnapshots.get(position));
     }
 
     /**
@@ -123,13 +125,13 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     }
 
     public DatabaseReference getRef(int position) {
-        return mSnapshots.getItem(position).getRef();
+        return mSnapshots.get(position).getRef();
     }
 
     @Override
     public long getItemId(int i) {
         // http://stackoverflow.com/questions/5100071/whats-the-purpose-of-item-ids-in-android-listview-adapter
-        return mSnapshots.getItem(i).getKey().hashCode();
+        return mSnapshots.get(i).getKey().hashCode();
     }
 
     @Override

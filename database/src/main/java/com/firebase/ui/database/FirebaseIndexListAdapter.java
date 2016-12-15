@@ -37,8 +37,10 @@ import com.google.firebase.database.Query;
  *           contained in the children of the given Firebase location
  */
 public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
-        implements IndexMismatchListener {
+        implements JoinResolver {
     private static final String TAG = "IndexListAdapter";
+
+    protected Query mDataQuery;
 
     /**
      * @param activity    The activity containing the ListView
@@ -59,18 +61,24 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
                                     @LayoutRes int modelLayout,
                                     Query keyRef,
                                     Query dataRef) {
-        super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef, dataRef));
-        ((FirebaseIndexArray) mSnapshots).setOnIndexMismatchListener(this);
+        super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef), false);
+        mDataQuery = dataRef;
+        ((FirebaseIndexArray) mSnapshots).setJoinResolver(this);
+        mSnapshots.startListening();
     }
 
-    /**
-     * Called when a key in {@code keyRef} could not be found in {@code dataRef}.
-     *
-     * @param index The index of a {@code snapshot} in {@code keyRef} that could not be found in {@code dataRef}.
-     * @param snapshot The snapshot who's key could not be found in {@code dataRef}.
-     */
     @Override
-    public void onIndexMismatch(int index, DataSnapshot snapshot) {
+    public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
+        return mDataQuery.getRef().child(keySnapshot.getKey());
+    }
+
+    @Override
+    public Query onDisjoin(DataSnapshot keySnapshot) {
+        return mDataQuery.getRef().child(keySnapshot.getKey());
+    }
+
+    @Override
+    public void onJoinFailed(int index, DataSnapshot snapshot) {
         Log.w(TAG, "Key not found at ref " + snapshot.getRef() + " for index " + index + ".");
     }
 }

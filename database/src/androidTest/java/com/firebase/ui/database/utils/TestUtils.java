@@ -5,7 +5,10 @@ import android.content.Context;
 import com.firebase.ui.database.utils.Bean;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 
 import junit.framework.AssertionFailedError;
 
@@ -26,25 +29,45 @@ public class TestUtils {
         }
     }
 
-    public static FirebaseApp initializeApp(Context context) {
+    private static FirebaseApp initializeApp(Context context) {
         return FirebaseApp.initializeApp(context, new FirebaseOptions.Builder()
                 .setApplicationId("fir-ui-tests")
                 .setDatabaseUrl("https://fir-ui-tests.firebaseio.com/")
                 .build(), APP_NAME);
     }
 
+    public static void setJoinResolver(FirebaseIndexArray array, final DatabaseReference ref) {
+        array.setJoinResolver(new JoinResolver() {
+            @Override
+            public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
+                return ref.child(keySnapshot.getKey());
+            }
+
+            @Override
+            public Query onDisjoin(DataSnapshot keySnapshot) {
+                return ref.child(keySnapshot.getKey());
+            }
+
+            @Override
+            public void onJoinFailed(int index, DataSnapshot snapshot) {
+                throw new IllegalStateException(index + ": " + snapshot);
+            }
+        });
+    }
+
     public static void runAndWaitUntil(FirebaseArray array,
                                        Runnable task,
                                        Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
-        array.setOnChangedListener(new FirebaseArray.OnChangedListener() {
+        array.setChangeListener(new FirebaseArray.ChangeListener() {
+            @Override
             public void onChanged(EventType type, int index, int oldIndex) {
                 semaphore.release();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                throw new IllegalStateException(databaseError.toException());
+            public void onCancelled(DatabaseError error) {
+                throw new IllegalStateException(error.toException());
             }
         });
         task.run();
@@ -62,13 +85,12 @@ public class TestUtils {
         if (!isDone) {
             throw new AssertionFailedError();
         }
-        array.setOnChangedListener(null);
     }
 
     public static boolean isValuesEqual(FirebaseArray array, int[] expected) {
-        if (array.getCount() != expected.length) return false;
-        for (int i = 0; i < array.getCount(); i++) {
-            if (!array.getItem(i).getValue(Integer.class).equals(expected[i])) {
+        if (array.size() != expected.length) return false;
+        for (int i = 0; i < array.size(); i++) {
+            if (!array.get(i).getValue(Integer.class).equals(expected[i])) {
                 return false;
             }
         }
@@ -76,6 +98,6 @@ public class TestUtils {
     }
 
     public static Bean getBean(FirebaseArray array, int index) {
-        return array.getItem(index).getValue(Bean.class);
+        return array.get(index).getValue(Bean.class);
     }
 }

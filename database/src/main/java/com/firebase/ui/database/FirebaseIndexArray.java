@@ -14,6 +14,7 @@
 
 package com.firebase.ui.database;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -30,85 +31,96 @@ import java.util.Set;
 
 class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = "FirebaseIndexArray";
+    private static final ChangeListener NOOP_CHANGE_LISTENER = new ChangeListener() {
+        @Override
+        public void onChanged(EventType type, int index, int oldIndex) {
+        }
 
-    private Query mQuery;
-    private ChangedListener mListener;
-    private IndexMismatchListener mIndexMismatchListener;
+        @Override
+        public void onCancelled(DatabaseError error) {
+        }
+    };
+
+    private ChangeListener mListenerCopy;
+    private JoinResolver mJoinResolver;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
-    public FirebaseIndexArray(Query keyRef, Query dataRef) {
+    public FirebaseIndexArray(Query keyRef) {
         super(keyRef);
-        mQuery = dataRef;
     }
 
     @Override
-    public void cleanup() {
-        super.cleanup();
+    public void setChangeListener(@NonNull ChangeListener listener) {
+        super.setChangeListener(listener);
+        mListenerCopy = listener;
+    }
+
+    public void setJoinResolver(@NonNull JoinResolver joinResolver) {
+        if (mIsListening && joinResolver == null) {
+            throw new IllegalStateException("Join resolver cannot be null.");
+        }
+        mJoinResolver = joinResolver;
+    }
+
+    @Override
+    public void startListening() {
+        if (mJoinResolver == null) throw new IllegalStateException("Join resolver cannot be null.");
+        super.startListening();
+    }
+
+    @Override
+    public void stopListening() {
+        super.stopListening();
         Set<Query> refs = new HashSet<>(mRefs.keySet());
         for (Query ref : refs) {
             ref.removeEventListener(mRefs.remove(ref));
         }
+        mDataSnapshots.clear();
     }
 
     @Override
-    public int getCount() {
+    public int size() {
         return mDataSnapshots.size();
     }
 
     @Override
-    public DataSnapshot getItem(int index) {
+    public DataSnapshot get(int index) {
         return mDataSnapshots.get(index);
-    }
-
-    private int getIndexForKey(String key) {
-        int dataCount = getCount();
-        int index = 0;
-        for (int keyIndex = 0; index < dataCount; keyIndex++) {
-            String superKey = super.getItem(keyIndex).getKey();
-            if (key.equals(superKey)) {
-                break;
-            } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
-                index++;
-            }
-        }
-        return index;
-    }
-
-    private boolean isMatch(int index, String key) {
-        return index >= 0 && index < getCount() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
     @Override
     public void onChildAdded(DataSnapshot keySnapshot, String previousChildKey) {
-        super.setOnChangedListener(null);
+        super.setChangeListener(NOOP_CHANGE_LISTENER);
         super.onChildAdded(keySnapshot, previousChildKey);
-        super.setOnChangedListener(mListener);
+        super.setChangeListener(mListenerCopy);
 
-        Query ref = mQuery.getRef().child(keySnapshot.getKey());
+        Query ref = mJoinResolver.onJoin(keySnapshot, previousChildKey);
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
     }
 
     @Override
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
-        super.setOnChangedListener(null);
+        super.setChangeListener(NOOP_CHANGE_LISTENER);
         super.onChildChanged(snapshot, previousChildKey);
-        super.setOnChangedListener(mListener);
+        super.setChangeListener(mListenerCopy);
     }
 
     @Override
     public void onChildRemoved(DataSnapshot keySnapshot) {
         String key = keySnapshot.getKey();
         int index = getIndexForKey(key);
-        mQuery.getRef().child(key).removeEventListener(mRefs.remove(mQuery.getRef().child(key)));
 
-        super.setOnChangedListener(null);
+        Query removeQuery = mJoinResolver.onDisjoin(keySnapshot);
+        removeQuery.removeEventListener(mRefs.remove(removeQuery));
+
+        super.setChangeListener(NOOP_CHANGE_LISTENER);
         super.onChildRemoved(keySnapshot);
-        super.setOnChangedListener(mListener);
+        super.setChangeListener(mListenerCopy);
 
         if (isMatch(index, key)) {
             mDataSnapshots.remove(index);
-            notifyChangedListeners(ChangedListener.EventType.REMOVED, index);
+            notifyChangeListener(ChangeListener.EventType.REMOVED, index);
         }
     }
 
@@ -117,15 +129,15 @@ class FirebaseIndexArray extends FirebaseArray {
         String key = keySnapshot.getKey();
         int oldIndex = getIndexForKey(key);
 
-        super.setOnChangedListener(null);
+        super.setChangeListener(NOOP_CHANGE_LISTENER);
         super.onChildMoved(keySnapshot, previousChildKey);
-        super.setOnChangedListener(mListener);
+        super.setChangeListener(mListenerCopy);
 
         if (isMatch(oldIndex, key)) {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            notifyChangedListeners(ChangedListener.EventType.MOVED, newIndex, oldIndex);
+            mListener.onChanged(ChangeListener.EventType.MOVED, newIndex, oldIndex);
         }
     }
 
@@ -136,20 +148,22 @@ class FirebaseIndexArray extends FirebaseArray {
         super.onCancelled(error);
     }
 
-    @Override
-    public void setOnChangedListener(ChangedListener listener) {
-        super.setOnChangedListener(listener);
-        mListener = listener;
-    }
-
-    public void setOnIndexMismatchListener(IndexMismatchListener listener) {
-        mIndexMismatchListener = listener;
-    }
-
-    protected void notifyIndexMismatchListeners(int index, DataSnapshot snapshot) {
-        if (mIndexMismatchListener != null) {
-            mIndexMismatchListener.onIndexMismatch(index, snapshot);
+    private int getIndexForKey(String key) {
+        int dataCount = size();
+        int index = 0;
+        for (int keyIndex = 0; index < dataCount; keyIndex++) {
+            String superKey = super.get(keyIndex).getKey();
+            if (key.equals(superKey)) {
+                break;
+            } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
+                index++;
+            }
         }
+        return index;
+    }
+
+    private boolean isMatch(int index, String key) {
+        return index >= 0 && index < size() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
     private class DataRefListener implements ValueEventListener {
@@ -161,24 +175,24 @@ class FirebaseIndexArray extends FirebaseArray {
             if (snapshot.getValue() != null) {
                 if (!isMatch(index, key)) {
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangedListeners(ChangedListener.EventType.ADDED, index);
+                    notifyChangeListener(ChangeListener.EventType.ADDED, index);
                 } else {
                     mDataSnapshots.set(index, snapshot);
-                    notifyChangedListeners(ChangedListener.EventType.CHANGED, index);
+                    notifyChangeListener(ChangeListener.EventType.CHANGED, index);
                 }
             } else {
                 if (isMatch(index, key)) {
                     mDataSnapshots.remove(index);
-                    notifyChangedListeners(ChangedListener.EventType.REMOVED, index);
+                    notifyChangeListener(ChangeListener.EventType.REMOVED, index);
                 } else {
-                    notifyIndexMismatchListeners(index, snapshot);
+                    mJoinResolver.onJoinFailed(index, snapshot);
                 }
             }
         }
 
         @Override
         public void onCancelled(DatabaseError error) {
-            notifyCancelledListeners(error);
+            mListener.onCancelled(error);
         }
     }
 }

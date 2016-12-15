@@ -38,6 +38,8 @@
     <string name="no_internet_connection">No internet connection</string>
     <string name="signed_in_header">You are signed in!</string>
     <string name="sign_out">Sign out</string>
+    <string name="signed_in">Signed In</string>
+    <string name="sign_in_failed">Sign In Failed</string>
     <string name="delete_account_label">Delete account</string>
     <string name="sign_out_failed">Sign out failed</string>
     <string name="delete_account_failed">Delete account failed</string>

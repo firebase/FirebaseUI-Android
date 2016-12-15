@@ -64,8 +64,10 @@ import com.google.firebase.database.Query;
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
 public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends FirebaseRecyclerAdapter<T, VH> implements IndexMismatchListener {
+        extends FirebaseRecyclerAdapter<T, VH> implements JoinResolver {
     private static final String TAG = "IndexRecyclerAdapter";
+
+    protected Query mDataQuery;
 
     /**
      * @param modelClass      Firebase will marshall the data at a location into an instance
@@ -86,18 +88,24 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
                                         Class<VH> viewHolderClass,
                                         Query keyRef,
                                         Query dataRef) {
-        super(modelClass, modelLayout, viewHolderClass, new FirebaseIndexArray(keyRef, dataRef));
-        ((FirebaseIndexArray) mSnapshots).setOnIndexMismatchListener(this);
+        super(modelClass, modelLayout, viewHolderClass, new FirebaseIndexArray(keyRef), false);
+        mDataQuery = dataRef;
+        ((FirebaseIndexArray) mSnapshots).setJoinResolver(this);
+        mSnapshots.startListening();
     }
 
-    /**
-     * Called when a key in {@code keyRef} could not be found in {@code dataRef}.
-     *
-     * @param index The index of a {@code snapshot} in {@code keyRef} that could not be found in {@code dataRef}.
-     * @param snapshot The snapshot who's key could not be found in {@code dataRef}.
-     */
     @Override
-    public void onIndexMismatch(int index, DataSnapshot snapshot) {
+    public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
+        return mDataQuery.getRef().child(keySnapshot.getKey());
+    }
+
+    @Override
+    public Query onDisjoin(DataSnapshot keySnapshot) {
+        return mDataQuery.getRef().child(keySnapshot.getKey());
+    }
+
+    @Override
+    public void onJoinFailed(int index, DataSnapshot snapshot) {
         Log.w(TAG, "Key not found at ref " + snapshot.getRef() + " for index " + index + ".");
     }
 }

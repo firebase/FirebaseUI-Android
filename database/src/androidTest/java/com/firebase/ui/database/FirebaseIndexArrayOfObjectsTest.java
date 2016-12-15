@@ -32,13 +32,14 @@ import java.util.concurrent.Callable;
 import static com.firebase.ui.database.TestUtils.getAppInstance;
 import static com.firebase.ui.database.TestUtils.getBean;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
+import static com.firebase.ui.database.TestUtils.setJoinResolver;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
 public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
     private DatabaseReference mRef;
     private DatabaseReference mKeyRef;
-    private FirebaseArray mArray;
+    private FirebaseIndexArray mArray;
 
     @Before
     public void setUp() throws Exception {
@@ -47,13 +48,15 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
         mRef = databaseInstance.getReference().child("firebasearray").child("objects");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray").child("objects");
 
-        mArray = new FirebaseIndexArray(mKeyRef, mRef);
+        mArray = new FirebaseIndexArray(mKeyRef);
+        setJoinResolver(mArray, mRef);
         mRef.removeValue();
         mKeyRef.removeValue();
 
         runAndWaitUntil(mArray, new Runnable() {
                             @Override
                             public void run() {
+                                mArray.startListening();
                                 for (int i = 1; i <= 3; i++) {
                                     setValue(new Bean(i, "Text " + i, i % 2 == 0), i);
                                 }
@@ -61,7 +64,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
                         }, new Callable<Boolean>() {
                             @Override
                             public Boolean call() throws Exception {
-                                return mArray.getCount() == 3;
+                                return mArray.size() == 3;
                             }
                         }
         );
@@ -72,20 +75,17 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
         if (mRef != null) {
             mRef.getRoot().removeValue();
         }
-
-        if (mArray != null) {
-            mArray.cleanup();
-        }
+        super.tearDown();
     }
 
     @Test
     public void testSize() throws Exception {
-        assertEquals(3, mArray.getCount());
+        assertEquals(3, mArray.size());
     }
 
     @Test
     public void testPushIncreasesSize() throws Exception {
-        assertEquals(3, mArray.getCount());
+        assertEquals(3, mArray.size());
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
                 setValue(new Bean(4), null);
@@ -93,7 +93,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.getCount() == 4;
+                return mArray.size() == 4;
             }
         });
     }
@@ -107,7 +107,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.getItem(3).getValue(Bean.class).getNumber() == 4;
+                return mArray.get(3).getValue(Bean.class).getNumber() == 4;
             }
         });
     }
@@ -120,7 +120,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
             }
         }, new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                return mArray.getItem(3).getValue(Bean.class).getNumber() == 3 && mArray.getItem(0)
+                return mArray.get(3).getValue(Bean.class).getNumber() == 3 && mArray.get(0)
                         .getValue(Bean.class)
                         .getNumber() == 4;
             }
@@ -131,7 +131,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
     public void testChangePriorities() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
-                mKeyRef.child(mArray.getItem(2).getKey()).setPriority(0.5);
+                mKeyRef.child(mArray.get(2).getKey()).setPriority(0.5);
             }
         }, new Callable<Boolean>() {
             public Boolean call() throws Exception {
