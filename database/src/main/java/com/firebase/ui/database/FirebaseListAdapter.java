@@ -51,7 +51,7 @@ import com.google.firebase.database.Query;
  *           contained in the children of the given Firebase location
  */
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
-    private static final String TAG = FirebaseListAdapter.class.getSimpleName();
+    private static final String TAG = "FirebaseListAdapter";
 
     FirebaseArray mSnapshots;
     private final Class<T> mModelClass;
