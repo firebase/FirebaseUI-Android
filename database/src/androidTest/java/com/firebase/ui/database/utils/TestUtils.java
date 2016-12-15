@@ -59,7 +59,7 @@ public class TestUtils {
                                        Runnable task,
                                        Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
-        array.setChangeListener(new FirebaseArray.ChangeListener() {
+        array.setChangeEventListener(new FirebaseArray.ChangeEventListener() {
             @Override
             public void onChanged(EventType type, int index, int oldIndex) {
                 semaphore.release();
