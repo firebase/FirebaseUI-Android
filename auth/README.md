@@ -91,8 +91,8 @@ Twitter app as reported by the [Twitter application manager](https://apps.twitte
 </resources>
 ```
 
-In addition, if you are using Smart Lock or require a user's email, you must enable the
-"Request email addresses from users" permission in the "Permissions" tab of your app.
+In addition, you must enable the "Request email addresses from users" permission
+in the "Permissions" tab of your Twitter app.
 
 ## Using FirebaseUI for Authentication
 
