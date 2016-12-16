@@ -20,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 
 @SuppressWarnings("Registered")
 public class AppCompatBase extends AppCompatActivity {
-
     protected ActivityHelper mActivityHelper;
 
     @Override
