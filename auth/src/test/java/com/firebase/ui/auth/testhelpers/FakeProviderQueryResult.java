@@ -21,7 +21,7 @@ import com.google.firebase.auth.ProviderQueryResult;
 import java.util.List;
 
 public class FakeProviderQueryResult implements ProviderQueryResult {
-    List<String> mProviders;
+    private List<String> mProviders;
 
     public FakeProviderQueryResult(List<String> providers) {
         mProviders = providers;
