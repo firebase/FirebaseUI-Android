@@ -18,7 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 public class FakeAuthResult implements AuthResult {
-    FirebaseUser mFirebaseUser;
+    private FirebaseUser mFirebaseUser;
 
     public FakeAuthResult(FirebaseUser firebaseUser) {
         mFirebaseUser = firebaseUser;

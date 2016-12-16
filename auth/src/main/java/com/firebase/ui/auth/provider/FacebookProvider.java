@@ -108,7 +108,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void setAuthenticationCallback(IdpCallback callback) {
-        this.mCallbackObject = callback;
+        mCallbackObject = callback;
     }
 
     @Override
