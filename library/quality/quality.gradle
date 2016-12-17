@@ -69,8 +69,6 @@ task pmd(type: Pmd) {
 
 android {
     lintOptions {
-        disable 'InvalidPackage',
-                'NewerVersionAvailable' // Comment this line out to do a quick check for library version updates.
         baseline file("$configDir/lint-baseline.xml")
         checkAllWarnings true
         warningsAsErrors true
