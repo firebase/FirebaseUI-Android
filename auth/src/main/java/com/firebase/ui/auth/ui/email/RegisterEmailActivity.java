@@ -175,6 +175,13 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                         }
                     }
                 });
+        
+        //This code is supposed to fix the error explained in issue #409
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        AuthCredential credential = EmailAuthProvider
+            .getCredential(email, password);
+
+        firebaseUser.reauthenticate(credential);
     }
 
     @Override
