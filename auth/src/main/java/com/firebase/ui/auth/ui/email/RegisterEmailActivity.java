@@ -147,6 +147,12 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                                 mSaveSmartLock,
                                                 firebaseUser,
                                                 password);
+                                        
+                                        //This code is supposed to fix the error explained in issue #409
+                                        AuthCredential credential = EmailAuthProvider
+                                                .getCredential(email, password);
+
+                                        firebaseUser.reauthenticate(credential);
                                     }
                                 });
                     }
@@ -177,13 +183,6 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                         }
                     }
                 });
-        
-        //This code is supposed to fix the error explained in issue #409
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        AuthCredential credential = EmailAuthProvider
-            .getCredential(email, password);
-
-        firebaseUser.reauthenticate(credential);
     }
 
     @Override
