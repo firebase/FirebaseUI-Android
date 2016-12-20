@@ -3,6 +3,7 @@ package com.firebase.ui.auth.ui.email;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,8 +37,7 @@ import java.util.List;
  *
  * Host Activities should implement {@link CheckEmailListener}.
  */
-public class CheckEmailFragment extends BaseFragment implements
-        View.OnClickListener {
+public class CheckEmailFragment extends BaseFragment implements View.OnClickListener {
 
     /**
      * Interface to be implemented by Activities hosting this Fragment.
@@ -47,17 +47,17 @@ public class CheckEmailFragment extends BaseFragment implements
         /**
          * Email entered belongs to an existing email user.
          */
-        void onExistingEmailUser(@NonNull String email);
+        void onExistingEmailUser(User user);
 
         /**
          * Email entered belongs to an existing IDP user.
          */
-        void onExistingIdpUser(@NonNull String email, @NonNull String provider);
+        void onExistingIdpUser(User user);
 
         /**
          * Email entered does not beling to an existing user.
          */
-        void onNewUser(@NonNull String email, @Nullable String name);
+        void onNewUser(User user);
 
     }
 
@@ -117,7 +117,11 @@ public class CheckEmailFragment extends BaseFragment implements
         if (!(getActivity() instanceof CheckEmailListener)) {
             throw new IllegalStateException("Activity must implement CheckEmailListener");
         }
-        this.mListener = (CheckEmailListener) getActivity();
+        mListener = (CheckEmailListener) getActivity();
+
+        if (savedInstanceState != null) {
+            return;
+        }
 
         // Check for email
         String email = getArguments().getString(ExtraConstants.EXTRA_EMAIL);
@@ -129,6 +133,12 @@ public class CheckEmailFragment extends BaseFragment implements
             // Try SmartLock email autocomplete hint
             showEmailAutoCompleteHint();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -182,15 +192,22 @@ public class CheckEmailFragment extends BaseFragment implements
                             if (providers == null || providers.isEmpty()) {
                                 // Get name from SmartLock, if possible
                                 String name = null;
+                                Uri photoUri = null;
                                 if (mLastCredential != null && mLastCredential.getId().equals(email)) {
                                     name = mLastCredential.getName();
+                                    photoUri = mLastCredential.getProfilePictureUri();
                                 }
 
-                                mListener.onNewUser(email, name);
+                                mListener.onNewUser(new User.Builder(email)
+                                                            .setName(name)
+                                                            .setPhotoUri(photoUri)
+                                                            .build());
                             } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(providers.get(0))) {
-                                mListener.onExistingEmailUser(email);
+                                mListener.onExistingEmailUser(new User.Builder(email).build());
                             } else {
-                                mListener.onExistingIdpUser(email, providers.get(0));
+                                mListener.onExistingIdpUser(new User.Builder(email)
+                                                                    .setProvider(providers.get(0))
+                                                                    .build());
                             }
                         }
                     });

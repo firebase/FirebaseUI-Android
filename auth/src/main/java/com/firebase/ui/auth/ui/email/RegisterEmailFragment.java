@@ -60,18 +60,27 @@ public class RegisterEmailFragment extends BaseFragment implements
     private RequiredFieldValidator mNameValidator;
     private SaveSmartLock mSaveSmartLock;
 
-    public static RegisterEmailFragment getInstance(FlowParameters flowParameters,
-                                                    @Nullable String email,
-                                                    @Nullable String name) {
+    private User mUser;
+
+    public static RegisterEmailFragment getInstance(FlowParameters flowParameters, User user) {
         RegisterEmailFragment fragment = new RegisterEmailFragment();
 
         Bundle args = new Bundle();
         args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
-        args.putString(ExtraConstants.EXTRA_EMAIL, email);
-        args.putString(ExtraConstants.EXTRA_NAME, name);
+        args.putParcelable(ExtraConstants.EXTRA_USER, user);
 
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            mUser = getArguments().getParcelable(ExtraConstants.EXTRA_USER);
+        } else {
+            mUser = savedInstanceState.getParcelable(ExtraConstants.EXTRA_USER);
+        }
     }
 
     @Nullable
@@ -102,22 +111,42 @@ public class RegisterEmailFragment extends BaseFragment implements
         mPasswordEditText.setOnFocusChangeListener(this);
         v.findViewById(R.id.button_create).setOnClickListener(this);
 
+        if (savedInstanceState != null) {
+            return v;
+        }
+
         // If email is passed in, fill in the field and move down to the name field.
-        String email = getArguments().getString(ExtraConstants.EXTRA_EMAIL);
+        String email = mUser.getEmail();
         if (!TextUtils.isEmpty(email)) {
             mEmailEditText.setText(email);
-            mNameEditText.requestFocus();
         }
 
         // If name is passed in, fill in the field and move down to the password field.
-        String name = getArguments().getString(ExtraConstants.EXTRA_NAME);
+        String name = mUser.getName();
         if (!TextUtils.isEmpty(name)) {
             mNameEditText.setText(name);
-            mPasswordEditText.requestFocus();
+        }
+
+        // See http://stackoverflow.com/questions/11082341/android-requestfocus-ineffective#comment51774752_11082523
+        if (!TextUtils.isEmpty(mNameEditText.getText())) {
+            safeRequestFocus(mPasswordEditText);
+        } else if (!TextUtils.isEmpty(mEmailEditText.getText())) {
+            safeRequestFocus(mNameEditText);
+        } else {
+            safeRequestFocus(mEmailEditText);
         }
 
         return v;
 
+    }
+
+    private void safeRequestFocus(final View v) {
+        v.post(new Runnable() {
+            @Override
+            public void run() {
+                v.requestFocus();
+            }
+        });
     }
 
     @Override
@@ -132,12 +161,22 @@ public class RegisterEmailFragment extends BaseFragment implements
         setUpTermsOfService();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(ExtraConstants.EXTRA_USER,
+                               new User.Builder(mEmailEditText.getText().toString())
+                                       .setName(mNameEditText.getText().toString())
+                                       .setPhotoUri(mUser.getPhotoUri())
+                                       .build());
+        super.onSaveInstanceState(outState);
+    }
+
     private void setUpTermsOfService() {
         if (mHelper.getFlowParams().termsOfServiceUrl == null) {
             return;
         }
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(
-                ContextCompat.getColor(getActivity().getApplicationContext(), R.color.linkColor));
+        ForegroundColorSpan foregroundColorSpan =
+                new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.linkColor));
 
         String preamble = getResources().getString(R.string.create_account_preamble);
         String link = getResources().getString(R.string.terms_of_service);
@@ -204,7 +243,10 @@ public class RegisterEmailFragment extends BaseFragment implements
                     public void onSuccess(AuthResult authResult) {
                         // Set display name
                         UserProfileChangeRequest changeNameRequest =
-                                new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                                new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(name)
+                                        .setPhotoUri(mUser.getPhotoUri())
+                                        .build();
 
                         final FirebaseUser user = authResult.getUser();
                         user.updateProfile(changeNameRequest)
@@ -222,7 +264,7 @@ public class RegisterEmailFragment extends BaseFragment implements
                                                 user,
                                                 password,
                                                 new IdpResponse(EmailAuthProvider.PROVIDER_ID,
-                                                        email));
+                                                                email));
                                     }
                                 });
                     }
