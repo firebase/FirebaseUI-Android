@@ -19,10 +19,12 @@ public class KickoffActivity extends AppCompatBase {
     private static final String TAG = "KickoffActivity";
     private static final int RC_PLAY_SERVICES = 1;
 
+    private boolean mIsWaitingForPlayServices = false;
+
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        if (savedInstance == null) {
+        if (savedInstance == null || !savedInstance.getBoolean(ExtraConstants.HAS_EXISTING_INSTANCE)) {
             if (!hasNetworkConnection()) {
                 Log.d(TAG, "No network connection");
                 finish(ErrorCodes.NO_NETWORK, IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
@@ -47,6 +49,7 @@ public class KickoffActivity extends AppCompatBase {
                                         mActivityHelper.getFlowParams());
             } else {
                 errorDialog.show();
+                mIsWaitingForPlayServices = true;
             }
         }
     }
@@ -54,7 +57,7 @@ public class KickoffActivity extends AppCompatBase {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // It doesn't matter what we put here, we just don't want outState to be empty
-        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
+        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, !mIsWaitingForPlayServices);
         super.onSaveInstanceState(outState);
     }
 
