@@ -17,23 +17,19 @@ package com.firebase.ui.auth.testhelpers;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 
-import org.mockito.Mockito;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
 @Implements(ActivityHelper.class)
 public class ActivityHelperShadow extends BaseHelperShadow {
-    public static SaveSmartLock sSaveSmartLock;
 
     public ActivityHelperShadow() {
         super();
-        if (sSaveSmartLock == null) {
-            sSaveSmartLock = Mockito.mock(SaveSmartLock.class);
-        }
     }
 
     @Implementation
     public SaveSmartLock getSaveSmartLockInstance() {
         return sSaveSmartLock;
     }
+
 }
