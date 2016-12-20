@@ -280,6 +280,10 @@ public class AuthUiActivity extends AppCompatActivity {
             selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
         }
 
+        if (mUseTwitterProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+        }
+
         if (mUseFacebookProvider.isChecked()) {
             selectedProviders.add(
                     new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
@@ -292,10 +296,6 @@ public class AuthUiActivity extends AppCompatActivity {
                     new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
                             .setPermissions(getGooglePermissions())
                             .build());
-        }
-
-        if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
         }
 
         return selectedProviders;
