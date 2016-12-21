@@ -15,8 +15,6 @@
 package com.firebase.ui.auth.util;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
-import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -33,7 +32,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-@RunWith(CustomRobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23)
 public class HeadlessAPIWrapperImplTest {
 
@@ -49,45 +48,39 @@ public class HeadlessAPIWrapperImplTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mHeadlessAPIWrapperImpl = new FirebaseAuthWrapperImpl(mMockFirebaseAuth);
-        PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
     }
 
     @Test
     public void testIsPlayServicesAvailable() {
-        when(PlayServicesHelper.sApiAvailability.isGooglePlayServicesAvailable(
+        when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
                 RuntimeEnvironment.application))
                 .thenReturn(ConnectionResult.SERVICE_UPDATING);
         assertFalse(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
-                RuntimeEnvironment.application));
-
-        when(PlayServicesHelper.sApiAvailability.isGooglePlayServicesAvailable(
+                RuntimeEnvironment.application, mMockGoogleApiAvailability));
+        when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
                 RuntimeEnvironment.application))
                 .thenReturn(ConnectionResult.SERVICE_MISSING);
         assertFalse(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
-                RuntimeEnvironment.application));
-
-        when(PlayServicesHelper.sApiAvailability.isGooglePlayServicesAvailable(
+                RuntimeEnvironment.application, mMockGoogleApiAvailability));
+        when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
                 RuntimeEnvironment.application))
                 .thenReturn(ConnectionResult.SERVICE_DISABLED);
         assertFalse(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
-                RuntimeEnvironment.application));
-
-        when(PlayServicesHelper.sApiAvailability.isGooglePlayServicesAvailable(
+                RuntimeEnvironment.application, mMockGoogleApiAvailability));
+        when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
                 RuntimeEnvironment.application))
                 .thenReturn(ConnectionResult.SERVICE_INVALID);
         assertFalse(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
-                RuntimeEnvironment.application));
-
-        when(PlayServicesHelper.sApiAvailability.isGooglePlayServicesAvailable(
+                RuntimeEnvironment.application, mMockGoogleApiAvailability));
+        when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
                 RuntimeEnvironment.application))
                 .thenReturn(ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED);
-        assertFalse(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
-                RuntimeEnvironment.application));
-
-        when(PlayServicesHelper.sApiAvailability.isGooglePlayServicesAvailable(
+        assertTrue(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
+                RuntimeEnvironment.application, mMockGoogleApiAvailability));
+        when(mMockGoogleApiAvailability.isGooglePlayServicesAvailable(
                 RuntimeEnvironment.application))
                 .thenReturn(ConnectionResult.SUCCESS);
         assertTrue(mHeadlessAPIWrapperImpl.isPlayServicesAvailable(
-                RuntimeEnvironment.application));
+                RuntimeEnvironment.application, mMockGoogleApiAvailability));
     }
 }

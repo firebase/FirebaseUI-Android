@@ -139,7 +139,11 @@ public class FirebaseAuthWrapperImpl
 
     @Override
     public boolean isPlayServicesAvailable(Context context) {
-        int result = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
+        return isPlayServicesAvailable(context, GoogleApiAvailability.getInstance());
+    }
+
+    boolean isPlayServicesAvailable(Context context, GoogleApiAvailability apiAvailability) {
+        int result = apiAvailability.isGooglePlayServicesAvailable(context);
         return result == ConnectionResult.SUCCESS
                 || result == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED;
     }
