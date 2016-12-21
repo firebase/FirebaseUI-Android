@@ -14,7 +14,6 @@
 
 package com.firebase.uidemo.database;
 
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RotateDrawable;
@@ -29,6 +28,10 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -63,8 +66,6 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private RecyclerView mMessages;
     private LinearLayoutManager mManager;
     private FirebaseRecyclerAdapter<Chat, ChatHolder> mRecyclerViewAdapter;
-
-    private MyTouchListener mTouchListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +104,6 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         mMessages.setHasFixedSize(false);
         mMessages.setLayoutManager(mManager);
-
-        mTouchListener = new MyTouchListener();
     }
 
     private void sendCurrentMessage() {
@@ -178,7 +177,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 }
                 chatView.itemView.setTag(R.layout.message, chatView);
                 chatView.itemView.setTag(position);
-                chatView.itemView.setOnTouchListener(mTouchListener);
+                //chatView.itemView.setOnTouchListener(mTouchListener);
             }
 
             @Override
@@ -194,6 +193,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 mManager.smoothScrollToPosition(mMessages, null, mRecyclerViewAdapter.getItemCount());
             }
         });
+
+        mMessages.setOnTouchListener(new ChatTouchListener(mMessages, mRecyclerViewAdapter));
 
         mMessages.setAdapter(mRecyclerViewAdapter);
     }
@@ -260,6 +261,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         private final TextView mTextField;
         private final FrameLayout mLeftArrow;
         private final FrameLayout mRightArrow;
+        private final FrameLayout mMessageRow;
         private final RelativeLayout mMessageContainer;
         private final LinearLayout mMessage;
         private final TextView mRemoveText;
@@ -272,15 +274,12 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             mTextField = (TextView) itemView.findViewById(R.id.message_text);
             mLeftArrow = (FrameLayout) itemView.findViewById(R.id.left_arrow);
             mRightArrow = (FrameLayout) itemView.findViewById(R.id.right_arrow);
+            mMessageRow = (FrameLayout) itemView.findViewById(R.id.message_row);
             mMessageContainer = (RelativeLayout) itemView.findViewById(R.id.message_container);
             mMessage = (LinearLayout) itemView.findViewById(R.id.message);
             mRemoveText = (TextView) itemView.findViewById(R.id.remove_text);
             mGreen300 = ContextCompat.getColor(itemView.getContext(), R.color.material_green_300);
             mGray300 = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mMessage.getLayoutParams();
-            layoutParams.rightMargin = 0;
-            mMessage.setLayoutParams(layoutParams);
-            hideRemoveLabel();
         }
 
         public void setIsSender(boolean isSender) {
@@ -311,57 +310,100 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         public void setText(String text) {
             mTextField.setText(text);
         }
-        public void showRemoveLabel() { mRemoveText.setVisibility(View.VISIBLE); }
-        public void hideRemoveLabel() { mRemoveText.setVisibility(View.INVISIBLE); }
-        public void slideMessage(int x, int y) {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mMessage.getLayoutParams();
-            layoutParams.rightMargin = x;
-            mMessage.setLayoutParams(layoutParams);
+
+        public void slideMessage(int x) { slideMessage(x, false); }
+        public void slideMessage(int x, boolean forceDisable) {
+            //Log.d(TAG, "mMessageRow.get translation x: "+mMessageRow.getTranslationX());
+            //Log.d(TAG, "remove label.get translation x: "+mRemoveText.getTranslationX());
+            mMessageRow.setTranslationX(-x);
+            mRemoveText.setTranslationX(mRemoveText.getWidth()-Math.min(x, mRemoveText.getWidth()));
+            mRemoveText.setEnabled(x >= mRemoveText.getWidth() && !forceDisable);
+        }
+        public void resetSlide() {
+            // animate the message bubble and the remove label back to their original positions
+            TranslateAnimation animation = new TranslateAnimation(0.0f, -1*mMessageRow.getTranslationX(), 0.0f, 0.0f);
+            Log.i(TAG, "Animating text bubble "+-1*mMessageRow.getTranslationX()+" to the right");
+            animation.setInterpolator(new BounceInterpolator());
+            animation.setDuration(1000);
+            animation.setFillAfter(true);
+            mMessageRow.startAnimation(animation);
+            animation = new TranslateAnimation(0.0f, mRemoveText.getTranslationX()+mRemoveText.getWidth(), 0.0f, 0.0f);
+            Log.i(TAG, "Animating remove label "+mRemoveText.getTranslationX()+mRemoveText.getWidth()+" to the right");
+            animation.setInterpolator(new BounceInterpolator());
+            animation.setDuration(1000);
+            animation.setFillAfter(true);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    Log.d(TAG, "onAnimationEnd: remove label.get translation x: "+mRemoveText.getTranslationX());
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            mRemoveText.startAnimation(animation);
         }
     }
-    class MyTouchListener implements View.OnTouchListener {
-        private static final int REMOVE_THRESHOLD = 75;
+    // This class listens for touch events on the chat recycler view
+    class ChatTouchListener implements View.OnTouchListener {
+        private int REMOVE_THRESHOLD = Integer.MAX_VALUE;
 
-        private int action_down_x = 0;
-        private int action_up_x = 0;
-        private int difference = 0;
+        private int mActionDownX = 0;
+        private int mActionUpX = 0;
+        private int mDifference = 0;
+        RecyclerView mRecyclerView;
+        FirebaseRecyclerAdapter mAdapter;
+        private ChatHolder mSelectedViewHolder;
+        private int mSelectedItemPosition;
+
+        public ChatTouchListener(RecyclerView recyclerView, FirebaseRecyclerAdapter adapter) {
+            mRecyclerView = recyclerView;
+            mAdapter = adapter;
+            REMOVE_THRESHOLD = getResources().getDimensionPixelSize(R.dimen.button_width);
+        }
 
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
-
-            ChatHolder holder = (ChatHolder) v.getTag(R.layout.message);
-            int action = event.getAction();
-            int position = (Integer) v.getTag();
-
-            switch (action) {
+        public boolean onTouch(View view, MotionEvent event) {
+            //Log.d(TAG, "onTouch: action="+event.getAction()+" at "+event.getX()+", "+event.getY());
+            View child = mRecyclerView.findChildViewUnder(event.getX(), event.getY());
+            ChatHolder overViewHolder = null;
+            if (child != null) {
+                overViewHolder = (ChatHolder) child.getTag(R.layout.message);
+            }
+            switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    action_down_x = (int) event.getX();
-                    Log.d("action", "ACTION_DOWN - ");
+                    if (mSelectedViewHolder != null) {
+                        // release the selected item
+                        mSelectedViewHolder.slideMessage(0);
+                    }
+                    mSelectedViewHolder = overViewHolder;
+                    mSelectedItemPosition = (Integer) child.getTag();
+                    mActionDownX = (int) event.getX();
+                    Log.d(TAG, "remove label.get translation x: "+mSelectedViewHolder.mRemoveText.getTranslationX());
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    action_up_x = (int) event.getX();
-                    difference = action_down_x - action_up_x;
-                    if (difference > REMOVE_THRESHOLD) holder.showRemoveLabel();
-                    if (difference < REMOVE_THRESHOLD) holder.hideRemoveLabel();
-                    ChatActivity.this.mRecyclerViewAdapter.notifyItemChanged(position);
-                    Log.d("action", "ACTION_MOVE - "+difference);
-                    holder.slideMessage(difference, 0);
+                    mActionUpX = (int) event.getX();
+                    mDifference = mActionDownX - mActionUpX;
+                    mSelectedViewHolder.slideMessage(mDifference, overViewHolder != mSelectedViewHolder);
                     break;
                 case MotionEvent.ACTION_UP:
-                    Log.d("action", "ACTION_UP - "+difference);
-                    if (difference > REMOVE_THRESHOLD) {
-                        ChatActivity.this.mRecyclerViewAdapter.getRef(position).removeValue();
+                    if (mDifference > REMOVE_THRESHOLD && mSelectedViewHolder == overViewHolder) {
+                        mAdapter.getRef(mSelectedItemPosition).removeValue();
                     }
-                    else {
-                        action_down_x = 0;
-                        action_up_x = 0;
-                        difference = 0;
-                        holder.slideMessage(0, 0);
-                    }
+                    mActionDownX = mActionUpX = mDifference = 0;
+                    mSelectedViewHolder.resetSlide();
+                    mSelectedViewHolder = null;
                     break;
+
             }
             return true;
         }
-
     }
 }
