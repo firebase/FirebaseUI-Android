@@ -29,6 +29,7 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.PlayServicesHelper;
@@ -144,17 +145,17 @@ public class CredentialSignInHandlerTest {
         ArgumentCaptor<Integer> intCaptor = ArgumentCaptor.forClass(Integer.class);
         verify(mockActivity).startActivityForResult(intentCaptor.capture(), intCaptor.capture());
         Intent capturedIntent = intentCaptor.getValue();
-        IdpResponse capturedResponse = IdpResponse.fromResultIntent(capturedIntent);
+        User capturedUser = User.getUser(capturedIntent);
         assertEquals(RC_ACCOUNT_LINK, (int) intCaptor.getValue());
         assertEquals(
                 WelcomeBackIdpPrompt.class.getName(),
                 capturedIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
-                capturedResponse.getEmail());
+                capturedUser.getEmail());
         assertEquals(
                 FacebookAuthProvider.PROVIDER_ID,
-                capturedResponse.getProviderType());
+                capturedUser.getProvider());
 
     }
 
