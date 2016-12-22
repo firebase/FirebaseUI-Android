@@ -29,6 +29,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
@@ -37,7 +38,6 @@ import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseUser;
@@ -89,12 +89,11 @@ public class SaveSmartLock extends SmartLockBase<Status> {
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getActivity(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.general_error, Toast.LENGTH_SHORT).show();
 
         PendingIntent resolution =
-                GoogleApiAvailability
-                        .getInstance()
-                        .getErrorResolutionPendingIntent(getActivity(),
+                PlayServicesHelper.getGoogleApiAvailability()
+                        .getErrorResolutionPendingIntent(getContext(),
                                                          connectionResult.getErrorCode(),
                                                          RC_UPDATE_SERVICE);
         try {
@@ -169,9 +168,9 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     public void saveCredentialsOrFinish(FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable IdpResponse response) {
-        if (!mHelper.getFlowParams().smartLockEnabled
-                || !PlayServicesHelper.getInstance(getContext()).isPlayServicesAvailable()
-                || getActivity().isFinishing()) {
+        mResponse = response;
+
+        if (!mHelper.getFlowParams().smartLockEnabled) {
             finish();
             return;
         }
@@ -179,7 +178,6 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
-        mResponse = response;
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
