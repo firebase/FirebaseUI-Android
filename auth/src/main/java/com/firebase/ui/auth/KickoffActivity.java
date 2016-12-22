@@ -89,7 +89,7 @@ public class KickoffActivity extends AppCompatBase {
         ConnectivityManager manager =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        return (manager != null
+        return !(manager != null
                 && manager.getActiveNetworkInfo() != null
                 && manager.getActiveNetworkInfo().isConnectedOrConnecting());
     }
