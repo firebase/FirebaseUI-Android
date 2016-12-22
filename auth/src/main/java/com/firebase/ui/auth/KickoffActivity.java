@@ -29,7 +29,7 @@ public class KickoffActivity extends AppCompatBase {
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         if (savedInstance == null || savedInstance.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
-            if (!hasNetworkConnection()) {
+            if (isOffline()) {
                 Log.d(TAG, "No network connection");
                 finish(ErrorCodes.NO_NETWORK,
                        IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
@@ -82,13 +82,15 @@ public class KickoffActivity extends AppCompatBase {
 
     /**
      * Check if there is an active or soon-to-be-active network connection.
+     *
+     * @return true if there is no network connection, false otherwise.
      */
-    private boolean hasNetworkConnection() {
+    private boolean isOffline() {
         ConnectivityManager manager =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        return manager != null
+        return (manager != null
                 && manager.getActiveNetworkInfo() != null
-                && manager.getActiveNetworkInfo().isConnectedOrConnecting();
+                && manager.getActiveNetworkInfo().isConnectedOrConnecting());
     }
 }
