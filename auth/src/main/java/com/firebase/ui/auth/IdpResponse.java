@@ -140,9 +140,13 @@ public class IdpResponse implements Parcelable {
      * @param resultIntent The intent which {@code onActivityResult} was called with.
      * @return The IdpResponse containing the token(s) from signing in with the Idp
      */
-    @NonNull
+    @Nullable
     public static IdpResponse fromResultIntent(Intent resultIntent) {
-        return resultIntent.getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        if (resultIntent != null) {
+            return resultIntent.getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        } else {
+            return null;
+        }
     }
 
     public static Intent getIntent(IdpResponse response) {

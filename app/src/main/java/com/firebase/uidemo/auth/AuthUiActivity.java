@@ -209,6 +209,12 @@ public class AuthUiActivity extends AppCompatActivity {
             return;
         } else if (resultCode == ResultCodes.CANCELED) {
             // Sign in failed
+            if (response == null) {
+                // User pressed back button
+                showSnackbar(R.string.sign_in_cancelled);
+                return;
+            }
+
             if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
@@ -218,8 +224,6 @@ public class AuthUiActivity extends AppCompatActivity {
                 showSnackbar(R.string.unknown_error);
                 return;
             }
-
-            showSnackbar(R.string.sign_in_cancelled);
         }
 
         showSnackbar(R.string.unknown_sign_in_response);

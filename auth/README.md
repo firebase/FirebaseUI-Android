@@ -239,6 +239,12 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             return;
         } else if (resultCode == ResultCodes.CANCELED) {
             // Sign in failed
+            if (response == null) {
+                // User pressed back button
+                showSnackbar(R.string.sign_in_cancelled);
+                return;
+            }
+
             if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
@@ -248,8 +254,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 showSnackbar(R.string.unknown_error);
                 return;
             }
-
-            showSnackbar(R.string.sign_in_cancelled);
         }
 
         showSnackbar(R.string.unknown_sign_in_response);
