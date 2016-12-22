@@ -28,13 +28,11 @@ import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FacebookProviderShadow;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
-import com.firebase.ui.auth.testhelpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.testhelpers.GoogleProviderShadow;
 import com.firebase.ui.auth.testhelpers.LoginManagerShadow;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
-import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -42,7 +40,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -65,18 +62,11 @@ import static org.mockito.Mockito.when;
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class,
         shadows = {
-                FirebaseAuthWrapperImplShadow.class,
                 GoogleProviderShadow.class,
                 FacebookProviderShadow.class,
                 LoginManagerShadow.class
         }, sdk = 23)
 public class AuthMethodPickerActivityTest {
-
-    @Before
-    public void setUp() {
-        PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
-    }
-
     @Test
     public void testAllProvidersArePopulated() {
         List<String> providers = Arrays.asList(

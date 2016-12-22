@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/FirebaseUI.WrapperStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/email_layout"
+        style="@style/FirebaseUI.Text.TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:transitionGroup="true"
+        android:transitionName="email_field"
+        app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
+        app:hintTextAppearance="@style/FirebaseUI.Text.HintText"
+        tools:ignore="UnusedAttribute">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/email"
+            style="@style/FirebaseUI.EditText.EmailField" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/button_next"
+        style="@style/FirebaseUI.Button"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/email_layout"
+        android:text="@string/next_default" />
+
+</RelativeLayout>

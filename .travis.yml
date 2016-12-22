@@ -12,7 +12,7 @@ cache:
 android:
   components:
     - tools
-    - build-tools-25.0.1
+    - build-tools-25.0.2
     - android-25
     - platform-tools
     - extra-android-m2repository
@@ -32,24 +32,3 @@ after_failure:
   - cat app/build/reports/lint-results.html
   - cat app/build/reports/findbugs.html
   - cat app/build/reports/pmd.html
-
-  # auth
-  - cat auth/build/reports/checkstyle.html
-  - cat auth/build/reports/lint-results.xml
-  - cat auth/build/reports/lint-results.html
-  - cat auth/build/reports/findbugs.html
-  - cat auth/build/reports/pmd.html
-
-  # database
-  - cat database/build/reports/checkstyle.html
-  - cat database/build/reports/lint-results.xml
-  - cat database/build/reports/lint-results.html
-  - cat database/build/reports/findbugs.html
-  - cat database/build/reports/pmd.html
-
-  # storage
-  - cat storage/build/reports/checkstyle.html
-  - cat storage/build/reports/lint-results.xml
-  - cat storage/build/reports/lint-results.html
-  - cat storage/build/reports/findbugs.html
-  - cat storage/build/reports/pmd.html

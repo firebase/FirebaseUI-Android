@@ -3,6 +3,12 @@
     <color name="colorPrimaryDark">#0288D1</color>
     <color name="colorAccent">#FFA000</color>
 
+    <!-- Text -->
+    <color name="text_default_material_dark_primary">#ffffffff</color>
+    <color name="text_default_material_light_primary">#de000000</color>
+    <color name="text_default_material_dark_secondary">#b3ffffff</color>
+    <color name="text_default_material_light_secondary">#8a000000</color>
+
     <color name="material_deep_purple_50">#EDE7F6</color>
     <color name="material_deep_purple_500">#673AB7</color>
     <color name="material_deep_purple_700">#512DA8</color>
