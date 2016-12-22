@@ -23,6 +23,7 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
@@ -275,7 +276,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
      * On failure, delete the credential from SmartLock (if applicable) and then launch the
      * auth method picker flow.
      */
-    private void signInWithEmailAndPassword(String email, String password) {
+    private void signInWithEmailAndPassword(final String email, String password) {
         mHelper.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(
@@ -283,7 +284,8 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        finish(ResultCodes.OK, new Intent());
+                        finish(ResultCodes.OK,
+                               IdpResponse.getIntent(new IdpResponse(EmailAuthProvider.PROVIDER_ID, email)));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -342,8 +344,9 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             IdpSignInContainer.signIn(
                     getActivity(),
                     mHelper.getFlowParams(),
-                    email,
-                    accountTypeToProviderId(accountType));
+                    new User.Builder(email)
+                            .setProvider(accountTypeToProviderId(accountType))
+                            .build());
         } else {
             Log.w(TAG, "unknown provider: " + accountType);
             startActivityForResult(

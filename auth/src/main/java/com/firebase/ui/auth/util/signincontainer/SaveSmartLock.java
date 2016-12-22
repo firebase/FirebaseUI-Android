@@ -169,6 +169,8 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     public void saveCredentialsOrFinish(FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable IdpResponse response) {
+        mResponse = response;
+
         if (!mHelper.getFlowParams().smartLockEnabled
                 || !PlayServicesHelper.getInstance(getContext()).isPlayServicesAvailable()
                 || getActivity().isFinishing()) {
@@ -179,7 +181,6 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
-        mResponse = response;
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 

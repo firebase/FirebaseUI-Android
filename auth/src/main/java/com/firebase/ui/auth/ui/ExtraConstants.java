@@ -18,12 +18,9 @@ package com.firebase.ui.auth.ui;
  * Constants used for passing Intent extra params between authentication flow activities.
  */
 public class ExtraConstants {
-    public static final String EXTRA_EMAIL = "extra_email";
-    public static final String EXTRA_NAME = "extra_name";
-    public static final String EXTRA_USER = "extra_user";
-    public static final String EXTRA_ERROR_MESSAGE = "extra_error_msg";
     public static final String EXTRA_FLOW_PARAMS = "extra_flow_params";
     public static final String EXTRA_IDP_RESPONSE = "extra_idp_response";
-    public static final String EXTRA_PROVIDER = "extra_provider";
+    public static final String EXTRA_USER = "extra_user";
+    public static final String EXTRA_EMAIL = "extra_email";
     public static final String HAS_EXISTING_INSTANCE = "has_existing_instance";
 }

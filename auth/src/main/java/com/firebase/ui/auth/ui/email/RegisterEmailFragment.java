@@ -24,6 +24,7 @@ import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.RequiredFieldValidator;
@@ -77,9 +78,9 @@ public class RegisterEmailFragment extends BaseFragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            mUser = getArguments().getParcelable(ExtraConstants.EXTRA_USER);
+            mUser = User.getUser(getArguments());
         } else {
-            mUser = savedInstanceState.getParcelable(ExtraConstants.EXTRA_USER);
+            mUser = User.getUser(savedInstanceState);
         }
     }
 

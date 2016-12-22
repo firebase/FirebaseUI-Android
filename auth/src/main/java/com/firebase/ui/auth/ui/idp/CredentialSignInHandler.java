@@ -74,7 +74,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                             .fetchProvidersForEmail(email)
                             .addOnFailureListener(new TaskFailureLogger(
                                     TAG, "Error fetching providers for email"))
-                            .addOnSuccessListener(new StartWelcomeBackFlow(email))
+                            .addOnSuccessListener(new StartWelcomeBackFlow())
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
@@ -94,12 +94,6 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     }
 
     private class StartWelcomeBackFlow implements OnSuccessListener<ProviderQueryResult> {
-        private String mEmail;
-
-        public StartWelcomeBackFlow(String email) {
-            mEmail = email;
-        }
-
         @Override
         public void onSuccess(@NonNull ProviderQueryResult result) {
             mHelper.dismissDialog();
@@ -119,9 +113,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                         WelcomeBackIdpPrompt.createIntent(
                                 mActivity,
                                 mHelper.getFlowParams(),
-                                result.getProviders().get(0),
-                                mResponse,
-                                mEmail
+                                new IdpResponse(provider, mResponse.getEmail())
                         ), mAccountLinkResultCode);
             }
         }

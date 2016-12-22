@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
@@ -54,7 +55,6 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "WelcomeBackPassword";
-    private static final StyleSpan BOLD = new StyleSpan(Typeface.BOLD);
 
     private String mEmail;
     private TextInputLayout mPasswordLayout;
@@ -83,7 +83,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         bodyText = String.format(bodyText, mEmail);
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
-        spannableStringBuilder.setSpan(BOLD,
+        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
                                        emailStart,
                                        emailStart + mEmail.length(),
                                        Spannable.SPAN_INCLUSIVE_INCLUSIVE);
@@ -103,10 +103,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
             next(mEmail, mPasswordField.getText().toString());
         } else if (id == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
-                    getApplicationContext(),
+                    this,
                     mActivityHelper.getFlowParams(),
                     mEmail));
-            finish(ResultCodes.OK, new Intent());
+            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
         }
     }
 

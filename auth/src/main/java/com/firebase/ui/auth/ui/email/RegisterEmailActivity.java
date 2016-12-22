@@ -26,6 +26,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -74,7 +75,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
         switch (requestCode) {
             case RC_SIGN_IN:
             case RC_WELCOME_BACK_IDP:
-                finish(resultCode, new Intent());
+                finish(resultCode, data);
         }
     }
 
@@ -97,9 +98,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
         Intent intent = WelcomeBackIdpPrompt.createIntent(
                 this,
                 mActivityHelper.getFlowParams(),
-                user.getProvider(),
-                null,
-                user.getEmail());
+                new IdpResponse(user.getProvider(), user.getEmail()));
         mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
 
         setSlideAnimation();
