@@ -55,6 +55,8 @@
     <string name="sign_in_with_email">Sign in with email</string>
     <string name="sign_in_with_twitter">Sign in with Twitter</string>
     <string name="email_account_creation_error">Email account registration unsuccessful</string>
+    <string name="general_error">An error has occurred.</string>
+
 
     <string name="progress_dialog_loading">Loading…</string>
     <string name="progress_dialog_sending">Sending…</string>

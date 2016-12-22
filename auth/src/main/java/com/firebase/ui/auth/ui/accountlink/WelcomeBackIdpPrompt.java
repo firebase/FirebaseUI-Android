@@ -42,6 +42,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -122,22 +123,12 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     @Override
-    public void onSuccess(IdpResponse idpResponse) {
-        next(idpResponse);
-    }
-
-    @Override
-    public void onFailure(Bundle extra) {
-        Toast.makeText(getApplicationContext(), "Error signing in", Toast.LENGTH_LONG).show();
-        finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-    }
-
-    private void next(final IdpResponse newIdpResponse) {
-        if (newIdpResponse == null) {
+    public void onSuccess(final IdpResponse idpResponse) {
+        if (idpResponse == null) {
             return; // do nothing
         }
 
-        AuthCredential newCredential = AuthCredentialHelper.getAuthCredential(newIdpResponse);
+        AuthCredential newCredential = AuthCredentialHelper.getAuthCredential(idpResponse);
         if (newCredential == null) {
             Log.e(TAG, "No credential returned");
             finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
@@ -156,10 +147,16 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                                         .linkWithCredential(mPrevCredential)
                                         .addOnFailureListener(new TaskFailureLogger(
                                                 TAG, "Error signing in with previous credential"))
-                                        .addOnCompleteListener(new FinishListener(newIdpResponse));
+                                        .addOnCompleteListener(new FinishListener(idpResponse));
                             } else {
-                                finish(ResultCodes.OK, IdpResponse.getIntent(newIdpResponse));
+                                finish(ResultCodes.OK, IdpResponse.getIntent(idpResponse));
                             }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            finishWithError();
                         }
                     })
                     .addOnFailureListener(
@@ -169,8 +166,18 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                     .linkWithCredential(newCredential)
                     .addOnFailureListener(
                             new TaskFailureLogger(TAG, "Error linking with credential"))
-                    .addOnCompleteListener(new FinishListener(newIdpResponse));
+                    .addOnCompleteListener(new FinishListener(idpResponse));
         }
+    }
+
+    @Override
+    public void onFailure(Bundle extra) {
+        finishWithError();
+    }
+
+    private void finishWithError() {
+        Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
+        finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
     }
 
     public static Intent createIntent(

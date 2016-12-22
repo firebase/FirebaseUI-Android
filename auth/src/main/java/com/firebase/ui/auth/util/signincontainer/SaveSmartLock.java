@@ -29,6 +29,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
@@ -89,7 +90,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.general_error, Toast.LENGTH_SHORT).show();
 
         PendingIntent resolution =
                 GoogleApiAvailability
