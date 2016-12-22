@@ -4,6 +4,7 @@
     <string name="default_toolbar_title">@string/app_name</string>
     <string name="title_welcome_back_password_prompt">@string/sign_in_default</string>
     <string name="title_welcome_back_idp_prompt">@string/sign_in_default</string>
+    <string name="title_check_email">@string/sign_in_default</string>
     <string name="title_register_email_activity">@string/create_account_title</string>
     <string name="title_recover_password_activity">@string/recover_password_title</string>
     <string name="title_confirm_recover_password_activity">@string/check_your_email</string>
@@ -32,6 +33,7 @@
     <string name="error_email_does_not_exist">That email address doesn\'t match an existing account</string>
     <string name="welcome_back">Welcome back!</string>
     <string name="trouble_signing_in">Trouble signing in?</string>
+    <string name="next_default">Next</string>
     <string name="sign_in_default">Sign in</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>

@@ -27,7 +27,6 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.tasks.Task;
@@ -139,20 +138,12 @@ public class FirebaseAuthWrapperImpl
 
     @Override
     public boolean isPlayServicesAvailable(Context context) {
-        return isPlayServicesAvailable(context, GoogleApiAvailability.getInstance());
-    }
-
-    protected boolean isPlayServicesAvailable(
-            Context context,
-            GoogleApiAvailability apiAvailability) {
-        int result = apiAvailability.isGooglePlayServicesAvailable(context);
-        return result == ConnectionResult.SUCCESS
-                || result == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED;
+        return PlayServicesHelper.getInstance(context).isPlayServicesAvailable();
     }
 
     @Override
     public PendingIntent getEmailHintIntent(FragmentActivity fragmentActivity) {
-        if (!isPlayServicesAvailable(fragmentActivity, GoogleApiAvailability.getInstance())) {
+        if (!isPlayServicesAvailable(fragmentActivity)) {
             return null;
         }
 
