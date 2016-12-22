@@ -237,7 +237,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             startActivity(SignedInActivity.createIntent(this, response));
             finish();
             return;
-        } else if (resultCode == ResultCodes.CANCELED) {
+        } else {
             // Sign in failed
             if (response == null) {
                 // User pressed back button
