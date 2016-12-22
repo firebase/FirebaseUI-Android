@@ -21,13 +21,18 @@ public class KickoffActivity extends AppCompatBase {
 
     private boolean mIsWaitingForPlayServices = false;
 
+    public static Intent createIntent(Context context, FlowParameters flowParams) {
+        return ActivityHelper.createBaseIntent(context, KickoffActivity.class, flowParams);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         if (savedInstance == null || !savedInstance.getBoolean(ExtraConstants.HAS_EXISTING_INSTANCE)) {
             if (!hasNetworkConnection()) {
                 Log.d(TAG, "No network connection");
-                finish(ErrorCodes.NO_NETWORK, IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
+                finish(ErrorCodes.NO_NETWORK,
+                       IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
                 return;
             }
 
@@ -39,14 +44,14 @@ public class KickoffActivity extends AppCompatBase {
                     new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
-                            finish(ResultCodes.CANCELED, new Intent());
+                            finish(ResultCodes.CANCELED,
+                                   IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
                         }
                     });
 
             // The error dialog will be null if isGooglePlayServicesAvailable returned SUCCESS
             if (errorDialog == null) {
-                SignInDelegate.delegate(KickoffActivity.this,
-                                        mActivityHelper.getFlowParams());
+                SignInDelegate.delegate(KickoffActivity.this, mActivityHelper.getFlowParams());
             } else {
                 errorDialog.show();
                 mIsWaitingForPlayServices = true;
@@ -66,8 +71,7 @@ public class KickoffActivity extends AppCompatBase {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_PLAY_SERVICES) {
             if (resultCode == ResultCodes.OK) {
-                SignInDelegate.delegate(KickoffActivity.this,
-                                        mActivityHelper.getFlowParams());
+                SignInDelegate.delegate(KickoffActivity.this, mActivityHelper.getFlowParams());
             } else {
                 finish(ResultCodes.CANCELED,
                        IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
@@ -77,7 +81,6 @@ public class KickoffActivity extends AppCompatBase {
             if (delegate != null) delegate.onActivityResult(requestCode, resultCode, data);
         }
     }
-
 
     /**
      * Check if there is an active or soon-to-be-active network connection.
@@ -89,9 +92,5 @@ public class KickoffActivity extends AppCompatBase {
         return manager != null
                 && manager.getActiveNetworkInfo() != null
                 && manager.getActiveNetworkInfo().isConnectedOrConnecting();
-    }
-
-    public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return ActivityHelper.createBaseIntent(context, KickoffActivity.class, flowParams);
     }
 }
