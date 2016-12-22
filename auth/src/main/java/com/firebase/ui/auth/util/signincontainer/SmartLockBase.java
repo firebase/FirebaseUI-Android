@@ -70,7 +70,7 @@ public abstract class SmartLockBase<R extends Result> extends BaseFragment imple
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), com.firebase.ui.auth.R.string.general_error, Toast.LENGTH_SHORT).show();
     }
 
     @Override

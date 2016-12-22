@@ -30,6 +30,7 @@ import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.ui.User;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;

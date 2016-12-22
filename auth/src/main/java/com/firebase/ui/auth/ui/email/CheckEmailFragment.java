@@ -20,6 +20,7 @@ import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
 import com.google.android.gms.auth.api.credentials.Credential;

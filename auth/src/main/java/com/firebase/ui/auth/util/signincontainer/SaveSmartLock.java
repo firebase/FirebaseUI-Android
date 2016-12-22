@@ -29,6 +29,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
@@ -88,12 +89,12 @@ public class SaveSmartLock extends SmartLockBase<Status> {
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getActivity(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.general_error, Toast.LENGTH_SHORT).show();
 
         PendingIntent resolution =
                 GoogleApiAvailability
                         .getInstance()
-                        .getErrorResolutionPendingIntent(getActivity(),
+                        .getErrorResolutionPendingIntent(getContext(),
                                                          connectionResult.getErrorCode(),
                                                          RC_UPDATE_SERVICE);
         try {
@@ -168,7 +169,9 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     public void saveCredentialsOrFinish(FirebaseUser firebaseUser,
                                         @Nullable String password,
                                         @Nullable IdpResponse response) {
-        if (!mHelper.getFlowParams().smartLockEnabled || getActivity().isFinishing()) {
+        mResponse = response;
+
+        if (!mHelper.getFlowParams().smartLockEnabled) {
             finish();
             return;
         }
@@ -176,7 +179,6 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
-        mResponse = response;
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
