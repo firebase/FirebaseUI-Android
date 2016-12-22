@@ -27,7 +27,6 @@ import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
-import com.firebase.ui.auth.testhelpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
@@ -94,7 +93,7 @@ public class WelcomeBackPasswordPromptTest {
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class, FirebaseAuthWrapperImplShadow.class})
+    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
     public void testSignInButton_signsInAndSavesCredentials() {
         // initialize mocks
         new ActivityHelperShadow();

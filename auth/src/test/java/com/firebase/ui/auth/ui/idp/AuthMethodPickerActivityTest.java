@@ -28,7 +28,6 @@ import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FacebookProviderShadow;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
-import com.firebase.ui.auth.testhelpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.testhelpers.GoogleProviderShadow;
 import com.firebase.ui.auth.testhelpers.LoginManagerShadow;
 import com.firebase.ui.auth.testhelpers.TestConstants;
@@ -63,7 +62,6 @@ import static org.mockito.Mockito.when;
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class,
         shadows = {
-                FirebaseAuthWrapperImplShadow.class,
                 GoogleProviderShadow.class,
                 FacebookProviderShadow.class,
                 LoginManagerShadow.class
