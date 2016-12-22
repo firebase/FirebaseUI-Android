@@ -1,6 +1,5 @@
 package com.firebase.ui.auth;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,11 +11,12 @@ import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.firebase.ui.auth.util.signincontainer.SignInDelegate;
-import com.google.android.gms.common.GoogleApiAvailability;
 
 public class KickoffActivity extends AppCompatBase {
     private static final String TAG = "KickoffActivity";
+    private static final String IS_WAITING_FOR_PLAY_SERVICES = "is_waiting_for_play_services";
     private static final int RC_PLAY_SERVICES = 1;
 
     private boolean mIsWaitingForPlayServices = false;
@@ -28,7 +28,7 @@ public class KickoffActivity extends AppCompatBase {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        if (savedInstance == null || !savedInstance.getBoolean(ExtraConstants.HAS_EXISTING_INSTANCE)) {
+        if (savedInstance == null || savedInstance.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
             if (!hasNetworkConnection()) {
                 Log.d(TAG, "No network connection");
                 finish(ErrorCodes.NO_NETWORK,
@@ -36,24 +36,21 @@ public class KickoffActivity extends AppCompatBase {
                 return;
             }
 
-            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-            Dialog errorDialog = apiAvailability.getErrorDialog(
+            boolean isPlayServicesAvailable = PlayServicesHelper.makePlayServicesAvailable(
                     this,
-                    apiAvailability.isGooglePlayServicesAvailable(this),
                     RC_PLAY_SERVICES,
                     new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             finish(ResultCodes.CANCELED,
-                                   IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+                                   IdpResponse.getErrorCodeIntent(
+                                           ErrorCodes.UNKNOWN_ERROR));
                         }
                     });
 
-            // The error dialog will be null if isGooglePlayServicesAvailable returned SUCCESS
-            if (errorDialog == null) {
+            if (isPlayServicesAvailable) {
                 SignInDelegate.delegate(KickoffActivity.this, mActivityHelper.getFlowParams());
             } else {
-                errorDialog.show();
                 mIsWaitingForPlayServices = true;
             }
         }
@@ -62,7 +59,8 @@ public class KickoffActivity extends AppCompatBase {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // It doesn't matter what we put here, we just don't want outState to be empty
-        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, !mIsWaitingForPlayServices);
+        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
+        outState.putBoolean(IS_WAITING_FOR_PLAY_SERVICES, mIsWaitingForPlayServices);
         super.onSaveInstanceState(outState);
     }
 
