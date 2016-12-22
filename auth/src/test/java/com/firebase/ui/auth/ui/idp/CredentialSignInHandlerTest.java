@@ -15,7 +15,6 @@
 package com.firebase.ui.auth.ui.idp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 
 import com.firebase.ui.auth.BuildConfig;
@@ -29,8 +28,8 @@ import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.PlayServicesHelper;
@@ -88,7 +87,6 @@ public class CredentialSignInHandlerTest {
                 smartLock,
                 RC_ACCOUNT_LINK,
                 idpResponse);
-        Context mockContext = mock(Context.class);
 
         Task signInTask = Tasks.forResult(new FakeAuthResult(mockFirebaseUser));
         when(mockActivityHelper.getFlowParams()).thenReturn(
@@ -129,7 +127,6 @@ public class CredentialSignInHandlerTest {
                 RC_ACCOUNT_LINK,
                 idpResponse);
 
-        Context mockContext = mock(Context.class);
         FlowParameters mockFlowParams = mock(FlowParameters.class);
         when(mockActivityHelper.getFirebaseAuth()).thenReturn(mockFirebaseAuth);
         when(mockActivityHelper.getFlowParams()).thenReturn(mockFlowParams);
@@ -148,16 +145,17 @@ public class CredentialSignInHandlerTest {
         ArgumentCaptor<Integer> intCaptor = ArgumentCaptor.forClass(Integer.class);
         verify(mockActivity).startActivityForResult(intentCaptor.capture(), intCaptor.capture());
         Intent capturedIntent = intentCaptor.getValue();
+        User capturedUser = User.getUser(capturedIntent);
         assertEquals(RC_ACCOUNT_LINK, (int) intCaptor.getValue());
         assertEquals(
                 WelcomeBackIdpPrompt.class.getName(),
                 capturedIntent.getComponent().getClassName());
         assertEquals(
                 TestConstants.EMAIL,
-                capturedIntent.getExtras().getString(ExtraConstants.EXTRA_EMAIL));
+                capturedUser.getEmail());
         assertEquals(
                 FacebookAuthProvider.PROVIDER_ID,
-                capturedIntent.getExtras().getString(ExtraConstants.EXTRA_PROVIDER));
+                capturedUser.getProvider());
 
     }
 
@@ -174,7 +172,6 @@ public class CredentialSignInHandlerTest {
                 RC_ACCOUNT_LINK,
                 idpResponse);
 
-        Context mockContext = mock(Context.class);
         Task mockTask = mock(Task.class);
         FlowParameters mockFlowParams = mock(FlowParameters.class);
 

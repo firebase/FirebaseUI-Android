@@ -48,8 +48,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SignedInActivity extends AppCompatActivity {
-    private static final String EXTRA_IDP_RESPONSE = "extra_idp_response";
-
     @BindView(android.R.id.content)
     View mRootView;
 
@@ -78,7 +76,7 @@ public class SignedInActivity extends AppCompatActivity {
             return;
         }
 
-        mIdpResponse = getIntent().getParcelableExtra(EXTRA_IDP_RESPONSE);
+        mIdpResponse = IdpResponse.fromResultIntent(getIntent());
 
         setContentView(R.layout.signed_in_layout);
         ButterKnife.bind(this);
@@ -181,19 +179,21 @@ public class SignedInActivity extends AppCompatActivity {
     }
 
     private void populateIdpToken() {
+        String token = null;
+        String secret = null;
         if (mIdpResponse != null) {
-            String token = mIdpResponse.getIdpToken();
-            String secret = mIdpResponse.getIdpSecret();
-            if (token == null) {
-                findViewById(R.id.idp_token_layout).setVisibility(View.GONE);
-            } else {
-                ((TextView) findViewById(R.id.idp_token)).setText(token);
-            }
-            if (secret == null) {
-                findViewById(R.id.idp_secret_layout).setVisibility(View.GONE);
-            } else {
-                ((TextView) findViewById(R.id.idp_secret)).setText(secret);
-            }
+            token = mIdpResponse.getIdpToken();
+            secret = mIdpResponse.getIdpSecret();
+        }
+        if (token == null) {
+            findViewById(R.id.idp_token_layout).setVisibility(View.GONE);
+        } else {
+            ((TextView) findViewById(R.id.idp_token)).setText(token);
+        }
+        if (secret == null) {
+            findViewById(R.id.idp_secret_layout).setVisibility(View.GONE);
+        } else {
+            ((TextView) findViewById(R.id.idp_secret)).setText(secret);
         }
     }
 
@@ -204,9 +204,8 @@ public class SignedInActivity extends AppCompatActivity {
     }
 
     public static Intent createIntent(Context context, IdpResponse idpResponse) {
-        Intent in = new Intent();
+        Intent in = IdpResponse.getIntent(idpResponse);
         in.setClass(context, SignedInActivity.class);
-        in.putExtra(EXTRA_IDP_RESPONSE, idpResponse);
         return in;
     }
 }

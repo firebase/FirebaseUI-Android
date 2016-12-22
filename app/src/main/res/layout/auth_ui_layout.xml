@@ -80,29 +80,32 @@
             android:text="@string/auth_providers_header"/>
 
         <CheckBox
-            android:id="@+id/email_provider"
+            android:id="@+id/google_provider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/email_label"/>
+            android:text="@string/google_label"/>
 
         <CheckBox
             android:id="@+id/facebook_provider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/facebook_label"/>
-
-        <CheckBox
-            android:id="@+id/google_provider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/google_label"/>
 
         <CheckBox
             android:id="@+id/twitter_provider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/twitter_label"/>
+
+        <CheckBox
+            android:id="@+id/email_provider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/email_label"/>
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Subhead"
