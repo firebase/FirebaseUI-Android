@@ -89,12 +89,12 @@ public class SaveSmartLock extends SmartLockBase<Status> {
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getActivity(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
 
         PendingIntent resolution =
                 GoogleApiAvailability
                         .getInstance()
-                        .getErrorResolutionPendingIntent(getActivity(),
+                        .getErrorResolutionPendingIntent(getContext(),
                                                          connectionResult.getErrorCode(),
                                                          RC_UPDATE_SERVICE);
         try {
@@ -172,8 +172,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         mResponse = response;
 
         if (!mHelper.getFlowParams().smartLockEnabled
-                || !PlayServicesHelper.getInstance(getContext()).isPlayServicesAvailable()
-                || getActivity().isFinishing()) {
+                || !PlayServicesHelper.getInstance(getContext()).isPlayServicesAvailable()) {
             finish();
             return;
         }
