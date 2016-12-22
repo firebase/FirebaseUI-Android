@@ -22,6 +22,7 @@ import android.util.Log;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
@@ -113,7 +114,10 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                         WelcomeBackIdpPrompt.createIntent(
                                 mActivity,
                                 mHelper.getFlowParams(),
-                                new IdpResponse(provider, mResponse.getEmail())
+                                new User.Builder(mResponse.getEmail())
+                                        .setProvider(provider)
+                                        .build(),
+                                mResponse
                         ), mAccountLinkResultCode);
             }
         }

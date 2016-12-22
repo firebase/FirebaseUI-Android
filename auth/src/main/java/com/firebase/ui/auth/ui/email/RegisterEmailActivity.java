@@ -98,7 +98,8 @@ public class RegisterEmailActivity extends AppCompatBase implements
         Intent intent = WelcomeBackIdpPrompt.createIntent(
                 this,
                 mActivityHelper.getFlowParams(),
-                new IdpResponse(user.getProvider(), user.getEmail()));
+                user,
+                new IdpResponse(EmailAuthProvider.PROVIDER_ID, user.getEmail()));
         mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
 
         setSlideAnimation();

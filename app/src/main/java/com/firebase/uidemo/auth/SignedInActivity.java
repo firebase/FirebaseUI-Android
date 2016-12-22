@@ -179,8 +179,12 @@ public class SignedInActivity extends AppCompatActivity {
     }
 
     private void populateIdpToken() {
-        String token = mIdpResponse.getIdpToken();
-        String secret = mIdpResponse.getIdpSecret();
+        String token = null;
+        String secret = null;
+        if (mIdpResponse != null) {
+            token = mIdpResponse.getIdpToken();
+            secret = mIdpResponse.getIdpSecret();
+        }
         if (token == null) {
             findViewById(R.id.idp_token_layout).setVisibility(View.GONE);
         } else {

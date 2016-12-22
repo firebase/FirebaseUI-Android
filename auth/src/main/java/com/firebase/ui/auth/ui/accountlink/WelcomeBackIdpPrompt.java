@@ -40,6 +40,7 @@ import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -61,15 +62,17 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
-        IdpResponse prevIdpResponse = IdpResponse.fromResultIntent(getIntent());
-        mPrevCredential = AuthCredentialHelper.getAuthCredential(prevIdpResponse);
+        IdpResponse newUserIdpResponse = IdpResponse.fromResultIntent(getIntent());
+        mPrevCredential = AuthCredentialHelper.getAuthCredential(newUserIdpResponse);
 
-        String providerId = prevIdpResponse.getProviderType();
+        User oldUser = User.getUser(getIntent());
+
+        String providerId = oldUser.getProvider();
         for (IdpConfig idpConfig : mActivityHelper.getFlowParams().providerInfo) {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new GoogleProvider(this, idpConfig, prevIdpResponse.getEmail());
+                        mIdpProvider = new GoogleProvider(this, idpConfig, oldUser.getEmail());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         mIdpProvider = new FacebookProvider(
@@ -95,7 +98,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         }
 
         ((TextView) findViewById(R.id.welcome_back_idp_prompt))
-                .setText(getIdpPromptString(prevIdpResponse.getEmail()));
+                .setText(getIdpPromptString(oldUser.getEmail()));
 
         mIdpProvider.setAuthenticationCallback(this);
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
@@ -173,9 +176,11 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     public static Intent createIntent(
             Context context,
             FlowParameters flowParams,
-            IdpResponse idpResponse) {
+            User existingUser,
+            IdpResponse newUserResponse) {
         return BaseHelper.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, idpResponse);
+                .putExtra(ExtraConstants.EXTRA_USER, existingUser)
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, newUserResponse);
     }
 
     private class FinishListener implements OnCompleteListener<AuthResult> {
