@@ -50,6 +50,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 
 /**
  * Activity displaying a form to create a new email/password account.
@@ -145,6 +147,12 @@ public class RegisterEmailActivity extends AppCompatBase implements View.OnClick
                                                 mSaveSmartLock,
                                                 firebaseUser,
                                                 password);
+                                        
+                                        //This code is supposed to fix the error explained in issue #409
+                                        AuthCredential credential = EmailAuthProvider
+                                                .getCredential(email, password);
+
+                                        firebaseUser.reauthenticate(credential);
                                     }
                                 });
                     }
