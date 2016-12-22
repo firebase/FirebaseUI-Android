@@ -38,7 +38,6 @@ import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseUser;
@@ -93,8 +92,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         Toast.makeText(getContext(), R.string.general_error, Toast.LENGTH_SHORT).show();
 
         PendingIntent resolution =
-                GoogleApiAvailability
-                        .getInstance()
+                PlayServicesHelper.getGoogleApiAvailability()
                         .getErrorResolutionPendingIntent(getContext(),
                                                          connectionResult.getErrorCode(),
                                                          RC_UPDATE_SERVICE);
@@ -172,8 +170,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                                         @Nullable IdpResponse response) {
         mResponse = response;
 
-        if (!mHelper.getFlowParams().smartLockEnabled
-                || !PlayServicesHelper.getInstance(getContext()).isPlayServicesAvailable()) {
+        if (!mHelper.getFlowParams().smartLockEnabled) {
             finish();
             return;
         }

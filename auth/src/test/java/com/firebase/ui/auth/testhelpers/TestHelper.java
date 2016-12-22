@@ -20,8 +20,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,7 +31,6 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -77,14 +74,6 @@ public class TestHelper {
         when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
         when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
         return mockFirebaseUser;
-    }
-
-    public static GoogleApiAvailability makeMockGoogleApiAvailability() {
-        GoogleApiAvailability availability = mock(GoogleApiAvailability.class);
-        when(availability.isGooglePlayServicesAvailable(any(Context.class)))
-                .thenReturn(ConnectionResult.SUCCESS);
-
-        return availability;
     }
 
     public static void verifySmartLockSave(String providerId, String email, String password) {

@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,11 +28,9 @@ import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
-import com.firebase.ui.auth.testhelpers.FirebaseAuthWrapperImplShadow;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.User;
-import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
@@ -62,7 +61,7 @@ public class RegisterEmailActivityTest {
                 TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)));
         return Robolectric.buildActivity(RegisterEmailActivity.class)
                 .withIntent(startIntent)
-                .create()
+                .create(new Bundle())
                 .start()
                 .visible()
                 .get();
@@ -71,13 +70,9 @@ public class RegisterEmailActivityTest {
     @Before
     public void setUp() {
         TestHelper.initializeApp(RuntimeEnvironment.application);
-        PlayServicesHelper.sApiAvailability = TestHelper.makeMockGoogleApiAvailability();
     }
 
     @Test
-    @Config(shadows = {
-            FirebaseAuthWrapperImplShadow.class
-    })
     public void testSignUpButton_validatesFields() {
         RegisterEmailActivity registerEmailActivity = createActivity();
 
@@ -109,8 +104,7 @@ public class RegisterEmailActivityTest {
     @Test
     @Config(shadows = {
             BaseHelperShadow.class,
-            ActivityHelperShadow.class,
-            FirebaseAuthWrapperImplShadow.class
+            ActivityHelperShadow.class
     })
     public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
         // init mocks
