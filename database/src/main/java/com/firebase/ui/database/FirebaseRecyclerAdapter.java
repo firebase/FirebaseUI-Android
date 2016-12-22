@@ -108,7 +108,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
             @Override
             public void onReady() {
-                Log.d(TAG, "Done loading data");
                 FirebaseRecyclerAdapter.this.onReady();
             }
 

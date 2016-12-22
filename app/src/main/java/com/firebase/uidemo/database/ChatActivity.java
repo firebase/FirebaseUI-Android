@@ -297,10 +297,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
 
             ((GradientDrawable) mMessage.getBackground()).setColor(color);
-            ((RotateDrawable) mLeftArrow.getBackground()).getDrawable()
-                    .setColorFilter(color, PorterDuff.Mode.SRC);
-            ((RotateDrawable) mRightArrow.getBackground()).getDrawable()
-                    .setColorFilter(color, PorterDuff.Mode.SRC);
+            ((RotateDrawable) mLeftArrow.getBackground()).getDrawable().setColorFilter(color, PorterDuff.Mode.SRC);
+            ((RotateDrawable) mRightArrow.getBackground()).getDrawable().setColorFilter(color, PorterDuff.Mode.SRC);
         }
 
         public void setName(String name) {
@@ -313,42 +311,32 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         public void slideMessage(int x) { slideMessage(x, false); }
         public void slideMessage(int x, boolean forceDisable) {
-            //Log.d(TAG, "mMessageRow.get translation x: "+mMessageRow.getTranslationX());
-            //Log.d(TAG, "remove label.get translation x: "+mRemoveText.getTranslationX());
             mMessageRow.setTranslationX(-x);
             mRemoveText.setTranslationX(mRemoveText.getWidth()-Math.min(x, mRemoveText.getWidth()));
             mRemoveText.setEnabled(x >= mRemoveText.getWidth() && !forceDisable);
         }
         public void resetSlide() {
             // animate the message bubble and the remove label back to their original positions
-            TranslateAnimation animation = new TranslateAnimation(0.0f, -1*mMessageRow.getTranslationX(), 0.0f, 0.0f);
-            Log.i(TAG, "Animating text bubble "+-1*mMessageRow.getTranslationX()+" to the right");
+            animateRight(mMessageRow, -1*mMessageRow.getTranslationX());
+            animateRight(mRemoveText, mRemoveText.getWidth() - mRemoveText.getTranslationX());
+        }
+        public void animateRight(final View view, final float offsetX) {
+            TranslateAnimation animation = new TranslateAnimation(0.0f, offsetX, 0.0f, 0.0f);
+            Log.d(TAG, "Animating "+view.getId()+" view from "+view.getTranslationX()+" "+offsetX+" to the right");
             animation.setInterpolator(new BounceInterpolator());
             animation.setDuration(1000);
-            animation.setFillAfter(true);
-            mMessageRow.startAnimation(animation);
-            animation = new TranslateAnimation(0.0f, mRemoveText.getTranslationX()+mRemoveText.getWidth(), 0.0f, 0.0f);
-            Log.i(TAG, "Animating remove label "+mRemoveText.getTranslationX()+mRemoveText.getWidth()+" to the right");
-            animation.setInterpolator(new BounceInterpolator());
-            animation.setDuration(1000);
-            animation.setFillAfter(true);
             animation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
+                @Override public void onAnimationStart(Animation animation) { }
+                @Override public void onAnimationRepeat(Animation animation) { }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    Log.d(TAG, "onAnimationEnd: remove label.get translation x: "+mRemoveText.getTranslationX());
+                    view.setTranslationX(view.getTranslationX()+offsetX);
                 }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
             });
-            mRemoveText.startAnimation(animation);
+            view.startAnimation(animation);
+
         }
     }
     // This class listens for touch events on the chat recycler view
@@ -386,7 +374,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     mSelectedViewHolder = overViewHolder;
                     mSelectedItemPosition = (Integer) child.getTag();
                     mActionDownX = (int) event.getX();
-                    Log.d(TAG, "remove label.get translation x: "+mSelectedViewHolder.mRemoveText.getTranslationX());
+                    Log.d(TAG, "ACTION_DOWN: remove label.get translation x: "+mSelectedViewHolder.mRemoveText.getTranslationX());
                     break;
                 case MotionEvent.ACTION_MOVE:
                     mActionUpX = (int) event.getX();
