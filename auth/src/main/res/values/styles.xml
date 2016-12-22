@@ -197,28 +197,26 @@
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.EmailButton">
-        <item name="android:drawableLeft">@drawable/ic_email_white_18dp</item>
+        <item name="android:drawableLeft">@drawable/ic_mail_white_24dp</item>
         <item name="android:visibility">gone</item>
         <item name="android:background">@drawable/idp_button_background_email</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.GoogleButton">
-        <item name="android:drawableLeft">@drawable/logo_googleg_color_18dp</item>
+        <item name="android:drawableLeft">@drawable/ic_googleg_color_24dp</item>
         <item name="android:background">@drawable/idp_button_background_google</item>
         <item name="android:textColor">#757575</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.FacebookButton">
-        <item name="android:drawableLeft">@drawable/com_facebook_button_icon_white</item>
+        <item name="android:drawableLeft">@drawable/ic_facebook_white_22dp</item>
         <item name="android:background">@drawable/idp_button_background_facebook</item>
         <item name="android:textColor">@color/com_facebook_button_text_color</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.TwitterButton">
-        <item name="android:drawableLeft">@drawable/tw__ic_logo_default</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:drawablePadding">8dp</item>
+        <item name="android:drawableLeft">@drawable/ic_twitter_bird_white_24dp</item>
         <item name="android:background">@drawable/idp_button_background_twitter</item>
         <item name="android:textColor">@color/tw__solid_white</item>
     </style>

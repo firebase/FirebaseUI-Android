@@ -34,6 +34,7 @@ import butterknife.OnClick;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
+@SuppressWarnings("LogConditional")
 public class ImageActivity extends AppCompatActivity {
 
     private static final String TAG = "ImageDemo";
