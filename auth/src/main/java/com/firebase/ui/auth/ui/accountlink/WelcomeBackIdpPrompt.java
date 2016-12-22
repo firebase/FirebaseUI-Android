@@ -92,8 +92,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         }
 
         if (mIdpProvider == null) {
-            Log.w(TAG, "Firebase login successful." +
-                    " Account linking failed due to provider not enabled by application");
+            Log.w(TAG, "Firebase login unsuccessful."
+                    + " Account linking failed due to provider not enabled by application: "
+                    + providerId);
             finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
             return;
         }
