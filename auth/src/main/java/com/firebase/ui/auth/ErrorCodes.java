@@ -15,6 +15,6 @@ public final class ErrorCodes {
     public static final int UNKNOWN_ERROR = 20;
 
     private ErrorCodes() {
-        // We don't want people to initialize this class
+        // no instance
     }
 }

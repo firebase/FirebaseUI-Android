@@ -18,6 +18,6 @@ public final class ResultCodes {
     public static final int CANCELED = Activity.RESULT_CANCELED;
 
     private ResultCodes() {
-        // We don't want people to initialize this class
+        // no instance
     }
 }
