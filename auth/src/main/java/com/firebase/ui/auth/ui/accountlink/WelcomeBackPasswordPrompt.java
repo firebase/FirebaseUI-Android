@@ -63,6 +63,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     @Nullable
     private SaveSmartLock mSaveSmartLock;
 
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            IdpResponse response) {
+        return BaseHelper.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,13 +172,5 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                         mPasswordLayout.setError(error);
                     }
                 });
-    }
-
-    public static Intent createIntent(
-            Context context,
-            FlowParameters flowParams,
-            IdpResponse response) {
-        return BaseHelper.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }
 }

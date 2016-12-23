@@ -26,7 +26,8 @@ public class ActivityHelper extends BaseHelper {
     private AppCompatBase mActivity;
 
     public ActivityHelper(AppCompatBase activity, Intent intent) {
-        super(activity, (FlowParameters) intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS));
+        super(activity,
+              (FlowParameters) intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS));
         mActivity = activity;
     }
 

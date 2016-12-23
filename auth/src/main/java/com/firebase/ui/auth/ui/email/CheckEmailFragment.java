@@ -40,44 +40,18 @@ import java.util.List;
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that
  * email.
- *
+ * <p>
  * Host Activities should implement {@link CheckEmailListener}.
  */
 public class CheckEmailFragment extends BaseFragment implements View.OnClickListener {
 
-    /**
-     * Interface to be implemented by Activities hosting this Fragment.
-     */
-     interface CheckEmailListener {
-
-        /**
-         * Email entered belongs to an existing email user.
-         */
-        void onExistingEmailUser(User user);
-
-        /**
-         * Email entered belongs to an existing IDP user.
-         */
-        void onExistingIdpUser(User user);
-
-        /**
-         * Email entered does not beling to an existing user.
-         */
-        void onNewUser(User user);
-
-    }
-
     public static final String TAG = "CheckEmailFragment";
-
     private static final int RC_HINT = 13;
     private static final int RC_WELCOME_BACK_IDP = 15;
     private static final int RC_SIGN_IN = 16;
-
     private EditText mEmailEditText;
-
     private EmailFieldValidator mEmailFieldValidator;
     private CheckEmailListener mListener;
-
     private Credential mLastCredential;
 
     public static CheckEmailFragment getInstance(@NonNull FlowParameters flowParameters,
@@ -185,44 +159,60 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
                     .fetchProvidersForEmail(email)
                     .addOnFailureListener(
                             new TaskFailureLogger(TAG, "Error fetching providers for email"))
-                    .addOnCompleteListener(getActivity(), new OnCompleteListener<ProviderQueryResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                            mHelper.dismissDialog();
-                        }
-                    })
-                    .addOnSuccessListener(getActivity(), new OnSuccessListener<ProviderQueryResult>() {
-                        @Override
-                        public void onSuccess(ProviderQueryResult result) {
-                            List<String> providers = result.getProviders();
-                            if (providers == null || providers.isEmpty()) {
-                                // Get name from SmartLock, if possible
-                                String name = null;
-                                Uri photoUri = null;
-                                if (mLastCredential != null && mLastCredential.getId().equals(email)) {
-                                    name = mLastCredential.getName();
-                                    photoUri = mLastCredential.getProfilePictureUri();
-                                }
+                    .addOnCompleteListener(getActivity(),
+                                           new OnCompleteListener<ProviderQueryResult>() {
+                                               @Override
+                                               public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                                                   mHelper.dismissDialog();
+                                               }
+                                           })
+                    .addOnSuccessListener(getActivity(),
+                                          new OnSuccessListener<ProviderQueryResult>() {
+                                              @Override
+                                              public void onSuccess(ProviderQueryResult result) {
+                                                  List<String> providers = result.getProviders();
+                                                  if (providers == null || providers.isEmpty()) {
+                                                      // Get name from SmartLock, if possible
+                                                      String name = null;
+                                                      Uri photoUri = null;
+                                                      if (mLastCredential != null && mLastCredential
+                                                              .getId()
+                                                              .equals(email)) {
+                                                          name = mLastCredential.getName();
+                                                          photoUri = mLastCredential.getProfilePictureUri();
+                                                      }
 
-                                mListener.onNewUser(new User.Builder(email)
-                                                            .setName(name)
-                                                            .setPhotoUri(photoUri)
-                                                            .build());
-                            } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(providers.get(0))) {
-                                mListener.onExistingEmailUser(new User.Builder(email).build());
-                            } else {
-                                mListener.onExistingIdpUser(new User.Builder(email)
-                                                                    .setProvider(providers.get(0))
-                                                                    .build());
-                            }
-                        }
-                    });
+                                                      mListener.onNewUser(new User.Builder(email)
+                                                                                  .setName(name)
+                                                                                  .setPhotoUri(
+                                                                                          photoUri)
+                                                                                  .build());
+                                                  } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(
+                                                          providers.get(0))) {
+                                                      mListener.onExistingEmailUser(new User.Builder(
+                                                              email).build());
+                                                  } else {
+                                                      mListener.onExistingIdpUser(new User.Builder(
+                                                              email)
+                                                                                          .setProvider(
+                                                                                                  providers
+                                                                                                          .get(0))
+                                                                                          .build());
+                                                  }
+                                              }
+                                          });
         }
     }
 
     private void showEmailAutoCompleteHint() {
         try {
-            startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT, null, 0, 0, 0, null);
+            startIntentSenderForResult(getEmailHintIntent().getIntentSender(),
+                                       RC_HINT,
+                                       null,
+                                       0,
+                                       0,
+                                       0,
+                                       null);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }
@@ -258,5 +248,27 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
         if (id == R.id.button_next) {
             validateAndProceed();
         }
+    }
+
+    /**
+     * Interface to be implemented by Activities hosting this Fragment.
+     */
+    interface CheckEmailListener {
+
+        /**
+         * Email entered belongs to an existing email user.
+         */
+        void onExistingEmailUser(User user);
+
+        /**
+         * Email entered belongs to an existing IDP user.
+         */
+        void onExistingIdpUser(User user);
+
+        /**
+         * Email entered does not beling to an existing user.
+         */
+        void onNewUser(User user);
+
     }
 }

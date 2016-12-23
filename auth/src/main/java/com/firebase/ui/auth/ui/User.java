@@ -36,6 +36,14 @@ public class User implements Parcelable {
         mPhotoUri = photoUri;
     }
 
+    public static User getUser(Intent intent) {
+        return intent.getParcelableExtra(ExtraConstants.EXTRA_USER);
+    }
+
+    public static User getUser(Bundle arguments) {
+        return arguments.getParcelable(ExtraConstants.EXTRA_USER);
+    }
+
     @NonNull
     public String getEmail() {
         return mEmail;
@@ -67,14 +75,6 @@ public class User implements Parcelable {
         dest.writeString(mName);
         dest.writeString(mProvider);
         dest.writeParcelable(mPhotoUri, flags);
-    }
-
-    public static User getUser(Intent intent) {
-        return intent.getParcelableExtra(ExtraConstants.EXTRA_USER);
-    }
-
-    public static User getUser(Bundle arguments) {
-        return arguments.getParcelable(ExtraConstants.EXTRA_USER);
     }
 
     public static final class Builder {

@@ -42,6 +42,15 @@ public class RegisterEmailActivity extends AppCompatBase implements
     private static final int RC_SIGN_IN = 17;
     private static final int RC_WELCOME_BACK_IDP = 18;
 
+    public static Intent createIntent(Context context, FlowParameters flowParams) {
+        return createIntent(context, flowParams, null);
+    }
+
+    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
+        return BaseHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,14 +132,5 @@ public class RegisterEmailActivity extends AppCompatBase implements
     private void setSlideAnimation() {
         // Make the next activity slide in
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-
-    public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return createIntent(context, flowParams, null);
-    }
-
-    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return BaseHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

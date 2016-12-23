@@ -64,6 +64,10 @@ public class AuthMethodPickerActivity extends AppCompatBase
     @Nullable
     private SaveSmartLock mSaveSmartLock;
 
+    public static Intent createIntent(Context context, FlowParameters flowParams) {
+        return BaseHelper.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,9 +199,5 @@ public class AuthMethodPickerActivity extends AppCompatBase
                 }
             }
         }
-    }
-
-    public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return BaseHelper.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
     }
 }

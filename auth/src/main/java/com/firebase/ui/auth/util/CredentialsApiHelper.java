@@ -50,6 +50,19 @@ public class CredentialsApiHelper {
         mClientHelper = gacHelper;
     }
 
+    public static CredentialsApiHelper getInstance(Activity activity) {
+        // Get a task helper with the Credentials Api
+        GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
+        taskHelper.getBuilder()
+                .addApi(Auth.CREDENTIALS_API);
+
+        return getInstance(taskHelper);
+    }
+
+    public static CredentialsApiHelper getInstance(GoogleApiClientTaskHelper taskHelper) {
+        return new CredentialsApiHelper(taskHelper);
+    }
+
     public CredentialRequest createCredentialRequest(List<IdpConfig> providers) {
         boolean emailSupported = false;
         ArrayList<String> idps = new ArrayList<>();
@@ -139,19 +152,6 @@ public class CredentialsApiHelper {
                                 });
                     }
                 });
-    }
-
-    public static CredentialsApiHelper getInstance(Activity activity) {
-        // Get a task helper with the Credentials Api
-        GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
-        taskHelper.getBuilder()
-                .addApi(Auth.CREDENTIALS_API);
-
-        return getInstance(taskHelper);
-    }
-
-    public static CredentialsApiHelper getInstance(GoogleApiClientTaskHelper taskHelper) {
-        return new CredentialsApiHelper(taskHelper);
     }
 
     private abstract static class ExceptionForwardingContinuation<InT, OutT>
