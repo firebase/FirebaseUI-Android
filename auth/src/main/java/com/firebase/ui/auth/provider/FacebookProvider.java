@@ -55,8 +55,8 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     // DO NOT USE DIRECTLY: see onSuccess(String, LoginResult) and onFailure(Bundle) below
     private IdpCallback mCallbackObject;
 
-    public FacebookProvider(Context appContext, AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
-        appContext = appContext.getApplicationContext();
+    public FacebookProvider(Context context, AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
+        Context appContext = context.getApplicationContext();
 
         if (appContext.getResources().getIdentifier(
                 "facebook_permissions", "array", appContext.getPackageName()) != 0) {
