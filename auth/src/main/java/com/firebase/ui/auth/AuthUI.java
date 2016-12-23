@@ -421,17 +421,6 @@ public class AuthUI {
      * {@code new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()}
      */
     public static class IdpConfig implements Parcelable {
-        public static final Creator<IdpConfig> CREATOR = new Creator<IdpConfig>() {
-            @Override
-            public IdpConfig createFromParcel(Parcel in) {
-                return new IdpConfig(in);
-            }
-
-            @Override
-            public IdpConfig[] newArray(int size) {
-                return new IdpConfig[size];
-            }
-        };
         private final String mProviderId;
         private final List<String> mScopes;
 
@@ -452,6 +441,18 @@ public class AuthUI {
         public List<String> getScopes() {
             return mScopes;
         }
+
+        public static final Creator<IdpConfig> CREATOR = new Creator<IdpConfig>() {
+            @Override
+            public IdpConfig createFromParcel(Parcel in) {
+                return new IdpConfig(in);
+            }
+
+            @Override
+            public IdpConfig[] newArray(int size) {
+                return new IdpConfig[size];
+            }
+        };
 
         @Override
         public int describeContents() {

@@ -26,24 +26,6 @@ import com.firebase.ui.auth.ui.ExtraConstants;
  * A container that encapsulates the result of authenticating with an Identity Provider.
  */
 public class IdpResponse implements Parcelable {
-    public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
-        @Override
-        public IdpResponse createFromParcel(Parcel in) {
-            return new IdpResponse(
-                    in.readString(),
-                    in.readString(),
-                    in.readString(),
-                    in.readString(),
-                    in.readInt()
-            );
-        }
-
-        @Override
-        public IdpResponse[] newArray(int size) {
-            return new IdpResponse[size];
-        }
-    };
-
     private final String mProviderId;
     private final String mEmail;
     private final String mToken;
@@ -156,4 +138,22 @@ public class IdpResponse implements Parcelable {
         dest.writeString(mSecret);
         dest.writeInt(mErrorCode);
     }
+
+    public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
+        @Override
+        public IdpResponse createFromParcel(Parcel in) {
+            return new IdpResponse(
+                    in.readString(),
+                    in.readString(),
+                    in.readString(),
+                    in.readString(),
+                    in.readInt()
+            );
+        }
+
+        @Override
+        public IdpResponse[] newArray(int size) {
+            return new IdpResponse[size];
+        }
+    };
 }

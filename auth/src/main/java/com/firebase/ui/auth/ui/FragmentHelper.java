@@ -11,8 +11,7 @@ public class FragmentHelper extends BaseHelper {
 
     public FragmentHelper(Fragment fragment) {
         super(fragment.getContext().getApplicationContext(),
-              (FlowParameters) fragment.getArguments()
-                      .getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS));
+              (FlowParameters) fragment.getArguments().getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS));
         mFragment = fragment;
     }
 

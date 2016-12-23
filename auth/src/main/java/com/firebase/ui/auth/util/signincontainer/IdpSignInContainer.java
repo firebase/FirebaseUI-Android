@@ -52,9 +52,7 @@ public class IdpSignInContainer extends BaseFragment implements IdpCallback {
     @Nullable
     private SaveSmartLock mSaveSmartLock;
 
-    public static void signIn(FragmentActivity activity,
-                              FlowParameters parameters,
-                              User user) {
+    public static void signIn(FragmentActivity activity, FlowParameters parameters, User user) {
         FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(TAG);
         if (!(fragment instanceof IdpSignInContainer)) {

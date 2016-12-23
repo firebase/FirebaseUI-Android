@@ -106,8 +106,7 @@ public class GoogleApiClientTaskHelper {
                     }
 
                     @Override
-                    public void onConnectionSuspended(int i) {
-                    }
+                    public void onConnectionSuspended(int i) {}
                 })
                 .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
