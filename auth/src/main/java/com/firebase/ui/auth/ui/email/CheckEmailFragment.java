@@ -44,14 +44,39 @@ import java.util.List;
  * Host Activities should implement {@link CheckEmailListener}.
  */
 public class CheckEmailFragment extends BaseFragment implements View.OnClickListener {
+    /**
+     * Interface to be implemented by Activities hosting this Fragment.
+     */
+     interface CheckEmailListener {
+
+        /**
+         * Email entered belongs to an existing email user.
+         */
+        void onExistingEmailUser(User user);
+
+        /**
+         * Email entered belongs to an existing IDP user.
+         */
+        void onExistingIdpUser(User user);
+
+        /**
+         * Email entered does not beling to an existing user.
+         */
+        void onNewUser(User user);
+
+    }
 
     public static final String TAG = "CheckEmailFragment";
+
     private static final int RC_HINT = 13;
     private static final int RC_WELCOME_BACK_IDP = 15;
     private static final int RC_SIGN_IN = 16;
+
     private EditText mEmailEditText;
+
     private EmailFieldValidator mEmailFieldValidator;
     private CheckEmailListener mListener;
+
     private Credential mLastCredential;
 
     public static CheckEmailFragment getInstance(@NonNull FlowParameters flowParameters,
@@ -70,7 +95,6 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         View v = inflater.inflate(R.layout.check_email_layout, container, false);
 
         // Email field and validator
@@ -166,41 +190,35 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
                                                    mHelper.dismissDialog();
                                                }
                                            })
-                    .addOnSuccessListener(getActivity(),
-                                          new OnSuccessListener<ProviderQueryResult>() {
-                                              @Override
-                                              public void onSuccess(ProviderQueryResult result) {
-                                                  List<String> providers = result.getProviders();
-                                                  if (providers == null || providers.isEmpty()) {
-                                                      // Get name from SmartLock, if possible
-                                                      String name = null;
-                                                      Uri photoUri = null;
-                                                      if (mLastCredential != null && mLastCredential
-                                                              .getId()
-                                                              .equals(email)) {
-                                                          name = mLastCredential.getName();
-                                                          photoUri = mLastCredential.getProfilePictureUri();
-                                                      }
+                    .addOnSuccessListener(
+                            getActivity(),
+                            new OnSuccessListener<ProviderQueryResult>() {
+                                @Override
+                                public void onSuccess(ProviderQueryResult result) {
+                                    List<String> providers = result.getProviders();
+                                    if (providers == null || providers.isEmpty()) {
+                                        // Get name from SmartLock, if possible
+                                        String name = null;
+                                        Uri photoUri = null;
+                                        if (mLastCredential != null && mLastCredential.getId().equals(email)) {
+                                            name = mLastCredential.getName();
+                                            photoUri = mLastCredential.getProfilePictureUri();
+                                        }
 
-                                                      mListener.onNewUser(new User.Builder(email)
-                                                                                  .setName(name)
-                                                                                  .setPhotoUri(
-                                                                                          photoUri)
-                                                                                  .build());
-                                                  } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(
-                                                          providers.get(0))) {
-                                                      mListener.onExistingEmailUser(new User.Builder(
-                                                              email).build());
-                                                  } else {
-                                                      mListener.onExistingIdpUser(new User.Builder(
-                                                              email)
-                                                                                          .setProvider(
-                                                                                                  providers
-                                                                                                          .get(0))
-                                                                                          .build());
-                                                  }
-                                              }
-                                          });
+                                        mListener.onNewUser(new User.Builder(email)
+                                                                    .setName(name)
+                                                                    .setPhotoUri(photoUri)
+                                                                    .build());
+                                    } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(providers.get(0))) {
+                                        mListener.onExistingEmailUser(new User.Builder(email).build());
+                                    } else {
+                                        mListener.onExistingIdpUser(
+                                                new User.Builder(email)
+                                                        .setProvider(providers.get(0))
+                                                        .build());
+                                    }
+                                }
+                            });
         }
     }
 
@@ -248,27 +266,5 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
         if (id == R.id.button_next) {
             validateAndProceed();
         }
-    }
-
-    /**
-     * Interface to be implemented by Activities hosting this Fragment.
-     */
-    interface CheckEmailListener {
-
-        /**
-         * Email entered belongs to an existing email user.
-         */
-        void onExistingEmailUser(User user);
-
-        /**
-         * Email entered belongs to an existing IDP user.
-         */
-        void onExistingIdpUser(User user);
-
-        /**
-         * Email entered does not beling to an existing user.
-         */
-        void onNewUser(User user);
-
     }
 }
