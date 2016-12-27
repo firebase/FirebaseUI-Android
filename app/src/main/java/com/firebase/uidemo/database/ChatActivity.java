@@ -308,11 +308,12 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             mTextField.setText(text);
         }
 
-        public void slideMessage(int x) { slideMessage(x, false); }
-        public void slideMessage(int x, boolean forceDisable) {
+        public boolean slideMessage(int x) { return slideMessage(x, false); }
+        public boolean slideMessage(int x, boolean forceDisable) {
             mMessageRow.setTranslationX(-x);
             mRemoveText.setTranslationX(mRemoveText.getWidth()-Math.min(x, mRemoveText.getWidth()));
             mRemoveText.setEnabled(x >= mRemoveText.getWidth() && !forceDisable);
+            return x >= mRemoveText.getWidth();
         }
         public void resetSlide() {
             // animate the message bubble and the remove label back to their original positions
@@ -341,20 +342,18 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
     // This class listens for touch events on the chat recycler view
     class ChatTouchListener implements View.OnTouchListener {
-        private int REMOVE_THRESHOLD = Integer.MAX_VALUE;
-
+        private boolean mActionEnabled = false;
         private int mActionDownX = 0;
         private int mActionUpX = 0;
         private int mDifference = 0;
         RecyclerView mRecyclerView;
         FirebaseRecyclerAdapter mAdapter;
-        private ChatHolder mSelectedViewHolder;
+        private ChatHolder mSelectedViewHolder; // the VH the user originally touched in this move
         private int mSelectedItemPosition;
 
         public ChatTouchListener(RecyclerView recyclerView, FirebaseRecyclerAdapter adapter) {
             mRecyclerView = recyclerView;
             mAdapter = adapter;
-            REMOVE_THRESHOLD = getResources().getDimensionPixelSize(R.dimen.button_width);
         }
 
         @Override
@@ -366,8 +365,9 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    mActionEnabled = false;
                     if (mSelectedViewHolder != null) {
-                        // release the selected item
+                        // the user clicked on an item, while we thought they were holding another item
                         mSelectedViewHolder.slideMessage(0);
                     }
                     if (child != null) {
@@ -380,17 +380,18 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     if (mSelectedViewHolder != null) {
                         mActionUpX = (int) event.getX();
                         mDifference = mActionDownX - mActionUpX;
-                        mSelectedViewHolder.slideMessage(mDifference, overViewHolder != mSelectedViewHolder);
+                        mActionEnabled = mSelectedViewHolder.slideMessage(mDifference, overViewHolder != mSelectedViewHolder);
                     }
                     break;
                 case MotionEvent.ACTION_UP:
                     if (mSelectedViewHolder != null) {
-                        if (mDifference > REMOVE_THRESHOLD && mSelectedViewHolder == overViewHolder) {
+                        if (mActionEnabled && mSelectedViewHolder == overViewHolder) {
                             mAdapter.getRef(mSelectedItemPosition).removeValue();
                         }
                         mActionDownX = mActionUpX = mDifference = 0;
                         mSelectedViewHolder.resetSlide();
                         mSelectedViewHolder = null;
+                        mActionEnabled = false;
                         break;
                     }
 

@@ -64,10 +64,10 @@
 
     <TextView
         android:id="@+id/remove_text"
-        android:layout_width="@dimen/button_width"
+        android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
-        android:translationX="@dimen/button_width"
+        android:translationX="100dp"
         tools:translationX="50dp"
         android:background="@color/material_red_a200"
         android:padding="10dp"
