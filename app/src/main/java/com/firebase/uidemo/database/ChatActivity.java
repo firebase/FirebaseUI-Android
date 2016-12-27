@@ -320,17 +320,18 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             animateRight(mMessageRow, -1*mMessageRow.getTranslationX());
             animateRight(mRemoveText, mRemoveText.getWidth() - mRemoveText.getTranslationX());
         }
-        public void animateRight(final View view, final float offsetX) {
+        // Helper function that animates the view to the right by offsetX over a 500ms
+        public static void animateRight(final View view, final float offsetX) {
             TranslateAnimation animation = new TranslateAnimation(0.0f, offsetX, 0.0f, 0.0f);
-            Log.d(TAG, "Animating "+view.getId()+" view from "+view.getTranslationX()+" "+offsetX+" to the right");
             animation.setInterpolator(new BounceInterpolator());
-            animation.setDuration(1000);
+            animation.setDuration(500);
             animation.setAnimationListener(new Animation.AnimationListener() {
                 @Override public void onAnimationStart(Animation animation) { }
                 @Override public void onAnimationRepeat(Animation animation) { }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
+                    view.clearAnimation();
                     view.setTranslationX(view.getTranslationX()+offsetX);
                 }
 
@@ -359,7 +360,6 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         @Override
         public boolean onTouch(View view, MotionEvent event) {
-            //Log.d(TAG, "onTouch: action="+event.getAction()+" at "+event.getX()+", "+event.getY());
             View child = mRecyclerView.findChildViewUnder(event.getX(), event.getY());
             ChatHolder overViewHolder = null;
             if (child != null) {
@@ -374,7 +374,6 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     mSelectedViewHolder = overViewHolder;
                     mSelectedItemPosition = (Integer) child.getTag();
                     mActionDownX = (int) event.getX();
-                    Log.d(TAG, "ACTION_DOWN: remove label.get translation x: "+mSelectedViewHolder.mRemoveText.getTranslationX());
                     break;
                 case MotionEvent.ACTION_MOVE:
                     mActionUpX = (int) event.getX();
