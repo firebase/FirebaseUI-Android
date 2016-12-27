@@ -57,4 +57,5 @@
     <string name="photos">Photos</string>
     <string name="idp_token">IDP Token</string>
     <string name="idp_secret">IDP Secret</string>
+    <string name="remove_text">Remove</string>
 </resources>

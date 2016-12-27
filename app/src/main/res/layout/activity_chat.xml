@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".database.ChatActivity">
 
+    <TextView
+        android:id="@+id/emptyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No messages. Start chatting at the bottom!"
+        android:padding="16dp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messagesList"
         android:layout_width="match_parent"
@@ -34,7 +41,11 @@
             android:id="@+id/messageEdit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:imeActionLabel="@string/button_text_send"
+            android:imeOptions="actionSend"
+            android:inputType="text"
+            android:maxLines="1" />
 
         <Button
             android:id="@+id/sendButton"

@@ -107,6 +107,11 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
             }
 
             @Override
+            public void onReady() {
+                FirebaseRecyclerAdapter.this.onReady();
+            }
+
+            @Override
             public void onCancelled(DatabaseError databaseError) {
                 FirebaseRecyclerAdapter.this.onCancelled(databaseError);
             }
@@ -199,6 +204,18 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     protected void onCancelled(DatabaseError error) {
         Log.w(TAG, error.toException());
     }
+
+    /**
+     * This method will be triggered each time updates from the database have been completely processed.
+     * So the first time this method is called, the initial data has been loaded - including the case
+     * when no data at all is available. Each next time the method is called, a complete update (potentially
+     * consisting of updates to multiple child items, has been completed.
+     * <p>
+     * You would typically override this method to hide a loading indicator (after the initial load) or
+     * to complete a batch update to a UI element.
+     */
+    protected void onReady() { }
+
 
     /**
      * Each time the data at the given Firebase location changes, this method will be called for each item that needs

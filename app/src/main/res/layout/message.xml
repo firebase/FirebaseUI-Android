@@ -9,50 +9,74 @@
     android:paddingTop="5dp">
 
     <FrameLayout
-        android:id="@+id/left_arrow"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="2dp"
-        android:background="@drawable/chat_message_arrow"
-        android:rotation="180"/>
-
-
-    <LinearLayout
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
+        android:id="@+id/message_row"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="26dp"
-        android:layout_marginRight="26dp"
-        android:background="@drawable/chat_message_background"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_width="match_parent"
+        tools:translationX="-50dp"
+        android:layout_alignParentLeft="true">
+        <FrameLayout
+            android:id="@+id/left_arrow"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="2dp"
+            android:background="@drawable/chat_message_arrow"
+            android:rotation="180"/>
 
-        <TextView
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:id="@+id/message_text"
+
+        <LinearLayout
+            android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            tools:text="Hey this is a message, look!"/>
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
+            android:background="@drawable/chat_message_background"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-        <TextView
-            style="@style/TextAppearance.AppCompat.Small"
-            android:id="@+id/name_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Some User"/>
+            <TextView
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:id="@+id/message_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                tools:text="Hey this is a message, look!"/>
 
-    </LinearLayout>
+            <TextView
+                style="@style/TextAppearance.AppCompat.Small"
+                android:id="@+id/name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Some User"/>
 
-    <FrameLayout
-        android:id="@+id/right_arrow"
-        android:layout_width="50dp"
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/right_arrow"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignEnd="@+id/message"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/message"
+            android:layout_marginRight="-25dp"
+            android:background="@drawable/chat_message_arrow"
+            android:rotation="180"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/remove_text"
+        android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_alignEnd="@+id/message"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/message"
-        android:layout_marginRight="-25dp"
-        android:background="@drawable/chat_message_arrow"
-        android:rotation="180"/>
+        android:layout_alignParentRight="true"
+        android:translationX="100dp"
+        tools:translationX="50dp"
+        android:background="@color/material_red_a200"
+        android:padding="10dp"
+        android:text="@string/remove_text"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textColor="?android:attr/textColorPrimaryInverse"
+        android:textIsSelectable="false"
+        android:textStyle="bold" />
+
 
 </RelativeLayout>
