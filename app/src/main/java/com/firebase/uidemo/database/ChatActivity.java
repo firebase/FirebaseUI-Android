@@ -127,7 +127,6 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     public void onStart() {
         super.onStart();
 
-        // TODO: should this be done in onAuthStateChanged? ow the listeners won't be a
         // Default Database rules do not allow unauthenticated reads, so we need to
         // sign in before attaching the RecyclerView adapter otherwise the Adapter will
         // not be able to read any data from the Database.
@@ -177,7 +176,6 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 }
                 chatView.itemView.setTag(R.layout.message, chatView);
                 chatView.itemView.setTag(position);
-                //chatView.itemView.setOnTouchListener(mTouchListener);
             }
 
             @Override
@@ -194,6 +192,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
         });
 
+        // Listen for chat messages on the entire recycler view
         mMessages.setOnTouchListener(new ChatTouchListener(mMessages, mRecyclerViewAdapter));
 
         mMessages.setAdapter(mRecyclerViewAdapter);
@@ -371,23 +370,29 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         // release the selected item
                         mSelectedViewHolder.slideMessage(0);
                     }
-                    mSelectedViewHolder = overViewHolder;
-                    mSelectedItemPosition = (Integer) child.getTag();
-                    mActionDownX = (int) event.getX();
+                    if (child != null) {
+                        mSelectedViewHolder = overViewHolder;
+                        mSelectedItemPosition = (Integer) child.getTag();
+                        mActionDownX = (int) event.getX();
+                    }
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    mActionUpX = (int) event.getX();
-                    mDifference = mActionDownX - mActionUpX;
-                    mSelectedViewHolder.slideMessage(mDifference, overViewHolder != mSelectedViewHolder);
+                    if (mSelectedViewHolder != null) {
+                        mActionUpX = (int) event.getX();
+                        mDifference = mActionDownX - mActionUpX;
+                        mSelectedViewHolder.slideMessage(mDifference, overViewHolder != mSelectedViewHolder);
+                    }
                     break;
                 case MotionEvent.ACTION_UP:
-                    if (mDifference > REMOVE_THRESHOLD && mSelectedViewHolder == overViewHolder) {
-                        mAdapter.getRef(mSelectedItemPosition).removeValue();
+                    if (mSelectedViewHolder != null) {
+                        if (mDifference > REMOVE_THRESHOLD && mSelectedViewHolder == overViewHolder) {
+                            mAdapter.getRef(mSelectedItemPosition).removeValue();
+                        }
+                        mActionDownX = mActionUpX = mDifference = 0;
+                        mSelectedViewHolder.resetSlide();
+                        mSelectedViewHolder = null;
+                        break;
                     }
-                    mActionDownX = mActionUpX = mDifference = 0;
-                    mSelectedViewHolder.resetSlide();
-                    mSelectedViewHolder = null;
-                    break;
 
             }
             return true;
