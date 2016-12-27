@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.ui.BaseFragment;
+import com.firebase.ui.auth.ui.FragmentBase;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.ConnectionResult;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class SmartLockBase<R extends Result> extends BaseFragment implements
+public abstract class SmartLockBase<R extends Result> extends FragmentBase implements
         GoogleApiClient.ConnectionCallbacks,
         ResultCallback<R>,
         GoogleApiClient.OnConnectionFailedListener {
