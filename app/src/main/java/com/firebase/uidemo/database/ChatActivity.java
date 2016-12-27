@@ -29,7 +29,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
@@ -88,7 +87,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 sendCurrentMessage();
             }
         });
-        // Allow hitting the Send keyon the soft keyboard to send the message
+        // Allow hitting the Send key on the soft keyboard to send the message
         mMessageEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
@@ -192,8 +191,23 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
         });
 
-        // Listen for chat messages on the entire recycler view
-        mMessages.setOnTouchListener(new ChatTouchListener(mMessages, mRecyclerViewAdapter));
+        // Listen for touch gestures on the entire recycler view
+        mMessages.setOnTouchListener(new RecyclerSwipeListener(mMessages, new RecyclerSwipeListener.SwipeActionListener() {
+            @Override
+            public boolean onSwipeLeft(RecyclerView.ViewHolder vh, int x, boolean forceDisable) {
+                return ((ChatHolder) vh).slideMessage(x, forceDisable);
+            }
+
+            @Override
+            public void onReset(RecyclerView.ViewHolder vh) {
+                ((ChatHolder) vh).resetSlide();
+            }
+
+            @Override
+            public void onPerformAction(RecyclerView.ViewHolder vh) {
+                mRecyclerViewAdapter.getRef((int) ((ChatHolder) vh).itemView.getTag()).removeValue();
+            }
+        }));
 
         mMessages.setAdapter(mRecyclerViewAdapter);
     }
@@ -228,7 +242,6 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     public static class Chat {
-
         String name;
         String text;
         String uid;
@@ -308,14 +321,15 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             mTextField.setText(text);
         }
 
-        public boolean slideMessage(int x) { return slideMessage(x, false); }
         public boolean slideMessage(int x, boolean forceDisable) {
+            // the user is swiping left over this holder, move the message bubble left and uncover the delete label
             mMessageRow.setTranslationX(-x);
             mRemoveText.setTranslationX(mRemoveText.getWidth()-Math.min(x, mRemoveText.getWidth()));
             mRemoveText.setEnabled(x >= mRemoveText.getWidth() && !forceDisable);
             return x >= mRemoveText.getWidth();
         }
         public void resetSlide() {
+            Log.d(TAG, "resetSlide");
             // animate the message bubble and the remove label back to their original positions
             animateRight(mMessageRow, -1*mMessageRow.getTranslationX());
             animateRight(mRemoveText, mRemoveText.getWidth() - mRemoveText.getTranslationX());
@@ -331,29 +345,31 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
+                    Log.d(TAG, "Moving "+view.getId()+" to x="+(view.getTranslationX()+offsetX));
                     view.clearAnimation();
                     view.setTranslationX(view.getTranslationX()+offsetX);
                 }
-
             });
             view.startAnimation(animation);
-
         }
     }
-    // This class listens for touch events on the chat recycler view
-    class ChatTouchListener implements View.OnTouchListener {
+    // This class listens for swipe events on the recycler view
+    static class RecyclerSwipeListener implements View.OnTouchListener {
+        public interface SwipeActionListener {
+            boolean onSwipeLeft(RecyclerView.ViewHolder vh, int x, boolean forceDisable);
+            void onReset(RecyclerView.ViewHolder vh);
+            void onPerformAction(RecyclerView.ViewHolder vh);
+        }
         private boolean mActionEnabled = false;
         private int mActionDownX = 0;
         private int mActionUpX = 0;
-        private int mDifference = 0;
-        RecyclerView mRecyclerView;
-        FirebaseRecyclerAdapter mAdapter;
-        private ChatHolder mSelectedViewHolder; // the VH the user originally touched in this move
-        private int mSelectedItemPosition;
+        RecyclerView mRecyclerView; // the Recycler that we're listening for swipes on
+        private RecyclerView.ViewHolder mSelectedViewHolder; // the VH the user originally touched in this move
+        private SwipeActionListener mListener;
 
-        public ChatTouchListener(RecyclerView recyclerView, FirebaseRecyclerAdapter adapter) {
+        public RecyclerSwipeListener(RecyclerView recyclerView, SwipeActionListener listener) {
             mRecyclerView = recyclerView;
-            mAdapter = adapter;
+            mListener = listener;
         }
 
         @Override
@@ -368,28 +384,31 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                     mActionEnabled = false;
                     if (mSelectedViewHolder != null) {
                         // the user clicked on an item, while we thought they were holding another item
-                        mSelectedViewHolder.slideMessage(0);
+                        mListener.onSwipeLeft(mSelectedViewHolder, 0, false);
                     }
                     if (child != null) {
                         mSelectedViewHolder = overViewHolder;
-                        mSelectedItemPosition = (Integer) child.getTag();
                         mActionDownX = (int) event.getX();
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     if (mSelectedViewHolder != null) {
                         mActionUpX = (int) event.getX();
-                        mDifference = mActionDownX - mActionUpX;
-                        mActionEnabled = mSelectedViewHolder.slideMessage(mDifference, overViewHolder != mSelectedViewHolder);
+                        int difference = mActionDownX - mActionUpX;
+                        mActionEnabled = mListener.onSwipeLeft(mSelectedViewHolder, difference, overViewHolder != mSelectedViewHolder);
                     }
                     break;
                 case MotionEvent.ACTION_UP:
                     if (mSelectedViewHolder != null) {
                         if (mActionEnabled && mSelectedViewHolder == overViewHolder) {
-                            mAdapter.getRef(mSelectedItemPosition).removeValue();
+                            mListener.onSwipeLeft(mSelectedViewHolder, 0, false);
+                            mListener.onPerformAction(mSelectedViewHolder);
                         }
-                        mActionDownX = mActionUpX = mDifference = 0;
-                        mSelectedViewHolder.resetSlide();
+                        else {
+                            mListener.onReset(mSelectedViewHolder);
+                        }
+                        mActionDownX = mActionUpX = 0;
+
                         mSelectedViewHolder = null;
                         mActionEnabled = false;
                         break;
