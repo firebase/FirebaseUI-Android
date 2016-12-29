@@ -23,18 +23,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = FirebaseIndexArray.class.getSimpleName();
 
-    private Query mQuery;
+    private final Query mQuery;
+    private final HashMap<Query, ValueEventListener> mRefs = new HashMap<>();
+    private final ArrayList<DataSnapshot> mDataSnapshots = new ArrayList<>();
     private OnChangedListener mListener;
-    private Map<Query, ValueEventListener> mRefs = new HashMap<>();
-    private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
     public FirebaseIndexArray(Query keyRef, Query dataRef) {
         super(keyRef);
@@ -44,9 +41,8 @@ class FirebaseIndexArray extends FirebaseArray {
     @Override
     public void cleanup() {
         super.cleanup();
-        Set<Query> refs = new HashSet<>(mRefs.keySet());
-        for (Query ref : refs) {
-            ref.removeEventListener(mRefs.remove(ref));
+        for (Map.Entry<Query, ValueEventListener> entry : mRefs.entrySet()) {
+            entry.getKey().removeEventListener(entry.getValue());
         }
     }
 
@@ -60,21 +56,7 @@ class FirebaseIndexArray extends FirebaseArray {
         return mDataSnapshots.get(index);
     }
 
-    private int getIndexForKey(String key) {
-        int dataCount = getCount();
-        int index = 0;
-        for (int keyIndex = 0; index < dataCount; keyIndex++) {
-            String superKey = super.getItem(keyIndex).getKey();
-            if (key.equals(superKey)) {
-                break;
-            } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
-                index++;
-            }
-        }
-        return index;
-    }
-
-    private boolean isMatch(int index, String key) {
+    private boolean isKeyAtIndex(int index, String key) {
         return index >= 0 && index < getCount() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
@@ -105,7 +87,7 @@ class FirebaseIndexArray extends FirebaseArray {
         super.onChildRemoved(keySnapshot);
         super.setOnChangedListener(mListener);
 
-        if (isMatch(index, key)) {
+        if (isKeyAtIndex(index, key)) {
             mDataSnapshots.remove(index);
             notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
         }
@@ -120,7 +102,7 @@ class FirebaseIndexArray extends FirebaseArray {
         super.onChildMoved(keySnapshot, previousChildKey);
         super.setOnChangedListener(mListener);
 
-        if (isMatch(oldIndex, key)) {
+        if (isKeyAtIndex(oldIndex, key)) {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
@@ -147,7 +129,7 @@ class FirebaseIndexArray extends FirebaseArray {
             int index = getIndexForKey(key);
 
             if (snapshot.getValue() != null) {
-                if (!isMatch(index, key)) {
+                if (!isKeyAtIndex(index, key)) {
                     mDataSnapshots.add(index, snapshot);
                     notifyChangedListeners(OnChangedListener.EventType.ADDED, index);
                 } else {
@@ -155,7 +137,7 @@ class FirebaseIndexArray extends FirebaseArray {
                     notifyChangedListeners(OnChangedListener.EventType.CHANGED, index);
                 }
             } else {
-                if (isMatch(index, key)) {
+                if (isKeyAtIndex(index, key)) {
                     mDataSnapshots.remove(index);
                     notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
                 } else {

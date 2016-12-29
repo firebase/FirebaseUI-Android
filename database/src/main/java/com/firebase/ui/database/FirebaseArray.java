@@ -21,7 +21,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * This class implements an array-like collection on top of a Firebase location.
@@ -38,11 +38,12 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
 
     }
 
-    private Query mQuery;
+    private final Query mQuery;
+    private final ArrayList<DataSnapshot> mSnapshots = new ArrayList<>();
+    private final HashMap<String, Integer> mSnapshotMap = new HashMap<>();
     private OnChangedListener mListener;
-    private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
-    public FirebaseArray(Query ref) {
+    FirebaseArray(Query ref) {
         mQuery = ref;
         mQuery.addChildEventListener(this);
         mQuery.addValueEventListener(this);
@@ -61,16 +62,13 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
         return mSnapshots.get(index);
     }
 
-    private int getIndexForKey(String key) {
-        int index = 0;
-        for (DataSnapshot snapshot : mSnapshots) {
-            if (snapshot.getKey().equals(key)) {
-                return index;
-            } else {
-                index++;
-            }
+    public int getIndexForKey(String key) {
+        final Integer index = mSnapshotMap.get(key);
+        if (index != null) {
+            return index;
+        } else {
+            throw new IllegalArgumentException("Key not found");
         }
-        throw new IllegalArgumentException("Key not found");
     }
 
     @Override
@@ -80,6 +78,7 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
             index = getIndexForKey(previousChildKey) + 1;
         }
         mSnapshots.add(index, snapshot);
+        mSnapshotMap.put(snapshot.getKey(), index);
         notifyChangedListeners(OnChangedListener.EventType.ADDED, index);
     }
 
@@ -94,6 +93,7 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
     public void onChildRemoved(DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
+        mSnapshotMap.remove(snapshot.getKey());
         notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
     }
 
@@ -103,6 +103,7 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
         mSnapshots.remove(oldIndex);
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
+        mSnapshotMap.put(snapshot.getKey(), newIndex);
         notifyChangedListeners(OnChangedListener.EventType.MOVED, newIndex, oldIndex);
     }
 
@@ -120,17 +121,17 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
         mListener = listener;
     }
 
-    protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
+    void notifyChangedListeners(OnChangedListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
 
-    protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
+    void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
             mListener.onChildChanged(type, index, oldIndex);
         }
     }
 
-    protected void notifyCancelledListeners(DatabaseError databaseError) {
+    void notifyCancelledListeners(DatabaseError databaseError) {
         if (mListener != null) {
             mListener.onCancelled(databaseError);
         }
