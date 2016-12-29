@@ -14,11 +14,9 @@
 
 package com.firebase.ui.database;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.InstrumentationTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 
-import com.firebase.ui.database.utils.Bean;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -32,10 +30,12 @@ import java.util.concurrent.Callable;
 import static com.firebase.ui.database.TestUtils.getAppInstance;
 import static com.firebase.ui.database.TestUtils.getBean;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-@SmallTest
-public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
+public class FirebaseIndexArrayOfObjectsTest {
+    private static final int INITIAL_SIZE = 3;
+
     private DatabaseReference mRef;
     private DatabaseReference mKeyRef;
     private FirebaseArray mArray;
@@ -43,7 +43,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
     @Before
     public void setUp() throws Exception {
         FirebaseDatabase databaseInstance =
-                FirebaseDatabase.getInstance(getAppInstance(getInstrumentation().getContext()));
+                FirebaseDatabase.getInstance(getAppInstance(InstrumentationRegistry.getContext()));
         mRef = databaseInstance.getReference().child("firebasearray").child("objects");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray").child("objects");
 
@@ -52,19 +52,18 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
         mKeyRef.removeValue();
 
         runAndWaitUntil(mArray, new Runnable() {
-                            @Override
-                            public void run() {
-                                for (int i = 1; i <= 3; i++) {
-                                    setValue(new Bean(i, "Text " + i, i % 2 == 0), i);
-                                }
-                            }
-                        }, new Callable<Boolean>() {
-                            @Override
-                            public Boolean call() throws Exception {
-                                return mArray.getCount() == 3;
-                            }
-                        }
-        );
+            @Override
+            public void run() {
+                for (int i = 1; i <= INITIAL_SIZE; i++) {
+                    pushValue(new Bean(i, "Text " + i, i % 2 == 0), i);
+                }
+            }
+        }, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return mArray.getCount() == INITIAL_SIZE;
+            }
+        });
     }
 
     @After
@@ -79,16 +78,10 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
     }
 
     @Test
-    public void testSize() throws Exception {
-        assertEquals(3, mArray.getCount());
-    }
-
-    @Test
     public void testPushIncreasesSize() throws Exception {
-        assertEquals(3, mArray.getCount());
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
-                setValue(new Bean(4), null);
+                pushValue(new Bean(4), null);
             }
         }, new Callable<Boolean>() {
             @Override
@@ -102,7 +95,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
     public void testPushAppends() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
-                setValue(new Bean(4), 4);
+                pushValue(new Bean(4), 4);
             }
         }, new Callable<Boolean>() {
             @Override
@@ -116,7 +109,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
     public void testAddValueWithPriority() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
-                setValue(new Bean(4), 0.5);
+                pushValue(new Bean(4), 0.5);
             }
         }, new Callable<Boolean>() {
             public Boolean call() throws Exception {
@@ -143,7 +136,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
         });
     }
 
-    private void setValue(Object value, Object priority) {
+    private void pushValue(Object value, Object priority) {
         String key = mKeyRef.push().getKey();
 
         if (priority != null) {

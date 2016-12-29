@@ -2,16 +2,15 @@ package com.firebase.ui.database;
 
 import android.content.Context;
 
-import com.firebase.ui.database.utils.Bean;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DatabaseError;
 
-import junit.framework.AssertionFailedError;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertTrue;
 
 public class TestUtils {
     private static final String APP_NAME = "firebaseui-tests";
@@ -64,9 +63,7 @@ public class TestUtils {
                 // and we're not done
             }
         }
-        if (!isDone) {
-            throw new AssertionFailedError();
-        }
+        assertTrue("Timed out waiting for expected results on FirebaseArray", isDone);
         array.setOnChangedListener(null);
     }
 

@@ -1,4 +1,4 @@
-package com.firebase.ui.database.utils;
+package com.firebase.ui.database;
 
 public class Bean {
     private int number;

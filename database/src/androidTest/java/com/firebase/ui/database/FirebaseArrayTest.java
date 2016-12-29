@@ -14,9 +14,8 @@
 
 package com.firebase.ui.database;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.InstrumentationTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
@@ -32,28 +31,29 @@ import java.util.concurrent.Callable;
 import static com.firebase.ui.database.TestUtils.getAppInstance;
 import static com.firebase.ui.database.TestUtils.isValuesEqual;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-@SmallTest
-public class FirebaseArrayTest extends InstrumentationTestCase {
+public class FirebaseArrayTest {
+    private static final int INITIAL_SIZE = 3;
     private DatabaseReference mRef;
     private FirebaseArray mArray;
 
     @Before
     public void setUp() throws Exception {
-        FirebaseApp app = getAppInstance(getInstrumentation().getContext());
+        FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
         mArray = new FirebaseArray(mRef);
         mRef.removeValue();
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
-                for (int i = 1; i <= 3; i++) {
+                for (int i = 1; i <= INITIAL_SIZE; i++) {
                     mRef.push().setValue(i, i);
                 }
             }
         }, new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                return mArray.getCount() == 3;
+                return mArray.getCount() == INITIAL_SIZE;
             }
         });
     }
@@ -70,13 +70,7 @@ public class FirebaseArrayTest extends InstrumentationTestCase {
     }
 
     @Test
-    public void testSize() throws Exception {
-        assertEquals(3, mArray.getCount());
-    }
-
-    @Test
     public void testPushIncreasesSize() throws Exception {
-        assertEquals(3, mArray.getCount());
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
                 mRef.push().setValue(4);
