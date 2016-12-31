@@ -177,7 +177,7 @@ public class RegisterEmailFragment extends BaseFragment implements
         ForegroundColorSpan foregroundColorSpan =
                 new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.linkColor));
 
-        String preamble = getString(R.string.create_account_preamble); // TODO
+        String preamble = getString(R.string.create_account_preamble);
         String link = getString(R.string.terms_of_service);
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
         int start = preamble.length();
