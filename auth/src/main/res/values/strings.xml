@@ -28,18 +28,13 @@
     <string name="progress_dialog_checking_accounts">Checking for existing accounts…</string>
 
     <!-- Email sign up -->
-    <!--TODO Sign up-->
-    <string name="title_create_account">Create account</string>
+    <string name="title_create_account">Sign up</string>
     <string name="name_hint">First &amp; last name</string>
     <string name="button_text_save">Save</string>
     <string name="progress_dialog_signing_up">Signing up…</string>
-    <string name="error_weak_password">Password not strong enough. Use at least 6 characters and a mix of letters and numbers.</string>
-    <!--TODO remove above-->
-    <plurals name="password_length">
-        <item quantity="one">Strong passwords have at least %1$d character and a mix of letters
-        and numbers</item>
-        <item quantity="other">Strong passwords have at least %1$d characters and a mix of letters
-        and numbers</item>
+    <plurals name="error_weak_password">
+        <item quantity="one">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item>
+        <item quantity="other">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item>
     </plurals>
     <string name="email_account_creation_error">Email account registration unsuccessful</string>
     <string name="error_user_collision">An account already exists with that email address.</string>

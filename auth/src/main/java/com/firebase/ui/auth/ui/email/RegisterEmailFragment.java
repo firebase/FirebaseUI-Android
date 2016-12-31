@@ -278,7 +278,8 @@ public class RegisterEmailFragment extends BaseFragment implements
 
                         if (e instanceof FirebaseAuthWeakPasswordException) {
                             // Password too weak
-                            mPasswordInput.setError(getString(R.string.error_weak_password));
+                            mPasswordInput.setError(getResources().getQuantityString(
+                                    R.plurals.error_weak_password, R.integer.min_password_length));
                         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             // Email address is malformed
                             mEmailInput.setError(getString(R.string.invalid_email_address));
