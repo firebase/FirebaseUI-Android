@@ -51,7 +51,7 @@ dependencies {
     compile "com.android.support:cardview-v7:$support_library_version"
 
     testCompile 'junit:junit:4.12'
-    //noinspection NewerVersionAvailable
+    //noinspection NewerVersionAvailable, GradleDynamicVersion
     testCompile 'org.mockito:mockito-core:2.5.+'
     testCompile 'org.robolectric:robolectric:3.1.4'
     // See https://github.com/robolectric/robolectric/issues/1932#issuecomment-219796474
