@@ -113,7 +113,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     private String getIdpPromptString(String email) {
-        String promptStringTemplate = getResources().getString(R.string.welcome_back_idp_prompt);
+        String promptStringTemplate = getString(R.string.welcome_back_idp_prompt);
         return String.format(promptStringTemplate, email, mIdpProvider.getName(this));
     }
 

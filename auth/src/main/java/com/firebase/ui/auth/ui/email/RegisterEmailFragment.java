@@ -173,14 +173,15 @@ public class RegisterEmailFragment extends BaseFragment implements
     }
 
     private void setUpTermsOfService() {
-        if (mHelper.getFlowParams().termsOfServiceUrl == null) {
+        if (TextUtils.isEmpty(mHelper.getFlowParams().termsOfServiceUrl)) {
             return;
         }
+
         ForegroundColorSpan foregroundColorSpan =
                 new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.linkColor));
 
-        String preamble = getResources().getString(R.string.create_account_preamble);
-        String link = getResources().getString(R.string.terms_of_service);
+        String preamble = getString(R.string.create_account_preamble); // TODO
+        String link = getString(R.string.terms_of_service);
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
         int start = preamble.length();
         spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);

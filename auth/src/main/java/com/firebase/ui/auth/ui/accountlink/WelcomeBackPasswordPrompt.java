@@ -79,7 +79,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         mPasswordField = (EditText) findViewById(R.id.password);
 
         // Create welcome back text with email bolded
-        String bodyText = getResources().getString(R.string.welcome_back_password_prompt_body);
+        String bodyText = getString(R.string.welcome_back_password_prompt_body);
         bodyText = String.format(bodyText, mEmail);
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
