@@ -47,6 +47,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+@SuppressWarnings("LogConditional")
 public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "RecyclerViewDemo";
 
