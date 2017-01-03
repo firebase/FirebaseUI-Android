@@ -24,9 +24,8 @@ public class PasswordFieldValidator extends BaseValidator {
     public PasswordFieldValidator(TextInputLayout errorContainer, int minLength) {
         super(errorContainer);
         mMinLength = minLength;
-        String template = mErrorContainer.getResources()
-                .getQuantityString(R.plurals.password_length, minLength);
-        mErrorMessage = String.format(template, mMinLength);
+        mErrorMessage = mErrorContainer.getResources()
+                .getQuantityString(R.plurals.password_length, minLength, mMinLength);
     }
 
     @Override

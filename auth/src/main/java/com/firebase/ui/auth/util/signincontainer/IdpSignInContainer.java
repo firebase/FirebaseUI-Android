@@ -32,9 +32,9 @@ import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.provider.TwitterProvider;
-import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
@@ -44,7 +44,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
-public class IdpSignInContainer extends BaseFragment implements IdpCallback {
+public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     private static final String TAG = "IDPSignInContainer";
     private static final int RC_WELCOME_BACK_IDP = 4;
 
