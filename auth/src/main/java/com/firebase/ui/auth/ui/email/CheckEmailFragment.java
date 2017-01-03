@@ -40,15 +40,14 @@ import java.util.List;
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that
  * email.
- *
+ * <p>
  * Host Activities should implement {@link CheckEmailListener}.
  */
 public class CheckEmailFragment extends FragmentBase implements View.OnClickListener {
-
     /**
      * Interface to be implemented by Activities hosting this Fragment.
      */
-     interface CheckEmailListener {
+    interface CheckEmailListener {
 
         /**
          * Email entered belongs to an existing email user.
@@ -96,7 +95,6 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         View v = inflater.inflate(R.layout.check_email_layout, container, false);
 
         // Email field and validator
@@ -180,44 +178,49 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
                     .fetchProvidersForEmail(email)
                     .addOnFailureListener(
                             new TaskFailureLogger(TAG, "Error fetching providers for email"))
-                    .addOnCompleteListener(getActivity(), new OnCompleteListener<ProviderQueryResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                            mHelper.dismissDialog();
-                        }
-                    })
-                    .addOnSuccessListener(getActivity(), new OnSuccessListener<ProviderQueryResult>() {
-                        @Override
-                        public void onSuccess(ProviderQueryResult result) {
-                            List<String> providers = result.getProviders();
-                            if (providers == null || providers.isEmpty()) {
-                                // Get name from SmartLock, if possible
-                                String name = null;
-                                Uri photoUri = null;
-                                if (mLastCredential != null && mLastCredential.getId().equals(email)) {
-                                    name = mLastCredential.getName();
-                                    photoUri = mLastCredential.getProfilePictureUri();
+                    .addOnCompleteListener(
+                            getActivity(),
+                            new OnCompleteListener<ProviderQueryResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                                    mHelper.dismissDialog();
                                 }
+                            })
+                    .addOnSuccessListener(
+                            getActivity(),
+                            new OnSuccessListener<ProviderQueryResult>() {
+                                @Override
+                                public void onSuccess(ProviderQueryResult result) {
+                                    List<String> providers = result.getProviders();
+                                    if (providers == null || providers.isEmpty()) {
+                                        // Get name from SmartLock, if possible
+                                        String name = null;
+                                        Uri photoUri = null;
+                                        if (mLastCredential != null && mLastCredential.getId().equals(email)) {
+                                            name = mLastCredential.getName();
+                                            photoUri = mLastCredential.getProfilePictureUri();
+                                        }
 
-                                mListener.onNewUser(new User.Builder(email)
-                                                            .setName(name)
-                                                            .setPhotoUri(photoUri)
-                                                            .build());
-                            } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(providers.get(0))) {
-                                mListener.onExistingEmailUser(new User.Builder(email).build());
-                            } else {
-                                mListener.onExistingIdpUser(new User.Builder(email)
-                                                                    .setProvider(providers.get(0))
+                                        mListener.onNewUser(new User.Builder(email)
+                                                                    .setName(name)
+                                                                    .setPhotoUri(photoUri)
                                                                     .build());
-                            }
-                        }
-                    });
+                                    } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(providers.get(0))) {
+                                        mListener.onExistingEmailUser(new User.Builder(email).build());
+                                    } else {
+                                        mListener.onExistingIdpUser(
+                                                new User.Builder(email)
+                                                        .setProvider(providers.get(0))
+                                                        .build());
+                                    }
+                                }
+                            });
         }
     }
 
     private void showEmailAutoCompleteHint() {
         try {
-            startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT, null, 0, 0, 0, null);
+            mHelper.startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }
