@@ -16,13 +16,19 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
-import com.firebase.ui.auth.util.FirebaseAuthWrapperFactory;
+import com.firebase.ui.auth.util.GoogleApiConstants;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
+import com.google.android.gms.auth.api.credentials.HintRequest;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -37,7 +43,7 @@ import java.util.List;
  *
  * Host Activities should implement {@link CheckEmailListener}.
  */
-public class CheckEmailFragment extends BaseFragment implements View.OnClickListener {
+public class CheckEmailFragment extends FragmentBase implements View.OnClickListener {
 
     /**
      * Interface to be implemented by Activities hosting this Fragment.
@@ -107,11 +113,6 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        // Set title
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setTitle(R.string.title_check_email);
-        }
 
         // Set listener
         if (!(getActivity() instanceof CheckEmailListener)) {
@@ -215,16 +216,34 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
     }
 
     private void showEmailAutoCompleteHint() {
-        PendingIntent hintIntent = FirebaseAuthWrapperFactory
-                .getFirebaseAuthWrapper(mHelper.getAppName())
-                .getEmailHintIntent(getActivity());
-        if (hintIntent != null) {
-            try {
-                startIntentSenderForResult(hintIntent.getIntentSender(), RC_HINT, null, 0, 0, 0, null);
-            } catch (IntentSender.SendIntentException e) {
-                Log.e(TAG, "Unable to start hint intent", e);
-            }
+        try {
+            startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT, null, 0, 0, 0, null);
+        } catch (IntentSender.SendIntentException e) {
+            Log.e(TAG, "Unable to start hint intent", e);
         }
+    }
+
+    private PendingIntent getEmailHintIntent() {
+        GoogleApiClient client = new GoogleApiClient.Builder(getContext())
+                .addApi(Auth.CREDENTIALS_API)
+                .enableAutoManage(getActivity(), GoogleApiConstants.AUTO_MANAGE_ID3,
+                                  new GoogleApiClient.OnConnectionFailedListener() {
+                                      @Override
+                                      public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                                          Log.e(TAG,
+                                                "Client connection failed: " + connectionResult.getErrorMessage());
+                                      }
+                                  })
+                .build();
+
+        HintRequest hintRequest = new HintRequest.Builder()
+                .setHintPickerConfig(new CredentialPickerConfig.Builder()
+                                             .setShowCancelButton(true)
+                                             .build())
+                .setEmailAddressIdentifierSupported(true)
+                .build();
+
+        return Auth.CredentialsApi.getHintPickerIntent(client, hintRequest);
     }
 
     @Override

@@ -10,19 +10,19 @@ import android.support.v7.app.AlertDialog;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.ui.BaseDialog;
+import com.firebase.ui.auth.ui.DialogBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 
-public class RecoveryEmailSentDialog extends BaseDialog {
+public class RecoveryEmailSentDialog extends DialogBase {
     private static final String TAG = "RecoveryEmailSentDialog";
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getContext(), R.style.FirebaseUI_Dialog)
-                .setTitle(R.string.title_confirm_recover_password_activity)
-                .setMessage(String.format(getString(R.string.confirm_recovery_body),
-                                          getArguments().getString(ExtraConstants.EXTRA_EMAIL)))
+                .setTitle(R.string.title_confirm_recover_password)
+                .setMessage(getString(R.string.confirm_recovery_body,
+                                      getArguments().getString(ExtraConstants.EXTRA_EMAIL)))
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface anInterface) {

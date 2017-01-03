@@ -1,10 +1,7 @@
 package com.firebase.ui.auth.util.signincontainer;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +12,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
@@ -23,11 +19,11 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiConstants;
-import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -64,7 +60,6 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
     private static final int RC_EMAIL_FLOW = 5;
-    private static final int RC_PLAY_SERVICES = 6;
 
     private Credential mCredential;
 
@@ -73,34 +68,6 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         super.onCreate(savedInstance);
         if (savedInstance != null) {
             // We already have a running instance of this fragment
-            return;
-        }
-
-        if (!hasNetworkConnection()) {
-            Log.d(TAG, "No network connection");
-            finish(ErrorCodes.NO_NETWORK, IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
-            return;
-        }
-
-        // Make Google Play Services available at the correct version, if possible
-        boolean madeAvailable =
-                PlayServicesHelper
-                        .getInstance(getActivity())
-                        .makePlayServicesAvailable(getActivity(), RC_PLAY_SERVICES,
-                                                   new DialogInterface.OnCancelListener() {
-                                                       @Override
-                                                       public void onCancel(DialogInterface dialogInterface) {
-                                                           Log.w(TAG,
-                                                                 "playServices:dialog.onCancel()");
-                                                           finish(ResultCodes.CANCELED,
-                                                                  IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-                                                       }
-                                                   });
-
-        if (!madeAvailable
-                || !PlayServicesHelper.getInstance(getActivity()).isPlayServicesAvailable()) {
-            Log.w(TAG, "playServices: could not make available.");
-            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
             return;
         }
 
@@ -184,9 +151,6 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             case RC_AUTH_METHOD_PICKER:
             case RC_EMAIL_FLOW:
                 finish(resultCode, data);
-                break;
-            case RC_PLAY_SERVICES:
-                if (resultCode != ResultCodes.OK) finish(resultCode, data);
                 break;
             default:
                 IdpSignInContainer signInContainer = IdpSignInContainer.getInstance(getActivity());
@@ -275,7 +239,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
      * On failure, delete the credential from SmartLock (if applicable) and then launch the
      * auth method picker flow.
      */
-    private void signInWithEmailAndPassword(String email, String password) {
+    private void signInWithEmailAndPassword(final String email, String password) {
         mHelper.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(
@@ -283,7 +247,8 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        finish(ResultCodes.OK, new Intent());
+                        finish(ResultCodes.OK,
+                               IdpResponse.getIntent(new IdpResponse(EmailAuthProvider.PROVIDER_ID, email)));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -342,8 +307,9 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             IdpSignInContainer.signIn(
                     getActivity(),
                     mHelper.getFlowParams(),
-                    email,
-                    accountTypeToProviderId(accountType));
+                    new User.Builder(email)
+                            .setProvider(accountTypeToProviderId(accountType))
+                            .build());
         } else {
             Log.w(TAG, "unknown provider: " + accountType);
             startActivityForResult(
@@ -353,18 +319,6 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     RC_IDP_SIGNIN);
             mHelper.dismissDialog();
         }
-    }
-
-    /**
-     * Check if there is an active or soon-to-be-active network connection.
-     */
-    private boolean hasNetworkConnection() {
-        ConnectivityManager manager =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return manager != null
-                && manager.getActiveNetworkInfo() != null
-                && manager.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
     public static void delegate(FragmentActivity activity, FlowParameters params) {

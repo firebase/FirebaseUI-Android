@@ -109,7 +109,7 @@ public class BaseHelper {
             @Nullable String password,
             IdpResponse response) {
         if (saveSmartLock == null) {
-            finishActivity(activity, ResultCodes.OK, new Intent());
+            finishActivity(activity, ResultCodes.OK, IdpResponse.getIntent(response));
         } else {
             saveSmartLock.saveCredentialsOrFinish(
                     firebaseUser,

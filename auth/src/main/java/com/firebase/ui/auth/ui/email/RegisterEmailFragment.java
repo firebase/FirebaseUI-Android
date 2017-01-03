@@ -20,10 +20,11 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.RequiredFieldValidator;
@@ -43,7 +44,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 /**
  * Fragment to display an email/name/password sign up form for new users.
  */
-public class RegisterEmailFragment extends BaseFragment implements
+public class RegisterEmailFragment extends FragmentBase implements
         View.OnClickListener, View.OnFocusChangeListener {
 
     public static final String TAG = "RegisterEmailFragment";
@@ -77,9 +78,9 @@ public class RegisterEmailFragment extends BaseFragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            mUser = getArguments().getParcelable(ExtraConstants.EXTRA_USER);
+            mUser = User.getUser(getArguments());
         } else {
-            mUser = savedInstanceState.getParcelable(ExtraConstants.EXTRA_USER);
+            mUser = User.getUser(savedInstanceState);
         }
     }
 
@@ -152,10 +153,7 @@ public class RegisterEmailFragment extends BaseFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // Set title
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setTitle(R.string.title_register_email_activity);
-        }
+        getActivity().setTitle(R.string.title_register_email);
 
         mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
         setUpTermsOfService();
@@ -172,14 +170,15 @@ public class RegisterEmailFragment extends BaseFragment implements
     }
 
     private void setUpTermsOfService() {
-        if (mHelper.getFlowParams().termsOfServiceUrl == null) {
+        if (TextUtils.isEmpty(mHelper.getFlowParams().termsOfServiceUrl)) {
             return;
         }
+
         ForegroundColorSpan foregroundColorSpan =
                 new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.linkColor));
 
-        String preamble = getResources().getString(R.string.create_account_preamble);
-        String link = getResources().getString(R.string.terms_of_service);
+        String preamble = getString(R.string.create_account_preamble);
+        String link = getString(R.string.terms_of_service);
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
         int start = preamble.length();
         spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
@@ -276,7 +275,8 @@ public class RegisterEmailFragment extends BaseFragment implements
 
                         if (e instanceof FirebaseAuthWeakPasswordException) {
                             // Password too weak
-                            mPasswordInput.setError(getString(R.string.error_weak_password));
+                            mPasswordInput.setError(getResources().getQuantityString(
+                                    R.plurals.error_weak_password, R.integer.min_password_length));
                         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             // Email address is malformed
                             mEmailInput.setError(getString(R.string.invalid_email_address));

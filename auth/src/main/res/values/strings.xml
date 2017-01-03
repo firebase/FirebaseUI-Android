@@ -1,66 +1,71 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">ui_flow</string>
 
+    <!-- Common -->
     <string name="default_toolbar_title">@string/app_name</string>
-    <string name="title_welcome_back_password_prompt">@string/sign_in_default</string>
-    <string name="title_welcome_back_idp_prompt">@string/sign_in_default</string>
-    <string name="title_check_email">@string/sign_in_default</string>
-    <string name="title_register_email_activity">@string/create_account_title</string>
-    <string name="title_recover_password_activity">@string/recover_password_title</string>
-    <string name="title_confirm_recover_password_activity">@string/check_your_email</string>
-
-    <string name="email_hint">Email</string>
-    <string name="password_hint">Password</string>
-    <string name="name_hint">First &amp; last name</string>
-    <string name="password_recovery_body">Get instructions sent to this email that explain how to
-        reset your password.</string>
-    <string name="create_account_title">Create account</string>
-    <string name="required_field">You can\'t leave this empty.</string>
-    <plurals name="password_length">
-        <item quantity="one">Strong passwords have at least %1$d character and a mix of letters
-        and numbers</item>
-        <item quantity="other">Strong passwords have at least %1$d characters and a mix of letters
-        and numbers</item>
-    </plurals>
-    <string name="invalid_email_address">That email address isn\'t correct</string>
-    <string name="missing_email_address">Enter your email address to continue</string>
-    <string name="error_weak_password">Password not strong enough. Use at least 6 characters and a mix of letters and numbers.</string>
-    <string name="error_user_collision">An account already exists with that email address.</string>
-    <string name="button_text_send">Send</string>
-    <string name="button_text_save">Save</string>
-    <string name="confirm_recovery_body">Follow the instructions sent to %1$s to recover your
-        password.</string>
-    <string name="error_email_does_not_exist">That email address doesn\'t match an existing account</string>
-    <string name="welcome_back">Welcome back!</string>
-    <string name="trouble_signing_in">Trouble signing in?</string>
-    <string name="next_default">Next</string>
+    <string name="progress_dialog_loading">Loading…</string>
     <string name="sign_in_default">Sign in</string>
+    <string name="general_error">An error has occurred.</string>
+
+    <!-- Provider -->
+    <string name="idp_name_google">Google</string>
+    <string name="idp_name_facebook">Facebook</string>
+    <string name="idp_name_twitter">Twitter</string>
+
+    <!-- Auth method picker -->
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
-    <string name="check_your_email">Check your email</string>
-    <string name="recover_password_title">Recover password</string>
+    <string name="sign_in_with_twitter">Sign in with Twitter</string>
+    <string name="sign_in_with_email">Sign in with email</string>
+
+    <!-- Email common-->
+    <string name="next_default">Next</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="required_field">You can\'t leave this empty.</string>
+    <string name="invalid_email_address">That email address isn\'t correct</string>
+    <string name="missing_email_address">Enter your email address to continue</string>
+    <string name="progress_dialog_checking_accounts">Checking for existing accounts…</string>
+
+    <!-- Email sign up -->
+    <string name="title_register_email">Sign up</string>
+    <string name="name_hint">First &amp; last name</string>
+    <string name="button_text_save">Save</string>
+    <string name="progress_dialog_signing_up">Signing up…</string>
+    <plurals name="error_weak_password">
+        <item quantity="one">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item>
+        <item quantity="other">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item>
+    </plurals>
+    <string name="email_account_creation_error">Email account registration unsuccessful</string>
+    <string name="error_user_collision">An account already exists with that email address.</string>
+    <string name="create_account_preamble">"By tapping SAVE you are indicating that you agree to the "</string>
+    <string name="terms_of_service">Terms of Service</string>
+
+    <!-- Idp/Email welcome back -->
+    <string name="title_welcome_back_idp_prompt">@string/sign_in_default</string>
+    <string name="title_welcome_back_password_prompt">@string/sign_in_default</string>
     <string name="welcome_back_idp_header">You already have an account</string>
+    <string name="welcome_back_email_header">Welcome back!</string>
     <string name="welcome_back_idp_prompt">
         You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
         Sign in with <xliff:g id="provider_name" example="Google">%2$s</xliff:g> to continue.
     </string>
-    <string name="welcome_back_password_prompt_body">You\'ve already used
-        <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g> to sign in. Enter
-        your password for that account.</string>
-    <string name="idp_name_google">Google</string>
-    <string name="idp_name_facebook">Facebook</string>
-    <string name="idp_name_twitter">Twitter</string>
-    <string name="create_account_preamble">"By tapping SAVE you are indicating that you agree to the "</string>
-    <string name="terms_of_service">Terms of Service</string>
-    <string name="sign_in_with_email">Sign in with email</string>
-    <string name="sign_in_with_twitter">Sign in with Twitter</string>
-    <string name="email_account_creation_error">Email account registration unsuccessful</string>
-
-    <string name="progress_dialog_loading">Loading…</string>
-    <string name="progress_dialog_sending">Sending…</string>
+    <string name="welcome_back_password_prompt_body">
+        You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>
+        to sign in. Enter your password for that account.
+    </string>
     <string name="progress_dialog_signing_in">Signing in…</string>
-    <string name="progress_dialog_signing_up">Signing up…</string>
-    <string name="progress_dialog_checking_accounts">Checking for existing accounts…</string>
+    <string name="trouble_signing_in">Trouble signing in?</string>
+
+    <!-- Password recovery -->
+    <string name="title_recover_password_activity">Recover password</string>
+    <string name="title_confirm_recover_password">Check your email</string>
+    <string name="password_recovery_body">Get instructions sent to this email that explain how to
+        reset your password.</string>
+    <string name="button_text_send">Send</string>
+    <string name="confirm_recovery_body">Follow the instructions sent to %1$s to recover your password.</string>
+    <string name="progress_dialog_sending">Sending…</string>
+    <string name="error_email_does_not_exist">That email address doesn\'t match an existing account</string>
 
     <!-- accessibility -->
     <string name="accessibility_logo">App logo</string>
