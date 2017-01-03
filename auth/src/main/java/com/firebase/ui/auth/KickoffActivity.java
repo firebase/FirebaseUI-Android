@@ -49,7 +49,7 @@ public class KickoffActivity extends AppCompatBase {
                     });
 
             if (isPlayServicesAvailable) {
-                SignInDelegate.delegate(KickoffActivity.this, mActivityHelper.getFlowParams());
+                SignInDelegate.delegate(this, mActivityHelper.getFlowParams());
             } else {
                 mIsWaitingForPlayServices = true;
             }
@@ -69,7 +69,7 @@ public class KickoffActivity extends AppCompatBase {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_PLAY_SERVICES) {
             if (resultCode == ResultCodes.OK) {
-                SignInDelegate.delegate(KickoffActivity.this, mActivityHelper.getFlowParams());
+                SignInDelegate.delegate(this, mActivityHelper.getFlowParams());
             } else {
                 finish(ResultCodes.CANCELED,
                        IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));

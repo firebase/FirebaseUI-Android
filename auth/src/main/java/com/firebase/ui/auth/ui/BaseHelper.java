@@ -21,13 +21,24 @@ import com.google.firebase.auth.FirebaseUser;
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
 public class BaseHelper {
+    private final FlowParameters mFlowParams;
     protected Context mContext;
     protected ProgressDialog mProgressDialog;
-    private final FlowParameters mFlowParams;
 
     public BaseHelper(Context context, FlowParameters parameters) {
         mContext = context;
         mFlowParams = parameters;
+    }
+
+    public static Intent createBaseIntent(
+            @NonNull Context context,
+            @NonNull Class<? extends Activity> target,
+            @NonNull FlowParameters flowParams) {
+        return new Intent(
+                checkNotNull(context, "context cannot be null"),
+                checkNotNull(target, "target activity cannot be null"))
+                .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS,
+                          checkNotNull(flowParams, "flowParams cannot be null"));
     }
 
     public FlowParameters getFlowParams() {
@@ -77,17 +88,6 @@ public class BaseHelper {
 
     public FirebaseUser getCurrentUser() {
         return getFirebaseAuth().getCurrentUser();
-    }
-
-    public static Intent createBaseIntent(
-            @NonNull Context context,
-            @NonNull Class<? extends Activity> target,
-            @NonNull FlowParameters flowParams) {
-        return new Intent(
-                checkNotNull(context, "context cannot be null"),
-                checkNotNull(target, "target activity cannot be null"))
-                .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS,
-                          checkNotNull(flowParams, "flowParams cannot be null"));
     }
 
     public SaveSmartLock getSaveSmartLockInstance(FragmentActivity activity) {

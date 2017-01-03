@@ -64,18 +64,18 @@ import java.util.Set;
  * If an alternative app instance is in use, call
  * {@link AuthUI#getInstance(FirebaseApp) AuthUI.getInstance(app} instead, passing the
  * appropriate app instance.
- *
+ * <p>
  * <h2>Sign-in</h2>
- *
+ * <p>
  * If a user is not currently signed in (as can be determined by checking
  * {@code auth.getCurrentUser() != null}, where {@code auth} is the {@link FirebaseAuth}
  * associated with your {@link FirebaseApp}) then the sign-in process can be started by creating
  * a sign-in intent using {@link SignInIntentBuilder}. A builder instance can be retrieved by
  * calling {@link AuthUI#createSignInIntentBuilder()}.
- *
+ * <p>
  * <p>The builder provides the following customization options for the authentication flow
  * implemented by this library:
- *
+ * <p>
  * <ul>
  *     <li>The set of authentication methods desired can be specified.</li>
  *     <li>The terms of service URL for your app can be specified, which is included as a link
@@ -86,13 +86,13 @@ import java.util.Set;
  *         the flow for consistent customization of colors and typography.
  *     </li>
  * </ul>
- *
- *
+ * <p>
+ * <p>
  * <h3>Sign-in examples</h3>
- *
+ * <p>
  * If no customization is required, and only email authentication is required, the sign-in flow
  * can be started as follows:
- *
+ * <p>
  * <pre>
  * {@code
  * startActivityForResult(
@@ -100,9 +100,9 @@ import java.util.Set;
  *     RC_SIGN_IN);
  * }
  * </pre>
- *
+ * <p>
  * If Google Sign-in and Facebook Sign-in are also required, then this can be replaced with:
- *
+ * <p>
  * <pre>
  * {@code
  * startActivityForResult(
@@ -119,9 +119,9 @@ import java.util.Set;
  *     RC_SIGN_IN);
  * }
  * </pre>
- *
+ * <p>
  * Finally, if a terms of service URL and a custom theme are required:
- *
+ * <p>
  * <pre>
  * {@code
  * startActivityForResult(
@@ -134,16 +134,16 @@ import java.util.Set;
  *     RC_SIGN_IN);
  * }
  * </pre>
- *
+ * <p>
  * <h3>Handling the Sign-in response</h3>
- *
+ * <p>
  * The authentication flow provides only two response codes:
  * {@link ResultCodes#OK RESULT_OK} if a user is signed in,
  * and {@link ResultCodes#CANCELED RESULT_CANCELLED} if sign in
  * failed. No further information on failure is provided as it is not typically useful; the only
  * recourse for most apps if sign in fails is to ask the user to sign in again later, or proceed
  * with an anonymous account if supported.
- *
+ * <p>
  * <pre>
  * {@code
  * @Override
@@ -162,11 +162,11 @@ import java.util.Set;
  *   }
  * }
  * </pre>
- *
+ * <p>
  * <h2>Sign-out</h2>
- *
+ * <p>
  * With the integrations provided by AuthUI, signing out a user is a multi-stage process:
- *
+ * <p>
  * <ol>
  *     <li>The user must be signed out of the {@link FirebaseAuth} instance.</li>
  *     <li>Smart Lock for Passwords must be instructed to disable automatic sign-in, in
@@ -180,11 +180,11 @@ import java.util.Set;
  *         would also prevent the user from switching between accounts on the same provider.
  *     </li>
  * </ol>
- *
+ * <p>
  * In order to make this process easier, AuthUI provides a simple
  * {@link AuthUI#signOut(Activity) signOut} method to encapsulate this behavior. The method returns
  * a {@link Task} which is marked completed once all necessary sign-out operations are completed:
- *
+ * <p>
  * <pre>
  * {@code
  * public void onClick(View v) {
@@ -200,15 +200,15 @@ import java.util.Set;
  *   }
  * }
  * </pre>
- *
+ * <p>
  * <h2>IDP Provider configuration</h2>
- *
+ * <p>
  * Interacting with identity providers typically requires some additional client configuration.
  * AuthUI currently supports Google Sign-in and Facebook Sign-in, and currently requires the
  * basic configuration for these providers to be specified via string properties:
- *
+ * <p>
  * <ul>
- *
+ * <p>
  * <li>Google Sign-in: If your app build uses the
  * <a href="https://developers.google.com/android/guides/google-services-plugin">Google
  * Services Gradle Plugin</a>, no additional configuration is required. If not, please override
@@ -216,14 +216,14 @@ import java.util.Set;
  * <a href="https://developers.google.com/identity/sign-in/web/devconsole-project">Google OAuth
  * web client id.</a>
  * </li>
- *
+ * <p>
  * <li>Facebook Sign-in: Please override the string resource
  * {@code facebook_application_id} to provide the
  * <a href="https://developers.facebook.com/docs/apps/register">App ID</a> for your app as
  * registered on the
  * <a href="https://developers.facebook.com/apps">Facebook Developer Dashboard</a>.
  * </li>
- *
+ * <p>
  * </ul>
  */
 public class AuthUI {
@@ -274,6 +274,40 @@ public class AuthUI {
     private AuthUI(FirebaseApp app) {
         mApp = app;
         mAuth = FirebaseAuth.getInstance(mApp);
+    }
+
+    /**
+     * Retrieves the {@link AuthUI} instance associated with the default app, as returned by
+     * {@code FirebaseApp.getInstance()}.
+     *
+     * @throws IllegalStateException if the default app is not initialized.
+     */
+    public static AuthUI getInstance() {
+        return getInstance(FirebaseApp.getInstance());
+    }
+
+    /**
+     * Retrieves the {@link AuthUI} instance associated the the specified app.
+     */
+    public static AuthUI getInstance(FirebaseApp app) {
+        AuthUI authUi;
+        synchronized (INSTANCES) {
+            authUi = INSTANCES.get(app);
+            if (authUi == null) {
+                authUi = new AuthUI(app);
+                INSTANCES.put(app, authUi);
+            }
+        }
+        return authUi;
+    }
+
+    /**
+     * Default theme used by {@link SignInIntentBuilder#setTheme(int)} if no theme
+     * customization is required.
+     */
+    @StyleRes
+    public static int getDefaultTheme() {
+        return R.style.FirebaseUI;
     }
 
     /**
@@ -381,43 +415,8 @@ public class AuthUI {
     }
 
     /**
-     * Retrieves the {@link AuthUI} instance associated with the default app, as returned by
-     * {@code FirebaseApp.getInstance()}.
-     *
-     * @throws IllegalStateException if the default app is not initialized.
-     */
-    public static AuthUI getInstance() {
-        return getInstance(FirebaseApp.getInstance());
-    }
-
-    /**
-     * Retrieves the {@link AuthUI} instance associated the the specified app.
-     */
-    public static AuthUI getInstance(FirebaseApp app) {
-        AuthUI authUi;
-        synchronized (INSTANCES) {
-            authUi = INSTANCES.get(app);
-            if (authUi == null) {
-                authUi = new AuthUI(app);
-                INSTANCES.put(app, authUi);
-            }
-        }
-        return authUi;
-    }
-
-    /**
-     * Default theme used by {@link SignInIntentBuilder#setTheme(int)} if no theme
-     * customization is required.
-     */
-    @StyleRes
-    public static int getDefaultTheme() {
-        return R.style.FirebaseUI;
-    }
-
-
-    /**
      * Configuration for an identity provider.
-     *
+     * <p>
      * In the simplest case, you can supply the provider ID and build the config like this:
      * {@code new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()}
      */
@@ -430,17 +429,17 @@ public class AuthUI {
             mProviderId = providerId;
         }
 
+        private IdpConfig(Parcel in) {
+            mProviderId = in.readString();
+            mScopes = in.createStringArrayList();
+        }
+
         public String getProviderId() {
             return mProviderId;
         }
 
         public List<String> getScopes() {
             return mScopes;
-        }
-
-        protected IdpConfig(Parcel in) {
-            mProviderId = in.readString();
-            mScopes = in.createStringArrayList();
         }
 
         public static final Creator<IdpConfig> CREATOR = new Creator<IdpConfig>() {
@@ -488,14 +487,14 @@ public class AuthUI {
             /**
              * Specifies the additional permissions that the application will request for this
              * identity provider.
-             *
+             * <p>
              * For Facebook permissions see:
              * https://developers.facebook.com/docs/facebook-login/android
              * https://developers.facebook.com/docs/facebook-login/permissions
-             *
+             * <p>
              * For Google permissions see:
              * https://developers.google.com/identity/protocols/googlescopes
-             *
+             * <p>
              * Twitter permissions are only configurable through the Twitter developer console.
              */
             public Builder setPermissions(List<String> permissions) {
@@ -556,7 +555,7 @@ public class AuthUI {
         /**
          * Specified the set of supported authentication providers. At least one provider must
          * be specified. There may only be one instance of each provider.
-         *
+         * <p>
          * <p>If no providers are explicitly specified by calling this method, then the email
          * provider is the default supported provider.
          *
@@ -583,7 +582,7 @@ public class AuthUI {
          * Specifies the set of supported authentication providers. At least one provider
          * must be specified, and the set of providers must be a subset of
          * {@link #SUPPORTED_PROVIDERS}. There may only be one instance of each provider.
-         *
+         * <p>
          * <p>If no providers are explicitly specified by calling this method, then
          * {@link #EMAIL_PROVIDER email} is the default supported provider.
          *
@@ -605,7 +604,7 @@ public class AuthUI {
 
         /**
          * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
-         *
+         * <p>
          * <p>SmartLock is enabled by default
          */
         public SignInIntentBuilder setIsSmartLockEnabled(boolean enabled) {

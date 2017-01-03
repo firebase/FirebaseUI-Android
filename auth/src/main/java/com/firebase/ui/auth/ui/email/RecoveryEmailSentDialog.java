@@ -16,6 +16,14 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 public class RecoveryEmailSentDialog extends DialogBase {
     private static final String TAG = "RecoveryEmailSentDialog";
 
+    public static void show(String email, FragmentManager manager) {
+        RecoveryEmailSentDialog result = new RecoveryEmailSentDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString(ExtraConstants.EXTRA_EMAIL, email);
+        result.setArguments(bundle);
+        result.show(manager, TAG);
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -31,13 +39,5 @@ public class RecoveryEmailSentDialog extends DialogBase {
                 })
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
-    }
-
-    public static void show(String email, FragmentManager manager) {
-        RecoveryEmailSentDialog result = new RecoveryEmailSentDialog();
-        Bundle bundle = new Bundle();
-        bundle.putString(ExtraConstants.EXTRA_EMAIL, email);
-        result.setArguments(bundle);
-        result.show(manager, TAG);
     }
 }

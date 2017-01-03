@@ -52,6 +52,33 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Nullable
     private SaveSmartLock mSaveSmartLock;
 
+    public static void signIn(FragmentActivity activity, FlowParameters parameters, User user) {
+        FragmentManager fm = activity.getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(TAG);
+        if (!(fragment instanceof IdpSignInContainer)) {
+            IdpSignInContainer result = new IdpSignInContainer();
+
+            Bundle bundle = FragmentHelper.getFlowParamsBundle(parameters);
+            bundle.putParcelable(ExtraConstants.EXTRA_USER, user);
+            result.setArguments(bundle);
+
+            try {
+                fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Cannot add fragment", e);
+            }
+        }
+    }
+
+    public static IdpSignInContainer getInstance(FragmentActivity activity) {
+        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
+        if (fragment instanceof IdpSignInContainer) {
+            return (IdpSignInContainer) fragment;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,35 +144,6 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
             finish(resultCode, data);
         } else {
             mIdpProvider.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    public static void signIn(FragmentActivity activity,
-                              FlowParameters parameters,
-                              User user) {
-        FragmentManager fm = activity.getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(TAG);
-        if (!(fragment instanceof IdpSignInContainer)) {
-            IdpSignInContainer result = new IdpSignInContainer();
-
-            Bundle bundle = FragmentHelper.getFlowParamsBundle(parameters);
-            bundle.putParcelable(ExtraConstants.EXTRA_USER, user);
-            result.setArguments(bundle);
-
-            try {
-                fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
-            } catch (IllegalStateException e) {
-                Log.e(TAG, "Cannot add fragment", e);
-            }
-        }
-    }
-
-    public static IdpSignInContainer getInstance(FragmentActivity activity) {
-        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment instanceof IdpSignInContainer) {
-            return (IdpSignInContainer) fragment;
-        } else {
-            return null;
         }
     }
 }

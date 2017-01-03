@@ -53,6 +53,28 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     private String mProfilePictureUri;
     private IdpResponse mResponse;
 
+    @Nullable
+    public static SaveSmartLock getInstance(FragmentActivity activity, FlowParameters parameters) {
+        SaveSmartLock result;
+
+        FragmentManager fm = activity.getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(TAG);
+        if (!(fragment instanceof SaveSmartLock)) {
+            result = new SaveSmartLock();
+            result.setArguments(FragmentHelper.getFlowParamsBundle(parameters));
+            try {
+                fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Cannot add fragment", e);
+                return null;
+            }
+        } else {
+            result = (SaveSmartLock) fragment;
+        }
+
+        return result;
+    }
+
     @Override
     public void onConnected(Bundle bundle) {
         if (TextUtils.isEmpty(mEmail)) {
@@ -157,7 +179,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     /**
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise, finish the calling Activity with {@link ResultCodes#OK RESULT_OK}.
-     *
+     * <p>
      * Note: saveCredentialsOrFinish cannot be called immediately after getInstance because
      * onCreate has not yet been called.
      *
@@ -188,27 +210,5 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                 .enableAutoManage(getActivity(), GoogleApiConstants.AUTO_MANAGE_ID2, this)
                 .build();
         mGoogleApiClient.connect();
-    }
-
-    @Nullable
-    public static SaveSmartLock getInstance(FragmentActivity activity, FlowParameters parameters) {
-        SaveSmartLock result;
-
-        FragmentManager fm = activity.getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(TAG);
-        if (!(fragment instanceof SaveSmartLock)) {
-            result = new SaveSmartLock();
-            result.setArguments(FragmentHelper.getFlowParamsBundle(parameters));
-            try {
-                fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
-            } catch (IllegalStateException e) {
-                Log.e(TAG, "Cannot add fragment", e);
-                return null;
-            }
-        } else {
-            result = (SaveSmartLock) fragment;
-        }
-
-        return result;
     }
 }

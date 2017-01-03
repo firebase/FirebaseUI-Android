@@ -30,7 +30,6 @@ import java.util.List;
  * a serializable manner, in order to pass data between activities.
  */
 public class FlowParameters implements Parcelable {
-
     @NonNull
     public final String appName;
 

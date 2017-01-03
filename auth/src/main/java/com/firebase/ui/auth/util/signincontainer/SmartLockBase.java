@@ -34,50 +34,6 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     protected GoogleApiClient mGoogleApiClient;
     private boolean mWasProgressDialogShowing;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mWasProgressDialogShowing) {
-            mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
-            mWasProgressDialogShowing = false;
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mWasProgressDialogShowing = mHelper.isProgressDialogShowing();
-        mHelper.dismissDialog();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        cleanup();
-    }
-
-    public void cleanup() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getContext(), com.firebase.ui.auth.R.string.general_error, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        // Just wait
-    }
-
     /**
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to
      * a Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
@@ -143,5 +99,51 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         }
 
         return credentials;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mWasProgressDialogShowing) {
+            mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
+            mWasProgressDialogShowing = false;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mWasProgressDialogShowing = mHelper.isProgressDialogShowing();
+        mHelper.dismissDialog();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cleanup();
+    }
+
+    public void cleanup() {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(getContext(),
+                       com.firebase.ui.auth.R.string.general_error,
+                       Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // Just wait
     }
 }

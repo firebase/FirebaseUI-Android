@@ -55,8 +55,8 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     // DO NOT USE DIRECTLY: see onSuccess(String, LoginResult) and onFailure(Bundle) below
     private IdpCallback mCallbackObject;
 
-    public FacebookProvider(Context appContext, AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
-        appContext = appContext.getApplicationContext();
+    public FacebookProvider(Context context, AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
+        Context appContext = context.getApplicationContext();
 
         if (appContext.getResources().getIdentifier(
                 "facebook_permissions", "array", appContext.getPackageName()) != 0) {
@@ -73,6 +73,14 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         }
         FacebookSdk.sdkInitialize(appContext);
         FacebookSdk.setWebDialogTheme(theme);
+    }
+
+    public static AuthCredential createAuthCredential(IdpResponse response) {
+        if (!response.getProviderType().equals(FacebookAuthProvider.PROVIDER_ID)) {
+            return null;
+        }
+        return FacebookAuthProvider
+                .getCredential(response.getIdpToken());
     }
 
     @Override
@@ -127,7 +135,8 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         FacebookRequestError requestError = response.getError();
                         if (requestError != null) {
-                            Log.e(TAG, "Received Facebook error: " + requestError.getErrorMessage());
+                            Log.e(TAG,
+                                  "Received Facebook error: " + requestError.getErrorMessage());
                             onFailure(new Bundle());
                             return;
                         }
@@ -195,14 +204,5 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         // is contained in sCallbackManager, that activity will not be garbage collected.
         // Thus, we have leaked an Activity.
         sCallbackManager = null;
-    }
-
-
-    public static AuthCredential createAuthCredential(IdpResponse response) {
-        if (!response.getProviderType().equals(FacebookAuthProvider.PROVIDER_ID)) {
-            return null;
-        }
-        return FacebookAuthProvider
-                .getCredential(response.getIdpToken());
     }
 }
