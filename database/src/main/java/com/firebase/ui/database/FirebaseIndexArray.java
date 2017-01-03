@@ -33,7 +33,7 @@ class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = "FirebaseIndexArray";
     private static final ChangeEventListener NOOP_CHANGE_LISTENER = new ChangeEventListener() {
         @Override
-        public void onChanged(EventType type, int index, int oldIndex) {
+        public void onChange(EventType type, int index, int oldIndex) {
         }
 
         @Override

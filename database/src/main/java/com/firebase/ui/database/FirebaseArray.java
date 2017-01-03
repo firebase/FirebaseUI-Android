@@ -31,7 +31,7 @@ class FirebaseArray implements ChildEventListener {
     public interface ChangeEventListener {
         enum EventType {ADDED, CHANGED, REMOVED, MOVED}
 
-        void onChanged(EventType type, int index, int oldIndex);
+        void onChange(EventType type, int index, int oldIndex);
 
         void onCancelled(DatabaseError error);
     }
@@ -102,7 +102,7 @@ class FirebaseArray implements ChildEventListener {
         mSnapshots.remove(oldIndex);
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
-        mListener.onChanged(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+        mListener.onChange(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
     }
 
     @Override
@@ -123,6 +123,6 @@ class FirebaseArray implements ChildEventListener {
     }
 
     protected void notifyChangeListener(ChangeEventListener.EventType type, int index) {
-        mListener.onChanged(type, index, -1);
+        mListener.onChange(type, index, -1);
     }
 }
