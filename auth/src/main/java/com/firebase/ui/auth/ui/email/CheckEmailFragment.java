@@ -47,7 +47,7 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
     /**
      * Interface to be implemented by Activities hosting this Fragment.
      */
-     interface CheckEmailListener {
+    interface CheckEmailListener {
 
         /**
          * Email entered belongs to an existing email user.
@@ -178,13 +178,14 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
                     .fetchProvidersForEmail(email)
                     .addOnFailureListener(
                             new TaskFailureLogger(TAG, "Error fetching providers for email"))
-                    .addOnCompleteListener(getActivity(),
-                                           new OnCompleteListener<ProviderQueryResult>() {
-                                               @Override
-                                               public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                                                   mHelper.dismissDialog();
-                                               }
-                                           })
+                    .addOnCompleteListener(
+                            getActivity(),
+                            new OnCompleteListener<ProviderQueryResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                                    mHelper.dismissDialog();
+                                }
+                            })
                     .addOnSuccessListener(
                             getActivity(),
                             new OnSuccessListener<ProviderQueryResult>() {
@@ -219,13 +220,7 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
 
     private void showEmailAutoCompleteHint() {
         try {
-            startIntentSenderForResult(getEmailHintIntent().getIntentSender(),
-                                       RC_HINT,
-                                       null,
-                                       0,
-                                       0,
-                                       0,
-                                       null);
+            mHelper.startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }
