@@ -111,9 +111,9 @@ class FirebaseArray implements ChildEventListener {
         }
     }
 
-    protected void notifyCancelledListeners(DatabaseError databaseError) {
+    protected void notifyCancelledListeners(DatabaseError error) {
         if (mListener != null) {
-            mListener.onCancelled(databaseError);
+            mListener.onCancelled(error);
         }
     }
 }

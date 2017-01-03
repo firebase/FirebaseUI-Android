@@ -50,8 +50,8 @@ import com.google.firebase.database.Query;
  * @param <T> The class type to use as a model for the data
  *           contained in the children of the given Firebase location
  */
-public abstract class FirebaseListAdapter<T> extends BaseAdapter implements OnChangedListener {
-    private static final String TAG = FirebaseListAdapter.class.getSimpleName();
+public abstract class FirebaseListAdapter<T> extends BaseAdapter {
+    private static final String TAG = "FirebaseListAdapter";
 
     private FirebaseArray mSnapshots;
     private final Class<T> mModelClass;
@@ -67,7 +67,17 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements OnCh
         mLayout = modelLayout;
         mSnapshots = snapshots;
 
-        mSnapshots.setOnChangedListener(this);
+        mSnapshots.setOnChangedListener(new OnChangedListener() {
+            @Override
+            public void onChanged(EventType type, int index, int oldIndex) {
+                FirebaseListAdapter.this.onChanged(type, index, oldIndex);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                FirebaseListAdapter.this.onCancelled(error);
+            }
+        });
     }
 
     /**
@@ -135,18 +145,17 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements OnCh
         return view;
     }
 
-    @Override
-    public void onChanged(EventType type, int index, int oldIndex) {
+    /**
+     * @see OnChangedListener#onChanged(OnChangedListener.EventType, int, int)
+     */
+    protected void onChanged(OnChangedListener.EventType type, int index, int oldIndex) {
         notifyDataSetChanged();
     }
 
     /**
-     * This method will be triggered in the event that this listener either failed at the server,
-     * or is removed as a result of the security and Firebase Database rules.
-     *
-     * @param error A description of the error that occurred
+     * @see OnChangedListener#onCancelled(DatabaseError)
      */
-    public void onCancelled(DatabaseError error) {
+    protected void onCancelled(DatabaseError error) {
         Log.w(TAG, error.toException());
     }
 

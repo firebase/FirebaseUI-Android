@@ -71,9 +71,8 @@ import java.lang.reflect.InvocationTargetException;
  * @param <T>  The Java class that maps to the type of objects stored in the Firebase location.
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
-public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> implements OnChangedListener {
-    private static final String TAG = FirebaseRecyclerAdapter.class.getSimpleName();
+public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+    private static final String TAG = "FirebaseRecyclerAdapter";
 
     private FirebaseArray mSnapshots;
     private Class<T> mModelClass;
@@ -89,7 +88,17 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         mViewHolderClass = viewHolderClass;
         mSnapshots = snapshots;
 
-        mSnapshots.setOnChangedListener(this);
+        mSnapshots.setOnChangedListener(new OnChangedListener() {
+            @Override
+            public void onChanged(EventType type, int index, int oldIndex) {
+                FirebaseRecyclerAdapter.this.onChanged(type, index, oldIndex);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                FirebaseRecyclerAdapter.this.onCancelled(error);
+            }
+        });
     }
 
     /**
@@ -171,8 +180,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         return mModelLayout;
     }
 
-    @Override
-    public void onChanged(EventType type, int index, int oldIndex) {
+    /**
+     * @see OnChangedListener#onChanged(OnChangedListener.EventType, int, int)
+     */
+    protected void onChanged(OnChangedListener.EventType type, int index, int oldIndex) {
         switch (type) {
             case ADDED:
                 notifyItemInserted(index);
@@ -192,12 +203,9 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     /**
-     * This method will be triggered in the event that this listener either failed at the server,
-     * or is removed as a result of the security and Firebase Database rules.
-     *
-     * @param error A description of the error that occurred
+     * @see OnChangedListener#onCancelled(DatabaseError)
      */
-    public void onCancelled(DatabaseError error) {
+    protected void onCancelled(DatabaseError error) {
         Log.w(TAG, error.toException());
     }
 
