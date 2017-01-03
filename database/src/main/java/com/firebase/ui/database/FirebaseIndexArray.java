@@ -137,7 +137,7 @@ class FirebaseIndexArray extends FirebaseArray {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            mListener.onChanged(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+            mListener.onChange(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
         }
     }
 
