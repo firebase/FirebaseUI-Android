@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 class FirebaseIndexArray extends FirebaseArray {
@@ -41,8 +42,11 @@ class FirebaseIndexArray extends FirebaseArray {
     @Override
     public void cleanup() {
         super.cleanup();
-        for (Map.Entry<Query, ValueEventListener> entry : mRefs.entrySet()) {
+        final Iterator<Map.Entry<Query, ValueEventListener>> it = mRefs.entrySet().iterator();
+        while (it.hasNext()) {
+            final Map.Entry<Query, ValueEventListener> entry = it.next();
             entry.getKey().removeEventListener(entry.getValue());
+            it.remove();
         }
     }
 
