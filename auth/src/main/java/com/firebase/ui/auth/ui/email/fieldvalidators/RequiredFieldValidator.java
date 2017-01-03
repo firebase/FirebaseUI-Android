@@ -21,9 +21,7 @@ import com.firebase.ui.auth.R;
 public class RequiredFieldValidator extends BaseValidator {
     public RequiredFieldValidator(TextInputLayout errorContainer) {
         super(errorContainer);
-        mErrorMessage = mErrorContainer.getContext()
-                .getResources()
-                .getString(R.string.required_field);
+        mErrorMessage = mErrorContainer.getResources().getString(R.string.required_field);
     }
 
     @Override

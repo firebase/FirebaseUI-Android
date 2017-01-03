@@ -25,7 +25,7 @@ public class PasswordFieldValidator extends BaseValidator {
         super(errorContainer);
         mMinLength = minLength;
         mErrorMessage = mErrorContainer.getResources()
-                .getQuantityString(R.plurals.password_length, minLength, mMinLength);
+                .getQuantityString(R.plurals.error_weak_password, mMinLength, mMinLength);
     }
 
     @Override
