@@ -153,10 +153,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // Set title
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setTitle(R.string.title_register_email_activity);
-        }
+        getActivity().setTitle(R.string.title_register_email);
 
         mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
         setUpTermsOfService();
@@ -173,14 +170,15 @@ public class RegisterEmailFragment extends FragmentBase implements
     }
 
     private void setUpTermsOfService() {
-        if (mHelper.getFlowParams().termsOfServiceUrl == null) {
+        if (TextUtils.isEmpty(mHelper.getFlowParams().termsOfServiceUrl)) {
             return;
         }
+
         ForegroundColorSpan foregroundColorSpan =
                 new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.linkColor));
 
-        String preamble = getResources().getString(R.string.create_account_preamble);
-        String link = getResources().getString(R.string.terms_of_service);
+        String preamble = getString(R.string.create_account_preamble);
+        String link = getString(R.string.terms_of_service);
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
         int start = preamble.length();
         spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
@@ -277,7 +275,8 @@ public class RegisterEmailFragment extends FragmentBase implements
 
                         if (e instanceof FirebaseAuthWeakPasswordException) {
                             // Password too weak
-                            mPasswordInput.setError(getString(R.string.error_weak_password));
+                            mPasswordInput.setError(getResources().getQuantityString(
+                                    R.plurals.error_weak_password, R.integer.min_password_length));
                         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             // Email address is malformed
                             mEmailInput.setError(getString(R.string.invalid_email_address));

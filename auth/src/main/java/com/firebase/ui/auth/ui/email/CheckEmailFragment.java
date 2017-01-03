@@ -114,11 +114,6 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Set title
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setTitle(R.string.title_check_email);
-        }
-
         // Set listener
         if (!(getActivity() instanceof CheckEmailListener)) {
             throw new IllegalStateException("Activity must implement CheckEmailListener");
