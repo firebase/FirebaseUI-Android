@@ -18,6 +18,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +26,15 @@ import java.util.List;
 /**
  * This class implements an array-like collection on top of a Firebase location.
  */
-class FirebaseArray implements ChildEventListener {
+class FirebaseArray implements ChildEventListener, ValueEventListener {
     public interface OnChangedListener {
         enum EventType {ADDED, CHANGED, REMOVED, MOVED}
 
         void onChanged(EventType type, int index, int oldIndex);
 
         void onCancelled(DatabaseError databaseError);
+
+        void onReady();
     }
 
     private Query mQuery;
@@ -41,10 +44,12 @@ class FirebaseArray implements ChildEventListener {
     public FirebaseArray(Query ref) {
         mQuery = ref;
         mQuery.addChildEventListener(this);
+        mQuery.addValueEventListener(this);
     }
 
     public void cleanup() {
-        mQuery.removeEventListener(this);
+        mQuery.removeEventListener((ValueEventListener)this);
+        mQuery.removeEventListener((ChildEventListener)this);
     }
 
     public int getCount() {
@@ -98,6 +103,11 @@ class FirebaseArray implements ChildEventListener {
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
         notifyChangedListeners(OnChangedListener.EventType.MOVED, newIndex, oldIndex);
+    }
+
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        mListener.onReady();
     }
 
     @Override

@@ -59,6 +59,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private RecyclerView mMessages;
     private LinearLayoutManager mManager;
     private FirebaseRecyclerAdapter<Chat, ChatHolder> mRecyclerViewAdapter;
+    private View mEmptyListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +71,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
+
+        mEmptyListView = findViewById(R.id.emptyTextView);
 
         mRef = FirebaseDatabase.getInstance().getReference();
         mChatRef = mRef.child("chats");
@@ -154,6 +157,12 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 } else {
                     chatView.setIsSender(false);
                 }
+            }
+
+            @Override
+            protected void onDataChanged() {
+                // if there are no chat messages, show a view that invites the user to add a message
+                mEmptyListView.setVisibility(mRecyclerViewAdapter.getItemCount() == 0?View.VISIBLE:View.INVISIBLE);
             }
         };
 
