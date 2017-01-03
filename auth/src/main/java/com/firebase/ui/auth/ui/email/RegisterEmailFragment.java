@@ -20,9 +20,9 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
@@ -44,7 +44,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 /**
  * Fragment to display an email/name/password sign up form for new users.
  */
-public class RegisterEmailFragment extends BaseFragment implements
+public class RegisterEmailFragment extends FragmentBase implements
         View.OnClickListener, View.OnFocusChangeListener {
 
     public static final String TAG = "RegisterEmailFragment";
