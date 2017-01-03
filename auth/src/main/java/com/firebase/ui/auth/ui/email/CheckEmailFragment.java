@@ -16,9 +16,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
@@ -43,7 +43,7 @@ import java.util.List;
  *
  * Host Activities should implement {@link CheckEmailListener}.
  */
-public class CheckEmailFragment extends BaseFragment implements View.OnClickListener {
+public class CheckEmailFragment extends FragmentBase implements View.OnClickListener {
 
     /**
      * Interface to be implemented by Activities hosting this Fragment.
@@ -113,11 +113,6 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        // Set title
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setTitle(R.string.title_check_email);
-        }
 
         // Set listener
         if (!(getActivity() instanceof CheckEmailListener)) {
