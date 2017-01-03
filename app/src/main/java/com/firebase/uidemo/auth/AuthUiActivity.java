@@ -87,7 +87,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.sign_in)
     Button mSignIn;
 
-    @BindView(android.R.id.content)
+    @BindView(R.id.root)
     View mRootView;
 
     @BindView(R.id.firebase_logo)
