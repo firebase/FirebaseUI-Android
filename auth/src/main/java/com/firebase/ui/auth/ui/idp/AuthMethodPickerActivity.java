@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -54,6 +55,7 @@ import java.util.List;
  * is launched to manage the IDP-specific sign-in flow. If email authentication is chosen,
  * the {@link RegisterEmailActivity} is started.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase
         implements IdpCallback, View.OnClickListener {
     private static final String TAG = "AuthMethodPicker";

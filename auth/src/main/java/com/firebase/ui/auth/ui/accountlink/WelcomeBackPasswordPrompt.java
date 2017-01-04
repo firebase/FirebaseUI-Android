@@ -20,6 +20,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -53,6 +54,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming
  * the password before initiating a link.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "WelcomeBackPassword";
 

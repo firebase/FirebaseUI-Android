@@ -14,9 +14,12 @@
 
 package com.firebase.ui.auth.ui;
 
+import android.support.annotation.RestrictTo;
+
 /**
  * Constants used for passing Intent extra params between authentication flow activities.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ExtraConstants {
     public static final String EXTRA_FLOW_PARAMS = "extra_flow_params";
     public static final String EXTRA_IDP_RESPONSE = "extra_idp_response";

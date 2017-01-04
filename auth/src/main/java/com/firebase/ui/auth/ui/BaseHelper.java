@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
 
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class BaseHelper {
     private final FlowParameters mFlowParams;
     protected Context mContext;
