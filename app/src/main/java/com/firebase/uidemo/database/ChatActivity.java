@@ -155,9 +155,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mRecyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                mManager.smoothScrollToPosition(mMessages,
-                                                null,
-                                                mRecyclerViewAdapter.getItemCount());
+                mManager.smoothScrollToPosition(mMessages, null, mRecyclerViewAdapter.getItemCount());
             }
         });
 
