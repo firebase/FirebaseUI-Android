@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.RestrictTo;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
@@ -36,6 +37,7 @@ import com.google.firebase.auth.EmailAuthProvider;
  * and {@link RegisterEmailFragment} and triggers {@link WelcomeBackPasswordPrompt}
  * and {@link WelcomeBackIdpPrompt}.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RegisterEmailActivity extends AppCompatBase implements
         CheckEmailFragment.CheckEmailListener {
 

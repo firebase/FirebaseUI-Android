@@ -16,9 +16,11 @@ package com.firebase.ui.auth.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.RestrictTo;
 import android.support.v7.app.AppCompatActivity;
 
 @SuppressWarnings("Registered")
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AppCompatBase extends AppCompatActivity {
 
     protected ActivityHelper mActivityHelper;

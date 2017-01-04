@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.Log;
@@ -43,6 +44,7 @@ import java.util.List;
  * <p>
  * Host Activities should implement {@link CheckEmailListener}.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class CheckEmailFragment extends FragmentBase implements View.OnClickListener {
     /**
      * Interface to be implemented by Activities hosting this Fragment.
