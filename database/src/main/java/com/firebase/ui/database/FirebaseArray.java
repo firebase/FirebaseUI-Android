@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ListIterator;
 
 /**
  * This class implements an array-like collection on top of a Firebase location.
@@ -71,6 +72,16 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
         }
     }
 
+    private int scanArrayForKey(String key) {
+        final ListIterator<DataSnapshot> it = mSnapshots.listIterator();
+        while (it.hasNext()) {
+            if (it.next().getKey().equals(key)) {
+                return it.previousIndex();
+            }
+        }
+        throw new IllegalArgumentException("Key not found");
+    }
+
     @Override
     public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
         int index = 0;
@@ -101,9 +112,15 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
     public void onChildMoved(DataSnapshot snapshot, String previousChildKey) {
         int oldIndex = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(oldIndex);
-        int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
+        int newIndex = previousChildKey == null ? 0 : (scanArrayForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
-        mSnapshotMap.put(snapshot.getKey(), newIndex);
+
+        // Rebuild the map of indices
+        mSnapshotMap.clear();
+        for (int i = 0; i < mSnapshots.size(); i++) {
+            mSnapshotMap.put(mSnapshots.get(i).getKey(), i);
+        }
+
         notifyChangedListeners(OnChangedListener.EventType.MOVED, newIndex, oldIndex);
     }
 
