@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -44,6 +45,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 /**
  * Fragment to display an email/name/password sign up form for new users.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RegisterEmailFragment extends FragmentBase implements
         View.OnClickListener, View.OnFocusChangeListener {
 
