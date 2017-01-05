@@ -112,7 +112,7 @@ public class FirebaseArrayTest {
     }
 
     @Test
-    public void testChangePriorities() throws Exception {
+    public void testChangePriorityBackToFront() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
                 mArray.getItem(2).getRef().setPriority(0.5);
@@ -120,6 +120,19 @@ public class FirebaseArrayTest {
         }, new Callable<Boolean>() {
             public Boolean call() throws Exception {
                 return isValuesEqual(mArray, new int[]{3, 1, 2});
+            }
+        });
+    }
+
+    @Test
+    public void testChangePriorityFrontToBack() throws Exception {
+        runAndWaitUntil(mArray, new Runnable() {
+            public void run() {
+                mArray.getItem(0).getRef().setPriority(4);
+            }
+        }, new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                return isValuesEqual(mArray, new int[]{2, 3, 1});
             }
         });
     }
