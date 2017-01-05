@@ -9,14 +9,14 @@ import android.support.annotation.RestrictTo;
 import android.util.Log;
 
 import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.firebase.ui.auth.util.signincontainer.SignInDelegate;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class KickoffActivity extends AppCompatBase {
+public class KickoffActivity extends HelperActivityBase {
     private static final String TAG = "KickoffActivity";
     private static final String IS_WAITING_FOR_PLAY_SERVICES = "is_waiting_for_play_services";
     private static final int RC_PLAY_SERVICES = 1;
@@ -30,6 +30,7 @@ public class KickoffActivity extends AppCompatBase {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+
         if (savedInstance == null || savedInstance.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
             if (isOffline()) {
                 Log.d(TAG, "No network connection");

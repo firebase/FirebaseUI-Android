@@ -25,9 +25,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ActivityHelper extends BaseHelper {
-    private AppCompatBase mActivity;
+    private HelperActivityBase mActivity;
 
-    public ActivityHelper(AppCompatBase activity, Intent intent) {
+    public ActivityHelper(HelperActivityBase activity, Intent intent) {
         super(activity, (FlowParameters) intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS));
         mActivity = activity;
     }
