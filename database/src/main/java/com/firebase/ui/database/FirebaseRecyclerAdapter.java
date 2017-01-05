@@ -71,7 +71,8 @@ import java.lang.reflect.InvocationTargetException;
  * @param <T>  The Java class that maps to the type of objects stored in the Firebase location.
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
-public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter<VH> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
     private FirebaseArray mSnapshots;

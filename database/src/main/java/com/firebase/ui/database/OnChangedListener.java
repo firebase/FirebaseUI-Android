@@ -1,5 +1,7 @@
 package com.firebase.ui.database;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 public interface OnChangedListener {
@@ -11,6 +13,11 @@ public interface OnChangedListener {
      * REMOVED: an onChildRemoved event was received
      * <p>
      * MOVED: an onChildMoved event was received
+     *
+     * @see ChildEventListener#onChildAdded(DataSnapshot, String)
+     * @see ChildEventListener#onChildChanged(DataSnapshot, String)
+     * @see ChildEventListener#onChildRemoved(DataSnapshot)
+     * @see ChildEventListener#onChildMoved(DataSnapshot, String)
      */
     enum EventType {ADDED, CHANGED, REMOVED, MOVED}
 
