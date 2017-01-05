@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.RestrictTo;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
@@ -36,11 +37,21 @@ import com.google.firebase.auth.EmailAuthProvider;
  * and {@link RegisterEmailFragment} and triggers {@link WelcomeBackPasswordPrompt}
  * and {@link WelcomeBackIdpPrompt}.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RegisterEmailActivity extends AppCompatBase implements
         CheckEmailFragment.CheckEmailListener {
 
     private static final int RC_SIGN_IN = 17;
     private static final int RC_WELCOME_BACK_IDP = 18;
+
+    public static Intent createIntent(Context context, FlowParameters flowParams) {
+        return createIntent(context, flowParams, null);
+    }
+
+    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
+        return BaseHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,14 +134,5 @@ public class RegisterEmailActivity extends AppCompatBase implements
     private void setSlideAnimation() {
         // Make the next activity slide in
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-
-    public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return createIntent(context, flowParams, null);
-    }
-
-    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return BaseHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

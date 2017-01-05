@@ -5,6 +5,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -54,6 +55,7 @@ import java.util.List;
  * is started, unless only email is supported, in which case the
  * {@link RegisterEmailActivity} is started.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private static final String TAG = "SignInDelegate";
     private static final int RC_CREDENTIALS_READ = 2;
@@ -62,6 +64,25 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private static final int RC_EMAIL_FLOW = 5;
 
     private Credential mCredential;
+
+    public static void delegate(FragmentActivity activity, FlowParameters params) {
+        FragmentManager fm = activity.getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(TAG);
+        if (!(fragment instanceof SignInDelegate)) {
+            SignInDelegate result = new SignInDelegate();
+            result.setArguments(FragmentHelper.getFlowParamsBundle(params));
+            fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
+        }
+    }
+
+    public static SignInDelegate getInstance(FragmentActivity activity) {
+        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
+        if (fragment instanceof SignInDelegate) {
+            return (SignInDelegate) fragment;
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -248,7 +269,8 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         finish(ResultCodes.OK,
-                               IdpResponse.getIntent(new IdpResponse(EmailAuthProvider.PROVIDER_ID, email)));
+                               IdpResponse.getIntent(new IdpResponse(EmailAuthProvider.PROVIDER_ID,
+                                                                     email)));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -318,25 +340,6 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                             mHelper.getFlowParams()),
                     RC_IDP_SIGNIN);
             mHelper.dismissDialog();
-        }
-    }
-
-    public static void delegate(FragmentActivity activity, FlowParameters params) {
-        FragmentManager fm = activity.getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(TAG);
-        if (!(fragment instanceof SignInDelegate)) {
-            SignInDelegate result = new SignInDelegate();
-            result.setArguments(FragmentHelper.getFlowParamsBundle(params));
-            fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
-        }
-    }
-
-    public static SignInDelegate getInstance(FragmentActivity activity) {
-        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment instanceof SignInDelegate) {
-            return (SignInDelegate) fragment;
-        } else {
-            return null;
         }
     }
 }

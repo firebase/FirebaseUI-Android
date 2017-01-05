@@ -85,6 +85,10 @@ public class GoogleProvider implements
                 .build();
     }
 
+    public static AuthCredential createAuthCredential(IdpResponse response) {
+        return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
+    }
+
     public String getName(Context context) {
         return context.getResources().getString(R.string.idp_name_google);
     }
@@ -92,11 +96,6 @@ public class GoogleProvider implements
     @Override
     public String getProviderId() {
         return GoogleAuthProvider.PROVIDER_ID;
-    }
-
-
-    public static AuthCredential createAuthCredential(IdpResponse response) {
-        return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
     }
 
     @Override

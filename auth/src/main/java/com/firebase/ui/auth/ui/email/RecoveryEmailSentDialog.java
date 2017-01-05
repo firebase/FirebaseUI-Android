@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
@@ -13,8 +14,17 @@ import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.DialogBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RecoveryEmailSentDialog extends DialogBase {
     private static final String TAG = "RecoveryEmailSentDialog";
+
+    public static void show(String email, FragmentManager manager) {
+        RecoveryEmailSentDialog result = new RecoveryEmailSentDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString(ExtraConstants.EXTRA_EMAIL, email);
+        result.setArguments(bundle);
+        result.show(manager, TAG);
+    }
 
     @NonNull
     @Override
@@ -31,13 +41,5 @@ public class RecoveryEmailSentDialog extends DialogBase {
                 })
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
-    }
-
-    public static void show(String email, FragmentManager manager) {
-        RecoveryEmailSentDialog result = new RecoveryEmailSentDialog();
-        Bundle bundle = new Bundle();
-        bundle.putString(ExtraConstants.EXTRA_EMAIL, email);
-        result.setArguments(bundle);
-        result.show(manager, TAG);
     }
 }

@@ -7,7 +7,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class User implements Parcelable {
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override
@@ -34,6 +36,14 @@ public class User implements Parcelable {
         mName = name;
         mProvider = provider;
         mPhotoUri = photoUri;
+    }
+
+    public static User getUser(Intent intent) {
+        return intent.getParcelableExtra(ExtraConstants.EXTRA_USER);
+    }
+
+    public static User getUser(Bundle arguments) {
+        return arguments.getParcelable(ExtraConstants.EXTRA_USER);
     }
 
     @NonNull
@@ -67,14 +77,6 @@ public class User implements Parcelable {
         dest.writeString(mName);
         dest.writeString(mProvider);
         dest.writeParcelable(mPhotoUri, flags);
-    }
-
-    public static User getUser(Intent intent) {
-        return intent.getParcelableExtra(ExtraConstants.EXTRA_USER);
-    }
-
-    public static User getUser(Bundle arguments) {
-        return arguments.getParcelable(ExtraConstants.EXTRA_USER);
     }
 
     public static final class Builder {

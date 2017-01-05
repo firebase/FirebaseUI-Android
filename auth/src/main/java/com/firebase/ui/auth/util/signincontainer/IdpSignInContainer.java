@@ -17,6 +17,7 @@ package com.firebase.ui.auth.util.signincontainer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -44,6 +45,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     private static final String TAG = "IDPSignInContainer";
     private static final int RC_WELCOME_BACK_IDP = 4;
@@ -51,6 +53,33 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     private IdpProvider mIdpProvider;
     @Nullable
     private SaveSmartLock mSaveSmartLock;
+
+    public static void signIn(FragmentActivity activity, FlowParameters parameters, User user) {
+        FragmentManager fm = activity.getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(TAG);
+        if (!(fragment instanceof IdpSignInContainer)) {
+            IdpSignInContainer result = new IdpSignInContainer();
+
+            Bundle bundle = FragmentHelper.getFlowParamsBundle(parameters);
+            bundle.putParcelable(ExtraConstants.EXTRA_USER, user);
+            result.setArguments(bundle);
+
+            try {
+                fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Cannot add fragment", e);
+            }
+        }
+    }
+
+    public static IdpSignInContainer getInstance(FragmentActivity activity) {
+        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
+        if (fragment instanceof IdpSignInContainer) {
+            return (IdpSignInContainer) fragment;
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,35 +146,6 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
             finish(resultCode, data);
         } else {
             mIdpProvider.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    public static void signIn(FragmentActivity activity,
-                              FlowParameters parameters,
-                              User user) {
-        FragmentManager fm = activity.getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(TAG);
-        if (!(fragment instanceof IdpSignInContainer)) {
-            IdpSignInContainer result = new IdpSignInContainer();
-
-            Bundle bundle = FragmentHelper.getFlowParamsBundle(parameters);
-            bundle.putParcelable(ExtraConstants.EXTRA_USER, user);
-            result.setArguments(bundle);
-
-            try {
-                fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
-            } catch (IllegalStateException e) {
-                Log.e(TAG, "Cannot add fragment", e);
-            }
-        }
-    }
-
-    public static IdpSignInContainer getInstance(FragmentActivity activity) {
-        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag(TAG);
-        if (fragment instanceof IdpSignInContainer) {
-            return (IdpSignInContainer) fragment;
-        } else {
-            return null;
         }
     }
 }
