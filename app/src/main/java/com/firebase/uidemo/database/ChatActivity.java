@@ -14,6 +14,7 @@
 
 package com.firebase.uidemo.database;
 
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RotateDrawable;
@@ -171,22 +172,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         attachRecyclerViewAdapter();
                     }
                 })
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(),
-                                           R.string.signed_in,
-                                           Toast.LENGTH_SHORT)
-                                    .show();
-                        } else {
-                            Toast.makeText(getApplicationContext(),
-                                           R.string.sign_in_failed,
-                                           Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }
-                });
+                .addOnCompleteListener(new SignInResultNotifier(this));
     }
 
     public boolean isSignedIn() {
@@ -288,6 +274,23 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         public void setText(String text) {
             mTextField.setText(text);
+        }
+    }
+
+    private static class SignInResultNotifier implements OnCompleteListener<AuthResult> {
+        private Context mContext;
+
+        public SignInResultNotifier(Context context) {
+            mContext = context.getApplicationContext();
+        }
+
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+            if (task.isSuccessful()) {
+                Toast.makeText(mContext, R.string.signed_in, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(mContext, R.string.sign_in_failed, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
