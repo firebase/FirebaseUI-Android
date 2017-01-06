@@ -54,7 +54,15 @@ public class BaseHelper {
 
     public void showLoadingDialog(String message) {
         dismissDialog();
-        mProgressDialog = ProgressDialog.show(mContext, "", message, true);
+
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setTitle("");
+        }
+
+        mProgressDialog.setMessage(message);
+        mProgressDialog.show();
     }
 
     public void showLoadingDialog(@StringRes int stringResource) {

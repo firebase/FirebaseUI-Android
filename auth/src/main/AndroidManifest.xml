@@ -22,9 +22,9 @@
 
         <activity
             android:name=".KickoffActivity"
-            android:label="@string/default_toolbar_title"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+            android:label=""
+            android:theme="@style/FirebaseUI.Transparent"/>
 
         <activity
             android:name=".ui.email.RecoverPasswordActivity"
