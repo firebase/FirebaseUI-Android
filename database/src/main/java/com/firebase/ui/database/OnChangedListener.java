@@ -6,26 +6,40 @@ import com.google.firebase.database.DatabaseError;
 
 public interface OnChangedListener {
     /**
-     * ADDED: an onChildAdded event was received
-     * <p>
-     * CHANGED: an onChildChanged event was received
-     * <p>
-     * REMOVED: an onChildRemoved event was received
-     * <p>
-     * MOVED: an onChildMoved event was received
-     *
-     * @see ChildEventListener#onChildAdded(DataSnapshot, String)
-     * @see ChildEventListener#onChildChanged(DataSnapshot, String)
-     * @see ChildEventListener#onChildRemoved(DataSnapshot)
-     * @see ChildEventListener#onChildMoved(DataSnapshot, String)
+     * The type of event received when a child has been updated.
      */
-    enum EventType {ADDED, CHANGED, REMOVED, MOVED}
+    enum EventType {
+        /**
+         * An onChildAdded event was received.
+         *
+         * @see ChildEventListener#onChildAdded(DataSnapshot, String)
+         */
+        ADDED,
+        /**
+         * An onChildChanged event was received.
+         *
+         * @see ChildEventListener#onChildChanged(DataSnapshot, String)
+         */
+        CHANGED,
+        /**
+         * An onChildRemoved event was received.
+         *
+         * @see ChildEventListener#onChildRemoved(DataSnapshot)
+         */
+        REMOVED,
+        /**
+         * An onChildMoved event was received.
+         *
+         * @see ChildEventListener#onChildMoved(DataSnapshot, String)
+         */
+        MOVED
+    }
 
     /**
      * A callback for when a child has changed in FirebaseArray.
      *
-     * @param type The type of event received
-     * @param index The index at which the change occurred
+     * @param type     The type of event received
+     * @param index    The index at which the change occurred
      * @param oldIndex If {@code type} is a moved event, the previous index of the moved child.
      *                 For any other event, {@code oldIndex} will be -1.
      */

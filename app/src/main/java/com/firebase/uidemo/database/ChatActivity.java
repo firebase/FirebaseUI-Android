@@ -94,8 +94,11 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
         });
 
-        mMessages = (RecyclerView) findViewById(R.id.messagesList);
         mManager = new LinearLayoutManager(this);
+        mManager.setReverseLayout(false);
+
+        mMessages = (RecyclerView) findViewById(R.id.messagesList);
+        mMessages.setHasFixedSize(false);
         mMessages.setLayoutManager(mManager);
     }
 
@@ -106,10 +109,10 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         // Default Database rules do not allow unauthenticated reads, so we need to
         // sign in before attaching the RecyclerView adapter otherwise the Adapter will
         // not be able to read any data from the Database.
-        if (isSignedIn()) {
-            attachRecyclerViewAdapter();
-        } else {
+        if (!isSignedIn()) {
             signInAnonymously();
+        } else {
+            attachRecyclerViewAdapter();
         }
     }
 
@@ -277,6 +280,9 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         }
     }
 
+    /**
+     * Notifies the user of sign in successes or failures beyond the lifecycle of an activity.
+     */
     private static class SignInResultNotifier implements OnCompleteListener<AuthResult> {
         private Context mContext;
 
