@@ -89,9 +89,9 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         mViewHolderClass = viewHolderClass;
         mSnapshots = snapshots;
 
-        mSnapshots.setOnChangedListener(new OnChangedListener() {
+        mSnapshots.setOnChangedListener(new ChangeEventListener() {
             @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
+            public void onChildChanged(EventType type, int index, int oldIndex) {
                 FirebaseRecyclerAdapter.this.onChanged(type, index, oldIndex);
             }
 
@@ -182,9 +182,9 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     /**
-     * @see OnChangedListener#onChanged(OnChangedListener.EventType, int, int)
+     * @see ChangeEventListener#onChildChanged(ChangeEventListener.EventType, int, int)
      */
-    protected void onChanged(OnChangedListener.EventType type, int index, int oldIndex) {
+    protected void onChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
         switch (type) {
             case ADDED:
                 notifyItemInserted(index);
@@ -204,7 +204,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     /**
-     * @see OnChangedListener#onCancelled(DatabaseError)
+     * @see ChangeEventListener#onCancelled(DatabaseError)
      */
     protected void onCancelled(DatabaseError error) {
         Log.w(TAG, error.toException());

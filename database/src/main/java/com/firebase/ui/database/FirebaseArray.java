@@ -27,7 +27,7 @@ import java.util.List;
  */
 class FirebaseArray implements ChildEventListener {
     private Query mQuery;
-    private OnChangedListener mListener;
+    private ChangeEventListener mListener;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     public FirebaseArray(Query ref) {
@@ -66,21 +66,21 @@ class FirebaseArray implements ChildEventListener {
             index = getIndexForKey(previousChildKey) + 1;
         }
         mSnapshots.add(index, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.ADDED, index);
+        notifyChangedListeners(ChangeEventListener.EventType.ADDED, index);
     }
 
     @Override
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.set(index, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.CHANGED, index);
+        notifyChangedListeners(ChangeEventListener.EventType.CHANGED, index);
     }
 
     @Override
     public void onChildRemoved(DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
-        notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
+        notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
     }
 
     @Override
@@ -89,7 +89,7 @@ class FirebaseArray implements ChildEventListener {
         mSnapshots.remove(oldIndex);
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
-        notifyChangedListeners(OnChangedListener.EventType.MOVED, newIndex, oldIndex);
+        notifyChangedListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
     }
 
     @Override
@@ -97,17 +97,17 @@ class FirebaseArray implements ChildEventListener {
         notifyCancelledListeners(error);
     }
 
-    public void setOnChangedListener(OnChangedListener listener) {
+    public void setOnChangedListener(ChangeEventListener listener) {
         mListener = listener;
     }
 
-    protected void notifyChangedListeners(OnChangedListener.EventType type, int index) {
+    protected void notifyChangedListeners(ChangeEventListener.EventType type, int index) {
         notifyChangedListeners(type, index, -1);
     }
 
-    protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
+    protected void notifyChangedListeners(ChangeEventListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
-            mListener.onChanged(type, index, oldIndex);
+            mListener.onChildChanged(type, index, oldIndex);
         }
     }
 

@@ -4,7 +4,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
-public interface OnChangedListener {
+public interface ChangeEventListener {
     /**
      * The type of event received when a child has been updated.
      */
@@ -43,7 +43,7 @@ public interface OnChangedListener {
      * @param oldIndex If {@code type} is a moved event, the previous index of the moved child.
      *                 For any other event, {@code oldIndex} will be -1.
      */
-    void onChanged(EventType type, int index, int oldIndex);
+    void onChildChanged(EventType type, int index, int oldIndex);
 
     /**
      * This method will be triggered in the event that this listener either failed at the server,
