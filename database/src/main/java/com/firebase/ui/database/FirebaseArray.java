@@ -30,11 +30,12 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
     public interface OnChangedListener {
         enum EventType {ADDED, CHANGED, REMOVED, MOVED}
 
-        void onChanged(EventType type, int index, int oldIndex);
+        void onChildChanged(EventType type, int index, int oldIndex);
+
+        void onDataChanged();
 
         void onCancelled(DatabaseError databaseError);
 
-        void onReady();
     }
 
     private Query mQuery;
@@ -107,7 +108,7 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        mListener.onReady();
+        mListener.onDataChanged();
     }
 
     @Override
@@ -125,7 +126,7 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
 
     protected void notifyChangedListeners(OnChangedListener.EventType type, int index, int oldIndex) {
         if (mListener != null) {
-            mListener.onChanged(type, index, oldIndex);
+            mListener.onChildChanged(type, index, oldIndex);
         }
     }
 
