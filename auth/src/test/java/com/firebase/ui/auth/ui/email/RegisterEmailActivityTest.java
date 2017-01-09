@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 23)
+@Config(constants = BuildConfig.class, sdk = 25)
 public class RegisterEmailActivityTest {
 
     private RegisterEmailActivity createActivity() {

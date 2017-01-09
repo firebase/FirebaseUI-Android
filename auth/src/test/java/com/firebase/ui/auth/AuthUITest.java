@@ -33,7 +33,7 @@ import java.util.Arrays;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 23)
+@Config(constants = BuildConfig.class, sdk = 25)
 public class AuthUITest {
     private FirebaseApp mFirebaseApp;
 

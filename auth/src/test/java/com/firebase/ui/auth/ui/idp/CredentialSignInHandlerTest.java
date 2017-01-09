@@ -60,7 +60,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 23, shadows = {ActivityHelperShadow.class})
+@Config(constants = BuildConfig.class, sdk = 25, shadows = {ActivityHelperShadow.class})
 public class CredentialSignInHandlerTest {
     private static final int RC_ACCOUNT_LINK = 3;
     private static final String LINKING_ERROR = "ERROR_TEST_LINKING";

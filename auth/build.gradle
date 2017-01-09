@@ -53,7 +53,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //noinspection NewerVersionAvailable, GradleDynamicVersion
     testCompile 'org.mockito:mockito-core:2.5.+'
-    testCompile 'org.robolectric:robolectric:3.1.4'
+    testCompile 'org.robolectric:robolectric:3.2.1'
     // See https://github.com/robolectric/robolectric/issues/1932#issuecomment-219796474
     testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
 }

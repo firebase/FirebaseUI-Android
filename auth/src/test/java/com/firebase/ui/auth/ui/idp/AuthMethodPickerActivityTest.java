@@ -65,7 +65,7 @@ import static org.mockito.Mockito.when;
                 GoogleProviderShadow.class,
                 FacebookProviderShadow.class,
                 LoginManagerShadow.class
-        }, sdk = 23)
+        }, sdk = 25)
 public class AuthMethodPickerActivityTest {
     @Test
     public void testAllProvidersArePopulated() {
