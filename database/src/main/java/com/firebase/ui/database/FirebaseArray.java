@@ -22,12 +22,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
- * This class implements an array-like collection on top of a Firebase location.
+ * This class implements a collection on top of a Firebase location.
  */
-class FirebaseArray implements ChildEventListener {
+class FirebaseArray implements ChildEventListener, List<DataSnapshot> {
     public interface ChangeEventListener {
         enum EventType {ADDED, CHANGED, REMOVED, MOVED}
 
@@ -37,7 +40,7 @@ class FirebaseArray implements ChildEventListener {
     }
 
     protected ChangeEventListener mListener;
-    protected boolean mIsListening;
+    private boolean mIsListening;
     private Query mQuery;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
@@ -64,12 +67,12 @@ class FirebaseArray implements ChildEventListener {
         mIsListening = false;
     }
 
-    public int size() {
-        return mSnapshots.size();
+    public boolean isListening() {
+        return mIsListening;
     }
 
-    public DataSnapshot get(int index) {
-        return mSnapshots.get(index);
+    protected void notifyChangeListener(ChangeEventListener.EventType type, int index) {
+        mListener.onChange(type, index, -1);
     }
 
     @Override
@@ -122,7 +125,320 @@ class FirebaseArray implements ChildEventListener {
         throw new IllegalArgumentException("Key not found");
     }
 
-    protected void notifyChangeListener(ChangeEventListener.EventType type, int index) {
-        mListener.onChange(type, index, -1);
+    @Override
+    public int size() {
+        return mSnapshots.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return mSnapshots.isEmpty();
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return mSnapshots.contains(o);
+    }
+
+    @Override
+    public Object[] toArray() {
+        return mSnapshots.toArray();
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return mSnapshots.toArray(a);
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return mSnapshots.containsAll(c);
+    }
+
+    @Override
+    public DataSnapshot get(int index) {
+        return mSnapshots.get(index);
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return mSnapshots.indexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        return mSnapshots.lastIndexOf(o);
+    }
+
+    @Override
+    public Iterator<DataSnapshot> iterator() {
+        return new ImmutableIterator(mSnapshots.iterator());
+    }
+
+    @Override
+    public ListIterator<DataSnapshot> listIterator() {
+        return new ImmutableListIterator(mSnapshots.listIterator());
+    }
+
+    @Override
+    public ListIterator<DataSnapshot> listIterator(int index) {
+        return new ImmutableListIterator(mSnapshots.listIterator(index));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FirebaseArray snapshots = (FirebaseArray) o;
+
+        return mIsListening == snapshots.mIsListening
+                && mListener.equals(snapshots.mListener)
+                && mQuery.equals(snapshots.mQuery)
+                && mSnapshots.equals(snapshots.mSnapshots);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mListener.hashCode();
+        result = 31 * result + (mIsListening ? 1 : 0);
+        result = 31 * result + mQuery.hashCode();
+        result = 31 * result + mSnapshots.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "FirebaseArray{" +
+                "mListener=" + mListener +
+                ", mIsListening=" + mIsListening +
+                ", mQuery=" + mQuery +
+                ", mSnapshots=" + mSnapshots +
+                '}';
+    }
+
+    protected static class ImmutableIterator implements Iterator<DataSnapshot> {
+        private Iterator<DataSnapshot> mIterator;
+
+        public ImmutableIterator(Iterator<DataSnapshot> iterator) {
+            mIterator = iterator;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return mIterator.hasNext();
+        }
+
+        @Override
+        public DataSnapshot next() {
+            return mIterator.next();
+        }
+    }
+
+    protected static class ImmutableListIterator implements ListIterator<DataSnapshot> {
+        private ListIterator<DataSnapshot> mListIterator;
+
+        public ImmutableListIterator(ListIterator<DataSnapshot> listIterator) {
+            mListIterator = listIterator;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return mListIterator.hasNext();
+        }
+
+        @Override
+        public DataSnapshot next() {
+            return mListIterator.next();
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return mListIterator.hasPrevious();
+        }
+
+        @Override
+        public DataSnapshot previous() {
+            return mListIterator.previous();
+        }
+
+        @Override
+        public int nextIndex() {
+            return mListIterator.nextIndex();
+        }
+
+        @Override
+        public int previousIndex() {
+            return mListIterator.previousIndex();
+        }
+
+        /**
+         * Guaranteed to throw an exception and leave the collection unmodified.
+         *
+         * @throws UnsupportedOperationException always
+         * @deprecated Unsupported operation.
+         */
+        @Deprecated
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        /**
+         * Guaranteed to throw an exception and leave the collection unmodified.
+         *
+         * @throws UnsupportedOperationException always
+         * @deprecated Unsupported operation.
+         */
+        @Deprecated
+        @Override
+        public void set(DataSnapshot snapshot) {
+            throw new UnsupportedOperationException();
+        }
+
+        /**
+         * Guaranteed to throw an exception and leave the collection unmodified.
+         *
+         * @throws UnsupportedOperationException always
+         * @deprecated Unsupported operation.
+         */
+        @Deprecated
+        @Override
+        public void add(DataSnapshot snapshot) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public boolean add(DataSnapshot snapshot) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public boolean remove(Object o) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public boolean addAll(Collection<? extends DataSnapshot> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public boolean addAll(int index, Collection<? extends DataSnapshot> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public DataSnapshot set(int index, DataSnapshot element) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public void add(int index, DataSnapshot element) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public DataSnapshot remove(int index) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Guaranteed to throw an exception and leave the collection unmodified.
+     *
+     * @throws UnsupportedOperationException always
+     * @deprecated Unsupported operation.
+     */
+    @Deprecated
+    @Override
+    public List<DataSnapshot> subList(int fromIndex, int toIndex) {
+        throw new UnsupportedOperationException();
     }
 }

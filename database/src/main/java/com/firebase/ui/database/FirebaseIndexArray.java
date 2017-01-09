@@ -23,9 +23,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,7 +60,7 @@ class FirebaseIndexArray extends FirebaseArray {
     }
 
     public void setJoinResolver(@NonNull JoinResolver joinResolver) {
-        if (mIsListening && joinResolver == null) {
+        if (isListening() && joinResolver == null) {
             throw new IllegalStateException("Join resolver cannot be null.");
         }
         mJoinResolver = joinResolver;
@@ -77,16 +80,6 @@ class FirebaseIndexArray extends FirebaseArray {
             ref.removeEventListener(mRefs.remove(ref));
         }
         mDataSnapshots.clear();
-    }
-
-    @Override
-    public int size() {
-        return mDataSnapshots.size();
-    }
-
-    @Override
-    public DataSnapshot get(int index) {
-        return mDataSnapshots.get(index);
     }
 
     @Override
@@ -147,24 +140,6 @@ class FirebaseIndexArray extends FirebaseArray {
         super.onCancelled(error);
     }
 
-    private int getIndexForKey(String key) {
-        int dataCount = size();
-        int index = 0;
-        for (int keyIndex = 0; index < dataCount; keyIndex++) {
-            String superKey = super.get(keyIndex).getKey();
-            if (key.equals(superKey)) {
-                break;
-            } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
-                index++;
-            }
-        }
-        return index;
-    }
-
-    private boolean isMatch(int index, String key) {
-        return index >= 0 && index < size() && mDataSnapshots.get(index).getKey().equals(key);
-    }
-
     private class DataRefListener implements ValueEventListener {
         @Override
         public void onDataChange(DataSnapshot snapshot) {
@@ -193,5 +168,116 @@ class FirebaseIndexArray extends FirebaseArray {
         public void onCancelled(DatabaseError error) {
             mListener.onCancelled(error);
         }
+    }
+
+    private int getIndexForKey(String key) {
+        int dataCount = size();
+        int index = 0;
+        for (int keyIndex = 0; index < dataCount; keyIndex++) {
+            String superKey = super.get(keyIndex).getKey();
+            if (key.equals(superKey)) {
+                break;
+            } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
+                index++;
+            }
+        }
+        return index;
+    }
+
+    private boolean isMatch(int index, String key) {
+        return index >= 0 && index < size() && mDataSnapshots.get(index).getKey().equals(key);
+    }
+
+    @Override
+    public int size() {
+        return mDataSnapshots.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return mDataSnapshots.isEmpty();
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return mDataSnapshots.contains(o);
+    }
+
+    @Override
+    public Object[] toArray() {
+        return mDataSnapshots.toArray();
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return mDataSnapshots.toArray(a);
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return mDataSnapshots.containsAll(c);
+    }
+
+    @Override
+    public DataSnapshot get(int index) {
+        return mDataSnapshots.get(index);
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return mDataSnapshots.indexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        return mDataSnapshots.lastIndexOf(o);
+    }
+
+    @Override
+    public Iterator<DataSnapshot> iterator() {
+        return new ImmutableIterator(mDataSnapshots.iterator());
+    }
+
+    @Override
+    public ListIterator<DataSnapshot> listIterator() {
+        return new ImmutableListIterator(mDataSnapshots.listIterator());
+    }
+
+    @Override
+    public ListIterator<DataSnapshot> listIterator(int index) {
+        return new ImmutableListIterator(mDataSnapshots.listIterator(index));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        FirebaseIndexArray array = (FirebaseIndexArray) o;
+
+        return mJoinResolver.equals(array.mJoinResolver)
+                && mRefs.equals(array.mRefs)
+                && mDataSnapshots.equals(array.mDataSnapshots);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + mJoinResolver.hashCode();
+        result = 31 * result + mRefs.hashCode();
+        result = 31 * result + mDataSnapshots.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "FirebaseIndexArray{" +
+                "mListener=" + mListener +
+                ", mIsListening=" + isListening() +
+                ", mJoinResolver=" + mJoinResolver +
+                ", mRefs=" + mRefs +
+                ", mDataSnapshots=" + mDataSnapshots +
+                '}';
     }
 }
