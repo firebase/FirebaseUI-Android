@@ -70,7 +70,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mSnapshots.setOnChangedListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(EventType type, int index, int oldIndex) {
-                FirebaseListAdapter.this.onChanged(type, index, oldIndex);
+                FirebaseListAdapter.this.onChildChanged(type, index, oldIndex);
             }
 
             @Override
@@ -148,7 +148,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     /**
      * @see ChangeEventListener#onChildChanged(ChangeEventListener.EventType, int, int)
      */
-    protected void onChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
+    protected void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
         notifyDataSetChanged();
     }
 

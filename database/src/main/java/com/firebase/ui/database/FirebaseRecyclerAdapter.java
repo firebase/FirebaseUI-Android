@@ -92,7 +92,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         mSnapshots.setOnChangedListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(EventType type, int index, int oldIndex) {
-                FirebaseRecyclerAdapter.this.onChanged(type, index, oldIndex);
+                FirebaseRecyclerAdapter.this.onChildChanged(type, index, oldIndex);
             }
 
             @Override
@@ -184,7 +184,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     /**
      * @see ChangeEventListener#onChildChanged(ChangeEventListener.EventType, int, int)
      */
-    protected void onChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
+    protected void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
         switch (type) {
             case ADDED:
                 notifyItemInserted(index);
