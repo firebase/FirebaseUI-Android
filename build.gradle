@@ -1,4 +1,4 @@
-apply from: 'common/constants.gradle'
+apply from: 'constants.gradle'
 
 buildscript {
     repositories {
@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.3.0-beta1'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'io.fabric.tools:gradle:1.+'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
@@ -39,10 +39,9 @@ if (JavaVersion.current().isJava8Compatible()) {
  */
 allprojects { project ->
 
-
     // Get constants, this is where we store things
     // like the list of submodules or the version
-    project.apply from: "$rootDir/common/constants.gradle"
+    project.apply from: "$rootDir/constants.gradle"
 
     def isLibrary = 'library'.equals(project.name)
     def isSubmodule = submodules.contains(project.name)
@@ -249,7 +248,7 @@ allprojects { project ->
         bintray {
             user = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
             key = hasProperty('BINTRAY_KEY') ? getProperty('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
-            publications = [ publicationName ]
+            publications = [publicationName]
 
             filesSpec {
                 from pomLoc
@@ -259,13 +258,13 @@ allprojects { project ->
                 }
             }
 
-            configurations = [ 'archives' ]
+            configurations = ['archives']
 
             pkg {
                 repo = 'firebase-ui'
                 name = archivesBaseName
                 userOrg = 'firebaseui'
-                licenses = [ 'Apache-2.0' ]
+                licenses = ['Apache-2.0']
                 vcsUrl = 'https://github.com/firebase/FirebaseUI-Android.git'
 
                 version {

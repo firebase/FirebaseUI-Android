@@ -93,8 +93,8 @@ Twitter app as reported by the [Twitter application manager](https://apps.twitte
 </resources>
 ```
 
-In addition, if you are using Smart Lock or require a user's email, you must enable the
-"Request email addresses from users" permission in the "Permissions" tab of your app.
+In addition, you must enable the "Request email addresses from users" permission
+in the "Permissions" tab of your Twitter app.
 
 ## Using FirebaseUI for Authentication
 
@@ -218,42 +218,47 @@ startActivityForResult(
 #### Handling the sign-in response
 
 #####Response codes
-The authentication flow only provides three response codes:
-`Activity.RESULT_OK` if a user is signed in, `Activity.RESULT_CANCELLED` if
-sign in failed, and `ResultCodes.RESULT_NO_NETWORK` if sign in failed due to a lack of network connectivity.
-No further information on failure is provided as it is not
-typically useful; the only recourse for most apps if sign in fails is to ask
-the user to sign in again later, or proceed with anonymous sign-in if
-supported.
+The authentication flow provides several response codes of which the most common are as follows:
+`ResultCodes.OK` if a user is signed in, `ResultCodes.CANCELLED` if the user manually canceled the sign in,
+`ResultCodes.NO_NETWORK` if sign in failed due to a lack of network connectivity,
+and `ResultCodes.UNKNOWN_ERROR` for all other errors.
+Typically, the only recourse for most apps if sign in fails is to ask
+the user to sign in again later, or proceed with anonymous sign-in if supported.
 
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow
+    // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
     if (requestCode == RC_SIGN_IN) {
-        if (resultCode == RESULT_OK) {
-            // user is signed in!
-            startActivity(new Intent(this, WelcomeBackActivity.class));
+        IdpResponse response = IdpResponse.fromResultIntent(data);
+
+        // Successfully signed in
+        if (resultCode == ResultCodes.OK) {
+            startActivity(SignedInActivity.createIntent(this, response));
             finish();
             return;
+        } else {
+            // Sign in failed
+            if (response == null) {
+                // User pressed back button
+                showSnackbar(R.string.sign_in_cancelled);
+                return;
+            }
+
+            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                showSnackbar(R.string.no_internet_connection);
+                return;
+            }
+
+            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                showSnackbar(R.string.unknown_error);
+                return;
+            }
         }
 
-        // Sign in canceled
-        if (resultCode == RESULT_CANCELED) {
-            showSnackbar(R.string.sign_in_cancelled);
-            return;
-        }
-
-        // No network
-        if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
-            showSnackbar(R.string.no_internet_connection);
-            return;
-        }
-
-        // User is not signed in. Maybe just wait for the user to press
-        // "sign in" again, or show a message.
+        showSnackbar(R.string.unknown_sign_in_response);
     }
-}
+ }
 ```
 
 Alternatively, you can register a listener for authentication state changes;
@@ -268,7 +273,7 @@ Intent.
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == RESULT_OK) {
+    if (resultCode == ResultCodes.OK) {
         IdpResponse idpResponse = IdpResponse.fromResultIntent(data);
         startActivity(new Intent(this, WelcomeBackActivity.class)
                 .putExtra("my_token", idpResponse.getIdpToken()));

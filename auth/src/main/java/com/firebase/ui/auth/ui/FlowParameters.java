@@ -18,20 +18,20 @@ import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.Preconditions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Encapsulates the core parameters and data captured during the authentication flow, in
  * a serializable manner, in order to pass data between activities.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FlowParameters implements Parcelable {
-
     @NonNull
     public final String appName;
 
@@ -88,7 +88,7 @@ public class FlowParameters implements Parcelable {
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
             int smartLockEnabledInt = in.readInt();
-            boolean smartLockEnabled = (smartLockEnabledInt != 0);
+            boolean smartLockEnabled = smartLockEnabledInt != 0;
 
             return new FlowParameters(
                     appName,
