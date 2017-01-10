@@ -69,7 +69,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
             @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
+            public void onChildChanged(EventType type, int index, int oldIndex) {
                 notifyDataSetChanged();
             }
 
@@ -79,7 +79,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             }
 
             @Override
-            public void onReady() {
+            public void onDataChanged() {
                 FirebaseListAdapter.this.onDataChanged();
             }
         });
