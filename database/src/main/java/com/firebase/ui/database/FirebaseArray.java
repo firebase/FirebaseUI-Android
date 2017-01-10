@@ -49,8 +49,8 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
     }
 
     public void cleanup() {
-        mQuery.removeEventListener((ValueEventListener)this);
-        mQuery.removeEventListener((ChildEventListener)this);
+        mQuery.removeEventListener((ValueEventListener) this);
+        mQuery.removeEventListener((ChildEventListener) this);
     }
 
     public int getCount() {
