@@ -30,8 +30,10 @@ Feature parity (where it makes sense) is a strict requirement for feature develo
 ### Code reviews
 
 All submissions, including submissions by project members, require review. We
-use Github pull requests for this purpose. We adhere to the
+use GitHub pull requests for this purpose. We adhere to the
 [Google Java style guide](https://google.github.io/styleguide/javaguide.html).
+In addition, style and lint checks are run on each build to ensure quality. To run the full
+suite of tests, checks, lint, etc, run `./gradlew check` (this will ensure the Travis build passes).
 
 ### The small print
 
