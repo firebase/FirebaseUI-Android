@@ -51,6 +51,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private static final String TAG = "RecyclerViewDemo";
 
     private FirebaseAuth mAuth;
+    private DatabaseReference mRef;
     private DatabaseReference mChatRef;
     private Button mSendButton;
     private EditText mMessageEdit;
