@@ -57,4 +57,7 @@
     <string name="photos">Photos</string>
     <string name="idp_token">IDP Token</string>
     <string name="idp_secret">IDP Secret</string>
+
+    <!-- strings for Auth UI demo activities -->
+    <string name="start_chatting">No messages. Start chatting at the bottom!</string>
 </resources>

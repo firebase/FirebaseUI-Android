@@ -10,7 +10,7 @@
         android:id="@+id/emptyTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No messages. Start chatting at the bottom!"
+        android:text="@string/start_chatting"
         android:padding="16dp" />
 
     <android.support.v7.widget.RecyclerView
