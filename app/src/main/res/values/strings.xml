@@ -64,4 +64,7 @@
     <string name="choose_image">Choose Image</string>
     <string name="accessibility_downloaded_image">Downloaded image</string>
     <string name="drive_file">Drive File</string>
+
+    <!-- strings for Auth UI demo activities -->
+    <string name="start_chatting">No messages. Start chatting at the bottom!</string>
 </resources>
