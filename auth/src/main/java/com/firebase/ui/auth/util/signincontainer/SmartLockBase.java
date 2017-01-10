@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.ui.BaseFragment;
+import com.firebase.ui.auth.ui.FragmentBase;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.ConnectionResult;
@@ -25,58 +25,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class SmartLockBase<R extends Result> extends BaseFragment implements
+public abstract class SmartLockBase<R extends Result> extends FragmentBase implements
         GoogleApiClient.ConnectionCallbacks,
         ResultCallback<R>,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "SmartLockBase";
 
     protected GoogleApiClient mGoogleApiClient;
-    private boolean mWasProgressDialogShowing = false;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mWasProgressDialogShowing) {
-            mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
-            mWasProgressDialogShowing = false;
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mWasProgressDialogShowing = mHelper.isProgressDialogShowing();
-        mHelper.dismissDialog();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        cleanup();
-    }
-
-    public void cleanup() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        // Just wait
-    }
+    private boolean mWasProgressDialogShowing;
 
     /**
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to
@@ -143,5 +99,51 @@ public abstract class SmartLockBase<R extends Result> extends BaseFragment imple
         }
 
         return credentials;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mWasProgressDialogShowing) {
+            mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
+            mWasProgressDialogShowing = false;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mWasProgressDialogShowing = mHelper.isProgressDialogShowing();
+        mHelper.dismissDialog();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cleanup();
+    }
+
+    public void cleanup() {
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(getContext(),
+                       com.firebase.ui.auth.R.string.general_error,
+                       Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // Just wait
     }
 }

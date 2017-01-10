@@ -42,10 +42,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class GoogleProvider implements
         IdpProvider, OnClickListener, GoogleApiClient.OnConnectionFailedListener {
-
     private static final String TAG = "GoogleProvider";
     private static final int RC_SIGN_IN = 20;
     private static final String ERROR_KEY = "error";
+
     private GoogleApiClient mGoogleApiClient;
     private Activity mActivity;
     private IdpCallback mIDPCallback;
@@ -85,6 +85,10 @@ public class GoogleProvider implements
                 .build();
     }
 
+    public static AuthCredential createAuthCredential(IdpResponse response) {
+        return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
+    }
+
     public String getName(Context context) {
         return context.getResources().getString(R.string.idp_name_google);
     }
@@ -92,11 +96,6 @@ public class GoogleProvider implements
     @Override
     public String getProviderId() {
         return GoogleAuthProvider.PROVIDER_ID;
-    }
-
-
-    public static AuthCredential createAuthCredential(IdpResponse response) {
-        return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
     }
 
     @Override
@@ -111,7 +110,7 @@ public class GoogleProvider implements
         }
     }
 
-    private IdpResponse createIDPResponse(GoogleSignInAccount account) {
+    private IdpResponse createIdpResponse(GoogleSignInAccount account) {
         return new IdpResponse(
                 GoogleAuthProvider.PROVIDER_ID, account.getEmail(), account.getIdToken());
     }
@@ -122,7 +121,7 @@ public class GoogleProvider implements
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result != null) {
                 if (result.isSuccess()) {
-                    mIDPCallback.onSuccess(createIDPResponse(result.getSignInAccount()));
+                    mIDPCallback.onSuccess(createIdpResponse(result.getSignInAccount()));
                 } else {
                     onError(result);
                 }
@@ -140,7 +139,7 @@ public class GoogleProvider implements
 
     private void onError(GoogleSignInResult result) {
         String errorMessage = result.getStatus().getStatusMessage();
-        onError(String.valueOf(result.getStatus().getStatusCode()) + " " + errorMessage);
+        onError(result.getStatus().getStatusCode() + " " + errorMessage);
     }
 
     private void onError(String errorMessage) {

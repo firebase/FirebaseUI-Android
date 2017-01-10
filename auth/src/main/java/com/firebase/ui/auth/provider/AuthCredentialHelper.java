@@ -22,7 +22,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
-public class AuthCredentialHelper {
+public final class AuthCredentialHelper {
     @Nullable
     public static AuthCredential getAuthCredential(IdpResponse idpResponse) {
         switch (idpResponse.getProviderType()) {
