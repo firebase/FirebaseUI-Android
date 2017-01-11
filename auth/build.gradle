@@ -27,13 +27,6 @@ android {
             }
         }
     }
-
-    lintOptions {
-        // We have okio as a transitive dependency, which causes some lint errors due to
-        // using Java 8 nio packages. Safely downgrading them to warning.
-        // https://github.com/square/okio/issues/58
-        disable 'InvalidPackage'
-    }
 }
 
 dependencies {
