@@ -33,7 +33,11 @@ class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = "FirebaseIndexArray";
     private static final ChangeEventListener NOOP_CHANGE_LISTENER = new ChangeEventListener() {
         @Override
-        public void onChange(EventType type, int index, int oldIndex) {
+        public void onChildChanged(EventType type, int index, int oldIndex) {
+        }
+
+        @Override
+        public void onDataChanged() {
         }
 
         @Override
@@ -137,7 +141,7 @@ class FirebaseIndexArray extends FirebaseArray {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            mListener.onChange(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+            mListener.onChildChanged(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
         }
     }
 

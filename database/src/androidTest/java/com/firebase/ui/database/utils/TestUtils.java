@@ -61,8 +61,12 @@ public class TestUtils {
         final Semaphore semaphore = new Semaphore(0);
         array.setChangeEventListener(new FirebaseArray.ChangeEventListener() {
             @Override
-            public void onChange(EventType type, int index, int oldIndex) {
+            public void onChildChanged(EventType type, int index, int oldIndex) {
                 semaphore.release();
+            }
+
+            @Override
+            public void onDataChanged() {
             }
 
             @Override
