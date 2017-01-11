@@ -32,7 +32,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-class FirebaseIndexArray extends FirebaseArray {
+public class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = "FirebaseIndexArray";
     private static final ChangeEventListener NOOP_CHANGE_LISTENER = new ChangeEventListener() {
         @Override
@@ -44,8 +44,8 @@ class FirebaseIndexArray extends FirebaseArray {
         }
     };
 
+    protected JoinResolver mJoinResolver;
     private ChangeEventListener mListenerCopy;
-    private JoinResolver mJoinResolver;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 

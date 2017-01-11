@@ -75,8 +75,8 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         extends RecyclerView.Adapter<VH> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
-    FirebaseArray mSnapshots;
-    private Class<T> mModelClass;
+    protected FirebaseArray mSnapshots;
+    protected Class<T> mModelClass;
     protected Class<VH> mViewHolderClass;
     protected int mModelLayout;
 

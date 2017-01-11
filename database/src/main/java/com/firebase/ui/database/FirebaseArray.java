@@ -30,7 +30,7 @@ import java.util.ListIterator;
 /**
  * This class implements a collection on top of a Firebase location.
  */
-class FirebaseArray implements ChildEventListener, List<DataSnapshot> {
+public class FirebaseArray implements ChildEventListener, List<DataSnapshot> {
     public interface ChangeEventListener {
         enum EventType {ADDED, CHANGED, REMOVED, MOVED}
 
