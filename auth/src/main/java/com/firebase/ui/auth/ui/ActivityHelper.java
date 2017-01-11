@@ -20,6 +20,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -33,6 +34,7 @@ public class ActivityHelper extends BaseHelper {
     }
 
     public void configureTheme() {
+        mActivity.setTheme(R.style.FirebaseUI); // Provides default values
         mActivity.setTheme(getFlowParams().themeId);
     }
 
