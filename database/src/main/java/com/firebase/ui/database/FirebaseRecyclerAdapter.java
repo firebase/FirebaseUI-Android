@@ -96,26 +96,15 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                FirebaseRecyclerAdapter.this.onCancelled(error);
-            }
-
-            @Override
             public void onDataChanged() {
                 FirebaseRecyclerAdapter.this.onDataChanged();
             }
-        });
-    }
 
-    /* This method will be triggered each time updates from the database have been completely processed.
-     * So the first time this method is called, the initial data has been loaded - including the case
-     * when no data at all is available. Each next time the method is called, a complete update (potentially
-     * consisting of updates to multiple child items) has been completed.
-     * <p>
-     * You would typically override this method to hide a loading indicator (after the initial load) or
-     * to complete a batch update to a UI element.
-     */
-    protected void onDataChanged() {
+            @Override
+            public void onCancelled(DatabaseError error) {
+                FirebaseRecyclerAdapter.this.onCancelled(error);
+            }
+        });
     }
 
     /**
@@ -217,6 +206,12 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
             default:
                 throw new IllegalStateException("Incomplete case statement");
         }
+    }
+
+    /**
+     * @see ChangeEventListener#onDataChanged()
+     */
+    protected void onDataChanged() {
     }
 
     /**
