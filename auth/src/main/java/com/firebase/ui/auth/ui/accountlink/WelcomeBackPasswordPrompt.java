@@ -20,6 +20,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -53,6 +54,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming
  * the password before initiating a link.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "WelcomeBackPassword";
 
@@ -62,6 +64,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     private IdpResponse mIdpResponse;
     @Nullable
     private SaveSmartLock mSaveSmartLock;
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            IdpResponse response) {
+        return BaseHelper.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +89,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         mPasswordField = (EditText) findViewById(R.id.password);
 
         // Create welcome back text with email bolded
-        String bodyText = getResources().getString(R.string.welcome_back_password_prompt_body);
-        bodyText = String.format(bodyText, mEmail);
+        String bodyText = getString(R.string.welcome_back_password_prompt_body, mEmail);
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
@@ -164,13 +173,5 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                         mPasswordLayout.setError(error);
                     }
                 });
-    }
-
-    public static Intent createIntent(
-            Context context,
-            FlowParameters flowParams,
-            IdpResponse response) {
-        return BaseHelper.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }
 }

@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 23)
+@Config(constants = BuildConfig.class, sdk = 25)
 public class RegisterEmailActivityTest {
 
     private RegisterEmailActivity createActivity() {
@@ -93,7 +93,7 @@ public class RegisterEmailActivityTest {
         assertEquals(
                 String.format(
                         registerEmailActivity.getResources().getQuantityString(
-                                R.plurals.password_length,
+                                R.plurals.error_weak_password,
                                 R.integer.min_password_length),
                         registerEmailActivity.getResources()
                                 .getInteger(R.integer.min_password_length)

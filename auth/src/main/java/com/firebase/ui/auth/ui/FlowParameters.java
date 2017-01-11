@@ -18,6 +18,7 @@ import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
@@ -29,8 +30,8 @@ import java.util.List;
  * Encapsulates the core parameters and data captured during the authentication flow, in
  * a serializable manner, in order to pass data between activities.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FlowParameters implements Parcelable {
-
     @NonNull
     public final String appName;
 

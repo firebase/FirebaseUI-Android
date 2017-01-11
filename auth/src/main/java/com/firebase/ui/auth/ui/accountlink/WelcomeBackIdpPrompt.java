@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,11 +53,22 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     private static final String TAG = "WelcomeBackIdpPrompt";
 
     private IdpProvider mIdpProvider;
     private AuthCredential mPrevCredential;
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            User existingUser,
+            IdpResponse newUserResponse) {
+        return BaseHelper.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
+                .putExtra(ExtraConstants.EXTRA_USER, existingUser)
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, newUserResponse);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +125,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     private String getIdpPromptString(String email) {
-        String promptStringTemplate = getResources().getString(R.string.welcome_back_idp_prompt);
-        return String.format(promptStringTemplate, email, mIdpProvider.getName(this));
+        return getString(R.string.welcome_back_idp_prompt, email, mIdpProvider.getName(this));
     }
 
     @Override
@@ -179,16 +190,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     private void finishWithError() {
         Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
         finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-    }
-
-    public static Intent createIntent(
-            Context context,
-            FlowParameters flowParams,
-            User existingUser,
-            IdpResponse newUserResponse) {
-        return BaseHelper.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_USER, existingUser)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, newUserResponse);
     }
 
     private class FinishListener implements OnCompleteListener<AuthResult> {

@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
@@ -36,11 +37,17 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 /**
  * Activity to initiate the "forgot password" flow by asking for the user's email.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "RecoverPasswordActivity";
 
     private EditText mEmailEditText;
     private EmailFieldValidator mEmailFieldValidator;
+
+    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
+        return BaseHelper.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +91,6 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 });
     }
 
-
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button_done) {
@@ -93,10 +99,5 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 next(mEmailEditText.getText().toString());
             }
         }
-    }
-
-    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return BaseHelper.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

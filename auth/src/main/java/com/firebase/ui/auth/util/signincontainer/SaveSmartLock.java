@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -42,6 +43,7 @@ import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseUser;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SaveSmartLock extends SmartLockBase<Status> {
     private static final String TAG = "SaveSmartLock";
     private static final int RC_SAVE = 100;
@@ -52,6 +54,28 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     private String mPassword;
     private String mProfilePictureUri;
     private IdpResponse mResponse;
+
+    @Nullable
+    public static SaveSmartLock getInstance(FragmentActivity activity, FlowParameters parameters) {
+        SaveSmartLock result;
+
+        FragmentManager fm = activity.getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(TAG);
+        if (!(fragment instanceof SaveSmartLock)) {
+            result = new SaveSmartLock();
+            result.setArguments(FragmentHelper.getFlowParamsBundle(parameters));
+            try {
+                fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
+            } catch (IllegalStateException e) {
+                Log.e(TAG, "Cannot add fragment", e);
+                return null;
+            }
+        } else {
+            result = (SaveSmartLock) fragment;
+        }
+
+        return result;
+    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -157,7 +181,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     /**
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise, finish the calling Activity with {@link ResultCodes#OK RESULT_OK}.
-     *
+     * <p>
      * Note: saveCredentialsOrFinish cannot be called immediately after getInstance because
      * onCreate has not yet been called.
      *
@@ -188,27 +212,5 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                 .enableAutoManage(getActivity(), GoogleApiConstants.AUTO_MANAGE_ID2, this)
                 .build();
         mGoogleApiClient.connect();
-    }
-
-    @Nullable
-    public static SaveSmartLock getInstance(FragmentActivity activity, FlowParameters parameters) {
-        SaveSmartLock result;
-
-        FragmentManager fm = activity.getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(TAG);
-        if (!(fragment instanceof SaveSmartLock)) {
-            result = new SaveSmartLock();
-            result.setArguments(FragmentHelper.getFlowParamsBundle(parameters));
-            try {
-                fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
-            } catch (IllegalStateException e) {
-                Log.e(TAG, "Cannot add fragment", e);
-                return null;
-            }
-        } else {
-            result = (SaveSmartLock) fragment;
-        }
-
-        return result;
     }
 }

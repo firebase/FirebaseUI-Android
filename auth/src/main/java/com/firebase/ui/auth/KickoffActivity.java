@@ -5,16 +5,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.annotation.RestrictTo;
 import android.util.Log;
 
 import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.firebase.ui.auth.util.signincontainer.SignInDelegate;
 
-public class KickoffActivity extends AppCompatBase {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+public class KickoffActivity extends HelperActivityBase {
     private static final String TAG = "KickoffActivity";
     private static final String IS_WAITING_FOR_PLAY_SERVICES = "is_waiting_for_play_services";
     private static final int RC_PLAY_SERVICES = 1;
@@ -28,6 +30,7 @@ public class KickoffActivity extends AppCompatBase {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+
         if (savedInstance == null || savedInstance.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
             if (isOffline()) {
                 Log.d(TAG, "No network connection");
@@ -49,7 +52,7 @@ public class KickoffActivity extends AppCompatBase {
                     });
 
             if (isPlayServicesAvailable) {
-                SignInDelegate.delegate(KickoffActivity.this, mActivityHelper.getFlowParams());
+                SignInDelegate.delegate(this, mActivityHelper.getFlowParams());
             } else {
                 mIsWaitingForPlayServices = true;
             }
@@ -69,7 +72,7 @@ public class KickoffActivity extends AppCompatBase {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_PLAY_SERVICES) {
             if (resultCode == ResultCodes.OK) {
-                SignInDelegate.delegate(KickoffActivity.this, mActivityHelper.getFlowParams());
+                SignInDelegate.delegate(this, mActivityHelper.getFlowParams());
             } else {
                 finish(ResultCodes.CANCELED,
                        IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));

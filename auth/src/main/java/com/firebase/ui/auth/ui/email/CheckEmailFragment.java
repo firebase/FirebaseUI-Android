@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,9 +17,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.BaseFragment;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
@@ -40,15 +41,15 @@ import java.util.List;
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that
  * email.
- *
+ * <p>
  * Host Activities should implement {@link CheckEmailListener}.
  */
-public class CheckEmailFragment extends BaseFragment implements View.OnClickListener {
-
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+public class CheckEmailFragment extends FragmentBase implements View.OnClickListener {
     /**
      * Interface to be implemented by Activities hosting this Fragment.
      */
-     interface CheckEmailListener {
+    interface CheckEmailListener {
 
         /**
          * Email entered belongs to an existing email user.
@@ -96,7 +97,6 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         View v = inflater.inflate(R.layout.check_email_layout, container, false);
 
         // Email field and validator
@@ -113,11 +113,6 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        // Set title
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setTitle(R.string.title_check_email);
-        }
 
         // Set listener
         if (!(getActivity() instanceof CheckEmailListener)) {
@@ -185,44 +180,49 @@ public class CheckEmailFragment extends BaseFragment implements View.OnClickList
                     .fetchProvidersForEmail(email)
                     .addOnFailureListener(
                             new TaskFailureLogger(TAG, "Error fetching providers for email"))
-                    .addOnCompleteListener(getActivity(), new OnCompleteListener<ProviderQueryResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                            mHelper.dismissDialog();
-                        }
-                    })
-                    .addOnSuccessListener(getActivity(), new OnSuccessListener<ProviderQueryResult>() {
-                        @Override
-                        public void onSuccess(ProviderQueryResult result) {
-                            List<String> providers = result.getProviders();
-                            if (providers == null || providers.isEmpty()) {
-                                // Get name from SmartLock, if possible
-                                String name = null;
-                                Uri photoUri = null;
-                                if (mLastCredential != null && mLastCredential.getId().equals(email)) {
-                                    name = mLastCredential.getName();
-                                    photoUri = mLastCredential.getProfilePictureUri();
+                    .addOnCompleteListener(
+                            getActivity(),
+                            new OnCompleteListener<ProviderQueryResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                                    mHelper.dismissDialog();
                                 }
+                            })
+                    .addOnSuccessListener(
+                            getActivity(),
+                            new OnSuccessListener<ProviderQueryResult>() {
+                                @Override
+                                public void onSuccess(ProviderQueryResult result) {
+                                    List<String> providers = result.getProviders();
+                                    if (providers == null || providers.isEmpty()) {
+                                        // Get name from SmartLock, if possible
+                                        String name = null;
+                                        Uri photoUri = null;
+                                        if (mLastCredential != null && mLastCredential.getId().equals(email)) {
+                                            name = mLastCredential.getName();
+                                            photoUri = mLastCredential.getProfilePictureUri();
+                                        }
 
-                                mListener.onNewUser(new User.Builder(email)
-                                                            .setName(name)
-                                                            .setPhotoUri(photoUri)
-                                                            .build());
-                            } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(providers.get(0))) {
-                                mListener.onExistingEmailUser(new User.Builder(email).build());
-                            } else {
-                                mListener.onExistingIdpUser(new User.Builder(email)
-                                                                    .setProvider(providers.get(0))
+                                        mListener.onNewUser(new User.Builder(email)
+                                                                    .setName(name)
+                                                                    .setPhotoUri(photoUri)
                                                                     .build());
-                            }
-                        }
-                    });
+                                    } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(providers.get(0))) {
+                                        mListener.onExistingEmailUser(new User.Builder(email).build());
+                                    } else {
+                                        mListener.onExistingIdpUser(
+                                                new User.Builder(email)
+                                                        .setProvider(providers.get(0))
+                                                        .build());
+                                    }
+                                }
+                            });
         }
     }
 
     private void showEmailAutoCompleteHint() {
         try {
-            startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT, null, 0, 0, 0, null);
+            mHelper.startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }

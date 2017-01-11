@@ -3,9 +3,11 @@ package com.firebase.ui.auth.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.annotation.RestrictTo;
+import android.support.v4.app.DialogFragment;
 
-public class BaseFragment extends Fragment {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+public class DialogBase extends DialogFragment {
     protected FragmentHelper mHelper;
 
     @Override

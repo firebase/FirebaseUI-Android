@@ -69,7 +69,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
         mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
             @Override
-            public void onChanged(EventType type, int index, int oldIndex) {
+            public void onChildChanged(EventType type, int index, int oldIndex) {
                 notifyDataSetChanged();
             }
 
@@ -77,7 +77,24 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             public void onCancelled(DatabaseError databaseError) {
                 FirebaseListAdapter.this.onCancelled(databaseError);
             }
+
+            @Override
+            public void onDataChanged() {
+                FirebaseListAdapter.this.onDataChanged();
+            }
         });
+    }
+
+
+    /* This method will be triggered each time updates from the database have been completely processed.
+     * So the first time this method is called, the initial data has been loaded - including the case
+     * when no data at all is available. Each next time the method is called, a complete update (potentially
+     * consisting of updates to multiple child items) has been completed.
+     * <p>
+     * You would typically override this method to hide a loading indicator (after the initial load) or
+     * to complete a batch update to a UI element.
+     */
+    protected void onDataChanged() {
     }
 
     /**
