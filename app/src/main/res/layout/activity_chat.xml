@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".database.ChatActivity">
 
+    <TextView
+        android:id="@+id/emptyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_chatting"
+        android:padding="16dp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messagesList"
         android:layout_width="match_parent"

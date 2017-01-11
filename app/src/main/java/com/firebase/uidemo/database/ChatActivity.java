@@ -52,6 +52,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private RecyclerView mMessages;
     private LinearLayoutManager mManager;
     private FirebaseRecyclerAdapter<Chat, ChatHolder> mRecyclerViewAdapter;
+    private View mEmptyListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
+        mEmptyListView = findViewById(R.id.emptyTextView);
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         mChatIndicesRef = ref.child("chatIndices");
@@ -144,14 +146,20 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         chatView.setName(chat.getName());
                         chatView.setText(chat.getMessage());
 
-                        FirebaseUser currentUser = mAuth.getCurrentUser();
-                        if (currentUser != null && chat.getUid().equals(currentUser.getUid())) {
-                            chatView.setIsSender(true);
-                        } else {
-                            chatView.setIsSender(false);
-                        }
-                    }
-                };
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                if (currentUser != null && chat.getUid().equals(currentUser.getUid())) {
+                    chatView.setIsSender(true);
+                } else {
+                    chatView.setIsSender(false);
+                }
+            }
+
+            @Override
+            protected void onDataChanged() {
+                // if there are no chat messages, show a view that invites the user to add a message
+                mEmptyListView.setVisibility(mRecyclerViewAdapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
+            }
+        };
 
         // Scroll to bottom on new messages
         mRecyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
