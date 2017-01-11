@@ -149,10 +149,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         return parseSnapshot(mSnapshots.getItem(position));
     }
 
-    public List<T> getItems() {
-        List<T> items = new ArrayList<>(getItemCount());
+    public List<DataSnapshot> getItems() {
+        List<DataSnapshot> items = new ArrayList<>(getItemCount());
         for (int i = 0; i < getItemCount(); i++) {
-            items.add(getItem(i));
+            items.add(mSnapshots.getItem(i));
         }
         return items;
     }
