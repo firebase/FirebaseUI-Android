@@ -1,0 +1,10 @@
+project.ext.firebase_version = '10.0.1'
+project.ext.support_library_version = '25.1.0'
+
+project.ext.submodules = ['database', 'auth', 'storage']
+project.ext.group = 'com.firebaseui'
+project.ext.version = '1.1.0'
+project.ext.pomdesc = 'Firebase UI Android'
+project.ext.buildTools = '25.0.2'
+project.ext.compileSdk = 25
+project.ext.targetSdk = 25

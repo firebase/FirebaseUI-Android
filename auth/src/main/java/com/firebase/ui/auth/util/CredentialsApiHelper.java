@@ -15,17 +15,10 @@
 package com.firebase.ui.auth.util;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.support.annotation.NonNull;
 
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
-import com.google.android.gms.auth.api.credentials.HintRequest;
-import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
@@ -34,15 +27,11 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A {@link com.google.android.gms.tasks.Task Task} based wrapper for the Smart Lock for Passwords
  * API.
  */
 public class CredentialsApiHelper {
-
     @NonNull
     private final GoogleApiClientTaskHelper mClientHelper;
 
@@ -50,64 +39,16 @@ public class CredentialsApiHelper {
         mClientHelper = gacHelper;
     }
 
-    public CredentialRequest createCredentialRequest(List<IdpConfig> providers) {
-        boolean emailSupported = false;
-        ArrayList<String> idps = new ArrayList<>();
-        for (IdpConfig provider : providers) {
-            String providerId = provider.getProviderId();
-            if (AuthUI.EMAIL_PROVIDER.equals(providerId)) {
-                emailSupported = true;
-            } else if (AuthUI.GOOGLE_PROVIDER.equals(providerId)) {
-                idps.add(IdentityProviders.GOOGLE);
-            } else if (AuthUI.FACEBOOK_PROVIDER.equals(providerId)) {
-                idps.add(IdentityProviders.FACEBOOK);
-            } else if (AuthUI.TWITTER_PROVIDER.equals(providerId)) {
-                idps.add(IdentityProviders.TWITTER);
-            }
-        }
+    public static CredentialsApiHelper getInstance(Activity activity) {
+        // Get a task helper with the Credentials Api
+        GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
+        taskHelper.getBuilder().addApi(Auth.CREDENTIALS_API);
 
-        return new CredentialRequest.Builder()
-                .setPasswordLoginSupported(emailSupported)
-                .setAccountTypes(idps.toArray(new String[idps.size()]))
-                .build();
+        return getInstance(taskHelper);
     }
 
-    public Task<CredentialRequestResult> request(final CredentialRequest request) {
-        return mClientHelper.getConnectedGoogleApiClient().continueWithTask(
-                new ExceptionForwardingContinuation<GoogleApiClient, CredentialRequestResult>() {
-                    @Override
-                    protected void process(
-                            final GoogleApiClient client,
-                            final TaskCompletionSource<CredentialRequestResult> source) {
-                        Auth.CredentialsApi.request(client, request)
-                                .setResultCallback(new TaskResultCaptor<>(source));
-                    }
-                });
-    }
-
-    public Task<Status> save(final Credential credential) {
-        return mClientHelper.getConnectedGoogleApiClient().continueWithTask(
-                new ExceptionForwardingContinuation<GoogleApiClient, Status>() {
-                    @Override
-                    protected void process(
-                            GoogleApiClient client,
-                            TaskCompletionSource<Status> source) {
-                        Auth.CredentialsApi.save(client, credential)
-                                .setResultCallback(new TaskResultCaptor<>(source));
-                    }
-                });
-    }
-
-    public Task<PendingIntent> getHintPickerIntent(final HintRequest request) {
-        return mClientHelper.getConnectedGoogleApiClient().continueWithTask(
-                new ExceptionForwardingContinuation<GoogleApiClient, PendingIntent>() {
-                    @Override
-                    protected void process(
-                            GoogleApiClient client,
-                            TaskCompletionSource<PendingIntent> source) {
-                        source.setResult(Auth.CredentialsApi.getHintPickerIntent(client, request));
-                    }
-                });
+    public static CredentialsApiHelper getInstance(GoogleApiClientTaskHelper taskHelper) {
+        return new CredentialsApiHelper(taskHelper);
     }
 
     public Task<Status> delete(final Credential credential) {
@@ -141,20 +82,7 @@ public class CredentialsApiHelper {
                 });
     }
 
-    public static CredentialsApiHelper getInstance(Activity activity) {
-        // Get a task helper with the Credentials Api
-        GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
-        taskHelper.getBuilder()
-                .addApi(Auth.CREDENTIALS_API);
-
-        return getInstance(taskHelper);
-    }
-
-    public static CredentialsApiHelper getInstance(GoogleApiClientTaskHelper taskHelper) {
-        return new CredentialsApiHelper(taskHelper);
-    }
-
-    private static abstract class ExceptionForwardingContinuation<InT, OutT>
+    private abstract static class ExceptionForwardingContinuation<InT, OutT>
             implements Continuation<InT, Task<OutT>> {
 
         @Override

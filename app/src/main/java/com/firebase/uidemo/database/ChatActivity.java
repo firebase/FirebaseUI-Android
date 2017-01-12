@@ -46,9 +46,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+@SuppressWarnings("LogConditional")
 public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
-
-    public static final String TAG = "RecyclerViewDemo";
+    private static final String TAG = "RecyclerViewDemo";
 
     private FirebaseAuth mAuth;
     private DatabaseReference mRef;
@@ -59,6 +59,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private RecyclerView mMessages;
     private LinearLayoutManager mManager;
     private FirebaseRecyclerAdapter<Chat, ChatHolder> mRecyclerViewAdapter;
+    private View mEmptyListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
 
+        mEmptyListView = findViewById(R.id.emptyTextView);
+
         mRef = FirebaseDatabase.getInstance().getReference();
         mChatRef = mRef.child("chats");
 
@@ -80,7 +83,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 String uid = mAuth.getCurrentUser().getUid();
                 String name = "User " + uid.substring(0, 6);
 
-                Chat chat = new Chat(name, uid, mMessageEdit.getText().toString());
+                Chat chat = new Chat(name, mMessageEdit.getText().toString(), uid);
                 mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
@@ -146,7 +149,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {
                 chatView.setName(chat.getName());
-                chatView.setText(chat.getText());
+                chatView.setText(chat.getMessage());
 
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null && chat.getUid().equals(currentUser.getUid())) {
@@ -154,6 +157,12 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 } else {
                     chatView.setIsSender(false);
                 }
+            }
+
+            @Override
+            protected void onDataChanged() {
+                // if there are no chat messages, show a view that invites the user to add a message
+                mEmptyListView.setVisibility(mRecyclerViewAdapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
             }
         };
 
@@ -188,7 +197,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     public boolean isSignedIn() {
-        return (mAuth.getCurrentUser() != null);
+        return mAuth.getCurrentUser() != null;
     }
 
     public void updateUI() {
@@ -198,30 +207,42 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     public static class Chat {
-
-        String name;
-        String text;
-        String uid;
+        private String mName;
+        private String mMessage;
+        private String mUid;
 
         public Chat() {
+            // Needed for Firebase
         }
 
-        public Chat(String name, String uid, String message) {
-            this.name = name;
-            this.text = message;
-            this.uid = uid;
+        public Chat(String name, String message, String uid) {
+            mName = name;
+            mMessage = message;
+            mUid = uid;
         }
 
         public String getName() {
-            return name;
+            return mName;
+        }
+
+        public void setName(String name) {
+            mName = name;
+        }
+
+        public String getMessage() {
+            return mMessage;
+        }
+
+        public void setMessage(String message) {
+            mMessage = message;
         }
 
         public String getUid() {
-            return uid;
+            return mUid;
         }
 
-        public String getText() {
-            return text;
+        public void setUid(String uid) {
+            mUid = uid;
         }
     }
 

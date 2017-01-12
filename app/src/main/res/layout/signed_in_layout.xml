@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp"
     tools:context=".auth.SignedInActivity">
 
     <LinearLayout
@@ -12,7 +15,6 @@
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
-        android:layout_marginTop="16dp"
         android:orientation="vertical">
 
         <TextView
@@ -45,7 +47,8 @@
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
                 android:text="@string/delete_account_label"
-                android:theme="@style/WarnButton"/>
+                android:theme="@style/WarnButton"
+                tools:ignore="ButtonStyle"/>
 
         </LinearLayout>
 
@@ -78,17 +81,20 @@
                 <TextView
                     android:id="@+id/user_email"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="true"/>
 
                 <TextView
                     android:id="@+id/user_display_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="true"/>
 
                 <TextView
                     android:id="@+id/user_enabled_providers"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="true"/>
 
             </LinearLayout>
 
@@ -96,8 +102,8 @@
 
         <LinearLayout
             android:id="@+id/idp_token_layout"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -109,14 +115,15 @@
             <TextView
                 android:id="@+id/idp_token"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/idp_secret_layout"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -128,7 +135,8 @@
             <TextView
                 android:id="@+id/idp_secret"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true"/>
 
         </LinearLayout>
 

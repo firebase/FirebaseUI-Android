@@ -15,20 +15,20 @@
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Upload"/>
+        android:text="@string/upload"/>
 
     <Button
         android:id="@+id/button_choose_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose Image"/>
+        android:text="@string/choose_image"/>
 
     <TextView
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Download"/>
+        android:text="@string/download"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Download"/>
+            android:text="@string/download"/>
 
     </LinearLayout>
 
@@ -48,6 +48,7 @@
         android:id="@+id/first_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@string/accessibility_downloaded_image"
         android:scaleType="centerCrop"
         android:src="#E6E6E6"
         android:visibility="invisible"

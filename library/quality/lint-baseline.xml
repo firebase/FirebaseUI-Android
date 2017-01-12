@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="4" by="lint 2.3.0-alpha2">
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.facebook_button` appears to be unused"
+        errorLine1="    android:id=&quot;@+id/facebook_button&quot;/>
+"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src\main\res\layout\idp_button_facebook.xml"
+            line="5"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.google_button` appears to be unused"
+        errorLine1="    android:id=&quot;@+id/google_button&quot;/>
+"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src\main\res\layout\idp_button_google.xml"
+            line="5"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedIds"
+        message="The resource `R.id.twitter_button` appears to be unused"
+        errorLine1="    android:id=&quot;@+id/twitter_button&quot;/>
+"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src\main\res\layout\idp_button_twitter.xml"
+            line="5"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="SelectableText"
+        message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
+        errorLine1="        &lt;TextView
+"
+        errorLine2="        ^">
+        <location
+            file="src\main\res\layout\register_email_layout.xml"
+            line="79"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="SelectableText"
+        message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
+        errorLine1="    &lt;TextView
+"
+        errorLine2="    ^">
+        <location
+            file="src\main\res\layout\welcome_back_idp_prompt_layout.xml"
+            line="16"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="SelectableText"
+        message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
+        errorLine1="    &lt;TextView
+"
+        errorLine2="    ^">
+        <location
+            file="src\main\res\layout\welcome_back_password_prompt_layout.xml"
+            line="15"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.google_crash_reporting_api_key` appears to be unused"
+        errorLine1="    &lt;string name=&quot;google_crash_reporting_api_key&quot; translatable=&quot;false&quot;>AIzaSyAZYK9Jx9o0iR0XTVno_lX4a5GmhSt2sKA&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build/generated/res/google-services/release/values/values.xml"
+            line="8"
+            column="13"/>
+        <location
+            file="build/generated/res/google-services/debug/values/values.xml"
+            line="8"
+            column="13"/>
+    </issue>
+
+</issues>

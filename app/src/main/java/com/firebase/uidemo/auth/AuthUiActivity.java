@@ -33,8 +33,9 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.ResultCodes;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.uidemo.R;
 import com.google.android.gms.common.Scopes;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,7 +51,7 @@ import butterknife.OnClick;
 public class AuthUiActivity extends AppCompatActivity {
     private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
-    private static final String FIREBASE_TOS_URL = "https://www.firebase.com/terms/terms-of-service.html";
+    private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
     private static final int RC_SIGN_IN = 100;
 
     @BindView(R.id.default_theme)
@@ -86,7 +87,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.sign_in)
     Button mSignIn;
 
-    @BindView(android.R.id.content)
+    @BindView(R.id.root)
     View mRootView;
 
     @BindView(R.id.firebase_logo)
@@ -199,20 +200,30 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            startActivity(SignedInActivity.createIntent(this, IdpResponse.fromResultIntent(data)));
+        IdpResponse response = IdpResponse.fromResultIntent(data);
+
+        // Successfully signed in
+        if (resultCode == ResultCodes.OK) {
+            startActivity(SignedInActivity.createIntent(this, response));
             finish();
             return;
-        }
+        } else {
+            // Sign in failed
+            if (response == null) {
+                // User pressed back button
+                showSnackbar(R.string.sign_in_cancelled);
+                return;
+            }
 
-        if (resultCode == RESULT_CANCELED) {
-            showSnackbar(R.string.sign_in_cancelled);
-            return;
-        }
+            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                showSnackbar(R.string.no_internet_connection);
+                return;
+            }
 
-        if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
-            showSnackbar(R.string.no_internet_connection);
-            return;
+            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                showSnackbar(R.string.unknown_error);
+                return;
+            }
         }
 
         showSnackbar(R.string.unknown_sign_in_response);
@@ -269,6 +280,10 @@ public class AuthUiActivity extends AppCompatActivity {
             selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
         }
 
+        if (mUseTwitterProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+        }
+
         if (mUseFacebookProvider.isChecked()) {
             selectedProviders.add(
                     new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
@@ -281,10 +296,6 @@ public class AuthUiActivity extends AppCompatActivity {
                     new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
                             .setPermissions(getGooglePermissions())
                             .build());
-        }
-
-        if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
         }
 
         return selectedProviders;
@@ -302,20 +313,20 @@ public class AuthUiActivity extends AppCompatActivity {
     @MainThread
     private boolean isGoogleConfigured() {
         return !UNCHANGED_CONFIG_VALUE.equals(
-                getResources().getString(R.string.default_web_client_id));
+                getString(R.string.default_web_client_id));
     }
 
     @MainThread
     private boolean isFacebookConfigured() {
         return !UNCHANGED_CONFIG_VALUE.equals(
-                getResources().getString(R.string.facebook_application_id));
+                getString(R.string.facebook_application_id));
     }
 
     @MainThread
     private boolean isTwitterConfigured() {
         List<String> twitterConfigs = Arrays.asList(
-                getResources().getString(R.string.twitter_consumer_key),
-                getResources().getString(R.string.twitter_consumer_secret)
+                getString(R.string.twitter_consumer_key),
+                getString(R.string.twitter_consumer_secret)
         );
 
         return !twitterConfigs.contains(UNCHANGED_CONFIG_VALUE);

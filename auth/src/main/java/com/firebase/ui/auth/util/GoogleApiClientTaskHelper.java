@@ -66,6 +66,28 @@ public class GoogleApiClientTaskHelper {
         activity.getApplication().registerActivityLifecycleCallbacks(new GacLifecycleCallbacks());
     }
 
+    /**
+     * Retrieve the instance for the specified activity, reusing an instance if it exists,
+     * otherwise creates a new one.
+     */
+    public static GoogleApiClientTaskHelper getInstance(Activity activity) {
+        GoogleApiClientTaskHelper helper;
+        synchronized (INSTANCES) {
+            helper = INSTANCES.get(activity);
+            if (helper == null) {
+                helper = new GoogleApiClientTaskHelper(activity);
+                INSTANCES.put(activity, helper);
+            }
+        }
+        return helper;
+    }
+
+    private static void clearInstance(Activity activity) {
+        synchronized (INSTANCES) {
+            INSTANCES.remove(activity);
+        }
+    }
+
     public Task<GoogleApiClient> getConnectedGoogleApiClient() {
         final TaskCompletionSource<GoogleApiClient> source = new TaskCompletionSource<>();
         if (!mConnectTaskRef.compareAndSet(null, source)) {
@@ -109,33 +131,11 @@ public class GoogleApiClientTaskHelper {
         return mBuilder;
     }
 
-    /**
-     * Retrieve the instance for the specified activity, reusing an instance if it exists,
-     * otherwise creates a new one.
-     */
-    public static GoogleApiClientTaskHelper getInstance(Activity activity) {
-        GoogleApiClientTaskHelper helper;
-        synchronized (INSTANCES) {
-            helper = INSTANCES.get(activity);
-            if (helper == null) {
-                helper = new GoogleApiClientTaskHelper(activity);
-                INSTANCES.put(activity, helper);
-            }
-        }
-        return helper;
-    }
-
-    private static void clearInstance(Activity activity) {
-        synchronized (INSTANCES) {
-            INSTANCES.remove(activity);
-        }
-    }
-
     private final class GacLifecycleCallbacks extends AbstractActivityLifecycleCallbacks {
 
         @Override
         public void onActivityStarted(Activity activity) {
-            if (mActivity == activity) {
+            if (mActivity.equals(activity)) {
                 GoogleApiClient client = mClientRef.get();
                 if (client != null) {
                     client.connect();
@@ -145,7 +145,7 @@ public class GoogleApiClientTaskHelper {
 
         @Override
         public void onActivityStopped(Activity activity) {
-            if (mActivity == activity) {
+            if (mActivity.equals(activity)) {
                 GoogleApiClient client = mClientRef.get();
                 if (client != null) {
                     client.disconnect();
