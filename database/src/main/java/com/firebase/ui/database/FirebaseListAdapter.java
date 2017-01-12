@@ -131,10 +131,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         return parseSnapshot(mSnapshots.getItem(position));
     }
 
-    public List<DataSnapshot> getItems() {
-        List<DataSnapshot> items = new ArrayList<>(getCount());
+    public List<T> getItems() {
+        List<T> items = new ArrayList<>(getCount());
         for (int i = 0; i < getCount(); i++) {
-            items.add(mSnapshots.getItem(i));
+            items.add(getItem(i));
         }
         return items;
     }
@@ -152,6 +152,14 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
     public DatabaseReference getRef(int position) {
         return mSnapshots.getItem(position).getRef();
+    }
+
+    public List<DataSnapshot> getSnapshots() {
+        List<DataSnapshot> items = new ArrayList<>(getCount());
+        for (int i = 0; i < getCount(); i++) {
+            items.add(mSnapshots.getItem(i));
+        }
+        return items;
     }
 
     @Override
