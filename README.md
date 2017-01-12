@@ -67,8 +67,8 @@ For convenience, here are some examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
-| 1.1.0              | 10.0.1                         |
-| 1.0.1              | 10.0.0                         |
+| 1.1.0              | 10.0.0 or 10.0.1               |
+| 1.0.1              | 10.0.0 or 10.0.1               |
 | 1.0.0              | 9.8.0                          |
 | 0.6.2              | 9.8.0                          |
 | 0.6.1              | 9.6.1                          |
