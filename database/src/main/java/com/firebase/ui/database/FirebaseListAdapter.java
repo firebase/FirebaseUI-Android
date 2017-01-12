@@ -51,7 +51,7 @@ import java.util.List;
  * </pre>
  *
  * @param <T> The class type to use as a model for the data
- *           contained in the children of the given Firebase location
+ *            contained in the children of the given Firebase location
  */
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     private static final String TAG = FirebaseListAdapter.class.getSimpleName();
@@ -86,18 +86,6 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
                 FirebaseListAdapter.this.onDataChanged();
             }
         });
-    }
-
-
-    /* This method will be triggered each time updates from the database have been completely processed.
-     * So the first time this method is called, the initial data has been loaded - including the case
-     * when no data at all is available. Each next time the method is called, a complete update (potentially
-     * consisting of updates to multiple child items) has been completed.
-     * <p>
-     * You would typically override this method to hide a loading indicator (after the initial load) or
-     * to complete a batch update to a UI element.
-     */
-    protected void onDataChanged() {
     }
 
     /**
@@ -179,6 +167,18 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         // Call out to subclass to marshall this model into the provided view
         populateView(view, model, position);
         return view;
+    }
+
+    /**
+     * This method will be triggered each time updates from the database have been completely processed.
+     * So the first time this method is called, the initial data has been loaded - including the case
+     * when no data at all is available. Each next time the method is called, a complete update (potentially
+     * consisting of updates to multiple child items) has been completed.
+     * <p>
+     * You would typically override this method to hide a loading indicator (after the initial load) or
+     * to complete a batch update to a UI element.
+     */
+    protected void onDataChanged() {
     }
 
     /**

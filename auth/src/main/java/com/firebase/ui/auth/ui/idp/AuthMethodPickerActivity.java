@@ -21,8 +21,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
@@ -111,7 +111,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
             }
         }
 
-        LinearLayout btnHolder = (LinearLayout) findViewById(R.id.btn_holder);
+        ViewGroup btnHolder = (ViewGroup) findViewById(R.id.btn_holder);
         for (final IdpProvider provider : mIdpProviders) {
             View loginButton = null;
             switch (provider.getProviderId()) {

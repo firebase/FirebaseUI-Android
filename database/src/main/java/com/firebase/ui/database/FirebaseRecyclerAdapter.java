@@ -124,17 +124,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         });
     }
 
-    /* This method will be triggered each time updates from the database have been completely processed.
-     * So the first time this method is called, the initial data has been loaded - including the case
-     * when no data at all is available. Each next time the method is called, a complete update (potentially
-     * consisting of updates to multiple child items) has been completed.
-     * <p>
-     * You would typically override this method to hide a loading indicator (after the initial load) or
-     * to complete a batch update to a UI element.
-     */
-    protected void onDataChanged() {
-    }
-
     /**
      * @param modelClass      Firebase will marshall the data at a location into
      *                        an instance of a class that you provide
@@ -228,6 +217,18 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @Override
     public int getItemViewType(int position) {
         return mModelLayout;
+    }
+
+    /**
+     * This method will be triggered each time updates from the database have been completely processed.
+     * So the first time this method is called, the initial data has been loaded - including the case
+     * when no data at all is available. Each next time the method is called, a complete update (potentially
+     * consisting of updates to multiple child items) has been completed.
+     * <p>
+     * You would typically override this method to hide a loading indicator (after the initial load) or
+     * to complete a batch update to a UI element.
+     */
+    protected void onDataChanged() {
     }
 
     /**
