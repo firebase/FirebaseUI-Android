@@ -102,11 +102,11 @@
     <!-- Common styles -->
     <style name="FirebaseUI.Text.TextInputLayout">
         <item name="android:paddingTop">8dp</item>
-        <item name="android:textColorHint">?android:attr/textColor</item>
+        <item name="android:textColorHint">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="FirebaseUI.Text.HintText" parent="FirebaseUI.Text.T12">
-        <item name="android:textColor">?android:attr/textColor</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
     <style name="FirebaseUI.Text.ErrorText" parent="FirebaseUI.Text.T12">
@@ -133,7 +133,7 @@
     </style>
 
     <style name="FirebaseUI.EditText">
-        <item name="android:textColor">?android:textColor</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">16sp</item>
         <item name="android:lineSpacingExtra">8sp</item>
         <item name="android:layout_width">match_parent</item>
@@ -164,7 +164,7 @@
     <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">?android:textColor</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:paddingBottom">16dp</item>
     </style>
 
