@@ -44,6 +44,9 @@ public class TestUtils {
             }
 
             @Override
+            public void onDataChanged() {}
+
+            @Override
             public void onCancelled(DatabaseError error) {
                 throw new IllegalStateException(error.toException());
             }
