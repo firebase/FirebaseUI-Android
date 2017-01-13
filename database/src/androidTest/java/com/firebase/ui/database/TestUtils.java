@@ -66,12 +66,11 @@ public class TestUtils {
             }
 
             @Override
-            public void onDataChanged() {
-            }
+            public void onDataChanged() {}
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                throw new IllegalStateException(error.toException());
+            public void onCancelled(DatabaseError databaseError) {
+                throw new IllegalStateException(databaseError.toException());
             }
         });
         task.run();
