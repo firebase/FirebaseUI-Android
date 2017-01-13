@@ -28,6 +28,8 @@ import com.google.firebase.database.Query;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is a generic way of backing an RecyclerView with a Firebase location.
@@ -152,6 +154,14 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         return parseSnapshot(mSnapshots.getItem(position));
     }
 
+    public List<T> getItems() {
+        List<T> items = new ArrayList<>(getItemCount());
+        for (int i = 0; i < getItemCount(); i++) {
+            items.add(getItem(i));
+        }
+        return items;
+    }
+
     /**
      * This method parses the DataSnapshot into the requested type. You can override it in subclasses
      * to do custom parsing.
@@ -165,6 +175,14 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     public DatabaseReference getRef(int position) {
         return mSnapshots.getItem(position).getRef();
+    }
+
+    public List<DataSnapshot> getSnapshots() {
+        List<DataSnapshot> items = new ArrayList<>(getItemCount());
+        for (int i = 0; i < getItemCount(); i++) {
+            items.add(mSnapshots.getItem(i));
+        }
+        return items;
     }
 
     @Override

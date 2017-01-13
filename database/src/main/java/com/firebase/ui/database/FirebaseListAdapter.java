@@ -26,6 +26,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class is a generic way of backing an Android ListView with a Firebase location.
  * It handles all of the child events at the given Firebase location. It marshals received data into the given
@@ -116,6 +119,14 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         return parseSnapshot(mSnapshots.getItem(position));
     }
 
+    public List<T> getItems() {
+        List<T> items = new ArrayList<>(getCount());
+        for (int i = 0; i < getCount(); i++) {
+            items.add(getItem(i));
+        }
+        return items;
+    }
+
     /**
      * This method parses the DataSnapshot into the requested type. You can override it in subclasses
      * to do custom parsing.
@@ -129,6 +140,14 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
     public DatabaseReference getRef(int position) {
         return mSnapshots.getItem(position).getRef();
+    }
+
+    public List<DataSnapshot> getSnapshots() {
+        List<DataSnapshot> items = new ArrayList<>(getCount());
+        for (int i = 0; i < getCount(); i++) {
+            items.add(mSnapshots.getItem(i));
+        }
+        return items;
     }
 
     @Override
