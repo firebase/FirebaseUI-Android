@@ -46,7 +46,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    compile 'com.firebaseui:firebase-ui-auth:1.0.1'
+    compile 'com.firebaseui:firebase-ui-auth:1.1.0'
 }
 ```
 

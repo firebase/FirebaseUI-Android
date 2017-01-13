@@ -66,6 +66,9 @@ public class TestUtils {
             }
 
             @Override
+            public void onDataChanged() {}
+
+            @Override
             public void onDataChanged() {
             }
 
