@@ -37,6 +37,7 @@ public class TestUtils {
                                        Runnable task,
                                        Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
+
         array.setOnChangedListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
