@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:supportsRtl="false">
+        android:supportsRtl="true">
 
         <meta-data
             android:name="com.google.android.gms.version"
