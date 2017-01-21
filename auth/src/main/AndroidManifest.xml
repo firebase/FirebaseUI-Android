@@ -5,8 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <application
-        android:supportsRtl="true">
+    <application>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -22,8 +21,8 @@
 
         <activity
             android:name=".KickoffActivity"
-            android:exported="false"
             android:label=""
+            android:exported="false"
             android:theme="@style/FirebaseUI.Transparent"/>
 
         <activity
