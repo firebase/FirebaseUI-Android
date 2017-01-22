@@ -211,7 +211,7 @@ public class AuthUiActivity extends AppCompatActivity {
             startActivity(SignedInActivity.createIntent(this, response));
             finish();
             return;
-        } else if(resultCode == ResultCodes.NO_EMAIL_ACCOUNT) {
+        } else if (resultCode == ResultCodes.NO_EMAIL_ACCOUNT) {
             showSnackbar(R.string.error_email_does_not_exist);
             return;
         } else {
