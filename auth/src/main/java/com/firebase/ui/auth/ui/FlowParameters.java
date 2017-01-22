@@ -49,19 +49,23 @@ public class FlowParameters implements Parcelable {
 
     public final boolean smartLockEnabled;
 
+    public final boolean createAccountIfEmailNotExists;
+
     public FlowParameters(
             @NonNull String appName,
             @NonNull List<IdpConfig> providerInfo,
             @StyleRes int themeId,
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
-            boolean smartLockEnabled) {
+            boolean smartLockEnabled,
+            boolean createAccountIfEmailNotExists) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null");
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
         this.smartLockEnabled = smartLockEnabled;
+        this.createAccountIfEmailNotExists = createAccountIfEmailNotExists;
     }
 
     @Override
@@ -72,6 +76,7 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
         dest.writeInt(smartLockEnabled ? 1 : 0);
+        dest.writeInt(createAccountIfEmailNotExists ? 1 : 0);
     }
 
     @Override
@@ -88,7 +93,10 @@ public class FlowParameters implements Parcelable {
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
             int smartLockEnabledInt = in.readInt();
+            int createAccountIfNotEmailExistsInt = in.readInt();
+
             boolean smartLockEnabled = smartLockEnabledInt != 0;
+            boolean createAccountIfEmailNotExists = createAccountIfNotEmailExistsInt != 0;
 
             return new FlowParameters(
                     appName,
@@ -96,7 +104,8 @@ public class FlowParameters implements Parcelable {
                     themeId,
                     logoId,
                     termsOfServiceUrl,
-                    smartLockEnabled);
+                    smartLockEnabled,
+                    createAccountIfEmailNotExists);
         }
 
         @Override

@@ -517,6 +517,7 @@ public class AuthUI {
         private LinkedHashSet<IdpConfig> mProviders = new LinkedHashSet<>();
         private String mTosUrl;
         private boolean mIsSmartLockEnabled = true;
+        private boolean mCreateAccountIfEmailNotExists = true;
 
         private SignInIntentBuilder() {
             mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
@@ -632,7 +633,15 @@ public class AuthUI {
                                       mTheme,
                                       mLogo,
                                       mTosUrl,
-                                      mIsSmartLockEnabled);
+                                      mIsSmartLockEnabled,
+                                      mCreateAccountIfEmailNotExists);
         }
+
+        public SignInIntentBuilder setCreateAccountIfEmailNotExists(boolean enabled) {
+            mCreateAccountIfEmailNotExists = enabled;
+            return this;
+        }
+
+
     }
 }

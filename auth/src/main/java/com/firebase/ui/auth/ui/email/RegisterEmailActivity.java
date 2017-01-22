@@ -21,8 +21,10 @@ import android.support.annotation.RestrictTo;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -118,17 +120,25 @@ public class RegisterEmailActivity extends AppCompatBase implements
 
     @Override
     public void onNewUser(User user) {
-        // New user, direct them to create an account with email/password.
-        RegisterEmailFragment fragment = RegisterEmailFragment.getInstance(
-                mActivityHelper.getFlowParams(),
-                user);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
+        // New user, direct them to create an account with email/password
+        // if account creation is enabled in SignInIntentBuilder
 
-        View v = findViewById(R.id.email_layout);
-        if (v != null) ft.addSharedElement(v, "email_field");
+        boolean createAccount = mActivityHelper.getFlowParams().createAccountIfEmailNotExists;
+        if(createAccount) {
 
-        ft.disallowAddToBackStack().commit();
+            RegisterEmailFragment fragment = RegisterEmailFragment.getInstance(
+                    mActivityHelper.getFlowParams(),
+                    user);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
+
+            View v = findViewById(R.id.email_layout);
+            if (v != null) ft.addSharedElement(v, "email_field");
+
+            ft.disallowAddToBackStack().commit();
+        } else {
+            finish(ResultCodes.NO_EMAIL_ACCOUNT, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+        }
     }
 
     private void setSlideAnimation() {

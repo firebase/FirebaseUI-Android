@@ -17,6 +17,11 @@ public final class ResultCodes {
      **/
     public static final int CANCELED = Activity.RESULT_CANCELED;
 
+    /**
+     * Email does not exist in auth database
+     */
+    public static final int NO_EMAIL_ACCOUNT = 2;
+
     private ResultCodes() {
         // no instance
     }
