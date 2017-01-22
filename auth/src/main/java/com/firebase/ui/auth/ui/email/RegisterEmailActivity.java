@@ -124,7 +124,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
         // if account creation is enabled in SignInIntentBuilder
 
         boolean createAccount = mActivityHelper.getFlowParams().createAccountIfEmailNotExists;
-        if(createAccount) {
+        if (createAccount) {
 
             RegisterEmailFragment fragment = RegisterEmailFragment.getInstance(
                     mActivityHelper.getFlowParams(),
