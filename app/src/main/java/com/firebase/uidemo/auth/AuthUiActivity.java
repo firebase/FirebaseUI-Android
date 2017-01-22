@@ -120,6 +120,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_scope_games)
     CheckBox mGoogleScopeGames;
 
+    @BindView(R.id.create_account_enabled)
+    CheckBox mCreateAccountEnabled;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,6 +186,7 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
                         .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
+                        .setCreateAccountIfEmailNotExists(mCreateAccountEnabled.isChecked())
                         .build(),
                 RC_SIGN_IN);
     }
@@ -206,6 +210,9 @@ public class AuthUiActivity extends AppCompatActivity {
         if (resultCode == ResultCodes.OK) {
             startActivity(SignedInActivity.createIntent(this, response));
             finish();
+            return;
+        } else if(resultCode == ResultCodes.NO_EMAIL_ACCOUNT) {
+            showSnackbar(R.string.error_email_does_not_exist);
             return;
         } else {
             // Sign in failed

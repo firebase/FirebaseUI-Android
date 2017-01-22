@@ -235,6 +235,13 @@
                 android:checked="true"
                 android:text="@string/enable_smartlock"/>
 
+            <CheckBox
+                android:id="@+id/create_account_enabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/create_email_account_if_not_exists"/>
+
         </LinearLayout>
 
     </ScrollView>
