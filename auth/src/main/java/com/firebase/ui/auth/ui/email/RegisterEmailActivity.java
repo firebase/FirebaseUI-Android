@@ -18,13 +18,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -123,21 +122,22 @@ public class RegisterEmailActivity extends AppCompatBase implements
         // New user, direct them to create an account with email/password
         // if account creation is enabled in SignInIntentBuilder
 
-        boolean createAccount = mActivityHelper.getFlowParams().createAccountIfEmailNotExists;
-        if (createAccount) {
+        boolean createAccount = mActivityHelper.getFlowParams().allowNewEmailAccounts;
 
+        TextInputLayout mEmailLayout = (TextInputLayout) findViewById(R.id.email_layout);
+
+        if (createAccount) {
             RegisterEmailFragment fragment = RegisterEmailFragment.getInstance(
                     mActivityHelper.getFlowParams(),
                     user);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
 
-            View v = findViewById(R.id.email_layout);
-            if (v != null) ft.addSharedElement(v, "email_field");
+            if (mEmailLayout != null) ft.addSharedElement(mEmailLayout, "email_field");
 
             ft.disallowAddToBackStack().commit();
         } else {
-            finish(ResultCodes.NO_EMAIL_ACCOUNT, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+            mEmailLayout.setError(getString(R.string.error_email_does_not_exist));
         }
     }
 
