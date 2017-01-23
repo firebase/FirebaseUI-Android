@@ -637,7 +637,7 @@ public class AuthUI {
                                       mCreateAccountIfEmailNotExists);
         }
 
-        public SignInIntentBuilder setCreateAccountIfEmailNotExists(boolean enabled) {
+        public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
             mCreateAccountIfEmailNotExists = enabled;
             return this;
         }

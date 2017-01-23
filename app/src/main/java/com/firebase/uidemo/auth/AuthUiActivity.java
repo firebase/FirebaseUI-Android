@@ -120,8 +120,8 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_scope_games)
     CheckBox mGoogleScopeGames;
 
-    @BindView(R.id.create_account_enabled)
-    CheckBox mCreateAccountEnabled;
+    @BindView(R.id.allow_new_email_accounts)
+    CheckBox mAllowNewEmailAccounts;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -186,7 +186,7 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
                         .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
-                        .setCreateAccountIfEmailNotExists(mCreateAccountEnabled.isChecked())
+                        .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
                 RC_SIGN_IN);
     }
