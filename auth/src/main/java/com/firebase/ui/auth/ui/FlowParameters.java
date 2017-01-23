@@ -49,7 +49,7 @@ public class FlowParameters implements Parcelable {
 
     public final boolean smartLockEnabled;
 
-    public final boolean createAccountIfEmailNotExists;
+    public final boolean allowNewEmailAccounts;
 
     public FlowParameters(
             @NonNull String appName,
@@ -58,14 +58,14 @@ public class FlowParameters implements Parcelable {
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
             boolean smartLockEnabled,
-            boolean createAccountIfEmailNotExists) {
+            boolean allowNewEmailAccounts) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null");
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
         this.smartLockEnabled = smartLockEnabled;
-        this.createAccountIfEmailNotExists = createAccountIfEmailNotExists;
+        this.allowNewEmailAccounts = allowNewEmailAccounts;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
         dest.writeInt(smartLockEnabled ? 1 : 0);
-        dest.writeInt(createAccountIfEmailNotExists ? 1 : 0);
+        dest.writeInt(allowNewEmailAccounts ? 1 : 0);
     }
 
     @Override
@@ -93,10 +93,10 @@ public class FlowParameters implements Parcelable {
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
             int smartLockEnabledInt = in.readInt();
-            int createAccountIfNotEmailExistsInt = in.readInt();
+            int allowNewEmailAccountsInt = in.readInt();
 
             boolean smartLockEnabled = smartLockEnabledInt != 0;
-            boolean createAccountIfEmailNotExists = createAccountIfNotEmailExistsInt != 0;
+            boolean allowNewEmailAccounts = allowNewEmailAccountsInt != 0;
 
             return new FlowParameters(
                     appName,
@@ -105,7 +105,7 @@ public class FlowParameters implements Parcelable {
                     logoId,
                     termsOfServiceUrl,
                     smartLockEnabled,
-                    createAccountIfEmailNotExists);
+                    allowNewEmailAccounts);
         }
 
         @Override
