@@ -284,6 +284,7 @@ recycler.setAdapter(mAdapter);
 Like before, we get a custom RecyclerView populated with data from Firebase by setting the properties to the correct fields.
 
 ## Using FirebaseUI with indexed data
+
 If your data is [properly indexed](https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure), change your adapter initalization like so:
 
 For a `RecyclerView`, use `FirebaseIndexRecyclerAdapter` instead of `FirebaseRecyclerAdapter`:
@@ -302,7 +303,8 @@ new FirebaseIndexListAdapter<Chat>(this, Chat.class, android.R.layout.two_line_l
 
 `keyRef` is the location of your keys, and `dataRef` is the location of your data.
 
-### A note on ordering:
+### A note on ordering
+
 The order in which your receive your data depends on the order from `keyRef`, not `dataRef`:
 ```json
 {
