@@ -14,6 +14,7 @@
 
 package com.firebase.uidemo.database;
 
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RotateDrawable;
@@ -37,6 +38,7 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,9 +88,9 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 Chat chat = new Chat(name, mMessageEdit.getText().toString(), uid);
                 mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
                     @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
-                        if (databaseError != null) {
-                            Log.e(TAG, "Failed to write message", databaseError.toException());
+                    public void onComplete(DatabaseError error, DatabaseReference reference) {
+                        if (error != null) {
+                            Log.e(TAG, "Failed to write message", error.toException());
                         }
                     }
                 });
@@ -97,11 +99,10 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
         });
 
-        mMessages = (RecyclerView) findViewById(R.id.messagesList);
-
         mManager = new LinearLayoutManager(this);
         mManager.setReverseLayout(false);
 
+        mMessages = (RecyclerView) findViewById(R.id.messagesList);
         mMessages.setHasFixedSize(false);
         mMessages.setLayoutManager(mManager);
     }
@@ -145,7 +146,6 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         Query lastFifty = mChatRef.limitToLast(50);
         mRecyclerViewAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
                 Chat.class, R.layout.message, ChatHolder.class, lastFifty) {
-
             @Override
             public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {
                 chatView.setName(chat.getName());
@@ -180,20 +180,13 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private void signInAnonymously() {
         Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show();
         mAuth.signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
-                        if (task.isSuccessful()) {
-                            Toast.makeText(ChatActivity.this, "Signed In",
-                                    Toast.LENGTH_SHORT).show();
-                            attachRecyclerViewAdapter();
-                        } else {
-                            Toast.makeText(ChatActivity.this, "Sign In Failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
+                    public void onSuccess(AuthResult result) {
+                        attachRecyclerViewAdapter();
                     }
-                });
+                })
+                .addOnCompleteListener(new SignInResultNotifier(this));
     }
 
     public boolean isSignedIn() {
@@ -295,6 +288,26 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         public void setText(String text) {
             mTextField.setText(text);
+        }
+    }
+
+    /**
+     * Notifies the user of sign in successes or failures beyond the lifecycle of an activity.
+     */
+    private static class SignInResultNotifier implements OnCompleteListener<AuthResult> {
+        private Context mContext;
+
+        public SignInResultNotifier(Context context) {
+            mContext = context.getApplicationContext();
+        }
+
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+            if (task.isSuccessful()) {
+                Toast.makeText(mContext, R.string.signed_in, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(mContext, R.string.sign_in_failed, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
