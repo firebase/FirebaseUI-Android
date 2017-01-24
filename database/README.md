@@ -301,3 +301,29 @@ new FirebaseIndexListAdapter<Chat>(this, Chat.class, android.R.layout.two_line_l
 ```
 
 `keyRef` is the location of your keys, and `dataRef` is the location of your data.
+
+### A note on ordering:
+The order in which your receive your data depends on the order from `keyRef`, not `dataRef`:
+```json
+{
+  "data": {
+    // This order doesn't matter, the order is taken from keys/(user1 or user2).
+    "3": true,
+    "1": "some data",
+    "2": 5
+  },
+  "keys": {
+    // These two users have different orders for their data thanks to key side ordering.
+    "user1": {
+      "1": true,
+      "2": true,
+      "3": true
+    },
+    "user2": {
+      "3": true,
+      "2": true,
+      "1": true
+    }
+  }
+}
+```
