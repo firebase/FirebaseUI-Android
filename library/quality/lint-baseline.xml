@@ -2,13 +2,24 @@
 <issues format="4" by="lint 2.3.0-alpha2">
 
     <issue
+        id="RtlEnabled"
+        severity="Error"
+        message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest"
+        category="Internationalization:Bidirectional Text"
+        priority="3"
+        summary="Using RTL attributes without enabling RTL support"
+        explanation="To enable right-to-left support, when running on API 17 and higher, you must set the `android:supportsRtl` attribute in the manifest `<application>` element. If you have started adding RTL attributes, but have not yet finished the migration, you can set the attribute to false to satisfy this lint check.">
+        <location file="src/main/AndroidManifest.xml"/>
+    </issue>
+
+    <issue
         id="UnusedIds"
         message="The resource `R.id.facebook_button` appears to be unused"
         errorLine1="    android:id=&quot;@+id/facebook_button&quot;/>
 "
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src\main\res\layout\idp_button_facebook.xml"
+            file="src/main/res/layout/idp_button_facebook.xml"
             line="5"
             column="5"/>
     </issue>
@@ -20,7 +31,7 @@
 "
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src\main\res\layout\idp_button_google.xml"
+            file="src/main/res/layout/idp_button_google.xml"
             line="5"
             column="5"/>
     </issue>
@@ -32,7 +43,7 @@
 "
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="src\main\res\layout\idp_button_twitter.xml"
+            file="src/main/res/layout/idp_button_twitter.xml"
             line="5"
             column="5"/>
     </issue>
@@ -44,7 +55,7 @@
 "
         errorLine2="        ^">
         <location
-            file="src\main\res\layout\register_email_layout.xml"
+            file="src/main/res/layout/register_email_layout.xml"
             line="79"
             column="9"/>
     </issue>
@@ -56,7 +67,7 @@
 "
         errorLine2="    ^">
         <location
-            file="src\main\res\layout\welcome_back_idp_prompt_layout.xml"
+            file="src/main/res/layout/welcome_back_idp_prompt_layout.xml"
             line="16"
             column="5"/>
     </issue>
@@ -68,7 +79,7 @@
 "
         errorLine2="    ^">
         <location
-            file="src\main\res\layout\welcome_back_password_prompt_layout.xml"
+            file="src/main/res/layout/welcome_back_password_prompt_layout.xml"
             line="15"
             column="5"/>
     </issue>
