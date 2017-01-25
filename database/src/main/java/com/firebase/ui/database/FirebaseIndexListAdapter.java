@@ -63,7 +63,7 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
                                     Query dataRef) {
         super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef), false);
         mDataQuery = dataRef;
-        ((FirebaseIndexArray) mSnapshots).setJoinResolver(this);
+        ((FirebaseIndexArray) mSnapshots).setJoinResolverListener(this);
         mSnapshots.startListening();
     }
 

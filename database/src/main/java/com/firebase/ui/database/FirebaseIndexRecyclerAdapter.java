@@ -90,7 +90,7 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
                                         Query dataRef) {
         super(modelClass, modelLayout, viewHolderClass, new FirebaseIndexArray(keyRef), false);
         mDataQuery = dataRef;
-        ((FirebaseIndexArray) mSnapshots).setJoinResolver(this);
+        ((FirebaseIndexArray) mSnapshots).setJoinResolverListener(this);
         mSnapshots.startListening();
     }
 

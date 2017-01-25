@@ -20,13 +20,19 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
@@ -41,7 +47,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
 @SuppressWarnings("LogConditional")
 public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
@@ -141,7 +146,6 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     private void attachRecyclerViewAdapter() {
-        Query lastFifty = mChatRef.limitToLast(50);
         mRecyclerViewAdapter =
                 new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
                         Chat.class,
@@ -192,11 +196,11 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 .addOnCompleteListener(new SignInResultNotifier(this));
     }
 
-    public boolean isSignedIn() {
+    private boolean isSignedIn() {
         return mAuth.getCurrentUser() != null;
     }
 
-    public void updateUI() {
+    private void updateUI() {
         // Sending only allowed when signed in
         mSendButton.setEnabled(isSignedIn());
         mMessageEdit.setEnabled(isSignedIn());

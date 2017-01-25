@@ -45,8 +45,8 @@ class FirebaseIndexArray extends FirebaseArray {
         }
     };
 
+    protected JoinResolver mJoinResolver;
     private ChangeEventListener mListenerCopy;
-    private JoinResolver mJoinResolver;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
@@ -60,7 +60,7 @@ class FirebaseIndexArray extends FirebaseArray {
         mListenerCopy = listener;
     }
 
-    public void setJoinResolver(@NonNull JoinResolver joinResolver) {
+    public void setJoinResolverListener(@NonNull JoinResolver joinResolver) {
         if (mIsListening && joinResolver == null) {
             throw new IllegalStateException("Join resolver cannot be null.");
         }
@@ -124,7 +124,7 @@ class FirebaseIndexArray extends FirebaseArray {
 
         if (isMatch(index, key)) {
             mDataSnapshots.remove(index);
-            notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
+            notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
         }
     }
 
@@ -141,7 +141,7 @@ class FirebaseIndexArray extends FirebaseArray {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            notifyChangedListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+            mListener.onChildChanged(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
         }
     }
 
@@ -178,15 +178,15 @@ class FirebaseIndexArray extends FirebaseArray {
             if (snapshot.getValue() != null) {
                 if (!isMatch(index, key)) {
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangedListeners(ChangeEventListener.EventType.ADDED, index);
+                    notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, index);
                 } else {
                     mDataSnapshots.set(index, snapshot);
-                    notifyChangedListeners(ChangeEventListener.EventType.CHANGED, index);
+                    notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, index);
                 }
             } else {
                 if (isMatch(index, key)) {
                     mDataSnapshots.remove(index);
-                    notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
+                    notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
                 } else {
                     mJoinResolver.onJoinFailed(index, snapshot);
                 }

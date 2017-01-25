@@ -37,7 +37,7 @@ public class TestUtils {
     }
 
     public static void setJoinResolver(FirebaseIndexArray array, final DatabaseReference ref) {
-        array.setJoinResolver(new JoinResolver() {
+        array.setJoinResolverListener(new JoinResolver() {
             @Override
             public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
                 return ref.child(keySnapshot.getKey());
@@ -59,7 +59,7 @@ public class TestUtils {
                                        Runnable task,
                                        Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
-        array.setOnChangedListener(new ChangeEventListener() {
+        array.setChangeEventListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
                 semaphore.release();
@@ -67,10 +67,6 @@ public class TestUtils {
 
             @Override
             public void onDataChanged() {}
-
-            @Override
-            public void onDataChanged() {
-            }
 
             @Override
             public void onCancelled(DatabaseError error) {
