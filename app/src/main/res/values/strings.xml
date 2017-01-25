@@ -38,8 +38,6 @@
     <string name="no_internet_connection">No internet connection</string>
     <string name="signed_in_header">You are signed in!</string>
     <string name="sign_out">Sign out</string>
-    <string name="signed_in">Signed In</string>
-    <string name="sign_in_failed">Sign In Failed</string>
     <string name="delete_account_label">Delete account</string>
     <string name="sign_out_failed">Sign out failed</string>
     <string name="delete_account_failed">Delete account failed</string>
@@ -67,6 +65,8 @@
     <string name="accessibility_downloaded_image">Downloaded image</string>
     <string name="drive_file">Drive File</string>
 
-    <!-- strings for the database demo activities -->
+    <!-- strings for database demo activities -->
     <string name="start_chatting">No messages. Start chatting at the bottom!</string>
+    <string name="signed_in">Signed In</string>
+    <string name="sign_in_failed">Sign In Failed</string>
 </resources>
