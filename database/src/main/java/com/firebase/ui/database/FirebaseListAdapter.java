@@ -53,8 +53,8 @@ import com.google.firebase.database.Query;
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     private static final String TAG = "FirebaseListAdapter";
 
-    protected FirebaseArray mSnapshots;
-    protected final Class<T> mModelClass;
+    private FirebaseArray mSnapshots;
+    private final Class<T> mModelClass;
     protected Activity mActivity;
     protected int mLayout;
     private ChangeEventListener mListener;
@@ -68,7 +68,22 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mLayout = modelLayout;
         mSnapshots = snapshots;
 
-        startListening();
+        mListener = mSnapshots.addChangeEventListener(new ChangeEventListener() {
+            @Override
+            public void onChildChanged(EventType type, int index, int oldIndex) {
+                FirebaseListAdapter.this.onChildChanged(type, index, oldIndex);
+            }
+
+            @Override
+            public void onDataChanged() {
+                FirebaseListAdapter.this.onDataChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                FirebaseListAdapter.this.onCancelled(error);
+            }
+        });
     }
 
     /**
@@ -86,30 +101,6 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
                                int modelLayout,
                                Query ref) {
         this(activity, modelClass, modelLayout, new FirebaseArray(ref));
-    }
-
-    /**
-     * If you need to do some setup before we start listening for change events in the database
-     * (such as setting a custom {@link JoinResolver}), do so it here and then call {@code
-     * super.startListening()}.
-     */
-    protected void startListening() {
-        mListener = mSnapshots.addChangeEventListener(new ChangeEventListener() {
-            @Override
-            public void onChildChanged(EventType type, int index, int oldIndex) {
-                FirebaseListAdapter.this.onChildChanged(type, index, oldIndex);
-            }
-
-            @Override
-            public void onDataChanged() {
-                FirebaseListAdapter.this.onDataChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                FirebaseListAdapter.this.onCancelled(error);
-            }
-        });
     }
 
     public void cleanup() {

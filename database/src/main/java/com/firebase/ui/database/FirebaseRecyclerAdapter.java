@@ -75,8 +75,8 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         extends RecyclerView.Adapter<VH> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
-    protected FirebaseArray mSnapshots;
-    protected Class<T> mModelClass;
+    private FirebaseArray mSnapshots;
+    private Class<T> mModelClass;
     protected Class<VH> mViewHolderClass;
     protected int mModelLayout;
     private ChangeEventListener mListener;
@@ -90,7 +90,22 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         mViewHolderClass = viewHolderClass;
         mSnapshots = snapshots;
 
-        startListening();
+        mListener = mSnapshots.addChangeEventListener(new ChangeEventListener() {
+            @Override
+            public void onChildChanged(EventType type, int index, int oldIndex) {
+                FirebaseRecyclerAdapter.this.onChildChanged(type, index, oldIndex);
+            }
+
+            @Override
+            public void onDataChanged() {
+                FirebaseRecyclerAdapter.this.onDataChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                FirebaseRecyclerAdapter.this.onCancelled(error);
+            }
+        });
     }
 
     /**
@@ -108,30 +123,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                                    Class<VH> viewHolderClass,
                                    Query ref) {
         this(modelClass, modelLayout, viewHolderClass, new FirebaseArray(ref));
-    }
-
-    /**
-     * If you need to do some setup before we start listening for change events in the database
-     * (such as setting a custom {@link JoinResolver}), do so it here and then call {@code
-     * super.startListening()}.
-     */
-    protected void startListening() {
-        mListener = mSnapshots.addChangeEventListener(new ChangeEventListener() {
-            @Override
-            public void onChildChanged(EventType type, int index, int oldIndex) {
-                FirebaseRecyclerAdapter.this.onChildChanged(type, index, oldIndex);
-            }
-
-            @Override
-            public void onDataChanged() {
-                FirebaseRecyclerAdapter.this.onDataChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                FirebaseRecyclerAdapter.this.onCancelled(error);
-            }
-        });
     }
 
     public void cleanup() {
