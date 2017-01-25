@@ -46,7 +46,10 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
     }
 
     public void startListening() {
-        if (mListener == null) throw new IllegalStateException("Listener cannot be null.");
+        if (mListener == null) {
+            throw new IllegalStateException("Listener cannot be null.");
+        }
+
         mQuery.addChildEventListener(this);
         mQuery.addValueEventListener(this);
         mIsListening = true;

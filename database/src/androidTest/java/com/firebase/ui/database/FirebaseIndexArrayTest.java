@@ -37,7 +37,7 @@ import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
 public class FirebaseIndexArrayTest extends InstrumentationTestCase {
     private DatabaseReference mRef;
     private DatabaseReference mKeyRef;
-    private FirebaseIndexArray mArray;
+    private FirebaseArray mArray;
 
     @Before
     public void setUp() throws Exception {
