@@ -32,14 +32,13 @@ import java.util.concurrent.Callable;
 import static com.firebase.ui.database.TestUtils.getAppInstance;
 import static com.firebase.ui.database.TestUtils.getBean;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
-import static com.firebase.ui.database.TestUtils.setJoinResolver;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
 public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
     private DatabaseReference mRef;
     private DatabaseReference mKeyRef;
-    private FirebaseIndexArray mArray;
+    private FirebaseArray mArray;
 
     @Before
     public void setUp() throws Exception {
@@ -48,8 +47,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
         mRef = databaseInstance.getReference().child("firebasearray").child("objects");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray").child("objects");
 
-        mArray = new FirebaseIndexArray(mKeyRef);
-        setJoinResolver(mArray, mRef);
+        mArray = new FirebaseIndexArray(mKeyRef, mRef);
         mRef.removeValue();
         mKeyRef.removeValue();
 

@@ -61,30 +61,29 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     FirebaseListAdapter(Activity activity,
                         Class<T> modelClass,
                         @LayoutRes int modelLayout,
-                        FirebaseArray snapshots,
-                        boolean shouldStartListening) {
+                        FirebaseArray snapshots) {
         mActivity = activity;
         mModelClass = modelClass;
         mLayout = modelLayout;
         mSnapshots = snapshots;
 
-        mSnapshots.setChangeEventListener(new FirebaseArray.ChangeEventListener() {
+        mSnapshots.setChangeEventListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(EventType type, int index, int oldIndex) {
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                FirebaseListAdapter.this.onCancelled(error);
+                FirebaseListAdapter.this.onChildChanged(type, index, oldIndex);
             }
 
             @Override
             public void onDataChanged() {
                 FirebaseListAdapter.this.onDataChanged();
             }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                FirebaseListAdapter.this.onCancelled(error);
+            }
         });
-        if (shouldStartListening) mSnapshots.startListening();
+        startListening();
     }
 
     /**
@@ -101,7 +100,16 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
                                Class<T> modelClass,
                                int modelLayout,
                                Query ref) {
-        this(activity, modelClass, modelLayout, new FirebaseArray(ref), true);
+        this(activity, modelClass, modelLayout, new FirebaseArray(ref));
+    }
+
+    /**
+     * If you need to do some setup before we start listening for change events in the database
+     * (such as setting a custom {@link JoinResolver}), do so it here and then call {@code
+     * super.startListening()}.
+     */
+    protected void startListening() {
+        mSnapshots.startListening();
     }
 
     public void cleanup() {
@@ -153,22 +161,20 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     }
 
     /**
-     * This method will be triggered each time updates from the database have been completely processed.
-     * So the first time this method is called, the initial data has been loaded - including the case
-     * when no data at all is available. Each next time the method is called, a complete update (potentially
-     * consisting of updates to multiple child items) has been completed.
-     * <p>
-     * You would typically override this method to hide a loading indicator (after the initial load) or
-     * to complete a batch update to a UI element.
+     * @see ChangeEventListener#onChildChanged(ChangeEventListener.EventType, int, int)
+     */
+    protected void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
+        notifyDataSetChanged();
+    }
+
+    /**
+     * @see ChangeEventListener#onDataChanged()
      */
     protected void onDataChanged() {
     }
 
     /**
-     * This method will be triggered in the event that this listener either failed at the server,
-     * or is removed as a result of the security and Firebase Database rules.
-     *
-     * @param error A description of the error that occurred
+     * @see ChangeEventListener#onCancelled(DatabaseError)
      */
     protected void onCancelled(DatabaseError error) {
         Log.w(TAG, error.toException());

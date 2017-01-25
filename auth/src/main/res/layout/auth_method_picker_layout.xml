@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:gravity="center|bottom"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:gravity="center|bottom"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_weight="1.0"
+        android:gravity="center">
 
         <ImageView
             android:id="@+id/logo"
             style="@style/FirebaseUI.AuthMethodPicker.Logo"
-            android:layout_marginBottom="64dp"
-            android:layout_marginTop="48dp"
-            android:contentDescription="@string/accessibility_logo" />
-
-        <LinearLayout
-            android:id="@+id/btn_holder"
-            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder">
-
-            <Button
-                android:id="@+id/email_provider"
-                style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
-                android:text="@string/sign_in_with_email" />
-
-        </LinearLayout>
+            android:contentDescription="@string/accessibility_logo"/>
 
     </LinearLayout>
-</ScrollView>
+
+    <LinearLayout
+        android:id="@+id/btn_holder"
+        android:layout_weight="0"
+        style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder">
+
+        <Button
+            android:id="@+id/email_provider"
+            style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
+            android:text="@string/sign_in_with_email"/>
+
+    </LinearLayout>
+
+</LinearLayout>

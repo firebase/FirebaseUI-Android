@@ -49,12 +49,14 @@ public class FirebaseIndexArray extends FirebaseArray {
     };
 
     protected JoinResolver mJoinResolver;
+    private Query mDataQuery;
     private ChangeEventListener mListenerCopy;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
-    public FirebaseIndexArray(Query keyRef) {
-        super(keyRef);
+    public FirebaseIndexArray(Query keyQuery, Query dataQuery) {
+        super(keyQuery);
+        mDataQuery = dataQuery;
     }
 
     @Override
@@ -63,16 +65,19 @@ public class FirebaseIndexArray extends FirebaseArray {
         mListenerCopy = listener;
     }
 
-    public void setJoinResolver(@NonNull JoinResolver joinResolver) {
+    public void setJoinResolver(JoinResolver joinResolver) {
         if (isListening() && joinResolver == null) {
-            throw new IllegalStateException("Join resolver cannot be null.");
+            throw new IllegalArgumentException(
+                    "Join resolver cannot be null while FirebaseIndexArray is listening for data.");
         }
         mJoinResolver = joinResolver;
     }
 
     @Override
     public void startListening() {
-        if (mJoinResolver == null) throw new IllegalStateException("Join resolver cannot be null.");
+        if (mJoinResolver == null) {
+            mJoinResolver = new DefaultJoinResolver();
+        }
         super.startListening();
     }
 
@@ -117,7 +122,7 @@ public class FirebaseIndexArray extends FirebaseArray {
 
         if (isMatch(index, key)) {
             mDataSnapshots.remove(index);
-            notifyChangeListener(ChangeEventListener.EventType.REMOVED, index);
+            notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
         }
     }
 
@@ -153,15 +158,15 @@ public class FirebaseIndexArray extends FirebaseArray {
             if (snapshot.getValue() != null) {
                 if (!isMatch(index, key)) {
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangeListener(ChangeEventListener.EventType.ADDED, index);
+                    notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, index);
                 } else {
                     mDataSnapshots.set(index, snapshot);
-                    notifyChangeListener(ChangeEventListener.EventType.CHANGED, index);
+                    notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, index);
                 }
             } else {
                 if (isMatch(index, key)) {
                     mDataSnapshots.remove(index);
-                    notifyChangeListener(ChangeEventListener.EventType.REMOVED, index);
+                    notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
                 } else {
                     mJoinResolver.onJoinFailed(index, snapshot);
                 }
@@ -171,6 +176,23 @@ public class FirebaseIndexArray extends FirebaseArray {
         @Override
         public void onCancelled(DatabaseError error) {
             mListener.onCancelled(error);
+        }
+    }
+
+    private class DefaultJoinResolver implements JoinResolver {
+        @Override
+        public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
+            return mDataQuery.getRef().child(keySnapshot.getKey());
+        }
+
+        @Override
+        public Query onDisjoin(DataSnapshot keySnapshot) {
+            return mDataQuery.getRef().child(keySnapshot.getKey());
+        }
+
+        @Override
+        public void onJoinFailed(int index, DataSnapshot snapshot) {
+            Log.w(TAG, "Key not found at ref " + snapshot.getRef() + " for index " + index + ".");
         }
     }
 

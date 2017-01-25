@@ -5,10 +5,7 @@ import android.content.Context;
 import com.firebase.ui.database.utils.Bean;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 
 import junit.framework.AssertionFailedError;
 
@@ -36,32 +33,13 @@ public class TestUtils {
                 .build(), APP_NAME);
     }
 
-    public static void setJoinResolver(FirebaseIndexArray array, final DatabaseReference ref) {
-        array.setJoinResolver(new JoinResolver() {
-            @Override
-            public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
-                return ref.child(keySnapshot.getKey());
-            }
-
-            @Override
-            public Query onDisjoin(DataSnapshot keySnapshot) {
-                return ref.child(keySnapshot.getKey());
-            }
-
-            @Override
-            public void onJoinFailed(int index, DataSnapshot snapshot) {
-                throw new IllegalStateException(index + ": " + snapshot);
-            }
-        });
-    }
-
     public static void runAndWaitUntil(FirebaseArray array,
                                        Runnable task,
                                        Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
-        array.setChangeEventListener(new FirebaseArray.ChangeEventListener() {
+        array.setChangeEventListener(new ChangeEventListener() {
             @Override
-            public void onChildChanged(EventType type, int index, int oldIndex) {
+            public void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
                 semaphore.release();
             }
 
@@ -69,8 +47,8 @@ public class TestUtils {
             public void onDataChanged() {}
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                throw new IllegalStateException(databaseError.toException());
+            public void onCancelled(DatabaseError error) {
+                throw new IllegalStateException(error.toException());
             }
         });
         task.run();

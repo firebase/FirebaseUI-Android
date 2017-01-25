@@ -2,9 +2,7 @@ package com.firebase.ui.database;
 
 import android.app.Activity;
 import android.support.annotation.LayoutRes;
-import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Query;
 
 /**
@@ -36,12 +34,7 @@ import com.google.firebase.database.Query;
  * @param <T> The class type to use as a model for the data
  *           contained in the children of the given Firebase location
  */
-public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
-        implements JoinResolver {
-    private static final String TAG = "IndexListAdapter";
-
-    protected Query mDataQuery;
-
+public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T> {
     /**
      * @param activity    The activity containing the ListView
      * @param modelClass  Firebase will marshall the data at a location into
@@ -61,24 +54,6 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
                                     @LayoutRes int modelLayout,
                                     Query keyRef,
                                     Query dataRef) {
-        super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef), false);
-        mDataQuery = dataRef;
-        ((FirebaseIndexArray) mSnapshots).setJoinResolver(this);
-        mSnapshots.startListening();
-    }
-
-    @Override
-    public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
-        return mDataQuery.getRef().child(keySnapshot.getKey());
-    }
-
-    @Override
-    public Query onDisjoin(DataSnapshot keySnapshot) {
-        return mDataQuery.getRef().child(keySnapshot.getKey());
-    }
-
-    @Override
-    public void onJoinFailed(int index, DataSnapshot snapshot) {
-        Log.w(TAG, "Key not found at ref " + snapshot.getRef() + " for index " + index + ".");
+        super(activity, modelClass, modelLayout, new FirebaseIndexArray(keyRef, dataRef));
     }
 }

@@ -3,6 +3,9 @@ package com.firebase.ui.database;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Query;
 
+/**
+ * Handles joining two queries together.
+ */
 public interface JoinResolver {
     /**
      * Called after an {@code onChildAdded} event from {@code keyRef}.

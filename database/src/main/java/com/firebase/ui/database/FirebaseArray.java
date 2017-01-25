@@ -32,34 +32,27 @@ import java.util.ListIterator;
  * This class implements a collection on top of a Firebase location.
  */
 public class FirebaseArray implements ChildEventListener, ValueEventListener, List<DataSnapshot> {
-    public interface ChangeEventListener {
-        enum EventType {ADDED, CHANGED, REMOVED, MOVED}
-
-        void onChildChanged(EventType type, int index, int oldIndex);
-
-        void onDataChanged();
-
-        void onCancelled(DatabaseError error);
-    }
-
     protected ChangeEventListener mListener;
     private boolean mIsListening;
     private Query mQuery;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
-    public FirebaseArray(Query ref) {
-        mQuery = ref;
+    public FirebaseArray(Query query) {
+        mQuery = query;
     }
 
     public void setChangeEventListener(@NonNull ChangeEventListener listener) {
         if (mIsListening && listener == null) {
-            throw new IllegalStateException("Listener cannot be null.");
+            throw new IllegalArgumentException("Listener cannot be null.");
         }
         mListener = listener;
     }
 
     public void startListening() {
-        if (mListener == null) throw new IllegalStateException("Listener cannot be null.");
+        if (mListener == null) {
+            throw new IllegalStateException("Listener cannot be null.");
+        }
+
         mQuery.addChildEventListener(this);
         mQuery.addValueEventListener(this);
         mIsListening = true;
@@ -76,7 +69,7 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
         return mIsListening;
     }
 
-    protected void notifyChangeListener(ChangeEventListener.EventType type, int index) {
+    protected void notifyChangeEventListeners(ChangeEventListener.EventType type, int index) {
         mListener.onChildChanged(type, index, -1);
     }
 
@@ -87,21 +80,21 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
             index = getIndexForKey(previousChildKey) + 1;
         }
         mSnapshots.add(index, snapshot);
-        notifyChangeListener(ChangeEventListener.EventType.ADDED, index);
+        notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, index);
     }
 
     @Override
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.set(index, snapshot);
-        notifyChangeListener(ChangeEventListener.EventType.CHANGED, index);
+        notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, index);
     }
 
     @Override
     public void onChildRemoved(DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
-        notifyChangeListener(ChangeEventListener.EventType.REMOVED, index);
+        notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
     }
 
     @Override

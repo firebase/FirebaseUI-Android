@@ -16,14 +16,12 @@ package com.firebase.ui.database;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Query;
 
 /**
- * This class is a generic way of backing an RecyclerView with a Firebase location.
- * It handles all of the child events at the given Firebase location. It marshals received data into the given
+ * This class is a generic way of backing an RecyclerView with a Firebase location. It handles all
+ * of the child events at the given Firebase location. It marshals received data into the given
  * class type.
  * <p>
  * To use this class in your app, subclass it passing in all required parameters and implement the
@@ -64,11 +62,7 @@ import com.google.firebase.database.Query;
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
  */
 public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends FirebaseRecyclerAdapter<T, VH> implements JoinResolver {
-    private static final String TAG = "IndexRecyclerAdapter";
-
-    protected Query mDataQuery;
-
+        extends FirebaseRecyclerAdapter<T, VH> {
     /**
      * @param modelClass      Firebase will marshall the data at a location into an instance
      *                        of a class that you provide
@@ -88,24 +82,6 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
                                         Class<VH> viewHolderClass,
                                         Query keyRef,
                                         Query dataRef) {
-        super(modelClass, modelLayout, viewHolderClass, new FirebaseIndexArray(keyRef), false);
-        mDataQuery = dataRef;
-        ((FirebaseIndexArray) mSnapshots).setJoinResolver(this);
-        mSnapshots.startListening();
-    }
-
-    @Override
-    public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
-        return mDataQuery.getRef().child(keySnapshot.getKey());
-    }
-
-    @Override
-    public Query onDisjoin(DataSnapshot keySnapshot) {
-        return mDataQuery.getRef().child(keySnapshot.getKey());
-    }
-
-    @Override
-    public void onJoinFailed(int index, DataSnapshot snapshot) {
-        Log.w(TAG, "Key not found at ref " + snapshot.getRef() + " for index " + index + ".");
+        super(modelClass, modelLayout, viewHolderClass, new FirebaseIndexArray(keyRef, dataRef));
     }
 }
