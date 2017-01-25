@@ -32,10 +32,9 @@ import java.util.ListIterator;
  * This class implements a collection on top of a Firebase location.
  */
 public class FirebaseArray implements ChildEventListener, ValueEventListener, List<DataSnapshot> {
-    protected ChangeEventListener mListener;
-    private boolean mIsListening;
-
     private Query mQuery;
+    private boolean mNotifyListeners = true;
+    private List<ChangeEventListener> mListeners = new ArrayList<>();
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     public FirebaseArray(Query query) {
@@ -43,52 +42,85 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
     }
 
     /**
-     * @param listener The listener to be notified of change events and errors.
-     * @throws IllegalArgumentException if the {@link ChangeEventListener} is null while {@link
-     *                                  FirebaseArray} is listening for change events.
-     */
-    public void setChangeEventListener(@NonNull ChangeEventListener listener) {
-        if (mIsListening && listener == null) {
-            throw new IllegalArgumentException("Listener cannot be null.");
-        }
-        mListener = listener;
-    }
-
-    /**
-     * Start listening for change events. Should be followed by a call to {@link #stopListening()}
-     * at some point.
+     * Add a listener for change events and errors occurring at the location provided in {@link
+     * #FirebaseArray(Query)}.
      *
-     * @throws IllegalStateException if {@link ChangeEventListener} is null.
+     * @param listener the listener to be called with changes
+     * @return a reference to the listener provided. Save this to remove the listener later
+     * @throws IllegalArgumentException if the listener is null
      */
-    public void startListening() {
-        if (mListener == null) {
-            throw new IllegalStateException("Listener cannot be null.");
+    public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
+        checkNotNull(listener);
+
+        mListeners.add(listener);
+        if (mListeners.size() <= 1) {
+            mQuery.addChildEventListener(this);
+            mQuery.addValueEventListener(this);
         }
 
-        mQuery.addChildEventListener(this);
-        mQuery.addValueEventListener(this);
-        mIsListening = true;
+        return listener;
     }
 
     /**
-     * Stop listening for change events. The list will be empty after this call returns.
+     * Remove the {@link ChangeEventListener} from the location provided in {@link
+     * #FirebaseArray(Query)}. The list will be empty after this call returns.
+     *
+     * @param listener the listener to remove
+     * @throws IllegalArgumentException if the listener is null
      */
-    public void stopListening() {
-        mQuery.removeEventListener((ValueEventListener) this);
-        mQuery.removeEventListener((ChildEventListener) this);
-        mSnapshots.clear();
-        mIsListening = false;
+    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
+        checkNotNull(listener);
+
+        mListeners.remove(listener);
+        if (mListeners.isEmpty()) {
+            mQuery.removeEventListener((ValueEventListener) this);
+            mQuery.removeEventListener((ChildEventListener) this);
+            mSnapshots.clear();
+        }
+    }
+
+    private static void checkNotNull(ChangeEventListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("ChangeEventListener cannot be null.");
+        }
     }
 
     /**
-     * @return true if {@link FirebaseArray} is listening for change events, false otherwise.
+     * @return true if {@link FirebaseArray} is listening for change events, false otherwise
      */
     public boolean isListening() {
-        return mIsListening;
+        return mListeners.size() > 0;
+    }
+
+    protected void setShouldNotifyListeners(boolean notifyListeners) {
+        mNotifyListeners = notifyListeners;
     }
 
     protected void notifyChangeEventListeners(ChangeEventListener.EventType type, int index) {
-        mListener.onChildChanged(type, index, -1);
+        notifyChangeEventListeners(type, index, -1);
+    }
+
+    protected void notifyChangeEventListeners(ChangeEventListener.EventType type,
+                                              int index,
+                                              int oldIndex) {
+        if (!mNotifyListeners) return;
+        for (ChangeEventListener listener : mListeners) {
+            listener.onChildChanged(type, index, oldIndex);
+        }
+    }
+
+    protected void notifyListenersOnDataChanged() {
+        if (!mNotifyListeners) return;
+        for (ChangeEventListener listener : mListeners) {
+            listener.onDataChanged();
+        }
+    }
+
+    protected void notifyListenersOnCancelled(DatabaseError error) {
+        if (!mNotifyListeners) return;
+        for (ChangeEventListener listener : mListeners) {
+            listener.onCancelled(error);
+        }
     }
 
     @Override
@@ -121,17 +153,17 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
         mSnapshots.remove(oldIndex);
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
-        mListener.onChildChanged(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+        notifyChangeEventListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
     }
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        mListener.onDataChanged();
+        notifyListenersOnDataChanged();
     }
 
     @Override
     public void onCancelled(DatabaseError error) {
-        mListener.onCancelled(error);
+        notifyListenersOnCancelled(error);
     }
 
     private int getIndexForKey(String key) {
@@ -228,16 +260,14 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
 
         FirebaseArray snapshots = (FirebaseArray) o;
 
-        return mIsListening == snapshots.mIsListening
-                && mListener.equals(snapshots.mListener)
+        return mListeners.equals(snapshots.mListeners)
                 && mQuery.equals(snapshots.mQuery)
                 && mSnapshots.equals(snapshots.mSnapshots);
     }
 
     @Override
     public int hashCode() {
-        int result = mListener.hashCode();
-        result = 31 * result + (mIsListening ? 1 : 0);
+        int result = mListeners.hashCode();
         result = 31 * result + mQuery.hashCode();
         result = 31 * result + mSnapshots.hashCode();
         return result;
@@ -246,7 +276,7 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
     @Override
     public String toString() {
         return "FirebaseArray{" +
-                "mIsListening=" + mIsListening +
+                "mIsListening=" + isListening() +
                 ", mQuery=" + mQuery +
                 ", mSnapshots=" + mSnapshots +
                 '}';

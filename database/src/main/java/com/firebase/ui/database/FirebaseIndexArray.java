@@ -34,22 +34,8 @@ import java.util.Set;
 
 public class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = "FirebaseIndexArray";
-    private static final ChangeEventListener NOOP_CHANGE_LISTENER = new ChangeEventListener() {
-        @Override
-        public void onChildChanged(EventType type, int index, int oldIndex) {
-        }
-
-        @Override
-        public void onDataChanged() {
-        }
-
-        @Override
-        public void onCancelled(DatabaseError error) {
-        }
-    };
 
     private Query mDataQuery;
-    private ChangeEventListener mListenerCopy;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
@@ -59,19 +45,15 @@ public class FirebaseIndexArray extends FirebaseArray {
     }
 
     @Override
-    public void setChangeEventListener(@NonNull ChangeEventListener listener) {
-        super.setChangeEventListener(listener);
-        mListenerCopy = listener;
-    }
-
-    @Override
-    public void stopListening() {
-        super.stopListening();
-        Set<Query> refs = new HashSet<>(mRefs.keySet());
-        for (Query ref : refs) {
-            ref.removeEventListener(mRefs.remove(ref));
+    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
+        super.removeChangeEventListener(listener);
+        if (!isListening()) {
+            Set<Query> refs = new HashSet<>(mRefs.keySet());
+            for (Query ref : refs) {
+                ref.removeEventListener(mRefs.remove(ref));
+            }
+            mDataSnapshots.clear();
         }
-        mDataSnapshots.clear();
     }
 
     private int getIndexForKey(String key) {
@@ -94,9 +76,9 @@ public class FirebaseIndexArray extends FirebaseArray {
 
     @Override
     public void onChildAdded(DataSnapshot keySnapshot, String previousChildKey) {
-        super.setChangeEventListener(NOOP_CHANGE_LISTENER);
+        setShouldNotifyListeners(false);
         super.onChildAdded(keySnapshot, previousChildKey);
-        super.setChangeEventListener(mListenerCopy);
+        setShouldNotifyListeners(true);
 
         Query ref = mDataQuery.getRef().child(keySnapshot.getKey());
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
@@ -104,9 +86,9 @@ public class FirebaseIndexArray extends FirebaseArray {
 
     @Override
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
-        super.setChangeEventListener(NOOP_CHANGE_LISTENER);
+        setShouldNotifyListeners(false);
         super.onChildChanged(snapshot, previousChildKey);
-        super.setChangeEventListener(mListenerCopy);
+        setShouldNotifyListeners(true);
     }
 
     @Override
@@ -117,9 +99,9 @@ public class FirebaseIndexArray extends FirebaseArray {
                 .child(key)
                 .removeEventListener(mRefs.remove(mDataQuery.getRef().child(key)));
 
-        super.setChangeEventListener(NOOP_CHANGE_LISTENER);
+        setShouldNotifyListeners(false);
         super.onChildRemoved(keySnapshot);
-        super.setChangeEventListener(mListenerCopy);
+        setShouldNotifyListeners(true);
 
         if (isMatch(index, key)) {
             mDataSnapshots.remove(index);
@@ -132,15 +114,15 @@ public class FirebaseIndexArray extends FirebaseArray {
         String key = keySnapshot.getKey();
         int oldIndex = getIndexForKey(key);
 
-        super.setChangeEventListener(NOOP_CHANGE_LISTENER);
+        setShouldNotifyListeners(false);
         super.onChildMoved(keySnapshot, previousChildKey);
-        super.setChangeEventListener(mListenerCopy);
+        setShouldNotifyListeners(true);
 
         if (isMatch(oldIndex, key)) {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            mListener.onChildChanged(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+            notifyChangeEventListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
         }
     }
 
@@ -176,7 +158,7 @@ public class FirebaseIndexArray extends FirebaseArray {
 
         @Override
         public void onCancelled(DatabaseError error) {
-            mListener.onCancelled(error);
+            notifyListenersOnCancelled(error);
         }
     }
 
@@ -248,8 +230,7 @@ public class FirebaseIndexArray extends FirebaseArray {
 
         FirebaseIndexArray array = (FirebaseIndexArray) o;
 
-        return (mListenerCopy == null ? array.mListenerCopy == null : mListenerCopy.equals(array.mListenerCopy))
-                && mDataQuery.equals(array.mDataQuery)
+        return mDataQuery.equals(array.mDataQuery)
                 && mRefs.equals(array.mRefs)
                 && mDataSnapshots.equals(array.mDataSnapshots);
     }
@@ -257,7 +238,6 @@ public class FirebaseIndexArray extends FirebaseArray {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (mListenerCopy == null ? 0 : mListenerCopy.hashCode());
         result = 31 * result + mDataQuery.hashCode();
         result = 31 * result + mRefs.hashCode();
         result = 31 * result + mDataSnapshots.hashCode();
