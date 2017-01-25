@@ -267,7 +267,8 @@ public class FirebaseIndexArray extends FirebaseArray {
     @Override
     public String toString() {
         return "FirebaseIndexArray{" +
-                "mDataQuery=" + mDataQuery +
+                "mIsListening=" + isListening() +
+                ", mDataQuery=" + mDataQuery +
                 ", mDataSnapshots=" + mDataSnapshots +
                 '}';
     }
