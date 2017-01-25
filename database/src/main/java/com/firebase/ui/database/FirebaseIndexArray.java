@@ -178,6 +178,11 @@ public class FirebaseIndexArray extends FirebaseArray {
     }
 
     @Override
+    public Iterator<DataSnapshot> iterator() {
+        return new ImmutableIterator(mDataSnapshots.iterator());
+    }
+
+    @Override
     public Object[] toArray() {
         return mDataSnapshots.toArray();
     }
@@ -208,18 +213,13 @@ public class FirebaseIndexArray extends FirebaseArray {
     }
 
     @Override
-    public Iterator<DataSnapshot> iterator() {
-        return new ImmutableIterator<>(mDataSnapshots.iterator());
-    }
-
-    @Override
     public ListIterator<DataSnapshot> listIterator() {
-        return new ImmutableListIterator<>(mDataSnapshots.listIterator());
+        return new ImmutableListIterator(mDataSnapshots.listIterator());
     }
 
     @Override
     public ListIterator<DataSnapshot> listIterator(int index) {
-        return new ImmutableListIterator<>(mDataSnapshots.listIterator(index));
+        return new ImmutableListIterator(mDataSnapshots.listIterator(index));
     }
 
     @Override

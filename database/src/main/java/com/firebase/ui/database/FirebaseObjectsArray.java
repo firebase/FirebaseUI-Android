@@ -58,7 +58,7 @@ public class FirebaseObjectsArray<E> extends UnmodifiableList<E> {
      */
     @Override
     public Iterator<E> iterator() {
-        return new ImmutableIterator<>(getObjects().iterator());
+        return new ImmutableIterator(getObjects().iterator());
     }
 
     @Override
@@ -98,7 +98,7 @@ public class FirebaseObjectsArray<E> extends UnmodifiableList<E> {
      */
     @Override
     public ListIterator<E> listIterator() {
-        return new ImmutableListIterator<>(getObjects().listIterator());
+        return new ImmutableListIterator(getObjects().listIterator());
     }
 
     /**
@@ -108,7 +108,7 @@ public class FirebaseObjectsArray<E> extends UnmodifiableList<E> {
      */
     @Override
     public ListIterator<E> listIterator(int index) {
-        return new ImmutableListIterator<>(getObjects().listIterator(index));
+        return new ImmutableListIterator(getObjects().listIterator(index));
     }
 
     @Override

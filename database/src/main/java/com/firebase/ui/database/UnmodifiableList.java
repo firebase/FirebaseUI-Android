@@ -129,10 +129,10 @@ public abstract class UnmodifiableList<E> implements List<E> {
         throw new UnsupportedOperationException();
     }
 
-    protected static class ImmutableIterator<T> implements Iterator<T> {
-        private Iterator<T> mIterator;
+    protected class ImmutableIterator implements Iterator<E> {
+        protected Iterator<E> mIterator;
 
-        public ImmutableIterator(Iterator<T> iterator) {
+        public ImmutableIterator(Iterator<E> iterator) {
             mIterator = iterator;
         }
 
@@ -142,15 +142,15 @@ public abstract class UnmodifiableList<E> implements List<E> {
         }
 
         @Override
-        public T next() {
+        public E next() {
             return mIterator.next();
         }
     }
 
-    protected static class ImmutableListIterator<T> implements ListIterator<T> {
-        private ListIterator<T> mListIterator;
+    protected class ImmutableListIterator implements ListIterator<E> {
+        protected ListIterator<E> mListIterator;
 
-        public ImmutableListIterator(ListIterator<T> listIterator) {
+        public ImmutableListIterator(ListIterator<E> listIterator) {
             mListIterator = listIterator;
         }
 
@@ -160,7 +160,7 @@ public abstract class UnmodifiableList<E> implements List<E> {
         }
 
         @Override
-        public T next() {
+        public E next() {
             return mListIterator.next();
         }
 
@@ -170,7 +170,7 @@ public abstract class UnmodifiableList<E> implements List<E> {
         }
 
         @Override
-        public T previous() {
+        public E previous() {
             return mListIterator.previous();
         }
 
@@ -190,12 +190,12 @@ public abstract class UnmodifiableList<E> implements List<E> {
         }
 
         @Override
-        public void set(T t) {
+        public void set(E e) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void add(T t) {
+        public void add(E e) {
             throw new UnsupportedOperationException();
         }
     }

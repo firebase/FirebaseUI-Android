@@ -200,7 +200,7 @@ public class FirebaseArray extends UnmodifiableList<DataSnapshot> implements Chi
      */
     @Override
     public Iterator<DataSnapshot> iterator() {
-        return new ImmutableIterator<>(mSnapshots.iterator());
+        return new ImmutableIterator(mSnapshots.iterator());
     }
 
     @Override
@@ -240,7 +240,7 @@ public class FirebaseArray extends UnmodifiableList<DataSnapshot> implements Chi
      */
     @Override
     public ListIterator<DataSnapshot> listIterator() {
-        return new ImmutableListIterator<>(mSnapshots.listIterator());
+        return new ImmutableListIterator(mSnapshots.listIterator());
     }
 
     /**
@@ -250,7 +250,7 @@ public class FirebaseArray extends UnmodifiableList<DataSnapshot> implements Chi
      */
     @Override
     public ListIterator<DataSnapshot> listIterator(int index) {
-        return new ImmutableListIterator<>(mSnapshots.listIterator(index));
+        return new ImmutableListIterator(mSnapshots.listIterator(index));
     }
 
     @Override
