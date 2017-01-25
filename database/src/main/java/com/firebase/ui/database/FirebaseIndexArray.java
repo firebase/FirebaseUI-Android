@@ -48,7 +48,6 @@ public class FirebaseIndexArray extends FirebaseArray {
         }
     };
 
-    protected JoinResolver mJoinResolver;
     private Query mDataQuery;
     private ChangeEventListener mListenerCopy;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
@@ -63,22 +62,6 @@ public class FirebaseIndexArray extends FirebaseArray {
     public void setChangeEventListener(@NonNull ChangeEventListener listener) {
         super.setChangeEventListener(listener);
         mListenerCopy = listener;
-    }
-
-    public void setJoinResolver(JoinResolver joinResolver) {
-        if (isListening() && joinResolver == null) {
-            throw new IllegalArgumentException(
-                    "Join resolver cannot be null while FirebaseIndexArray is listening for data.");
-        }
-        mJoinResolver = joinResolver;
-    }
-
-    @Override
-    public void startListening() {
-        if (mJoinResolver == null) {
-            mJoinResolver = new DefaultJoinResolver();
-        }
-        super.startListening();
     }
 
     @Override
@@ -115,7 +98,7 @@ public class FirebaseIndexArray extends FirebaseArray {
         super.onChildAdded(keySnapshot, previousChildKey);
         super.setChangeEventListener(mListenerCopy);
 
-        Query ref = mJoinResolver.onJoin(keySnapshot, previousChildKey);
+        Query ref = mDataQuery.getRef().child(keySnapshot.getKey());
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
     }
 
@@ -130,9 +113,9 @@ public class FirebaseIndexArray extends FirebaseArray {
     public void onChildRemoved(DataSnapshot keySnapshot) {
         String key = keySnapshot.getKey();
         int index = getIndexForKey(key);
-
-        Query removeQuery = mJoinResolver.onDisjoin(keySnapshot);
-        removeQuery.removeEventListener(mRefs.remove(removeQuery));
+        mDataQuery.getRef()
+                .child(key)
+                .removeEventListener(mRefs.remove(mDataQuery.getRef().child(key)));
 
         super.setChangeEventListener(NOOP_CHANGE_LISTENER);
         super.onChildRemoved(keySnapshot);
@@ -186,7 +169,7 @@ public class FirebaseIndexArray extends FirebaseArray {
                     mDataSnapshots.remove(index);
                     notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
                 } else {
-                    mJoinResolver.onJoinFailed(index, snapshot);
+                    Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
                 }
             }
         }
@@ -194,23 +177,6 @@ public class FirebaseIndexArray extends FirebaseArray {
         @Override
         public void onCancelled(DatabaseError error) {
             mListener.onCancelled(error);
-        }
-    }
-
-    private class DefaultJoinResolver implements JoinResolver {
-        @Override
-        public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
-            return mDataQuery.getRef().child(keySnapshot.getKey());
-        }
-
-        @Override
-        public Query onDisjoin(DataSnapshot keySnapshot) {
-            return mDataQuery.getRef().child(keySnapshot.getKey());
-        }
-
-        @Override
-        public void onJoinFailed(int index, DataSnapshot snapshot) {
-            Log.w(TAG, "Key not found at ref " + snapshot.getRef() + " for index " + index + ".");
         }
     }
 
@@ -282,8 +248,7 @@ public class FirebaseIndexArray extends FirebaseArray {
 
         FirebaseIndexArray array = (FirebaseIndexArray) o;
 
-        return (mJoinResolver == null ? array.mJoinResolver == null : mJoinResolver.equals(array.mJoinResolver))
-                && (mListenerCopy == null ? array.mListenerCopy == null : mListenerCopy.equals(array.mListenerCopy))
+        return (mListenerCopy == null ? array.mListenerCopy == null : mListenerCopy.equals(array.mListenerCopy))
                 && mDataQuery.equals(array.mDataQuery)
                 && mRefs.equals(array.mRefs)
                 && mDataSnapshots.equals(array.mDataSnapshots);
@@ -292,7 +257,6 @@ public class FirebaseIndexArray extends FirebaseArray {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (mJoinResolver == null ? 0 : mJoinResolver.hashCode());
         result = 31 * result + (mListenerCopy == null ? 0 : mListenerCopy.hashCode());
         result = 31 * result + mDataQuery.hashCode();
         result = 31 * result + mRefs.hashCode();
