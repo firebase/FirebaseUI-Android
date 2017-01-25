@@ -146,17 +146,16 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     private void attachRecyclerViewAdapter() {
-        mRecyclerViewAdapter =
-                new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
-                        Chat.class,
-                        R.layout.message,
-                        ChatHolder.class,
-                        mChatIndicesRef.limitToLast(50),
-                        mChatRef) {
-                    @Override
-                    public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {
-                        chatView.setName(chat.getName());
-                        chatView.setText(chat.getMessage());
+        mRecyclerViewAdapter = new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
+                Chat.class,
+                R.layout.message,
+                ChatHolder.class,
+                mChatIndicesRef.limitToLast(50),
+                mChatRef) {
+            @Override
+            public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {
+                chatView.setName(chat.getName());
+                chatView.setText(chat.getMessage());
 
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null && chat.getUid().equals(currentUser.getUid())) {
