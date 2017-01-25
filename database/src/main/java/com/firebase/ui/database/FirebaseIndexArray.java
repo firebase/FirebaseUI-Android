@@ -209,26 +209,26 @@ public class FirebaseIndexArray extends FirebaseArray {
 
     @Override
     public Iterator<DataSnapshot> iterator() {
-        return new ImmutableIterator(mDataSnapshots.iterator());
+        return new ImmutableIterator<>(mDataSnapshots.iterator());
     }
 
     @Override
     public ListIterator<DataSnapshot> listIterator() {
-        return new ImmutableListIterator(mDataSnapshots.listIterator());
+        return new ImmutableListIterator<>(mDataSnapshots.listIterator());
     }
 
     @Override
     public ListIterator<DataSnapshot> listIterator(int index) {
-        return new ImmutableListIterator(mDataSnapshots.listIterator(index));
+        return new ImmutableListIterator<>(mDataSnapshots.listIterator(index));
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
 
-        FirebaseIndexArray array = (FirebaseIndexArray) o;
+        FirebaseIndexArray array = (FirebaseIndexArray) obj;
 
         return mDataQuery.equals(array.mDataQuery)
                 && mRefs.equals(array.mRefs)

@@ -15,7 +15,6 @@
 package com.firebase.ui.database;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -32,7 +31,7 @@ import java.util.ListIterator;
 /**
  * This class implements a collection on top of a Firebase location.
  */
-public class FirebaseArray implements ChildEventListener, ValueEventListener, List<DataSnapshot> {
+public class FirebaseArray extends UnmodifiableList<DataSnapshot> implements ChildEventListener, ValueEventListener {
     private Query mQuery;
     private boolean mNotifyListeners = true;
     private List<ChangeEventListener> mListeners = new ArrayList<>();
@@ -90,7 +89,7 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * @return true if {@link FirebaseArray} is listening for change events, false otherwise
      */
     public boolean isListening() {
-        return mListeners.size() > 0;
+        return !mListeners.isEmpty();
     }
 
     protected void setShouldNotifyListeners(boolean notifyListeners) {
@@ -194,6 +193,16 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
         return mSnapshots.contains(o);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return an immutable iterator
+     */
+    @Override
+    public Iterator<DataSnapshot> iterator() {
+        return new ImmutableIterator<>(mSnapshots.iterator());
+    }
+
     @Override
     public Object[] toArray() {
         return mSnapshots.toArray();
@@ -227,21 +236,11 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
     /**
      * {@inheritDoc}
      *
-     * @return an immutable iterator
-     */
-    @Override
-    public Iterator<DataSnapshot> iterator() {
-        return new ImmutableIterator(mSnapshots.iterator());
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * @return an immutable list iterator
      */
     @Override
     public ListIterator<DataSnapshot> listIterator() {
-        return new ImmutableListIterator(mSnapshots.listIterator());
+        return new ImmutableListIterator<>(mSnapshots.listIterator());
     }
 
     /**
@@ -251,15 +250,15 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      */
     @Override
     public ListIterator<DataSnapshot> listIterator(int index) {
-        return new ImmutableListIterator(mSnapshots.listIterator(index));
+        return new ImmutableListIterator<>(mSnapshots.listIterator(index));
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
 
-        FirebaseArray snapshots = (FirebaseArray) o;
+        FirebaseArray snapshots = (FirebaseArray) obj;
 
         return mListeners.equals(snapshots.mListeners)
                 && mQuery.equals(snapshots.mQuery)
@@ -281,200 +280,5 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
                 ", mQuery=" + mQuery +
                 ", mSnapshots=" + mSnapshots +
                 '}';
-    }
-
-    protected static class ImmutableIterator implements Iterator<DataSnapshot> {
-        private Iterator<DataSnapshot> mIterator;
-
-        public ImmutableIterator(Iterator<DataSnapshot> iterator) {
-            mIterator = iterator;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return mIterator.hasNext();
-        }
-
-        @Override
-        public DataSnapshot next() {
-            return mIterator.next();
-        }
-    }
-
-    protected static class ImmutableListIterator implements ListIterator<DataSnapshot> {
-        private ListIterator<DataSnapshot> mListIterator;
-
-        public ImmutableListIterator(ListIterator<DataSnapshot> listIterator) {
-            mListIterator = listIterator;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return mListIterator.hasNext();
-        }
-
-        @Override
-        public DataSnapshot next() {
-            return mListIterator.next();
-        }
-
-        @Override
-        public boolean hasPrevious() {
-            return mListIterator.hasPrevious();
-        }
-
-        @Override
-        public DataSnapshot previous() {
-            return mListIterator.previous();
-        }
-
-        @Override
-        public int nextIndex() {
-            return mListIterator.nextIndex();
-        }
-
-        @Override
-        public int previousIndex() {
-            return mListIterator.previousIndex();
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void set(DataSnapshot snapshot) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void add(DataSnapshot snapshot) {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public boolean add(DataSnapshot snapshot) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public boolean remove(Object o) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public boolean addAll(Collection<? extends DataSnapshot> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public boolean addAll(int index, Collection<? extends DataSnapshot> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public DataSnapshot set(int index, DataSnapshot element) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public void add(int index, DataSnapshot element) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public DataSnapshot remove(int index) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Guaranteed to throw an exception and leave the collection unmodified.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public List<DataSnapshot> subList(int fromIndex, int toIndex) {
-        throw new UnsupportedOperationException();
     }
 }
