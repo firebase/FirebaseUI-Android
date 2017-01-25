@@ -63,12 +63,18 @@ class FirebaseIndexArray extends FirebaseArray {
     }
 
     public void setJoinResolver(JoinResolver joinResolver) {
-        mJoinResolver = joinResolver == null ? new DefaultJoinResolver() : joinResolver;
+        if (mIsListening && joinResolver == null) {
+            throw new IllegalArgumentException(
+                    "Join resolver cannot be null while FirebaseIndexArray is listening for data.");
+        }
+        mJoinResolver = joinResolver;
     }
 
     @Override
     public void startListening() {
-        if (mJoinResolver == null) throw new IllegalStateException("Join resolver cannot be null.");
+        if (mJoinResolver == null) {
+            mJoinResolver = new DefaultJoinResolver();
+        }
         super.startListening();
     }
 

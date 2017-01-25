@@ -5,10 +5,7 @@ import android.content.Context;
 import com.firebase.ui.database.utils.Bean;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 
 import junit.framework.AssertionFailedError;
 
@@ -34,25 +31,6 @@ public class TestUtils {
                 .setApplicationId("fir-ui-tests")
                 .setDatabaseUrl("https://fir-ui-tests.firebaseio.com/")
                 .build(), APP_NAME);
-    }
-
-    public static void setJoinResolver(FirebaseIndexArray array, final DatabaseReference ref) {
-        array.setJoinResolver(new JoinResolver() {
-            @Override
-            public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
-                return ref.child(keySnapshot.getKey());
-            }
-
-            @Override
-            public Query onDisjoin(DataSnapshot keySnapshot) {
-                return ref.child(keySnapshot.getKey());
-            }
-
-            @Override
-            public void onJoinFailed(int index, DataSnapshot snapshot) {
-                throw new IllegalStateException(index + ": " + snapshot);
-            }
-        });
     }
 
     public static void runAndWaitUntil(FirebaseArray array,

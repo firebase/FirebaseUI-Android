@@ -40,7 +40,7 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
 
     public void setChangeEventListener(@NonNull ChangeEventListener listener) {
         if (mIsListening && listener == null) {
-            throw new IllegalStateException("Listener cannot be null.");
+            throw new IllegalArgumentException("Listener cannot be null.");
         }
         mListener = listener;
     }

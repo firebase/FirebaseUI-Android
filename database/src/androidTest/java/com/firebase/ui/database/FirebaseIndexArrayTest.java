@@ -31,7 +31,6 @@ import java.util.concurrent.Callable;
 import static com.firebase.ui.database.TestUtils.getAppInstance;
 import static com.firebase.ui.database.TestUtils.isValuesEqual;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
-import static com.firebase.ui.database.TestUtils.setJoinResolver;
 
 @RunWith(AndroidJUnit4.class)
 @SmallTest
@@ -48,8 +47,7 @@ public class FirebaseIndexArrayTest extends InstrumentationTestCase {
         mRef = databaseInstance.getReference().child("firebasearray");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray");
 
-        mArray = new FirebaseIndexArray(mKeyRef);
-        setJoinResolver(mArray, mRef);
+        mArray = new FirebaseIndexArray(mKeyRef, mRef);
         mRef.removeValue();
         mKeyRef.removeValue();
 
