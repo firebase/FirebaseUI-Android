@@ -282,7 +282,9 @@ public class FirebaseIndexArray extends FirebaseArray {
 
         FirebaseIndexArray array = (FirebaseIndexArray) o;
 
-        return mJoinResolver.equals(array.mJoinResolver)
+        return (mJoinResolver == null ? array.mJoinResolver == null : mJoinResolver.equals(array.mJoinResolver))
+                && (mListenerCopy == null ? array.mListenerCopy == null : mListenerCopy.equals(array.mListenerCopy))
+                && mDataQuery.equals(array.mDataQuery)
                 && mRefs.equals(array.mRefs)
                 && mDataSnapshots.equals(array.mDataSnapshots);
     }
@@ -290,7 +292,9 @@ public class FirebaseIndexArray extends FirebaseArray {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + mJoinResolver.hashCode();
+        result = 31 * result + (mJoinResolver == null ? 0 : mJoinResolver.hashCode());
+        result = 31 * result + (mListenerCopy == null ? 0 : mListenerCopy.hashCode());
+        result = 31 * result + mDataQuery.hashCode();
         result = 31 * result + mRefs.hashCode();
         result = 31 * result + mDataSnapshots.hashCode();
         return result;
@@ -299,10 +303,7 @@ public class FirebaseIndexArray extends FirebaseArray {
     @Override
     public String toString() {
         return "FirebaseIndexArray{" +
-                "mListener=" + mListener +
-                ", mIsListening=" + isListening() +
-                ", mJoinResolver=" + mJoinResolver +
-                ", mRefs=" + mRefs +
+                "mDataQuery=" + mDataQuery +
                 ", mDataSnapshots=" + mDataSnapshots +
                 '}';
     }

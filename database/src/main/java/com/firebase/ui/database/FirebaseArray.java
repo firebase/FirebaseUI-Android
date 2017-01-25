@@ -213,8 +213,7 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
     @Override
     public String toString() {
         return "FirebaseArray{" +
-                "mListener=" + mListener +
-                ", mIsListening=" + mIsListening +
+                "mIsListening=" + mIsListening +
                 ", mQuery=" + mQuery +
                 ", mSnapshots=" + mSnapshots +
                 '}';
