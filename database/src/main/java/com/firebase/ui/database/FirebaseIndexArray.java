@@ -124,7 +124,7 @@ class FirebaseIndexArray extends FirebaseArray {
 
         if (isMatch(index, key)) {
             mDataSnapshots.remove(index);
-            notifyChangeListener(ChangeEventListener.EventType.REMOVED, index);
+            notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
         }
     }
 
@@ -141,7 +141,7 @@ class FirebaseIndexArray extends FirebaseArray {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            mListener.onChildChanged(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+            notifyChangedListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
         }
     }
 
@@ -178,15 +178,15 @@ class FirebaseIndexArray extends FirebaseArray {
             if (snapshot.getValue() != null) {
                 if (!isMatch(index, key)) {
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangeListener(ChangeEventListener.EventType.ADDED, index);
+                    notifyChangedListeners(ChangeEventListener.EventType.ADDED, index);
                 } else {
                     mDataSnapshots.set(index, snapshot);
-                    notifyChangeListener(ChangeEventListener.EventType.CHANGED, index);
+                    notifyChangedListeners(ChangeEventListener.EventType.CHANGED, index);
                 }
             } else {
                 if (isMatch(index, key)) {
                     mDataSnapshots.remove(index);
-                    notifyChangeListener(ChangeEventListener.EventType.REMOVED, index);
+                    notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
                 } else {
                     mJoinResolver.onJoinFailed(index, snapshot);
                 }

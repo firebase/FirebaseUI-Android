@@ -69,4 +69,6 @@
 
     <!-- strings for Auth UI demo activities -->
     <string name="start_chatting">No messages. Start chatting at the bottom!</string>
+    <string name="sign_in_failed">Sign In Failed</string>
+    <string name="signed_in">Signed In</string>
 </resources>

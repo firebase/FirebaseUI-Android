@@ -29,19 +29,8 @@ import java.util.List;
  * This class implements an array-like collection on top of a Firebase location.
  */
 class FirebaseArray implements ChildEventListener, ValueEventListener {
-    public interface ChangeEventListener {
-        enum EventType {ADDED, CHANGED, REMOVED, MOVED}
-
-        void onChildChanged(EventType type, int index, int oldIndex);
-
-        void onDataChanged();
-
-        void onCancelled(DatabaseError error);
-    }
-
-    protected ChangeEventListener mListener;
-    protected boolean mIsListening;
     private Query mQuery;
+    private ChangeEventListener mListener;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     public FirebaseArray(Query ref) {
@@ -84,21 +73,21 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
             index = getIndexForKey(previousChildKey) + 1;
         }
         mSnapshots.add(index, snapshot);
-        notifyChangeListener(ChangeEventListener.EventType.ADDED, index);
+        notifyChangedListeners(ChangeEventListener.EventType.ADDED, index);
     }
 
     @Override
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.set(index, snapshot);
-        notifyChangeListener(ChangeEventListener.EventType.CHANGED, index);
+        notifyChangedListeners(ChangeEventListener.EventType.CHANGED, index);
     }
 
     @Override
     public void onChildRemoved(DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(index);
-        notifyChangeListener(ChangeEventListener.EventType.REMOVED, index);
+        notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
     }
 
     @Override
@@ -107,7 +96,7 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
         mSnapshots.remove(oldIndex);
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
-        mListener.onChildChanged(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+        notifyChangedListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
     }
 
     @Override

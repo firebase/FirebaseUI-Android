@@ -14,6 +14,10 @@
 
 package com.firebase.uidemo.database;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -64,6 +68,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
+
         mEmptyListView = findViewById(R.id.emptyTextView);
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -92,8 +97,11 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
         });
 
-        mMessages = (RecyclerView) findViewById(R.id.messagesList);
         mManager = new LinearLayoutManager(this);
+        mManager.setReverseLayout(false);
+
+        mMessages = (RecyclerView) findViewById(R.id.messagesList);
+        mMessages.setHasFixedSize(false);
         mMessages.setLayoutManager(mManager);
     }
 
@@ -139,8 +147,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         Chat.class,
                         R.layout.message,
                         ChatHolder.class,
-                        mChatIndicesRef,
-                        lastFifty) {
+                        mChatIndicesRef.limitToLast(50),
+                        mChatRef) {
                     @Override
                     public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {
                         chatView.setName(chat.getName());
@@ -165,9 +173,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mRecyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                mManager.smoothScrollToPosition(mMessages,
-                                                null,
-                                                mRecyclerViewAdapter.getItemCount());
+                mManager.smoothScrollToPosition(mMessages, null, mRecyclerViewAdapter.getItemCount());
             }
         });
 
@@ -183,22 +189,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                         attachRecyclerViewAdapter();
                     }
                 })
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(),
-                                           R.string.signed_in,
-                                           Toast.LENGTH_SHORT)
-                                    .show();
-                        } else {
-                            Toast.makeText(getApplicationContext(),
-                                           R.string.sign_in_failed,
-                                           Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }
-                });
+                .addOnCompleteListener(new SignInResultNotifier(this));
     }
 
     public boolean isSignedIn() {
@@ -209,5 +200,117 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         // Sending only allowed when signed in
         mSendButton.setEnabled(isSignedIn());
         mMessageEdit.setEnabled(isSignedIn());
+    }
+
+    public static class Chat {
+        private String mName;
+        private String mMessage;
+        private String mUid;
+
+        public Chat() {
+            // Needed for Firebase
+        }
+
+        public Chat(String name, String message, String uid) {
+            mName = name;
+            mMessage = message;
+            mUid = uid;
+        }
+
+        public String getName() {
+            return mName;
+        }
+
+        public void setName(String name) {
+            mName = name;
+        }
+
+        public String getMessage() {
+            return mMessage;
+        }
+
+        public void setMessage(String message) {
+            mMessage = message;
+        }
+
+        public String getUid() {
+            return mUid;
+        }
+
+        public void setUid(String uid) {
+            mUid = uid;
+        }
+    }
+
+    public static class ChatHolder extends RecyclerView.ViewHolder {
+        private final TextView mNameField;
+        private final TextView mTextField;
+        private final FrameLayout mLeftArrow;
+        private final FrameLayout mRightArrow;
+        private final RelativeLayout mMessageContainer;
+        private final LinearLayout mMessage;
+        private final int mGreen300;
+        private final int mGray300;
+
+        public ChatHolder(View itemView) {
+            super(itemView);
+            mNameField = (TextView) itemView.findViewById(R.id.name_text);
+            mTextField = (TextView) itemView.findViewById(R.id.message_text);
+            mLeftArrow = (FrameLayout) itemView.findViewById(R.id.left_arrow);
+            mRightArrow = (FrameLayout) itemView.findViewById(R.id.right_arrow);
+            mMessageContainer = (RelativeLayout) itemView.findViewById(R.id.message_container);
+            mMessage = (LinearLayout) itemView.findViewById(R.id.message);
+            mGreen300 = ContextCompat.getColor(itemView.getContext(), R.color.material_green_300);
+            mGray300 = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
+        }
+
+        public void setIsSender(boolean isSender) {
+            final int color;
+            if (isSender) {
+                color = mGreen300;
+                mLeftArrow.setVisibility(View.GONE);
+                mRightArrow.setVisibility(View.VISIBLE);
+                mMessageContainer.setGravity(Gravity.END);
+            } else {
+                color = mGray300;
+                mLeftArrow.setVisibility(View.VISIBLE);
+                mRightArrow.setVisibility(View.GONE);
+                mMessageContainer.setGravity(Gravity.START);
+            }
+
+            ((GradientDrawable) mMessage.getBackground()).setColor(color);
+            ((RotateDrawable) mLeftArrow.getBackground()).getDrawable()
+                    .setColorFilter(color, PorterDuff.Mode.SRC);
+            ((RotateDrawable) mRightArrow.getBackground()).getDrawable()
+                    .setColorFilter(color, PorterDuff.Mode.SRC);
+        }
+
+        public void setName(String name) {
+            mNameField.setText(name);
+        }
+
+        public void setText(String text) {
+            mTextField.setText(text);
+        }
+    }
+
+    /**
+     * Notifies the user of sign in successes or failures beyond the lifecycle of an activity.
+     */
+    private static class SignInResultNotifier implements OnCompleteListener<AuthResult> {
+        private Context mContext;
+
+        public SignInResultNotifier(Context context) {
+            mContext = context.getApplicationContext();
+        }
+
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+            if (task.isSuccessful()) {
+                Toast.makeText(mContext, R.string.signed_in, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(mContext, R.string.sign_in_failed, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
