@@ -75,7 +75,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         extends RecyclerView.Adapter<VH> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
-    FirebaseArray mSnapshots;
+    private FirebaseArray mSnapshots;
     private Class<T> mModelClass;
     protected Class<VH> mViewHolderClass;
     protected int mModelLayout;
@@ -83,8 +83,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     FirebaseRecyclerAdapter(Class<T> modelClass,
                             @LayoutRes int modelLayout,
                             Class<VH> viewHolderClass,
-                            FirebaseArray snapshots,
-                            boolean shouldStartListening) {
+                            FirebaseArray snapshots) {
         mModelClass = modelClass;
         mModelLayout = modelLayout;
         mViewHolderClass = viewHolderClass;
@@ -106,7 +105,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                 FirebaseRecyclerAdapter.this.onCancelled(error);
             }
         });
-        if (shouldStartListening) mSnapshots.startListening();
+        startListening();
     }
 
     /**
@@ -123,7 +122,16 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                                    int modelLayout,
                                    Class<VH> viewHolderClass,
                                    Query ref) {
-        this(modelClass, modelLayout, viewHolderClass, new FirebaseArray(ref), true);
+        this(modelClass, modelLayout, viewHolderClass, new FirebaseArray(ref));
+    }
+
+    /**
+     * If you need to do some setup before we start listening for change events in the database
+     * (such as setting a custom {@link JoinResolver}), do so it here and then call {@code
+     * super.startListening()}.
+     */
+    protected void startListening() {
+        mSnapshots.startListening();
     }
 
     public void cleanup() {

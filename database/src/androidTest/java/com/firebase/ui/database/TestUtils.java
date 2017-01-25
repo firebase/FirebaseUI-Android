@@ -37,7 +37,7 @@ public class TestUtils {
     }
 
     public static void setJoinResolver(FirebaseIndexArray array, final DatabaseReference ref) {
-        array.setJoinResolverListener(new JoinResolver() {
+        array.setJoinResolver(new JoinResolver() {
             @Override
             public Query onJoin(DataSnapshot keySnapshot, String previousChildKey) {
                 return ref.child(keySnapshot.getKey());
