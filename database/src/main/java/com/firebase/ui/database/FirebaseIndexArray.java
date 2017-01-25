@@ -91,6 +91,24 @@ public class FirebaseIndexArray extends FirebaseArray {
         mDataSnapshots.clear();
     }
 
+    private int getIndexForKey(String key) {
+        int dataCount = size();
+        int index = 0;
+        for (int keyIndex = 0; index < dataCount; keyIndex++) {
+            String superKey = super.get(keyIndex).getKey();
+            if (key.equals(superKey)) {
+                break;
+            } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
+                index++;
+            }
+        }
+        return index;
+    }
+
+    private boolean isMatch(int index, String key) {
+        return index >= 0 && index < size() && mDataSnapshots.get(index).getKey().equals(key);
+    }
+
     @Override
     public void onChildAdded(DataSnapshot keySnapshot, String previousChildKey) {
         super.setChangeEventListener(NOOP_CHANGE_LISTENER);
@@ -194,24 +212,6 @@ public class FirebaseIndexArray extends FirebaseArray {
         public void onJoinFailed(int index, DataSnapshot snapshot) {
             Log.w(TAG, "Key not found at ref " + snapshot.getRef() + " for index " + index + ".");
         }
-    }
-
-    private int getIndexForKey(String key) {
-        int dataCount = size();
-        int index = 0;
-        for (int keyIndex = 0; index < dataCount; keyIndex++) {
-            String superKey = super.get(keyIndex).getKey();
-            if (key.equals(superKey)) {
-                break;
-            } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
-                index++;
-            }
-        }
-        return index;
-    }
-
-    private boolean isMatch(int index, String key) {
-        return index >= 0 && index < size() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
     @Override
