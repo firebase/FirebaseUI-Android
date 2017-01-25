@@ -57,6 +57,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     protected final Class<T> mModelClass;
     protected Activity mActivity;
     protected int mLayout;
+    private ChangeEventListener mListener;
 
     FirebaseListAdapter(Activity activity,
                         Class<T> modelClass,
@@ -67,22 +68,6 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
         mLayout = modelLayout;
         mSnapshots = snapshots;
 
-        mSnapshots.setChangeEventListener(new ChangeEventListener() {
-            @Override
-            public void onChildChanged(EventType type, int index, int oldIndex) {
-                FirebaseListAdapter.this.onChildChanged(type, index, oldIndex);
-            }
-
-            @Override
-            public void onDataChanged() {
-                FirebaseListAdapter.this.onDataChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                FirebaseListAdapter.this.onCancelled(error);
-            }
-        });
         startListening();
     }
 
@@ -109,11 +94,26 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
      * super.startListening()}.
      */
     protected void startListening() {
-        mSnapshots.startListening();
+        mListener = mSnapshots.addChangeEventListener(new ChangeEventListener() {
+            @Override
+            public void onChildChanged(EventType type, int index, int oldIndex) {
+                FirebaseListAdapter.this.onChildChanged(type, index, oldIndex);
+            }
+
+            @Override
+            public void onDataChanged() {
+                FirebaseListAdapter.this.onDataChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                FirebaseListAdapter.this.onCancelled(error);
+            }
+        });
     }
 
     public void cleanup() {
-        mSnapshots.stopListening();
+        mSnapshots.removeChangeEventListener(mListener);
     }
 
     @Override

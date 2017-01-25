@@ -39,6 +39,7 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
     private DatabaseReference mRef;
     private DatabaseReference mKeyRef;
     private FirebaseArray mArray;
+    private ChangeEventListener mListener;
 
     @Before
     public void setUp() throws Exception {
@@ -51,10 +52,9 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
         mRef.removeValue();
         mKeyRef.removeValue();
 
-        runAndWaitUntil(mArray, new Runnable() {
+        mListener = runAndWaitUntil(mArray, new Runnable() {
                             @Override
                             public void run() {
-                                mArray.startListening();
                                 for (int i = 1; i <= 3; i++) {
                                     setValue(new Bean(i, "Text " + i, i % 2 == 0), i);
                                 }
@@ -70,8 +70,8 @@ public class FirebaseIndexArrayOfObjectsTest extends InstrumentationTestCase {
 
     @After
     public void tearDown() throws Exception {
+        mArray.removeChangeEventListener(mListener);
         mRef.getRoot().removeValue();
-        mArray.stopListening();
         super.tearDown();
     }
 

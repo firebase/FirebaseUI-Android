@@ -15,6 +15,7 @@
 package com.firebase.ui.database;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -337,37 +338,16 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
             return mListIterator.previousIndex();
         }
 
-        /**
-         * Guaranteed to throw an exception and leave the collection unmodified.
-         *
-         * @throws UnsupportedOperationException always
-         * @deprecated Unsupported operation.
-         */
-        @Deprecated
         @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
 
-        /**
-         * Guaranteed to throw an exception and leave the collection unmodified.
-         *
-         * @throws UnsupportedOperationException always
-         * @deprecated Unsupported operation.
-         */
-        @Deprecated
         @Override
         public void set(DataSnapshot snapshot) {
             throw new UnsupportedOperationException();
         }
 
-        /**
-         * Guaranteed to throw an exception and leave the collection unmodified.
-         *
-         * @throws UnsupportedOperationException always
-         * @deprecated Unsupported operation.
-         */
-        @Deprecated
         @Override
         public void add(DataSnapshot snapshot) {
             throw new UnsupportedOperationException();
@@ -379,9 +359,8 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * Guaranteed to throw an exception and leave the collection unmodified.
      *
      * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public boolean add(DataSnapshot snapshot) {
         throw new UnsupportedOperationException();
@@ -391,9 +370,8 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * Guaranteed to throw an exception and leave the collection unmodified.
      *
      * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public boolean remove(Object o) {
         throw new UnsupportedOperationException();
@@ -405,7 +383,7 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * @throws UnsupportedOperationException always
      * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public boolean addAll(Collection<? extends DataSnapshot> c) {
         throw new UnsupportedOperationException();
@@ -417,7 +395,7 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * @throws UnsupportedOperationException always
      * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public boolean addAll(int index, Collection<? extends DataSnapshot> c) {
         throw new UnsupportedOperationException();
@@ -427,9 +405,8 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * Guaranteed to throw an exception and leave the collection unmodified.
      *
      * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public boolean removeAll(Collection<?> c) {
         throw new UnsupportedOperationException();
@@ -439,9 +416,8 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * Guaranteed to throw an exception and leave the collection unmodified.
      *
      * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public boolean retainAll(Collection<?> c) {
         throw new UnsupportedOperationException();
@@ -451,9 +427,8 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * Guaranteed to throw an exception and leave the collection unmodified.
      *
      * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public void clear() {
         throw new UnsupportedOperationException();
@@ -463,9 +438,8 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * Guaranteed to throw an exception and leave the collection unmodified.
      *
      * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public DataSnapshot set(int index, DataSnapshot element) {
         throw new UnsupportedOperationException();
@@ -475,9 +449,8 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * Guaranteed to throw an exception and leave the collection unmodified.
      *
      * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public void add(int index, DataSnapshot element) {
         throw new UnsupportedOperationException();
@@ -487,9 +460,8 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * Guaranteed to throw an exception and leave the collection unmodified.
      *
      * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public DataSnapshot remove(int index) {
         throw new UnsupportedOperationException();
@@ -499,9 +471,8 @@ public class FirebaseArray implements ChildEventListener, ValueEventListener, Li
      * Guaranteed to throw an exception and leave the collection unmodified.
      *
      * @throws UnsupportedOperationException always
-     * @deprecated Unsupported operation.
      */
-    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
     public List<DataSnapshot> subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException();

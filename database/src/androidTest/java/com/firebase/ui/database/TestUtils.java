@@ -33,11 +33,11 @@ public class TestUtils {
                 .build(), APP_NAME);
     }
 
-    public static void runAndWaitUntil(FirebaseArray array,
-                                       Runnable task,
-                                       Callable<Boolean> done) throws InterruptedException {
+    public static ChangeEventListener runAndWaitUntil(FirebaseArray array,
+                                                      Runnable task,
+                                                      Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
-        array.setChangeEventListener(new ChangeEventListener() {
+        ChangeEventListener listener = array.addChangeEventListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
                 semaphore.release();
@@ -52,6 +52,7 @@ public class TestUtils {
             }
         });
         task.run();
+
         boolean isDone = false;
         long startedAt = System.currentTimeMillis();
         while (!isDone && System.currentTimeMillis() - startedAt < TIMEOUT) {
@@ -63,9 +64,12 @@ public class TestUtils {
                 // and we're not done
             }
         }
+
         if (!isDone) {
             throw new AssertionFailedError();
         }
+
+        return listener;
     }
 
     public static boolean isValuesEqual(FirebaseArray array, int[] expected) {

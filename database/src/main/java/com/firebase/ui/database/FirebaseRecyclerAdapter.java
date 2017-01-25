@@ -79,6 +79,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     protected Class<T> mModelClass;
     protected Class<VH> mViewHolderClass;
     protected int mModelLayout;
+    private ChangeEventListener mListener;
 
     FirebaseRecyclerAdapter(Class<T> modelClass,
                             @LayoutRes int modelLayout,
@@ -89,22 +90,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         mViewHolderClass = viewHolderClass;
         mSnapshots = snapshots;
 
-        mSnapshots.setChangeEventListener(new ChangeEventListener() {
-            @Override
-            public void onChildChanged(EventType type, int index, int oldIndex) {
-                FirebaseRecyclerAdapter.this.onChildChanged(type, index, oldIndex);
-            }
-
-            @Override
-            public void onDataChanged() {
-                FirebaseRecyclerAdapter.this.onDataChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                FirebaseRecyclerAdapter.this.onCancelled(error);
-            }
-        });
         startListening();
     }
 
@@ -131,11 +116,26 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * super.startListening()}.
      */
     protected void startListening() {
-        mSnapshots.startListening();
+        mListener = mSnapshots.addChangeEventListener(new ChangeEventListener() {
+            @Override
+            public void onChildChanged(EventType type, int index, int oldIndex) {
+                FirebaseRecyclerAdapter.this.onChildChanged(type, index, oldIndex);
+            }
+
+            @Override
+            public void onDataChanged() {
+                FirebaseRecyclerAdapter.this.onDataChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                FirebaseRecyclerAdapter.this.onCancelled(error);
+            }
+        });
     }
 
     public void cleanup() {
-        mSnapshots.stopListening();
+        mSnapshots.removeChangeEventListener(mListener);
     }
 
     @Override

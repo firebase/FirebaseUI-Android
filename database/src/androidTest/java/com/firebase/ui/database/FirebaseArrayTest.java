@@ -38,6 +38,7 @@ import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
 public class FirebaseArrayTest extends InstrumentationTestCase {
     private DatabaseReference mRef;
     private FirebaseArray mArray;
+    private ChangeEventListener mListener;
 
     @Before
     public void setUp() throws Exception {
@@ -45,10 +46,9 @@ public class FirebaseArrayTest extends InstrumentationTestCase {
         FirebaseApp app = getAppInstance(getInstrumentation().getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
         mArray = new FirebaseArray(mRef);
-        mRef.removeValue();
-        runAndWaitUntil(mArray, new Runnable() {
+
+        mListener = runAndWaitUntil(mArray, new Runnable() {
             public void run() {
-                mArray.startListening();
                 for (int i = 1; i <= 3; i++) {
                     mRef.push().setValue(i, i);
                 }
@@ -62,8 +62,8 @@ public class FirebaseArrayTest extends InstrumentationTestCase {
 
     @After
     public void tearDown() throws Exception {
+        mArray.removeChangeEventListener(mListener);
         mRef.getRoot().removeValue();
-        mArray.stopListening();
         super.tearDown();
     }
 
