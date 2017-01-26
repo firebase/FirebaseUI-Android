@@ -14,9 +14,8 @@
 
 package com.firebase.ui.database;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.InstrumentationTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -33,8 +32,9 @@ import static com.firebase.ui.database.TestUtils.isValuesEqual;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
 
 @RunWith(AndroidJUnit4.class)
-@SmallTest
-public class FirebaseIndexArrayTest extends InstrumentationTestCase {
+public class FirebaseIndexArrayTest {
+    private static final int INITIAL_SIZE = 3;
+
     private DatabaseReference mRef;
     private DatabaseReference mKeyRef;
     private FirebaseIndexArray mArray;
@@ -42,7 +42,7 @@ public class FirebaseIndexArrayTest extends InstrumentationTestCase {
     @Before
     public void setUp() throws Exception {
         FirebaseDatabase databaseInstance =
-                FirebaseDatabase.getInstance(getAppInstance(getInstrumentation().getContext()));
+                FirebaseDatabase.getInstance(getAppInstance(InstrumentationRegistry.getContext()));
         mRef = databaseInstance.getReference().child("firebasearray");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray");
 
@@ -53,14 +53,14 @@ public class FirebaseIndexArrayTest extends InstrumentationTestCase {
         runAndWaitUntil(mArray, new Runnable() {
             @Override
             public void run() {
-                for (int i = 1; i <= 3; i++) {
-                    setValue(i, i);
+                for (int i = 1; i <= INITIAL_SIZE; i++) {
+                    pushValue(i, i);
                 }
             }
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.getCount() == 3;
+                return mArray.getCount() == INITIAL_SIZE;
             }
         });
     }
@@ -77,16 +77,10 @@ public class FirebaseIndexArrayTest extends InstrumentationTestCase {
     }
 
     @Test
-    public void testSize() throws Exception {
-        assertEquals(3, mArray.getCount());
-    }
-
-    @Test
     public void testPushIncreasesSize() throws Exception {
-        assertEquals(3, mArray.getCount());
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
-                setValue(4, null);
+                pushValue(4, null);
             }
         }, new Callable<Boolean>() {
             @Override
@@ -100,7 +94,7 @@ public class FirebaseIndexArrayTest extends InstrumentationTestCase {
     public void testPushAppends() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
-                setValue(4, 4);
+                pushValue(4, 4);
             }
         }, new Callable<Boolean>() {
             @Override
@@ -114,7 +108,7 @@ public class FirebaseIndexArrayTest extends InstrumentationTestCase {
     public void testAddValueWithPriority() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
             public void run() {
-                setValue(4, 0.5);
+                pushValue(4, 0.5);
             }
         }, new Callable<Boolean>() {
             public Boolean call() throws Exception {
@@ -137,7 +131,7 @@ public class FirebaseIndexArrayTest extends InstrumentationTestCase {
         });
     }
 
-    private void setValue(Object value, Object priority) {
+    private void pushValue(Object value, Object priority) {
         String key = mKeyRef.push().getKey();
 
         if (priority != null) {
