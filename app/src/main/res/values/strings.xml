@@ -65,8 +65,8 @@
     <string name="accessibility_downloaded_image">Downloaded image</string>
     <string name="drive_file">Drive File</string>
 
-    <!-- strings for Auth UI demo activities -->
+    <!-- strings for database demo activities -->
     <string name="start_chatting">No messages. Start chatting at the bottom!</string>
-    <string name="sign_in_failed">Sign In Failed</string>
     <string name="signed_in">Signed In</string>
+    <string name="sign_in_failed">Sign In Failed</string>
 </resources>
