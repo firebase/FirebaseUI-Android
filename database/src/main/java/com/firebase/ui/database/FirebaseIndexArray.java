@@ -32,7 +32,7 @@ class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = FirebaseIndexArray.class.getSimpleName();
 
     private Query mQuery;
-    private OnChangedListener mListener;
+    private ChangeEventListener mListener;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
@@ -107,7 +107,7 @@ class FirebaseIndexArray extends FirebaseArray {
 
         if (isMatch(index, key)) {
             mDataSnapshots.remove(index);
-            notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
+            notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
         }
     }
 
@@ -124,7 +124,7 @@ class FirebaseIndexArray extends FirebaseArray {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            notifyChangedListeners(OnChangedListener.EventType.MOVED, newIndex, oldIndex);
+            notifyChangedListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
         }
     }
 
@@ -135,7 +135,7 @@ class FirebaseIndexArray extends FirebaseArray {
     }
 
     @Override
-    public void setOnChangedListener(OnChangedListener listener) {
+    public void setOnChangedListener(ChangeEventListener listener) {
         super.setOnChangedListener(listener);
         mListener = listener;
     }
@@ -149,15 +149,15 @@ class FirebaseIndexArray extends FirebaseArray {
             if (snapshot.getValue() != null) {
                 if (!isMatch(index, key)) {
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangedListeners(OnChangedListener.EventType.ADDED, index);
+                    notifyChangedListeners(ChangeEventListener.EventType.ADDED, index);
                 } else {
                     mDataSnapshots.set(index, snapshot);
-                    notifyChangedListeners(OnChangedListener.EventType.CHANGED, index);
+                    notifyChangedListeners(ChangeEventListener.EventType.CHANGED, index);
                 }
             } else {
                 if (isMatch(index, key)) {
                     mDataSnapshots.remove(index);
-                    notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
+                    notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
                 } else {
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
                 }
