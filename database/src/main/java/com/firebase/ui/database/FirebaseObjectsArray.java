@@ -42,13 +42,7 @@ public class FirebaseObjectsArray<E> extends UnmodifiableList<E> {
 
     @Override
     public boolean contains(Object o) {
-        for (int i = 0; i < mSnapshots.size(); i++) {
-            E value = get(i);
-            if (o == null ? value == null : value.equals(o)) {
-                return true;
-            }
-        }
-        return false;
+        return indexOf(o) >= 0;
     }
 
     /**
