@@ -59,7 +59,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     private RecyclerView mMessages;
     private LinearLayoutManager mManager;
-    private FirebaseRecyclerAdapter<Chat, ChatHolder> mRecyclerViewAdapter;
+    private FirebaseRecyclerAdapter<Chat, ChatHolder> mAdapter;
     private View mEmptyListView;
 
     @Override
@@ -126,8 +126,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     @Override
     public void onStop() {
         super.onStop();
-        if (mRecyclerViewAdapter != null) {
-            mRecyclerViewAdapter.cleanup();
+        if (mAdapter != null) {
+            mAdapter.cleanup();
         }
     }
 
@@ -145,41 +145,41 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     private void attachRecyclerViewAdapter() {
-        mRecyclerViewAdapter = new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
+        mAdapter = new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
                 Chat.class,
                 ChatHolder.class,
                 R.layout.message,
                 mChatIndicesRef.limitToLast(50),
                 mChatRef) {
             @Override
-            public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {
-                chatView.setName(chat.getName());
-                chatView.setText(chat.getMessage());
+            public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
+                holder.setName(chat.getName());
+                holder.setText(chat.getMessage());
 
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null && chat.getUid().equals(currentUser.getUid())) {
-                    chatView.setIsSender(true);
+                    holder.setIsSender(true);
                 } else {
-                    chatView.setIsSender(false);
+                    holder.setIsSender(false);
                 }
             }
 
             @Override
             public void onDataChanged() {
                 // if there are no chat messages, show a view that invites the user to add a message
-                mEmptyListView.setVisibility(mRecyclerViewAdapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
+                mEmptyListView.setVisibility(mAdapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
             }
         };
 
         // Scroll to bottom on new messages
-        mRecyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                mManager.smoothScrollToPosition(mMessages, null, mRecyclerViewAdapter.getItemCount());
+                mManager.smoothScrollToPosition(mMessages, null, mAdapter.getItemCount());
             }
         });
 
-        mMessages.setAdapter(mRecyclerViewAdapter);
+        mMessages.setAdapter(mAdapter);
     }
 
     private void signInAnonymously() {

@@ -50,7 +50,8 @@ import com.google.firebase.database.Query;
  *
  * @param <T> The class type to use as a model for the data contained in the children of the given
  *            Firebase location
- * @deprecated use {@link com.firebase.ui.database.adapter.FirebaseListAdapter} instead
+ * @deprecated ListView is no longer supported, use {@link com.firebase.ui.database.adapter.FirebaseRecyclerAdapter}
+ * instead
  */
 @Deprecated
 public abstract class FirebaseListAdapter<T> extends BaseAdapter {
