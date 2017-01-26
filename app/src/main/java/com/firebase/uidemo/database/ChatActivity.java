@@ -35,8 +35,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.adapter.FirebaseIndexRecyclerAdapter;
+import com.firebase.ui.database.adapter.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -48,7 +48,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-@SuppressWarnings("LogConditional")
 public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "RecyclerViewDemo";
 
@@ -148,8 +147,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     private void attachRecyclerViewAdapter() {
         mRecyclerViewAdapter = new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
                 Chat.class,
-                R.layout.message,
                 ChatHolder.class,
+                R.layout.message,
                 mChatIndicesRef.limitToLast(50),
                 mChatRef) {
             @Override
@@ -166,7 +165,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
 
             @Override
-            protected void onDataChanged() {
+            public void onDataChanged() {
                 // if there are no chat messages, show a view that invites the user to add a message
                 mEmptyListView.setVisibility(mRecyclerViewAdapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
             }
