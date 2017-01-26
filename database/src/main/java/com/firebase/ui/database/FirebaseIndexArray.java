@@ -25,12 +25,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 public class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = "FirebaseIndexArray";
@@ -48,10 +46,10 @@ public class FirebaseIndexArray extends FirebaseArray {
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
         super.removeChangeEventListener(listener);
         if (!isListening()) {
-            Set<Query> refs = new HashSet<>(mRefs.keySet());
-            for (Query ref : refs) {
-                ref.removeEventListener(mRefs.remove(ref));
+            for (Query query : mRefs.keySet()) {
+                query.removeEventListener(mRefs.get(query));
             }
+            mRefs.clear();
             mDataSnapshots.clear();
         }
     }
