@@ -165,6 +165,14 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
 
             @Override
+            public void onChildChanged(EventType type, int index, int oldIndex) {
+                super.onChildChanged(type, index, oldIndex);
+
+                // TODO temporary fix for https://github.com/firebase/FirebaseUI-Android/issues/546
+                onDataChanged();
+            }
+
+            @Override
             public void onDataChanged() {
                 // if there are no chat messages, show a view that invites the user to add a message
                 mEmptyListView.setVisibility(mAdapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
