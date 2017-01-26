@@ -31,7 +31,7 @@ import java.util.ListIterator;
 /**
  * This class implements a collection on top of a Firebase location.
  */
-public class FirebaseArray extends UnmodifiableList<DataSnapshot> implements ChildEventListener, ValueEventListener {
+public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildEventListener, ValueEventListener {
     private Query mQuery;
     private boolean mNotifyListeners = true;
     private List<ChangeEventListener> mListeners = new ArrayList<>();
@@ -86,7 +86,8 @@ public class FirebaseArray extends UnmodifiableList<DataSnapshot> implements Chi
     }
 
     /**
-     * @return true if {@link FirebaseArray} is listening for change events, false otherwise
+     * @return true if {@link FirebaseArray} is listening for change events from the Firebase
+     * database, false otherwise
      */
     public boolean isListening() {
         return !mListeners.isEmpty();

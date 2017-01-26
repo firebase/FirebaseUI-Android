@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public abstract class UnmodifiableList<E> implements List<E> {
+public abstract class ImmutableList<E> implements List<E> {
     /**
      * Guaranteed to throw an exception and leave the collection unmodified.
      *

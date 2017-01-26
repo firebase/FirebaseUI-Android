@@ -13,7 +13,7 @@ import java.util.ListIterator;
  *
  * @param <E> the object representation of a {@link DataSnapshot}
  */
-public class FirebaseObjectsArray<E> extends UnmodifiableList<E> {
+public class FirebaseObjectsArray<E> extends ImmutableList<E> {
     private List<DataSnapshot> mSnapshots;
     private Class<E> mEClass;
 
