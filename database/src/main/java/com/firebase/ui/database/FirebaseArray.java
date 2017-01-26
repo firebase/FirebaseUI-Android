@@ -92,37 +92,6 @@ public class FirebaseArray extends UnmodifiableList<DataSnapshot> implements Chi
         return !mListeners.isEmpty();
     }
 
-    protected void setShouldNotifyListeners(boolean notifyListeners) {
-        mNotifyListeners = notifyListeners;
-    }
-
-    protected void notifyChangeEventListeners(ChangeEventListener.EventType type, int index) {
-        notifyChangeEventListeners(type, index, -1);
-    }
-
-    protected void notifyChangeEventListeners(ChangeEventListener.EventType type,
-                                              int index,
-                                              int oldIndex) {
-        if (!mNotifyListeners) return;
-        for (ChangeEventListener listener : mListeners) {
-            listener.onChildChanged(type, index, oldIndex);
-        }
-    }
-
-    protected void notifyListenersOnDataChanged() {
-        if (!mNotifyListeners) return;
-        for (ChangeEventListener listener : mListeners) {
-            listener.onDataChanged();
-        }
-    }
-
-    protected void notifyListenersOnCancelled(DatabaseError error) {
-        if (!mNotifyListeners) return;
-        for (ChangeEventListener listener : mListeners) {
-            listener.onCancelled(error);
-        }
-    }
-
     @Override
     public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
         int index = 0;
@@ -178,6 +147,37 @@ public class FirebaseArray extends UnmodifiableList<DataSnapshot> implements Chi
         throw new IllegalArgumentException("Key not found");
     }
 
+    protected void setShouldNotifyListeners(boolean notifyListeners) {
+        mNotifyListeners = notifyListeners;
+    }
+
+    protected void notifyChangeEventListeners(ChangeEventListener.EventType type, int index) {
+        notifyChangeEventListeners(type, index, -1);
+    }
+
+    protected void notifyChangeEventListeners(ChangeEventListener.EventType type,
+                                              int index,
+                                              int oldIndex) {
+        if (!mNotifyListeners) return;
+        for (ChangeEventListener listener : mListeners) {
+            listener.onChildChanged(type, index, oldIndex);
+        }
+    }
+
+    protected void notifyListenersOnDataChanged() {
+        if (!mNotifyListeners) return;
+        for (ChangeEventListener listener : mListeners) {
+            listener.onDataChanged();
+        }
+    }
+
+    protected void notifyListenersOnCancelled(DatabaseError error) {
+        if (!mNotifyListeners) return;
+        for (ChangeEventListener listener : mListeners) {
+            listener.onCancelled(error);
+        }
+    }
+
     @Override
     public int size() {
         return mSnapshots.size();
@@ -211,6 +211,17 @@ public class FirebaseArray extends UnmodifiableList<DataSnapshot> implements Chi
     @Override
     public <T> T[] toArray(T[] a) {
         return mSnapshots.toArray(a);
+    }
+
+    /**
+     * Get a continually updated list of objects representing the {@link DataSnapshot}s in this
+     * list.
+     *
+     * @param <T> the object representation of a {@link DataSnapshot}
+     * @return a list that represents the objects in this list of {@link DataSnapshot}
+     */
+    public <T> List<T> toObjectRepresentation(Class<T> tClass) {
+        return new FirebaseObjectsArray<>(this, tClass);
     }
 
     @Override
