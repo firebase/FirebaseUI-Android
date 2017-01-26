@@ -18,44 +18,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * This class is a generic way of backing an {@link RecyclerView} with a Firebase location. It
- * handles all of the child events at the given Firebase location. It marshals received data into
+ * This class is a generic way of backing a {@link RecyclerView} with a Firebase location. It
+ * handles all of the child events at the given Firebase location and marshals received data into
  * the given class type.
  * <p>
- * To use this class in your app, subclass it passing in all required parameters and implement the
- * {@link #populateViewHolder(RecyclerView.ViewHolder, Object, int)} method.
- * <p>
- * <pre>
- *     private static class ChatMessageViewHolder extends RecyclerView.ViewHolder {
- *         TextView messageText;
- *         TextView nameText;
- *
- *         public ChatMessageViewHolder(View itemView) {
- *             super(itemView);
- *             nameText = (TextView)itemView.findViewById(android.R.id.text1);
- *             messageText = (TextView) itemView.findViewById(android.R.id.text2);
- *         }
- *     }
- *
- *     FirebaseRecyclerAdapter<ChatMessage, ChatMessageViewHolder> adapter;
- *     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
- *
- *     RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
- *     recycler.setHasFixedSize(true);
- *     recycler.setLayoutManager(new LinearLayoutManager(this));
- *
- *     adapter = new FirebaseRecyclerAdapter<ChatMessage, ChatMessageViewHolder>(
- *           ChatMessage.class, android.R.layout.two_line_list_item, ChatMessageViewHolder.class,
- * ref) {
- *         public void populateViewHolder(ChatMessageViewHolder chatMessageViewHolder,
- *                                        ChatMessage chatMessage,
- *                                        int position) {
- *             chatMessageViewHolder.nameText.setText(chatMessage.getName());
- *             chatMessageViewHolder.messageText.setText(chatMessage.getMessage());
- *         }
- *     };
- *     recycler.setAdapter(mAdapter);
- * </pre>
+ * See the <a href="https://github.com/firebase/FirebaseUI-Android/blob/master/database/README.md">README</a>
+ * for an in-depth tutorial on how to set up the FirebaseRecyclerAdapter.
  *
  * @param <T>  The Java class that maps to the type of objects stored in the Firebase location.
  * @param <VH> The {@link RecyclerView.ViewHolder} class that contains the Views in the layout that
