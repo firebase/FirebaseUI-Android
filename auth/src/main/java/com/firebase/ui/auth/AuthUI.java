@@ -636,7 +636,7 @@ public class AuthUI {
             return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
         }
 
-        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        @VisibleForTesting()
         public FlowParameters getFlowParams() {
             return new FlowParameters(mApp.getName(),
                                       new ArrayList<>(mProviders),
