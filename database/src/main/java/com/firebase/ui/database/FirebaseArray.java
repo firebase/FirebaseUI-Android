@@ -272,15 +272,12 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
 
         FirebaseArray snapshots = (FirebaseArray) obj;
 
-        return mListeners.equals(snapshots.mListeners)
-                && mQuery.equals(snapshots.mQuery)
-                && mSnapshots.equals(snapshots.mSnapshots);
+        return mQuery.equals(snapshots.mQuery) && mSnapshots.equals(snapshots.mSnapshots);
     }
 
     @Override
     public int hashCode() {
-        int result = mListeners.hashCode();
-        result = 31 * result + mQuery.hashCode();
+        int result = mQuery.hashCode();
         result = 31 * result + mSnapshots.hashCode();
         return result;
     }

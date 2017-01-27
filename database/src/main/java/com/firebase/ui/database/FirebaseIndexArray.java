@@ -130,7 +130,7 @@ public class FirebaseIndexArray extends FirebaseArray {
         super.onCancelled(error);
     }
 
-    private class DataRefListener implements ValueEventListener {
+    protected class DataRefListener implements ValueEventListener {
         @Override
         public void onDataChange(DataSnapshot snapshot) {
             String key = snapshot.getKey();
@@ -228,16 +228,13 @@ public class FirebaseIndexArray extends FirebaseArray {
 
         FirebaseIndexArray array = (FirebaseIndexArray) obj;
 
-        return mDataQuery.equals(array.mDataQuery)
-                && mRefs.equals(array.mRefs)
-                && mDataSnapshots.equals(array.mDataSnapshots);
+        return mDataQuery.equals(array.mDataQuery) && mDataSnapshots.equals(array.mDataSnapshots);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + mDataQuery.hashCode();
-        result = 31 * result + mRefs.hashCode();
         result = 31 * result + mDataSnapshots.hashCode();
         return result;
     }
