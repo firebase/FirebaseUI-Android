@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
@@ -118,17 +119,26 @@ public class RegisterEmailActivity extends AppCompatBase implements
 
     @Override
     public void onNewUser(User user) {
-        // New user, direct them to create an account with email/password.
-        RegisterEmailFragment fragment = RegisterEmailFragment.getInstance(
-                mActivityHelper.getFlowParams(),
-                user);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
+        // New user, direct them to create an account with email/password
+        // if account creation is enabled in SignInIntentBuilder
 
-        View v = findViewById(R.id.email_layout);
-        if (v != null) ft.addSharedElement(v, "email_field");
+        boolean createAccount = mActivityHelper.getFlowParams().allowNewEmailAccounts;
 
-        ft.disallowAddToBackStack().commit();
+        TextInputLayout mEmailLayout = (TextInputLayout) findViewById(R.id.email_layout);
+
+        if (createAccount) {
+            RegisterEmailFragment fragment = RegisterEmailFragment.getInstance(
+                    mActivityHelper.getFlowParams(),
+                    user);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
+
+            if (mEmailLayout != null) ft.addSharedElement(mEmailLayout, "email_field");
+
+            ft.disallowAddToBackStack().commit();
+        } else {
+            mEmailLayout.setError(getString(R.string.error_email_does_not_exist));
+        }
     }
 
     private void setSlideAnimation() {

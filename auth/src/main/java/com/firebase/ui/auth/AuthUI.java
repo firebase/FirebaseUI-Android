@@ -517,6 +517,7 @@ public class AuthUI {
         private LinkedHashSet<IdpConfig> mProviders = new LinkedHashSet<>();
         private String mTosUrl;
         private boolean mIsSmartLockEnabled = true;
+        private boolean mAllowNewEmailAccounts = true;
 
         private SignInIntentBuilder() {
             mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
@@ -632,7 +633,15 @@ public class AuthUI {
                                       mTheme,
                                       mLogo,
                                       mTosUrl,
-                                      mIsSmartLockEnabled);
+                                      mIsSmartLockEnabled,
+                                      mAllowNewEmailAccounts);
         }
+
+        public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
+            mAllowNewEmailAccounts = enabled;
+            return this;
+        }
+
+
     }
 }

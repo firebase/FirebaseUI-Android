@@ -102,6 +102,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.smartlock_enabled)
     CheckBox mEnableSmartLock;
 
+    @BindView(R.id.allow_new_email_accounts)
+    CheckBox mAllowNewEmailAccounts;
+
     @BindView(R.id.facebook_scopes_label)
     TextView mFacebookScopesLabel;
 
@@ -183,6 +186,7 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
                         .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
+                        .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
                 RC_SIGN_IN);
     }
