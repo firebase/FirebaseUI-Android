@@ -616,7 +616,7 @@ public class AuthUI {
         /**
          * Enables or disables creating new accounts in the email sign in flow.
          * <p>
-         * <p>Account creation is enabled by default
+         * <p>Account creation is enabled by default.
          */
         public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
             mAllowNewEmailAccounts = enabled;
