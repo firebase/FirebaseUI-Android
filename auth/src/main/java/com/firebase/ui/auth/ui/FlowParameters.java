@@ -49,19 +49,23 @@ public class FlowParameters implements Parcelable {
 
     public final boolean smartLockEnabled;
 
+    public final boolean allowNewEmailAccounts;
+
     public FlowParameters(
             @NonNull String appName,
             @NonNull List<IdpConfig> providerInfo,
             @StyleRes int themeId,
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
-            boolean smartLockEnabled) {
+            boolean smartLockEnabled,
+            boolean allowNewEmailAccounts) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null");
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
         this.smartLockEnabled = smartLockEnabled;
+        this.allowNewEmailAccounts = allowNewEmailAccounts;
     }
 
     @Override
@@ -72,6 +76,7 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
         dest.writeInt(smartLockEnabled ? 1 : 0);
+        dest.writeInt(allowNewEmailAccounts ? 1 : 0);
     }
 
     @Override
@@ -88,7 +93,10 @@ public class FlowParameters implements Parcelable {
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
             int smartLockEnabledInt = in.readInt();
+            int allowNewEmailAccountsInt = in.readInt();
+
             boolean smartLockEnabled = smartLockEnabledInt != 0;
+            boolean allowNewEmailAccounts = allowNewEmailAccountsInt != 0;
 
             return new FlowParameters(
                     appName,
@@ -96,7 +104,8 @@ public class FlowParameters implements Parcelable {
                     themeId,
                     logoId,
                     termsOfServiceUrl,
-                    smartLockEnabled);
+                    smartLockEnabled,
+                    allowNewEmailAccounts);
         }
 
         @Override
