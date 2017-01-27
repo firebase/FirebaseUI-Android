@@ -11,15 +11,25 @@ import java.util.ListIterator;
 /**
  * Acts as a bridge between a list of {@link DataSnapshot}s and a list of objects of type E.
  *
- * @param <E> the object representation of a {@link DataSnapshot}
+ * @param <E> the model representation of a {@link DataSnapshot}
  */
-public class FirebaseObjectsArray<E> extends ImmutableList<E> {
+public class FirebaseObjectsArray<E> extends ImmutableList<E> implements SnapshotParser<E> {
     private List<DataSnapshot> mSnapshots;
     private Class<E> mEClass;
+    private SnapshotParser<E> mParser;
 
     public FirebaseObjectsArray(List<DataSnapshot> snapshots, Class<E> eClass) {
         mSnapshots = snapshots;
         mEClass = eClass;
+        mParser = this;
+    }
+
+    public FirebaseObjectsArray(List<DataSnapshot> snapshots,
+                                Class<E> eClass,
+                                SnapshotParser<E> parser) {
+        mSnapshots = snapshots;
+        mEClass = eClass;
+        mParser = parser;
     }
 
     protected List<E> getObjects() {
@@ -28,6 +38,11 @@ public class FirebaseObjectsArray<E> extends ImmutableList<E> {
             objects.add(get(i));
         }
         return objects;
+    }
+
+    @Override
+    public E parseSnapshot(DataSnapshot snapshot) {
+        return snapshot.getValue(mEClass);
     }
 
     @Override
@@ -72,7 +87,7 @@ public class FirebaseObjectsArray<E> extends ImmutableList<E> {
 
     @Override
     public E get(int index) {
-        return mSnapshots.get(index).getValue(mEClass);
+        return mParser.parseSnapshot(mSnapshots.get(index));
     }
 
     @Override

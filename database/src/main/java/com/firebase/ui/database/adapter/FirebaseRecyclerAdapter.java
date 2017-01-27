@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.firebase.ui.database.ChangeEventListener;
 import com.firebase.ui.database.FirebaseArray;
+import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
  *             is shown for each object.
  */
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> implements ChangeEventListener {
+        extends RecyclerView.Adapter<VH> implements ChangeEventListener, SnapshotParser {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
     protected FirebaseArray mSnapshots;
@@ -121,14 +122,8 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         return parseSnapshot(mSnapshots.get(position));
     }
 
-    /**
-     * This method parses the DataSnapshot into the requested type. You can override it in
-     * subclasses to do custom parsing.
-     *
-     * @param snapshot the DataSnapshot to extract the model from
-     * @return the model extracted from the DataSnapshot
-     */
-    protected T parseSnapshot(DataSnapshot snapshot) {
+    @Override
+    public T parseSnapshot(DataSnapshot snapshot) {
         return snapshot.getValue(mModelClass);
     }
 
