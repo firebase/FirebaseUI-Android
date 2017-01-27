@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.firebase.ui.database.ChangeEventListener;
 import com.firebase.ui.database.FirebaseArray;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +30,7 @@ import java.lang.reflect.InvocationTargetException;
  *             is shown for each object.
  */
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> implements ChangeEventListener, SnapshotParser {
+        extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
     protected FirebaseArray mSnapshots;
@@ -74,17 +73,14 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         this(new FirebaseArray(ref), modelClass, viewHolderClass, modelLayout);
     }
 
-    /**
-     * If you need to do some setup before we start listening for change events in the database
-     * (such as setting a custom {@link JoinResolver}), do so it here and then call {@code
-     * super.startListening()}.
-     */
-    protected void startListening() {
+    @Override
+    public void startListening() {
         if (!mSnapshots.isListening()) {
             mSnapshots.addChangeEventListener(this);
         }
     }
 
+    @Override
     public void cleanup() {
         mSnapshots.removeChangeEventListener(this);
     }
@@ -118,6 +114,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         Log.w(TAG, error.toException());
     }
 
+    @Override
     public T getItem(int position) {
         return parseSnapshot(mSnapshots.get(position));
     }
@@ -127,6 +124,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         return snapshot.getValue(mModelClass);
     }
 
+    @Override
     public DatabaseReference getRef(int position) {
         return mSnapshots.get(position).getRef();
     }

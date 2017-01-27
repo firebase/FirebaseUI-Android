@@ -10,7 +10,6 @@ import android.widget.ListView;
 
 import com.firebase.ui.database.ChangeEventListener;
 import com.firebase.ui.database.FirebaseArray;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +26,7 @@ import com.google.firebase.database.Query;
  * @param <T> The class type to use as a model for the data contained in the children of the given
  *            Firebase location
  */
-public abstract class FirebaseListAdapter<T> extends BaseAdapter implements ChangeEventListener, SnapshotParser<T> {
+public abstract class FirebaseListAdapter<T> extends BaseAdapter implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseListAdapter";
 
     protected Activity mActivity;
@@ -69,17 +68,14 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Chan
         this(activity, new FirebaseArray(ref), modelClass, modelLayout);
     }
 
-    /**
-     * If you need to do some setup before we start listening for change events in the database
-     * (such as setting a custom {@link JoinResolver}), do so it here and then call {@code
-     * super.startListening()}.
-     */
-    protected void startListening() {
+    @Override
+    public void startListening() {
         if (!mSnapshots.isListening()) {
             mSnapshots.addChangeEventListener(this);
         }
     }
 
+    @Override
     public void cleanup() {
         mSnapshots.removeChangeEventListener(this);
     }
@@ -108,6 +104,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Chan
         return snapshot.getValue(mModelClass);
     }
 
+    @Override
     public DatabaseReference getRef(int position) {
         return mSnapshots.get(position).getRef();
     }

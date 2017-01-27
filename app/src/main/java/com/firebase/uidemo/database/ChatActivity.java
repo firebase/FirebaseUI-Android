@@ -175,7 +175,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             @Override
             public void onDataChanged() {
                 // if there are no chat messages, show a view that invites the user to add a message
-                mEmptyListView.setVisibility(mAdapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
+                mEmptyListView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
             }
         };
 
