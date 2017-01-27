@@ -116,7 +116,16 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
         }
 
         mIdpProvider.setAuthenticationCallback(this);
-        mIdpProvider.startLogin(getActivity());
+
+        if (savedInstanceState == null) {
+            mIdpProvider.startLogin(getActivity());
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
