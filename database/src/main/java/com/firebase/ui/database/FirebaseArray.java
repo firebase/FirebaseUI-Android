@@ -221,7 +221,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @param <T> the model representation of a {@link DataSnapshot}
      * @return a list that represents the objects in this list of {@link DataSnapshot}
      */
-    public <T> List<T> toModelList(Class<T> tClass) {
+    public <T> List<T> toObjectsList(Class<T> tClass) {
         return new FirebaseArrayOfObjects<>(this, tClass);
     }
 
@@ -232,7 +232,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @param <T> the model representation of a {@link DataSnapshot}
      * @return a list that represents the objects in this list of {@link DataSnapshot}
      */
-    public <T> List<T> toModelList(Class<T> tClass, SnapshotParser<T> parser) {
+    public <T> List<T> toObjectsList(Class<T> tClass, SnapshotParser<T> parser) {
         return new FirebaseArrayOfObjects<>(this, tClass, parser);
     }
 

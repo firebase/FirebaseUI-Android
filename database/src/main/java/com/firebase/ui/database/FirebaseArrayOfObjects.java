@@ -32,6 +32,10 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> implements Snaps
         mParser = parser;
     }
 
+    public List<DataSnapshot> getSnapshots() {
+        return mSnapshots;
+    }
+
     protected List<E> getObjects() {
         List<E> objects = new ArrayList<>(mSnapshots.size());
         for (int i = 0; i < mSnapshots.size(); i++) {
