@@ -13,20 +13,20 @@ import java.util.ListIterator;
  *
  * @param <E> the model representation of a {@link DataSnapshot}
  */
-public class FirebaseObjectsArray<E> extends ImmutableList<E> implements SnapshotParser<E> {
+public class FirebaseArrayOfObjects<E> extends ImmutableList<E> implements SnapshotParser<E> {
     private List<DataSnapshot> mSnapshots;
     private Class<E> mEClass;
     private SnapshotParser<E> mParser;
 
-    public FirebaseObjectsArray(List<DataSnapshot> snapshots, Class<E> eClass) {
+    public FirebaseArrayOfObjects(List<DataSnapshot> snapshots, Class<E> eClass) {
         mSnapshots = snapshots;
         mEClass = eClass;
         mParser = this;
     }
 
-    public FirebaseObjectsArray(List<DataSnapshot> snapshots,
-                                Class<E> eClass,
-                                SnapshotParser<E> parser) {
+    public FirebaseArrayOfObjects(List<DataSnapshot> snapshots,
+                                  Class<E> eClass,
+                                  SnapshotParser<E> parser) {
         mSnapshots = snapshots;
         mEClass = eClass;
         mParser = parser;
@@ -125,7 +125,7 @@ public class FirebaseObjectsArray<E> extends ImmutableList<E> implements Snapsho
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        FirebaseObjectsArray<?> array = (FirebaseObjectsArray<?>) obj;
+        FirebaseArrayOfObjects<?> array = (FirebaseArrayOfObjects<?>) obj;
 
         return mSnapshots.equals(array.mSnapshots) && mEClass.equals(array.mEClass);
     }
@@ -139,7 +139,7 @@ public class FirebaseObjectsArray<E> extends ImmutableList<E> implements Snapsho
 
     @Override
     public String toString() {
-        return "FirebaseObjectsArray{" +
+        return "FirebaseArrayOfObjects{" +
                 "mSnapshots=" + mSnapshots +
                 '}';
     }

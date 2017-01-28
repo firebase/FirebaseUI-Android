@@ -222,7 +222,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @return a list that represents the objects in this list of {@link DataSnapshot}
      */
     public <T> List<T> toModelList(Class<T> tClass) {
-        return new FirebaseObjectsArray<>(this, tClass);
+        return new FirebaseArrayOfObjects<>(this, tClass);
     }
 
     /**
@@ -233,7 +233,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @return a list that represents the objects in this list of {@link DataSnapshot}
      */
     public <T> List<T> toModelList(Class<T> tClass, SnapshotParser<T> parser) {
-        return new FirebaseObjectsArray<>(this, tClass, parser);
+        return new FirebaseArrayOfObjects<>(this, tClass, parser);
     }
 
     @Override
