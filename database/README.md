@@ -266,6 +266,26 @@ protected void onDestroy() {
 
 You're done! You now have a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
 
+## Using FirebaseUI to populate a ListView
+
+ListView is the older, yet simpler way to handle lists of items. Using it is analogous to
+using a `FirebaseRecyclerAdapter`, but with `FirebaseListAdapter` instead and no `ViewHolder`:
+```java
+ListView messagesView = (ListView) findViewById(R.id.messages_list);
+
+DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+mAdapter = new FirebaseListAdapter<Chat>(this, Chat.class, android.R.layout.two_line_list_item, ref) {
+    @Override
+    protected void populateView(View view, Chat chatMessage, int position) {
+        ((TextView) view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
+        ((TextView) view.findViewById(android.R.id.text2)).setText(chatMessage.getText());
+
+    }
+};
+messagesView.setAdapter(mAdapter);
+```
+
 ## Using FirebaseUI with indexed data
 
 If your data is [properly indexed](https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure), change your adapter initalization like so:
