@@ -606,10 +606,20 @@ public class AuthUI {
         /**
          * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
          * <p>
-         * <p>SmartLock is enabled by default
+         * <p>SmartLock is enabled by default.
          */
         public SignInIntentBuilder setIsSmartLockEnabled(boolean enabled) {
             mIsSmartLockEnabled = enabled;
+            return this;
+        }
+
+        /**
+         * Enables or disables creating new accounts in the email sign in flow.
+         * <p>
+         * <p>Account creation is enabled by default.
+         */
+        public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
+            mAllowNewEmailAccounts = enabled;
             return this;
         }
 
@@ -626,7 +636,7 @@ public class AuthUI {
             return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
         }
 
-        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        @VisibleForTesting()
         public FlowParameters getFlowParams() {
             return new FlowParameters(mApp.getName(),
                                       new ArrayList<>(mProviders),
@@ -636,12 +646,5 @@ public class AuthUI {
                                       mIsSmartLockEnabled,
                                       mAllowNewEmailAccounts);
         }
-
-        public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
-            mAllowNewEmailAccounts = enabled;
-            return this;
-        }
-
-
     }
 }
