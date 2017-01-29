@@ -88,6 +88,9 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
                                         Class<VH> viewHolderClass,
                                         Query keyRef,
                                         Query dataRef) {
-        super(modelClass, modelLayout, viewHolderClass, new FirebaseIndexArray(keyRef, dataRef));
+        super(modelClass,
+              modelLayout,
+              viewHolderClass,
+              new FirebaseIndexArray(keyRef, dataRef.getRef()));
     }
 }
