@@ -61,16 +61,16 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     /**
-     * @param ref The Firebase location to watch for data changes. Can also be a slice of a
-     *            location, using some combination of {@code limit()}, {@code startAt()}, and {@code
-     *            endAt()}.
+     * @param query The Firebase location to watch for data changes. Can also be a slice of a
+     *              location, using some combination of {@code limit()}, {@code startAt()}, and
+     *              {@code endAt()}.
      * @see #FirebaseRecyclerAdapter(FirebaseArray, Class, Class, int)
      */
     public FirebaseRecyclerAdapter(Class<T> modelClass,
                                    Class<VH> viewHolderClass,
                                    @LayoutRes int modelLayout,
-                                   Query ref) {
-        this(new FirebaseArray(ref), modelClass, viewHolderClass, modelLayout);
+                                   Query query) {
+        this(new FirebaseArray(query), modelClass, viewHolderClass, modelLayout);
     }
 
     @Override

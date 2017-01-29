@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -33,13 +34,13 @@ import java.util.Map;
 public class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = "FirebaseIndexArray";
 
-    private Query mDataQuery;
+    private DatabaseReference mDataRef;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
-    public FirebaseIndexArray(Query keyQuery, Query dataQuery) {
+    public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef) {
         super(keyQuery);
-        mDataQuery = dataQuery;
+        mDataRef = dataRef;
     }
 
     @Override
@@ -78,7 +79,7 @@ public class FirebaseIndexArray extends FirebaseArray {
         super.onChildAdded(keySnapshot, previousChildKey);
         setShouldNotifyListeners(true);
 
-        Query ref = mDataQuery.getRef().child(keySnapshot.getKey());
+        Query ref = mDataRef.child(keySnapshot.getKey());
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
     }
 
@@ -93,9 +94,7 @@ public class FirebaseIndexArray extends FirebaseArray {
     public void onChildRemoved(DataSnapshot keySnapshot) {
         String key = keySnapshot.getKey();
         int index = getIndexForKey(key);
-        mDataQuery.getRef()
-                .child(key)
-                .removeEventListener(mRefs.remove(mDataQuery.getRef().child(key)));
+        mDataRef.child(key).removeEventListener(mRefs.remove(mDataRef.getRef().child(key)));
 
         setShouldNotifyListeners(false);
         super.onChildRemoved(keySnapshot);
@@ -228,13 +227,13 @@ public class FirebaseIndexArray extends FirebaseArray {
 
         FirebaseIndexArray array = (FirebaseIndexArray) obj;
 
-        return mDataQuery.equals(array.mDataQuery) && mDataSnapshots.equals(array.mDataSnapshots);
+        return mDataRef.equals(array.mDataRef) && mDataSnapshots.equals(array.mDataSnapshots);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + mDataQuery.hashCode();
+        result = 31 * result + mDataRef.hashCode();
         result = 31 * result + mDataSnapshots.hashCode();
         return result;
     }
@@ -243,7 +242,7 @@ public class FirebaseIndexArray extends FirebaseArray {
     public String toString() {
         return "FirebaseIndexArray{" +
                 "mIsListening=" + isListening() +
-                ", mDataQuery=" + mDataQuery +
+                ", mDataRef=" + mDataRef +
                 ", mDataSnapshots=" + mDataSnapshots +
                 '}';
     }
