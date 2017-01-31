@@ -13,8 +13,7 @@
     <LinearLayout
         android:id="@+id/btn_holder"
         style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder.Portrait"
-        android:layout_height="wrap_content"
-        android:layout_weight="0">
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/email_provider"
