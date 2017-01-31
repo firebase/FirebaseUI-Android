@@ -37,6 +37,11 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
     private List<ChangeEventListener> mListeners = new ArrayList<>();
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
+    /**
+     * @param query The Firebase location to watch for data changes. Can also be a slice of a
+     *              location, using some combination of {@code limit()}, {@code startAt()}, and
+     *              {@code endAt()}.
+     */
     public FirebaseArray(Query query) {
         mQuery = query;
     }

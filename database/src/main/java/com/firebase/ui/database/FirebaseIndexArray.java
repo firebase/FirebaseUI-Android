@@ -15,6 +15,7 @@
 package com.firebase.ui.database;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -38,6 +39,13 @@ public class FirebaseIndexArray extends FirebaseArray {
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
+    /**
+     * @param keyQuery The Firebase location containing the list of keys to be found in {@code
+     *                 dataRef}. Can also be a slice of a location, using some combination of {@code
+     *                 limit()}, {@code startAt()}, and {@code endAt()}.
+     * @param dataRef  The Firebase location to watch for data changes. Each key key found at {@code
+     *                 keyQuery}'s location represents a list item in the {@link RecyclerView}.
+     */
     public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef) {
         super(keyQuery);
         mDataRef = dataRef;

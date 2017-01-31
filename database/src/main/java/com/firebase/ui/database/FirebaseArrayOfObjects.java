@@ -18,12 +18,21 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> implements Snaps
     private Class<E> mEClass;
     private SnapshotParser<E> mParser;
 
+    /**
+     * @param snapshots a list of {@link DataSnapshot}s to be converted to a model type
+     * @param eClass    the model representation of a {@link DataSnapshot}
+     */
     public FirebaseArrayOfObjects(List<DataSnapshot> snapshots, Class<E> eClass) {
         mSnapshots = snapshots;
         mEClass = eClass;
         mParser = this;
     }
 
+    /**
+     * @param parser a custom {@link SnapshotParser} to manually convert each {@link DataSnapshot}
+     *               to its model type
+     * @see #FirebaseArrayOfObjects(List, Class)
+     */
     public FirebaseArrayOfObjects(List<DataSnapshot> snapshots,
                                   Class<E> eClass,
                                   SnapshotParser<E> parser) {
