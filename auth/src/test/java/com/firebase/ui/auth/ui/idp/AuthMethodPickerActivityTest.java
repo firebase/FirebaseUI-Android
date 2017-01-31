@@ -76,12 +76,11 @@ public class AuthMethodPickerActivityTest {
                 AuthUI.TWITTER_PROVIDER,
                 AuthUI.EMAIL_PROVIDER);
 
-        AuthMethodPickerActivity authMethodPickerActivity =
-                createActivity(providers);
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
         assertEquals(providers.size(),
-                ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
-                        .getChildCount());
+                     ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
+                             .getChildCount());
         Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
         assertEquals(View.VISIBLE, emailButton.getVisibility());
     }
@@ -93,12 +92,11 @@ public class AuthMethodPickerActivityTest {
                 AuthUI.FACEBOOK_PROVIDER,
                 AuthUI.GOOGLE_PROVIDER);
 
-        AuthMethodPickerActivity authMethodPickerActivity =
-                createActivity(providers);
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
         assertEquals(providers.size() + 1, // plus one due to the invisible email button
-                ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
-                        .getChildCount());
+                     ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
+                             .getChildCount());
         Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
         assertEquals(View.GONE, emailButton.getVisibility());
     }
@@ -107,8 +105,7 @@ public class AuthMethodPickerActivityTest {
     public void testEmailLoginFlow() {
         List<String> providers = Arrays.asList(AuthUI.EMAIL_PROVIDER);
 
-        AuthMethodPickerActivity authMethodPickerActivity =
-                createActivity(providers);
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
         Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
         emailButton.performClick();
@@ -166,16 +163,13 @@ public class AuthMethodPickerActivityTest {
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         new FakeAuthResult(mockFirebaseUser), true, null));
 
-        Button googleButton =
-                (Button) authMethodPickerActivity.findViewById(R.id.google_button);
+        Button googleButton = (Button) authMethodPickerActivity.findViewById(R.id.google_button);
 
         assertNotNull(googleButton);
         googleButton.performClick();
 
         verifySmartLockSave(AuthUI.GOOGLE_PROVIDER, TestConstants.EMAIL, null);
     }
-
-
 
     @Test
     @Config(shadows = {ActivityHelperShadow.class})
