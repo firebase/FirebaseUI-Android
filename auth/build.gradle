@@ -22,6 +22,8 @@ android {
         }
 
         debug {
+            // This is needed for tests to pass. Facebook automatically enables app logging
+            // which causes a null pointer exception while running tests.
             manifestPlaceholders = [enableFbLogging: false]
         }
     }
