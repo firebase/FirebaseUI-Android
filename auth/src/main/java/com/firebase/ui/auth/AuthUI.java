@@ -24,7 +24,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.annotation.VisibleForTesting;
 
-import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
@@ -347,9 +346,7 @@ public class AuthUI {
                 });
 
         // Facebook sign out
-        if (FacebookSdk.isInitialized()) {
-            LoginManager.getInstance().logOut();
-        }
+        LoginManager.getInstance().logOut();
 
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, googleSignOutTask);

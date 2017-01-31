@@ -14,7 +14,6 @@
 
 package com.firebase.uidemo.database;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -30,9 +29,8 @@ import android.widget.Toast;
 import com.firebase.ui.database.adapter.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.adapter.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -201,25 +199,5 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         // Sending only allowed when signed in
         mSendButton.setEnabled(isSignedIn());
         mMessageEdit.setEnabled(isSignedIn());
-    }
-
-    /**
-     * Notifies the user of sign in successes or failures beyond the lifecycle of an activity.
-     */
-    private static class SignInResultNotifier implements OnCompleteListener<AuthResult> {
-        private Context mContext;
-
-        public SignInResultNotifier(Context context) {
-            mContext = context.getApplicationContext();
-        }
-
-        @Override
-        public void onComplete(@NonNull Task<AuthResult> task) {
-            if (task.isSuccessful()) {
-                Toast.makeText(mContext, R.string.signed_in, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(mContext, R.string.sign_in_failed, Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 }
