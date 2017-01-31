@@ -9,18 +9,11 @@
     android:gravity="center|bottom"
     android:orientation="horizontal">
 
-    <LinearLayout
+    <include
+        layout="@layout/include_auth_method_picker_logo"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1.0"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/logo"
-            style="@style/FirebaseUI.AuthMethodPicker.Logo"
-            android:contentDescription="@string/accessibility_logo" />
-
-    </LinearLayout>
+        android:layout_weight="1.0" />
 
     <FrameLayout
         android:layout_width="0dp"
