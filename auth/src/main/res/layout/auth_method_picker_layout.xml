@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:gravity="center|bottom"
@@ -17,19 +17,22 @@
         <ImageView
             android:id="@+id/logo"
             style="@style/FirebaseUI.AuthMethodPicker.Logo"
-            android:contentDescription="@string/accessibility_logo"/>
+            android:contentDescription="@string/accessibility_logo" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/btn_holder"
-        android:layout_weight="0"
-        style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder">
+        style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder.Portrait"
+        android:layout_height="wrap_content"
+        android:layout_weight="0">
 
         <Button
             android:id="@+id/email_provider"
             style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
-            android:text="@string/sign_in_with_email"/>
+            android:text="@string/sign_in_with_email"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </LinearLayout>
 
