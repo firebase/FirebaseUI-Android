@@ -21,7 +21,7 @@
 
         <meta-data
             android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
-            android:value="false"/>
+            android:value="${enableFbLogging}"/>
 
         <activity
             android:name=".KickoffActivity"
