@@ -27,12 +27,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
 /**
- * This class is a generic way of backing an Android ListView with a Firebase location. It handles
- * all of the child events at the given Firebase location. It marshals received data into the given
- * class type. Extend this class and provide an implementation of {@code populateView}, which will
- * be given an instance of your list item mLayout and an instance your class that holds your data.
- * Simply populate the view however you like and this class will handle updating the list as the
- * data changes.
+ * This class is a generic way of backing an Android ListView with a Firebase location.
+ * It handles all of the child events at the given Firebase location. It marshals received data into the given
+ * class type. Extend this class and provide an implementation of {@code populateView}, which will be given an
+ * instance of your list item mLayout and an instance your class that holds your data.
+ * Simply populate the view however you like and this class will handle updating the list as the data changes.
  * <p>
  * <pre>
  *     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -91,14 +90,13 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
 
     /**
      * @param activity    The activity containing the ListView
-     * @param modelClass  Firebase will marshall the data at a location into an instance of a class
-     *                    that you provide
-     * @param modelLayout This is the layout used to represent a single list item. You will be
-     *                    responsible for populating an instance of the corresponding view with the
-     *                    data from an instance of modelClass.
-     * @param ref         The Firebase location to watch for data changes. Can also be a slice of a
-     *                    location, using some combination of {@code limit()}, {@code startAt()},
-     *                    and {@code endAt()}.
+     * @param modelClass  Firebase will marshall the data at a location into
+     *                    an instance of a class that you provide
+     * @param modelLayout This is the layout used to represent a single list item.
+     *                    You will be responsible for populating an instance of the corresponding
+     *                    view with the data from an instance of modelClass.
+     * @param ref         The Firebase location to watch for data changes. Can also be a slice of a location,
+     *                    using some combination of {@code limit()}, {@code startAt()}, and {@code endAt()}.
      */
     public FirebaseListAdapter(Activity activity,
                                Class<T> modelClass,
@@ -122,8 +120,8 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
     }
 
     /**
-     * This method parses the DataSnapshot into the requested type. You can override it in
-     * subclasses to do custom parsing.
+     * This method parses the DataSnapshot into the requested type. You can override it in subclasses
+     * to do custom parsing.
      *
      * @param snapshot the DataSnapshot to extract the model from
      * @return the model extracted from the DataSnapshot
