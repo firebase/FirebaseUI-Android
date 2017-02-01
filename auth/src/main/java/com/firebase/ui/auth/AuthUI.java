@@ -28,9 +28,10 @@ import android.support.v4.app.FragmentActivity;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.util.CredentialApiHelper;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
-import com.firebase.ui.auth.util.OldCredentialsApiHelper;
+import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.signincontainer.SmartLockBase;
 import com.google.android.gms.auth.api.Auth;
@@ -329,7 +330,7 @@ public class AuthUI {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN);
 
         // Get Credentials Helper
-        OldCredentialsApiHelper credentialsHelper = OldCredentialsApiHelper.getInstance(taskHelper);
+        CredentialApiHelper credentialsHelper = CredentialsApiHelper.getInstance(taskHelper);
 
         // Firebase Sign out
         mAuth.signOut();
@@ -379,7 +380,7 @@ public class AuthUI {
         // Initialize SmartLock helper
         GoogleApiClientTaskHelper gacHelper = GoogleApiClientTaskHelper.getInstance(activity);
         gacHelper.getBuilder().addApi(Auth.CREDENTIALS_API);
-        OldCredentialsApiHelper credentialHelper = OldCredentialsApiHelper.getInstance(gacHelper);
+        CredentialApiHelper credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
 
         // Get all SmartLock credentials associated with the user
         List<Credential> credentials = SmartLockBase.credentialsFromFirebaseUser(firebaseUser);
@@ -419,7 +420,7 @@ public class AuthUI {
      */
     public Task<Void> signOut(@NonNull FragmentActivity activity) {
         // Get Credentials Helper
-        CredentialsApiHelper credentialsHelper = CredentialsApiHelper.getInstance(activity);
+        GoogleApiHelper credentialsHelper = GoogleApiHelper.getInstanceForSignInApi(activity);
 
         // Firebase Sign out
         mAuth.signOut();
@@ -456,7 +457,7 @@ public class AuthUI {
         Task<Void> deleteUserTask = firebaseUser.delete();
 
         // Initialize SmartLock helper
-        CredentialsApiHelper credentialHelper = CredentialsApiHelper.getInstance(activity);
+        GoogleApiHelper credentialHelper = GoogleApiHelper.getInstanceForSignInApi(activity);
 
         // Get all SmartLock credentials associated with the user
         List<Credential> credentials = SmartLockBase.credentialsFromFirebaseUser(firebaseUser);
