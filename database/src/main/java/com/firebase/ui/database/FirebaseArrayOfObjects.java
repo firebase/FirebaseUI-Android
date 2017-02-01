@@ -25,7 +25,7 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
      * @param snapshots  a list of {@link DataSnapshot}s to be converted to a model type
      * @param modelClass the model representation of a {@link DataSnapshot}
      */
-    public FirebaseArrayOfObjects(List<DataSnapshot> snapshots, Class<E> modelClass) {
+    protected FirebaseArrayOfObjects(List<DataSnapshot> snapshots, Class<E> modelClass) {
         mSnapshots = snapshots;
         mEClass = modelClass;
         mParser = new SnapshotParser<E>() {
