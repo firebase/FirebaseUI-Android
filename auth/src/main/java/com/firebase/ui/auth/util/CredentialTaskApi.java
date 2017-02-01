@@ -4,7 +4,7 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Task;
 
-public interface CredentialApiHelper {
+public interface CredentialTaskApi {
     Task<Status> disableAutoSignIn();
 
     Task<Status> delete(Credential credential);

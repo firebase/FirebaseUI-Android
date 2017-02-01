@@ -28,7 +28,7 @@ import android.support.v4.app.FragmentActivity;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.CredentialApiHelper;
+import com.firebase.ui.auth.util.CredentialTaskApi;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
@@ -330,7 +330,7 @@ public class AuthUI {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN);
 
         // Get Credentials Helper
-        CredentialApiHelper credentialsHelper = CredentialsApiHelper.getInstance(taskHelper);
+        CredentialTaskApi credentialsHelper = CredentialsApiHelper.getInstance(taskHelper);
 
         // Firebase Sign out
         mAuth.signOut();
@@ -371,7 +371,7 @@ public class AuthUI {
         // Initialize SmartLock helper
         GoogleApiClientTaskHelper gacHelper = GoogleApiClientTaskHelper.getInstance(activity);
         gacHelper.getBuilder().addApi(Auth.CREDENTIALS_API);
-        CredentialApiHelper credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
+        CredentialTaskApi credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
 
         return getDeleteTask(credentialHelper);
     }
@@ -414,12 +414,12 @@ public class AuthUI {
      */
     public Task<Void> delete(@NonNull FragmentActivity activity) {
         // Initialize SmartLock helper
-        CredentialApiHelper credentialHelper = GoogleSignInHelper.getInstance(activity);
+        CredentialTaskApi credentialHelper = GoogleSignInHelper.getInstance(activity);
 
         return getDeleteTask(credentialHelper);
     }
 
-    private Task<Void> getDeleteTask(CredentialApiHelper credentialHelper) {
+    private Task<Void> getDeleteTask(CredentialTaskApi credentialHelper) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser == null) {
             // If the current user is null, return a failed task immediately

@@ -32,7 +32,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
  * API.
  */
 @Deprecated
-public class CredentialsApiHelper implements CredentialApiHelper {
+public class CredentialsApiHelper implements CredentialTaskApi {
     @NonNull
     private final GoogleApiClientTaskHelper mClientHelper;
 

@@ -12,7 +12,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
-public class GoogleSignInHelper extends GoogleApiHelper implements CredentialApiHelper {
+public class GoogleSignInHelper extends GoogleApiHelper implements CredentialTaskApi {
     protected GoogleSignInHelper(FragmentActivity activity, GoogleApiClient.Builder builder) {
         super(activity, builder);
     }
