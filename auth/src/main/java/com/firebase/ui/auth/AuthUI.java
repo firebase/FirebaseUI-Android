@@ -368,46 +368,12 @@ public class AuthUI {
      */
     @Deprecated
     public Task<Void> delete(@NonNull Activity activity) {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser == null) {
-            // If the current user is null, return a failed task immediately
-            return Tasks.forException(new Exception("No currently signed in user."));
-        }
-
-        // Delete the Firebase user
-        Task<Void> deleteUserTask = firebaseUser.delete();
-
         // Initialize SmartLock helper
         GoogleApiClientTaskHelper gacHelper = GoogleApiClientTaskHelper.getInstance(activity);
         gacHelper.getBuilder().addApi(Auth.CREDENTIALS_API);
         CredentialApiHelper credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
 
-        // Get all SmartLock credentials associated with the user
-        List<Credential> credentials = SmartLockBase.credentialsFromFirebaseUser(firebaseUser);
-
-        // For each Credential in the list, create a task to delete it.
-        List<Task<?>> credentialTasks = new ArrayList<>();
-        for (Credential credential : credentials) {
-            credentialTasks.add(credentialHelper.delete(credential));
-        }
-
-        // Create a combined task that will succeed when all credential delete operations
-        // have completed (even if they fail).
-        final Task<Void> combinedCredentialTask = Tasks.whenAll(credentialTasks);
-
-        // Chain the Firebase Auth delete task with the combined Credentials task
-        // and return.
-        return deleteUserTask.continueWithTask(new Continuation<Void, Task<Void>>() {
-            @Override
-            public Task<Void> then(@NonNull Task<Void> task) throws Exception {
-                // Call getResult() to propagate failure by throwing an exception
-                // if there was one.
-                task.getResult(Exception.class);
-
-                // Return the combined credential task
-                return combinedCredentialTask;
-            }
-        });
+        return getDeleteTask(credentialHelper);
     }
 
     /**
@@ -447,6 +413,13 @@ public class AuthUI {
      * @param activity the calling {@link Activity}.
      */
     public Task<Void> delete(@NonNull FragmentActivity activity) {
+        // Initialize SmartLock helper
+        CredentialApiHelper credentialHelper = GoogleSignInHelper.getInstance(activity);
+
+        return getDeleteTask(credentialHelper);
+    }
+
+    private Task<Void> getDeleteTask(CredentialApiHelper credentialHelper) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser == null) {
             // If the current user is null, return a failed task immediately
@@ -455,9 +428,6 @@ public class AuthUI {
 
         // Delete the Firebase user
         Task<Void> deleteUserTask = firebaseUser.delete();
-
-        // Initialize SmartLock helper
-        GoogleSignInHelper credentialHelper = GoogleSignInHelper.getInstance(activity);
 
         // Get all SmartLock credentials associated with the user
         List<Credential> credentials = SmartLockBase.credentialsFromFirebaseUser(firebaseUser);
