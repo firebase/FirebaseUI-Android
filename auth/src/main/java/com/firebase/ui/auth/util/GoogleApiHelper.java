@@ -5,15 +5,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -21,77 +16,26 @@ import java.net.ConnectException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A {@link Task} based wrapper for the GoogleApiClient.
+ * A {@link Task} based wrapper to get a connect {@link GoogleApiClient}.
  */
-public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, CredentialApiHelper {
+public abstract class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final AtomicInteger SAFE_ID = new AtomicInteger(0);
 
-    private GoogleApiClient mClient;
+    protected GoogleApiClient mClient;
     private TaskCompletionSource<Bundle> mGoogleApiConnectionTask = new TaskCompletionSource<>();
 
-    private GoogleApiHelper() {
+    protected GoogleApiHelper(FragmentActivity activity, GoogleApiClient.Builder builder) {
+        builder.enableAutoManage(activity, getSafeAutoManageId(), this);
+        builder.addConnectionCallbacks(this);
+        mClient = builder.build();
     }
 
     public static int getSafeAutoManageId() {
         return SAFE_ID.getAndIncrement();
     }
 
-    public static GoogleApiHelper getInstanceForSignInApi(FragmentActivity activity) {
-        GoogleApiClient.Builder builder = new GoogleApiClient.Builder(activity)
-                .addApi(Auth.CREDENTIALS_API)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN);
-        return getInstance(activity, builder);
-    }
-
-    public static GoogleApiHelper getInstance(FragmentActivity activity,
-                                              GoogleApiClient.Builder builder) {
-        GoogleApiHelper helper = new GoogleApiHelper();
-        builder.enableAutoManage(activity, getSafeAutoManageId(), helper);
-        builder.addConnectionCallbacks(helper);
-        helper.setClient(builder.build());
-        return helper;
-    }
-
-    public void setClient(GoogleApiClient client) {
-        mClient = client;
-    }
-
-    public Task<Status> signOut() {
-        final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
-        mGoogleApiConnectionTask.getTask().addOnSuccessListener(new OnSuccessListener<Bundle>() {
-            @Override
-            public void onSuccess(Bundle bundle) {
-                Auth.GoogleSignInApi.signOut(mClient)
-                        .setResultCallback(new TaskResultCaptor<>(statusTask));
-            }
-        });
-        return statusTask.getTask();
-    }
-
-    @Override
-    public Task<Status> disableAutoSignIn() {
-        final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
-        mGoogleApiConnectionTask.getTask().addOnSuccessListener(new OnSuccessListener<Bundle>() {
-            @Override
-            public void onSuccess(Bundle bundle) {
-                Auth.CredentialsApi.disableAutoSignIn(mClient)
-                        .setResultCallback(new TaskResultCaptor<>(statusTask));
-            }
-        });
-        return statusTask.getTask();
-    }
-
-    @Override
-    public Task<Status> delete(final Credential credential) {
-        final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
-        mGoogleApiConnectionTask.getTask().addOnSuccessListener(new OnSuccessListener<Bundle>() {
-            @Override
-            public void onSuccess(Bundle bundle) {
-                Auth.CredentialsApi.delete(mClient, credential)
-                        .setResultCallback(new TaskResultCaptor<>(statusTask));
-            }
-        });
-        return statusTask.getTask();
+    public Task<Bundle> getConnectedApiTask() {
+        return mGoogleApiConnectionTask.getTask();
     }
 
     @Override
@@ -109,7 +53,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks, Goo
         mGoogleApiConnectionTask.setException(new ConnectException(result.toString()));
     }
 
-    private static final class TaskResultCaptor<R extends Result> implements ResultCallback<R> {
+    protected static final class TaskResultCaptor<R extends Result> implements ResultCallback<R> {
         private TaskCompletionSource<R> mSource;
 
         public TaskResultCaptor(TaskCompletionSource<R> source) {
