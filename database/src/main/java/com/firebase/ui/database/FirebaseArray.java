@@ -60,7 +60,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
 
         mListeners.add(listener);
         notifySubscriptionEventListeners(SubscriptionEventListener.EventType.ADDED);
-        if (mListeners.size() <= 1) {
+        if (mListeners.size() == 1) { // Only start listening when the first listener is added
             mQuery.addChildEventListener(this);
             mQuery.addValueEventListener(this);
         }
