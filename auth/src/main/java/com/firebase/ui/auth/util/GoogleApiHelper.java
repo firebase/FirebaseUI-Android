@@ -1,13 +1,11 @@
 package com.firebase.ui.auth.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GoogleApiHelper {
-    private static final List<Void> IDS = new ArrayList<>();
+    private static final AtomicInteger SAFE_ID = new AtomicInteger(0);
 
     public static int getSafeAutoManageId() {
-        IDS.add(null);
-        return IDS.size() - 1;
+        return SAFE_ID.getAndIncrement();
     }
 }
