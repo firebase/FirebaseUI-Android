@@ -45,9 +45,9 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     private static final int RC_SIGN_IN = 20;
     private static final String ERROR_KEY = "error";
 
+    private GoogleApiClient mGoogleApiClient;
     private FragmentActivity mActivity;
     private IdpConfig mIdpConfig;
-    private GoogleApiClient mGoogleApiClient;
     private IdpCallback mIdpCallback;
 
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig) {
