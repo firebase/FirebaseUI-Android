@@ -34,7 +34,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
-import com.firebase.ui.auth.util.GoogleApiConstants;
+import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -209,7 +209,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(getActivity(), GoogleApiConstants.AUTO_MANAGE_ID2, this)
+                .enableAutoManage(getActivity(), GoogleApiHelper.getSafeAutoManageId(), this)
                 .build();
         mGoogleApiClient.connect();
     }

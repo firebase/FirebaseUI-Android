@@ -23,7 +23,7 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
-import com.firebase.ui.auth.util.GoogleApiConstants;
+import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
@@ -234,7 +234,7 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
     private PendingIntent getEmailHintIntent() {
         GoogleApiClient client = new GoogleApiClient.Builder(getContext())
                 .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(getActivity(), GoogleApiConstants.AUTO_MANAGE_ID3,
+                .enableAutoManage(getActivity(), GoogleApiHelper.getSafeAutoManageId(),
                                   new GoogleApiClient.OnConnectionFailedListener() {
                                       @Override
                                       public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

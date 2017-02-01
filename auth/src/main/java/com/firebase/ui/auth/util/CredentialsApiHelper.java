@@ -14,92 +14,107 @@
 
 package com.firebase.ui.auth.util;
 
-import android.app.Activity;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
+import java.net.ConnectException;
+
 /**
- * A {@link com.google.android.gms.tasks.Task Task} based wrapper for the Smart Lock for Passwords
- * API.
+ * A {@link Task} based wrapper for the Smart Lock for Passwords API.
  */
-public class CredentialsApiHelper {
-    @NonNull
-    private final GoogleApiClientTaskHelper mClientHelper;
+public class CredentialsApiHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    private GoogleApiClient mClient;
+    private TaskCompletionSource<Bundle> mGoogleApiConnectionTask = new TaskCompletionSource<>();
 
-    private CredentialsApiHelper(GoogleApiClientTaskHelper gacHelper) {
-        mClientHelper = gacHelper;
+    private CredentialsApiHelper() {
     }
 
-    public static CredentialsApiHelper getInstance(Activity activity) {
-        // Get a task helper with the Credentials Api
-        GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
-        taskHelper.getBuilder().addApi(Auth.CREDENTIALS_API);
-
-        return getInstance(taskHelper);
+    public static CredentialsApiHelper getInstance(FragmentActivity activity) {
+        GoogleApiClient.Builder builder = new GoogleApiClient.Builder(activity)
+                .addApi(Auth.CREDENTIALS_API)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN);
+        return getInstance(activity, builder);
     }
 
-    public static CredentialsApiHelper getInstance(GoogleApiClientTaskHelper taskHelper) {
-        return new CredentialsApiHelper(taskHelper);
+    public static CredentialsApiHelper getInstance(FragmentActivity activity,
+                                                   GoogleApiClient.Builder builder) {
+        CredentialsApiHelper helper = new CredentialsApiHelper();
+        builder.enableAutoManage(activity, GoogleApiHelper.getSafeAutoManageId(), helper);
+        builder.addConnectionCallbacks(helper);
+        helper.setClient(builder.build());
+        return helper;
     }
 
-    public Task<Status> delete(final Credential credential) {
-        return mClientHelper.getConnectedGoogleApiClient().continueWithTask(
-                new ExceptionForwardingContinuation<GoogleApiClient, Status>() {
-                    @Override
-                    protected void process(
-                            GoogleApiClient client,
-                            TaskCompletionSource<Status> source) {
-                        Auth.CredentialsApi.delete(client, credential)
-                                .setResultCallback(new TaskResultCaptor<>(source));
-                    }
-                });
+    public void setClient(GoogleApiClient client) {
+        mClient = client;
+    }
+
+    public Task<Status> signOut() {
+        final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
+        mGoogleApiConnectionTask.getTask().addOnSuccessListener(new OnSuccessListener<Bundle>() {
+            @Override
+            public void onSuccess(Bundle bundle) {
+                Auth.GoogleSignInApi.signOut(mClient)
+                        .setResultCallback(new TaskResultCaptor<>(statusTask));
+            }
+        });
+        return statusTask.getTask();
     }
 
     public Task<Status> disableAutoSignIn() {
-        return mClientHelper.getConnectedGoogleApiClient().continueWithTask(
-                new ExceptionForwardingContinuation<GoogleApiClient, Status>() {
-                    @Override
-                    protected void process(
-                            final GoogleApiClient client,
-                            final TaskCompletionSource<Status> source) {
-                        Auth.CredentialsApi.disableAutoSignIn(client)
-                                .setResultCallback(new ResultCallback<Status>() {
-                                    @Override
-                                    public void onResult(@NonNull Status status) {
-                                        source.setResult(status);
-                                    }
-                                });
-                    }
-                });
+        final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
+        mGoogleApiConnectionTask.getTask().addOnSuccessListener(new OnSuccessListener<Bundle>() {
+            @Override
+            public void onSuccess(Bundle bundle) {
+                Auth.CredentialsApi.disableAutoSignIn(mClient)
+                        .setResultCallback(new TaskResultCaptor<>(statusTask));
+            }
+        });
+        return statusTask.getTask();
     }
 
-    private abstract static class ExceptionForwardingContinuation<InT, OutT>
-            implements Continuation<InT, Task<OutT>> {
+    public Task<Status> delete(final Credential credential) {
+        final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
+        mGoogleApiConnectionTask.getTask().addOnSuccessListener(new OnSuccessListener<Bundle>() {
+            @Override
+            public void onSuccess(Bundle bundle) {
+                Auth.CredentialsApi.delete(mClient, credential)
+                        .setResultCallback(new TaskResultCaptor<>(statusTask));
+            }
+        });
+        return statusTask.getTask();
+    }
 
-        @Override
-        public final Task<OutT> then(@NonNull Task<InT> task) throws Exception {
-            TaskCompletionSource<OutT> source = new TaskCompletionSource<>();
-            // calling task.getResult() will implicitly re-throw the exception of the original
-            // task, which will be returned as the result for the output task. Similarly,
-            // if process() throws an exception, this will be turned into the task result.
-            process(task.getResult(), source);
-            return source.getTask();
-        }
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        mGoogleApiConnectionTask.setResult(bundle);
+    }
 
-        protected abstract void process(InT in, TaskCompletionSource<OutT> result);
+    @Override
+    public void onConnectionSuspended(int i) {
+        // Just wait
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
+        mGoogleApiConnectionTask.setException(new ConnectException(result.toString()));
     }
 
     private static final class TaskResultCaptor<R extends Result> implements ResultCallback<R> {
-
         private TaskCompletionSource<R> mSource;
 
         public TaskResultCaptor(TaskCompletionSource<R> source) {
