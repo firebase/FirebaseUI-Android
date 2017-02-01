@@ -35,6 +35,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
     private Query mQuery;
     private boolean mNotifyListeners = true;
     private List<ChangeEventListener> mListeners = new ArrayList<>();
+    private List<SubscriptionEventListener> mSubscribers = new ArrayList<>();
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     /**
@@ -58,6 +59,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
         checkNotNull(listener);
 
         mListeners.add(listener);
+        notifySubscriptionEventListeners(SubscriptionEventListener.EventType.ADDED);
         if (mListeners.size() <= 1) {
             mQuery.addChildEventListener(this);
             mQuery.addValueEventListener(this);
@@ -67,16 +69,14 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
     }
 
     /**
-     * Remove the {@link ChangeEventListener} from the location provided in {@link
+     * Remove a {@link ChangeEventListener} from the location provided in {@link
      * #FirebaseArray(Query)}. The list will be empty after this call returns.
      *
      * @param listener the listener to remove
-     * @throws IllegalArgumentException if the listener is null
      */
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        checkNotNull(listener);
-
         mListeners.remove(listener);
+        notifySubscriptionEventListeners(SubscriptionEventListener.EventType.REMOVED);
         if (mListeners.isEmpty()) {
             mQuery.removeEventListener((ValueEventListener) this);
             mQuery.removeEventListener((ChildEventListener) this);
@@ -84,10 +84,40 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
         }
     }
 
-    private static void checkNotNull(ChangeEventListener listener) {
-        if (listener == null) {
-            throw new IllegalArgumentException("ChangeEventListener cannot be null.");
+    /**
+     * Add a listener for subscription events eg additions/removals of {@link ChangeEventListener}s.
+     *
+     * @param listener the listener to be called with changes
+     * @return a reference to the listener provided. Save this to remove the listener later
+     * @throws IllegalArgumentException if the listener is null
+     */
+    public SubscriptionEventListener addSubscriptionEventListener(@NonNull SubscriptionEventListener listener) {
+        checkNotNull(listener);
+        mSubscribers.add(listener);
+        return listener;
+    }
+
+    /**
+     * Remove a {@link SubscriptionEventListener} for this {@link FirebaseArray}.
+     *
+     * @param listener the listener to remove
+     */
+    public void removeSubscriptionEventListener(@NonNull SubscriptionEventListener listener) {
+        mSubscribers.remove(listener);
+    }
+
+    protected void notifySubscriptionEventListeners(@SubscriptionEventListener.EventType int eventType) {
+        for (SubscriptionEventListener listener : mSubscribers) {
+            if (eventType == SubscriptionEventListener.EventType.ADDED) {
+                listener.onSubscriptionAdded();
+            } else if (eventType == SubscriptionEventListener.EventType.REMOVED) {
+                listener.onSubscriptionRemoved();
+            }
         }
+    }
+
+    private static void checkNotNull(Object o) {
+        if (o == null) throw new IllegalArgumentException("Listener cannot be null.");
     }
 
     /**
@@ -223,22 +253,22 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * Get a continually updated list of objects representing the {@link DataSnapshot}s in this
      * list.
      *
-     * @param <T> the model representation of a {@link DataSnapshot}
+     * @param modelClass the model representation of a {@link DataSnapshot}
      * @return a list that represents the objects in this list of {@link DataSnapshot}
      */
-    public <T> List<T> toObjectsList(Class<T> tClass) {
-        return new FirebaseArrayOfObjects<>(this, tClass);
+    public <T> List<T> toObjectsList(Class<T> modelClass) {
+        return FirebaseArrayOfObjects.newInstance(this, modelClass);
     }
 
     /**
      * Get a continually updated list of objects representing the {@link DataSnapshot}s in this
      * list.
      *
-     * @param <T> the model representation of a {@link DataSnapshot}
-     * @return a list that represents the objects in this list of {@link DataSnapshot}
+     * @param parser a custom {@link SnapshotParser} to manually convert each {@link DataSnapshot}
+     *               to its model type
      */
-    public <T> List<T> toObjectsList(Class<T> tClass, SnapshotParser<T> parser) {
-        return new FirebaseArrayOfObjects<>(this, tClass, parser);
+    public <T> List<T> toObjectsList(Class<T> modelClass, SnapshotParser<T> parser) {
+        return FirebaseArrayOfObjects.newInstance(this, modelClass, parser);
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.firebase.ui.database;
 
+import android.util.Pair;
+
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,32 +16,50 @@ import java.util.ListIterator;
  *
  * @param <E> the model representation of a {@link DataSnapshot}
  */
-public class FirebaseArrayOfObjects<E> extends ImmutableList<E> implements SnapshotParser<E> {
-    private List<DataSnapshot> mSnapshots;
-    private Class<E> mEClass;
-    private SnapshotParser<E> mParser;
+public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
+    protected List<DataSnapshot> mSnapshots;
+    protected Class<E> mEClass;
+    protected SnapshotParser<E> mParser;
 
     /**
-     * @param snapshots a list of {@link DataSnapshot}s to be converted to a model type
-     * @param eClass    the model representation of a {@link DataSnapshot}
+     * @param snapshots  a list of {@link DataSnapshot}s to be converted to a model type
+     * @param modelClass the model representation of a {@link DataSnapshot}
      */
-    public FirebaseArrayOfObjects(List<DataSnapshot> snapshots, Class<E> eClass) {
+    public FirebaseArrayOfObjects(List<DataSnapshot> snapshots, Class<E> modelClass) {
         mSnapshots = snapshots;
-        mEClass = eClass;
-        mParser = this;
+        mEClass = modelClass;
+        mParser = new SnapshotParser<E>() {
+            @Override
+            public E parseSnapshot(DataSnapshot snapshot) {
+                return snapshot.getValue(mEClass);
+            }
+        };
+    }
+
+    /**
+     * @param snapshots  a list of {@link DataSnapshot}s to be converted to a model type
+     * @param modelClass the model representation of a {@link DataSnapshot}
+     */
+    public static <T> FirebaseArrayOfObjects<T> newInstance(List<DataSnapshot> snapshots,
+                                                            Class<T> modelClass) {
+        if (snapshots instanceof FirebaseArray) {
+            return new FirebaseArrayOfObjectsOptimized<>((FirebaseArray) snapshots, modelClass);
+        } else {
+            return new FirebaseArrayOfObjects<>(snapshots, modelClass);
+        }
     }
 
     /**
      * @param parser a custom {@link SnapshotParser} to manually convert each {@link DataSnapshot}
      *               to its model type
-     * @see #FirebaseArrayOfObjects(List, Class)
+     * @see #newInstance(List, Class)
      */
-    public FirebaseArrayOfObjects(List<DataSnapshot> snapshots,
-                                  Class<E> eClass,
-                                  SnapshotParser<E> parser) {
-        mSnapshots = snapshots;
-        mEClass = eClass;
-        mParser = parser;
+    public static <T> FirebaseArrayOfObjects<T> newInstance(List<DataSnapshot> snapshots,
+                                                            Class<T> modelClass,
+                                                            SnapshotParser<T> parser) {
+        FirebaseArrayOfObjects<T> array = newInstance(snapshots, modelClass);
+        array.mParser = parser;
+        return array;
     }
 
     public List<DataSnapshot> getSnapshots() {
@@ -51,11 +72,6 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> implements Snaps
             objects.add(get(i));
         }
         return objects;
-    }
-
-    @Override
-    public E parseSnapshot(DataSnapshot snapshot) {
-        return snapshot.getValue(mEClass);
     }
 
     @Override
@@ -155,5 +171,67 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> implements Snaps
         return "FirebaseArrayOfObjects{" +
                 "mSnapshots=" + mSnapshots +
                 '}';
+    }
+
+    protected static class FirebaseArrayOfObjectsOptimized<E> extends FirebaseArrayOfObjects<E>
+            implements ChangeEventListener, SubscriptionEventListener {
+        protected List<E> mObjects = new ArrayList<>();
+        protected Pair<Boolean, Boolean> mIsListening$AddedListener = new Pair<>(true, false);
+
+        public FirebaseArrayOfObjectsOptimized(FirebaseArray snapshots, Class<E> modelClass) {
+            super(snapshots, modelClass);
+            snapshots.addChangeEventListener(this);
+            snapshots.addSubscriptionEventListener(this);
+        }
+
+        @Override
+        protected List<E> getObjects() {
+            return mObjects;
+        }
+
+        @Override
+        public void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
+            switch (type) {
+                case ADDED:
+                    mObjects.add(get(index));
+                    break;
+                case CHANGED:
+                    mObjects.set(index, get(index));
+                    break;
+                case REMOVED:
+                    mObjects.remove(index);
+                    break;
+                case MOVED:
+                    mObjects.add(index, mObjects.remove(oldIndex));
+                    break;
+            }
+        }
+
+        @Override
+        public void onSubscriptionRemoved() {
+            FirebaseArray snapshots = (FirebaseArray) mSnapshots;
+            if (!snapshots.isListening()) {
+                snapshots.removeChangeEventListener(this);
+                mIsListening$AddedListener = new Pair<>(false, false);
+            }
+        }
+
+        @Override
+        public void onSubscriptionAdded() {
+            if (mIsListening$AddedListener.second) {
+                mIsListening$AddedListener = new Pair<>(true, false);
+            } else if (!mIsListening$AddedListener.first) {
+                ((FirebaseArray) mSnapshots).addChangeEventListener(this);
+                mIsListening$AddedListener = new Pair<>(true, true);
+            }
+        }
+
+        @Override
+        public void onDataChanged() {
+        }
+
+        @Override
+        public void onCancelled(DatabaseError error) {
+        }
     }
 }
