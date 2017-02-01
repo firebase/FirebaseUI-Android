@@ -1,7 +1,5 @@
 package com.firebase.ui.database;
 
-import android.util.Pair;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -176,7 +174,8 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
     protected static class FirebaseArrayOfObjectsOptimized<E> extends FirebaseArrayOfObjects<E>
             implements ChangeEventListener, SubscriptionEventListener {
         protected List<E> mObjects = new ArrayList<>();
-        protected Pair<Boolean, Boolean> mIsListening$AddedListener = new Pair<>(true, false);
+        protected boolean mIsListening = true;
+        protected boolean mAddedListener = false;
 
         public FirebaseArrayOfObjectsOptimized(FirebaseArray snapshots, Class<E> modelClass) {
             super(snapshots, modelClass);
@@ -212,17 +211,20 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
             FirebaseArray snapshots = (FirebaseArray) mSnapshots;
             if (!snapshots.isListening()) {
                 snapshots.removeChangeEventListener(this);
-                mIsListening$AddedListener = new Pair<>(false, false);
+                mIsListening = false;
+                mAddedListener = false;
             }
         }
 
         @Override
         public void onSubscriptionAdded() {
-            if (mIsListening$AddedListener.second) {
-                mIsListening$AddedListener = new Pair<>(true, false);
-            } else if (!mIsListening$AddedListener.first) {
+            if (mAddedListener) {
+                mIsListening = true;
+                mAddedListener = false;
+            } else if (!mIsListening) {
                 ((FirebaseArray) mSnapshots).addChangeEventListener(this);
-                mIsListening$AddedListener = new Pair<>(true, true);
+                mIsListening = true;
+                mAddedListener = true;
             }
         }
 
