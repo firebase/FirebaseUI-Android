@@ -8,7 +8,6 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -26,7 +25,7 @@ public class GoogleSignInHelper extends GoogleApiHelper implements CredentialTas
 
     public Task<Status> signOut() {
         final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
-        getConnectedApiTask().addOnSuccessListener(new OnSuccessListener<Bundle>() {
+        getConnectedApiTask().addOnSuccessListener(new ExceptionForwarder<Bundle>(statusTask) {
             @Override
             public void onSuccess(Bundle bundle) {
                 Auth.GoogleSignInApi.signOut(mClient)
@@ -39,7 +38,7 @@ public class GoogleSignInHelper extends GoogleApiHelper implements CredentialTas
     @Override
     public Task<Status> disableAutoSignIn() {
         final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
-        getConnectedApiTask().addOnSuccessListener(new OnSuccessListener<Bundle>() {
+        getConnectedApiTask().addOnSuccessListener(new ExceptionForwarder<Bundle>(statusTask) {
             @Override
             public void onSuccess(Bundle bundle) {
                 Auth.CredentialsApi.disableAutoSignIn(mClient)
@@ -52,7 +51,7 @@ public class GoogleSignInHelper extends GoogleApiHelper implements CredentialTas
     @Override
     public Task<Status> delete(final Credential credential) {
         final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
-        getConnectedApiTask().addOnSuccessListener(new OnSuccessListener<Bundle>() {
+        getConnectedApiTask().addOnSuccessListener(new ExceptionForwarder<Bundle>(statusTask) {
             @Override
             public void onSuccess(Bundle bundle) {
                 Auth.CredentialsApi.delete(mClient, credential)

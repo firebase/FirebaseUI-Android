@@ -85,12 +85,12 @@ public class CredentialsApiHelper implements CredentialTaskApi {
                 });
     }
 
-    private abstract static class ExceptionForwardingContinuation<InT, OutT>
-            implements Continuation<InT, Task<OutT>> {
+    private abstract static class ExceptionForwardingContinuation<TIn, TOut>
+            implements Continuation<TIn, Task<TOut>> {
 
         @Override
-        public final Task<OutT> then(@NonNull Task<InT> task) throws Exception {
-            TaskCompletionSource<OutT> source = new TaskCompletionSource<>();
+        public final Task<TOut> then(@NonNull Task<TIn> task) throws Exception {
+            TaskCompletionSource<TOut> source = new TaskCompletionSource<>();
             // calling task.getResult() will implicitly re-throw the exception of the original
             // task, which will be returned as the result for the output task. Similarly,
             // if process() throws an exception, this will be turned into the task result.
@@ -98,7 +98,7 @@ public class CredentialsApiHelper implements CredentialTaskApi {
             return source.getTask();
         }
 
-        protected abstract void process(InT in, TaskCompletionSource<OutT> result);
+        protected abstract void process(TIn in, TaskCompletionSource<TOut> result);
     }
 
     private static final class TaskResultCaptor<R extends Result> implements ResultCallback<R> {

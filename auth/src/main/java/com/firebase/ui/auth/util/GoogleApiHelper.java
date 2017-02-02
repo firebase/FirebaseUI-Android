@@ -9,6 +9,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
@@ -63,6 +65,19 @@ public abstract class GoogleApiHelper implements GoogleApiClient.ConnectionCallb
         @Override
         public void onResult(@NonNull R result) {
             mSource.setResult(result);
+        }
+    }
+
+    protected static abstract class ExceptionForwarder<TResult> implements OnSuccessListener<TResult>, OnFailureListener {
+        private TaskCompletionSource mSource;
+
+        public ExceptionForwarder(TaskCompletionSource source) {
+            mSource = source;
+        }
+
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            mSource.setException(e);
         }
     }
 }
