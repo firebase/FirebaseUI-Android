@@ -29,7 +29,7 @@ and [Web](https://github.com/firebase/firebaseui-web/).
 
 ![FirebaseUI authentication demo on Android](demo.gif)
 
-## Table of Content
+## Table of Contents
 
 1. [Configuration](#configuration)
 2. [Usage instructions](#using-firebaseui-for-authentication)

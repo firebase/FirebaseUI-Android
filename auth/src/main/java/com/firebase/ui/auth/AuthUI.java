@@ -66,7 +66,7 @@ import java.util.Set;
  * {@link AuthUI#getInstance(FirebaseApp)} instead, passing the appropriate app instance.
  * <p>
  * <p>
- * See the <a href="https://github.com/firebase/FirebaseUI-Android/tree/master/auth#using-firebaseui-for-authentication">README</a>
+ * See the <a href="https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#table-of-contents">README</a>
  * for examples on how to get started with FirebaseUI Auth.
  */
 public class AuthUI {
