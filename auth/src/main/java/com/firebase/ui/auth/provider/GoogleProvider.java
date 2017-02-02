@@ -60,7 +60,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
 
         mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
                 .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, getAccountBuilder(email).build())
+                .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(email))
                 .build();
     }
 
@@ -68,7 +68,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
         return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
     }
 
-    private GoogleSignInOptions.Builder getAccountBuilder(@Nullable String email) {
+    private GoogleSignInOptions getSignInOptions(@Nullable String email) {
         String clientId = mActivity.getString(R.string.default_web_client_id);
 
         GoogleSignInOptions.Builder builder =
@@ -91,7 +91,8 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
         if (!TextUtils.isEmpty(email)) {
             builder.setAccountName(email);
         }
-        return builder;
+
+        return builder.build();
     }
 
     public String getName(Context context) {
@@ -150,7 +151,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
             mGoogleApiClient.disconnect();
             mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
                     .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, getAccountBuilder(null).build())
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(null))
                     .build();
             startLogin(mActivity);
         } else {
