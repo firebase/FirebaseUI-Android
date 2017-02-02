@@ -33,6 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * {@link com.google.android.gms.common.api.GoogleApiClient} instance, which manages a single
  * instance per activity.
  */
+@Deprecated
 public class GoogleApiClientTaskHelper {
 
     private static final IdentityHashMap<Activity, GoogleApiClientTaskHelper> INSTANCES

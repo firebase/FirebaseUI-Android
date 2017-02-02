@@ -23,8 +23,8 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.CredentialsApiHelper;
-import com.firebase.ui.auth.util.GoogleApiConstants;
+import com.firebase.ui.auth.util.GoogleApiHelper;
+import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -98,7 +98,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             mGoogleApiClient = new GoogleApiClient.Builder(getContext().getApplicationContext())
                     .addConnectionCallbacks(this)
                     .addApi(Auth.CREDENTIALS_API)
-                    .enableAutoManage(getActivity(), GoogleApiConstants.AUTO_MANAGE_ID1, this)
+                    .enableAutoManage(getActivity(), GoogleApiHelper.getSafeAutoManageId(), this)
                     .build();
             mGoogleApiClient.connect();
 
@@ -299,8 +299,8 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             return;
         }
 
-        CredentialsApiHelper credentialsApiHelper = CredentialsApiHelper.getInstance(getActivity());
-        credentialsApiHelper.delete(mCredential)
+        GoogleSignInHelper.getInstance(getActivity())
+                .delete(mCredential)
                 .addOnCompleteListener(new OnCompleteListener<Status>() {
                     @Override
                     public void onComplete(@NonNull Task<Status> task) {

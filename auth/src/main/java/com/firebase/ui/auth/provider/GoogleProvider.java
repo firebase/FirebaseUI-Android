@@ -29,7 +29,7 @@ import android.view.View.OnClickListener;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.util.GoogleApiConstants;
+import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -80,7 +80,7 @@ public class GoogleProvider implements
         }
 
         mGoogleApiClient = new GoogleApiClient.Builder(activity)
-                .enableAutoManage(activity, GoogleApiConstants.AUTO_MANAGE_ID0, this)
+                .enableAutoManage(activity, GoogleApiHelper.getSafeAutoManageId(), this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, builder.build())
                 .build();
     }

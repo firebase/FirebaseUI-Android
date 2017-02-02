@@ -23,12 +23,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.annotation.VisibleForTesting;
+import android.support.v4.app.FragmentActivity;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.util.CredentialTaskApi;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
+import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.signincontainer.SmartLockBase;
 import com.google.android.gms.auth.api.Auth;
@@ -313,10 +316,12 @@ public class AuthUI {
      * Signs the current user out, if one is signed in.
      *
      * @param activity The activity requesting the user be signed out.
-     * @return a task which, upon completion, signals that the user has been signed out
-     * ({@code result.isSuccess()}, or that the sign-out attempt failed unexpectedly
-     * ({@code !result.isSuccess()}).
+     * @return a task which, upon completion, signals that the user has been signed out ({@code
+     * result.isSuccess()}, or that the sign-out attempt failed unexpectedly ({@code
+     * !result.isSuccess()}).
+     * @deprecated use {@link #signOut(FragmentActivity)} instead
      */
+    @Deprecated
     public Task<Void> signOut(@NonNull Activity activity) {
         // Get helper for Google Sign In and Credentials API
         GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
@@ -325,7 +330,7 @@ public class AuthUI {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN);
 
         // Get Credentials Helper
-        CredentialsApiHelper credentialsHelper = CredentialsApiHelper.getInstance(taskHelper);
+        CredentialTaskApi credentialsHelper = CredentialsApiHelper.getInstance(taskHelper);
 
         // Firebase Sign out
         mAuth.signOut();
@@ -359,8 +364,62 @@ public class AuthUI {
      * silently.
      *
      * @param activity the calling {@link Activity}.
+     * @deprecated use {@link #delete(FragmentActivity)} instead
      */
+    @Deprecated
     public Task<Void> delete(@NonNull Activity activity) {
+        // Initialize SmartLock helper
+        GoogleApiClientTaskHelper gacHelper = GoogleApiClientTaskHelper.getInstance(activity);
+        gacHelper.getBuilder().addApi(Auth.CREDENTIALS_API);
+        CredentialTaskApi credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
+
+        return getDeleteTask(credentialHelper);
+    }
+
+    /**
+     * Signs the current user out, if one is signed in.
+     *
+     * @param activity the activity requesting the user be signed out
+     * @return A task which, upon completion, signals that the user has been signed out ({@link
+     * Task#isSuccessful()}, or that the sign-out attempt failed unexpectedly !{@link
+     * Task#isSuccessful()}).
+     */
+    public Task<Void> signOut(@NonNull FragmentActivity activity) {
+        // Get Credentials Helper
+        GoogleSignInHelper credentialsHelper = GoogleSignInHelper.getInstance(activity);
+
+        // Firebase Sign out
+        mAuth.signOut();
+
+        // Disable credentials auto sign-in
+        Task<Status> disableCredentialsTask = credentialsHelper.disableAutoSignIn();
+
+        // Google sign out
+        Task<Status> signOutTask = credentialsHelper.signOut();
+
+        // Facebook sign out
+        LoginManager.getInstance().logOut();
+
+        // Wait for all tasks to complete
+        return Tasks.whenAll(disableCredentialsTask, signOutTask);
+    }
+
+    /**
+     * Delete the use from FirebaseAuth and delete any associated credentials from the Credentials
+     * API. Returns a {@link Task} that succeeds if the Firebase Auth user deletion succeeds and
+     * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
+     * silently.
+     *
+     * @param activity the calling {@link Activity}.
+     */
+    public Task<Void> delete(@NonNull FragmentActivity activity) {
+        // Initialize SmartLock helper
+        CredentialTaskApi credentialHelper = GoogleSignInHelper.getInstance(activity);
+
+        return getDeleteTask(credentialHelper);
+    }
+
+    private Task<Void> getDeleteTask(CredentialTaskApi credentialHelper) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser == null) {
             // If the current user is null, return a failed task immediately
@@ -369,11 +428,6 @@ public class AuthUI {
 
         // Delete the Firebase user
         Task<Void> deleteUserTask = firebaseUser.delete();
-
-        // Initialize SmartLock helper
-        GoogleApiClientTaskHelper gacHelper = GoogleApiClientTaskHelper.getInstance(activity);
-        gacHelper.getBuilder().addApi(Auth.CREDENTIALS_API);
-        CredentialsApiHelper credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
 
         // Get all SmartLock credentials associated with the user
         List<Credential> credentials = SmartLockBase.credentialsFromFirebaseUser(firebaseUser);
@@ -557,8 +611,8 @@ public class AuthUI {
          * <p>If no providers are explicitly specified by calling this method, then the email
          * provider is the default supported provider.
          *
-         * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains
-         *                   the configuration parameters for the IDP.
+         * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
+         *                   configuration parameters for the IDP.
          * @see IdpConfig
          */
         public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
