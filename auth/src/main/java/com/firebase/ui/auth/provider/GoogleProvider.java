@@ -27,7 +27,7 @@ import android.util.Log;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.util.GoogleApiConstants;
+import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -59,7 +59,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
         mIdpConfig = idpConfig;
 
         mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
-                .enableAutoManage(mActivity, GoogleApiConstants.AUTO_MANAGE_ID0, this)
+                .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, getAccountBuilder(email).build())
                 .build();
     }
@@ -149,7 +149,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
             mGoogleApiClient.stopAutoManage(mActivity);
             mGoogleApiClient.disconnect();
             mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
-                    .enableAutoManage(mActivity, GoogleApiConstants.AUTO_MANAGE_ID0, this)
+                    .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
                     .addApi(Auth.GOOGLE_SIGN_IN_API, getAccountBuilder(null).build())
                     .build();
             startLogin(mActivity);
