@@ -24,6 +24,7 @@ import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.GoogleApiHelper;
+import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -298,11 +299,11 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             return;
         }
 
-        AuthUI.getInstance()
-                .delete(getActivity())
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+        GoogleSignInHelper.getInstance(getActivity())
+                .delete(mCredential)
+                .addOnCompleteListener(new OnCompleteListener<Status>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public void onComplete(@NonNull Task<Status> task) {
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "deleteCredential:failure", task.getException());
                         }
