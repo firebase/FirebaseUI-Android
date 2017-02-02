@@ -34,7 +34,7 @@ import java.util.ListIterator;
 public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildEventListener, ValueEventListener {
     private Query mQuery;
     private boolean mNotifyListeners = true;
-    private List<ChangeEventListener> mListeners = new ArrayList<>();
+    private final List<ChangeEventListener> mListeners = new ArrayList<>();
     private List<SubscriptionEventListener> mSubscribers = new ArrayList<>();
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
@@ -58,11 +58,13 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
     public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
         checkNotNull(listener);
 
-        mListeners.add(listener);
-        notifySubscriptionEventListeners(SubscriptionEventListener.EventType.ADDED);
-        if (mListeners.size() == 1) { // Only start listening when the first listener is added
-            mQuery.addChildEventListener(this);
-            mQuery.addValueEventListener(this);
+        synchronized (mListeners) {
+            mListeners.add(listener);
+            notifySubscriptionEventListeners(SubscriptionEventListener.EventType.ADDED);
+            if (mListeners.size() == 1) { // Only start listening when the first listener is added
+                mQuery.addChildEventListener(this);
+                mQuery.addValueEventListener(this);
+            }
         }
 
         return listener;
@@ -75,12 +77,14 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @param listener the listener to remove
      */
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        mListeners.remove(listener);
-        notifySubscriptionEventListeners(SubscriptionEventListener.EventType.REMOVED);
-        if (mListeners.isEmpty()) {
-            mQuery.removeEventListener((ValueEventListener) this);
-            mQuery.removeEventListener((ChildEventListener) this);
-            mSnapshots.clear();
+        synchronized (mListeners) {
+            mListeners.remove(listener);
+            notifySubscriptionEventListeners(SubscriptionEventListener.EventType.REMOVED);
+            if (mListeners.isEmpty()) {
+                mQuery.removeEventListener((ValueEventListener) this);
+                mQuery.removeEventListener((ChildEventListener) this);
+                mSnapshots.clear();
+            }
         }
     }
 
