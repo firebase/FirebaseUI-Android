@@ -68,7 +68,7 @@ public abstract class GoogleApiHelper implements GoogleApiClient.ConnectionCallb
         }
     }
 
-    protected static abstract class ExceptionForwarder<TResult> implements OnSuccessListener<TResult>, OnFailureListener {
+    protected abstract static class ExceptionForwarder<TResult> implements OnSuccessListener<TResult>, OnFailureListener {
         private TaskCompletionSource mSource;
 
         public ExceptionForwarder(TaskCompletionSource source) {
