@@ -124,7 +124,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @return true if {@link FirebaseArray} is listening for change events from the Firebase
      * database, false otherwise
      */
-    public boolean isListening() {
+    public synchronized boolean isListening() {
         return !mListeners.isEmpty();
     }
 

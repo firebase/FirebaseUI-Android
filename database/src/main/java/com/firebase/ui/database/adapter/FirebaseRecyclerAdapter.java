@@ -39,6 +39,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     protected int mModelLayout;
 
     /**
+     * @param snapshots       The data used to populate the adapter
      * @param modelClass      Firebase will marshall the data at a location into an instance of a
      *                        class that you provide
      * @param modelLayout     This is the layout used to represent a single item in the list. You
@@ -46,12 +47,11 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      *                        view with the data from an instance of modelClass.
      * @param viewHolderClass The class that hold references to all sub-views in an instance
      *                        modelLayout.
-     * @param snapshots       The data used to populate the adapter
      */
     public FirebaseRecyclerAdapter(FirebaseArray snapshots,
                                    Class<T> modelClass,
-                                   Class<VH> viewHolderClass,
-                                   @LayoutRes int modelLayout) {
+                                   @LayoutRes int modelLayout,
+                                   Class<VH> viewHolderClass) {
         mSnapshots = snapshots;
         mModelClass = modelClass;
         mViewHolderClass = viewHolderClass;
@@ -64,13 +64,13 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * @param query The Firebase location to watch for data changes. Can also be a slice of a
      *              location, using some combination of {@code limit()}, {@code startAt()}, and
      *              {@code endAt()}.
-     * @see #FirebaseRecyclerAdapter(FirebaseArray, Class, Class, int)
+     * @see #FirebaseRecyclerAdapter(FirebaseArray, Class, int, Class)
      */
     public FirebaseRecyclerAdapter(Class<T> modelClass,
-                                   Class<VH> viewHolderClass,
                                    @LayoutRes int modelLayout,
+                                   Class<VH> viewHolderClass,
                                    Query query) {
-        this(new FirebaseArray(query), modelClass, viewHolderClass, modelLayout);
+        this(new FirebaseArray(query), modelClass, modelLayout, viewHolderClass);
     }
 
     @Override

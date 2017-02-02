@@ -16,13 +16,13 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
      *                 limit()}, {@code startAt()}, and {@code endAt()}.
      * @param dataRef  The Firebase location to watch for data changes. Each key key found at {@code
      *                 keyQuery}'s location represents a list item in the {@link RecyclerView}.
-     * @see FirebaseRecyclerAdapter#FirebaseRecyclerAdapter(FirebaseArray, Class, Class, int)
+     * @see FirebaseRecyclerAdapter#FirebaseRecyclerAdapter(FirebaseArray, Class, int, Class)
      */
     public FirebaseIndexRecyclerAdapter(Class<T> modelClass,
-                                        Class<VH> viewHolderClass,
                                         @LayoutRes int modelLayout,
+                                        Class<VH> viewHolderClass,
                                         Query keyQuery,
                                         DatabaseReference dataRef) {
-        super(new FirebaseIndexArray(keyQuery, dataRef), modelClass, viewHolderClass, modelLayout);
+        super(new FirebaseIndexArray(keyQuery, dataRef), modelClass, modelLayout, viewHolderClass);
     }
 }
