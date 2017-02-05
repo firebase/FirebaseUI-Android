@@ -32,6 +32,10 @@ public abstract class GoogleApiHelper implements GoogleApiClient.ConnectionCallb
         mClient = builder.build();
     }
 
+    /**
+     * @return a safe id for {@link GoogleApiClient.Builder#enableAutoManage(FragmentActivity, int,
+     * GoogleApiClient.OnConnectionFailedListener)}
+     */
     public static int getSafeAutoManageId() {
         return SAFE_ID.getAndIncrement();
     }
