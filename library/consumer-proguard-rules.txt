@@ -6,6 +6,3 @@
 -dontwarn retrofit.**
 -dontwarn retrofit2.**
 -dontwarn okio.**
-
-# Don't warn about custom @IntDef annotations
--dontwarn com.firebase.ui.database.SubscriptionEventListener$EventType
