@@ -1,1 +1,0 @@
--dontwarn com.firebase.ui.database.SubscriptionEventListener.EventType

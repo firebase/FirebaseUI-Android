@@ -21,6 +21,8 @@
 -keepattributes Signature
 -keepattributes *Annotation*
 
+-dontwarn com.firebase.ui.database.SubscriptionEventListener$EventType
+
 # See:
 # storage/README.md
 -assumenosideeffects class android.util.Log {
