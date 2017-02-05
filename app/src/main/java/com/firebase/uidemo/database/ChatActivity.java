@@ -26,7 +26,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.adapter.FirebaseIndexRecyclerAdapter;
+import com.firebase.ui.database.adapter.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,13 +37,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
 public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "RecyclerViewDemo";
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mRef;
+    private DatabaseReference mChatIndicesRef;
     private DatabaseReference mChatRef;
     private Button mSendButton;
     private EditText mMessageEdit;
@@ -64,8 +64,9 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
         mEmptyListMessage = (TextView) findViewById(R.id.emptyTextView);
 
-        mRef = FirebaseDatabase.getInstance().getReference();
-        mChatRef = mRef.child("chats");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        mChatIndicesRef = ref.child("chatIndices");
+        mChatRef = ref.child("chats");
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +75,9 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 String name = "User " + uid.substring(0, 6);
 
                 Chat chat = new Chat(name, mMessageEdit.getText().toString(), uid);
-                mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
+                DatabaseReference chatRef = mChatRef.push();
+                mChatIndicesRef.child(chatRef.getKey()).setValue(true);
+                chatRef.setValue(chat, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError error, DatabaseReference reference) {
                         if (error != null) {
@@ -131,9 +134,12 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     private void attachRecyclerViewAdapter() {
-        Query lastFifty = mChatRef.limitToLast(50);
-        mAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
-                Chat.class, R.layout.message, ChatHolder.class, lastFifty) {
+        mAdapter = new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
+                Chat.class,
+                R.layout.message,
+                ChatHolder.class,
+                mChatIndicesRef.limitToLast(50),
+                mChatRef) {
             @Override
             public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
                 holder.setName(chat.getName());
@@ -148,9 +154,17 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
 
             @Override
-            protected void onDataChanged() {
+            public void onChildChanged(EventType type, int index, int oldIndex) {
+                super.onChildChanged(type, index, oldIndex);
+
+                // TODO temporary fix for https://github.com/firebase/FirebaseUI-Android/issues/546
+                onDataChanged();
+            }
+
+            @Override
+            public void onDataChanged() {
                 // If there are no chat messages, show a view that invites the user to add a message.
-                mEmptyListMessage.setVisibility(mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         };
 
