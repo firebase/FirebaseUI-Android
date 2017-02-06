@@ -18,7 +18,7 @@ android {
             manifestPlaceholders = [enableFbLogging: true]
 
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
 
         debug {
