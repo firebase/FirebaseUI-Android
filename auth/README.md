@@ -217,8 +217,7 @@ startActivityForResult(
 
 #### Handling the sign-in response
 
-##### Response codes
-
+#####Response codes
 The authentication flow provides several response codes of which the most common are as follows:
 `ResultCodes.OK` if a user is signed in, `ResultCodes.CANCELLED` if the user manually canceled the sign in,
 `ResultCodes.NO_NETWORK` if sign in failed due to a lack of network connectivity,
@@ -345,23 +344,6 @@ AuthUI.getInstance()
         });
 ```
 
-### Using the `GoogleApiClient` in your own app
-
-FirebaseUI Auth heavily relies on the `GoogleApiClient` and its `enableAutoManage` method to
-help prevent memory leaks. However, using `enableAutoManage` can be risky because the method will throw
-an `IllegalStateException` if another `GoogleApiClient` is being managed with the same id.
-To help solve this problem, FirebaseUI provides a helper method to get a safe id that is
-not being used: `GoogleApiHelper#getSafeAutoManageId()`
-
-#### Example usage:
-
-```java
-new GoogleApiClient.Builder(mActivity)
-        .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), null /* listener */)
-        .addApi(...)
-        .build()
-```
-
 ### Authentication flow chart
 
 The authentication flow implemented on Android is more complex than on other
@@ -370,7 +352,7 @@ represented in the following diagram:
 
 ![FirebaseUI authentication flow on Android](flow.png)
 
-## UI customization
+### UI customization
 
 To provide customization of the visual style of the activities that implement
 the flow, a new theme can be declared. Standard material design color
@@ -477,4 +459,4 @@ startActivityForResult(
 
 #### Twitter
 
-Twitter permissions can only be configured through [Twitter's developer console](https://apps.twitter.com/).
+Twitter permissions can only be configured through Twitter's developer console.
