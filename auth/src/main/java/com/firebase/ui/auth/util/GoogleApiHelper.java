@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * A {@link Task} based wrapper to get a connect {@link GoogleApiClient}.
  */
 public abstract class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private static final AtomicInteger SAFE_ID = new AtomicInteger(0);
+    private static final AtomicInteger SAFE_ID = new AtomicInteger(10);
 
     protected GoogleApiClient mClient;
     private TaskCompletionSource<Bundle> mGoogleApiConnectionTask = new TaskCompletionSource<>();
@@ -32,6 +32,10 @@ public abstract class GoogleApiHelper implements GoogleApiClient.ConnectionCallb
         mClient = builder.build();
     }
 
+    /**
+     * @return a safe id for {@link GoogleApiClient.Builder#enableAutoManage(FragmentActivity, int,
+     * GoogleApiClient.OnConnectionFailedListener)}
+     */
     public static int getSafeAutoManageId() {
         return SAFE_ID.getAndIncrement();
     }
