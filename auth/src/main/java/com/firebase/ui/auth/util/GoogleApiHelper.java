@@ -42,6 +42,9 @@ public abstract class GoogleApiHelper implements GoogleApiClient.ConnectionCallb
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        // onConnected might be called multiple times, but we don't want to unregister listeners
+        // because extenders might be relying on each onConnected call. Instead, we just ignore future
+        // calls to onConnected or onConnectionFailed by using a `trySomething` strategy.
         mGoogleApiConnectionTask.trySetResult(bundle);
     }
 
