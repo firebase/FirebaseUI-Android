@@ -46,7 +46,7 @@ public abstract class GoogleApiHelper implements GoogleApiClient.ConnectionCallb
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        mGoogleApiConnectionTask.trySetResult(bundle);
+        mGoogleApiConnectionTask.setResult(bundle);
     }
 
     @Override
@@ -56,7 +56,7 @@ public abstract class GoogleApiHelper implements GoogleApiClient.ConnectionCallb
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult result) {
-        mGoogleApiConnectionTask.trySetException(new ConnectException(result.toString()));
+        mGoogleApiConnectionTask.setException(new ConnectException(result.toString()));
     }
 
     protected static final class TaskResultCaptor<R extends Result> implements ResultCallback<R> {
