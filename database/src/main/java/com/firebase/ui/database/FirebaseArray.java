@@ -110,7 +110,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
         mSubscribers.remove(listener);
     }
 
-    protected void notifySubscriptionEventListeners(@SubscriptionEventListener.EventType int eventType) {
+    protected void notifySubscriptionEventListeners(SubscriptionEventListener.EventType eventType) {
         for (SubscriptionEventListener listener : mSubscribers) {
             if (eventType == SubscriptionEventListener.EventType.ADDED) {
                 listener.onSubscriptionAdded();

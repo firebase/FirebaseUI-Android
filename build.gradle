@@ -25,6 +25,11 @@ allprojects {
     }
 }
 
+// TODO Remove once either Facebook or Robolectric fix the crash: https://github.com/robolectric/robolectric/issues/2579#issuecomment-276526911
+gradle.taskGraph.whenReady { graph ->
+    graph.allTasks.findAll { it.name ==~ /testReleaseUnitTest/ }*.enabled = false
+}
+
 //Skip Javadoc generation for Java 1.8 as it breaks build
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
