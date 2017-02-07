@@ -188,13 +188,8 @@ public class FirebaseIndexArray extends FirebaseArray {
     }
 
     @Override
-    public Object[] toArray() {
-        return mDataSnapshots.toArray();
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        return mDataSnapshots.toArray(a);
+    public DataSnapshot[] toArray() {
+        return mDataSnapshots.toArray(new DataSnapshot[mDataSnapshots.size()]);
     }
 
     @Override

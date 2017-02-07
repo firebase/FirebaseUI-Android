@@ -15,6 +15,7 @@
 package com.firebase.ui.database;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -244,13 +245,8 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
     }
 
     @Override
-    public Object[] toArray() {
-        return mSnapshots.toArray();
-    }
-
-    @Override
-    public <T> T[] toArray(T[] a) {
-        return mSnapshots.toArray(a);
+    public DataSnapshot[] toArray() {
+        return mSnapshots.toArray(new DataSnapshot[mSnapshots.size()]);
     }
 
     /**
@@ -339,5 +335,17 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
                 ", mQuery=" + mQuery +
                 ", mSnapshots=" + mSnapshots +
                 '}';
+    }
+
+    /**
+     * Guaranteed to throw an exception. Use {@link #toArray()} instead to get an array of {@link
+     * DataSnapshot}s.
+     *
+     * @throws UnsupportedOperationException always
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    @Override
+    public final <T> T[] toArray(T[] a) {
+        throw new UnsupportedOperationException();
     }
 }
