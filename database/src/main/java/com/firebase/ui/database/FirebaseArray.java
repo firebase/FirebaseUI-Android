@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class implements a collection on top of a Firebase location.
@@ -35,7 +36,7 @@ import java.util.ListIterator;
 public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildEventListener, ValueEventListener {
     private Query mQuery;
     private boolean mNotifyListeners = true;
-    private final List<ChangeEventListener> mListeners = new ArrayList<>();
+    private final List<ChangeEventListener> mListeners = new CopyOnWriteArrayList<>();
     private List<SubscriptionEventListener> mSubscribers = new ArrayList<>();
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
@@ -138,8 +139,10 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @return true if {@link FirebaseArray} is listening for change events from the Firebase
      * database, false otherwise
      */
-    public synchronized boolean isListening() {
-        return !mListeners.isEmpty();
+    public boolean isListening() {
+        synchronized (mListeners) {
+            return !mListeners.isEmpty();
+        }
     }
 
     @Override
