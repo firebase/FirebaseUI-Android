@@ -20,7 +20,7 @@ import com.google.firebase.database.Query;
  * location. It handles all of the child events at the given Firebase location. It marshals received
  * data into the given class type.
  * <p>
- * See the <a href="https://github.com/firebase/FirebaseUI-Android/blob/master/database/README.md">README</a>
+ * See the <a href="https://github.com/firebase/FirebaseUI-Android/blob/master/database/README.md#using-firebaseui-to-populate-a--1">README</a>
  * for an in-depth tutorial on how to set up the FirebaseListAdapter.
  *
  * @param <T> The class type to use as a model for the data contained in the children of the given

@@ -1,6 +1,6 @@
 # FirebaseUI Database
 
-## Using FirebaseUI to Populate a RecyclerView
+## Using FirebaseUI to populate a `RecyclerView`
 
 To use the FirebaseUI to display Firebase data, we need a few things:
 
@@ -266,7 +266,7 @@ protected void onDestroy() {
 
 You're done! You now have a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
 
-## Using FirebaseUI to populate a ListView
+## Using FirebaseUI to populate a `ListView`
 
 ListView is the older, yet simpler way to handle lists of items. Using it is analogous to
 using a `FirebaseRecyclerAdapter`, but with `FirebaseListAdapter` instead and no `ViewHolder`:
