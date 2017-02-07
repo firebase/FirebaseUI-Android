@@ -60,16 +60,14 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
     public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
         checkNotNull(listener);
 
-        synchronized (mListeners) {
-            mListeners.add(listener);
-            notifySubscriptionEventListeners(SubscriptionEventListener.EventType.ADDED);
-            if (mListeners.size() <= 1) { // Only start listening when the first listener is added
-                mQuery.addChildEventListener(this);
-                mQuery.addValueEventListener(this);
-            } else {
-                for (int i = 0; i < size(); i++) {
-                    listener.onChildChanged(ChangeEventListener.EventType.ADDED, i, -1);
-                }
+        mListeners.add(listener);
+        notifySubscriptionEventListeners(SubscriptionEventListener.EventType.ADDED);
+        if (mListeners.size() <= 1) { // Only start listening when the first listener is added
+            mQuery.addChildEventListener(this);
+            mQuery.addValueEventListener(this);
+        } else {
+            for (int i = 0; i < size(); i++) {
+                listener.onChildChanged(ChangeEventListener.EventType.ADDED, i, -1);
             }
         }
 
@@ -83,14 +81,12 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @param listener the listener to remove
      */
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        synchronized (mListeners) {
-            mListeners.remove(listener);
-            notifySubscriptionEventListeners(SubscriptionEventListener.EventType.REMOVED);
-            if (mListeners.isEmpty()) {
-                mQuery.removeEventListener((ValueEventListener) this);
-                mQuery.removeEventListener((ChildEventListener) this);
-                mSnapshots.clear();
-            }
+        mListeners.remove(listener);
+        notifySubscriptionEventListeners(SubscriptionEventListener.EventType.REMOVED);
+        if (mListeners.isEmpty()) {
+            mQuery.removeEventListener((ValueEventListener) this);
+            mQuery.removeEventListener((ChildEventListener) this);
+            mSnapshots.clear();
         }
     }
 
@@ -140,18 +136,14 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * database, false otherwise
      */
     public boolean isListening() {
-        synchronized (mListeners) {
-            return !mListeners.isEmpty();
-        }
+        return !mListeners.isEmpty();
     }
 
     /**
      * @return true if the provided {@link ChangeEventListener} is listening for changes
      */
     public boolean isListening(ChangeEventListener listener) {
-        synchronized (mListeners) {
-            return mListeners.contains(listener);
-        }
+        return mListeners.contains(listener);
     }
 
     @Override
