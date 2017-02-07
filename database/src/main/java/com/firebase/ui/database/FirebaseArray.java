@@ -145,6 +145,15 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
         }
     }
 
+    /**
+     * @return true if the provided {@link ChangeEventListener} is listening for changes
+     */
+    public boolean isListening(ChangeEventListener listener) {
+        synchronized (mListeners) {
+            return mListeners.contains(listener);
+        }
+    }
+
     @Override
     public void onChildAdded(DataSnapshot snapshot, String previousChildKey) {
         int index = 0;

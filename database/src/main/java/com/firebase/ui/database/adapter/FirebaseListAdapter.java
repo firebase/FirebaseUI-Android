@@ -70,7 +70,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
 
     @Override
     public void startListening() {
-        if (!mSnapshots.isListening()) {
+        if (!mSnapshots.isListening(this)) {
             mSnapshots.addChangeEventListener(this);
         }
     }
