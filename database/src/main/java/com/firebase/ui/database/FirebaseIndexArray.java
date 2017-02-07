@@ -74,7 +74,7 @@ class FirebaseIndexArray extends FirebaseArray {
         return index;
     }
 
-    private boolean isMatch(int index, String key) {
+    private boolean isKeyAtIndex(String key, int index) {
         return index >= 0 && index < getCount() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
@@ -105,7 +105,7 @@ class FirebaseIndexArray extends FirebaseArray {
         super.onChildRemoved(keySnapshot);
         super.setOnChangedListener(mListener);
 
-        if (isMatch(index, key)) {
+        if (isKeyAtIndex(key, index)) {
             mDataSnapshots.remove(index);
             notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
         }
@@ -120,7 +120,7 @@ class FirebaseIndexArray extends FirebaseArray {
         super.onChildMoved(keySnapshot, previousChildKey);
         super.setOnChangedListener(mListener);
 
-        if (isMatch(oldIndex, key)) {
+        if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
@@ -147,7 +147,7 @@ class FirebaseIndexArray extends FirebaseArray {
             int index = getIndexForKey(key);
 
             if (snapshot.getValue() != null) {
-                if (!isMatch(index, key)) {
+                if (!isKeyAtIndex(key, index)) {
                     mDataSnapshots.add(index, snapshot);
                     notifyChangedListeners(ChangeEventListener.EventType.ADDED, index);
                 } else {
@@ -155,7 +155,7 @@ class FirebaseIndexArray extends FirebaseArray {
                     notifyChangedListeners(ChangeEventListener.EventType.CHANGED, index);
                 }
             } else {
-                if (isMatch(index, key)) {
+                if (isKeyAtIndex(key, index)) {
                     mDataSnapshots.remove(index);
                     notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
                 } else {

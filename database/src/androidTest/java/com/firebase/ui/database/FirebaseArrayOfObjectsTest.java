@@ -31,7 +31,6 @@ import java.util.concurrent.Callable;
 import static com.firebase.ui.database.TestUtils.getAppInstance;
 import static com.firebase.ui.database.TestUtils.getBean;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class FirebaseArrayOfObjectsTest {
@@ -43,8 +42,10 @@ public class FirebaseArrayOfObjectsTest {
     @Before
     public void setUp() throws Exception {
         FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
-        mRef = FirebaseDatabase.getInstance(app).getReference()
-                .child("firebasearray").child("objects");
+        mRef = FirebaseDatabase.getInstance(app)
+                .getReference()
+                .child("firebasearray")
+                .child("objects");
         mArray = new FirebaseArray(mRef);
         mRef.removeValue();
         runAndWaitUntil(mArray, new Runnable() {
@@ -64,18 +65,14 @@ public class FirebaseArrayOfObjectsTest {
 
     @After
     public void tearDown() throws Exception {
-        if (mRef != null) {
-            mRef.getRoot().removeValue();
-        }
-
-        if (mArray != null) {
-            mArray.cleanup();
-        }
+        mArray.cleanup();
+        mRef.getRoot().removeValue();
     }
 
     @Test
     public void testPushIncreasesSize() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mRef.push().setValue(new Bean(4));
             }
@@ -90,6 +87,7 @@ public class FirebaseArrayOfObjectsTest {
     @Test
     public void testPushAppends() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mRef.push().setValue(new Bean(4), 4);
             }
@@ -104,10 +102,12 @@ public class FirebaseArrayOfObjectsTest {
     @Test
     public void testAddValueWithPriority() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mRef.push().setValue(new Bean(4), 0.5);
             }
         }, new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
                 return mArray.getItem(3).getValue(Bean.class).getNumber() == 3 && mArray.getItem(0)
                         .getValue(Bean.class)
@@ -119,10 +119,12 @@ public class FirebaseArrayOfObjectsTest {
     @Test
     public void testChangePriorities() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mArray.getItem(2).getRef().setPriority(0.5);
             }
         }, new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
                 return getBean(mArray, 0).getNumber() == 3
                         && getBean(mArray, 1).getNumber() == 1

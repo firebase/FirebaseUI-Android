@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
@@ -25,7 +26,7 @@ public class TestUtils {
         }
     }
 
-    public static FirebaseApp initializeApp(Context context) {
+    private static FirebaseApp initializeApp(Context context) {
         return FirebaseApp.initializeApp(context, new FirebaseOptions.Builder()
                 .setApplicationId("fir-ui-tests")
                 .setDatabaseUrl("https://fir-ui-tests.firebaseio.com/")
@@ -39,12 +40,15 @@ public class TestUtils {
 
         array.setOnChangedListener(new ChangeEventListener() {
             @Override
-            public void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
+            public void onChildChanged(ChangeEventListener.EventType type,
+                                       int index,
+                                       int oldIndex) {
                 semaphore.release();
             }
 
             @Override
-            public void onDataChanged() {}
+            public void onDataChanged() {
+            }
 
             @Override
             public void onCancelled(DatabaseError error) {
@@ -79,5 +83,20 @@ public class TestUtils {
 
     public static Bean getBean(FirebaseArray array, int index) {
         return array.getItem(index).getValue(Bean.class);
+    }
+
+    public static void pushValue(DatabaseReference keyRef,
+                                 DatabaseReference ref,
+                                 Object value,
+                                 Object priority) {
+        String key = keyRef.push().getKey();
+
+        if (priority != null) {
+            keyRef.child(key).setValue(true, priority);
+            ref.child(key).setValue(value, priority);
+        } else {
+            keyRef.child(key).setValue(true);
+            ref.child(key).setValue(value);
+        }
     }
 }
