@@ -183,6 +183,14 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
+    <style name="FirebaseUI.AuthMethodPicker.ReauthReason">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">@dimen/auth_method_button_width</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
     <style name="FirebaseUI.AuthMethodPicker.ButtonHolder">
         <item name="android:layout_width">@dimen/auth_method_button_width</item>
         <item name="android:orientation">vertical</item>
@@ -191,7 +199,7 @@
         <item name="android:paddingRight">4dp</item>
     </style>
 
-    <style name="FirebaseUI.AuthMethodPicker.ButtonHolder.Portrait" parent="FirebaseUI.AuthMethodPicker.ButtonHolder">
+    <style name="FirebaseUI.AuthMethodPicker.ButtonHolder.Portrait">
         <item name="android:paddingBottom">56dp</item>
     </style>
 

@@ -54,6 +54,10 @@
         You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>
         to sign in. Enter your password for that account.
     </string>
+    <string name="reauth_welcome_back_password_prompt_body">
+        You must reauthenticate to continue. Please enter the password for the account with email
+        <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
+    </string>
     <string name="progress_dialog_signing_in">Signing in…</string>
     <string name="trouble_signing_in">Trouble signing in?</string>
 

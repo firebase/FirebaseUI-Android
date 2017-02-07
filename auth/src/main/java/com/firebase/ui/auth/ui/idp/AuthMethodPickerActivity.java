@@ -19,11 +19,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
@@ -39,6 +41,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
@@ -47,7 +50,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Presents the list of authentication options for this app to the user. If an
@@ -60,7 +65,8 @@ public class AuthMethodPickerActivity extends AppCompatBase
         implements IdpCallback, View.OnClickListener {
     private static final String TAG = "AuthMethodPicker";
     private static final int RC_EMAIL_FLOW = 2;
-    private static final int RC_ACCOUNT_LINK = 3;
+    private static final int RC_EMAIL_DIRECT_SIGN_IN = 3;
+    private static final int RC_ACCOUNT_LINK = 4;
 
     private ArrayList<IdpProvider> mIdpProviders;
     @Nullable
@@ -77,7 +83,46 @@ public class AuthMethodPickerActivity extends AppCompatBase
         mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
         findViewById(R.id.email_provider).setOnClickListener(this);
 
-        populateIdpList(mActivityHelper.getFlowParams().providerInfo);
+        Map<String, IdpConfig> providerIdToConfig = new HashMap<>();
+        List<IdpConfig> allConfiguredProviders = mActivityHelper.getFlowParams().providerInfo;
+        for (IdpConfig providerConfig : allConfiguredProviders) {
+            providerIdToConfig.put(providerConfig.getProviderId(), providerConfig);
+        }
+        List<IdpConfig> visibleProviders = new ArrayList<>();
+        if (mActivityHelper.getFlowParams().isReauth) {
+            // display the reauthReason if available
+            String reauthReason = mActivityHelper.getFlowParams().reauthReason;
+            if (!TextUtils.isEmpty(reauthReason)) {
+                TextView reauthReasonTextView = (TextView) findViewById(R.id.reauth_reason);
+                reauthReasonTextView.setText(reauthReason);
+                reauthReasonTextView.setVisibility(View.VISIBLE);
+            }
+
+            // For reauth flow we only want to show the IDPs which the user has associated with
+            // their account.
+            List<String> providerIds = mActivityHelper.getCurrentUser().getProviders();
+            if (providerIds.size() == 0) {
+                // zero providers indicates that it is an email account
+                visibleProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
+            } else {
+                for (String providerId : providerIds) {
+                    IdpConfig idpConfig = providerIdToConfig.get(providerId);
+                    if (idpConfig == null) {
+                        Log.e(TAG, "User has provider " + providerId + " associated with their "
+                            + "account, but only the following IDPs have been configured: "
+                            + TextUtils.join(", ", providerIdToConfig.keySet()));
+                    } else {
+                        visibleProviders.add(idpConfig);
+                    }
+                }
+            }
+        } else {
+            visibleProviders = allConfiguredProviders;
+        }
+        if (visibleProviders.size() == 0) {
+            Log.e(TAG, "There are no configured providers associated with the user's account");
+        }
+        populateIdpList(visibleProviders);
 
         int logoId = mActivityHelper.getFlowParams().logoId;
         if (logoId == AuthUI.NO_LOGO) {
@@ -152,6 +197,10 @@ public class AuthMethodPickerActivity extends AppCompatBase
             if (resultCode == ResultCodes.OK) {
                 finish(ResultCodes.OK, data);
             }
+        } else if (requestCode == RC_EMAIL_DIRECT_SIGN_IN) {
+          if (resultCode == ResultCodes.OK) {
+              finish(ResultCodes.OK, data);
+          }
         } else if (requestCode == RC_ACCOUNT_LINK) {
             finish(resultCode, data);
         } else {
@@ -185,9 +234,25 @@ public class AuthMethodPickerActivity extends AppCompatBase
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.email_provider) {
-            startActivityForResult(
-                    RegisterEmailActivity.createIntent(this, mActivityHelper.getFlowParams()),
-                    RC_EMAIL_FLOW);
+            if (mActivityHelper.getFlowParams().isReauth) {
+                String reauthEmail = mActivityHelper.getFlowParams().reauthEmail;
+                if (reauthEmail == null) {
+                    Log.e(TAG, "Attempting to reauth with email but no reauthEmail provided");
+                    return;
+                }
+                startActivityForResult(
+                        WelcomeBackPasswordPrompt.createIntent(
+                                this,
+                                mActivityHelper.getFlowParams(),
+                                new IdpResponse(
+                                        AuthUI.EMAIL_PROVIDER,
+                                        reauthEmail)),
+                        RC_EMAIL_DIRECT_SIGN_IN);
+            } else {
+                startActivityForResult(
+                        RegisterEmailActivity.createIntent(this, mActivityHelper.getFlowParams()),
+                        RC_EMAIL_FLOW);
+            }
         }
     }
 

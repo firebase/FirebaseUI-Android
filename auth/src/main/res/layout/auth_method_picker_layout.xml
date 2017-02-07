@@ -11,16 +11,27 @@
     <include layout="@layout/include_auth_method_picker_logo" />
 
     <LinearLayout
-        android:id="@+id/btn_holder"
-        style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder.Portrait"
-        android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:orientation="vertical">
 
-        <Button
-            android:id="@+id/email_provider"
-            style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
-            android:text="@string/sign_in_with_email"
-            android:visibility="gone"
-            tools:visibility="visible"/>
+        <TextView
+          style="@style/FirebaseUI.AuthMethodPicker.ReauthReason"
+          android:id="@+id/reauth_reason"/>
+
+        <LinearLayout
+          android:id="@+id/btn_holder"
+          style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder"
+          android:layout_height="wrap_content">
+
+            <Button
+              android:id="@+id/email_provider"
+              style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
+              android:text="@string/sign_in_with_email"
+              android:visibility="gone"
+              tools:visibility="visible"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

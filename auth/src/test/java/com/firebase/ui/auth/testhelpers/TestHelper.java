@@ -64,9 +64,12 @@ public class TestHelper {
                 idpConfigs,
                 AuthUI.getDefaultTheme(),
                 AuthUI.NO_LOGO,
-                null,
-                true,
-                true);
+                null /* tosUrl */,
+                true /* smartLockEnabled */,
+                true /* allowNewEmailAccounts */,
+                false /* isReauth */,
+                null /* reauthEmail */,
+                null /* reauthReason */);
     }
 
     public static FirebaseUser makeMockFirebaseUser() {

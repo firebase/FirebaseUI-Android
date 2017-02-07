@@ -126,15 +126,23 @@ public class AuthUiActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.auth_ui_layout);
+        ButterKnife.bind(this);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            startActivity(SignedInActivity.createIntent(this, null));
+            startActivity(
+                    SignedInActivity.createIntent(
+                            this,
+                            null,
+                            new SignedInActivity.SignedInConfig(
+                                    getSelectedLogo(),
+                                    getSelectedTheme(),
+                                    getSelectedProviders(),
+                                    getSelectedTosUrl(),
+                                    mEnableSmartLock.isEnabled())));
             finish();
         }
-
-        setContentView(R.layout.auth_ui_layout);
-        ButterKnife.bind(this);
 
         if (!isGoogleConfigured()) {
             mUseGoogleProvider.setChecked(false);
@@ -208,7 +216,16 @@ public class AuthUiActivity extends AppCompatActivity {
 
         // Successfully signed in
         if (resultCode == ResultCodes.OK) {
-            startActivity(SignedInActivity.createIntent(this, response));
+            startActivity(
+                    SignedInActivity.createIntent(
+                            this,
+                            response,
+                            new SignedInActivity.SignedInConfig(
+                                    getSelectedLogo(),
+                                    getSelectedTheme(),
+                                    getSelectedProviders(),
+                                    getSelectedTosUrl(),
+                                    mEnableSmartLock.isEnabled())));
             finish();
             return;
         } else {

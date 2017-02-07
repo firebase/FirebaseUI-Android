@@ -306,6 +306,13 @@ public class AuthUI {
     }
 
     /**
+     * Starts the reauthentication flow.
+     */
+    public ReauthIntentBuilder createReauthIntentBuilder() {
+        return new ReauthIntentBuilder();
+    }
+
+    /**
      * Configuration for an identity provider.
      * <p>
      * In the simplest case, you can supply the provider ID and build the config like this:
@@ -401,48 +408,48 @@ public class AuthUI {
     }
 
     /**
-     * Builder for the intent to start the user authentication flow.
+     * Base builder for both {@link SignInIntentBuilder} and {@link ReauthIntentBuilder}
      */
-    public final class SignInIntentBuilder {
-        private int mLogo = NO_LOGO;
-        private int mTheme = getDefaultTheme();
-        private LinkedHashSet<IdpConfig> mProviders = new LinkedHashSet<>();
-        private String mTosUrl;
-        private boolean mIsSmartLockEnabled = true;
-        private boolean mAllowNewEmailAccounts = true;
+    private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
+        int mLogo = NO_LOGO;
+        int mTheme = getDefaultTheme();
+        LinkedHashSet<IdpConfig> mProviders = new LinkedHashSet<>();
+        String mTosUrl;
+        boolean mIsSmartLockEnabled = true;
 
-        private SignInIntentBuilder() {
+        private AuthIntentBuilder() {
             mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
         }
+
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified,
          * a default theme will be used.
          */
-        public SignInIntentBuilder setTheme(@StyleRes int theme) {
+        public T setTheme(@StyleRes int theme) {
             Preconditions.checkValidStyle(
-                    mApp.getApplicationContext(),
-                    theme,
-                    "theme identifier is unknown or not a style definition");
+                mApp.getApplicationContext(),
+                theme,
+                "theme identifier is unknown or not a style definition");
             mTheme = theme;
-            return this;
+            return (T) this;
         }
 
         /**
          * Specifies the logo to use for the {@link AuthMethodPickerActivity}. If no logo
          * is specified, none will be used.
          */
-        public SignInIntentBuilder setLogo(@DrawableRes int logo) {
+        public T setLogo(@DrawableRes int logo) {
             mLogo = logo;
-            return this;
+            return (T) this;
         }
 
         /**
          * Specifies the terms-of-service URL for the application.
          */
-        public SignInIntentBuilder setTosUrl(@Nullable String tosUrl) {
+        public T setTosUrl(@Nullable String tosUrl) {
             mTosUrl = tosUrl;
-            return this;
+            return (T) this;
         }
 
         /**
@@ -456,19 +463,19 @@ public class AuthUI {
          *                   configuration parameters for the IDP.
          * @see IdpConfig
          */
-        public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
+        public T setProviders(@NonNull List<IdpConfig> idpConfigs) {
             mProviders.clear();
             Set<String> configuredProviders = new HashSet<>();
             for (IdpConfig idpConfig : idpConfigs) {
                 if (configuredProviders.contains(idpConfig.getProviderId())) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                                                               + idpConfig.getProviderId()
-                                                               + " was set twice.");
+                        + idpConfig.getProviderId()
+                        + " was set twice.");
                 }
                 configuredProviders.add(idpConfig.getProviderId());
                 mProviders.add(idpConfig);
             }
-            return this;
+            return (T) this;
         }
 
         /**
@@ -484,7 +491,7 @@ public class AuthUI {
          * @see #GOOGLE_PROVIDER
          */
         @Deprecated
-        public SignInIntentBuilder setProviders(@NonNull String... providers) {
+        public T setProviders(@NonNull String... providers) {
             mProviders.clear(); // clear the default email provider
             for (String provider : providers) {
                 if (isIdpAlreadyConfigured(provider)) {
@@ -492,7 +499,7 @@ public class AuthUI {
                 }
                 mProviders.add(new IdpConfig.Builder(provider).build());
             }
-            return this;
+            return (T) this;
         }
 
         /**
@@ -500,19 +507,9 @@ public class AuthUI {
          * <p>
          * <p>SmartLock is enabled by default.
          */
-        public SignInIntentBuilder setIsSmartLockEnabled(boolean enabled) {
+        public T setIsSmartLockEnabled(boolean enabled) {
             mIsSmartLockEnabled = enabled;
-            return this;
-        }
-
-        /**
-         * Enables or disables creating new accounts in the email sign in flow.
-         * <p>
-         * <p>Account creation is enabled by default.
-         */
-        public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
-            mAllowNewEmailAccounts = enabled;
-            return this;
+            return (T) this;
         }
 
         private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
@@ -529,14 +526,94 @@ public class AuthUI {
         }
 
         @VisibleForTesting()
+        public abstract FlowParameters getFlowParams();
+    }
+
+    /**
+     * Builder for the intent to start the reauthentication flow.
+     */
+    public final class ReauthIntentBuilder extends AuthIntentBuilder<ReauthIntentBuilder> {
+        private String mReauthReason;
+        private String mReauthEmail;
+
+        private ReauthIntentBuilder() {
+            super();
+        }
+
+        /**
+         * Set an explanation for why reauth was requested e.g. "To delete your account you must
+         * reauthenticate."
+         *
+         * @param reauthReason A string explaining why reauthentication was requested.
+         * @return
+         */
+        public ReauthIntentBuilder setReauthReason(String reauthReason) {
+            mReauthReason = reauthReason;
+            return this;
+        }
+
+        /**
+         * Sets the email address for which reauthentication will be tried.  If email accounts are
+         * enabled this MUST be set or email reauthentication will fail.
+         *
+         * @param reauthEmail The email address of the account for which reauthentication is being
+         * requested
+         */
+        public ReauthIntentBuilder setReauthEmail(String reauthEmail) {
+            mReauthEmail = reauthEmail;
+            return this;
+        }
+
+        @Override
         public FlowParameters getFlowParams() {
-            return new FlowParameters(mApp.getName(),
-                                      new ArrayList<>(mProviders),
-                                      mTheme,
-                                      mLogo,
-                                      mTosUrl,
-                                      mIsSmartLockEnabled,
-                                      mAllowNewEmailAccounts);
+            return new FlowParameters(
+                    mApp.getName(),
+                    new ArrayList<>(mProviders),
+                    mTheme,
+                    mLogo,
+                    mTosUrl,
+                    mIsSmartLockEnabled,
+                    false,
+                    true,
+                    mReauthEmail,
+                    mReauthReason);
+        }
+    }
+
+    /**
+     * Builder for the intent to start the user authentication flow.
+     */
+    public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
+        private boolean mAllowNewEmailAccounts = true;
+
+        private SignInIntentBuilder() {
+            super();
+        }
+
+        /**
+         * Enables or disables creating new accounts in the email sign in flow.
+         * <p>
+         * <p>Account creation is enabled by default.
+         */
+        public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
+            mAllowNewEmailAccounts = enabled;
+            return this;
+        }
+
+        @Override
+        @VisibleForTesting()
+        public FlowParameters getFlowParams() {
+            return new FlowParameters(
+                    mApp.getName(),
+                    new ArrayList<>(mProviders),
+                    mTheme,
+                    mLogo,
+                    mTosUrl,
+                    mIsSmartLockEnabled,
+                    mAllowNewEmailAccounts,
+                    false,
+                    null,
+                    null);
         }
     }
 }
