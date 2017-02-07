@@ -15,7 +15,7 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public boolean add(E element) {
+    public final boolean add(E element) {
         throw new UnsupportedOperationException();
     }
 
@@ -26,7 +26,7 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public boolean remove(Object o) {
+    public final boolean remove(Object o) {
         throw new UnsupportedOperationException();
     }
 
@@ -37,7 +37,7 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public final boolean addAll(Collection<? extends E> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -48,7 +48,7 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public boolean addAll(int index, Collection<? extends E> c) {
+    public final boolean addAll(int index, Collection<? extends E> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -59,7 +59,7 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public final boolean removeAll(Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -70,7 +70,7 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public final boolean retainAll(Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -81,7 +81,7 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public void clear() {
+    public final void clear() {
         throw new UnsupportedOperationException();
     }
 
@@ -92,7 +92,7 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public E set(int index, E element) {
+    public final E set(int index, E element) {
         throw new UnsupportedOperationException();
     }
 
@@ -103,7 +103,7 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public void add(int index, E element) {
+    public final void add(int index, E element) {
         throw new UnsupportedOperationException();
     }
 
@@ -114,7 +114,7 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public E remove(int index) {
+    public final E remove(int index) {
         throw new UnsupportedOperationException();
     }
 
@@ -125,11 +125,11 @@ public abstract class ImmutableList<E> implements List<E> {
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     @Override
-    public List<E> subList(int fromIndex, int toIndex) {
+    public final List<E> subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException();
     }
 
-    protected class ImmutableIterator implements Iterator<E> {
+    protected final class ImmutableIterator implements Iterator<E> {
         protected Iterator<E> mIterator;
 
         public ImmutableIterator(Iterator<E> iterator) {
@@ -147,7 +147,7 @@ public abstract class ImmutableList<E> implements List<E> {
         }
     }
 
-    protected class ImmutableListIterator implements ListIterator<E> {
+    protected final class ImmutableListIterator implements ListIterator<E> {
         protected ListIterator<E> mListIterator;
 
         public ImmutableListIterator(ListIterator<E> listIterator) {
