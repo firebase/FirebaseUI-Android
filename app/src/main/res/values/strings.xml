@@ -63,7 +63,10 @@
     <string name="choose_image">Choose Image</string>
     <string name="accessibility_downloaded_image">Downloaded image</string>
     <string name="drive_file">Drive File</string>
-    <string name="allow_new_email_acccount">Allow account creation if email does not exist.</string>
+    <string name="allow_new_email_acccount">Allow account creation if email does not exist. (Not applicable to Reauth flow)</string>
+    <string name="reauthentication_reason">Reauthentication reason</string>
+    <string name="reauthenticate">Reauthenticate</string>
+    <string name="given_reauthentication_reason">Reauth was requested from test app. Please login to continue.</string>
 
     <!-- strings for database demo activities -->
     <string name="start_chatting">No messages. Start chatting at the bottom!</string>

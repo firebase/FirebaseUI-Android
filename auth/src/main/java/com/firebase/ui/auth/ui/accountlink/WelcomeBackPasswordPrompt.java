@@ -88,8 +88,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 
-        // Create welcome back text with email bolded
-        String bodyText = getString(R.string.welcome_back_password_prompt_body, mEmail);
+        // Create welcome back text with email bolded.
+        String bodyText;
+        FlowParameters flowParameters = mActivityHelper.getFlowParams();
+        if (flowParameters.isReauth) {
+            bodyText = getString(R.string.reauth_welcome_back_password_prompt_body, mEmail);
+        } else {
+            bodyText = getString(R.string.welcome_back_password_prompt_body, mEmail);
+        }
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
