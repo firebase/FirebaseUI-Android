@@ -61,7 +61,7 @@ public static class Chat {
 A few things to note here:
 
  * The fields have the exact same name as the properties in Firebase. This allows Firebase to automatically map the properties to these fields.
- * There is a default (parameterless constructor) that is necessary for Firebase to be able to create a new instance of this class.
+ * There is a default (parameter-less constructor) that is necessary for Firebase to be able to create a new instance of this class.
  * There is a convenience constructor that takes the member fields, so that we easily create a fully initialized `Chat` in our app
  * the `getText`, `getUid`, and `getName` methods are so-called getters and follow a JavaBean pattern
 
@@ -100,7 +100,7 @@ But when we build our app using FirebaseUI, we often won't need to register our 
 
 ### Find the RecyclerView
 
-We'll assume you've already added a `RecyclerVview` to your layout and have looked it up in the `onCreate` method of your activity:
+We'll assume you've already added a `RecyclerView` to your layout and have looked it up in the `onCreate` method of your activity:
 
 ```java
 @Override
@@ -288,7 +288,7 @@ messagesView.setAdapter(mAdapter);
 
 ## Using FirebaseUI with indexed data
 
-If your data is [properly indexed](https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure), change your adapter initalization like so:
+If your data is [properly indexed](https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure), change your adapter initialization like so:
 
 For a `RecyclerView`, use `FirebaseIndexRecyclerAdapter` instead of `FirebaseRecyclerAdapter`:
 ```java
