@@ -174,8 +174,6 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
     protected static class FirebaseArrayOfObjectsOptimized<E> extends FirebaseArrayOfObjects<E>
             implements ChangeEventListener, SubscriptionEventListener {
         protected List<E> mObjects = new ArrayList<>();
-        protected boolean mIsListening = true;
-        protected boolean mAddedListener = false;
 
         public FirebaseArrayOfObjectsOptimized(FirebaseArray snapshots, Class<E> modelClass) {
             super(snapshots, modelClass);
@@ -211,20 +209,14 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
             FirebaseArray snapshots = (FirebaseArray) mSnapshots;
             if (!snapshots.isListening()) {
                 snapshots.removeChangeEventListener(this);
-                mIsListening = false;
-                mAddedListener = false;
             }
         }
 
         @Override
         public void onSubscriptionAdded() {
-            if (mAddedListener) {
-                mIsListening = true;
-                mAddedListener = false;
-            } else if (!mIsListening) {
-                ((FirebaseArray) mSnapshots).addChangeEventListener(this);
-                mIsListening = true;
-                mAddedListener = true;
+            FirebaseArray snapshots = (FirebaseArray) mSnapshots;
+            if (!snapshots.isListening(this)) {
+                snapshots.addChangeEventListener(this);
             }
         }
 

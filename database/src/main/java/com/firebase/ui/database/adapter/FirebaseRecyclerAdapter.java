@@ -75,7 +75,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     @Override
     public void startListening() {
-        if (!mSnapshots.isListening()) {
+        if (!mSnapshots.isListening(this)) {
             mSnapshots.addChangeEventListener(this);
         }
     }
