@@ -36,10 +36,10 @@ public class TestUtils {
                                        Runnable task,
                                        Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
-        array.setOnChangedListener(new FirebaseArray.OnChangedListener() {
 
+        array.setOnChangedListener(new ChangeEventListener() {
             @Override
-            public void onChildChanged(EventType type, int index, int oldIndex) {
+            public void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
                 semaphore.release();
             }
 
@@ -47,8 +47,8 @@ public class TestUtils {
             public void onDataChanged() {}
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                throw new IllegalStateException(databaseError.toException());
+            public void onCancelled(DatabaseError error) {
+                throw new IllegalStateException(error.toException());
             }
         });
         task.run();

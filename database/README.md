@@ -86,8 +86,8 @@ ref.limitToLast(5).addValueEventListener(new ValueEventListener() {
         }
     }
     @Override
-    public void onCancelled(DatabaseError firebaseError) {
-        Log.e("Chat", "The read failed: " + firebaseError.getText());
+    public void onCancelled(DatabaseError error) {
+        Log.e("Chat", "The read failed: " + error.getText());
     }
 });
 ```
@@ -284,6 +284,7 @@ recycler.setAdapter(mAdapter);
 Like before, we get a custom RecyclerView populated with data from Firebase by setting the properties to the correct fields.
 
 ## Using FirebaseUI with indexed data
+
 If your data is [properly indexed](https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure), change your adapter initalization like so:
 
 For a `RecyclerView`, use `FirebaseIndexRecyclerAdapter` instead of `FirebaseRecyclerAdapter`:
@@ -301,3 +302,30 @@ new FirebaseIndexListAdapter<Chat>(this, Chat.class, android.R.layout.two_line_l
 ```
 
 `keyRef` is the location of your keys, and `dataRef` is the location of your data.
+
+### A note on ordering
+
+The order in which your receive your data depends on the order from `keyRef`, not `dataRef`:
+```javascript
+{
+  "data": {
+    // This order doesn't matter, the order is taken from keys/(user1 or user2).
+    "3": true,
+    "1": "some data",
+    "2": 5
+  },
+  "keys": {
+    // These two users have different orders for their data thanks to key side ordering.
+    "user1": {
+      "1": true,
+      "2": true,
+      "3": true
+    },
+    "user2": {
+      "3": true,
+      "2": true,
+      "1": true
+    }
+  }
+}
+```
