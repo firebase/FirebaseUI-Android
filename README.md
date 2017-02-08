@@ -23,7 +23,7 @@ dependency on the appropriate Firebase SDK so there is no need to include
 those separately in your app.
 
 In your `app/build.gradle` file add a dependency on one of the FirebaseUI
-libraries.
+libraries:
 
 ```groovy
 dependencies {
@@ -40,6 +40,18 @@ dependencies {
     compile 'com.firebaseui:firebase-ui:1.1.1'
 }
 ```
+
+and add the Fabric repository
+
+```groovy
+allprojects {
+    repositories {
+        // ...
+        maven { url 'https://maven.fabric.io/public' }
+    }
+}
+```
+
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
 
