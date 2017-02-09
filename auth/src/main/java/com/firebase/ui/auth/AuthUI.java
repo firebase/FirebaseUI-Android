@@ -431,6 +431,7 @@ public class AuthUI {
     /**
      * Base builder for both {@link SignInIntentBuilder} and {@link ReauthIntentBuilder}
      */
+    @SuppressWarnings(value="unchecked")
     private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
         int mLogo = NO_LOGO;
         int mTheme = getDefaultTheme();

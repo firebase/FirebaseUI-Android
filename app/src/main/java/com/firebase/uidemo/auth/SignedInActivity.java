@@ -125,7 +125,7 @@ public class SignedInActivity extends AppCompatActivity {
                 .setTheme(mSignedInConfig.theme)
                 .setTosUrl(mSignedInConfig.tosUrl)
                 .setReauthEmail(auth.getCurrentUser().getEmail())
-                .setReauthReason(getString(R.string.given_reauthentication_reason))
+                .setReauthReason(getString(R.string.reauthentication_reason))
                 .build();
 
         startActivityForResult(reauthIntent, RC_REAUTH);
@@ -233,7 +233,7 @@ public class SignedInActivity extends AppCompatActivity {
                 .show();
     }
 
-    static class SignedInConfig implements Parcelable {
+    static final class SignedInConfig implements Parcelable {
         int logo;
         int theme;
         List<IdpConfig> providerInfo;
