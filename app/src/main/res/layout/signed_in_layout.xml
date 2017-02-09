@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:text="Reauth"/>
+                android:text="@string/reauthenticate"/>
 
             <Button
                 android:id="@+id/delete_account"

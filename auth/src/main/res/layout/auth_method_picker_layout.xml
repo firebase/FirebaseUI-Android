@@ -17,7 +17,8 @@
 
         <TextView
           style="@style/FirebaseUI.AuthMethodPicker.ReauthReason"
-          android:id="@+id/reauth_reason"/>
+          android:id="@+id/reauth_reason"
+          android:textIsSelectable="true"/>
 
         <LinearLayout
           android:id="@+id/btn_holder"
