@@ -132,7 +132,7 @@ public class FirebaseArrayTest {
         runAndWaitUntil(mArray, new Runnable() {
             @Override
             public void run() {
-                mArray.getItem(0).getRef().setPriority(4);
+                mArray.get(0).getRef().setPriority(4);
             }
         }, new Callable<Boolean>() {
             @Override
