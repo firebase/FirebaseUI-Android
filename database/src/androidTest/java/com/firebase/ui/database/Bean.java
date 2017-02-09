@@ -1,17 +1,18 @@
-package com.firebase.ui.database.utils;
+package com.firebase.ui.database;
 
 public class Bean {
-    private int number;
-    private String text;
-    private boolean bool;
+    private int mNumber;
+    private String mText;
+    private boolean mBool;
 
     public Bean() {
+        // Needed for Firebase
     }
 
     public Bean(int number, String text, boolean bool) {
-        this.number = number;
-        this.text = text;
-        this.bool = bool;
+        mNumber = number;
+        mText = text;
+        mBool = bool;
     }
 
     public Bean(int index) {
@@ -19,14 +20,14 @@ public class Bean {
     }
 
     public int getNumber() {
-        return number;
+        return mNumber;
     }
 
     public String getText() {
-        return text;
+        return mText;
     }
 
     public boolean isBool() {
-        return bool;
+        return mBool;
     }
 }
