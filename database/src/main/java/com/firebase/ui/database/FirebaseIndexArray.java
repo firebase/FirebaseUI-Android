@@ -77,7 +77,7 @@ public class FirebaseIndexArray extends FirebaseArray {
         return index;
     }
 
-    private boolean isMatch(int index, String key) {
+    private boolean isKeyAtIndex(String key, int index) {
         return index >= 0 && index < size() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
@@ -108,7 +108,7 @@ public class FirebaseIndexArray extends FirebaseArray {
         super.onChildRemoved(keySnapshot);
         setShouldNotifyListeners(true);
 
-        if (isMatch(index, key)) {
+        if (isKeyAtIndex(key, index)) {
             mDataSnapshots.remove(index);
             notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
         }
@@ -123,7 +123,7 @@ public class FirebaseIndexArray extends FirebaseArray {
         super.onChildMoved(keySnapshot, previousChildKey);
         setShouldNotifyListeners(true);
 
-        if (isMatch(oldIndex, key)) {
+        if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
@@ -144,7 +144,7 @@ public class FirebaseIndexArray extends FirebaseArray {
             int index = getIndexForKey(key);
 
             if (snapshot.getValue() != null) {
-                if (!isMatch(index, key)) {
+                if (!isKeyAtIndex(key, index)) {
                     mDataSnapshots.add(index, snapshot);
                     notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, index);
                 } else {
@@ -152,7 +152,7 @@ public class FirebaseIndexArray extends FirebaseArray {
                     notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, index);
                 }
             } else {
-                if (isMatch(index, key)) {
+                if (isKeyAtIndex(key, index)) {
                     mDataSnapshots.remove(index);
                     notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
                 } else {
