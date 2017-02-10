@@ -2,16 +2,17 @@ package com.firebase.ui.auth;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.RestrictTo;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
-
 import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.firebase.ui.auth.util.signincontainer.SignInDelegate;
 
@@ -52,7 +53,12 @@ public class KickoffActivity extends HelperActivityBase {
                     });
 
             if (isPlayServicesAvailable) {
-                SignInDelegate.delegate(this, mActivityHelper.getFlowParams());
+                final FlowParameters flowParams = mActivityHelper.getFlowParams();
+                if (flowParams.isReauth) {
+                    showReauthDialog();
+                } else {
+                    SignInDelegate.delegate(this, flowParams);
+                }
             } else {
                 mIsWaitingForPlayServices = true;
             }
@@ -95,5 +101,25 @@ public class KickoffActivity extends HelperActivityBase {
         return !(manager != null
                 && manager.getActiveNetworkInfo() != null
                 && manager.getActiveNetworkInfo().isConnectedOrConnecting());
+    }
+
+    private void showReauthDialog() {
+        final FlowParameters flowParams = mActivityHelper.getFlowParams();
+        new AlertDialog.Builder(this, R.style.FirebaseUI_Dialog)
+                .setTitle(R.string.reauth_dialog_title)
+                .setPositiveButton(R.string.sign_in_default, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SignInDelegate.delegate(KickoffActivity.this, flowParams);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish(ResultCodes.CANCELED, new Intent());
+                    }
+                })
+                .create()
+                .show();
     }
 }

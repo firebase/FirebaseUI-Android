@@ -5,7 +5,11 @@
     <string name="default_toolbar_title">@string/app_name</string>
     <string name="progress_dialog_loading">Loading…</string>
     <string name="sign_in_default">Sign in</string>
+    <string name="cancel">Cancel</string>
     <string name="general_error">An error has occurred.</string>
+
+    <!-- Reauth Dialog -->
+    <string name="reauth_dialog_title">This action requires you to sign in before continuing.</string>
 
     <!-- Provider -->
     <string name="idp_name_google">Google</string>

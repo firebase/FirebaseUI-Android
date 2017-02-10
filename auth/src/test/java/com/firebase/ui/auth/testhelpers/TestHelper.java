@@ -68,7 +68,6 @@ public class TestHelper {
                 true  /* smartLockEnabled */,
                 true  /* allowNewEmailAccounts */,
                 false /* isReauth */,
-                null  /* reauthEmail */,
                 null  /* reauthReason */);
     }
 

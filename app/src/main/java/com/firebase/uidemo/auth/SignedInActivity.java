@@ -115,8 +115,6 @@ public class SignedInActivity extends AppCompatActivity {
 
     @OnClick(R.id.reauthenticate)
     public void reauthenticate() {
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
         Intent reauthIntent = AuthUI.getInstance()
                 .createReauthIntentBuilder()
                 .setProviders(mSignedInConfig.providerInfo)
@@ -124,7 +122,6 @@ public class SignedInActivity extends AppCompatActivity {
                 .setLogo(mSignedInConfig.logo)
                 .setTheme(mSignedInConfig.theme)
                 .setTosUrl(mSignedInConfig.tosUrl)
-                .setReauthEmail(auth.getCurrentUser().getEmail())
                 .setReauthReason(getString(R.string.reauthentication_reason))
                 .build();
 
@@ -215,14 +212,18 @@ public class SignedInActivity extends AppCompatActivity {
             token = mIdpResponse.getIdpToken();
             secret = mIdpResponse.getIdpSecret();
         }
+        View idpTokenLayout = findViewById(R.id.idp_token_layout);
         if (token == null) {
-            findViewById(R.id.idp_token_layout).setVisibility(View.GONE);
+            idpTokenLayout.setVisibility(View.GONE);
         } else {
+            idpTokenLayout.setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.idp_token)).setText(token);
         }
+        View idpSecretLayout = findViewById(R.id.idp_secret_layout);
         if (secret == null) {
-            findViewById(R.id.idp_secret_layout).setVisibility(View.GONE);
+            idpSecretLayout.setVisibility(View.GONE);
         } else {
+            idpSecretLayout.setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.idp_secret)).setText(secret);
         }
     }

@@ -234,23 +234,19 @@ public class AuthMethodPickerActivity extends AppCompatBase
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.email_provider) {
-            if (mActivityHelper.getFlowParams().isReauth) {
-                String reauthEmail = mActivityHelper.getFlowParams().reauthEmail;
-                if (reauthEmail == null) {
-                    Log.e(TAG, "Attempting to reauth with email but no reauthEmail provided");
-                    return;
-                }
+            FlowParameters flowParams = mActivityHelper.getFlowParams();
+            if (flowParams.isReauth) {
                 startActivityForResult(
                         WelcomeBackPasswordPrompt.createIntent(
                                 this,
-                                mActivityHelper.getFlowParams(),
+                                flowParams,
                                 new IdpResponse(
                                         AuthUI.EMAIL_PROVIDER,
-                                        reauthEmail)),
+                                        mActivityHelper.getCurrentUser().getEmail())),
                         RC_EMAIL_DIRECT_SIGN_IN);
             } else {
                 startActivityForResult(
-                        RegisterEmailActivity.createIntent(this, mActivityHelper.getFlowParams()),
+                        RegisterEmailActivity.createIntent(this, flowParams),
                         RC_EMAIL_FLOW);
             }
         }
