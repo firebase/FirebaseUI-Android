@@ -131,16 +131,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            startActivity(
-                    SignedInActivity.createIntent(
-                            this,
-                            null,
-                            new SignedInActivity.SignedInConfig(
-                                    getSelectedLogo(),
-                                    getSelectedTheme(),
-                                    getSelectedProviders(),
-                                    getSelectedTosUrl(),
-                                    mEnableSmartLock.isEnabled())));
+            startSignedInActivity(null);
             finish();
         }
 
@@ -216,16 +207,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
         // Successfully signed in
         if (resultCode == ResultCodes.OK) {
-            startActivity(
-                    SignedInActivity.createIntent(
-                            this,
-                            response,
-                            new SignedInActivity.SignedInConfig(
-                                    getSelectedLogo(),
-                                    getSelectedTheme(),
-                                    getSelectedProviders(),
-                                    getSelectedTosUrl(),
-                                    mEnableSmartLock.isEnabled())));
+            startSignedInActivity(response);
             finish();
             return;
         } else {
@@ -248,6 +230,19 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         showSnackbar(R.string.unknown_sign_in_response);
+    }
+
+    private void startSignedInActivity(IdpResponse response) {
+        startActivity(
+                SignedInActivity.createIntent(
+                        this,
+                        response,
+                        new SignedInActivity.SignedInConfig(
+                                getSelectedLogo(),
+                                getSelectedTheme(),
+                                getSelectedProviders(),
+                                getSelectedTosUrl(),
+                                mEnableSmartLock.isEnabled())));
     }
 
     @MainThread

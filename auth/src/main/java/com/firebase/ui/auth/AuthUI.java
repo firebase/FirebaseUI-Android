@@ -431,7 +431,7 @@ public class AuthUI {
     /**
      * Base builder for both {@link SignInIntentBuilder} and {@link ReauthIntentBuilder}
      */
-    @SuppressWarnings(value="unchecked")
+    @SuppressWarnings(value = "unchecked")
     private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
         int mLogo = NO_LOGO;
         int mTheme = getDefaultTheme();
@@ -555,7 +555,6 @@ public class AuthUI {
      */
     public final class ReauthIntentBuilder extends AuthIntentBuilder<ReauthIntentBuilder> {
         private String mReauthReason;
-        private String mReauthEmail;
 
         private ReauthIntentBuilder() {
             super();
@@ -566,23 +565,20 @@ public class AuthUI {
          * reauthenticate."
          *
          * @param reauthReason A string explaining why reauthentication was requested.
-         * @return
          */
         public ReauthIntentBuilder setReauthReason(String reauthReason) {
             mReauthReason = reauthReason;
             return this;
         }
 
-        /**
-         * Sets the email address for which reauthentication will be tried.  If email accounts are
-         * enabled this MUST be set or email reauthentication will fail.
-         *
-         * @param reauthEmail The email address of the account for which reauthentication is being
-         * requested
-         */
-        public ReauthIntentBuilder setReauthEmail(String reauthEmail) {
-            mReauthEmail = reauthEmail;
-            return this;
+        @Override
+        public Intent build() {
+            if (FirebaseAuth.getInstance(mApp).getCurrentUser() == null) {
+                throw new IllegalStateException(
+                    "User must be currently logged in to reauthenticate");
+            }
+
+            return super.build();
         }
 
         @Override
@@ -596,7 +592,6 @@ public class AuthUI {
                     mIsSmartLockEnabled,
                     false,
                     true,
-                    mReauthEmail,
                     mReauthReason);
         }
     }
@@ -637,7 +632,6 @@ public class AuthUI {
                     mIsSmartLockEnabled,
                     mAllowNewEmailAccounts,
                     false,
-                    null,
                     null);
         }
     }
