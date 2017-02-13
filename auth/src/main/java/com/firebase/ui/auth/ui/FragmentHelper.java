@@ -6,7 +6,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
-import android.support.v7.view.ContextThemeWrapper;
+import android.view.ContextThemeWrapper;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FragmentHelper extends BaseHelper {
