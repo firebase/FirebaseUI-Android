@@ -20,6 +20,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +35,6 @@ import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -141,16 +142,26 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 mChatIndicesRef.limitToLast(50),
                 mChatRef) {
             @Override
-            public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
-                holder.setName(chat.getName());
-                holder.setText(chat.getMessage());
+            public void populateViewHolder(final ChatHolder holder, Chat chat, int position) {
+                holder.bind(chat);
 
-                FirebaseUser currentUser = mAuth.getCurrentUser();
-                if (currentUser != null && chat.getUid().equals(currentUser.getUid())) {
-                    holder.setIsSender(true);
-                } else {
-                    holder.setIsSender(false);
-                }
+                holder.itemView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                    @Override
+                    public void onCreateContextMenu(ContextMenu menu,
+                                                    View v,
+                                                    ContextMenu.ContextMenuInfo menuInfo) {
+                        menu.add("Delete")
+                                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        DatabaseReference ref = getRef(holder.getAdapterPosition());
+                                        mChatIndicesRef.child(ref.getKey()).removeValue();
+                                        ref.removeValue();
+                                        return true;
+                                    }
+                                });
+                    }
+                });
             }
 
             @Override
