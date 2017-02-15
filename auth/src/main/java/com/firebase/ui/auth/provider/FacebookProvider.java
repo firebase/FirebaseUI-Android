@@ -43,7 +43,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
+    public static final String PUBLISH_PERMISSION = "publish";
+
     private static final String TAG = "FacebookProvider";
+
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
     private static final String ERROR = "err";
@@ -109,7 +112,11 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         }
 
         // Log in with permissions
-        loginManager.logInWithReadPermissions(activity, permissionsList);
+        if (mScopes.contains(PUBLISH_PERMISSION)) {
+            loginManager.logInWithPublishPermissions(activity, permissionsList);
+        } else {
+            loginManager.logInWithReadPermissions(activity, permissionsList);
+        }
     }
 
     @Override
