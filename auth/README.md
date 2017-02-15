@@ -445,8 +445,7 @@ Facebook Login.  If you would like to request additional permissions from the us
 // https://developers.facebook.com/docs/facebook-login/android
 // https://developers.facebook.com/docs/facebook-login/permissions
 
-// In addition, if you need publish permissions, add FacebookProvider.PUBLISH_PERMISSION to your
-// list of permissions.
+// If you need publish permissions, add FacebookProvider.PUBLISH_PERMISSION to your list of permissions.
 
 AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
           .setPermissions(Arrays.asList("user_friends"))
