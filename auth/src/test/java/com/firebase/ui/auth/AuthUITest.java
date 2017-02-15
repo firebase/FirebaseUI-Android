@@ -81,15 +81,15 @@ public class AuthUITest {
 
 
         List<IdpConfig> providers = builder.getFlowParams().providerInfo;
-        assertTrue(providers.size() == 2);
+        assertEquals(2, providers.size());
 
         IdpConfig email = providers.get(0);
         List<String> emailScopes = email.getScopes();
-        assertTrue(email.getProviderId().equals(AuthUI.EMAIL_PROVIDER));
-        assertTrue(emailScopes.size() == 2);
+        assertEquals(AuthUI.EMAIL_PROVIDER, email.getProviderId());
+        assertEquals(2, emailScopes.size());
         assertTrue(emailScopes.contains("A") && emailScopes.contains("B"));
 
-        assertTrue(providers.get(1).getProviderId().equals(AuthUI.GOOGLE_PROVIDER));
+        assertEquals(AuthUI.GOOGLE_PROVIDER, providers.get(1).getProviderId());
     }
 
     @Test
