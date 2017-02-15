@@ -433,7 +433,6 @@ public class AuthUI {
         private boolean mAllowNewEmailAccounts = true;
 
         private SignInIntentBuilder() {
-            mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
         }
 
         /**
@@ -562,6 +561,10 @@ public class AuthUI {
 
         @VisibleForTesting()
         public FlowParameters getFlowParams() {
+            if (mProviders.isEmpty()) {
+                mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+            }
+
             return new FlowParameters(mApp.getName(),
                                       mProviders,
                                       mTheme,
