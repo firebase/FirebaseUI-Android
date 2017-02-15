@@ -55,7 +55,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -315,9 +314,9 @@ public class AuthUI {
         private final String mProviderId;
         private final List<String> mScopes;
 
-        private IdpConfig(@NonNull String providerId, List<String> scopes) {
-            mScopes = scopes;
+        private IdpConfig(String providerId, List<String> scopes) {
             mProviderId = providerId;
+            mScopes = scopes;
         }
 
         private IdpConfig(Parcel in) {
@@ -356,10 +355,32 @@ public class AuthUI {
             parcel.writeStringList(mScopes);
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            IdpConfig config = (IdpConfig) o;
+
+            return mProviderId.equals(config.mProviderId);
+        }
+
+        @Override
+        public int hashCode() {
+            return mProviderId.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "IdpConfig{" +
+                    "mProviderId='" + mProviderId + '\'' +
+                    ", mScopes=" + mScopes +
+                    '}';
+        }
+
         public static class Builder {
             private String mProviderId;
             private List<String> mScopes = new ArrayList<>();
-
 
             /**
              * Builds the configuration parameters for an identity provider.
@@ -406,7 +427,7 @@ public class AuthUI {
     public final class SignInIntentBuilder {
         private int mLogo = NO_LOGO;
         private int mTheme = getDefaultTheme();
-        private LinkedHashSet<IdpConfig> mProviders = new LinkedHashSet<>();
+        private List<IdpConfig> mProviders = new ArrayList<>();
         private String mTosUrl;
         private boolean mIsSmartLockEnabled = true;
         private boolean mAllowNewEmailAccounts = true;
@@ -458,17 +479,28 @@ public class AuthUI {
          */
         public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
             mProviders.clear();
-            Set<String> configuredProviders = new HashSet<>();
-            for (IdpConfig idpConfig : idpConfigs) {
-                if (configuredProviders.contains(idpConfig.getProviderId())) {
-                    throw new IllegalArgumentException("Each provider can only be set once. "
-                                                               + idpConfig.getProviderId()
-                                                               + " was set twice.");
+            for (IdpConfig config : idpConfigs) {
+                if (mProviders.contains(config)) {
+                    int i = mProviders.indexOf(config);
+                    IdpConfig newConfig =
+                            new IdpConfig.Builder(config.getProviderId())
+                                    .setPermissions(getUniqueScopes(config.getScopes(),
+                                                                    mProviders.get(i).getScopes()))
+                                    .build();
+                    mProviders.set(i, newConfig);
+                } else {
+                    mProviders.add(config);
                 }
-                configuredProviders.add(idpConfig.getProviderId());
-                mProviders.add(idpConfig);
             }
             return this;
+        }
+
+        private List<String> getUniqueScopes(List<String> scopes1, List<String> scopes2) {
+            List<String> mergedScopes = new ArrayList<>(scopes2);
+            for (String scope : scopes1) {
+                if (!mergedScopes.contains(scope)) mergedScopes.add(scope);
+            }
+            return mergedScopes;
         }
 
         /**
@@ -495,6 +527,15 @@ public class AuthUI {
             return this;
         }
 
+        private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
+            for (IdpConfig config : mProviders) {
+                if (config.getProviderId().equals(providerId)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /**
          * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
          * <p>
@@ -515,15 +556,6 @@ public class AuthUI {
             return this;
         }
 
-        private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
-            for (IdpConfig config : mProviders) {
-                if (config.getProviderId().equals(providerId)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public Intent build() {
             return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
         }
@@ -531,7 +563,7 @@ public class AuthUI {
         @VisibleForTesting()
         public FlowParameters getFlowParams() {
             return new FlowParameters(mApp.getName(),
-                                      new ArrayList<>(mProviders),
+                                      mProviders,
                                       mTheme,
                                       mLogo,
                                       mTosUrl,

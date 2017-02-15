@@ -29,8 +29,11 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
@@ -63,13 +66,30 @@ public class AuthUITest {
         assertEquals(AuthUI.EMAIL_PROVIDER, flowParameters.providerInfo.get(0).getProviderId());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
-        SignInIntentBuilder startIntent =
-                AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder();
-        startIntent.setProviders(
-                Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                              new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()));
+        SignInIntentBuilder builder = AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder();
+        builder.setProviders(Arrays.asList(
+                new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER)
+                        .setPermissions(Collections.singletonList("A"))
+                        .build(),
+                new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER)
+                        .setPermissions(Arrays.asList("A", "B"))
+                        .build(),
+                new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
+                        .build()));
+
+
+        List<IdpConfig> providers = builder.getFlowParams().providerInfo;
+        assertTrue(providers.size() == 2);
+
+        IdpConfig email = providers.get(0);
+        List<String> emailScopes = email.getScopes();
+        assertTrue(email.getProviderId().equals(AuthUI.EMAIL_PROVIDER));
+        assertTrue(emailScopes.size() == 2);
+        assertTrue(emailScopes.contains("A") && emailScopes.contains("B"));
+
+        assertTrue(providers.get(1).getProviderId().equals(AuthUI.GOOGLE_PROVIDER));
     }
 
     @Test
