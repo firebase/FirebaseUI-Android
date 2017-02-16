@@ -15,32 +15,28 @@
         android:layout_height="match_parent"
         android:layout_weight="1.0" />
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:layout_weight="1.0">
 
-            <TextView
-              style="@style/FirebaseUI.AuthMethodPicker.ReauthReason"
-              android:id="@+id/reauth_reason"
-              android:textIsSelectable="true"/>
 
-            <LinearLayout
-              android:id="@+id/btn_holder"
-              style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder"
-              android:layout_height="wrap_content"
-              android:layout_below="@id/reauth_reason">
+        <LinearLayout
+            android:id="@+id/btn_holder"
+            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="@dimen/auth_method_button_marginBottom">
 
-                <Button
-                  android:id="@+id/email_provider"
-                  style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
-                  android:text="@string/sign_in_with_email"
-                  android:visibility="gone"
-                  tools:visibility="visible" />
+            <Button
+                android:id="@+id/email_provider"
+                style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
+                android:text="@string/sign_in_with_email"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
-            </LinearLayout>
+        </LinearLayout>
 
-    </RelativeLayout>
+    </FrameLayout>
 
 </LinearLayout>

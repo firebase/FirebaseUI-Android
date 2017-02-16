@@ -66,6 +66,10 @@ public class RegisterEmailActivity extends AppCompatBase implements
         // Get email from intent (can be null)
         String email = getIntent().getExtras().getString(ExtraConstants.EXTRA_EMAIL);
 
+        if (mActivityHelper.getFlowParams().isReauth) {
+            email = mActivityHelper.getCurrentUser().getEmail();
+        }
+
         // Start with check email
         CheckEmailFragment fragment = CheckEmailFragment.getInstance(
                 mActivityHelper.getFlowParams(), email);

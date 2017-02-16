@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -105,7 +106,7 @@ public class KickoffActivity extends HelperActivityBase {
 
     private void showReauthDialog() {
         final FlowParameters flowParams = mActivityHelper.getFlowParams();
-        new AlertDialog.Builder(this, R.style.FirebaseUI_Dialog)
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.FirebaseUI_Dialog)
                 .setTitle(R.string.reauth_dialog_title)
                 .setPositiveButton(R.string.sign_in_default, new OnClickListener() {
                     @Override
@@ -118,8 +119,12 @@ public class KickoffActivity extends HelperActivityBase {
                     public void onClick(DialogInterface dialog, int which) {
                         finish(ResultCodes.CANCELED, new Intent());
                     }
-                })
-                .create()
-                .show();
+                });
+
+        if (!TextUtils.isEmpty(flowParams.reauthReason)) {
+            builder.setMessage(flowParams.reauthReason);
+        }
+
+        builder.create().show();
     }
 }
