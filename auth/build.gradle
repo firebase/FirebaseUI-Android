@@ -38,18 +38,18 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:design:$support_library_version"
-    compile "com.android.support:customtabs:$support_library_version"
+    compile "com.android.support:design:$supportLibraryVersion"
+    compile "com.android.support:customtabs:$supportLibraryVersion"
 
-    compile "com.google.firebase:firebase-auth:$firebase_version"
-    compile "com.google.android.gms:play-services-auth:$firebase_version"
+    compile "com.google.firebase:firebase-auth:$firebaseVersion"
+    compile "com.google.android.gms:play-services-auth:$firebaseVersion"
 
     compile 'com.facebook.android:facebook-android-sdk:4.19.0'
     compile("com.twitter.sdk.android:twitter:2.3.0@aar") { transitive = true }
 
     // The following libraries are needed to prevent incompatibilities with the facebook
     // library when updating com.android.support libraries:
-    compile "com.android.support:cardview-v7:$support_library_version"
+    compile "com.android.support:cardview-v7:$supportLibraryVersion"
 
     testCompile 'junit:junit:4.12'
     //noinspection NewerVersionAvailable, GradleDynamicVersion
