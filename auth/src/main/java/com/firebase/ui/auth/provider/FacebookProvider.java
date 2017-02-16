@@ -40,11 +40,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
-    public static final String PUBLISH_PERMISSION = "publish";
-
     private static final String TAG = "FacebookProvider";
 
     private static final String EMAIL = "email";
@@ -53,6 +53,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private static final String ERROR_MSG = "err_msg";
 
     private static CallbackManager sCallbackManager;
+    private static List<String> sPublishPermissions;
 
     private final List<String> mScopes;
     // DO NOT USE DIRECTLY: see onSuccess(String, LoginResult) and onFailure(Bundle) below
@@ -72,7 +73,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         if (scopes == null) {
             mScopes = new ArrayList<>();
         } else {
-            mScopes = scopes;
+            mScopes = new ArrayList<>(scopes);
         }
         FacebookSdk.setWebDialogTheme(theme);
     }
@@ -100,23 +101,34 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         LoginManager loginManager = LoginManager.getInstance();
         loginManager.registerCallback(sCallbackManager, this);
 
-        List<String> permissionsList = new ArrayList<>(mScopes);
-
         // Ensure we have email and public_profile scopes
-        if (!permissionsList.contains(EMAIL)) {
-            permissionsList.add(EMAIL);
+        if (!mScopes.contains(EMAIL)) {
+            mScopes.add(EMAIL);
         }
 
-        if (!permissionsList.contains(PUBLIC_PROFILE)) {
-            permissionsList.add(PUBLIC_PROFILE);
+        if (!mScopes.contains(PUBLIC_PROFILE)) {
+            mScopes.add(PUBLIC_PROFILE);
         }
+
+        // Extract publish permissions
+        List<String> extractedPublishPermissions = new ArrayList<>();
+        Set<String> otherPublishPermissions = new HashSet<String>() {{
+            add("ads_management");
+            add("create_event");
+            add("rsvp_event");
+        }};
+        for (String permission : mScopes) {
+            if (permission.startsWith("publish")
+                    || permission.startsWith("manage")
+                    || otherPublishPermissions.contains(permission)) {
+                extractedPublishPermissions.add(permission);
+            }
+        }
+        mScopes.removeAll(extractedPublishPermissions);
+        sPublishPermissions = extractedPublishPermissions;
 
         // Log in with permissions
-        if (mScopes.contains(PUBLISH_PERMISSION)) {
-            loginManager.logInWithPublishPermissions(activity, permissionsList);
-        } else {
-            loginManager.logInWithReadPermissions(activity, permissionsList);
-        }
+        loginManager.logInWithReadPermissions(activity, mScopes);
     }
 
     @Override
@@ -189,9 +201,32 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                 loginResult.getAccessToken().getToken());
     }
 
-    private void onSuccess(String email, LoginResult loginResult) {
-        gcCallbackManager();
-        mCallbackObject.onSuccess(createIdpResponse(email, loginResult));
+    private void onSuccess(final String email, final LoginResult loginResult) {
+        if (sPublishPermissions.isEmpty()) {
+            gcCallbackManager();
+            mCallbackObject.onSuccess(createIdpResponse(email, loginResult));
+        } else {
+            LoginManager loginManager = LoginManager.getInstance();
+            loginManager.registerCallback(sCallbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult result) {
+                    sPublishPermissions.clear();
+                    FacebookProvider.this.onSuccess(email, loginResult);
+                }
+
+                @Override
+                public void onCancel() {
+                    FacebookProvider.this.onCancel();
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+                    FacebookProvider.this.onError(error);
+                }
+            });
+            loginManager.logInWithPublishPermissions((Activity) mCallbackObject,
+                                                     sPublishPermissions);
+        }
     }
 
     private void onFailure(Bundle bundle) {

@@ -348,7 +348,7 @@ public class AuthUiActivity extends AppCompatActivity {
             result.add("user_friends");
         }
         if (mFacebookScopePhotos.isChecked()) {
-            result.add("user_photos");
+            result.add("publish_actions");
         }
         return result;
     }
