@@ -85,6 +85,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
+        TextView welcomeBackHeader = (TextView) findViewById(R.id.welcome_back_email_header);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 
@@ -92,6 +93,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         String bodyText;
         FlowParameters flowParameters = mActivityHelper.getFlowParams();
         if (flowParameters.isReauth) {
+            welcomeBackHeader.setText(getString(R.string.welcome_back_email_header_reauth));
             bodyText = getString(R.string.reauth_welcome_back_password_prompt_body, mEmail);
         } else {
             bodyText = getString(R.string.welcome_back_password_prompt_body, mEmail);
