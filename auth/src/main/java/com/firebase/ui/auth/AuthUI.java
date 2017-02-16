@@ -314,14 +314,14 @@ public class AuthUI {
         private final String mProviderId;
         private final List<String> mScopes;
 
-        private IdpConfig(String providerId, List<String> scopes) {
+        private IdpConfig(@NonNull String providerId, List<String> scopes) {
             mProviderId = providerId;
-            mScopes = scopes;
+            mScopes = Collections.unmodifiableList(scopes);
         }
 
         private IdpConfig(Parcel in) {
             mProviderId = in.readString();
-            mScopes = in.createStringArrayList();
+            mScopes = Collections.unmodifiableList(in.createStringArrayList());
         }
 
         public String getProviderId() {
@@ -353,29 +353,6 @@ public class AuthUI {
         public void writeToParcel(Parcel parcel, int i) {
             parcel.writeString(mProviderId);
             parcel.writeStringList(mScopes);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            IdpConfig config = (IdpConfig) o;
-
-            return mProviderId.equals(config.mProviderId);
-        }
-
-        @Override
-        public int hashCode() {
-            return mProviderId.hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return "IdpConfig{" +
-                    "mProviderId='" + mProviderId + '\'' +
-                    ", mScopes=" + mScopes +
-                    '}';
         }
 
         public static class Builder {
@@ -479,27 +456,11 @@ public class AuthUI {
         public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
             mProviders.clear();
             for (IdpConfig config : idpConfigs) {
-                if (mProviders.contains(config)) {
-                    int i = mProviders.indexOf(config);
-                    IdpConfig newConfig =
-                            new IdpConfig.Builder(config.getProviderId())
-                                    .setPermissions(getUniqueScopes(config.getScopes(),
-                                                                    mProviders.get(i).getScopes()))
-                                    .build();
-                    mProviders.set(i, newConfig);
-                } else {
+                if (!mProviders.contains(config)) {
                     mProviders.add(config);
                 }
             }
             return this;
-        }
-
-        private List<String> getUniqueScopes(List<String> scopes1, List<String> scopes2) {
-            List<String> mergedScopes = new ArrayList<>(scopes2);
-            for (String scope : scopes1) {
-                if (!mergedScopes.contains(scope)) mergedScopes.add(scope);
-            }
-            return mergedScopes;
         }
 
         /**
