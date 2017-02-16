@@ -355,6 +355,29 @@ public class AuthUI {
             parcel.writeStringList(mScopes);
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            IdpConfig config = (IdpConfig) o;
+
+            return mProviderId.equals(config.mProviderId);
+        }
+
+        @Override
+        public int hashCode() {
+            return mProviderId.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "IdpConfig{" +
+                    "mProviderId='" + mProviderId + '\'' +
+                    ", mScopes=" + mScopes +
+                    '}';
+        }
+
         public static class Builder {
             private String mProviderId;
             private List<String> mScopes = new ArrayList<>();
@@ -456,7 +479,11 @@ public class AuthUI {
         public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
             mProviders.clear();
             for (IdpConfig config : idpConfigs) {
-                if (!mProviders.contains(config)) {
+                if (mProviders.contains(config)) {
+                    throw new IllegalArgumentException("Each provider can only be set once. "
+                                                               + config.getProviderId()
+                                                               + " was set twice.");
+                } else {
                     mProviders.add(config);
                 }
             }

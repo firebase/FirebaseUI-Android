@@ -29,11 +29,8 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
@@ -66,30 +63,13 @@ public class AuthUITest {
         assertEquals(AuthUI.EMAIL_PROVIDER, flowParameters.providerInfo.get(0).getProviderId());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
-        SignInIntentBuilder builder = AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder();
-        builder.setProviders(Arrays.asList(
-                new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER)
-                        .setPermissions(Collections.singletonList("A"))
-                        .build(),
-                new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER)
-                        .setPermissions(Arrays.asList("A", "B"))
-                        .build(),
-                new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-                        .build()));
-
-
-        List<IdpConfig> providers = builder.getFlowParams().providerInfo;
-        assertEquals(2, providers.size());
-
-        IdpConfig email = providers.get(0);
-        List<String> emailScopes = email.getScopes();
-        assertEquals(AuthUI.EMAIL_PROVIDER, email.getProviderId());
-        assertEquals(2, emailScopes.size());
-        assertTrue(emailScopes.contains("A") && emailScopes.contains("B"));
-
-        assertEquals(AuthUI.GOOGLE_PROVIDER, providers.get(1).getProviderId());
+        SignInIntentBuilder startIntent =
+                AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder();
+        startIntent.setProviders(
+                Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                              new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()));
     }
 
     @Test
