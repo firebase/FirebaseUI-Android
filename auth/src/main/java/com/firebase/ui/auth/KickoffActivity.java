@@ -114,7 +114,7 @@ public class KickoffActivity extends HelperActivityBase {
                         SignInDelegate.delegate(KickoffActivity.this, flowParams);
                     }
                 })
-                .setNegativeButton(R.string.cancel, new OnClickListener() {
+                .setNegativeButton(android.R.string.cancel, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish(ResultCodes.CANCELED, new Intent());
