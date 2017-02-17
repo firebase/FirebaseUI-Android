@@ -28,8 +28,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.adapter.FirebaseIndexRecyclerAdapter;
-import com.firebase.ui.database.adapter.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnSuccessListener;
