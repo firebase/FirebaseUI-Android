@@ -242,7 +242,7 @@ public class AuthUiActivity extends AppCompatActivity {
                                 getSelectedTheme(),
                                 getSelectedProviders(),
                                 getSelectedTosUrl(),
-                                mEnableSmartLock.isEnabled())));
+                                mEnableSmartLock.isChecked())));
     }
 
     @MainThread
