@@ -1,8 +1,5 @@
-package com.firebase.ui.database.adapter;
+package com.firebase.ui.database;
 
-import com.firebase.ui.database.ChangeEventListener;
-import com.firebase.ui.database.FirebaseArray;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DatabaseReference;
 
 public interface FirebaseAdapter<T> extends ChangeEventListener, SnapshotParser<T> {

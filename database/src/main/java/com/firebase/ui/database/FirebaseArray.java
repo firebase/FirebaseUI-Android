@@ -34,10 +34,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * This class implements a collection on top of a Firebase location.
  */
 public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildEventListener, ValueEventListener {
-    private Query mQuery;
-    private boolean mNotifyListeners = true;
     private final List<ChangeEventListener> mListeners = new CopyOnWriteArrayList<>();
     private List<SubscriptionEventListener> mSubscribers = new ArrayList<>();
+
+    private Query mQuery;
+    private boolean mNotifyListeners = true;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     /**
@@ -47,6 +48,10 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      */
     public FirebaseArray(Query query) {
         mQuery = query;
+    }
+
+    private static void checkNotNull(Object o) {
+        if (o == null) throw new IllegalArgumentException("Listener cannot be null.");
     }
 
     /**
@@ -125,10 +130,6 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
                 listener.onSubscriptionRemoved();
             }
         }
-    }
-
-    private static void checkNotNull(Object o) {
-        if (o == null) throw new IllegalArgumentException("Listener cannot be null.");
     }
 
     /**
