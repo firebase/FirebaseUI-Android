@@ -2,6 +2,7 @@
 *.iml
 /local.properties
 .idea
+!.idea/codeStyleSettings.xml
 .DS_Store
 build
 google-services.json

@@ -323,13 +323,13 @@ public class AuthUI {
         private final List<String> mScopes;
 
         private IdpConfig(@NonNull String providerId, List<String> scopes) {
-            mScopes = scopes;
             mProviderId = providerId;
+            mScopes = Collections.unmodifiableList(scopes);
         }
 
         private IdpConfig(Parcel in) {
             mProviderId = in.readString();
-            mScopes = in.createStringArrayList();
+            mScopes = Collections.unmodifiableList(in.createStringArrayList());
         }
 
         public String getProviderId() {
