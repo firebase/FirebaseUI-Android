@@ -35,7 +35,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildEventListener, ValueEventListener {
     private final List<ChangeEventListener> mListeners = new CopyOnWriteArrayList<>();
-    private List<SubscriptionEventListener> mSubscribers = new ArrayList<>();
 
     private Query mQuery;
     private boolean mNotifyListeners = true;
@@ -66,7 +65,6 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
         checkNotNull(listener);
 
         mListeners.add(listener);
-        notifySubscriptionEventListeners(SubscriptionEventListener.EventType.ADDED);
         if (mListeners.size() <= 1) { // Only start listening when the first listener is added
             mQuery.addChildEventListener(this);
             mQuery.addValueEventListener(this);
@@ -84,10 +82,10 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * #FirebaseArray(Query)}. The list will be empty after this call returns.
      *
      * @param listener the listener to remove
+     * @see #removeAllListeners()
      */
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
         mListeners.remove(listener);
-        notifySubscriptionEventListeners(SubscriptionEventListener.EventType.REMOVED);
         if (mListeners.isEmpty()) {
             mQuery.removeEventListener((ValueEventListener) this);
             mQuery.removeEventListener((ChildEventListener) this);
@@ -96,39 +94,13 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
     }
 
     /**
-     * Add a listener for subscription events eg additions/removals of {@link ChangeEventListener}s.
+     * Removes all {@link ChangeEventListener}s. The list will be empty after this call returns.
      *
-     * @param listener the listener to be called with changes
-     * @return a reference to the listener provided. Save this to remove the listener later
-     * @throws IllegalArgumentException if the listener is null
+     * @see #removeChangeEventListener(ChangeEventListener)
      */
-    public SubscriptionEventListener addSubscriptionEventListener(@NonNull SubscriptionEventListener listener) {
-        checkNotNull(listener);
-
-        for (SubscriptionEventListener ignored : mSubscribers) {
-            listener.onSubscriptionAdded();
-        }
-
-        mSubscribers.add(listener);
-        return listener;
-    }
-
-    /**
-     * Remove a {@link SubscriptionEventListener} for this {@link FirebaseArray}.
-     *
-     * @param listener the listener to remove
-     */
-    public void removeSubscriptionEventListener(@NonNull SubscriptionEventListener listener) {
-        mSubscribers.remove(listener);
-    }
-
-    protected void notifySubscriptionEventListeners(SubscriptionEventListener.EventType eventType) {
-        for (SubscriptionEventListener listener : mSubscribers) {
-            if (eventType == SubscriptionEventListener.EventType.ADDED) {
-                listener.onSubscriptionAdded();
-            } else if (eventType == SubscriptionEventListener.EventType.REMOVED) {
-                listener.onSubscriptionRemoved();
-            }
+    public void removeAllListeners() {
+        for (ChangeEventListener listener : mListeners) {
+            removeChangeEventListener(listener);
         }
     }
 
@@ -280,6 +252,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      *
      * @param parser a custom {@link SnapshotParser} to manually convert each {@link DataSnapshot}
      *               to its model type
+     * @see #toObjectsList(Class)
      */
     public <T> List<T> toObjectsList(Class<T> modelClass, SnapshotParser<T> parser) {
         return FirebaseArrayOfObjects.newInstance(this, modelClass, parser);
