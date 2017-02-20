@@ -14,6 +14,7 @@
 
 package com.firebase.ui.database;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
@@ -61,6 +62,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @return a reference to the listener provided. Save this to remove the listener later
      * @throws IllegalArgumentException if the listener is null
      */
+    @CallSuper
     public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
         checkNotNull(listener);
 
@@ -84,6 +86,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @param listener the listener to remove
      * @see #removeAllListeners()
      */
+    @CallSuper
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
         mListeners.remove(listener);
         if (mListeners.isEmpty()) {
@@ -98,6 +101,7 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      *
      * @see #removeChangeEventListener(ChangeEventListener)
      */
+    @CallSuper
     public void removeAllListeners() {
         for (ChangeEventListener listener : mListeners) {
             removeChangeEventListener(listener);
@@ -108,14 +112,14 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
      * @return true if {@link FirebaseArray} is listening for change events from the Firebase
      * database, false otherwise
      */
-    public boolean isListening() {
+    public final boolean isListening() {
         return !mListeners.isEmpty();
     }
 
     /**
      * @return true if the provided {@link ChangeEventListener} is listening for changes
      */
-    public boolean isListening(ChangeEventListener listener) {
+    public final boolean isListening(ChangeEventListener listener) {
         return mListeners.contains(listener);
     }
 
@@ -178,27 +182,27 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
         mNotifyListeners = notifyListeners;
     }
 
-    protected void notifyChangeEventListeners(ChangeEventListener.EventType type, int index) {
+    protected final void notifyChangeEventListeners(ChangeEventListener.EventType type, int index) {
         notifyChangeEventListeners(type, index, -1);
     }
 
-    protected void notifyChangeEventListeners(ChangeEventListener.EventType type,
-                                              int index,
-                                              int oldIndex) {
+    protected final void notifyChangeEventListeners(ChangeEventListener.EventType type,
+                                                    int index,
+                                                    int oldIndex) {
         if (!mNotifyListeners) return;
         for (ChangeEventListener listener : mListeners) {
             listener.onChildChanged(type, index, oldIndex);
         }
     }
 
-    protected void notifyListenersOnDataChanged() {
+    protected final void notifyListenersOnDataChanged() {
         if (!mNotifyListeners) return;
         for (ChangeEventListener listener : mListeners) {
             listener.onDataChanged();
         }
     }
 
-    protected void notifyListenersOnCancelled(DatabaseError error) {
+    protected final void notifyListenersOnCancelled(DatabaseError error) {
         if (!mNotifyListeners) return;
         for (ChangeEventListener listener : mListeners) {
             listener.onCancelled(error);
