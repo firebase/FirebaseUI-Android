@@ -317,11 +317,11 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
 
     @Override
     public String toString() {
-        return "FirebaseArray{" +
-                "mIsListening=" + isListening() +
-                ", mQuery=" + mQuery +
-                ", mSnapshots=" + mSnapshots +
-                '}';
+        if (isListening()) {
+            return "FirebaseArray is listening at " + mQuery + ":\n" + mSnapshots;
+        } else {
+            return "FirebaseArray is inactive";
+        }
     }
 
     /**

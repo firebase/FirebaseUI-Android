@@ -244,10 +244,10 @@ public class FirebaseIndexArray extends FirebaseArray {
 
     @Override
     public String toString() {
-        return "FirebaseIndexArray{" +
-                "mIsListening=" + isListening() +
-                ", mDataRef=" + mDataRef +
-                ", mDataSnapshots=" + mDataSnapshots +
-                '}';
+        if (isListening()) {
+            return "FirebaseIndexArray is listening at " + mDataRef + ":\n" + mDataSnapshots;
+        } else {
+            return "FirebaseIndexArray is inactive";
+        }
     }
 }
