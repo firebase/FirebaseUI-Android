@@ -28,18 +28,22 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:1.1.1'
+    compile 'com.firebaseui:firebase-ui-database:1.2.0'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:1.1.1'
+    compile 'com.firebaseui:firebase-ui-auth:1.2.0'
 
     // FirebaseUI Storage only
-    compile 'com.firebaseui:firebase-ui-storage:1.1.1'
+    compile 'com.firebaseui:firebase-ui-storage:1.2.0'
 
     // Single target that includes all FirebaseUI libraries above
-    compile 'com.firebaseui:firebase-ui:1.1.1'
+    compile 'com.firebaseui:firebase-ui:1.2.0'
 }
 ```
+
+If you're including the `firebase-ui-auth` dependency, there's a little
+[more setup](/firebase/FirebaseUI-Android/tree/master/auth#configuration)
+required.
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
 
@@ -67,6 +71,7 @@ For convenience, here are some examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 1.2.0              | 10.2.0                         |
 | 1.1.1              | 10.0.0 or 10.0.1               |
 | 1.0.1              | 10.0.0 or 10.0.1               |
 | 1.0.0              | 9.8.0                          |
