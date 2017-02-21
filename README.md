@@ -42,7 +42,7 @@ dependencies {
 ```
 
 If you're including the `firebase-ui-auth` dependency, there's a little
-[more setup](/firebase/FirebaseUI-Android/tree/master/auth#configuration)
+[more setup](https://github.com/firebase/FirebaseUI-Android/tree/master/auth#configuration)
 required.
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
