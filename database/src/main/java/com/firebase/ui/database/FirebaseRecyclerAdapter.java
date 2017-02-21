@@ -92,35 +92,20 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         mViewHolderClass = viewHolderClass;
         mSnapshots = snapshots;
 
-        mSnapshots.setOnChangedListener(new FirebaseArray.OnChangedListener() {
+        mSnapshots.setOnChangedListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(EventType type, int index, int oldIndex) {
-                switch (type) {
-                    case ADDED:
-                        notifyItemInserted(index);
-                        break;
-                    case CHANGED:
-                        notifyItemChanged(index);
-                        break;
-                    case REMOVED:
-                        notifyItemRemoved(index);
-                        break;
-                    case MOVED:
-                        notifyItemMoved(oldIndex, index);
-                        break;
-                    default:
-                        throw new IllegalStateException("Incomplete case statement");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                FirebaseRecyclerAdapter.this.onCancelled(databaseError);
+                FirebaseRecyclerAdapter.this.onChildChanged(type, index, oldIndex);
             }
 
             @Override
             public void onDataChanged() {
                 FirebaseRecyclerAdapter.this.onDataChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                FirebaseRecyclerAdapter.this.onCancelled(error);
             }
         });
     }
@@ -205,22 +190,35 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     /**
-     * This method will be triggered each time updates from the database have been completely processed.
-     * So the first time this method is called, the initial data has been loaded - including the case
-     * when no data at all is available. Each next time the method is called, a complete update (potentially
-     * consisting of updates to multiple child items) has been completed.
-     * <p>
-     * You would typically override this method to hide a loading indicator (after the initial load) or
-     * to complete a batch update to a UI element.
+     * @see ChangeEventListener#onChildChanged(ChangeEventListener.EventType, int, int)
+     */
+    protected void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
+        switch (type) {
+            case ADDED:
+                notifyItemInserted(index);
+                break;
+            case CHANGED:
+                notifyItemChanged(index);
+                break;
+            case REMOVED:
+                notifyItemRemoved(index);
+                break;
+            case MOVED:
+                notifyItemMoved(oldIndex, index);
+                break;
+            default:
+                throw new IllegalStateException("Incomplete case statement");
+        }
+    }
+
+    /**
+     * @see ChangeEventListener#onDataChanged()
      */
     protected void onDataChanged() {
     }
 
     /**
-     * This method will be triggered in the event that this listener either failed at the server,
-     * or is removed as a result of the security and Firebase Database rules.
-     *
-     * @param error A description of the error that occurred
+     * @see ChangeEventListener#onCancelled(DatabaseError)
      */
     protected void onCancelled(DatabaseError error) {
         Log.w(TAG, error.toException());

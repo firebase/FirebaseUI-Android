@@ -86,8 +86,8 @@ ref.limitToLast(5).addValueEventListener(new ValueEventListener() {
         }
     }
     @Override
-    public void onCancelled(DatabaseError firebaseError) {
-        Log.e("Chat", "The read failed: " + firebaseError.getText());
+    public void onCancelled(DatabaseError error) {
+        Log.e("Chat", "The read failed: " + error.getText());
     }
 });
 ```

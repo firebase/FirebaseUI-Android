@@ -71,7 +71,6 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         } else {
             mScopes = scopes;
         }
-        FacebookSdk.sdkInitialize(appContext);
         FacebookSdk.setWebDialogTheme(theme);
     }
 
@@ -79,8 +78,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         if (!response.getProviderType().equals(FacebookAuthProvider.PROVIDER_ID)) {
             return null;
         }
-        return FacebookAuthProvider
-                .getCredential(response.getIdpToken());
+        return FacebookAuthProvider.getCredential(response.getIdpToken());
     }
 
     @Override

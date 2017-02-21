@@ -2,16 +2,16 @@ package com.firebase.ui.database;
 
 import android.content.Context;
 
-import com.firebase.ui.database.utils.Bean;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DatabaseError;
-
-import junit.framework.AssertionFailedError;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertTrue;
 
 public class TestUtils {
     private static final String APP_NAME = "firebaseui-tests";
@@ -26,7 +26,7 @@ public class TestUtils {
         }
     }
 
-    public static FirebaseApp initializeApp(Context context) {
+    private static FirebaseApp initializeApp(Context context) {
         return FirebaseApp.initializeApp(context, new FirebaseOptions.Builder()
                 .setApplicationId("fir-ui-tests")
                 .setDatabaseUrl("https://fir-ui-tests.firebaseio.com/")
@@ -37,19 +37,22 @@ public class TestUtils {
                                        Runnable task,
                                        Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
-        array.setOnChangedListener(new FirebaseArray.OnChangedListener() {
 
+        array.setOnChangedListener(new ChangeEventListener() {
             @Override
-            public void onChildChanged(EventType type, int index, int oldIndex) {
+            public void onChildChanged(ChangeEventListener.EventType type,
+                                       int index,
+                                       int oldIndex) {
                 semaphore.release();
             }
 
             @Override
-            public void onDataChanged() {}
+            public void onDataChanged() {
+            }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                throw new IllegalStateException(databaseError.toException());
+            public void onCancelled(DatabaseError error) {
+                throw new IllegalStateException(error.toException());
             }
         });
         task.run();
@@ -64,9 +67,7 @@ public class TestUtils {
                 // and we're not done
             }
         }
-        if (!isDone) {
-            throw new AssertionFailedError();
-        }
+        assertTrue("Timed out waiting for expected results on FirebaseArray", isDone);
         array.setOnChangedListener(null);
     }
 
@@ -82,5 +83,20 @@ public class TestUtils {
 
     public static Bean getBean(FirebaseArray array, int index) {
         return array.getItem(index).getValue(Bean.class);
+    }
+
+    public static void pushValue(DatabaseReference keyRef,
+                                 DatabaseReference ref,
+                                 Object value,
+                                 Object priority) {
+        String key = keyRef.push().getKey();
+
+        if (priority != null) {
+            keyRef.child(key).setValue(true, priority);
+            ref.child(key).setValue(value, priority);
+        } else {
+            keyRef.child(key).setValue(true);
+            ref.child(key).setValue(value);
+        }
     }
 }

@@ -23,7 +23,7 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
-import com.firebase.ui.auth.util.GoogleApiConstants;
+import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
@@ -75,6 +75,7 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
     private static final int RC_SIGN_IN = 16;
 
     private EditText mEmailEditText;
+    private TextInputLayout mEmailLayout;
 
     private EmailFieldValidator mEmailFieldValidator;
     private CheckEmailListener mListener;
@@ -100,9 +101,11 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
         View v = inflater.inflate(R.layout.check_email_layout, container, false);
 
         // Email field and validator
+        mEmailLayout = (TextInputLayout) v.findViewById(R.id.email_layout);
         mEmailEditText = (EditText) v.findViewById(R.id.email);
-        mEmailFieldValidator = new EmailFieldValidator(
-                (TextInputLayout) v.findViewById(R.id.email_layout));
+        mEmailFieldValidator = new EmailFieldValidator(mEmailLayout);
+        mEmailLayout.setOnClickListener(this);
+        mEmailEditText.setOnClickListener(this);
 
         // "Next" button
         v.findViewById(R.id.button_next).setOnClickListener(this);
@@ -231,7 +234,7 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
     private PendingIntent getEmailHintIntent() {
         GoogleApiClient client = new GoogleApiClient.Builder(getContext())
                 .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(getActivity(), GoogleApiConstants.AUTO_MANAGE_ID3,
+                .enableAutoManage(getActivity(), GoogleApiHelper.getSafeAutoManageId(),
                                   new GoogleApiClient.OnConnectionFailedListener() {
                                       @Override
                                       public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -257,6 +260,8 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
 
         if (id == R.id.button_next) {
             validateAndProceed();
+        } else if (id == R.id.email_layout || id == R.id.email) {
+            mEmailLayout.setError(null);
         }
     }
 }

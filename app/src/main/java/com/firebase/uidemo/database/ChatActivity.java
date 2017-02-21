@@ -14,30 +14,22 @@
 
 package com.firebase.uidemo.database;
 
-import android.graphics.PorterDuff;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.RotateDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.firebase.uidemo.util.SignInResultNotifier;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,7 +38,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-@SuppressWarnings("LogConditional")
 public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "RecyclerViewDemo";
 
@@ -58,8 +49,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     private RecyclerView mMessages;
     private LinearLayoutManager mManager;
-    private FirebaseRecyclerAdapter<Chat, ChatHolder> mRecyclerViewAdapter;
-    private View mEmptyListView;
+    private FirebaseRecyclerAdapter<Chat, ChatHolder> mAdapter;
+    private TextView mEmptyListMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +62,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
         mSendButton = (Button) findViewById(R.id.sendButton);
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
-
-        mEmptyListView = findViewById(R.id.emptyTextView);
+        mEmptyListMessage = (TextView) findViewById(R.id.emptyTextView);
 
         mRef = FirebaseDatabase.getInstance().getReference();
         mChatRef = mRef.child("chats");
@@ -86,9 +76,9 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 Chat chat = new Chat(name, mMessageEdit.getText().toString(), uid);
                 mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
                     @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
-                        if (databaseError != null) {
-                            Log.e(TAG, "Failed to write message", databaseError.toException());
+                    public void onComplete(DatabaseError error, DatabaseReference reference) {
+                        if (error != null) {
+                            Log.e(TAG, "Failed to write message", error.toException());
                         }
                     }
                 });
@@ -97,11 +87,10 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
         });
 
-        mMessages = (RecyclerView) findViewById(R.id.messagesList);
-
         mManager = new LinearLayoutManager(this);
         mManager.setReverseLayout(false);
 
+        mMessages = (RecyclerView) findViewById(R.id.messagesList);
         mMessages.setHasFixedSize(false);
         mMessages.setLayoutManager(mManager);
     }
@@ -113,18 +102,18 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         // Default Database rules do not allow unauthenticated reads, so we need to
         // sign in before attaching the RecyclerView adapter otherwise the Adapter will
         // not be able to read any data from the Database.
-        if (!isSignedIn()) {
-            signInAnonymously();
-        } else {
+        if (isSignedIn()) {
             attachRecyclerViewAdapter();
+        } else {
+            signInAnonymously();
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mRecyclerViewAdapter != null) {
-            mRecyclerViewAdapter.cleanup();
+        if (mAdapter != null) {
+            mAdapter.cleanup();
         }
     }
 
@@ -143,158 +132,58 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     private void attachRecyclerViewAdapter() {
         Query lastFifty = mChatRef.limitToLast(50);
-        mRecyclerViewAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
+        mAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
                 Chat.class, R.layout.message, ChatHolder.class, lastFifty) {
-
             @Override
-            public void populateViewHolder(ChatHolder chatView, Chat chat, int position) {
-                chatView.setName(chat.getName());
-                chatView.setText(chat.getMessage());
+            public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
+                holder.setName(chat.getName());
+                holder.setText(chat.getMessage());
 
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser != null && chat.getUid().equals(currentUser.getUid())) {
-                    chatView.setIsSender(true);
+                    holder.setIsSender(true);
                 } else {
-                    chatView.setIsSender(false);
+                    holder.setIsSender(false);
                 }
             }
 
             @Override
             protected void onDataChanged() {
-                // if there are no chat messages, show a view that invites the user to add a message
-                mEmptyListView.setVisibility(mRecyclerViewAdapter.getItemCount() == 0 ? View.VISIBLE : View.INVISIBLE);
+                // If there are no chat messages, show a view that invites the user to add a message.
+                mEmptyListMessage.setVisibility(mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         };
 
         // Scroll to bottom on new messages
-        mRecyclerViewAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                mManager.smoothScrollToPosition(mMessages, null, mRecyclerViewAdapter.getItemCount());
+                mManager.smoothScrollToPosition(mMessages, null, mAdapter.getItemCount());
             }
         });
 
-        mMessages.setAdapter(mRecyclerViewAdapter);
+        mMessages.setAdapter(mAdapter);
     }
 
     private void signInAnonymously() {
         Toast.makeText(this, "Signing in...", Toast.LENGTH_SHORT).show();
         mAuth.signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
-                        if (task.isSuccessful()) {
-                            Toast.makeText(ChatActivity.this, "Signed In",
-                                    Toast.LENGTH_SHORT).show();
-                            attachRecyclerViewAdapter();
-                        } else {
-                            Toast.makeText(ChatActivity.this, "Sign In Failed",
-                                    Toast.LENGTH_SHORT).show();
-                        }
+                    public void onSuccess(AuthResult result) {
+                        attachRecyclerViewAdapter();
                     }
-                });
+                })
+                .addOnCompleteListener(new SignInResultNotifier(this));
     }
 
-    public boolean isSignedIn() {
+    private boolean isSignedIn() {
         return mAuth.getCurrentUser() != null;
     }
 
-    public void updateUI() {
+    private void updateUI() {
         // Sending only allowed when signed in
         mSendButton.setEnabled(isSignedIn());
         mMessageEdit.setEnabled(isSignedIn());
-    }
-
-    public static class Chat {
-        private String mName;
-        private String mMessage;
-        private String mUid;
-
-        public Chat() {
-            // Needed for Firebase
-        }
-
-        public Chat(String name, String message, String uid) {
-            mName = name;
-            mMessage = message;
-            mUid = uid;
-        }
-
-        public String getName() {
-            return mName;
-        }
-
-        public void setName(String name) {
-            mName = name;
-        }
-
-        public String getMessage() {
-            return mMessage;
-        }
-
-        public void setMessage(String message) {
-            mMessage = message;
-        }
-
-        public String getUid() {
-            return mUid;
-        }
-
-        public void setUid(String uid) {
-            mUid = uid;
-        }
-    }
-
-    public static class ChatHolder extends RecyclerView.ViewHolder {
-        private final TextView mNameField;
-        private final TextView mTextField;
-        private final FrameLayout mLeftArrow;
-        private final FrameLayout mRightArrow;
-        private final RelativeLayout mMessageContainer;
-        private final LinearLayout mMessage;
-        private final int mGreen300;
-        private final int mGray300;
-
-        public ChatHolder(View itemView) {
-            super(itemView);
-            mNameField = (TextView) itemView.findViewById(R.id.name_text);
-            mTextField = (TextView) itemView.findViewById(R.id.message_text);
-            mLeftArrow = (FrameLayout) itemView.findViewById(R.id.left_arrow);
-            mRightArrow = (FrameLayout) itemView.findViewById(R.id.right_arrow);
-            mMessageContainer = (RelativeLayout) itemView.findViewById(R.id.message_container);
-            mMessage = (LinearLayout) itemView.findViewById(R.id.message);
-            mGreen300 = ContextCompat.getColor(itemView.getContext(), R.color.material_green_300);
-            mGray300 = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
-        }
-
-        public void setIsSender(boolean isSender) {
-            final int color;
-            if (isSender) {
-                color = mGreen300;
-                mLeftArrow.setVisibility(View.GONE);
-                mRightArrow.setVisibility(View.VISIBLE);
-                mMessageContainer.setGravity(Gravity.END);
-            } else {
-                color = mGray300;
-                mLeftArrow.setVisibility(View.VISIBLE);
-                mRightArrow.setVisibility(View.GONE);
-                mMessageContainer.setGravity(Gravity.START);
-            }
-
-            ((GradientDrawable) mMessage.getBackground()).setColor(color);
-            ((RotateDrawable) mLeftArrow.getBackground()).getDrawable()
-                    .setColorFilter(color, PorterDuff.Mode.SRC);
-            ((RotateDrawable) mRightArrow.getBackground()).getDrawable()
-                    .setColorFilter(color, PorterDuff.Mode.SRC);
-        }
-
-        public void setName(String name) {
-            mNameField.setText(name);
-        }
-
-        public void setText(String text) {
-            mTextField.setText(text);
-        }
     }
 }

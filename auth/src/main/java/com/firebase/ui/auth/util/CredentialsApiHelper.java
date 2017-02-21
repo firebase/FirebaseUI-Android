@@ -31,7 +31,8 @@ import com.google.android.gms.tasks.TaskCompletionSource;
  * A {@link com.google.android.gms.tasks.Task Task} based wrapper for the Smart Lock for Passwords
  * API.
  */
-public class CredentialsApiHelper {
+@Deprecated
+public class CredentialsApiHelper implements CredentialTaskApi {
     @NonNull
     private final GoogleApiClientTaskHelper mClientHelper;
 
@@ -51,6 +52,7 @@ public class CredentialsApiHelper {
         return new CredentialsApiHelper(taskHelper);
     }
 
+    @Override
     public Task<Status> delete(final Credential credential) {
         return mClientHelper.getConnectedGoogleApiClient().continueWithTask(
                 new ExceptionForwardingContinuation<GoogleApiClient, Status>() {
@@ -64,6 +66,7 @@ public class CredentialsApiHelper {
                 });
     }
 
+    @Override
     public Task<Status> disableAutoSignIn() {
         return mClientHelper.getConnectedGoogleApiClient().continueWithTask(
                 new ExceptionForwardingContinuation<GoogleApiClient, Status>() {
@@ -82,12 +85,12 @@ public class CredentialsApiHelper {
                 });
     }
 
-    private abstract static class ExceptionForwardingContinuation<InT, OutT>
-            implements Continuation<InT, Task<OutT>> {
+    private abstract static class ExceptionForwardingContinuation<TIn, TOut>
+            implements Continuation<TIn, Task<TOut>> {
 
         @Override
-        public final Task<OutT> then(@NonNull Task<InT> task) throws Exception {
-            TaskCompletionSource<OutT> source = new TaskCompletionSource<>();
+        public final Task<TOut> then(@NonNull Task<TIn> task) throws Exception {
+            TaskCompletionSource<TOut> source = new TaskCompletionSource<>();
             // calling task.getResult() will implicitly re-throw the exception of the original
             // task, which will be returned as the result for the output task. Similarly,
             // if process() throws an exception, this will be turned into the task result.
@@ -95,7 +98,7 @@ public class CredentialsApiHelper {
             return source.getTask();
         }
 
-        protected abstract void process(InT in, TaskCompletionSource<OutT> result);
+        protected abstract void process(TIn in, TaskCompletionSource<TOut> result);
     }
 
     private static final class TaskResultCaptor<R extends Result> implements ResultCallback<R> {

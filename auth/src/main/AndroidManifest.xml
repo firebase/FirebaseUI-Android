@@ -5,8 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <application
-        android:supportsRtl="false">
+    <application>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -20,10 +19,14 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_application_id"/>
 
+        <meta-data
+            android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
+            android:value="${enableFbLogging}"/>
+
         <activity
             android:name=".KickoffActivity"
-            android:exported="false"
             android:label=""
+            android:exported="false"
             android:theme="@style/FirebaseUI.Transparent"/>
 
         <activity

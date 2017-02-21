@@ -32,7 +32,7 @@ class FirebaseIndexArray extends FirebaseArray {
     private static final String TAG = FirebaseIndexArray.class.getSimpleName();
 
     private Query mQuery;
-    private OnChangedListener mListener;
+    private ChangeEventListener mListener;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
@@ -74,7 +74,7 @@ class FirebaseIndexArray extends FirebaseArray {
         return index;
     }
 
-    private boolean isMatch(int index, String key) {
+    private boolean isKeyAtIndex(String key, int index) {
         return index >= 0 && index < getCount() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
@@ -105,9 +105,9 @@ class FirebaseIndexArray extends FirebaseArray {
         super.onChildRemoved(keySnapshot);
         super.setOnChangedListener(mListener);
 
-        if (isMatch(index, key)) {
+        if (isKeyAtIndex(key, index)) {
             mDataSnapshots.remove(index);
-            notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
+            notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
         }
     }
 
@@ -120,11 +120,11 @@ class FirebaseIndexArray extends FirebaseArray {
         super.onChildMoved(keySnapshot, previousChildKey);
         super.setOnChangedListener(mListener);
 
-        if (isMatch(oldIndex, key)) {
+        if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            notifyChangedListeners(OnChangedListener.EventType.MOVED, newIndex, oldIndex);
+            notifyChangedListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
         }
     }
 
@@ -135,7 +135,7 @@ class FirebaseIndexArray extends FirebaseArray {
     }
 
     @Override
-    public void setOnChangedListener(OnChangedListener listener) {
+    public void setOnChangedListener(ChangeEventListener listener) {
         super.setOnChangedListener(listener);
         mListener = listener;
     }
@@ -147,17 +147,17 @@ class FirebaseIndexArray extends FirebaseArray {
             int index = getIndexForKey(key);
 
             if (snapshot.getValue() != null) {
-                if (!isMatch(index, key)) {
+                if (!isKeyAtIndex(key, index)) {
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangedListeners(OnChangedListener.EventType.ADDED, index);
+                    notifyChangedListeners(ChangeEventListener.EventType.ADDED, index);
                 } else {
                     mDataSnapshots.set(index, snapshot);
-                    notifyChangedListeners(OnChangedListener.EventType.CHANGED, index);
+                    notifyChangedListeners(ChangeEventListener.EventType.CHANGED, index);
                 }
             } else {
-                if (isMatch(index, key)) {
+                if (isKeyAtIndex(key, index)) {
                     mDataSnapshots.remove(index);
-                    notifyChangedListeners(OnChangedListener.EventType.REMOVED, index);
+                    notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
                 } else {
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
                 }
