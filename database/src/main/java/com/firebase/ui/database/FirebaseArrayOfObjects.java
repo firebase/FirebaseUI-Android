@@ -60,8 +60,7 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
                                                           Class<T> modelClass,
                                                           SnapshotParser<T> parser) {
         if (snapshots instanceof FirebaseArray) {
-            return new FirebaseArrayOfObjectsOptimized<>(
-                    (FirebaseArray) snapshots, modelClass, parser);
+            return new Optimized<>((FirebaseArray) snapshots, modelClass, parser);
         } else {
             return new FirebaseArrayOfObjects<>(snapshots, modelClass, parser);
         }
@@ -176,13 +175,10 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
         return mSnapshots.toString();
     }
 
-    protected static class FirebaseArrayOfObjectsOptimized<E> extends FirebaseArrayOfObjects<E>
-            implements ChangeEventListener {
+    protected static class Optimized<E> extends FirebaseArrayOfObjects<E> implements ChangeEventListener {
         protected List<E> mObjects = new ArrayList<>();
 
-        public FirebaseArrayOfObjectsOptimized(FirebaseArray snapshots,
-                                               Class<E> modelClass,
-                                               SnapshotParser<E> parser) {
+        public Optimized(FirebaseArray snapshots, Class<E> modelClass, SnapshotParser<E> parser) {
             super(snapshots, modelClass, parser);
             snapshots.addChangeEventListener(this);
         }
