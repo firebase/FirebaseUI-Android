@@ -23,15 +23,12 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
      * @param snapshots  a list of {@link DataSnapshot}s to be converted to a model type
      * @param modelClass the model representation of a {@link DataSnapshot}
      */
-    protected FirebaseArrayOfObjects(List<DataSnapshot> snapshots, Class<E> modelClass) {
+    protected FirebaseArrayOfObjects(List<DataSnapshot> snapshots,
+                                     Class<E> modelClass,
+                                     SnapshotParser<E> parser) {
         mSnapshots = snapshots;
         mEClass = modelClass;
-        mParser = new SnapshotParser<E>() {
-            @Override
-            public E parseSnapshot(DataSnapshot snapshot) {
-                return snapshot.getValue(mEClass);
-            }
-        };
+        mParser = parser;
     }
 
     /**
@@ -39,12 +36,13 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
      * @param modelClass the model representation of a {@link DataSnapshot}
      */
     public static <T> FirebaseArrayOfObjects<T> newInstance(List<DataSnapshot> snapshots,
-                                                            Class<T> modelClass) {
-        if (snapshots instanceof FirebaseArray) {
-            return new FirebaseArrayOfObjectsOptimized<>((FirebaseArray) snapshots, modelClass);
-        } else {
-            return new FirebaseArrayOfObjects<>(snapshots, modelClass);
-        }
+                                                            final Class<T> modelClass) {
+        return getArray(snapshots, modelClass, new SnapshotParser<T>() {
+            @Override
+            public T parseSnapshot(DataSnapshot snapshot) {
+                return snapshot.getValue(modelClass);
+            }
+        });
     }
 
     /**
@@ -55,9 +53,17 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
     public static <T> FirebaseArrayOfObjects<T> newInstance(List<DataSnapshot> snapshots,
                                                             Class<T> modelClass,
                                                             SnapshotParser<T> parser) {
-        FirebaseArrayOfObjects<T> array = newInstance(snapshots, modelClass);
-        array.mParser = parser;
-        return array;
+        return getArray(snapshots, modelClass, parser);
+    }
+
+    private static <T> FirebaseArrayOfObjects<T> getArray(List<DataSnapshot> snapshots,
+                                                          Class<T> modelClass,
+                                                          SnapshotParser<T> parser) {
+        if (snapshots instanceof FirebaseArray) {
+            return new Optimized<>((FirebaseArray) snapshots, modelClass, parser);
+        } else {
+            return new FirebaseArrayOfObjects<>(snapshots, modelClass, parser);
+        }
     }
 
     public List<DataSnapshot> getSnapshots() {
@@ -169,12 +175,11 @@ public class FirebaseArrayOfObjects<E> extends ImmutableList<E> {
         return mSnapshots.toString();
     }
 
-    protected static class FirebaseArrayOfObjectsOptimized<E> extends FirebaseArrayOfObjects<E>
-            implements ChangeEventListener {
+    protected static class Optimized<E> extends FirebaseArrayOfObjects<E> implements ChangeEventListener {
         protected List<E> mObjects = new ArrayList<>();
 
-        public FirebaseArrayOfObjectsOptimized(FirebaseArray snapshots, Class<E> modelClass) {
-            super(snapshots, modelClass);
+        public Optimized(FirebaseArray snapshots, Class<E> modelClass, SnapshotParser<E> parser) {
+            super(snapshots, modelClass, parser);
             snapshots.addChangeEventListener(this);
         }
 
