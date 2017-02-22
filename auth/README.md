@@ -345,6 +345,23 @@ AuthUI.getInstance()
         });
 ```
 
+### Using the `GoogleApiClient` in your own app with `enableAutoManage` 
+
+FirebaseUI Auth heavily relies on the `GoogleApiClient` and its `enableAutoManage` method to
+help prevent memory leaks. However, using `enableAutoManage` can be risky because the method will throw
+an `IllegalStateException` if another `GoogleApiClient` is being managed with the same id.
+To help solve this problem, FirebaseUI provides a helper method to get a safe id that is
+not being used: `GoogleApiHelper#getSafeAutoManageId()`.
+
+#### Example usage:
+
+```java
+new GoogleApiClient.Builder(mActivity)
+        .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), null /* listener */)
+        .addApi(...)
+        .build()
+```
+
 ### Authentication flow chart
 
 The authentication flow implemented on Android is more complex than on other
