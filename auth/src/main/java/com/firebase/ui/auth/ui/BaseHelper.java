@@ -80,10 +80,6 @@ public class BaseHelper {
         return mProgressDialog != null && mProgressDialog.isShowing();
     }
 
-    public String getAppName() {
-        return mFlowParams.appName;
-    }
-
     public FirebaseApp getFirebaseApp() {
         return FirebaseApp.getInstance(mFlowParams.appName);
     }
