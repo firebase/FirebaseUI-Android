@@ -47,6 +47,7 @@ public class ChooserActivity extends AppCompatActivity {
 
         mActivities.setLayoutManager(new LinearLayoutManager(this));
         mActivities.setAdapter(new ActivityChooserAdapter());
+        mActivities.setHasFixedSize(true);
     }
 
     private static class ActivityChooserAdapter extends RecyclerView.Adapter<ActivityStarterHolder> {
