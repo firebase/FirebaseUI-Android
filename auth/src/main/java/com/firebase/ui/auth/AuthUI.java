@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -447,9 +448,9 @@ public class AuthUI {
          */
         public T setTheme(@StyleRes int theme) {
             Preconditions.checkValidStyle(
-                mApp.getApplicationContext(),
-                theme,
-                "theme identifier is unknown or not a style definition");
+                    mApp.getApplicationContext(),
+                    theme,
+                    "theme identifier is unknown or not a style definition");
             mTheme = theme;
             return (T) this;
         }
@@ -539,6 +540,7 @@ public class AuthUI {
             return (T) this;
         }
 
+        @CallSuper
         public Intent build() {
             if (mProviders.isEmpty()) {
                 mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
@@ -547,7 +549,7 @@ public class AuthUI {
             return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
         }
 
-        @VisibleForTesting()
+        @VisibleForTesting
         public abstract FlowParameters getFlowParams();
     }
 
@@ -575,8 +577,7 @@ public class AuthUI {
         @Override
         public Intent build() {
             if (FirebaseAuth.getInstance(mApp).getCurrentUser() == null) {
-                throw new IllegalStateException(
-                    "User must be currently logged in to reauthenticate");
+                throw new IllegalStateException("User must be currently logged in to reauthenticate");
             }
 
             return super.build();
