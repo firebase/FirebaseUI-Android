@@ -15,17 +15,14 @@
 package com.firebase.uidemo;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.uidemo.auth.AuthUiActivity;
@@ -71,24 +68,9 @@ public class ChooserActivity extends AppCompatActivity {
 
         @Override
         public ActivityStarterHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.activity_chooser_item, parent, false);
-
-            // Set custom margins
-            int marginsInPx = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    8, // 8dp
-                    parent.getResources().getDisplayMetrics());
-            RelativeLayout.LayoutParams text1Params =
-                    (RelativeLayout.LayoutParams) itemView.findViewById(android.R.id.text1)
-                            .getLayoutParams();
-            RelativeLayout.LayoutParams text2Params =
-                    (RelativeLayout.LayoutParams) itemView.findViewById(android.R.id.text2)
-                            .getLayoutParams();
-            text1Params.topMargin = marginsInPx;
-            text2Params.bottomMargin = marginsInPx;
-
-            return new ActivityStarterHolder(itemView);
+            return new ActivityStarterHolder(
+                    LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.activity_chooser_item, parent, false));
         }
 
         @Override
@@ -110,10 +92,8 @@ public class ChooserActivity extends AppCompatActivity {
 
         public ActivityStarterHolder(View itemView) {
             super(itemView);
-            mTitle = (TextView) itemView.findViewById(android.R.id.text1);
-            mDescription = (TextView) itemView.findViewById(android.R.id.text2);
-
-            mTitle.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            mTitle = (TextView) itemView.findViewById(R.id.text1);
+            mDescription = (TextView) itemView.findViewById(R.id.text2);
         }
 
         private void bind(Class aClass, @StringRes int name, @StringRes int description) {
