@@ -55,7 +55,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -356,10 +355,32 @@ public class AuthUI {
             parcel.writeStringList(mScopes);
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            IdpConfig config = (IdpConfig) o;
+
+            return mProviderId.equals(config.mProviderId);
+        }
+
+        @Override
+        public int hashCode() {
+            return mProviderId.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "IdpConfig{" +
+                    "mProviderId='" + mProviderId + '\'' +
+                    ", mScopes=" + mScopes +
+                    '}';
+        }
+
         public static class Builder {
             private String mProviderId;
             private List<String> mScopes = new ArrayList<>();
-
 
             /**
              * Builds the configuration parameters for an identity provider.
@@ -406,13 +427,12 @@ public class AuthUI {
     public final class SignInIntentBuilder {
         private int mLogo = NO_LOGO;
         private int mTheme = getDefaultTheme();
-        private LinkedHashSet<IdpConfig> mProviders = new LinkedHashSet<>();
+        private List<IdpConfig> mProviders = new ArrayList<>();
         private String mTosUrl;
         private boolean mIsSmartLockEnabled = true;
         private boolean mAllowNewEmailAccounts = true;
 
         private SignInIntentBuilder() {
-            mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
         }
 
         /**
@@ -458,15 +478,14 @@ public class AuthUI {
          */
         public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
             mProviders.clear();
-            Set<String> configuredProviders = new HashSet<>();
-            for (IdpConfig idpConfig : idpConfigs) {
-                if (configuredProviders.contains(idpConfig.getProviderId())) {
+            for (IdpConfig config : idpConfigs) {
+                if (mProviders.contains(config)) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                                                               + idpConfig.getProviderId()
+                                                               + config.getProviderId()
                                                                + " was set twice.");
+                } else {
+                    mProviders.add(config);
                 }
-                configuredProviders.add(idpConfig.getProviderId());
-                mProviders.add(idpConfig);
             }
             return this;
         }
@@ -495,6 +514,15 @@ public class AuthUI {
             return this;
         }
 
+        private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
+            for (IdpConfig config : mProviders) {
+                if (config.getProviderId().equals(providerId)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /**
          * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
          * <p>
@@ -515,23 +543,18 @@ public class AuthUI {
             return this;
         }
 
-        private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
-            for (IdpConfig config : mProviders) {
-                if (config.getProviderId().equals(providerId)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public Intent build() {
             return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
         }
 
         @VisibleForTesting()
         public FlowParameters getFlowParams() {
+            if (mProviders.isEmpty()) {
+                mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+            }
+
             return new FlowParameters(mApp.getName(),
-                                      new ArrayList<>(mProviders),
+                                      mProviders,
                                       mTheme,
                                       mLogo,
                                       mTosUrl,
