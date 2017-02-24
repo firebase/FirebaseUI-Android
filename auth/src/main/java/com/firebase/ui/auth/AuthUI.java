@@ -23,7 +23,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.FragmentActivity;
 
 import com.facebook.login.LoginManager;
@@ -549,8 +548,7 @@ public class AuthUI {
             return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
         }
 
-        @VisibleForTesting
-        public abstract FlowParameters getFlowParams();
+        protected abstract FlowParameters getFlowParams();
     }
 
     /**
@@ -584,7 +582,7 @@ public class AuthUI {
         }
 
         @Override
-        public FlowParameters getFlowParams() {
+        protected FlowParameters getFlowParams() {
             return new FlowParameters(
                     mApp.getName(),
                     mProviders,
@@ -619,8 +617,7 @@ public class AuthUI {
         }
 
         @Override
-        @VisibleForTesting()
-        public FlowParameters getFlowParams() {
+        protected FlowParameters getFlowParams() {
             return new FlowParameters(
                     mApp.getName(),
                     mProviders,
