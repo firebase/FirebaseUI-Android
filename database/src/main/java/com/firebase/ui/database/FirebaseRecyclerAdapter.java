@@ -67,6 +67,9 @@ import java.lang.reflect.InvocationTargetException;
  *     };
  *     recycler.setAdapter(mAdapter);
  * </pre>
+ * <p>
+ * To avoid Context leaks, make sure you invoke {@link #cleanup() cleanup}
+ * <p>
  *
  * @param <T>  The Java class that maps to the type of objects stored in the Firebase location.
  * @param <VH> The ViewHolder class that contains the Views in the layout that is shown for each object.
