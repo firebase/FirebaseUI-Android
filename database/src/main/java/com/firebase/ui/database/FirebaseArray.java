@@ -43,14 +43,7 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements Chil
      *              {@code endAt()}.
      */
     public FirebaseArray(Query query) {
-        // TODO: Instead of default parser, just fail on getObject if no parser is set
-        this(query, new SnapshotParser<T>() {
-            @Override
-            public T parseSnapshot(DataSnapshot snapshot) {
-                // This must mean that <T> is DataSnapshot, or it will explode.
-                return (T) snapshot;
-            }
-        });
+        this(query, null);
     }
 
     public FirebaseArray(Query query, SnapshotParser<T> parser) {
@@ -60,18 +53,8 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements Chil
 
     @Override
     public T getObject(int index) {
-        Preconditions.checkNotNull(mParser);
-
         // TODO: Cache this!
-        return mParser.parseSnapshot(get(index));
-    }
-
-    @Override
-    public T getObject(String key) {
-        Preconditions.checkNotNull(mParser);
-
-        // TODO: Implement and cache this!
-        return null;
+        return super.getObject(index);
     }
 
     @Override
@@ -179,7 +162,6 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements Chil
         return mSnapshots.isEmpty();
     }
 
-    // TODO: Maybe a containsObject?
     @Override
     public boolean contains(Object o) {
         return mSnapshots.contains(o);
@@ -195,7 +177,6 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements Chil
         return new ImmutableIterator(mSnapshots.iterator());
     }
 
-    // TODO(samstern): probably needs to be killed
     @Override
     public DataSnapshot[] toArray() {
         return mSnapshots.toArray(new DataSnapshot[mSnapshots.size()]);

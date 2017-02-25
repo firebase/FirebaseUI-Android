@@ -38,7 +38,7 @@ public class FirebaseIndexArrayOfObjectsTest {
 
     private DatabaseReference mRef;
     private DatabaseReference mKeyRef;
-    private ObservableSnapshotArray mArray;
+    private ObservableSnapshotArray<Bean> mArray;
     private ChangeEventListener mListener;
 
     @Before
@@ -49,7 +49,7 @@ public class FirebaseIndexArrayOfObjectsTest {
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray").child("objects");
 
         // TODO(samstern): FIX ALL DIS
-        mArray = new FirebaseIndexArray(mKeyRef, mRef);
+        mArray = new FirebaseIndexArray<>(mKeyRef, mRef);
         mRef.removeValue();
         mKeyRef.removeValue();
 

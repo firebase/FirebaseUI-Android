@@ -15,8 +15,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnapshot> {
 
     protected final List<ChangeEventListener> mListeners = new CopyOnWriteArrayList<>();
-
-    // TODO(samstern):Probably none of this should be in the super class!
     protected final SnapshotParser<T> mParser;
 
     public ObservableSnapshotArray() {
@@ -105,9 +103,9 @@ public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnaps
     }
 
     // TODO(samstern): Document
-    public abstract T getObject(int index);
-
-    // TODO: Do we need this method at all?
-    public abstract T getObject(String key);
+    public T getObject(int index) {
+        Preconditions.checkNotNull(mParser);
+        return mParser.parseSnapshot(get(index));
+    }
 
 }

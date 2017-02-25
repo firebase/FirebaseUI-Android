@@ -37,7 +37,7 @@ public interface ChangeEventListener {
     }
 
     /**
-     * TODO(samstern): Docs
+     * TODO(samstern): Document.
      * A callback for when a child has changed in FirebaseArray.
      *
      * @param type     The type of event received

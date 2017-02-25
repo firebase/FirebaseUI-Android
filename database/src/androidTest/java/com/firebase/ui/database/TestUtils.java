@@ -34,7 +34,7 @@ public class TestUtils {
                 .build(), APP_NAME);
     }
 
-    public static ChangeEventListener runAndWaitUntil(FirebaseArray array,
+    public static ChangeEventListener runAndWaitUntil(ObservableSnapshotArray array,
                                                       Runnable task,
                                                       Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
@@ -74,7 +74,7 @@ public class TestUtils {
         return listener;
     }
 
-    public static boolean isValuesEqual(FirebaseArray array, int[] expected) {
+    public static boolean isValuesEqual(ObservableSnapshotArray<?> array, int[] expected) {
         if (array.size() != expected.length) return false;
         for (int i = 0; i < array.size(); i++) {
             if (!array.get(i).getValue(Integer.class).equals(expected[i])) {
@@ -84,7 +84,7 @@ public class TestUtils {
         return true;
     }
 
-    public static Bean getBean(FirebaseArray array, int index) {
+    public static Bean getBean(ObservableSnapshotArray<?> array, int index) {
         return array.get(index).getValue(Bean.class);
     }
 

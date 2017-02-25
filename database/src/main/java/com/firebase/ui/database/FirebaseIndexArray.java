@@ -39,10 +39,9 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
 
     private FirebaseArray<DataSnapshot> mKeySnapshots;
-
-    // TODO
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
+    // TODO(samstern): Need to pass in a SnapshotParser.
     public FirebaseIndexArray() {}
 
     /**
@@ -59,26 +58,20 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
         mKeySnapshots.addChangeEventListener(this);
     }
 
-    // TODO(samstern): These comments suck
-    /** ===================== Start ChangeEventListener  ===================================== **/
-
     @Override
     public void onChildChanged(EventType type, DataSnapshot snapshot, int index, int oldIndex) {
         switch (type) {
             case ADDED:
-                // TODO
-                onKeyAdded(index);
+                onKeyAdded(snapshot);
                 break;
             case MOVED:
-                // TODO
-                onKeyMoved(index, oldIndex);
+                onKeyMoved(snapshot, index, oldIndex);
                 break;
             case CHANGED:
-                // TODO: Can this be a no-op?
+                // TODO(samstern): Can this be a no-op?
                 break;
             case REMOVED:
-                // TODO
-                onKeyRemoved(index, snapshot);
+                onKeyRemoved(snapshot, index);
                 break;
         }
     }
@@ -92,8 +85,6 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
     public void onCancelled(DatabaseError error) {
         Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
     }
-
-    /** ============================= End ChangeEventListener  =============================== **/
 
     @Override
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
@@ -109,17 +100,11 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
 
     @Override
     public T getObject(int index) {
-        // TODO
-        return null;
+        // TODO: Cache this!
+        return super.getObject(index);
     }
 
-    @Override
-    public T getObject(String key) {
-        // TODO
-        return null;
-    }
-
-    // TODO(samstern): Figure out what's going on here
+    // TODO(samstern): Figure out what's going on here, make sure it's still right
     private int getIndexForKey(String key) {
         int dataCount = size();
         int index = 0;
@@ -141,20 +126,18 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
         return index >= 0 && index < size() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
-    // TODO(samstern): Should this take a string?
-    protected void onKeyAdded(int index) {
-        String key = mKeySnapshots.get(index).getKey();
+    protected void onKeyAdded(DataSnapshot data) {
+        String key = data.getKey();
         Query ref = mDataRef.child(key);
 
         // Start listening
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
-
-        // TODO(samstern): Who do notify and how?
     }
 
-    protected void onKeyMoved(int index, int oldIndex) {
-        String key = mKeySnapshots.get(index).getKey();
+    protected void onKeyMoved(DataSnapshot data, int index, int oldIndex) {
+        String key = data.getKey();
 
+        // TODO(samstern): I don't think this block is correct anymore
         if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
@@ -163,9 +146,7 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
         }
     }
 
-    protected void onKeyRemoved(int index, DataSnapshot data) {
-        // TODO(samstern): How to get the removed data?
-
+    protected void onKeyRemoved(DataSnapshot data, int index) {
         String key = data.getKey();
         mDataRef.child(key).removeEventListener(mRefs.remove(mDataRef.getRef().child(key)));
 
@@ -188,7 +169,6 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
                 if (!isKeyAtIndex(key, index)) {
                     // We don't already know about this data, add it
                     mDataSnapshots.add(index, snapshot);
-                    // TODO(samstern): notifyChangeEventListeners needs to move to the base class
                     notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, snapshot, index);
                 } else {
                     // We already know about this data, just update it
