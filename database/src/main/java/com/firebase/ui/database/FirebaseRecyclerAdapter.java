@@ -29,9 +29,10 @@ import java.lang.reflect.InvocationTargetException;
  */
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
+
     private static final String TAG = "FirebaseRecyclerAdapter";
 
-    protected FirebaseArray mSnapshots;
+    protected ObservableSnapshotArray<T> mSnapshots;
     protected Class<T> mModelClass;
     protected Class<VH> mViewHolderClass;
     protected int mModelLayout;
@@ -46,7 +47,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * @param viewHolderClass The class that hold references to all sub-views in an instance
      *                        modelLayout.
      */
-    public FirebaseRecyclerAdapter(FirebaseArray snapshots,
+    public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
                                    Class<T> modelClass,
                                    @LayoutRes int modelLayout,
                                    Class<VH> viewHolderClass) {
@@ -62,13 +63,20 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * @param query The Firebase location to watch for data changes. Can also be a slice of a
      *              location, using some combination of {@code limit()}, {@code startAt()}, and
      *              {@code endAt()}.
-     * @see #FirebaseRecyclerAdapter(FirebaseArray, Class, int, Class)
+     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, Class, int, Class)
      */
     public FirebaseRecyclerAdapter(Class<T> modelClass,
                                    @LayoutRes int modelLayout,
                                    Class<VH> viewHolderClass,
                                    Query query) {
-        this(new FirebaseArray(query), modelClass, modelLayout, viewHolderClass);
+
+        // TODO(samstern): DRY with above constructor
+        mSnapshots = new FirebaseArray<T>(query, this);
+        mModelClass = modelClass;
+        mViewHolderClass = viewHolderClass;
+        mModelLayout = modelLayout;
+
+        startListening();
     }
 
     @Override
@@ -84,7 +92,8 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    public void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
+    public void onChildChanged(ChangeEventListener.EventType type, DataSnapshot snapshot,
+                               int index, int oldIndex) {
         switch (type) {
             case ADDED:
                 notifyItemInserted(index);
@@ -114,7 +123,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     @Override
     public T getItem(int position) {
-        return parseSnapshot(mSnapshots.get(position));
+        return mSnapshots.getObject(position);
     }
 
     @Override

@@ -32,12 +32,18 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-public class FirebaseIndexArray extends FirebaseArray {
+public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements ChangeEventListener {
     private static final String TAG = "FirebaseIndexArray";
 
     private DatabaseReference mDataRef;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
+
+    private FirebaseArray<DataSnapshot> mKeySnapshots;
+
+    // TODO
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
+
+    public FirebaseIndexArray() {}
 
     /**
      * @param keyQuery The Firebase location containing the list of keys to be found in {@code
@@ -47,9 +53,47 @@ public class FirebaseIndexArray extends FirebaseArray {
      *                 keyQuery}'s location represents a list item in the {@link RecyclerView}.
      */
     public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef) {
-        super(keyQuery);
+        mKeySnapshots = new FirebaseArray<>(keyQuery);
         mDataRef = dataRef;
+
+        mKeySnapshots.addChangeEventListener(this);
     }
+
+    // TODO(samstern): These comments suck
+    /** ===================== Start ChangeEventListener  ===================================== **/
+
+    @Override
+    public void onChildChanged(EventType type, DataSnapshot snapshot, int index, int oldIndex) {
+        switch (type) {
+            case ADDED:
+                // TODO
+                onKeyAdded(index);
+                break;
+            case MOVED:
+                // TODO
+                onKeyMoved(index, oldIndex);
+                break;
+            case CHANGED:
+                // TODO: Can this be a no-op?
+                break;
+            case REMOVED:
+                // TODO
+                onKeyRemoved(index, snapshot);
+                break;
+        }
+    }
+
+    @Override
+    public void onDataChanged() {
+        // TODO: Anything?
+    }
+
+    @Override
+    public void onCancelled(DatabaseError error) {
+        Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
+    }
+
+    /** ============================= End ChangeEventListener  =============================== **/
 
     @Override
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
@@ -63,11 +107,24 @@ public class FirebaseIndexArray extends FirebaseArray {
         }
     }
 
+    @Override
+    public T getObject(int index) {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public T getObject(String key) {
+        // TODO
+        return null;
+    }
+
+    // TODO(samstern): Figure out what's going on here
     private int getIndexForKey(String key) {
         int dataCount = size();
         int index = 0;
         for (int keyIndex = 0; index < dataCount; keyIndex++) {
-            String superKey = super.get(keyIndex).getKey();
+            String superKey = mKeySnapshots.get(keyIndex).getKey();
             if (key.equals(superKey)) {
                 break;
             } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
@@ -77,67 +134,50 @@ public class FirebaseIndexArray extends FirebaseArray {
         return index;
     }
 
+    /**
+     * Determines if a DataSnapshot with the given key is present at the given index.
+     */
     private boolean isKeyAtIndex(String key, int index) {
         return index >= 0 && index < size() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
-    @Override
-    public void onChildAdded(DataSnapshot keySnapshot, String previousChildKey) {
-        setShouldNotifyListeners(false);
-        super.onChildAdded(keySnapshot, previousChildKey);
-        setShouldNotifyListeners(true);
+    // TODO(samstern): Should this take a string?
+    protected void onKeyAdded(int index) {
+        String key = mKeySnapshots.get(index).getKey();
+        Query ref = mDataRef.child(key);
 
-        Query ref = mDataRef.child(keySnapshot.getKey());
+        // Start listening
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
+
+        // TODO(samstern): Who do notify and how?
     }
 
-    @Override
-    public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
-        setShouldNotifyListeners(false);
-        super.onChildChanged(snapshot, previousChildKey);
-        setShouldNotifyListeners(true);
-    }
-
-    @Override
-    public void onChildRemoved(DataSnapshot keySnapshot) {
-        String key = keySnapshot.getKey();
-        int index = getIndexForKey(key);
-        mDataRef.child(key).removeEventListener(mRefs.remove(mDataRef.getRef().child(key)));
-
-        setShouldNotifyListeners(false);
-        super.onChildRemoved(keySnapshot);
-        setShouldNotifyListeners(true);
-
-        if (isKeyAtIndex(key, index)) {
-            mDataSnapshots.remove(index);
-            notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
-        }
-    }
-
-    @Override
-    public void onChildMoved(DataSnapshot keySnapshot, String previousChildKey) {
-        String key = keySnapshot.getKey();
-        int oldIndex = getIndexForKey(key);
-
-        setShouldNotifyListeners(false);
-        super.onChildMoved(keySnapshot, previousChildKey);
-        setShouldNotifyListeners(true);
+    protected void onKeyMoved(int index, int oldIndex) {
+        String key = mKeySnapshots.get(index).getKey();
 
         if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
-            notifyChangeEventListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+            notifyChangeEventListeners(ChangeEventListener.EventType.MOVED, snapshot, newIndex, oldIndex);
         }
     }
 
-    @Override
-    public void onCancelled(DatabaseError error) {
-        Log.e(TAG,
-              "A fatal error occurred retrieving the necessary keys to populate your adapter.");
-        super.onCancelled(error);
+    protected void onKeyRemoved(int index, DataSnapshot data) {
+        // TODO(samstern): How to get the removed data?
+
+        String key = data.getKey();
+        mDataRef.child(key).removeEventListener(mRefs.remove(mDataRef.getRef().child(key)));
+
+        if (isKeyAtIndex(key, index)) {
+            DataSnapshot snapshot = mDataSnapshots.remove(index);
+            notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
+        }
     }
 
+    /**
+     * A ValueEventListener attached to the joined child data.
+     */
     protected class DataRefListener implements ValueEventListener {
         @Override
         public void onDataChange(DataSnapshot snapshot) {
@@ -146,17 +186,22 @@ public class FirebaseIndexArray extends FirebaseArray {
 
             if (snapshot.getValue() != null) {
                 if (!isKeyAtIndex(key, index)) {
+                    // We don't already know about this data, add it
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, index);
+                    // TODO(samstern): notifyChangeEventListeners needs to move to the base class
+                    notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, snapshot, index);
                 } else {
+                    // We already know about this data, just update it
                     mDataSnapshots.set(index, snapshot);
-                    notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, index);
+                    notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, snapshot, index);
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
+                    // This data has disappeared, remove it
                     mDataSnapshots.remove(index);
-                    notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
+                    notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
                 } else {
+                    // Data we never knew about has disappeared
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
                 }
             }
@@ -191,6 +236,12 @@ public class FirebaseIndexArray extends FirebaseArray {
     @Override
     public DataSnapshot[] toArray() {
         return mDataSnapshots.toArray(new DataSnapshot[mDataSnapshots.size()]);
+    }
+
+    @NonNull
+    @Override
+    public <T> T[] toArray(@NonNull T[] ts) {
+        return null;
     }
 
     @Override

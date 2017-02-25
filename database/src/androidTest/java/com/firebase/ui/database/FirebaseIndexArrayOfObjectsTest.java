@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import static com.firebase.ui.database.TestUtils.getAppInstance;
@@ -37,7 +38,7 @@ public class FirebaseIndexArrayOfObjectsTest {
 
     private DatabaseReference mRef;
     private DatabaseReference mKeyRef;
-    private FirebaseArray mArray;
+    private ObservableSnapshotArray mArray;
     private ChangeEventListener mListener;
 
     @Before
@@ -47,6 +48,7 @@ public class FirebaseIndexArrayOfObjectsTest {
         mRef = databaseInstance.getReference().child("firebasearray").child("objects");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray").child("objects");
 
+        // TODO(samstern): FIX ALL DIS
         mArray = new FirebaseIndexArray(mKeyRef, mRef);
         mRef.removeValue();
         mKeyRef.removeValue();

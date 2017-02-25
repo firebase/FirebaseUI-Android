@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
@@ -40,6 +41,7 @@ public class TestUtils {
         ChangeEventListener listener = array.addChangeEventListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(ChangeEventListener.EventType type,
+                                       DataSnapshot snapshot,
                                        int index,
                                        int oldIndex) {
                 semaphore.release();
