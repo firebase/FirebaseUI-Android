@@ -97,7 +97,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
                     break;
                 case AuthUI.FACEBOOK_PROVIDER:
                     mIdpProviders.add(new FacebookProvider(
-                            this, idpConfig, mActivityHelper.getFlowParams().themeId));
+                            idpConfig, mActivityHelper.getFlowParams().themeId));
                     break;
                 case AuthUI.TWITTER_PROVIDER:
                     mIdpProviders.add(new TwitterProvider(this));

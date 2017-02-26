@@ -89,7 +89,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         mIdpProvider = new FacebookProvider(
-                                this, idpConfig, mActivityHelper.getFlowParams().themeId);
+                                idpConfig, mActivityHelper.getFlowParams().themeId);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
                         mIdpProvider = new TwitterProvider(this);
