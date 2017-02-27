@@ -1,12 +1,15 @@
 package com.firebase.ui.database;
 
+import android.support.annotation.RestrictTo;
+
 /**
- * TODO(samstern): Document
+ * Convenience class for checking argument conditions.
  */
-public class Preconditions {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+class Preconditions {
 
     public static void checkNotNull(Object o) {
-        if (o == null) throw new IllegalArgumentException("Listener cannot be null.");
+        if (o == null) throw new IllegalArgumentException("Argument cannot be null.");
     }
 
 }

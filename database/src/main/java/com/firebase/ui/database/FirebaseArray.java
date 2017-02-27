@@ -15,7 +15,6 @@
 package com.firebase.ui.database;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -24,18 +23,19 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Map;
 
 /**
  * This class implements a collection on top of a Firebase location.
  */
-public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements ChildEventListener, ValueEventListener {
+public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implements ChildEventListener, ValueEventListener {
 
     protected final Query mQuery;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
+
+    private Map<String, T> mObjectCache = new HashMap<>();
 
     /**
      * @param query The Firebase location to watch for data changes. Can also be a slice of a
@@ -52,9 +52,8 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements Chil
     }
 
     @Override
-    public T getObject(int index) {
-        // TODO: Cache this!
-        return super.getObject(index);
+    protected List<DataSnapshot> getSnapshots() {
+        return mSnapshots;
     }
 
     @Override
@@ -80,7 +79,7 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements Chil
             mQuery.removeEventListener((ValueEventListener) this);
             mQuery.removeEventListener((ChildEventListener) this);
 
-            mSnapshots.clear();
+            clearData();
         }
     }
 
@@ -100,8 +99,7 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements Chil
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
 
-        mSnapshots.set(index, snapshot);
-
+        updateData(index, snapshot);
         notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, snapshot, index);
     }
 
@@ -109,8 +107,7 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements Chil
     public void onChildRemoved(DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
 
-        mSnapshots.remove(index);
-
+        removeData(index);
         notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
     }
 
@@ -153,76 +150,6 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements Chil
     }
 
     @Override
-    public int size() {
-        return mSnapshots.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return mSnapshots.isEmpty();
-    }
-
-    @Override
-    public boolean contains(Object o) {
-        return mSnapshots.contains(o);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return an immutable iterator
-     */
-    @Override
-    public Iterator<DataSnapshot> iterator() {
-        return new ImmutableIterator(mSnapshots.iterator());
-    }
-
-    @Override
-    public DataSnapshot[] toArray() {
-        return mSnapshots.toArray(new DataSnapshot[mSnapshots.size()]);
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return mSnapshots.containsAll(c);
-    }
-
-    @Override
-    public DataSnapshot get(int index) {
-        return mSnapshots.get(index);
-    }
-
-    @Override
-    public int indexOf(Object o) {
-        return mSnapshots.indexOf(o);
-    }
-
-    @Override
-    public int lastIndexOf(Object o) {
-        return mSnapshots.lastIndexOf(o);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return an immutable list iterator
-     */
-    @Override
-    public ListIterator<DataSnapshot> listIterator() {
-        return new ImmutableListIterator(mSnapshots.listIterator());
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return an immutable list iterator
-     */
-    @Override
-    public ListIterator<DataSnapshot> listIterator(int index) {
-        return new ImmutableListIterator(mSnapshots.listIterator(index));
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
@@ -246,17 +173,5 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T> implements Chil
         } else {
             return "FirebaseArray is inactive";
         }
-    }
-
-    /**
-     * Guaranteed to throw an exception. Use {@link #toArray()} instead to get an array of {@link
-     * DataSnapshot}s.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public final <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
     }
 }

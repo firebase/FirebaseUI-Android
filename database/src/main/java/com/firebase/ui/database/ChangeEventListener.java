@@ -37,10 +37,10 @@ public interface ChangeEventListener {
     }
 
     /**
-     * TODO(samstern): Document.
      * A callback for when a child has changed in FirebaseArray.
      *
      * @param type     The type of event received
+     * @param snapshot the {@link DataSnapshot} of the changed child.
      * @param index    The index at which the change occurred
      * @param oldIndex If {@code type} is a moved event, the previous index of the moved child. For
      *                 any other event, {@code oldIndex} will be -1.

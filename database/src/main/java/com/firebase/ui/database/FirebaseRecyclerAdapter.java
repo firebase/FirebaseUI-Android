@@ -69,8 +69,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                                    @LayoutRes int modelLayout,
                                    Class<VH> viewHolderClass,
                                    Query query) {
-
-        // TODO(samstern): DRY with above constructor
         mSnapshots = new FirebaseArray<T>(query, this);
         mModelClass = modelClass;
         mViewHolderClass = viewHolderClass;

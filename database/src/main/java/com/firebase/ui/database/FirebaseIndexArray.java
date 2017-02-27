@@ -25,24 +25,20 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
-public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements ChangeEventListener {
+public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> implements ChangeEventListener {
     private static final String TAG = "FirebaseIndexArray";
 
     private DatabaseReference mDataRef;
     private Map<Query, ValueEventListener> mRefs = new HashMap<>();
 
-    private FirebaseArray<DataSnapshot> mKeySnapshots;
+    private FirebaseArray<String> mKeySnapshots;
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
-    // TODO(samstern): Need to pass in a SnapshotParser.
-    public FirebaseIndexArray() {}
+    private Map<String, T> mObjectCache = new HashMap<>();
 
     /**
      * @param keyQuery The Firebase location containing the list of keys to be found in {@code
@@ -52,7 +48,19 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
      *                 keyQuery}'s location represents a list item in the {@link RecyclerView}.
      */
     public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef) {
-        mKeySnapshots = new FirebaseArray<>(keyQuery);
+        this(keyQuery, dataRef, null);
+    }
+
+    public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, SnapshotParser<T> parser) {
+        super(parser);
+
+        mKeySnapshots = new FirebaseArray<>(keyQuery, new SnapshotParser<String>() {
+            @Override
+            public String parseSnapshot(DataSnapshot snapshot) {
+                return snapshot.getKey();
+            }
+        });
+
         mDataRef = dataRef;
 
         mKeySnapshots.addChangeEventListener(this);
@@ -68,7 +76,8 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
                 onKeyMoved(snapshot, index, oldIndex);
                 break;
             case CHANGED:
-                // TODO(samstern): Can this be a no-op?
+                // This is a no-op, we don't care when a key 'changes' since that should not
+                // be a supported operation
                 break;
             case REMOVED:
                 onKeyRemoved(snapshot, index);
@@ -78,7 +87,7 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
 
     @Override
     public void onDataChanged() {
-        // TODO: Anything?
+        // No-op, we don't listen to batch events for the key ref
     }
 
     @Override
@@ -93,23 +102,27 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
             for (Query query : mRefs.keySet()) {
                 query.removeEventListener(mRefs.get(query));
             }
-            mRefs.clear();
-            mDataSnapshots.clear();
+
+            clearData();
         }
     }
 
     @Override
-    public T getObject(int index) {
-        // TODO: Cache this!
-        return super.getObject(index);
+    protected List<DataSnapshot> getSnapshots() {
+        return mDataSnapshots;
     }
 
-    // TODO(samstern): Figure out what's going on here, make sure it's still right
+    @Override
+    protected void clearData() {
+        super.clearData();
+        mRefs.clear();
+    }
+
     private int getIndexForKey(String key) {
         int dataCount = size();
         int index = 0;
         for (int keyIndex = 0; index < dataCount; keyIndex++) {
-            String superKey = mKeySnapshots.get(keyIndex).getKey();
+            String superKey = mKeySnapshots.getObject(keyIndex);
             if (key.equals(superKey)) {
                 break;
             } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
@@ -137,9 +150,8 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
     protected void onKeyMoved(DataSnapshot data, int index, int oldIndex) {
         String key = data.getKey();
 
-        // TODO(samstern): I don't think this block is correct anymore
         if (isKeyAtIndex(key, oldIndex)) {
-            DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
+            DataSnapshot snapshot = removeData(oldIndex);
             int newIndex = getIndexForKey(key);
             mDataSnapshots.add(newIndex, snapshot);
             notifyChangeEventListeners(ChangeEventListener.EventType.MOVED, snapshot, newIndex, oldIndex);
@@ -151,7 +163,7 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
         mDataRef.child(key).removeEventListener(mRefs.remove(mDataRef.getRef().child(key)));
 
         if (isKeyAtIndex(key, index)) {
-            DataSnapshot snapshot = mDataSnapshots.remove(index);
+            DataSnapshot snapshot = removeData(index);
             notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
         }
     }
@@ -172,13 +184,13 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
                     notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, snapshot, index);
                 } else {
                     // We already know about this data, just update it
-                    mDataSnapshots.set(index, snapshot);
+                    updateData(index, snapshot);
                     notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, snapshot, index);
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
                     // This data has disappeared, remove it
-                    mDataSnapshots.remove(index);
+                    removeData(index);
                     notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
                 } else {
                     // Data we never knew about has disappeared
@@ -191,67 +203,6 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
         public void onCancelled(DatabaseError error) {
             notifyListenersOnCancelled(error);
         }
-    }
-
-    @Override
-    public int size() {
-        return mDataSnapshots.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return mDataSnapshots.isEmpty();
-    }
-
-    @Override
-    public boolean contains(Object o) {
-        return mDataSnapshots.contains(o);
-    }
-
-    @Override
-    public Iterator<DataSnapshot> iterator() {
-        return new ImmutableIterator(mDataSnapshots.iterator());
-    }
-
-    @Override
-    public DataSnapshot[] toArray() {
-        return mDataSnapshots.toArray(new DataSnapshot[mDataSnapshots.size()]);
-    }
-
-    @NonNull
-    @Override
-    public <T> T[] toArray(@NonNull T[] ts) {
-        return null;
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return mDataSnapshots.containsAll(c);
-    }
-
-    @Override
-    public DataSnapshot get(int index) {
-        return mDataSnapshots.get(index);
-    }
-
-    @Override
-    public int indexOf(Object o) {
-        return mDataSnapshots.indexOf(o);
-    }
-
-    @Override
-    public int lastIndexOf(Object o) {
-        return mDataSnapshots.lastIndexOf(o);
-    }
-
-    @Override
-    public ListIterator<DataSnapshot> listIterator() {
-        return new ImmutableListIterator(mDataSnapshots.listIterator());
-    }
-
-    @Override
-    public ListIterator<DataSnapshot> listIterator(int index) {
-        return new ImmutableListIterator(mDataSnapshots.listIterator(index));
     }
 
     @Override
@@ -281,4 +232,5 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T> implements
             return "FirebaseIndexArray is inactive";
         }
     }
+
 }

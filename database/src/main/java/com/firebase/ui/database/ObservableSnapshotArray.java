@@ -2,15 +2,22 @@ package com.firebase.ui.database;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * TODO(samstern): Document and document all methods
+ * Exposes a collection of items in Firebase as a {@link List} of {@link DataSnapshot}. To observe
+ * the list attach a {@link com.google.firebase.database.ChildEventListener}.
+ *
+ * @param <T> a POJO class to which the DataSnapshots can be converted.
  */
 public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnapshot> {
 
@@ -26,7 +33,9 @@ public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnaps
     }
 
     /**
-     * TODO(samstern): Document.
+     * Attach a {@link ChangeEventListener} to this array. The listener will receive one
+     * 'ADDED' event for each item that exists in the array at the time of attachment, and then
+     * receive all future chld events.
      */
     @CallSuper
     public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
@@ -41,7 +50,7 @@ public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnaps
     }
 
     /**
-     * TODO(samstern): Document.
+     * Detach a {@link com.google.firebase.database.ChildEventListener} from this array.
      */
     @CallSuper
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
@@ -59,6 +68,8 @@ public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnaps
             removeChangeEventListener(listener);
         }
     }
+
+    protected abstract List<DataSnapshot> getSnapshots();
 
     protected final void notifyChangeEventListeners(ChangeEventListener.EventType type,
                                                     DataSnapshot snapshot,
@@ -102,10 +113,80 @@ public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnaps
         return mListeners.contains(listener);
     }
 
-    // TODO(samstern): Document
+    /**
+     * Get the {@link DataSnapshot} at a given position converted to an object of the parameterized
+     * type. This uses the {@link SnapshotParser} passed to the constructor. If the parser was not
+     * initialized this will throw an unchecked exception.
+     */
     public T getObject(int index) {
         Preconditions.checkNotNull(mParser);
         return mParser.parseSnapshot(get(index));
     }
 
+    @Override
+    public int size() {
+        return getSnapshots().size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return getSnapshots().isEmpty();
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return getSnapshots().contains(o);
+    }
+
+    @Override
+    public Iterator<DataSnapshot> iterator() {
+        return new ImmutableIterator(getSnapshots().iterator());
+    }
+
+    @Override
+    public DataSnapshot[] toArray() {
+        return getSnapshots().toArray(new DataSnapshot[getSnapshots().size()]);
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return getSnapshots().containsAll(c);
+    }
+
+    @Override
+    public DataSnapshot get(int index) {
+        return getSnapshots().get(index);
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return getSnapshots().indexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        return getSnapshots().lastIndexOf(o);
+    }
+
+    @Override
+    public ListIterator<DataSnapshot> listIterator() {
+        return new ImmutableListIterator(getSnapshots().listIterator());
+    }
+
+    @Override
+    public ListIterator<DataSnapshot> listIterator(int index) {
+        return new ImmutableListIterator(getSnapshots().listIterator(index));
+    }
+
+    /**
+     * Guaranteed to throw an exception. Use {@link #toArray()} instead to get an array of {@link
+     * DataSnapshot}s.
+     *
+     * @throws UnsupportedOperationException always
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    @Override
+    public final <T> T[] toArray(T[] a) {
+        throw new UnsupportedOperationException();
+    }
 }

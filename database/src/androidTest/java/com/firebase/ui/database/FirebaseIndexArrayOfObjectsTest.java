@@ -25,11 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import static com.firebase.ui.database.TestUtils.getAppInstance;
-import static com.firebase.ui.database.TestUtils.getBean;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
 
 @RunWith(AndroidJUnit4.class)
@@ -48,8 +46,7 @@ public class FirebaseIndexArrayOfObjectsTest {
         mRef = databaseInstance.getReference().child("firebasearray").child("objects");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray").child("objects");
 
-        // TODO(samstern): FIX ALL DIS
-        mArray = new FirebaseIndexArray<>(mKeyRef, mRef);
+        mArray = new FirebaseIndexArray<>(mKeyRef, mRef, new ClassSnapshotParser<>(Bean.class));
         mRef.removeValue();
         mKeyRef.removeValue();
 
@@ -99,7 +96,7 @@ public class FirebaseIndexArrayOfObjectsTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.get(3).getValue(Bean.class).getNumber() == 4;
+                return mArray.getObject(3).getNumber() == 4;
             }
         });
     }
@@ -114,9 +111,8 @@ public class FirebaseIndexArrayOfObjectsTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.get(3).getValue(Bean.class).getNumber() == 3 && mArray.get(0)
-                        .getValue(Bean.class)
-                        .getNumber() == 4;
+                return mArray.getObject(3).getNumber() == 3 &&
+                        mArray.getObject(0).getNumber() == 4;
             }
         });
     }
@@ -131,9 +127,9 @@ public class FirebaseIndexArrayOfObjectsTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return getBean(mArray, 0).getNumber() == 3
-                        && getBean(mArray, 1).getNumber() == 1
-                        && getBean(mArray, 2).getNumber() == 2;
+                return mArray.getObject(0).getNumber() == 3
+                        && mArray.getObject(1).getNumber() == 1
+                        && mArray.getObject(2).getNumber() == 2;
                 //return isValuesEqual(mArray, new int[]{3, 1, 2});
             }
         });

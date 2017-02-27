@@ -84,10 +84,6 @@ public class TestUtils {
         return true;
     }
 
-    public static Bean getBean(ObservableSnapshotArray<?> array, int index) {
-        return array.get(index).getValue(Bean.class);
-    }
-
     public static void pushValue(DatabaseReference keyRef,
                                  DatabaseReference ref,
                                  Object value,
