@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO(samstern): Document
+ * An extension of {@link ObservableSnapshotArray} that caches the result of {@link #getObject(int)}
+ * so that repeated calls for the same key are not expensive (unless the underlying snapshot
+ * has changed).
  */
 public abstract class CachingObservableSnapshotArray<T> extends ObservableSnapshotArray<T> {
 
