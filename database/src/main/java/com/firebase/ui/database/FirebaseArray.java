@@ -14,9 +14,7 @@
 
 package com.firebase.ui.database;
 
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -25,102 +23,84 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class implements a collection on top of a Firebase location.
  */
-public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildEventListener, ValueEventListener {
-    private final List<ChangeEventListener> mListeners = new CopyOnWriteArrayList<>();
-
+public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implements ChildEventListener, ValueEventListener {
     private Query mQuery;
-    private boolean mNotifyListeners = true;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     /**
+     * Create a new FirebaseArray with no {@link SnapshotParser}. Calls to {@link #getObject(int)}
+     * will fail.
+     *
      * @param query The Firebase location to watch for data changes. Can also be a slice of a
      *              location, using some combination of {@code limit()}, {@code startAt()}, and
      *              {@code endAt()}.
      */
     public FirebaseArray(Query query) {
-        mQuery = query;
-    }
-
-    private static void checkNotNull(Object o) {
-        if (o == null) throw new IllegalArgumentException("Listener cannot be null.");
+        super();
+        init(query);
     }
 
     /**
-     * Add a listener for change events and errors occurring at the location provided in {@link
-     * #FirebaseArray(Query)}.
+     * Create a new FirebaseArray that parses snapshots as members of a given class.
      *
-     * @param listener the listener to be called with changes
-     * @return a reference to the listener provided. Save this to remove the listener later
-     * @throws IllegalArgumentException if the listener is null
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(Class)
+     * @see FirebaseArray#FirebaseArray(Query)
      */
-    @CallSuper
-    public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
-        checkNotNull(listener);
+    public FirebaseArray(Query query, Class<T> tClass) {
+        super(tClass);
+        init(query);
+    }
 
-        mListeners.add(listener);
-        if (mListeners.size() <= 1) { // Only start listening when the first listener is added
+    /**
+     * Create a new FirebaseArray with a custom {@link SnapshotParser}.
+     *
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
+     * @see FirebaseArray#FirebaseArray(Query)
+     */
+    public FirebaseArray(Query query, SnapshotParser<T> parser) {
+        super(parser);
+        init(query);
+    }
+
+    private void init(Query query) {
+        mQuery = query;
+    }
+
+    @Override
+    protected List<DataSnapshot> getSnapshots() {
+        return mSnapshots;
+    }
+
+    @Override
+    public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
+        boolean wasListening = isListening();
+        super.addChangeEventListener(listener);
+
+        // Only start listening when the first listener is added
+        if (!wasListening) {
             mQuery.addChildEventListener(this);
             mQuery.addValueEventListener(this);
-        } else {
-            for (int i = 0; i < size(); i++) {
-                listener.onChildChanged(ChangeEventListener.EventType.ADDED, i, -1);
-            }
         }
 
         return listener;
     }
 
-    /**
-     * Remove a {@link ChangeEventListener} from the location provided in {@link
-     * #FirebaseArray(Query)}. The list will be empty after this call returns.
-     *
-     * @param listener the listener to remove
-     * @see #removeAllListeners()
-     */
-    @CallSuper
+    @Override
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        mListeners.remove(listener);
-        if (mListeners.isEmpty()) {
+        super.removeChangeEventListener(listener);
+
+        // Clear data when all listeners are removed
+        if (!isListening()) {
             mQuery.removeEventListener((ValueEventListener) this);
             mQuery.removeEventListener((ChildEventListener) this);
-            mSnapshots.clear();
+
+            clearData();
         }
-    }
-
-    /**
-     * Removes all {@link ChangeEventListener}s. The list will be empty after this call returns.
-     *
-     * @see #removeChangeEventListener(ChangeEventListener)
-     */
-    @CallSuper
-    public void removeAllListeners() {
-        for (ChangeEventListener listener : mListeners) {
-            removeChangeEventListener(listener);
-        }
-    }
-
-    /**
-     * @return true if {@link FirebaseArray} is listening for change events from the Firebase
-     * database, false otherwise
-     */
-    public final boolean isListening() {
-        return !mListeners.isEmpty();
-    }
-
-    /**
-     * @return true if the provided {@link ChangeEventListener} is listening for changes
-     */
-    public final boolean isListening(ChangeEventListener listener) {
-        return mListeners.contains(listener);
     }
 
     @Override
@@ -129,31 +109,40 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
         if (previousChildKey != null) {
             index = getIndexForKey(previousChildKey) + 1;
         }
+
         mSnapshots.add(index, snapshot);
-        notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, index);
+
+        notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, snapshot, index);
     }
 
     @Override
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
-        mSnapshots.set(index, snapshot);
-        notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, index);
+
+        updateData(index, snapshot);
+        notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, snapshot, index);
     }
 
     @Override
     public void onChildRemoved(DataSnapshot snapshot) {
         int index = getIndexForKey(snapshot.getKey());
-        mSnapshots.remove(index);
-        notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, index);
+
+        removeData(index);
+        notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
     }
 
     @Override
     public void onChildMoved(DataSnapshot snapshot, String previousChildKey) {
         int oldIndex = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(oldIndex);
+
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
-        notifyChangeEventListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+
+        notifyChangeEventListeners(ChangeEventListener.EventType.MOVED,
+                                   snapshot,
+                                   newIndex,
+                                   oldIndex);
     }
 
     @Override
@@ -176,130 +165,6 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
             }
         }
         throw new IllegalArgumentException("Key not found");
-    }
-
-    protected void setShouldNotifyListeners(boolean notifyListeners) {
-        mNotifyListeners = notifyListeners;
-    }
-
-    protected final void notifyChangeEventListeners(ChangeEventListener.EventType type, int index) {
-        notifyChangeEventListeners(type, index, -1);
-    }
-
-    protected final void notifyChangeEventListeners(ChangeEventListener.EventType type,
-                                                    int index,
-                                                    int oldIndex) {
-        if (!mNotifyListeners) return;
-        for (ChangeEventListener listener : mListeners) {
-            listener.onChildChanged(type, index, oldIndex);
-        }
-    }
-
-    protected final void notifyListenersOnDataChanged() {
-        if (!mNotifyListeners) return;
-        for (ChangeEventListener listener : mListeners) {
-            listener.onDataChanged();
-        }
-    }
-
-    protected final void notifyListenersOnCancelled(DatabaseError error) {
-        if (!mNotifyListeners) return;
-        for (ChangeEventListener listener : mListeners) {
-            listener.onCancelled(error);
-        }
-    }
-
-    @Override
-    public int size() {
-        return mSnapshots.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return mSnapshots.isEmpty();
-    }
-
-    @Override
-    public boolean contains(Object o) {
-        return mSnapshots.contains(o);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return an immutable iterator
-     */
-    @Override
-    public Iterator<DataSnapshot> iterator() {
-        return new ImmutableIterator(mSnapshots.iterator());
-    }
-
-    @Override
-    public DataSnapshot[] toArray() {
-        return mSnapshots.toArray(new DataSnapshot[mSnapshots.size()]);
-    }
-
-    /**
-     * Get a continually updated list of objects representing the {@link DataSnapshot}s in this
-     * list.
-     *
-     * @param modelClass the model representation of a {@link DataSnapshot}
-     * @return a list that represents the objects in this list of {@link DataSnapshot}
-     */
-    public <T> List<T> toObjectsList(Class<T> modelClass) {
-        return FirebaseArrayOfObjects.newInstance(this, modelClass);
-    }
-
-    /**
-     * Get a continually updated list of objects representing the {@link DataSnapshot}s in this
-     * list.
-     *
-     * @param parser a custom {@link SnapshotParser} to manually convert each {@link DataSnapshot}
-     *               to its model type
-     * @see #toObjectsList(Class)
-     */
-    public <T> List<T> toObjectsList(Class<T> modelClass, SnapshotParser<T> parser) {
-        return FirebaseArrayOfObjects.newInstance(this, modelClass, parser);
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return mSnapshots.containsAll(c);
-    }
-
-    @Override
-    public DataSnapshot get(int index) {
-        return mSnapshots.get(index);
-    }
-
-    @Override
-    public int indexOf(Object o) {
-        return mSnapshots.indexOf(o);
-    }
-
-    @Override
-    public int lastIndexOf(Object o) {
-        return mSnapshots.lastIndexOf(o);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return an immutable list iterator
-     */
-    @Override
-    public ListIterator<DataSnapshot> listIterator() {
-        return new ImmutableListIterator(mSnapshots.listIterator());
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return an immutable list iterator
-     */
-    @Override
-    public ListIterator<DataSnapshot> listIterator(int index) {
-        return new ImmutableListIterator(mSnapshots.listIterator(index));
     }
 
     @Override
@@ -326,17 +191,5 @@ public class FirebaseArray extends ImmutableList<DataSnapshot> implements ChildE
         } else {
             return "FirebaseArray is inactive";
         }
-    }
-
-    /**
-     * Guaranteed to throw an exception. Use {@link #toArray()} instead to get an array of {@link
-     * DataSnapshot}s.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public final <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
     }
 }

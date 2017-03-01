@@ -39,11 +39,12 @@ public interface ChangeEventListener {
      * A callback for when a child has changed in FirebaseArray.
      *
      * @param type     The type of event received
+     * @param snapshot the {@link DataSnapshot} of the changed child.
      * @param index    The index at which the change occurred
      * @param oldIndex If {@code type} is a moved event, the previous index of the moved child. For
      *                 any other event, {@code oldIndex} will be -1.
      */
-    void onChildChanged(EventType type, int index, int oldIndex);
+    void onChildChanged(EventType type, DataSnapshot snapshot, int index, int oldIndex);
 
     /**
      * This method will be triggered each time updates from the database have been completely

@@ -30,4 +30,16 @@ public class Bean {
     public boolean isBool() {
         return mBool;
     }
+
+    public void setNumber(int number) {
+        mNumber = number;
+    }
+
+    public void setText(String text) {
+        mText = text;
+    }
+
+    public void setBool(boolean bool) {
+        mBool = bool;
+    }
 }

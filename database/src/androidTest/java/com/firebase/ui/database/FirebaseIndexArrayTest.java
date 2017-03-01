@@ -37,7 +37,7 @@ public class FirebaseIndexArrayTest {
 
     private DatabaseReference mRef;
     private DatabaseReference mKeyRef;
-    private FirebaseArray mArray;
+    private ObservableSnapshotArray<?> mArray;
     private ChangeEventListener mListener;
 
     @Before

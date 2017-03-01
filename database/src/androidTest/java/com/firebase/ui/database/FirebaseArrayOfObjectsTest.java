@@ -29,7 +29,6 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.Callable;
 
 import static com.firebase.ui.database.TestUtils.getAppInstance;
-import static com.firebase.ui.database.TestUtils.getBean;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
 
 @RunWith(AndroidJUnit4.class)
@@ -37,7 +36,7 @@ public class FirebaseArrayOfObjectsTest {
     private static final int INITIAL_SIZE = 3;
 
     private DatabaseReference mRef;
-    private FirebaseArray mArray;
+    private FirebaseArray<Bean> mArray;
     private ChangeEventListener mListener;
 
     @Before
@@ -47,7 +46,7 @@ public class FirebaseArrayOfObjectsTest {
                 .getReference()
                 .child("firebasearray")
                 .child("objects");
-        mArray = new FirebaseArray(mRef);
+        mArray = new FirebaseArray<>(mRef, Bean.class);
         mRef.removeValue();
         mListener = runAndWaitUntil(mArray, new Runnable() {
             @Override
@@ -95,7 +94,7 @@ public class FirebaseArrayOfObjectsTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.get(3).getValue(Bean.class).getNumber() == 4;
+                return mArray.getObject(3).getNumber() == 4;
             }
         });
     }
@@ -110,9 +109,8 @@ public class FirebaseArrayOfObjectsTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.get(3).getValue(Bean.class).getNumber() == 3 && mArray.get(0)
-                        .getValue(Bean.class)
-                        .getNumber() == 4;
+                return mArray.getObject(3).getNumber() == 3
+                        && mArray.getObject(0).getNumber() == 4;
             }
         });
     }
@@ -127,10 +125,41 @@ public class FirebaseArrayOfObjectsTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return getBean(mArray, 0).getNumber() == 3
-                        && getBean(mArray, 1).getNumber() == 1
-                        && getBean(mArray, 2).getNumber() == 2;
+                return mArray.getObject(0).getNumber() == 3
+                        && mArray.getObject(1).getNumber() == 1
+                        && mArray.getObject(2).getNumber() == 2;
                 //return isValuesEqual(mArray, new int[]{3, 1, 2});
+            }
+        });
+    }
+
+    @Test
+    public void testCacheInvalidates() throws Exception {
+        final DatabaseReference pushRef = mRef.push();
+
+        // Set initial value to "5"
+        runAndWaitUntil(mArray, new Runnable() {
+            @Override
+            public void run() {
+                pushRef.setValue(new Bean(5), 100);
+            }
+        }, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return mArray.getObject(3).getNumber() == 5;
+            }
+        });
+
+        // Change the value to "6" and ensure that the change is propagated
+        runAndWaitUntil(mArray, new Runnable() {
+            @Override
+            public void run() {
+                pushRef.setValue(new Bean(6), 100);
+            }
+        }, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return mArray.getObject(3).getNumber() == 6;
             }
         });
     }
