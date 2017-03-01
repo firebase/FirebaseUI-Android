@@ -35,6 +35,7 @@ import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -165,8 +166,11 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
             }
 
             @Override
-            public void onChildChanged(EventType type, int index, int oldIndex) {
-                super.onChildChanged(type, index, oldIndex);
+            public void onChildChanged(EventType type,
+                                       DataSnapshot snapshot,
+                                       int index,
+                                       int oldIndex) {
+                super.onChildChanged(type, snapshot, index, oldIndex);
 
                 // TODO temporary fix for https://github.com/firebase/FirebaseUI-Android/issues/546
                 onDataChanged();
