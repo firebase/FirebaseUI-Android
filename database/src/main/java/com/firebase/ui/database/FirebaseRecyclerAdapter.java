@@ -29,7 +29,6 @@ import java.lang.reflect.InvocationTargetException;
  */
 public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
-
     private static final String TAG = "FirebaseRecyclerAdapter";
 
     protected ObservableSnapshotArray<T> mSnapshots;
@@ -51,7 +50,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                                    Class<T> modelClass,
                                    @LayoutRes int modelLayout,
                                    Class<VH> viewHolderClass) {
-
         init(snapshots, modelClass, modelLayout, viewHolderClass);
     }
 
@@ -65,12 +63,13 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                                    @LayoutRes int modelLayout,
                                    Class<VH> viewHolderClass,
                                    Query query) {
-
         init(new FirebaseArray<>(query, this), modelClass, modelLayout, viewHolderClass);
     }
 
-    private void init(ObservableSnapshotArray<T> snapshots, Class<T> modelClass,
-                      @LayoutRes int modelLayout, Class<VH> viewHolderClass) {
+    private void init(ObservableSnapshotArray<T> snapshots,
+                      Class<T> modelClass,
+                      @LayoutRes int modelLayout,
+                      Class<VH> viewHolderClass) {
         mSnapshots = snapshots;
         mModelClass = modelClass;
         mViewHolderClass = viewHolderClass;
@@ -92,8 +91,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    public void onChildChanged(ChangeEventListener.EventType type, DataSnapshot snapshot,
-                               int index, int oldIndex) {
+    public void onChildChanged(ChangeEventListener.EventType type,
+                               DataSnapshot snapshot,
+                               int index,
+                               int oldIndex) {
         switch (type) {
             case ADDED:
                 notifyItemInserted(index);

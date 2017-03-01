@@ -109,8 +109,8 @@ public class FirebaseArrayOfObjectsTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.getObject(3).getNumber() == 3 &&
-                        mArray.getObject(0).getNumber() == 4;
+                return mArray.getObject(3).getNumber() == 3
+                        && mArray.getObject(0).getNumber() == 4;
             }
         });
     }

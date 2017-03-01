@@ -17,12 +17,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Exposes a collection of items in Firebase as a {@link List} of {@link DataSnapshot}. To observe
  * the list attach a {@link com.google.firebase.database.ChildEventListener}.
  *
- * @param <T> a POJO class to which the DataSnapshots can be converted.
+ * @param <E> a POJO class to which the DataSnapshots can be converted.
  */
-public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnapshot> {
-
+public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnapshot> {
     protected final List<ChangeEventListener> mListeners = new CopyOnWriteArrayList<>();
-    protected final SnapshotParser<T> mParser;
+    protected final SnapshotParser<E> mParser;
 
     /**
      * Create an ObservableSnapshotArray without a {@link SnapshotParser}. Calls to
@@ -34,25 +33,28 @@ public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnaps
 
     /**
      * Create an ObservableSnapshotArray where snapshots are parsed as objects of a particular
-     * class.  See {@link ClassSnapshotParser}.
+     * class.
+     *
      * @param tClass the class as which DataSnapshots should be parsed.
+     * @see ClassSnapshotParser
      */
-    public ObservableSnapshotArray(@NonNull Class<T> tClass) {
+    public ObservableSnapshotArray(@NonNull Class<E> tClass) {
         this(new ClassSnapshotParser<>(tClass));
     }
 
     /**
      * Create an ObservableSnapshotArray with a custom {@link SnapshotParser}.
+     *
      * @param parser the {@link SnapshotParser to use}.
      */
-    public ObservableSnapshotArray(@NonNull SnapshotParser<T> parser) {
+    public ObservableSnapshotArray(@NonNull SnapshotParser<E> parser) {
         mParser = parser;
     }
 
     /**
-     * Attach a {@link ChangeEventListener} to this array. The listener will receive one
-     * 'ADDED' event for each item that exists in the array at the time of attachment, and then
-     * receive all future chld events.
+     * Attach a {@link ChangeEventListener} to this array. The listener will receive one {@link
+     * ChangeEventListener.EventType#ADDED} event for each item that already exists in the array at
+     * the time of attachment, and then receive all future child events.
      */
     @CallSuper
     public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
@@ -131,11 +133,11 @@ public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnaps
     }
 
     /**
-     * Get the {@link DataSnapshot} at a given position converted to an object of the parameterized
+     * Get the {@link DataSnapshot} at a given position converted to an object of the parametrized
      * type. This uses the {@link SnapshotParser} passed to the constructor. If the parser was not
      * initialized this will throw an unchecked exception.
      */
-    public T getObject(int index) {
+    public E getObject(int index) {
         Preconditions.checkNotNull(mParser);
         return mParser.parseSnapshot(get(index));
     }

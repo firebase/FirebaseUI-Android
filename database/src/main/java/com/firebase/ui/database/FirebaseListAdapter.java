@@ -45,7 +45,6 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
                                ObservableSnapshotArray<T> snapshots,
                                Class<T> modelClass,
                                @LayoutRes int modelLayout) {
-
         init(activity, snapshots, modelClass, modelLayout);
     }
 
@@ -59,12 +58,13 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
                                Class<T> modelClass,
                                @LayoutRes int modelLayout,
                                Query query) {
-
-        init(activity, new FirebaseArray<T>(query, this), modelClass, modelLayout);
+        init(activity, new FirebaseArray<>(query, this), modelClass, modelLayout);
     }
 
-    private void init(Activity activity, ObservableSnapshotArray<T> snapshots,
-                      Class<T> modelClass, @LayoutRes int modelLayout) {
+    private void init(Activity activity,
+                      ObservableSnapshotArray<T> snapshots,
+                      Class<T> modelClass,
+                      @LayoutRes int modelLayout) {
         mActivity = activity;
         mSnapshots = snapshots;
         mModelClass = modelClass;
@@ -86,8 +86,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     @Override
-    public void onChildChanged(ChangeEventListener.EventType type, DataSnapshot snapshot,
-                               int index, int oldIndex) {
+    public void onChildChanged(ChangeEventListener.EventType type,
+                               DataSnapshot snapshot,
+                               int index,
+                               int oldIndex) {
         notifyDataSetChanged();
     }
 

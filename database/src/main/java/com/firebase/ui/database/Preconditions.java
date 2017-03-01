@@ -7,9 +7,8 @@ import android.support.annotation.RestrictTo;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class Preconditions {
-
-    public static void checkNotNull(Object o) {
+    public static <T> T checkNotNull(T o) {
         if (o == null) throw new IllegalArgumentException("Argument cannot be null.");
+        return o;
     }
-
 }

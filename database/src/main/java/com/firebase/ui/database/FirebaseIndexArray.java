@@ -56,8 +56,8 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     /**
      * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
      *
-     * See {@link ObservableSnapshotArray#ObservableSnapshotArray(Class)}.
-     * See {@link #FirebaseIndexArray(Query, DatabaseReference)}.
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(Class)
+     * @see FirebaseIndexArray#FirebaseIndexArray(Query, DatabaseReference)
      */
     public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, Class<T> tClass) {
         super(tClass);
@@ -67,8 +67,8 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     /**
      * Create a new FirebaseIndexArray with a custom {@link SnapshotParser}.
      *
-     * See {@link ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)}.
-     * See {@link #FirebaseIndexArray(Query, DatabaseReference)}.
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
+     * @see FirebaseIndexArray#FirebaseIndexArray(Query, DatabaseReference)
      */
     public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, SnapshotParser<T> parser) {
         super(parser);
@@ -76,14 +76,13 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     }
 
     private void init(Query keyQuery, DatabaseReference dataRef) {
+        mDataRef = dataRef;
         mKeySnapshots = new FirebaseArray<>(keyQuery, new SnapshotParser<String>() {
             @Override
             public String parseSnapshot(DataSnapshot snapshot) {
                 return snapshot.getKey();
             }
         });
-
-        mDataRef = dataRef;
 
         mKeySnapshots.addChangeEventListener(this);
     }
@@ -162,8 +161,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     }
 
     protected void onKeyAdded(DataSnapshot data) {
-        String key = data.getKey();
-        Query ref = mDataRef.child(key);
+        Query ref = mDataRef.child(data.getKey());
 
         // Start listening
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
@@ -174,9 +172,11 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
         if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = removeData(oldIndex);
-            int newIndex = getIndexForKey(key);
-            mDataSnapshots.add(newIndex, snapshot);
-            notifyChangeEventListeners(ChangeEventListener.EventType.MOVED, snapshot, newIndex, oldIndex);
+            mDataSnapshots.add(index, snapshot);
+            notifyChangeEventListeners(ChangeEventListener.EventType.MOVED,
+                                       snapshot,
+                                       index,
+                                       oldIndex);
         }
     }
 
@@ -187,6 +187,34 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         if (isKeyAtIndex(key, index)) {
             DataSnapshot snapshot = removeData(index);
             notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
+
+        FirebaseIndexArray array = (FirebaseIndexArray) obj;
+
+        return mDataRef.equals(array.mDataRef) && mDataSnapshots.equals(array.mDataSnapshots);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + mDataRef.hashCode();
+        result = 31 * result + mDataSnapshots.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        if (isListening()) {
+            return "FirebaseIndexArray is listening at " + mDataRef + ":\n" + mDataSnapshots;
+        } else {
+            return "FirebaseIndexArray is inactive";
         }
     }
 
@@ -226,33 +254,4 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
             notifyListenersOnCancelled(error);
         }
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        if (!super.equals(obj)) return false;
-
-        FirebaseIndexArray array = (FirebaseIndexArray) obj;
-
-        return mDataRef.equals(array.mDataRef) && mDataSnapshots.equals(array.mDataSnapshots);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + mDataRef.hashCode();
-        result = 31 * result + mDataSnapshots.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        if (isListening()) {
-            return "FirebaseIndexArray is listening at " + mDataRef + ":\n" + mDataSnapshots;
-        } else {
-            return "FirebaseIndexArray is inactive";
-        }
-    }
-
 }

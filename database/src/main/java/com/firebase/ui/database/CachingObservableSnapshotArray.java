@@ -9,11 +9,10 @@ import java.util.Map;
 
 /**
  * An extension of {@link ObservableSnapshotArray} that caches the result of {@link #getObject(int)}
- * so that repeated calls for the same key are not expensive (unless the underlying snapshot
- * has changed).
+ * so that repeated calls for the same key are not expensive (unless the underlying snapshot has
+ * changed).
  */
 public abstract class CachingObservableSnapshotArray<T> extends ObservableSnapshotArray<T> {
-
     private Map<String, T> mObjectCache = new HashMap<>();
 
     /**
@@ -69,6 +68,4 @@ public abstract class CachingObservableSnapshotArray<T> extends ObservableSnapsh
         getSnapshots().set(index, snapshot);
         mObjectCache.remove(snapshot.getKey());
     }
-
-
 }

@@ -29,13 +29,12 @@ import java.util.List;
  * This class implements a collection on top of a Firebase location.
  */
 public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implements ChildEventListener, ValueEventListener {
-
     private Query mQuery;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     /**
-     * Create a new FirebaseArray with no {@link SnapshotParser}. Calls to
-     * {@link #getObject(int)} will fail.
+     * Create a new FirebaseArray with no {@link SnapshotParser}. Calls to {@link #getObject(int)}
+     * will fail.
      *
      * @param query The Firebase location to watch for data changes. Can also be a slice of a
      *              location, using some combination of {@code limit()}, {@code startAt()}, and
@@ -49,8 +48,8 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
     /**
      * Create a new FirebaseArray that parses snapshots as members of a given class.
      *
-     * See {@link ObservableSnapshotArray#ObservableSnapshotArray(Class)}.
-     * See {@link #FirebaseArray(Query)}.
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(Class)
+     * @see FirebaseArray#FirebaseArray(Query)
      */
     public FirebaseArray(Query query, Class<T> tClass) {
         super(tClass);
@@ -60,8 +59,8 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
     /**
      * Create a new FirebaseArray with a custom {@link SnapshotParser}.
      *
-     * See {@link ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)}.
-     * See {@link #FirebaseArray(Query)}.
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
+     * @see FirebaseArray#FirebaseArray(Query)
      */
     public FirebaseArray(Query query, SnapshotParser<T> parser) {
         super(parser);
@@ -140,8 +139,10 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
 
-        notifyChangeEventListeners(ChangeEventListener.EventType.MOVED, snapshot,
-                                   newIndex, oldIndex);
+        notifyChangeEventListeners(ChangeEventListener.EventType.MOVED,
+                                   snapshot,
+                                   newIndex,
+                                   oldIndex);
     }
 
     @Override
@@ -164,10 +165,6 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
             }
         }
         throw new IllegalArgumentException("Key not found");
-    }
-
-    public DataSnapshot getSnapshot(int index) {
-        return mSnapshots.get(index);
     }
 
     @Override
