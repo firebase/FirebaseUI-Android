@@ -38,9 +38,10 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     private FirebaseArray<String> mKeySnapshots;
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
-    private Map<String, T> mObjectCache = new HashMap<>();
-
     /**
+     * Create a new FirebaseIndexArray without a {@link SnapshotParser}.
+     * Calls to {@link #getObject(int)} will fail.
+     *
      * @param keyQuery The Firebase location containing the list of keys to be found in {@code
      *                 dataRef}. Can also be a slice of a location, using some combination of {@code
      *                 limit()}, {@code startAt()}, and {@code endAt()}.
@@ -48,12 +49,33 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
      *                 keyQuery}'s location represents a list item in the {@link RecyclerView}.
      */
     public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef) {
-        this(keyQuery, dataRef, null);
+        super();
+        init(keyQuery, dataRef);
     }
 
+    /**
+     * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
+     *
+     * See {@link ObservableSnapshotArray#ObservableSnapshotArray(Class)}.
+     * See {@link #FirebaseIndexArray(Query, DatabaseReference)}.
+     */
+    public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, Class<T> tClass) {
+        super(tClass);
+        init(keyQuery, dataRef);
+    }
+
+    /**
+     * Create a new FirebaseIndexArray with a custom {@link SnapshotParser}.
+     *
+     * See {@link ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)}.
+     * See {@link #FirebaseIndexArray(Query, DatabaseReference)}.
+     */
     public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, SnapshotParser<T> parser) {
         super(parser);
+        init(keyQuery, dataRef);
+    }
 
+    private void init(Query keyQuery, DatabaseReference dataRef) {
         mKeySnapshots = new FirebaseArray<>(keyQuery, new SnapshotParser<String>() {
             @Override
             public String parseSnapshot(DataSnapshot snapshot) {
@@ -193,7 +215,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                     removeData(index);
                     notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
                 } else {
-                    // Data we never knew about has disappeared
+                    // Data does not exist
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
                 }
             }

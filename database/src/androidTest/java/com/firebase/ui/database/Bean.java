@@ -32,14 +32,14 @@ public class Bean {
     }
 
     public void setNumber(int number) {
-        this.mNumber = number;
+        mNumber = number;
     }
 
     public void setText(String text) {
-        this.mText = text;
+        mText = text;
     }
 
     public void setBool(boolean bool) {
-        this.mBool = bool;
+        mBool = bool;
     }
 }

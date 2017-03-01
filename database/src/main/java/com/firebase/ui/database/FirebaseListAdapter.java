@@ -45,12 +45,8 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
                                ObservableSnapshotArray<T> snapshots,
                                Class<T> modelClass,
                                @LayoutRes int modelLayout) {
-        mSnapshots = snapshots;
-        mActivity = activity;
-        mModelClass = modelClass;
-        mLayout = modelLayout;
 
-        startListening();
+        init(activity, snapshots, modelClass, modelLayout);
     }
 
     /**
@@ -63,8 +59,14 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
                                Class<T> modelClass,
                                @LayoutRes int modelLayout,
                                Query query) {
-        mSnapshots = new FirebaseArray<T>(query, this);
+
+        init(activity, new FirebaseArray<T>(query, this), modelClass, modelLayout);
+    }
+
+    private void init(Activity activity, ObservableSnapshotArray<T> snapshots,
+                      Class<T> modelClass, @LayoutRes int modelLayout) {
         mActivity = activity;
+        mSnapshots = snapshots;
         mModelClass = modelClass;
         mLayout = modelLayout;
 

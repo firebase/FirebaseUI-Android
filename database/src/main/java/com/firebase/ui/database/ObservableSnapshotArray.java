@@ -24,11 +24,28 @@ public abstract class ObservableSnapshotArray<T> extends ImmutableList<DataSnaps
     protected final List<ChangeEventListener> mListeners = new CopyOnWriteArrayList<>();
     protected final SnapshotParser<T> mParser;
 
+    /**
+     * Create an ObservableSnapshotArray without a {@link SnapshotParser}. Calls to
+     * {@link #getObject(int)} will fail.
+     */
     public ObservableSnapshotArray() {
         mParser = null;
     }
 
-    public ObservableSnapshotArray(SnapshotParser<T> parser) {
+    /**
+     * Create an ObservableSnapshotArray where snapshots are parsed as objects of a particular
+     * class.  See {@link ClassSnapshotParser}.
+     * @param tClass the class as which DataSnapshots should be parsed.
+     */
+    public ObservableSnapshotArray(@NonNull Class<T> tClass) {
+        this(new ClassSnapshotParser<>(tClass));
+    }
+
+    /**
+     * Create an ObservableSnapshotArray with a custom {@link SnapshotParser}.
+     * @param parser the {@link SnapshotParser to use}.
+     */
+    public ObservableSnapshotArray(@NonNull SnapshotParser<T> parser) {
         mParser = parser;
     }
 

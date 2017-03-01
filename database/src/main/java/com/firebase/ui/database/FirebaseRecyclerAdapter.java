@@ -51,12 +51,8 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                                    Class<T> modelClass,
                                    @LayoutRes int modelLayout,
                                    Class<VH> viewHolderClass) {
-        mSnapshots = snapshots;
-        mModelClass = modelClass;
-        mViewHolderClass = viewHolderClass;
-        mModelLayout = modelLayout;
 
-        startListening();
+        init(snapshots, modelClass, modelLayout, viewHolderClass);
     }
 
     /**
@@ -69,7 +65,13 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
                                    @LayoutRes int modelLayout,
                                    Class<VH> viewHolderClass,
                                    Query query) {
-        mSnapshots = new FirebaseArray<T>(query, this);
+
+        init(new FirebaseArray<>(query, this), modelClass, modelLayout, viewHolderClass);
+    }
+
+    private void init(ObservableSnapshotArray<T> snapshots, Class<T> modelClass,
+                      @LayoutRes int modelLayout, Class<VH> viewHolderClass) {
+        mSnapshots = snapshots;
         mModelClass = modelClass;
         mViewHolderClass = viewHolderClass;
         mModelLayout = modelLayout;

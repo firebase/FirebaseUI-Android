@@ -23,31 +23,52 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class implements a collection on top of a Firebase location.
  */
 public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implements ChildEventListener, ValueEventListener {
 
-    protected final Query mQuery;
+    private Query mQuery;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
-    private Map<String, T> mObjectCache = new HashMap<>();
-
     /**
+     * Create a new FirebaseArray with no {@link SnapshotParser}. Calls to
+     * {@link #getObject(int)} will fail.
+     *
      * @param query The Firebase location to watch for data changes. Can also be a slice of a
      *              location, using some combination of {@code limit()}, {@code startAt()}, and
      *              {@code endAt()}.
      */
     public FirebaseArray(Query query) {
-        this(query, null);
+        super();
+        init(query);
     }
 
+    /**
+     * Create a new FirebaseArray that parses snapshots as members of a given class.
+     *
+     * See {@link ObservableSnapshotArray#ObservableSnapshotArray(Class)}.
+     * See {@link #FirebaseArray(Query)}.
+     */
+    public FirebaseArray(Query query, Class<T> tClass) {
+        super(tClass);
+        init(query);
+    }
+
+    /**
+     * Create a new FirebaseArray with a custom {@link SnapshotParser}.
+     *
+     * See {@link ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)}.
+     * See {@link #FirebaseArray(Query)}.
+     */
     public FirebaseArray(Query query, SnapshotParser<T> parser) {
         super(parser);
+        init(query);
+    }
+
+    private void init(Query query) {
         mQuery = query;
     }
 

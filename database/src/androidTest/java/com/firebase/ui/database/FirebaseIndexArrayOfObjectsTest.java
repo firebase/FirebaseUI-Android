@@ -46,7 +46,7 @@ public class FirebaseIndexArrayOfObjectsTest {
         mRef = databaseInstance.getReference().child("firebasearray").child("objects");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray").child("objects");
 
-        mArray = new FirebaseIndexArray<>(mKeyRef, mRef, new ClassSnapshotParser<>(Bean.class));
+        mArray = new FirebaseIndexArray<>(mKeyRef, mRef, Bean.class);
         mRef.removeValue();
         mKeyRef.removeValue();
 
