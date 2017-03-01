@@ -107,7 +107,7 @@ requires it.
 If you encounter a version incompatibility error between Android Studio
 and Gradle while trying to run the sample app, try disabling the Instant
 Run feature of Android Studio. Alternatively, update Android Studio and
-Gradle to their latet versions.
+Gradle to their latest versions.
 
 ## Contributing
 
