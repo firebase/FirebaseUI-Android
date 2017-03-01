@@ -1,8 +1,11 @@
 package com.firebase.ui.database;
 
+import android.support.annotation.RestrictTo;
+
 import com.google.firebase.database.DatabaseReference;
 
-public interface FirebaseAdapter<T> extends ChangeEventListener, SnapshotParser<T> {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+interface FirebaseAdapter<T> extends ChangeEventListener, SnapshotParser<T> {
 
     /**
      * If you need to do some setup before the adapter starts listening for change events in the
