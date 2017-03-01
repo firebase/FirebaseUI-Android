@@ -24,31 +24,23 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
     protected final SnapshotParser<E> mParser;
 
     /**
-     * Create an ObservableSnapshotArray without a {@link SnapshotParser}. Calls to
-     * {@link #getObject(int)} will fail.
-     */
-    public ObservableSnapshotArray() {
-        mParser = null;
-    }
-
-    /**
      * Create an ObservableSnapshotArray where snapshots are parsed as objects of a particular
      * class.
      *
-     * @param tClass the class as which DataSnapshots should be parsed.
+     * @param clazz the class as which DataSnapshots should be parsed.
      * @see ClassSnapshotParser
      */
-    public ObservableSnapshotArray(@NonNull Class<E> tClass) {
-        this(new ClassSnapshotParser<>(tClass));
+    public ObservableSnapshotArray(@NonNull Class<E> clazz) {
+        this(new ClassSnapshotParser<>(clazz));
     }
 
     /**
      * Create an ObservableSnapshotArray with a custom {@link SnapshotParser}.
      *
-     * @param parser the {@link SnapshotParser to use}.
+     * @param parser the {@link SnapshotParser} to use
      */
     public ObservableSnapshotArray(@NonNull SnapshotParser<E> parser) {
-        mParser = parser;
+        mParser = Preconditions.checkNotNull(parser);
     }
 
     /**
@@ -138,7 +130,6 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
      * initialized this will throw an unchecked exception.
      */
     public E getObject(int index) {
-        Preconditions.checkNotNull(mParser);
         return mParser.parseSnapshot(get(index));
     }
 

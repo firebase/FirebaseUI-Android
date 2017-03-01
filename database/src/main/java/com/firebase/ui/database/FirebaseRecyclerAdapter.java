@@ -37,6 +37,15 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     protected int mModelLayout;
 
     /**
+     * Internal constructor that does nothing. Can be used as a workaround to pass `this` into a
+     * constructor argument.
+     *
+     * @see #init(ObservableSnapshotArray, Class, int, Class)
+     */
+    protected FirebaseRecyclerAdapter() {
+    }
+
+    /**
      * @param snapshots       The data used to populate the adapter
      * @param modelClass      Firebase will marshall the data at a location into an instance of a
      *                        class that you provide
@@ -66,10 +75,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         init(new FirebaseArray<>(query, this), modelClass, modelLayout, viewHolderClass);
     }
 
-    private void init(ObservableSnapshotArray<T> snapshots,
-                      Class<T> modelClass,
-                      @LayoutRes int modelLayout,
-                      Class<VH> viewHolderClass) {
+    protected void init(ObservableSnapshotArray<T> snapshots,
+                        Class<T> modelClass,
+                        @LayoutRes int modelLayout,
+                        Class<VH> viewHolderClass) {
         mSnapshots = snapshots;
         mModelClass = modelClass;
         mViewHolderClass = viewHolderClass;
