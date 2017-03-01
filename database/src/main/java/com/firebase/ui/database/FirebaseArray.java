@@ -33,23 +33,12 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     /**
-     * Create a new FirebaseArray with no {@link SnapshotParser}. Calls to {@link #getObject(int)}
-     * will fail.
+     * Create a new FirebaseArray that parses snapshots as members of a given class.
      *
      * @param query The Firebase location to watch for data changes. Can also be a slice of a
      *              location, using some combination of {@code limit()}, {@code startAt()}, and
      *              {@code endAt()}.
-     */
-    public FirebaseArray(Query query) {
-        super();
-        init(query);
-    }
-
-    /**
-     * Create a new FirebaseArray that parses snapshots as members of a given class.
-     *
      * @see ObservableSnapshotArray#ObservableSnapshotArray(Class)
-     * @see FirebaseArray#FirebaseArray(Query)
      */
     public FirebaseArray(Query query, Class<T> tClass) {
         super(tClass);
@@ -60,7 +49,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
      * Create a new FirebaseArray with a custom {@link SnapshotParser}.
      *
      * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
-     * @see FirebaseArray#FirebaseArray(Query)
+     * @see FirebaseArray#FirebaseArray(Query, Class)
      */
     public FirebaseArray(Query query, SnapshotParser<T> parser) {
         super(parser);

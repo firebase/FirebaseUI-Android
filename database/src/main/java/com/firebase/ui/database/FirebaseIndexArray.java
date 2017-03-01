@@ -39,25 +39,14 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
     /**
-     * Create a new FirebaseIndexArray without a {@link SnapshotParser}.
-     * Calls to {@link #getObject(int)} will fail.
+     * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
      *
      * @param keyQuery The Firebase location containing the list of keys to be found in {@code
      *                 dataRef}. Can also be a slice of a location, using some combination of {@code
      *                 limit()}, {@code startAt()}, and {@code endAt()}.
      * @param dataRef  The Firebase location to watch for data changes. Each key key found at {@code
      *                 keyQuery}'s location represents a list item in the {@link RecyclerView}.
-     */
-    public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef) {
-        super();
-        init(keyQuery, dataRef);
-    }
-
-    /**
-     * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
-     *
      * @see ObservableSnapshotArray#ObservableSnapshotArray(Class)
-     * @see FirebaseIndexArray#FirebaseIndexArray(Query, DatabaseReference)
      */
     public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, Class<T> tClass) {
         super(tClass);
@@ -68,7 +57,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
      * Create a new FirebaseIndexArray with a custom {@link SnapshotParser}.
      *
      * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
-     * @see FirebaseIndexArray#FirebaseIndexArray(Query, DatabaseReference)
+     * @see FirebaseIndexArray#FirebaseIndexArray(Query, DatabaseReference, Class)
      */
     public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, SnapshotParser<T> parser) {
         super(parser);

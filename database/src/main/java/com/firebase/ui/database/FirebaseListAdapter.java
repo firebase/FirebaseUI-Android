@@ -33,6 +33,15 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     protected int mLayout;
 
     /**
+     * Internal constructor that does nothing. Can be used as a workaround to pass `this` into a
+     * constructor argument.
+     *
+     * @see #init(Activity, ObservableSnapshotArray, Class, int)
+     */
+    protected FirebaseListAdapter() {
+    }
+
+    /**
      * @param activity    The {@link Activity} containing the {@link ListView}
      * @param modelClass  Firebase will marshall the data at a location into an instance of a class
      *                    that you provide
@@ -61,10 +70,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
         init(activity, new FirebaseArray<>(query, this), modelClass, modelLayout);
     }
 
-    private void init(Activity activity,
-                      ObservableSnapshotArray<T> snapshots,
-                      Class<T> modelClass,
-                      @LayoutRes int modelLayout) {
+    protected void init(Activity activity,
+                        ObservableSnapshotArray<T> snapshots,
+                        Class<T> modelClass,
+                        @LayoutRes int modelLayout) {
         mActivity = activity;
         mSnapshots = snapshots;
         mModelClass = modelClass;

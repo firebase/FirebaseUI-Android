@@ -16,21 +16,14 @@ public abstract class CachingObservableSnapshotArray<T> extends ObservableSnapsh
     private Map<String, T> mObjectCache = new HashMap<>();
 
     /**
-     * See {@link ObservableSnapshotArray#ObservableSnapshotArray()}.
-     */
-    public CachingObservableSnapshotArray() {
-        super();
-    }
-
-    /**
-     * See {@link ObservableSnapshotArray#ObservableSnapshotArray(Class)}.
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(Class)
      */
     public CachingObservableSnapshotArray(@NonNull Class<T> tClass) {
         super(tClass);
     }
 
     /**
-     * See {@link ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)}.
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
      */
     public CachingObservableSnapshotArray(@NonNull SnapshotParser<T> parser) {
         super(parser);
