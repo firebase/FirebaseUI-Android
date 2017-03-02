@@ -1,10 +1,12 @@
 package com.firebase.ui.auth.util.signincontainer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.ui.FragmentBase;
@@ -32,7 +34,9 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     private static final String TAG = "SmartLockBase";
 
     protected GoogleApiClient mGoogleApiClient;
+
     private boolean mWasProgressDialogShowing;
+    private Pair<Integer, Intent> mActivityResultPair;
 
     /**
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to
@@ -110,7 +114,9 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     @Override
     public void onStart() {
         super.onStart();
-        if (mWasProgressDialogShowing) {
+        if (mActivityResultPair != null) {
+            mHelper.finish(mActivityResultPair.first, mActivityResultPair.second);
+        } else if (mWasProgressDialogShowing) {
             mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
             mWasProgressDialogShowing = false;
         }
@@ -132,6 +138,18 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     public void cleanup() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void finish(int resultCode, Intent resultIntent) {
+        try {
+            super.finish(resultCode, resultIntent);
+        } catch (NullPointerException npe) {
+            // Because this fragment lives beyond the activity lifecycle, Fragment#getActivity()
+            // might return null and we'll throw a NPE. To get around this, we wait until the
+            // activity comes back to life in onStart and we finish it there.
+            mActivityResultPair = new Pair<>(resultCode, resultIntent);
         }
     }
 
