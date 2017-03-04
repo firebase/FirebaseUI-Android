@@ -32,23 +32,11 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     private static final String TAG = "FirebaseRecyclerAdapter";
 
     protected ObservableSnapshotArray<T> mSnapshots;
-    protected Class<T> mModelClass;
     protected Class<VH> mViewHolderClass;
     protected int mModelLayout;
 
     /**
-     * Internal constructor that does nothing. Can be used as a workaround to pass `this` into a
-     * constructor argument.
-     *
-     * @see #init(ObservableSnapshotArray, Class, int, Class)
-     */
-    protected FirebaseRecyclerAdapter() {
-    }
-
-    /**
      * @param snapshots       The data used to populate the adapter
-     * @param modelClass      Firebase will marshall the data at a location into an instance of a
-     *                        class that you provide
      * @param modelLayout     This is the layout used to represent a single item in the list. You
      *                        will be responsible for populating an instance of the corresponding
      *                        view with the data from an instance of modelClass.
@@ -56,35 +44,38 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      *                        modelLayout.
      */
     public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
-                                   Class<T> modelClass,
                                    @LayoutRes int modelLayout,
                                    Class<VH> viewHolderClass) {
-        init(snapshots, modelClass, modelLayout, viewHolderClass);
+        mSnapshots = snapshots;
+        mViewHolderClass = viewHolderClass;
+        mModelLayout = modelLayout;
+
+        startListening();
     }
 
     /**
-     * @param query The Firebase location to watch for data changes. Can also be a slice of a
-     *              location, using some combination of {@code limit()}, {@code startAt()}, and
-     *              {@code endAt()}.
-     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, Class, int, Class)
+     * @param parser a custom {@link SnapshotParser} to convert a {@link DataSnapshot} to the model
+     *               class
+     * @param query  The Firebase location to watch for data changes. Can also be a slice of a
+     *               location, using some combination of {@code limit()}, {@code startAt()}, and
+     *               {@code endAt()}.
+     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class)
+     */
+    public FirebaseRecyclerAdapter(SnapshotParser<T> parser,
+                                   @LayoutRes int modelLayout,
+                                   Class<VH> viewHolderClass,
+                                   Query query) {
+        this(new FirebaseArray<>(query, parser), modelLayout, viewHolderClass);
+    }
+
+    /**
+     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query)
      */
     public FirebaseRecyclerAdapter(Class<T> modelClass,
                                    @LayoutRes int modelLayout,
                                    Class<VH> viewHolderClass,
                                    Query query) {
-        init(new FirebaseArray<>(query, this), modelClass, modelLayout, viewHolderClass);
-    }
-
-    protected void init(ObservableSnapshotArray<T> snapshots,
-                        Class<T> modelClass,
-                        @LayoutRes int modelLayout,
-                        Class<VH> viewHolderClass) {
-        mSnapshots = snapshots;
-        mModelClass = modelClass;
-        mViewHolderClass = viewHolderClass;
-        mModelLayout = modelLayout;
-
-        startListening();
+        this(new ClassSnapshotParser<>(modelClass), modelLayout, viewHolderClass, query);
     }
 
     @Override
@@ -134,11 +125,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @Override
     public T getItem(int position) {
         return mSnapshots.getObject(position);
-    }
-
-    @Override
-    public T parseSnapshot(DataSnapshot snapshot) {
-        return snapshot.getValue(mModelClass);
     }
 
     @Override
