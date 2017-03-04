@@ -29,22 +29,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
 
     protected Activity mActivity;
     protected ObservableSnapshotArray<T> mSnapshots;
-    protected Class<T> mModelClass;
     protected int mLayout;
 
     /**
-     * Internal constructor that does nothing. Can be used as a workaround to pass `this` into a
-     * constructor argument.
-     *
-     * @see #init(Activity, ObservableSnapshotArray, Class, int)
-     */
-    protected FirebaseListAdapter() {
-    }
-
-    /**
      * @param activity    The {@link Activity} containing the {@link ListView}
-     * @param modelClass  Firebase will marshall the data at a location into an instance of a class
-     *                    that you provide
      * @param modelLayout This is the layout used to represent a single list item. You will be
      *                    responsible for populating an instance of the corresponding view with the
      *                    data from an instance of modelClass.
@@ -52,34 +40,37 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
      */
     public FirebaseListAdapter(Activity activity,
                                ObservableSnapshotArray<T> snapshots,
-                               Class<T> modelClass,
                                @LayoutRes int modelLayout) {
-        init(activity, snapshots, modelClass, modelLayout);
+        mActivity = activity;
+        mSnapshots = snapshots;
+        mLayout = modelLayout;
+
+        startListening();
     }
 
     /**
-     * @param query The Firebase location to watch for data changes. Can also be a slice of a
-     *              location, using some combination of {@code limit()}, {@code startAt()}, and
-     *              {@code endAt()}.
-     * @see #FirebaseListAdapter(Activity, ObservableSnapshotArray, Class, int)
+     * @param parser a custom {@link SnapshotParser} to convert a {@link DataSnapshot} to the model
+     *               class
+     * @param query  The Firebase location to watch for data changes. Can also be a slice of a
+     *               location, using some combination of {@code limit()}, {@code startAt()}, and
+     *               {@code endAt()}.
+     * @see #FirebaseListAdapter(Activity, ObservableSnapshotArray, int)
+     */
+    public FirebaseListAdapter(Activity activity,
+                               SnapshotParser<T> parser,
+                               @LayoutRes int modelLayout,
+                               Query query) {
+        this(activity, new FirebaseArray<>(query, parser), modelLayout);
+    }
+
+    /**
+     * @see #FirebaseListAdapter(Activity, SnapshotParser, int, Query)
      */
     public FirebaseListAdapter(Activity activity,
                                Class<T> modelClass,
                                @LayoutRes int modelLayout,
                                Query query) {
-        init(activity, new FirebaseArray<>(query, this), modelClass, modelLayout);
-    }
-
-    protected void init(Activity activity,
-                        ObservableSnapshotArray<T> snapshots,
-                        Class<T> modelClass,
-                        @LayoutRes int modelLayout) {
-        mActivity = activity;
-        mSnapshots = snapshots;
-        mModelClass = modelClass;
-        mLayout = modelLayout;
-
-        startListening();
+        this(activity, new ClassSnapshotParser<>(modelClass), modelLayout, query);
     }
 
     @Override
@@ -114,11 +105,6 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     @Override
     public T getItem(int position) {
         return mSnapshots.getObject(position);
-    }
-
-    @Override
-    public T parseSnapshot(DataSnapshot snapshot) {
-        return snapshot.getValue(mModelClass);
     }
 
     @Override
