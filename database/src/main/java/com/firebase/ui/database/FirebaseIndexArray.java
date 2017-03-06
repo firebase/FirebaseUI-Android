@@ -14,6 +14,7 @@
 
 package com.firebase.ui.database;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -59,7 +60,8 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     }
 
     /**
-     * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
+     * Create a new FirebaseIndexArray that parses snapshots as members of a given class and joins
+     * refs together with a custom {@link JoinResolver}.
      *
      * @see FirebaseIndexArray#FirebaseIndexArray(Query, DatabaseReference, SnapshotParser,
      * JoinResolver)
@@ -96,11 +98,13 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         init(keyQuery, dataRef);
     }
 
-    private void init(Query keyQuery, DatabaseReference dataRef) {
+    @CallSuper
+    protected void init(Query keyQuery, DatabaseReference dataRef) {
         init(keyQuery, dataRef, new DefaultJoinResolver());
     }
 
-    private void init(Query keyQuery, DatabaseReference dataRef, JoinResolver resolver) {
+    @CallSuper
+    protected void init(Query keyQuery, DatabaseReference dataRef, JoinResolver resolver) {
         mDataRef = dataRef;
         mJoinResolver = resolver;
         mKeySnapshots = new FirebaseArray<>(keyQuery, new SnapshotParser<String>() {
@@ -291,7 +295,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         @NonNull
         @Override
         public DatabaseReference onDisjoin(DataSnapshot keySnapshot) {
-            return mDataRef.child(keySnapshot.getKey());
+            return onJoin(keySnapshot); // Match the join/disjoin pair
         }
 
         @Override
