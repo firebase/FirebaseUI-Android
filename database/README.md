@@ -251,7 +251,7 @@ protected void onCreate(Bundle savedInstanceState) {
     findViewById(R.id.send_button).setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ref.push().setValue(new Chat("puf", "1234", mMessage.getText().toString()));
+            ref.push().setValue(new Chat("puf", "1234", message.getText().toString()));
             message.setText("");
         }
     });
