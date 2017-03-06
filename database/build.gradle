@@ -6,28 +6,29 @@ android {
     buildToolsVersion buildTools
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion minSdk
         targetSdkVersion targetSdk
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
     }
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:$support_library_version"
-    compile "com.android.support:recyclerview-v7:$support_library_version"
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
 
-    compile "com.google.firebase:firebase-database:$firebase_version"
+    compile "com.google.firebase:firebase-database:$firebaseVersion"
 
     androidTestCompile 'junit:junit:4.12'
-    androidTestCompile "com.android.support:support-annotations:$support_library_version"
+    androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
 }

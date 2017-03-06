@@ -14,11 +14,9 @@
 
 package com.firebase.ui.database;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.InstrumentationTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 
-import com.firebase.ui.database.utils.Bean;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,56 +29,50 @@ import org.junit.runner.RunWith;
 import java.util.concurrent.Callable;
 
 import static com.firebase.ui.database.TestUtils.getAppInstance;
-import static com.firebase.ui.database.TestUtils.getBean;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
 
 @RunWith(AndroidJUnit4.class)
-@SmallTest
-public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
+public class FirebaseArrayOfObjectsTest {
+    private static final int INITIAL_SIZE = 3;
+
     private DatabaseReference mRef;
-    private FirebaseArray mArray;
+    private FirebaseArray<Bean> mArray;
+    private ChangeEventListener mListener;
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        FirebaseApp app = getAppInstance(getInstrumentation().getContext());
-        mRef = FirebaseDatabase.getInstance(app).getReference()
-                .child("firebasearray").child("objects");
-        mArray = new FirebaseArray(mRef);
+        FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
+        mRef = FirebaseDatabase.getInstance(app)
+                .getReference()
+                .child("firebasearray")
+                .child("objects");
+        mArray = new FirebaseArray<>(mRef, Bean.class);
         mRef.removeValue();
-        runAndWaitUntil(mArray, new Runnable() {
-                            @Override
-                            public void run() {
-                                mArray.startListening();
-                                for (int i = 1; i <= 3; i++) {
-                                    mRef.push().setValue(new Bean(i, "Text " + i, i % 2 == 0), i);
-                                }
-                            }
-                        }, new Callable<Boolean>() {
-                            @Override
-                            public Boolean call() throws Exception {
-                                return mArray.size() == 3;
-                            }
-                        }
-        );
+        mListener = runAndWaitUntil(mArray, new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 1; i <= INITIAL_SIZE; i++) {
+                    mRef.push().setValue(new Bean(i, "Text " + i, i % 2 == 0), i);
+                }
+            }
+        }, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return mArray.size() == INITIAL_SIZE;
+            }
+        });
     }
 
     @After
     public void tearDown() throws Exception {
+        mArray.removeChangeEventListener(mListener);
         mRef.getRoot().removeValue();
-        mArray.stopListening();
-        super.tearDown();
-    }
-
-    @Test
-    public void testSize() throws Exception {
-        assertEquals(3, mArray.size());
     }
 
     @Test
     public void testPushIncreasesSize() throws Exception {
-        assertEquals(3, mArray.size());
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mRef.push().setValue(new Bean(4));
             }
@@ -95,13 +87,14 @@ public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
     @Test
     public void testPushAppends() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mRef.push().setValue(new Bean(4), 4);
             }
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.get(3).getValue(Bean.class).getNumber() == 4;
+                return mArray.getObject(3).getNumber() == 4;
             }
         });
     }
@@ -109,14 +102,15 @@ public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
     @Test
     public void testAddValueWithPriority() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mRef.push().setValue(new Bean(4), 0.5);
             }
         }, new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
-                return mArray.get(3).getValue(Bean.class).getNumber() == 3 && mArray.get(0)
-                        .getValue(Bean.class)
-                        .getNumber() == 4;
+                return mArray.getObject(3).getNumber() == 3
+                        && mArray.getObject(0).getNumber() == 4;
             }
         });
     }
@@ -124,15 +118,48 @@ public class FirebaseArrayOfObjectsTest extends InstrumentationTestCase {
     @Test
     public void testChangePriorities() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mArray.get(2).getRef().setPriority(0.5);
             }
         }, new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
-                return getBean(mArray, 0).getNumber() == 3
-                        && getBean(mArray, 1).getNumber() == 1
-                        && getBean(mArray, 2).getNumber() == 2;
+                return mArray.getObject(0).getNumber() == 3
+                        && mArray.getObject(1).getNumber() == 1
+                        && mArray.getObject(2).getNumber() == 2;
                 //return isValuesEqual(mArray, new int[]{3, 1, 2});
+            }
+        });
+    }
+
+    @Test
+    public void testCacheInvalidates() throws Exception {
+        final DatabaseReference pushRef = mRef.push();
+
+        // Set initial value to "5"
+        runAndWaitUntil(mArray, new Runnable() {
+            @Override
+            public void run() {
+                pushRef.setValue(new Bean(5), 100);
+            }
+        }, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return mArray.getObject(3).getNumber() == 5;
+            }
+        });
+
+        // Change the value to "6" and ensure that the change is propagated
+        runAndWaitUntil(mArray, new Runnable() {
+            @Override
+            public void run() {
+                pushRef.setValue(new Bean(6), 100);
+            }
+        }, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return mArray.getObject(3).getNumber() == 6;
             }
         });
     }

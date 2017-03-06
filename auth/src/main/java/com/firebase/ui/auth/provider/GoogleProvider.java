@@ -23,32 +23,32 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.util.GoogleApiConstants;
+import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class GoogleProvider implements
-        IdpProvider, OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "GoogleProvider";
     private static final int RC_SIGN_IN = 20;
     private static final String ERROR_KEY = "error";
 
     private GoogleApiClient mGoogleApiClient;
-    private Activity mActivity;
-    private IdpCallback mIDPCallback;
+    private FragmentActivity mActivity;
+    private IdpConfig mIdpConfig;
+    private IdpCallback mIdpCallback;
 
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig) {
         this(activity, idpConfig, null);
@@ -56,22 +56,35 @@ public class GoogleProvider implements
 
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig, @Nullable String email) {
         mActivity = activity;
-        String clientId = activity.getString(R.string.default_web_client_id);
+        mIdpConfig = idpConfig;
+
+        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
+                .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(email))
+                .build();
+    }
+
+    public static AuthCredential createAuthCredential(IdpResponse response) {
+        return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
+    }
+
+    private GoogleSignInOptions getSignInOptions(@Nullable String email) {
+        String clientId = mActivity.getString(R.string.default_web_client_id);
 
         GoogleSignInOptions.Builder builder =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestEmail()
                         .requestIdToken(clientId);
 
-        if (activity.getResources().getIdentifier(
-                "google_permissions", "array", activity.getPackageName()) != 0) {
+        if (mActivity.getResources().getIdentifier(
+                "google_permissions", "array", mActivity.getPackageName()) != 0) {
             Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.google_permissions but that is"
                     + " no longer respected as of FirebaseUI 1.0.0. Please see README for IDP scope"
                     + " configuration instructions.");
         }
 
         // Add additional scopes
-        for (String scopeString : idpConfig.getScopes()) {
+        for (String scopeString : mIdpConfig.getScopes()) {
             builder.requestScopes(new Scope(scopeString));
         }
 
@@ -79,14 +92,7 @@ public class GoogleProvider implements
             builder.setAccountName(email);
         }
 
-        mGoogleApiClient = new GoogleApiClient.Builder(activity)
-                .enableAutoManage(activity, GoogleApiConstants.AUTO_MANAGE_ID0, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, builder.build())
-                .build();
-    }
-
-    public static AuthCredential createAuthCredential(IdpResponse response) {
-        return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
+        return builder.build();
     }
 
     public String getName(Context context) {
@@ -100,7 +106,7 @@ public class GoogleProvider implements
 
     @Override
     public void setAuthenticationCallback(IdpCallback callback) {
-        mIDPCallback = callback;
+        mIdpCallback = callback;
     }
 
     public void disconnect() {
@@ -121,7 +127,7 @@ public class GoogleProvider implements
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result != null) {
                 if (result.isSuccess()) {
-                    mIDPCallback.onSuccess(createIdpResponse(result.getSignInAccount()));
+                    mIdpCallback.onSuccess(createIdpResponse(result.getSignInAccount()));
                 } else {
                     onError(result);
                 }
@@ -138,21 +144,26 @@ public class GoogleProvider implements
     }
 
     private void onError(GoogleSignInResult result) {
-        String errorMessage = result.getStatus().getStatusMessage();
-        onError(result.getStatus().getStatusCode() + " " + errorMessage);
+        Status status = result.getStatus();
+
+        if (status.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
+            mGoogleApiClient.stopAutoManage(mActivity);
+            mGoogleApiClient.disconnect();
+            mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
+                    .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(null))
+                    .build();
+            startLogin(mActivity);
+        } else {
+            onError(status.getStatusCode() + " " + status.getStatusMessage());
+        }
     }
 
     private void onError(String errorMessage) {
         Log.e(TAG, "Error logging in with Google. " + errorMessage);
         Bundle extra = new Bundle();
         extra.putString(ERROR_KEY, errorMessage);
-        mIDPCallback.onFailure(extra);
-    }
-
-    @Override
-    public void onClick(View view) {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        startLogin(mActivity);
+        mIdpCallback.onFailure(extra);
     }
 
     @Override

@@ -2,16 +2,17 @@ package com.firebase.ui.database;
 
 import android.content.Context;
 
-import com.firebase.ui.database.utils.Bean;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-
-import junit.framework.AssertionFailedError;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertTrue;
 
 public class TestUtils {
     private static final String APP_NAME = "firebaseui-tests";
@@ -33,18 +34,22 @@ public class TestUtils {
                 .build(), APP_NAME);
     }
 
-    public static void runAndWaitUntil(FirebaseArray array,
-                                       Runnable task,
-                                       Callable<Boolean> done) throws InterruptedException {
+    public static ChangeEventListener runAndWaitUntil(ObservableSnapshotArray array,
+                                                      Runnable task,
+                                                      Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
-        array.setChangeEventListener(new ChangeEventListener() {
+        ChangeEventListener listener = array.addChangeEventListener(new ChangeEventListener() {
             @Override
-            public void onChildChanged(ChangeEventListener.EventType type, int index, int oldIndex) {
+            public void onChildChanged(ChangeEventListener.EventType type,
+                                       DataSnapshot snapshot,
+                                       int index,
+                                       int oldIndex) {
                 semaphore.release();
             }
 
             @Override
-            public void onDataChanged() {}
+            public void onDataChanged() {
+            }
 
             @Override
             public void onCancelled(DatabaseError error) {
@@ -52,6 +57,7 @@ public class TestUtils {
             }
         });
         task.run();
+
         boolean isDone = false;
         long startedAt = System.currentTimeMillis();
         while (!isDone && System.currentTimeMillis() - startedAt < TIMEOUT) {
@@ -63,12 +69,12 @@ public class TestUtils {
                 // and we're not done
             }
         }
-        if (!isDone) {
-            throw new AssertionFailedError();
-        }
+        assertTrue("Timed out waiting for expected results on FirebaseArray", isDone);
+
+        return listener;
     }
 
-    public static boolean isValuesEqual(FirebaseArray array, int[] expected) {
+    public static boolean isValuesEqual(ObservableSnapshotArray<?> array, int[] expected) {
         if (array.size() != expected.length) return false;
         for (int i = 0; i < array.size(); i++) {
             if (!array.get(i).getValue(Integer.class).equals(expected[i])) {
@@ -78,7 +84,18 @@ public class TestUtils {
         return true;
     }
 
-    public static Bean getBean(FirebaseArray array, int index) {
-        return array.get(index).getValue(Bean.class);
+    public static void pushValue(DatabaseReference keyRef,
+                                 DatabaseReference ref,
+                                 Object value,
+                                 Object priority) {
+        String key = keyRef.push().getKey();
+
+        if (priority != null) {
+            keyRef.child(key).setValue(true, priority);
+            ref.child(key).setValue(value, priority);
+        } else {
+            keyRef.child(key).setValue(true);
+            ref.child(key).setValue(value);
+        }
     }
 }

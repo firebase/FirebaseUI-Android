@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0-beta2'
+        classpath 'com.android.tools.build:gradle:2.3.0-rc1'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'io.fabric.tools:gradle:1.+'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
@@ -23,6 +23,11 @@ allprojects {
         mavenCentral()
         maven { url 'https://maven.fabric.io/public' }
     }
+}
+
+// TODO Remove once either Facebook or Robolectric fix the crash: https://github.com/robolectric/robolectric/issues/2579#issuecomment-276526911
+gradle.taskGraph.whenReady { graph ->
+    graph.allTasks.findAll { it.name ==~ /testReleaseUnitTest/ }*.enabled = false
 }
 
 //Skip Javadoc generation for Java 1.8 as it breaks build
