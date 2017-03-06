@@ -30,6 +30,9 @@
         <activity
             android:name=".database.ChatActivity"
             android:label="@string/name_chat"/>
+        <activity
+            android:name=".database.ChatIndexActivity"
+            android:label="@string/name_chat"/>
 
         <!-- Auth UI demo -->
         <activity

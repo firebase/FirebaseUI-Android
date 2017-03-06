@@ -13,6 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.uidemo.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ChatHolder extends RecyclerView.ViewHolder {
     private final TextView mNameField;
@@ -36,7 +38,23 @@ public class ChatHolder extends RecyclerView.ViewHolder {
         mGray300 = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
     }
 
-    public void setIsSender(boolean isSender) {
+    public void bind(Chat chat) {
+        setName(chat.getName());
+        setText(chat.getMessage());
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        setIsSender(currentUser != null && chat.getUid().equals(currentUser.getUid()));
+    }
+
+    private void setName(String name) {
+        mNameField.setText(name);
+    }
+
+    private void setText(String text) {
+        mTextField.setText(text);
+    }
+
+    private void setIsSender(boolean isSender) {
         final int color;
         if (isSender) {
             color = mGreen300;
@@ -55,13 +73,5 @@ public class ChatHolder extends RecyclerView.ViewHolder {
                 .setColorFilter(color, PorterDuff.Mode.SRC);
         ((RotateDrawable) mRightArrow.getBackground()).getDrawable()
                 .setColorFilter(color, PorterDuff.Mode.SRC);
-    }
-
-    public void setName(String name) {
-        mNameField.setText(name);
-    }
-
-    public void setText(String text) {
-        mTextField.setText(text);
     }
 }
