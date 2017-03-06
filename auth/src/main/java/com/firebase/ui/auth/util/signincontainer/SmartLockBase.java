@@ -143,13 +143,13 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
 
     @Override
     public void finish(int resultCode, Intent resultIntent) {
-        try {
-            super.finish(resultCode, resultIntent);
-        } catch (NullPointerException npe) {
+        if (getActivity() == null) {
             // Because this fragment lives beyond the activity lifecycle, Fragment#getActivity()
             // might return null and we'll throw a NPE. To get around this, we wait until the
             // activity comes back to life in onStart and we finish it there.
             mActivityResultPair = new Pair<>(resultCode, resultIntent);
+        } else {
+            super.finish(resultCode, resultIntent);
         }
     }
 
