@@ -447,9 +447,9 @@ public class AuthUI {
          */
         public T setTheme(@StyleRes int theme) {
             Preconditions.checkValidStyle(
-                    mApp.getApplicationContext(),
-                    theme,
-                    "theme identifier is unknown or not a style definition");
+                mApp.getApplicationContext(),
+                theme,
+                "theme identifier is unknown or not a style definition");
             mTheme = theme;
             return (T) this;
         }
