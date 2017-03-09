@@ -59,7 +59,7 @@ public class ImageActivity extends AppCompatActivity implements EasyPermissions.
         setContentView(R.layout.activity_image);
         ButterKnife.bind(this);
 
-        // By default, Firebase Storage files require authentication to read or write.
+        // By default, Cloud Storage files require authentication to read or write.
         // For this sample to function correctly, enable Anonymous Auth in the Firebase console:
         // https://console.firebase.google.com/project/_/authentication/providers
         FirebaseAuth.getInstance()
@@ -102,7 +102,7 @@ public class ImageActivity extends AppCompatActivity implements EasyPermissions.
         hideDownloadUI();
         Toast.makeText(this, "Uploading...", Toast.LENGTH_SHORT).show();
 
-        // Upload to Firebase Storage
+        // Upload to Cloud Storage
         String uuid = UUID.randomUUID().toString();
         mImageRef = FirebaseStorage.getInstance().getReference(uuid);
         mImageRef.putFile(uri)

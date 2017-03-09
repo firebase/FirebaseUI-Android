@@ -152,7 +152,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                             authResult.getUser()
                                     .linkWithCredential(authCredential)
                                     .addOnFailureListener(new TaskFailureLogger(
-                                            TAG, "Error signing in with credential"))
+                                            TAG, "Error signing in with credential " + authCredential.getProvider()))
                                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                         @Override
                                         public void onSuccess(AuthResult authResult) {
