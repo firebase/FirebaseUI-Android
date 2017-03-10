@@ -85,4 +85,7 @@
     <!-- account management -->
     <string name="edit_password_body">To change the email address associated with your <xliff:g example="Example Company" id="app_name">%1$s</xliff:g> account, please re-enter your password.</string>
     <string name="menu_item_save">Save</string>
+    <string name="linked_accounts">Linked accounts</string>
+    <string name="password">Password</string>
+    <string name="idp_name_email">Email</string>
 </resources>

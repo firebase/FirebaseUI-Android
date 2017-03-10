@@ -35,6 +35,7 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ui.accountmanagement.AccountSettingsActivity;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -96,6 +97,16 @@ public class SignedInActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         populateProfile();
         populateIdpToken();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_ACCOUNT_MANAGEMENT
+                && resultCode == AccountSettingsActivity.RESULT_SIGNED_OUT) {
+            startActivity(AuthUiActivity.createIntent(this));
+            finish();
+        }
     }
 
     @OnClick(R.id.sign_out)
