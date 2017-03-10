@@ -93,7 +93,17 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             return;
         }
 
-        if (mHelper.getFlowParams().smartLockEnabled) {
+        FlowParameters flowParams = mHelper.getFlowParams();
+        if (flowParams.isReauth) {
+            // if it's a reauth and it's not an email account, skip Smart Lock.
+            List<String> providers = mHelper.getCurrentUser().getProviders();
+            if (providers == null || providers.size() > 0) {
+                // this is a non-email user, skip Smart Lock
+                startAuthMethodChoice();
+                return;
+            }
+        }
+        if (flowParams.smartLockEnabled) {
             mHelper.showLoadingDialog(R.string.progress_dialog_loading);
 
             mGoogleApiClient = new GoogleApiClient.Builder(getContext().getApplicationContext())
