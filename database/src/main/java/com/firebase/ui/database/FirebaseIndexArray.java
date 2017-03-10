@@ -34,7 +34,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     private static final String TAG = "FirebaseIndexArray";
 
     private DatabaseReference mDataRef;
-    private Map<Query, ValueEventListener> mRefs = new HashMap<>();
+    private Map<DatabaseReference, ValueEventListener> mRefs = new HashMap<>();
 
     private FirebaseArray<String> mKeySnapshots;
     private JoinResolver mJoinResolver;
@@ -150,8 +150,8 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
         super.removeChangeEventListener(listener);
         if (!isListening()) {
-            for (Query query : mRefs.keySet()) {
-                query.removeEventListener(mRefs.get(query));
+            for (DatabaseReference ref : mRefs.keySet()) {
+                ref.removeEventListener(mRefs.get(ref));
             }
 
             clearData();
