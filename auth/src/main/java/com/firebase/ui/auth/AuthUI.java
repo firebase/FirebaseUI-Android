@@ -28,6 +28,7 @@ import android.support.v4.app.FragmentActivity;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.accountmanagement.AccountSettingsActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialTaskApi;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
@@ -314,6 +315,45 @@ public class AuthUI {
      */
     public SignInIntentBuilder createSignInIntentBuilder() {
         return new SignInIntentBuilder();
+    }
+
+    public AccountManagementIntentBuilder createAccountManagementBuilder() {
+        return new AccountManagementIntentBuilder();
+    }
+
+
+    public final class AccountManagementIntentBuilder {
+        private int mTheme;
+        private boolean mSmartLockEnabled = true;
+
+        /**
+         * Specifies the theme to use for the application flow. If no theme is specified,
+         * a default theme will be used.
+         */
+        public AccountManagementIntentBuilder setTheme(@StyleRes int theme) {
+            Preconditions.checkValidStyle(
+                    mApp.getApplicationContext(),
+                    theme,
+                    "theme identifier is unknown or not a style definition");
+            mTheme = theme;
+            return this;
+        }
+
+        public AccountManagementIntentBuilder setSmartLockEnabled(boolean enabled) {
+            mSmartLockEnabled = enabled;
+            return this;
+        }
+
+        public Intent build() {
+            return AccountSettingsActivity.createIntent(mApp.getApplicationContext(), new FlowParameters(
+                    mApp.getName(),
+                    new ArrayList<IdpConfig>(),
+                    mTheme,
+                    NO_LOGO,
+                    null,
+                    mSmartLockEnabled,
+                    false));
+        }
     }
 
     /**

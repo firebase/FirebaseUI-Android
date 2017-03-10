@@ -50,6 +50,15 @@
                 android:text="@string/reauthenticate"/>
 
             <Button
+                android:id="@+id/account_management"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:text="@string/edit_profile_button"/>
+
+            <Button
                 android:id="@+id/delete_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

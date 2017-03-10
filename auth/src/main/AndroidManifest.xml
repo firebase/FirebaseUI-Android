@@ -1,24 +1,20 @@
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.firebase.ui.auth">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.firebase.ui.auth">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application>
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="@string/twitter_consumer_secret"/>
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_application_id"/>
-
         <meta-data
             android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
             android:value="${enableFbLogging}"/>
@@ -28,37 +24,30 @@
             android:label=""
             android:exported="false"
             android:theme="@style/FirebaseUI.Transparent"/>
-
         <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/title_recover_password_activity"
             android:exported="false"/>
-
         <activity
             android:name=".ui.email.RegisterEmailActivity"
             android:label="@string/sign_in_default"
             android:exported="false"/>
-
         <activity
             android:name=".ui.accountlink.WelcomeBackIdpPrompt"
             android:label="@string/title_welcome_back_idp_prompt"
             android:exported="false"/>
-
         <activity
             android:name=".ui.accountlink.WelcomeBackPasswordPrompt"
             android:label="@string/title_welcome_back_password_prompt"
             android:exported="false"/>
-
         <activity
             android:name=".ui.idp.AuthMethodPickerActivity"
             android:label="@string/default_toolbar_title"
             android:exported="false"/>
-
         <activity
             android:name="com.facebook.FacebookActivity"
             android:label="@string/app_name"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
-
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -71,7 +60,18 @@
                 <data android:scheme="@string/facebook_login_protocol_scheme"/>
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".ui.accountmanagement.AccountSettingsActivity"
+            android:label="@string/account_settings_title"/>
+        <activity
+            android:label="Edit name"
+            android:name=".ui.accountmanagement.EditDisplayNameActivity"/>
+        <activity
+            android:label="Edit email"
+            android:name=".ui.accountmanagement.EditEmailActivity"/>
+        <activity
+            android:label="Change password"
+            android:name=".ui.accountmanagement.EditPasswordActivity"/>
     </application>
 
 </manifest>

@@ -57,6 +57,8 @@ public class SignedInActivity extends AppCompatActivity {
 
     private static final int RC_REAUTH = 100;
 
+    private static final int RC_ACCOUNT_MANAGEMENT = 100;
+    
     @BindView(android.R.id.content)
     View mRootView;
 
@@ -126,6 +128,13 @@ public class SignedInActivity extends AppCompatActivity {
                 .build();
 
         startActivityForResult(reauthIntent, RC_REAUTH);
+    }
+
+    @OnClick(R.id.account_management)
+    public void accountManagement(View view) {
+        startActivityForResult(
+                AuthUI.getInstance().createAccountManagementBuilder().build(),
+                RC_ACCOUNT_MANAGEMENT);
     }
 
     @OnClick(R.id.delete_account)
