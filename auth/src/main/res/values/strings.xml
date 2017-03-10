@@ -77,4 +77,5 @@
 
     <!-- accessibility -->
     <string name="accessibility_logo">App logo</string>
+    <string name="signed_in_with_specific_account">Signed in as <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g></string>
 </resources>
