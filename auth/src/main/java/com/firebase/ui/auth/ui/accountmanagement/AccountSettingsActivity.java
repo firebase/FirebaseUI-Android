@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.BaseHelper;
@@ -20,7 +21,6 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -31,33 +31,31 @@ public class AccountSettingsActivity extends UpEnabledActivity {
     private static final int RC_EDIT_DISPLAY_NAME = 100;
     private static final int RC_EDIT_EMAIL = 200;
     private static final int RC_CHANGE_PASSWORD = 300;
-    private ImageView mProfilePicture;
     private TextView mDisplayName;
-    private ImageButton mEditDisplayName;
     private TextView mEmail;
-    private ImageButton mEditEmail;
-    private Button mChangePassword;
-    private Button mSignOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         final FlowParameters flowParams = mActivityHelper.getFlowParams();
-        mActivityHelper.getCurrentUser().getPhotoUrl();
-        mSignOut = (Button) findViewById(R.id.sign_out_button);
-        mSignOut.setOnClickListener(new SignOutClickListener());
-        mProfilePicture = (ImageView) findViewById(R.id.profile_image);
-        Uri profilePhoto = mActivityHelper.getCurrentUser().getPhotoUrl();
-        if (profilePhoto != null) {
-            Picasso.with(this).load(profilePhoto).into(mProfilePicture);
-        }
-        mDisplayName = (TextView) findViewById(R.id.display_name);
-        mEditDisplayName = (ImageButton) findViewById(R.id.edit_display_name);
-        mEmail = (TextView) findViewById(R.id.email);
-        mEditEmail = (ImageButton) findViewById(R.id.edit_email);
+        Button signOut = (Button) findViewById(R.id.sign_out_button);
+        signOut.setOnClickListener(new SignOutClickListener());
+        ImageView profilePicture = (ImageView) findViewById(R.id.profile_image);
 
-        mEditDisplayName.setOnClickListener(new View.OnClickListener() {
+        Uri profilePhoto = mActivityHelper.getCurrentUser().getPhotoUrl();
+        Glide.with(this)
+                .load(profilePhoto)
+                .placeholder(R.drawable.ic_person_white_48dp)
+                .transform(new CircleTransform(getApplicationContext()))
+                .into(profilePicture);
+
+        mDisplayName = (TextView) findViewById(R.id.display_name);
+        ImageButton editDisplayName = (ImageButton) findViewById(R.id.edit_display_name);
+        mEmail = (TextView) findViewById(R.id.email);
+        ImageButton editEmail = (ImageButton) findViewById(R.id.edit_email);
+
+        editDisplayName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(
@@ -68,7 +66,7 @@ public class AccountSettingsActivity extends UpEnabledActivity {
             }
         });
 
-        mEditEmail.setOnClickListener(new View.OnClickListener() {
+        editEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(
@@ -79,8 +77,8 @@ public class AccountSettingsActivity extends UpEnabledActivity {
             }
         });
 
-        mChangePassword = (Button) findViewById(R.id.change_password);
-        mChangePassword.setOnClickListener(new View.OnClickListener() {
+        Button changePassword = (Button) findViewById(R.id.change_password);
+        changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(
@@ -131,12 +129,15 @@ public class AccountSettingsActivity extends UpEnabledActivity {
         linkedAccountHolder.removeAllViews();
         LayoutInflater layoutInflater = getLayoutInflater();
         View row;
+        ImageView providerImage;
+        TextView providerName;
+        TextView displayName;
         for (String providerId : providers) {
             row = layoutInflater.inflate(R.layout.linked_provider, linkedAccountHolder);
             if (row != null) {
-                ImageView providerImage = (ImageView) row.findViewById(R.id.provider_image);
-                TextView providerName = (TextView) row.findViewById(R.id.provider_name);
-                TextView displayName = (TextView) row.findViewById(R.id.display_name);
+                providerImage = (ImageView) row.findViewById(R.id.provider_image);
+                providerName = (TextView) row.findViewById(R.id.provider_name);
+                displayName = (TextView) row.findViewById(R.id.display_name);
                 displayName.setText(user.getDisplayName());
                 ImageButton unlinkButton = (ImageButton) row.findViewById(R.id.unlink_idp_button);
                 unlinkButton.setOnClickListener(new UnlinkIdpClickListener(providerId));
