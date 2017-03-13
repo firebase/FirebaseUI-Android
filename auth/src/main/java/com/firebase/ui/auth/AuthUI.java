@@ -18,11 +18,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.FragmentActivity;
 
 import com.facebook.login.LoginManager;
@@ -365,10 +365,7 @@ public class AuthUI {
         String mTosUrl;
         boolean mIsSmartLockEnabled = true;
 
-        private AuthIntentBuilder() {
-            mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
-        }
-
+        private AuthIntentBuilder() {}
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified,
@@ -376,9 +373,9 @@ public class AuthUI {
          */
         public T setTheme(@StyleRes int theme) {
             Preconditions.checkValidStyle(
-                mApp.getApplicationContext(),
-                theme,
-                "theme identifier is unknown or not a style definition");
+                    mApp.getApplicationContext(),
+                    theme,
+                    "theme identifier is unknown or not a style definition");
             mTheme = theme;
             return (T) this;
         }
@@ -435,12 +432,16 @@ public class AuthUI {
             return (T) this;
         }
 
+        @CallSuper
         public Intent build() {
+            if (mProviders.isEmpty()) {
+                mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+            }
+
             return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
         }
 
-        @VisibleForTesting()
-        public abstract FlowParameters getFlowParams();
+        protected abstract FlowParameters getFlowParams();
     }
 
     /**
@@ -467,18 +468,17 @@ public class AuthUI {
         @Override
         public Intent build() {
             if (FirebaseAuth.getInstance(mApp).getCurrentUser() == null) {
-                throw new IllegalStateException(
-                    "User must be currently logged in to reauthenticate");
+                throw new IllegalStateException("User must be currently logged in to reauthenticate");
             }
 
             return super.build();
         }
 
         @Override
-        public FlowParameters getFlowParams() {
+        protected FlowParameters getFlowParams() {
             return new FlowParameters(
                     mApp.getName(),
-                    new ArrayList<>(mProviders),
+                    mProviders,
                     mTheme,
                     mLogo,
                     mTosUrl,
@@ -510,15 +510,10 @@ public class AuthUI {
         }
 
         @Override
-        @VisibleForTesting()
-        public FlowParameters getFlowParams() {
-            if (mProviders.isEmpty()) {
-                mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
-            }
-
+        protected FlowParameters getFlowParams() {
             return new FlowParameters(
                     mApp.getName(),
-                    new ArrayList<>(mProviders),
+                    mProviders,
                     mTheme,
                     mLogo,
                     mTosUrl,
