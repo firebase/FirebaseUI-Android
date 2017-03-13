@@ -352,7 +352,9 @@ public class AuthUI {
                     NO_LOGO,
                     null,
                     mSmartLockEnabled,
-                    false));
+                    false,
+                    false,
+                    null));
         }
     }
 

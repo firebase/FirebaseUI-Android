@@ -106,6 +106,10 @@ public class SignedInActivity extends AppCompatActivity {
                 && resultCode == AccountSettingsActivity.RESULT_SIGNED_OUT) {
             startActivity(AuthUiActivity.createIntent(this));
             finish();
+        } else if (requestCode == RC_REAUTH) {
+            mIdpResponse = IdpResponse.fromResultIntent(data);
+            populateIdpToken();
+            populateProfile();
         }
     }
 
@@ -317,15 +321,5 @@ public class SignedInActivity extends AppCompatActivity {
         in.setClass(context, SignedInActivity.class);
         in.putExtra(EXTRA_SIGNED_IN_CONFIG, signedInConfig);
         return in;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_REAUTH) {
-            mIdpResponse = IdpResponse.fromResultIntent(data);
-            populateIdpToken();
-            populateProfile();
-        }
     }
 }
