@@ -108,6 +108,12 @@ public class KickoffActivity extends HelperActivityBase {
         final FlowParameters flowParams = mActivityHelper.getFlowParams();
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.FirebaseUI_Dialog)
                 .setTitle(R.string.reauth_dialog_title)
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        finish(ResultCodes.CANCELED, new Intent());
+                    }
+                })
                 .setPositiveButton(R.string.sign_in_default, new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
