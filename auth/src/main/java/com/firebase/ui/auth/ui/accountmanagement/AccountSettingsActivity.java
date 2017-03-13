@@ -2,8 +2,11 @@ package com.firebase.ui.auth.ui.accountmanagement;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,27 +144,49 @@ public class AccountSettingsActivity extends UpEnabledActivity {
                 displayName.setText(user.getDisplayName());
                 ImageButton unlinkButton = (ImageButton) row.findViewById(R.id.unlink_idp_button);
                 unlinkButton.setOnClickListener(new UnlinkIdpClickListener(providerId));
+                int px;
                 switch (providerId) {
                     case AuthUI.EMAIL_PROVIDER:
+                        providerImage.setBackground(makeColoredCircle(R.color.gdi_email_provider_grey));
                         providerImage.setImageResource(R.drawable.ic_email_white_48dp);
                         providerName.setText(R.string.idp_name_email);
                         break;
                     case AuthUI.FACEBOOK_PROVIDER:
-                        providerImage.setImageResource(R.drawable.com_facebook_button_icon_blue);
+                        px = pxFromDp(10);
+                        providerImage.setPadding(px, px, px, px);
+                        providerImage.setBackground(makeColoredCircle(R.color.gdi_facebook_blue));
+                        providerImage.setImageResource(R.drawable.ic_facebook_white_22dp);
                         providerName.setText(R.string.idp_name_facebook);
                         break;
                     case AuthUI.GOOGLE_PROVIDER:
+                        providerImage.setBackground(
+                                makeColoredCircle(R.color.gdi_white_background));
                         providerImage.setImageResource(R.drawable.ic_googleg_color_24dp);
                         providerName.setText(R.string.idp_name_google);
                         break;
                     case AuthUI.TWITTER_PROVIDER:
-                        providerImage.setImageResource(R.drawable.tw__composer_logo_blue);
+                        providerImage.setBackground(makeColoredCircle(R.color.gdi_twitter_blue));
+                        providerImage.setImageResource(R.drawable.ic_twitter_bird_white_24dp);
+                        px = pxFromDp(10);
+                        providerImage.setPadding(px, px, px, px);
                         providerName.setText(R.string.idp_name_twitter);
                         break;
                 }
 
             }
         }
+    }
+
+    private ShapeDrawable makeColoredCircle(@ColorRes int color) {
+        ShapeDrawable shapeDrawable = new ShapeDrawable();
+        shapeDrawable.setShape(new OvalShape());
+        int resolvedColor = getResources().getColor(color);
+        shapeDrawable.getPaint().setColor(resolvedColor);
+        return shapeDrawable;
+    }
+
+    private int pxFromDp(int dp) {
+        return (int) Math.ceil(dp * getResources().getDisplayMetrics().density);
     }
 
     class UnlinkIdpClickListener implements View.OnClickListener {

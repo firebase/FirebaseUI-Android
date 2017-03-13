@@ -10,7 +10,7 @@
         android:layout_height="48dp"
         android:layout_marginRight="16dp"
         android:padding="5dp"
-        android:src="@drawable/ic_googleg_color_24dp"
+        android:background="@drawable/circle_background"
         />
     <RelativeLayout
         android:orientation="vertical"
