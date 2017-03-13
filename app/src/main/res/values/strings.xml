@@ -7,7 +7,7 @@
 
     <string name="desc_chat">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
     <string name="desc_auth_ui">Demonstrates the Firebase Auth UI flow, with customization options.</string>
-    <string name="desc_image">Demonstrates displaying an image from Firebase Storage using Glide.</string>
+    <string name="desc_image">Demonstrates displaying an image from Cloud Storage using Glide.</string>
 
     <!-- strings for Auth UI demo activities -->
     <eat-comment/>
@@ -47,7 +47,7 @@
     <string name="configuration_required">Configuration is required - see README.md</string>
     <string name="other_options_header">Other Options:</string>
     <string name="enable_smartlock">Enable SmartLock for Passwords</string>
-    <string name="rational_image_perm">This sample will read an image from local storage to upload to Firebase Storage.</string>
+    <string name="rational_image_perm">This sample will read an image from local storage to upload to Cloud Storage.</string>
     <string name="anonymous_auth_failed_msg">Anonymous authentication failed, various components of the demo will not work. Make sure your device is online and that Anonymous Auth is configured in your Firebase project(https://console.firebase.google.com/project/_/authentication/providers)</string>
     <string name="extra_google_scopes">Example extra Google scopes</string>
     <string name="games">Games</string>
