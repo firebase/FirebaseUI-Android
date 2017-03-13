@@ -158,7 +158,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                                 result.getUser()
                                         .linkWithCredential(mPrevCredential)
                                         .addOnFailureListener(new TaskFailureLogger(
-                                                TAG, "Error signing in with previous credential"))
+                                                TAG, "Error signing in with previous credential " + idpResponse.getProviderType()))
                                         .addOnCompleteListener(new FinishListener(idpResponse));
                             } else {
                                 finish(ResultCodes.OK, IdpResponse.getIntent(idpResponse));
@@ -172,12 +172,12 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                         }
                     })
                     .addOnFailureListener(
-                            new TaskFailureLogger(TAG, "Error signing in with new credential"));
+                            new TaskFailureLogger(TAG, "Error signing in with new credential " + idpResponse.getProviderType()));
         } else {
             currentUser
                     .linkWithCredential(newCredential)
                     .addOnFailureListener(
-                            new TaskFailureLogger(TAG, "Error linking with credential"))
+                            new TaskFailureLogger(TAG, "Error linking with credential " + idpResponse.getProviderType()))
                     .addOnCompleteListener(new FinishListener(idpResponse));
         }
     }

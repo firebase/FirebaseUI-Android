@@ -95,7 +95,19 @@ For convenience, here are some examples:
 
 There is a sample app in the `app/` directory that demonstrates most
 of the features of FirebaseUI. Load the project in Android Studio and
-run it on your Android device to see a demonstration.
+run it on your Android device to see a demonstration. 
+
+Before you can run the sample app, you must create a project in
+the Firebase console. Add an Android app to the project, and copy
+the generated google-services.json file into the `app/` directory.
+Also enable [anonymous authentication](https://firebase.google.com/docs/auth/android/anonymous-auth)
+for the Firebase project, since some components of the sample app
+requires it.
+
+If you encounter a version incompatibility error between Android Studio
+and Gradle while trying to run the sample app, try disabling the Instant
+Run feature of Android Studio. Alternatively, update Android Studio and
+Gradle to their latest versions.
 
 ## Contributing
 

@@ -32,25 +32,23 @@ import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
+public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener, View.OnClickListener {
     private static final String TAG = "RecyclerViewDemo";
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mRef;
-    private DatabaseReference mChatRef;
+    protected DatabaseReference mChatRef;
     private Button mSendButton;
-    private EditText mMessageEdit;
+    protected EditText mMessageEdit;
 
     private RecyclerView mMessages;
     private LinearLayoutManager mManager;
-    private FirebaseRecyclerAdapter<Chat, ChatHolder> mAdapter;
-    private TextView mEmptyListMessage;
+    protected FirebaseRecyclerAdapter<Chat, ChatHolder> mAdapter;
+    protected TextView mEmptyListMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,28 +62,9 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mMessageEdit = (EditText) findViewById(R.id.messageEdit);
         mEmptyListMessage = (TextView) findViewById(R.id.emptyTextView);
 
-        mRef = FirebaseDatabase.getInstance().getReference();
-        mChatRef = mRef.child("chats");
+        mChatRef = FirebaseDatabase.getInstance().getReference().child("chats");
 
-        mSendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String uid = mAuth.getCurrentUser().getUid();
-                String name = "User " + uid.substring(0, 6);
-
-                Chat chat = new Chat(name, mMessageEdit.getText().toString(), uid);
-                mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError error, DatabaseReference reference) {
-                        if (error != null) {
-                            Log.e(TAG, "Failed to write message", error.toException());
-                        }
-                    }
-                });
-
-                mMessageEdit.setText("");
-            }
-        });
+        mSendButton.setOnClickListener(this);
 
         mManager = new LinearLayoutManager(this);
         mManager.setReverseLayout(false);
@@ -126,33 +105,30 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
     }
 
     @Override
+    public void onClick(View v) {
+        String uid = mAuth.getCurrentUser().getUid();
+        String name = "User " + uid.substring(0, 6);
+
+        Chat chat = new Chat(name, mMessageEdit.getText().toString(), uid);
+        mChatRef.push().setValue(chat, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError error, DatabaseReference reference) {
+                if (error != null) {
+                    Log.e(TAG, "Failed to write message", error.toException());
+                }
+            }
+        });
+
+        mMessageEdit.setText("");
+    }
+
+    @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         updateUI();
     }
 
     private void attachRecyclerViewAdapter() {
-        Query lastFifty = mChatRef.limitToLast(50);
-        mAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
-                Chat.class, R.layout.message, ChatHolder.class, lastFifty) {
-            @Override
-            public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
-                holder.setName(chat.getName());
-                holder.setText(chat.getMessage());
-
-                FirebaseUser currentUser = mAuth.getCurrentUser();
-                if (currentUser != null && chat.getUid().equals(currentUser.getUid())) {
-                    holder.setIsSender(true);
-                } else {
-                    holder.setIsSender(false);
-                }
-            }
-
-            @Override
-            protected void onDataChanged() {
-                // If there are no chat messages, show a view that invites the user to add a message.
-                mEmptyListMessage.setVisibility(mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-            }
-        };
+        mAdapter = getAdapter();
 
         // Scroll to bottom on new messages
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -163,6 +139,26 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         });
 
         mMessages.setAdapter(mAdapter);
+    }
+
+    protected FirebaseRecyclerAdapter<Chat, ChatHolder> getAdapter() {
+        Query lastFifty = mChatRef.limitToLast(50);
+        return new FirebaseRecyclerAdapter<Chat, ChatHolder>(
+                Chat.class,
+                R.layout.message,
+                ChatHolder.class,
+                lastFifty) {
+            @Override
+            public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
+                holder.bind(chat);
+            }
+
+            @Override
+            public void onDataChanged() {
+                // If there are no chat messages, show a view that invites the user to add a message.
+                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+            }
+        };
     }
 
     private void signInAnonymously() {
