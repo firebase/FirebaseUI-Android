@@ -46,11 +46,11 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import java.util.List;
 
 public class SignedInActivity extends AppCompatActivity {
     private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
@@ -241,12 +241,11 @@ public class SignedInActivity extends AppCompatActivity {
         String tosUrl;
         boolean isSmartLockEnabled;
 
-        SignedInConfig(
-            int logo,
-            int theme,
-            List<IdpConfig> providerInfo,
-            String tosUrl,
-            boolean isSmartLockEnabled) {
+        SignedInConfig(int logo,
+                       int theme,
+                       List<IdpConfig> providerInfo,
+                       String tosUrl,
+                       boolean isSmartLockEnabled) {
             this.logo = logo;
             this.theme = theme;
             this.providerInfo = providerInfo;

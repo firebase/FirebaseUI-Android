@@ -433,11 +433,11 @@ public class AuthUI {
      */
     @SuppressWarnings(value = "unchecked")
     private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
-        protected int mLogo = NO_LOGO;
-        protected int mTheme = getDefaultTheme();
-        protected List<IdpConfig> mProviders = new ArrayList<>();
-        protected String mTosUrl;
-        protected boolean mIsSmartLockEnabled = true;
+        int mLogo = NO_LOGO;
+        int mTheme = getDefaultTheme();
+        List<IdpConfig> mProviders = new ArrayList<>();
+        String mTosUrl;
+        boolean mIsSmartLockEnabled = true;
 
         private AuthIntentBuilder() {}
 
@@ -447,9 +447,9 @@ public class AuthUI {
          */
         public T setTheme(@StyleRes int theme) {
             Preconditions.checkValidStyle(
-                mApp.getApplicationContext(),
-                theme,
-                "theme identifier is unknown or not a style definition");
+                    mApp.getApplicationContext(),
+                    theme,
+                    "theme identifier is unknown or not a style definition");
             mTheme = theme;
             return (T) this;
         }
