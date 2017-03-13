@@ -23,6 +23,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
@@ -49,6 +50,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     private FragmentActivity mActivity;
     private IdpConfig mIdpConfig;
     private IdpCallback mIdpCallback;
+    private boolean mSpecificAccount;
 
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig) {
         this(activity, idpConfig, null);
@@ -57,7 +59,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig, @Nullable String email) {
         mActivity = activity;
         mIdpConfig = idpConfig;
-
+        mSpecificAccount = !TextUtils.isEmpty(email);
         mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
                 .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(email))
@@ -120,6 +122,14 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result != null) {
                 if (result.isSuccess()) {
+                    if (mSpecificAccount) {
+                        Toast.makeText(
+                                mActivity,
+                                mActivity.getString(
+                                        R.string.signed_in_with_specific_account,
+                                        result.getSignInAccount().getEmail()),
+                                Toast.LENGTH_SHORT).show();
+                    }
                     mIdpCallback.onSuccess(createIdpResponse(result.getSignInAccount()));
                 } else {
                     onError(result);

@@ -7,6 +7,9 @@
     <string name="sign_in_default">Sign in</string>
     <string name="general_error">An error has occurred.</string>
 
+    <!-- Reauth Dialog -->
+    <string name="reauth_dialog_title">This action requires you to sign in before continuing.</string>
+
     <!-- Provider -->
     <string name="idp_name_google">Google</string>
     <string name="idp_name_facebook">Facebook</string>
@@ -46,6 +49,7 @@
     <string name="title_welcome_back_password_prompt">@string/sign_in_default</string>
     <string name="welcome_back_idp_header">You already have an account</string>
     <string name="welcome_back_email_header">Welcome back!</string>
+    <string name="welcome_back_email_header_reauth">Reauthentication required</string>
     <string name="welcome_back_idp_prompt">
         You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
         Sign in with <xliff:g id="provider_name" example="Google">%2$s</xliff:g> to continue.
@@ -53,6 +57,10 @@
     <string name="welcome_back_password_prompt_body">
         You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>
         to sign in. Enter your password for that account.
+    </string>
+    <string name="reauth_welcome_back_password_prompt_body">
+        You must reauthenticate to continue. Please enter the password for the account with email
+        <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
     </string>
     <string name="progress_dialog_signing_in">Signing in…</string>
     <string name="trouble_signing_in">Trouble signing in?</string>
@@ -69,4 +77,5 @@
 
     <!-- accessibility -->
     <string name="accessibility_logo">App logo</string>
+    <string name="signed_in_with_specific_account">Signed in as <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g></string>
 </resources>
