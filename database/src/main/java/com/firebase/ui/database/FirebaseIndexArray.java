@@ -203,20 +203,18 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = removeData(oldIndex);
             mDataSnapshots.add(index, snapshot);
-            notifyChangeEventListeners(ChangeEventListener.EventType.MOVED,
-                                       snapshot,
-                                       index,
-                                       oldIndex);
+            notifyChangeEventListeners(EventType.MOVED, snapshot, index, oldIndex);
         }
     }
 
     protected void onKeyRemoved(DataSnapshot data, int index) {
         DatabaseReference removeRef = mJoinResolver.onDisjoin(data);
-        removeRef.removeEventListener(mRefs.remove(removeRef));
+        ValueEventListener listener = mRefs.remove(removeRef);
+        if (listener != null) removeRef.removeEventListener(listener);
 
         if (isKeyAtIndex(data.getKey(), index)) {
             DataSnapshot snapshot = removeData(index);
-            notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
+            notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
         }
     }
 
@@ -258,20 +256,20 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
             int index = getIndexForKey(key);
 
             if (snapshot.getValue() != null) {
-                if (!isKeyAtIndex(key, index)) {
-                    // We don't already know about this data, add it
-                    mDataSnapshots.add(index, snapshot);
-                    notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, snapshot, index);
-                } else {
+                if (isKeyAtIndex(key, index)) {
                     // We already know about this data, just update it
                     updateData(index, snapshot);
-                    notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, snapshot, index);
+                    notifyChangeEventListeners(EventType.CHANGED, snapshot, index);
+                } else {
+                    // We don't already know about this data, add it
+                    mDataSnapshots.add(index, snapshot);
+                    notifyChangeEventListeners(EventType.ADDED, snapshot, index);
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
                     // This data has disappeared, remove it
                     removeData(index);
-                    notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
+                    notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
                 } else {
                     // Data does not exist
                     mJoinResolver.onJoinFailed(index, snapshot);
