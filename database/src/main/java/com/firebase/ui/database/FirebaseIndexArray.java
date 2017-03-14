@@ -38,6 +38,9 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     private FirebaseArray<String> mKeySnapshots;
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
+    private List<String> mQueuedAdditions = new ArrayList<>();
+    private boolean mHasQueuedInstantOps;
+
     /**
      * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
      *
@@ -97,7 +100,10 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
     @Override
     public void onDataChanged() {
-        // No-op, we don't listen to batch events for the key ref
+        if (mHasQueuedInstantOps) {
+            notifyListenersOnDataChanged();
+            mHasQueuedInstantOps = false;
+        }
     }
 
     @Override
@@ -150,8 +156,10 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     }
 
     protected void onKeyAdded(DataSnapshot data) {
-        Query ref = mDataRef.child(data.getKey());
+        String key = data.getKey();
+        Query ref = mDataRef.child(key);
 
+        mQueuedAdditions.add(key);
         // Start listening
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
     }
@@ -161,6 +169,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
         if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = removeData(oldIndex);
+            mHasQueuedInstantOps = true;
             mDataSnapshots.add(index, snapshot);
             notifyChangeEventListeners(ChangeEventListener.EventType.MOVED,
                                        snapshot,
@@ -175,6 +184,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
         if (isKeyAtIndex(key, index)) {
             DataSnapshot snapshot = removeData(index);
+            mHasQueuedInstantOps = true;
             notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
         }
     }
@@ -221,16 +231,21 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                     // We don't already know about this data, add it
                     mDataSnapshots.add(index, snapshot);
                     notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, snapshot, index);
+
+                    mQueuedAdditions.remove(key);
+                    if (mQueuedAdditions.isEmpty()) notifyListenersOnDataChanged();
                 } else {
                     // We already know about this data, just update it
                     updateData(index, snapshot);
                     notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, snapshot, index);
+                    notifyListenersOnDataChanged();
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
                     // This data has disappeared, remove it
                     removeData(index);
                     notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
+                    notifyListenersOnDataChanged();
                 } else {
                     // Data does not exist
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
