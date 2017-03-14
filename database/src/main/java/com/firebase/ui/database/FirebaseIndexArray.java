@@ -33,7 +33,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     private static final String TAG = "FirebaseIndexArray";
 
     private DatabaseReference mDataRef;
-    private Map<Query, ValueEventListener> mRefs = new HashMap<>();
+    private Map<DatabaseReference, ValueEventListener> mRefs = new HashMap<>();
 
     private FirebaseArray<String> mKeySnapshots;
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
@@ -115,8 +115,8 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
         super.removeChangeEventListener(listener);
         if (!isListening()) {
-            for (Query query : mRefs.keySet()) {
-                query.removeEventListener(mRefs.get(query));
+            for (DatabaseReference ref : mRefs.keySet()) {
+                ref.removeEventListener(mRefs.get(ref));
             }
 
             clearData();
@@ -157,7 +157,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
     protected void onKeyAdded(DataSnapshot data) {
         String key = data.getKey();
-        Query ref = mDataRef.child(key);
+        DatabaseReference ref = mDataRef.child(key);
 
         mQueuedAdditions.add(key);
         // Start listening
@@ -171,21 +171,19 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
             DataSnapshot snapshot = removeData(oldIndex);
             mHasQueuedInstantOps = true;
             mDataSnapshots.add(index, snapshot);
-            notifyChangeEventListeners(ChangeEventListener.EventType.MOVED,
-                                       snapshot,
-                                       index,
-                                       oldIndex);
+            notifyChangeEventListeners(EventType.MOVED, snapshot, index, oldIndex);
         }
     }
 
     protected void onKeyRemoved(DataSnapshot data, int index) {
         String key = data.getKey();
-        mDataRef.child(key).removeEventListener(mRefs.remove(mDataRef.getRef().child(key)));
+        ValueEventListener listener = mRefs.remove(mDataRef.getRef().child(key));
+        if (listener != null) mDataRef.child(key).removeEventListener(listener);
 
         if (isKeyAtIndex(key, index)) {
             DataSnapshot snapshot = removeData(index);
             mHasQueuedInstantOps = true;
-            notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
+            notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
         }
     }
 
@@ -227,24 +225,24 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
             int index = getIndexForKey(key);
 
             if (snapshot.getValue() != null) {
-                if (!isKeyAtIndex(key, index)) {
+                if (isKeyAtIndex(key, index)) {
+                    // We already know about this data, just update it
+                    updateData(index, snapshot);
+                    notifyChangeEventListeners(EventType.CHANGED, snapshot, index);
+                    notifyListenersOnDataChanged();
+                } else {
                     // We don't already know about this data, add it
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, snapshot, index);
+                    notifyChangeEventListeners(EventType.ADDED, snapshot, index);
 
                     mQueuedAdditions.remove(key);
                     if (mQueuedAdditions.isEmpty()) notifyListenersOnDataChanged();
-                } else {
-                    // We already know about this data, just update it
-                    updateData(index, snapshot);
-                    notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, snapshot, index);
-                    notifyListenersOnDataChanged();
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
                     // This data has disappeared, remove it
                     removeData(index);
-                    notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
+                    notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
                     notifyListenersOnDataChanged();
                 } else {
                     // Data does not exist
