@@ -20,4 +20,6 @@ interface FirebaseAdapter<T> extends ChangeEventListener {
     T getItem(int position);
 
     DatabaseReference getRef(int position);
+
+    ObservableSnapshotArray<T> getSnapshots();
 }

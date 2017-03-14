@@ -133,6 +133,11 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
+    public ObservableSnapshotArray<T> getSnapshots() {
+        return mSnapshots;
+    }
+
+    @Override
     public int getItemCount() {
         return mSnapshots.size();
     }
