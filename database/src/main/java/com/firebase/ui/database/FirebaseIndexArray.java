@@ -168,7 +168,8 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
     protected void onKeyRemoved(DataSnapshot data, int index) {
         String key = data.getKey();
-        mDataRef.child(key).removeEventListener(mRefs.remove(mDataRef.getRef().child(key)));
+        ValueEventListener listener = mRefs.remove(mDataRef.getRef().child(key));
+        if (listener != null) mDataRef.child(key).removeEventListener(listener);
 
         if (isKeyAtIndex(key, index)) {
             DataSnapshot snapshot = removeData(index);
