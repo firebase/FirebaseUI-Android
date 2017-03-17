@@ -27,9 +27,9 @@ import com.google.firebase.database.Query;
 public abstract class FirebaseListAdapter<T> extends BaseAdapter implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseListAdapter";
 
-    protected Activity mActivity;
-    protected ObservableSnapshotArray<T> mSnapshots;
-    protected int mLayout;
+    protected final Activity mActivity;
+    protected final ObservableSnapshotArray<T> mSnapshots;
+    protected final int mLayout;
 
     /**
      * @param activity    The {@link Activity} containing the {@link ListView}
