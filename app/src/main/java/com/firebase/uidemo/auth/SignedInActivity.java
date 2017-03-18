@@ -18,6 +18,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -31,6 +33,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,13 +44,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SignedInActivity extends AppCompatActivity {
+    private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
+
+    private static final int RC_REAUTH = 100;
+
     @BindView(android.R.id.content)
     View mRootView;
 
@@ -65,6 +74,8 @@ public class SignedInActivity extends AppCompatActivity {
 
     private IdpResponse mIdpResponse;
 
+    private SignedInConfig mSignedInConfig;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +88,7 @@ public class SignedInActivity extends AppCompatActivity {
         }
 
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
+        mSignedInConfig = getIntent().getParcelableExtra(EXTRA_SIGNED_IN_CONFIG);
 
         setContentView(R.layout.signed_in_layout);
         ButterKnife.bind(this);
@@ -99,6 +111,21 @@ public class SignedInActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    @OnClick(R.id.reauthenticate)
+    public void reauthenticate() {
+        Intent reauthIntent = AuthUI.getInstance()
+                .createReauthIntentBuilder()
+                .setProviders(mSignedInConfig.providerInfo)
+                .setIsSmartLockEnabled(mSignedInConfig.isSmartLockEnabled)
+                .setLogo(mSignedInConfig.logo)
+                .setTheme(mSignedInConfig.theme)
+                .setTosUrl(mSignedInConfig.tosUrl)
+                .setReauthReason(getString(R.string.reauthentication_reason))
+                .build();
+
+        startActivityForResult(reauthIntent, RC_REAUTH);
     }
 
     @OnClick(R.id.delete_account)
@@ -185,14 +212,18 @@ public class SignedInActivity extends AppCompatActivity {
             token = mIdpResponse.getIdpToken();
             secret = mIdpResponse.getIdpSecret();
         }
+        View idpTokenLayout = findViewById(R.id.idp_token_layout);
         if (token == null) {
-            findViewById(R.id.idp_token_layout).setVisibility(View.GONE);
+            idpTokenLayout.setVisibility(View.GONE);
         } else {
+            idpTokenLayout.setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.idp_token)).setText(token);
         }
+        View idpSecretLayout = findViewById(R.id.idp_secret_layout);
         if (secret == null) {
-            findViewById(R.id.idp_secret_layout).setVisibility(View.GONE);
+            idpSecretLayout.setVisibility(View.GONE);
         } else {
+            idpSecretLayout.setVisibility(View.VISIBLE);
             ((TextView) findViewById(R.id.idp_secret)).setText(secret);
         }
     }
@@ -203,9 +234,78 @@ public class SignedInActivity extends AppCompatActivity {
                 .show();
     }
 
-    public static Intent createIntent(Context context, IdpResponse idpResponse) {
+    static final class SignedInConfig implements Parcelable {
+        int logo;
+        int theme;
+        List<IdpConfig> providerInfo;
+        String tosUrl;
+        boolean isSmartLockEnabled;
+
+        SignedInConfig(int logo,
+                       int theme,
+                       List<IdpConfig> providerInfo,
+                       String tosUrl,
+                       boolean isSmartLockEnabled) {
+            this.logo = logo;
+            this.theme = theme;
+            this.providerInfo = providerInfo;
+            this.tosUrl = tosUrl;
+            this.isSmartLockEnabled = isSmartLockEnabled;
+        }
+
+        SignedInConfig(Parcel in) {
+            logo = in.readInt();
+            theme = in.readInt();
+            providerInfo = new ArrayList<>();
+            in.readList(providerInfo, IdpConfig.class.getClassLoader());
+            tosUrl = in.readString();
+            isSmartLockEnabled = in.readInt() != 0;
+        }
+
+        public static final Creator<SignedInConfig> CREATOR = new Creator<SignedInConfig>() {
+            @Override
+            public SignedInConfig createFromParcel(Parcel in) {
+                return new SignedInConfig(in);
+            }
+
+            @Override
+            public SignedInConfig[] newArray(int size) {
+                return new SignedInConfig[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(logo);
+            dest.writeInt(theme);
+            dest.writeList(providerInfo);
+            dest.writeString(tosUrl);
+            dest.writeInt(isSmartLockEnabled ? 1 : 0);
+        }
+    }
+
+    public static Intent createIntent(
+            Context context,
+            IdpResponse idpResponse,
+            SignedInConfig signedInConfig) {
         Intent in = IdpResponse.getIntent(idpResponse);
         in.setClass(context, SignedInActivity.class);
+        in.putExtra(EXTRA_SIGNED_IN_CONFIG, signedInConfig);
         return in;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_REAUTH) {
+            mIdpResponse = IdpResponse.fromResultIntent(data);
+            populateIdpToken();
+            populateProfile();
+        }
     }
 }
