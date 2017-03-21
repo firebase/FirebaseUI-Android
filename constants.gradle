@@ -10,6 +10,6 @@ project.ext {
 
     buildTools = '25.0.2'
 
-    firebaseVersion = '10.2.0'
+    firebaseVersion = '10.2.1'
     supportLibraryVersion = '25.2.0'
 }
