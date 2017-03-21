@@ -268,7 +268,7 @@ Just like we did for `FirebaseListAdapter`, we'll create an anonymous subclass f
 
 ```java
 RecyclerView recycler = (RecyclerView) findViewById(R.id.messages_recycler);
-recycler.setHasFixedSize(true);
+recycler.setHasFixedSize(false);
 recycler.setLayoutManager(new LinearLayoutManager(this));
 
 mAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(Chat.class, android.R.layout.two_line_list_item, ChatHolder.class, mRef) {
