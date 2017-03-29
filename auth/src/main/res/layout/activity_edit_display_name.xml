@@ -13,7 +13,24 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_margin="20dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/circle_background"
+            android:layout_gravity="center_horizontal"/>
+
         <TextView
+            android:id="@+id/remove_profile_image_link"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            style="@style/FirebaseUI.Text.Link"
+            android:text="@string/remove_profile_image"/>
+
+        <TextView
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
