@@ -148,7 +148,14 @@ public class SignedInActivity extends AppCompatActivity {
     @OnClick(R.id.account_management)
     public void accountManagement(View view) {
         startActivityForResult(
-                AuthUI.getInstance().createAccountManagementBuilder().build(),
+                AuthUI.getInstance()
+                        .createAccountManagementBuilder()
+                        .setProviders(mSignedInConfig.providerInfo)
+                        .setIsSmartLockEnabled(mSignedInConfig.isSmartLockEnabled)
+                        .setLogo(mSignedInConfig.logo)
+                        .setTheme(mSignedInConfig.theme)
+                        .setTosUrl(mSignedInConfig.tosUrl)
+                        .build(),
                 RC_ACCOUNT_MANAGEMENT);
     }
 

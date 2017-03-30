@@ -321,43 +321,6 @@ public class AuthUI {
         return new AccountManagementIntentBuilder();
     }
 
-
-    public final class AccountManagementIntentBuilder {
-        private int mTheme;
-        private boolean mSmartLockEnabled = true;
-
-        /**
-         * Specifies the theme to use for the application flow. If no theme is specified,
-         * a default theme will be used.
-         */
-        public AccountManagementIntentBuilder setTheme(@StyleRes int theme) {
-            Preconditions.checkValidStyle(
-                    mApp.getApplicationContext(),
-                    theme,
-                    "theme identifier is unknown or not a style definition");
-            mTheme = theme;
-            return this;
-        }
-
-        public AccountManagementIntentBuilder setSmartLockEnabled(boolean enabled) {
-            mSmartLockEnabled = enabled;
-            return this;
-        }
-
-        public Intent build() {
-            return AccountSettingsActivity.createIntent(mApp.getApplicationContext(), new FlowParameters(
-                    mApp.getName(),
-                    new ArrayList<IdpConfig>(),
-                    mTheme,
-                    NO_LOGO,
-                    null,
-                    mSmartLockEnabled,
-                    false,
-                    false,
-                    null));
-        }
-    }
-
     /**
      * Starts the reauthentication flow.
      */
@@ -680,6 +643,29 @@ public class AuthUI {
                     mTosUrl,
                     mIsSmartLockEnabled,
                     mAllowNewEmailAccounts,
+                    false,
+                    null);
+        }
+    }
+
+
+    public final class AccountManagementIntentBuilder extends AuthIntentBuilder<AccountManagementIntentBuilder> {
+        public Intent build() {
+            return AccountSettingsActivity.createIntent(
+                    mApp.getApplicationContext(),
+                    getFlowParams());
+        }
+
+        @Override
+        public FlowParameters getFlowParams() {
+            return new FlowParameters(
+                    mApp.getName(),
+                    new ArrayList<>(mProviders),
+                    mTheme,
+                    NO_LOGO,
+                    null,
+                    mIsSmartLockEnabled,
+                    false,
                     false,
                     null);
         }

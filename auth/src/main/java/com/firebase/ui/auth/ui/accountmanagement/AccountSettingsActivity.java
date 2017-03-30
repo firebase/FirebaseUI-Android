@@ -34,14 +34,18 @@ public class AccountSettingsActivity extends UpEnabledActivity {
     private static final int RC_EDIT_DISPLAY_NAME = 100;
     private static final int RC_EDIT_EMAIL = 200;
     private static final int RC_CHANGE_PASSWORD = 300;
+    private static final int RC_REAUTH_EDIT_EMAIL = 400;
+    private static final int RC_REAUTH_PASSWORD = 500;
+
     private TextView mDisplayName;
     private TextView mEmail;
+    private FlowParameters mFlowParameters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        final FlowParameters flowParams = mActivityHelper.getFlowParams();
+        mFlowParameters = mActivityHelper.getFlowParams();
         Button signOut = (Button) findViewById(R.id.sign_out_button);
         signOut.setOnClickListener(new SignOutClickListener());
         ImageView profilePicture = (ImageView) findViewById(R.id.profile_image);
@@ -64,7 +68,7 @@ public class AccountSettingsActivity extends UpEnabledActivity {
                 startActivityForResult(
                         EditDisplayNameActivity.createIntent(
                                 getApplicationContext(),
-                                flowParams),
+                                mFlowParameters),
                         RC_EDIT_DISPLAY_NAME);
             }
         });
@@ -72,11 +76,7 @@ public class AccountSettingsActivity extends UpEnabledActivity {
         editEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(
-                        EditEmailActivity.createIntent(
-                                getApplicationContext(),
-                                flowParams),
-                        RC_EDIT_EMAIL);
+                startActivityForResult(getReauthIntent(), RC_REAUTH_EDIT_EMAIL);
             }
         });
 
@@ -84,11 +84,7 @@ public class AccountSettingsActivity extends UpEnabledActivity {
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(
-                        EditPasswordActivity.createIntent(
-                                getApplicationContext(),
-                                flowParams),
-                        RC_CHANGE_PASSWORD);
+                startActivityForResult(getReauthIntent(), RC_REAUTH_PASSWORD);
             }
         });
 
@@ -102,6 +98,31 @@ public class AccountSettingsActivity extends UpEnabledActivity {
             case RC_EDIT_DISPLAY_NAME:
             case RC_EDIT_EMAIL:
                 populateView();
+                break;
+            case RC_REAUTH_EDIT_EMAIL:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        startActivityForResult(
+                                EditEmailActivity.createIntent(
+                                        getApplicationContext(),
+                                        mFlowParameters),
+                                RC_EDIT_EMAIL);
+                        break;
+                    default:
+                        // fall through
+                }
+                break;
+            case RC_REAUTH_PASSWORD:
+                switch (resultCode) {
+                    case RESULT_OK:
+                        startActivityForResult(
+                                EditPasswordActivity.createIntent(this, mFlowParameters),
+                                RC_CHANGE_PASSWORD);
+                        break;
+                    default:
+                        // fall through
+                }
+                break;
             case RC_CHANGE_PASSWORD:
             default:
                 // fall through
@@ -113,6 +134,7 @@ public class AccountSettingsActivity extends UpEnabledActivity {
         mDisplayName.setText(firebaseUser.getDisplayName());
         mEmail.setText(firebaseUser.getEmail());
         populateLinkedAccounts();
+        maybeShowChangePassword();
     }
 
     private void populateLinkedAccounts() {
@@ -177,6 +199,15 @@ public class AccountSettingsActivity extends UpEnabledActivity {
         }
     }
 
+    private Intent getReauthIntent() {
+        return AuthUI.getInstance().createReauthIntentBuilder()
+                .setTosUrl(mFlowParameters.termsOfServiceUrl)
+                .setLogo(mFlowParameters.logoId)
+                .setProviders(mFlowParameters.providerInfo)
+                .setIsSmartLockEnabled(mFlowParameters.smartLockEnabled)
+                .build();
+    }
+
     private ShapeDrawable makeColoredCircle(@ColorRes int color) {
         ShapeDrawable shapeDrawable = new ShapeDrawable();
         shapeDrawable.setShape(new OvalShape());
@@ -187,6 +218,16 @@ public class AccountSettingsActivity extends UpEnabledActivity {
 
     private int pxFromDp(int dp) {
         return (int) Math.ceil(dp * getResources().getDisplayMetrics().density);
+    }
+
+    private void maybeShowChangePassword() {
+        View changePasswordLayout = findViewById(R.id.change_password_layout);
+        List<String> providers = mActivityHelper.getCurrentUser().getProviders();
+        if (providers.isEmpty() || providers.contains(AuthUI.EMAIL_PROVIDER)) {
+            changePasswordLayout.setVisibility(View.VISIBLE);
+        } else {
+            changePasswordLayout.setVisibility(View.GONE);
+        }
     }
 
     class UnlinkIdpClickListener implements View.OnClickListener {
@@ -211,6 +252,7 @@ public class AccountSettingsActivity extends UpEnabledActivity {
                     });
         }
     }
+
 
     class SignOutClickListener implements View.OnClickListener {
         @Override
