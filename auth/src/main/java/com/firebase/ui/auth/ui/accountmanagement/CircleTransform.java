@@ -23,9 +23,10 @@ class CircleTransform extends BitmapTransformation {
         Bitmap result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
         Paint paint = new Paint();
-        BitmapShader shader = new BitmapShader(source,
-                                               BitmapShader.TileMode.CLAMP,
-                                               BitmapShader.TileMode.CLAMP);
+        BitmapShader shader = new BitmapShader(
+                source,
+                BitmapShader.TileMode.CLAMP,
+                BitmapShader.TileMode.CLAMP);
         paint.setShader(shader);
         paint.setAntiAlias(true);
         float radius = size / 2f;

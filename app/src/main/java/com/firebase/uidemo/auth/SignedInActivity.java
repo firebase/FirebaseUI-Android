@@ -58,7 +58,7 @@ public class SignedInActivity extends AppCompatActivity {
 
     private static final int RC_REAUTH = 100;
 
-    private static final int RC_ACCOUNT_MANAGEMENT = 100;
+    private static final int RC_ACCOUNT_MANAGEMENT = 200;
     
     @BindView(android.R.id.content)
     View mRootView;
