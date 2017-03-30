@@ -157,8 +157,14 @@
     </style>
 
     <style name="FirebaseUI.Text.Heading" parent="FirebaseUI.Text.T07">
+        <item name="android:textColor">?android:textColor</item>
         <item name="android:paddingTop">0dp</item>
         <item name="android:paddingBottom">16dp</item>
+    </style>
+
+    <style name="FirebaseUI.Text.Heading.Sub">
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:textSize">16dp</item>
     </style>
 
     <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">

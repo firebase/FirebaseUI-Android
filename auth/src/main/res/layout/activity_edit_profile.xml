@@ -33,11 +33,10 @@
 
             <TextView
                 android:id="@+id/display_name"
+                style="@style/FirebaseUI.Text.BodyText"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/authui_inputTextColorDark"
-                android:textSize="16sp"/>
+                android:paddingBottom="0dp"
+                android:layout_weight="1"/>
 
             <ImageButton
                 android:id="@+id/edit_display_name"
@@ -60,11 +59,10 @@
             android:paddingTop="20dp">
 
             <TextView
+                style="@style/FirebaseUI.Text.Heading.Sub"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Email"
-                android:textColor="#000"
-                android:textStyle="bold"/>
+                android:text="@string/email_heading"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -85,11 +83,11 @@
 
                 <TextView
                     android:id="@+id/email"
+                    style="@style/FirebaseUI.Text.BodyText"
                     android:layout_width="0dp"
+                    android:paddingBottom="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/authui_inputTextColorDark"
-                    android:textSize="16sp"/>
+                    android:layout_weight="1"/>
 
                 <ImageButton
                     android:id="@+id/edit_email"
@@ -115,12 +113,11 @@
             android:paddingTop="20dp">
 
             <TextView
+                style="@style/FirebaseUI.Text.Heading.Sub"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:text="@string/password"
-                android:textColor="#000"
-                android:textStyle="bold"/>
+                android:text="@string/password"/>
 
             <Button
                 android:id="@+id/change_password"
@@ -144,12 +141,11 @@
             android:paddingTop="20dp">
 
             <TextView
+                style="@style/FirebaseUI.Text.Heading.Sub"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:text="@string/linked_accounts"
-                android:textColor="#000"
-                android:textStyle="bold"/>
+                android:text="@string/linked_accounts"/>
 
             <LinearLayout
                 android:id="@+id/linked_accounts_holder"

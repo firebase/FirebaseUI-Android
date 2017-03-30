@@ -13,7 +13,7 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 /**
  * TODO javadoc
  */
-public class EditPasswordActivity extends HelperActivityBase {
+public class EditPasswordActivity extends SaveFieldActivity {
     public static Intent createIntent(Context context, FlowParameters flowParameters) {
         return BaseHelper.createBaseIntent(context, EditPasswordActivity.class, flowParameters);
     }
@@ -21,6 +21,11 @@ public class EditPasswordActivity extends HelperActivityBase {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-//        setContentView(R.layout.activity_edit_password);
+        setContentView(R.layout.activity_edit_password);
+    }
+
+    @Override
+    protected void onSaveMenuItem() {
+
     }
 }

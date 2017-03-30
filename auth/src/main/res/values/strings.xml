@@ -89,4 +89,5 @@
     <string name="password">Password</string>
     <string name="idp_name_email">Email</string>
     <string name="remove_profile_image">Remove</string>
+    <string name="email_heading">Email</string>
 </resources>

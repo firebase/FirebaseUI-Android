@@ -4,12 +4,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 
 /**
  * TODO javadoc
  */
-public class UpEnabledActivity extends HelperActivityBase {
+public class UpEnabledActivity extends AppCompatBase {
 
     @Override
     protected void onCreate(Bundle savedInstance) {
