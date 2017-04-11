@@ -1,0 +1,68 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">ui_flow</string>
+
+    <string name="default_toolbar_title">@string/app_name</string>
+    <string name="title_welcome_back_password_prompt">@string/sign_in</string>
+    <string name="title_sign_in_activity">@string/sign_in</string>
+    <string name="title_sign_in_no_password_activity">@string/sign_in_with_email</string>
+    <string name="title_welcome_back_idp_prompt">@string/sign_in</string>
+    <string name="title_register_email_activity">@string/create_account_title</string>
+    <string name="title_recover_password_activity">@string/recover_password_title</string>
+    <string name="title_confirm_recover_password_activity">@string/check_your_email</string>
+
+    <string name="email_hint">Email</string>
+    <string name="sign_in_no_password_title">Coloque um e-mail para logar</string>
+    <string name="password_hint">Senha</string>
+    <string name="button_password_recovery_text">Dificuldade para lembrar sua senha</string>
+    <string name="name_hint">Nome &amp; sobrenome</string>
+    <string name="password_recovery_title">Esqueceu a senha</string>
+    <string name="password_recovery_body">Receba enviadas para este e-mail que explicam como
+         redefinir sua senha.</string>
+    <string name="create_account_title">Criar conta</string>
+    <string name="required_field">Você não pode deixar esse campo vazio.</string>
+    <string name="password_length">As senhas fortes têm pelo menos %1$d caracteres e uma mistura de letras
+         e números</string>
+    <string name="invalid_email_address">Email incorreto</string>
+    <string name="missing_email_address">Digite seu endereço de e-mail para continuar</string>
+    <string name="error_weak_password">A senha não e forte o suficiente. Use pelo menos 6 caracteres misturando letras e números.</string>
+    <string name="error_user_collision">Já existe uma conta com esse endereço de e-mail.</string>
+    <string name="button_text_send">Enviar</string>
+    <string name="button_text_save">Salvar</string>
+    <string name="require_email_text">Por favor, informe seu endereço de e-mail</string>
+    <string name="confirm_recovery_body">Siga as instruções enviadas para %1$s para recuperar sua senha</string>
+    <string name="error_email_does_not_exist">Este endereço de email não corresponde a uma conta existente</string>
+    <string name="account_welcomeback">Bem-vindo de volta</string>
+    +<string name="finding_credential">Finding a credential…</string>
+    <string name="do_delete">Apagar</string>
+    <string name="welcome_back">Bem-vindo de volta!</string>
+    <string name="next">Próximo</string>
+    <string name="trouble_signing_in">Problemas para fazer login?</string>
+    <string name="sign_in">Login</string>
+    <string name="sign_in_with_google">Login com Google</string>
+    <string name="sign_in_with_facebook">Login com Facebook</string>
+    <string name="button_done">Feito</string>
+    <string name="check_your_email">Verifique seu e-mail</string>
+    <string name="recover_password_title">Recuperar senha</string>
+    <string name="welcome_back_idp_header">Você já tem uma conta</string>
+    <string name="welcome_back_idp_prompt">
+        Você já usou <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
+        Entre com <xliff:g id="provider_name" example="Google">%2$s</xliff:g> para continuar.
+    </string>
+    <string name="welcome_back_password_prompt_body">Você já usou
+        <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g> para logar.
+        Entre com sua senha para essa conta</string>
+    <string name="password_word">Senha</string>
+    <string name="idp_name_google">Google</string>
+    <string name="idp_name_facebook">Facebook</string>
+    <string name="create_account_preamble">"Ao clicar em SALVAR, você indica que você concorda com o(s)"</string>
+    <string name="terms_of_service">Termos de serviço(s)</string>
+    <string name="sign_in_with_email">Login com email</string>
+    <string name="login_error">Logado com sucesso</string>
+    <string name="email_account_creation_error">Registro da conta de email falhou</string>
+    <string name="missing_password_email_toast">Email ou senha errados</string>
+
+    <string name="progress_dialog_loading">Carregando…</string>
+    <string name="progress_dialog_sending">Enviando…</string>
+    <string name="progress_dialog_signing_in">Logando…</string>
+    <string name="progress_dialog_signing_up">Saindo…</string>
+</resources>
