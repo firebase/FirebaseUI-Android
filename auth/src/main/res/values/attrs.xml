@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ProviderView">
+        <attr name="provider" format="enum">
+            <enum name="GOOGLE" value="0"/>
+            <enum name="FACEBOOK" value="1"/>
+            <enum name="TWITTER" value="2"/>
+            <enum name="PASSWORD" value="3"/>
+        </attr>
+        <attr name="displayName" format="string"/>
+    </declare-styleable>
+</resources>

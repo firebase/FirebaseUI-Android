@@ -51,11 +51,13 @@ public class AccountSettingsActivity extends UpEnabledActivity {
         ImageView profilePicture = (ImageView) findViewById(R.id.profile_image);
 
         Uri profilePhoto = mActivityHelper.getCurrentUser().getPhotoUrl();
-        Glide.with(this)
-                .load(profilePhoto)
-                .placeholder(R.drawable.ic_person_white_48dp)
-                .transform(new CircleTransform(getApplicationContext()))
-                .into(profilePicture);
+        if (profilePhoto != null) {
+            Glide.with(this)
+                    .load(profilePhoto)
+                    .placeholder(R.drawable.ic_person_white_48dp)
+                    .transform(new CircleTransform(getApplicationContext()))
+                    .into(profilePicture);
+        }
 
         mDisplayName = (TextView) findViewById(R.id.display_name);
         ImageButton editDisplayName = (ImageButton) findViewById(R.id.edit_display_name);
@@ -131,6 +133,9 @@ public class AccountSettingsActivity extends UpEnabledActivity {
 
     private void populateView() {
         FirebaseUser firebaseUser = mActivityHelper.getCurrentUser();
+        if (firebaseUser == null) {
+            return;
+        }
         mDisplayName.setText(firebaseUser.getDisplayName());
         mEmail.setText(firebaseUser.getEmail());
         populateLinkedAccounts();
@@ -154,47 +159,13 @@ public class AccountSettingsActivity extends UpEnabledActivity {
         linkedAccountHolder.removeAllViews();
         LayoutInflater layoutInflater = getLayoutInflater();
         View row;
-        ImageView providerImage;
-        TextView providerName;
-        TextView displayName;
         for (String providerId : providers) {
             row = layoutInflater.inflate(R.layout.linked_provider, linkedAccountHolder);
             if (row != null) {
-                providerImage = (ImageView) row.findViewById(R.id.provider_image);
-                providerName = (TextView) row.findViewById(R.id.provider_name);
-                displayName = (TextView) row.findViewById(R.id.display_name);
-                displayName.setText(user.getDisplayName());
-                ImageButton unlinkButton = (ImageButton) row.findViewById(R.id.unlink_idp_button);
-                unlinkButton.setOnClickListener(new UnlinkIdpClickListener(providerId));
-                int px;
-                switch (providerId) {
-                    case AuthUI.EMAIL_PROVIDER:
-                        providerImage.setBackground(makeColoredCircle(R.color.gdi_email_provider_grey));
-                        providerImage.setImageResource(R.drawable.ic_email_white_48dp);
-                        providerName.setText(R.string.idp_name_email);
-                        break;
-                    case AuthUI.FACEBOOK_PROVIDER:
-                        px = pxFromDp(10);
-                        providerImage.setPadding(px, px, px, px);
-                        providerImage.setBackground(makeColoredCircle(R.color.gdi_facebook_blue));
-                        providerImage.setImageResource(R.drawable.ic_facebook_white_22dp);
-                        providerName.setText(R.string.idp_name_facebook);
-                        break;
-                    case AuthUI.GOOGLE_PROVIDER:
-                        providerImage.setBackground(
-                                makeColoredCircle(R.color.gdi_white_background));
-                        providerImage.setImageResource(R.drawable.ic_googleg_color_24dp);
-                        providerName.setText(R.string.idp_name_google);
-                        break;
-                    case AuthUI.TWITTER_PROVIDER:
-                        providerImage.setBackground(makeColoredCircle(R.color.gdi_twitter_blue));
-                        providerImage.setImageResource(R.drawable.ic_twitter_bird_white_24dp);
-                        px = pxFromDp(10);
-                        providerImage.setPadding(px, px, px, px);
-                        providerName.setText(R.string.idp_name_twitter);
-                        break;
-                }
-
+                ProviderView providerView = (ProviderView) row.findViewById(R.id.provider);
+                providerView.setUnlinkListener(new UnlinkIdpClickListener(providerId));
+                providerView.setDisplayName(user.getDisplayName());
+                providerView.setProviderId(providerId);
             }
         }
     }
@@ -206,18 +177,6 @@ public class AccountSettingsActivity extends UpEnabledActivity {
                 .setProviders(mFlowParameters.providerInfo)
                 .setIsSmartLockEnabled(mFlowParameters.smartLockEnabled)
                 .build();
-    }
-
-    private ShapeDrawable makeColoredCircle(@ColorRes int color) {
-        ShapeDrawable shapeDrawable = new ShapeDrawable();
-        shapeDrawable.setShape(new OvalShape());
-        int resolvedColor = getResources().getColor(color);
-        shapeDrawable.getPaint().setColor(resolvedColor);
-        return shapeDrawable;
-    }
-
-    private int pxFromDp(int dp) {
-        return (int) Math.ceil(dp * getResources().getDisplayMetrics().density);
     }
 
     private void maybeShowChangePassword() {
@@ -244,7 +203,8 @@ public class AccountSettingsActivity extends UpEnabledActivity {
                     .unlink(mProviderId)
                     .addOnFailureListener(
                             new TaskFailureLogger(TAG, "Failed to unlink " + mProviderId))
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    .addOnSuccessListener(
+                            AccountSettingsActivity.this, new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult result) {
                             populateLinkedAccounts();
@@ -252,7 +212,6 @@ public class AccountSettingsActivity extends UpEnabledActivity {
                     });
         }
     }
-
 
     class SignOutClickListener implements View.OnClickListener {
         @Override
