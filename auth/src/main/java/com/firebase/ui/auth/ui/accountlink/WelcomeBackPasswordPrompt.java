@@ -40,6 +40,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
@@ -55,7 +56,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * the password before initiating a link.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
+public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener, Runnable {
     private static final String TAG = "WelcomeBackPassword";
 
     private String mEmail;
@@ -89,6 +90,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 
+        ImeHelper.addImeOnDoneListener(mPasswordField, this);
+
         // Create welcome back text with email bolded.
         String bodyText;
         FlowParameters flowParameters = mActivityHelper.getFlowParams();
@@ -117,7 +120,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     public void onClick(View view) {
         final int id = view.getId();
         if (id == R.id.button_done) {
-            next(mEmail, mPasswordField.getText().toString());
+            run();
         } else if (id == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
                     this,
@@ -125,6 +128,11 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                     mEmail));
             finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
         }
+    }
+
+    @Override
+    public void run() {
+        next(mEmail, mPasswordField.getText().toString());
     }
 
     private void next(final String email, final String password) {
