@@ -20,6 +20,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
+import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
@@ -45,7 +46,7 @@ import java.util.List;
  * Host Activities should implement {@link CheckEmailListener}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class CheckEmailFragment extends FragmentBase implements View.OnClickListener {
+public class CheckEmailFragment extends FragmentBase implements View.OnClickListener, ImeHelper.DonePressedListener {
     /**
      * Interface to be implemented by Activities hosting this Fragment.
      */
@@ -106,6 +107,8 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
         mEmailFieldValidator = new EmailFieldValidator(mEmailLayout);
         mEmailLayout.setOnClickListener(this);
         mEmailEditText.setOnClickListener(this);
+
+        ImeHelper.setImeOnDoneListener(mEmailEditText, this);
 
         // "Next" button
         v.findViewById(R.id.button_next).setOnClickListener(this);
@@ -263,5 +266,10 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
         } else if (id == R.id.email_layout || id == R.id.email) {
             mEmailLayout.setError(null);
         }
+    }
+
+    @Override
+    public void onDonePressed() {
+        validateAndProceed();
     }
 }
