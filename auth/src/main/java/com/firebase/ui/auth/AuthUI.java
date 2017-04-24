@@ -26,6 +26,7 @@ import android.support.annotation.StyleRes;
 import android.support.v4.app.FragmentActivity;
 
 import com.facebook.login.LoginManager;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialTaskApi;
@@ -49,6 +50,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.twitter.sdk.android.Twitter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +59,8 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * The entry point to the AuthUI authentication flow, and related utility methods. If your
@@ -192,6 +196,10 @@ public class AuthUI {
         // Facebook sign out
         LoginManager.getInstance().logOut();
 
+        // Twitter sign out
+        if (!Fabric.isInitialized()) TwitterProvider.initialize(activity);
+        Twitter.logOut();
+
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, googleSignOutTask);
     }
@@ -238,6 +246,10 @@ public class AuthUI {
 
         // Facebook sign out
         LoginManager.getInstance().logOut();
+
+        // Twitter sign out
+        if (!Fabric.isInitialized()) TwitterProvider.initialize(activity);
+        Twitter.logOut();
 
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, signOutTask);
