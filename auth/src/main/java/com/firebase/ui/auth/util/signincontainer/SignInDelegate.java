@@ -158,7 +158,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     Log.e(TAG, "Failed to send Credentials intent.", e);
                 }
             } else {
-                Log.e(TAG, status.getStatusMessage());
+                Log.e(TAG, "Status message:\n" + status.getStatusMessage());
             }
         }
         startAuthMethodChoice();
