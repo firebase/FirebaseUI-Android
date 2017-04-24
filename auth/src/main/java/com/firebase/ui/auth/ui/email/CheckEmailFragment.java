@@ -46,7 +46,7 @@ import java.util.List;
  * Host Activities should implement {@link CheckEmailListener}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class CheckEmailFragment extends FragmentBase implements View.OnClickListener, Runnable {
+public class CheckEmailFragment extends FragmentBase implements View.OnClickListener, ImeHelper.DonePressedListener {
     /**
      * Interface to be implemented by Activities hosting this Fragment.
      */
@@ -108,7 +108,7 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
         mEmailLayout.setOnClickListener(this);
         mEmailEditText.setOnClickListener(this);
 
-        ImeHelper.addImeOnDoneListener(mEmailEditText, this);
+        ImeHelper.setImeOnDoneListener(mEmailEditText, this);
 
         // "Next" button
         v.findViewById(R.id.button_next).setOnClickListener(this);
@@ -262,14 +262,14 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
         int id = view.getId();
 
         if (id == R.id.button_next) {
-            run();
+            validateAndProceed();
         } else if (id == R.id.email_layout || id == R.id.email) {
             mEmailLayout.setError(null);
         }
     }
 
     @Override
-    public void run() {
+    public void onDonePressed() {
         validateAndProceed();
     }
 }

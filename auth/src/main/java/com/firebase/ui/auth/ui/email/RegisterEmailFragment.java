@@ -48,7 +48,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RegisterEmailFragment extends FragmentBase implements
-        View.OnClickListener, View.OnFocusChangeListener, Runnable {
+        View.OnClickListener, View.OnFocusChangeListener, ImeHelper.DonePressedListener {
 
     public static final String TAG = "RegisterEmailFragment";
 
@@ -110,7 +110,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         mEmailInput = (TextInputLayout) v.findViewById(R.id.email_layout);
         mPasswordInput = (TextInputLayout) v.findViewById(R.id.password_layout);
 
-        ImeHelper.addImeOnDoneListener(mPasswordEditText, this);
+        ImeHelper.setImeOnDoneListener(mPasswordEditText, this);
 
         mEmailEditText.setOnFocusChangeListener(this);
         mNameEditText.setOnFocusChangeListener(this);
@@ -224,12 +224,16 @@ public class RegisterEmailFragment extends FragmentBase implements
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button_create) {
-            run();
+            validateAndRegisterUser();
         }
     }
 
     @Override
-    public void run() {
+    public void onDonePressed() {
+        validateAndRegisterUser();
+    }
+
+    private void validateAndRegisterUser() {
         String email = mEmailEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
         String name = mNameEditText.getText().toString();

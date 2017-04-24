@@ -56,7 +56,8 @@ import com.google.firebase.auth.FirebaseAuth;
  * the password before initiating a link.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener, Runnable {
+public class WelcomeBackPasswordPrompt extends AppCompatBase
+        implements View.OnClickListener, ImeHelper.DonePressedListener {
     private static final String TAG = "WelcomeBackPassword";
 
     private String mEmail;
@@ -90,7 +91,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 
-        ImeHelper.addImeOnDoneListener(mPasswordField, this);
+        ImeHelper.setImeOnDoneListener(mPasswordField, this);
 
         // Create welcome back text with email bolded.
         String bodyText;
@@ -120,7 +121,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     public void onClick(View view) {
         final int id = view.getId();
         if (id == R.id.button_done) {
-            run();
+            validateAndSignIn();
         } else if (id == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
                     this,
@@ -131,11 +132,15 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     }
 
     @Override
-    public void run() {
-        next(mEmail, mPasswordField.getText().toString());
+    public void onDonePressed() {
+        validateAndSignIn();
     }
 
-    private void next(final String email, final String password) {
+    private void validateAndSignIn() {
+        validateAndSignIn(mEmail, mPasswordField.getText().toString());
+    }
+
+    private void validateAndSignIn(final String email, final String password) {
         // Check for null or empty password
         if (TextUtils.isEmpty(password)) {
             mPasswordLayout.setError(getString(R.string.required_field));
@@ -168,7 +173,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                             authResult.getUser()
                                     .linkWithCredential(authCredential)
                                     .addOnFailureListener(new TaskFailureLogger(
-                                            TAG, "Error signing in with credential " + authCredential.getProvider()))
+                                            TAG,
+                                            "Error signing in with credential " + authCredential.getProvider()))
                                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                         @Override
                                         public void onSuccess(AuthResult authResult) {
