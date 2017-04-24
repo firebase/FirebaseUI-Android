@@ -137,8 +137,8 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                                 String email = object.getString("email");
                                 onSuccess(email, loginResult);
                             } catch (JSONException e) {
-                                Log.e(TAG, "JSON Exception reading from Facebook GraphRequest", e);
-                                onFailure(new Bundle());
+                                Log.e(TAG, "Failure retrieving Facebook email", e);
+                                onSuccess(null, loginResult);
                             }
                         }
                     }

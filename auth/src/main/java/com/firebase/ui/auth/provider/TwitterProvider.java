@@ -28,11 +28,8 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     private IdpCallback mCallbackObject;
     private TwitterAuthClient mTwitterAuthClient;
 
-    public TwitterProvider(Context appContext) {
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(
-                appContext.getString(R.string.twitter_consumer_key),
-                appContext.getString(R.string.twitter_consumer_secret));
-        Fabric.with(appContext.getApplicationContext(), new Twitter(authConfig));
+    public TwitterProvider(Context context) {
+        initialize(context);
         mTwitterAuthClient = new TwitterAuthClient();
     }
 
@@ -41,6 +38,13 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
             return null;
         }
         return TwitterAuthProvider.getCredential(response.getIdpToken(), response.getIdpSecret());
+    }
+
+    public static void initialize(Context context) {
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(
+                context.getString(R.string.twitter_consumer_key),
+                context.getString(R.string.twitter_consumer_secret));
+        Fabric.with(context.getApplicationContext(), new Twitter(authConfig));
     }
 
     @Override
