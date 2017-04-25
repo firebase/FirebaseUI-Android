@@ -64,6 +64,9 @@
             android:name=".ui.accountmanagement.AccountSettingsActivity"
             android:label="@string/account_settings_title"/>
         <activity
+            android:name=".ui.accountmanagement.ReauthActivity"
+            android:label="Reauthenticate"/>
+        <activity
             android:label="Edit name"
             android:name=".ui.accountmanagement.EditDisplayNameActivity"/>
         <activity

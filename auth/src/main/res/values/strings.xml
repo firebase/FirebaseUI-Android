@@ -90,4 +90,7 @@
     <string name="idp_name_email">Email</string>
     <string name="remove_profile_image">Remove</string>
     <string name="email_heading">Email</string>
+    <string name="reauth_explanation">To <xliff:g id="action" example="add an email">%1$s</xliff:g>, you will need to sign in again.</string>
+    <string name="reauth_action_add_email">add an email address to your account</string>
+    <string name="reauth_reason_change_password">change your password on your account</string>
 </resources>

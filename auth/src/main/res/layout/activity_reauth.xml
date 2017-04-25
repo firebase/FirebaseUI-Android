@@ -2,12 +2,14 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/FirebaseUI.WrapperStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/reauth_body"
+        style="@style/FirebaseUI.Text.BodyText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
@@ -16,7 +18,9 @@
         android:id="@+id/password_reauth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="40dp"
+        android:visibility="gone">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/password_layout"
@@ -35,9 +39,10 @@
     </LinearLayout>
     <LinearLayout
         android:id="@+id/idp_reauth"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder">
 
     </LinearLayout>
 </LinearLayout>

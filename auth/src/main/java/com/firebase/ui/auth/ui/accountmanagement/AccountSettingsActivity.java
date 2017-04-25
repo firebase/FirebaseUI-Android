@@ -78,7 +78,9 @@ public class AccountSettingsActivity extends UpEnabledActivity {
         editEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(getReauthIntent(), RC_REAUTH_EDIT_EMAIL);
+                startActivityForResult(
+                        getReauthIntent(ReauthActivity.REAUTAH_REASON_ADD_EMAIL),
+                        RC_REAUTH_EDIT_EMAIL);
             }
         });
 
@@ -86,7 +88,9 @@ public class AccountSettingsActivity extends UpEnabledActivity {
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(getReauthIntent(), RC_REAUTH_PASSWORD);
+                startActivityForResult(
+                        getReauthIntent(ReauthActivity.REAUTAH_REASON_CHANGE_PASSWORD),
+                        RC_REAUTH_PASSWORD);
             }
         });
 
@@ -170,13 +174,8 @@ public class AccountSettingsActivity extends UpEnabledActivity {
         }
     }
 
-    private Intent getReauthIntent() {
-        return AuthUI.getInstance().createReauthIntentBuilder()
-                .setTosUrl(mFlowParameters.termsOfServiceUrl)
-                .setLogo(mFlowParameters.logoId)
-                .setProviders(mFlowParameters.providerInfo)
-                .setIsSmartLockEnabled(mFlowParameters.smartLockEnabled)
-                .build();
+    private Intent getReauthIntent(String reauthReason) {
+        return ReauthActivity.createIntent(this, mFlowParameters, reauthReason);
     }
 
     private void maybeShowChangePassword() {
