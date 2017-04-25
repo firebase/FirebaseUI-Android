@@ -111,6 +111,7 @@ public class ImageActivity extends AppCompatActivity implements EasyPermissions.
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         //noinspection LogConditional
                         Log.d(TAG, "uploadPhoto:onSuccess:" +
+                                //noinspection VisibleForTests TODO remove once the tools team fixes lint
                                 taskSnapshot.getMetadata().getReference().getPath());
                         Toast.makeText(ImageActivity.this, "Image uploaded",
                                        Toast.LENGTH_SHORT).show();
