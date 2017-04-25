@@ -46,7 +46,7 @@ public abstract class SignInDelegateBase extends SmartLockBase<CredentialRequest
     private static final String TAG = "SignInDelegate";
     private static final int RC_CREDENTIALS_READ = 2;
     protected static final int RC_IDP_SIGNIN = 3;
-    protected final int RC_AUTH_METHOD_PICKER = 4;
+    protected static final int RC_AUTH_METHOD_PICKER = 4;
     protected static final int RC_EMAIL_FLOW = 5;
     protected boolean mSmartLockEnabledForDelegate = true;
 

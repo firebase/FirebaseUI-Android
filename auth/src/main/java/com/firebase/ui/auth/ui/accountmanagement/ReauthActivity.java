@@ -111,7 +111,10 @@ public class ReauthActivity extends UpEnabledActivity {
                 mActivityHelper.getFirebaseAuth()
                         .signInWithCredential(credential)
                         .addOnFailureListener(
-                                new TaskFailureLogger(TAG, "Firebase sign in with credential " + credential.getProvider() + " unsuccessful. Visit https://console.firebase.google.com to enable it."))
+                                new TaskFailureLogger(TAG, "Firebase sign in with credential "
+                                        + credential.getProvider()
+                                        + " unsuccessful. Visit https://console.firebase.google.com"
+                                        + " to enable it."))
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
