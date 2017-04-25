@@ -145,7 +145,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                     finish();
                 }
             } else {
-                Log.w(TAG, status.getStatusMessage());
+                Log.w(TAG, "Status message:\n" + status.getStatusMessage());
                 finish();
             }
         }
