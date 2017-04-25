@@ -38,8 +38,17 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     private FirebaseArray<String> mKeySnapshots;
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
-    private List<String> mQueuedAdditions = new ArrayList<>();
-    private boolean mHasQueuedInstantOps;
+    /**
+     * When keys are added in {@link FirebaseArray}, we need to fetch the data async. This list
+     * contains keys that exist in the backing {@link FirebaseArray}, but their data hasn't been
+     * downloaded yet in this array.
+     */
+    private List<String> mKeysWithPendingData = new ArrayList<>();
+    /**
+     * Moves or deletions don't need to fetch new data so they can be performed instantly once the
+     * backing {@link FirebaseArray} is done updating.
+     */
+    private boolean mHasPendingMoveOrDelete;
 
     /**
      * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
@@ -100,9 +109,9 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
     @Override
     public void onDataChanged() {
-        if (mHasQueuedInstantOps) {
+        if (mHasPendingMoveOrDelete) {
             notifyListenersOnDataChanged();
-            mHasQueuedInstantOps = false;
+            mHasPendingMoveOrDelete = false;
         }
     }
 
@@ -159,7 +168,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         String key = data.getKey();
         DatabaseReference ref = mDataRef.child(key);
 
-        mQueuedAdditions.add(key);
+        mKeysWithPendingData.add(key);
         // Start listening
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
     }
@@ -169,7 +178,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
         if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = removeData(oldIndex);
-            mHasQueuedInstantOps = true;
+            mHasPendingMoveOrDelete = true;
             mDataSnapshots.add(index, snapshot);
             notifyChangeEventListeners(EventType.MOVED, snapshot, index, oldIndex);
         }
@@ -182,7 +191,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
         if (isKeyAtIndex(key, index)) {
             DataSnapshot snapshot = removeData(index);
-            mHasQueuedInstantOps = true;
+            mHasPendingMoveOrDelete = true;
             notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
         }
     }
@@ -235,8 +244,8 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                     mDataSnapshots.add(index, snapshot);
                     notifyChangeEventListeners(EventType.ADDED, snapshot, index);
 
-                    mQueuedAdditions.remove(key);
-                    if (mQueuedAdditions.isEmpty()) notifyListenersOnDataChanged();
+                    mKeysWithPendingData.remove(key);
+                    if (mKeysWithPendingData.isEmpty()) notifyListenersOnDataChanged();
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
