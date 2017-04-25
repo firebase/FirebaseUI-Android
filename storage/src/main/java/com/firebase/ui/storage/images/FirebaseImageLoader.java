@@ -48,6 +48,7 @@ public class FirebaseImageLoader implements StreamModelLoader<StorageReference> 
         @Override
         public InputStream loadData(Priority priority) throws Exception {
             mStreamTask = mRef.getStream();
+            //noinspection VisibleForTests TODO remove once the tools team fixes lint
             mInputStream = Tasks.await(mStreamTask).getStream();
 
             return mInputStream;

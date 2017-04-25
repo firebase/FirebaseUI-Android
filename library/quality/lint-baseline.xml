@@ -12,6 +12,7 @@
         <location file="src/main/AndroidManifest.xml"/>
     </issue>
 
+    <!-- These ids are used in the AuthMethodPickerActivityTest.java tests -->
     <issue
         id="UnusedIds"
         message="The resource `R.id.facebook_button` appears to be unused"
@@ -51,8 +52,7 @@
     <issue
         id="SelectableText"
         message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
-        errorLine1="        &lt;TextView
-"
+        errorLine1="        &lt;TextView"
         errorLine2="        ^">
         <location
             file="src/main/res/layout/register_email_layout.xml"
@@ -63,8 +63,7 @@
     <issue
         id="SelectableText"
         message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
-        errorLine1="    &lt;TextView
-"
+        errorLine1="    &lt;TextView"
         errorLine2="    ^">
         <location
             file="src/main/res/layout/welcome_back_idp_prompt_layout.xml"
@@ -75,8 +74,7 @@
     <issue
         id="SelectableText"
         message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
-        errorLine1="    &lt;TextView
-"
+        errorLine1="    &lt;TextView"
         errorLine2="    ^">
         <location
             file="src/main/res/layout/welcome_back_password_prompt_layout.xml"

@@ -40,33 +40,6 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
-    <style name="FirebaseUI.Text.T01">
-        <item name="android:textSize">112sp</item>
-    </style>
-
-    <style name="FirebaseUI.Text.T02">
-        <item name="android:textSize">64sp</item>
-    </style>
-
-    <style name="FirebaseUI.Text.T03">
-        <item name="android:textSize">48sp</item>
-    </style>
-
-    <style name="FirebaseUI.Text.T04">
-        <item name="android:textSize">36sp</item>
-        <item name="android:lineSpacingExtra">12sp</item>
-    </style>
-
-    <style name="FirebaseUI.Text.T05">
-        <item name="android:textSize">24sp</item>
-        <item name="android:lineSpacingExtra">8sp</item>
-    </style>
-
-    <style name="FirebaseUI.Text.T06">
-        <item name="android:textSize">18sp</item>
-        <item name="android:lineSpacingExtra">6sp</item>
-    </style>
-
     <style name="FirebaseUI.Text.T07">
         <item name="android:textSize">20sp</item>
         <item name="android:lineSpacingExtra">4sp</item>
@@ -78,25 +51,9 @@
         <item name="android:lineSpacingExtra">8sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T09">
-        <item name="android:textSize">16sp</item>
-        <item name="android:lineSpacingExtra">4sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="FirebaseUI.Text.T11">
-        <item name="android:textSize">14sp</item>
-        <item name="android:lineSpacingExtra">6sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="FirebaseUI.Text.T12">
         <item name="android:textSize">12sp</item>
         <item name="android:lineSpacingExtra">4sp</item>
-    </style>
-
-    <style name="FirebaseUI.Text.T13">
-        <item name="android:textSize">10sp</item>
     </style>
 
     <!-- Common styles -->
@@ -120,16 +77,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">right</item>
         <item name="android:textColor">?attr/android:textColorPrimary</item>
-    </style>
-
-    <style name="FirebaseUI.Button.AlertButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">52dp</item>
-        <item name="android:padding">0dp</item>
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:layout_marginBottom">0dp</item>
-        <item name="android:gravity">right|center</item>
-        <item name="android:background">@android:color/transparent</item>
     </style>
 
     <style name="FirebaseUI.EditText">
@@ -165,12 +112,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">?android:textColor</item>
-        <item name="android:paddingBottom">16dp</item>
-    </style>
-
-    <style name="FirebaseUI.Text.BodyTextNoColor" parent="FirebaseUI.Text.T08">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">16dp</item>
     </style>
 
