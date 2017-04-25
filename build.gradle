@@ -29,15 +29,6 @@ gradle.taskGraph.whenReady { graph ->
     graph.allTasks.findAll { it.name ==~ /testReleaseUnitTest/ }*.enabled = false
 }
 
-//Skip Javadoc generation for Java 1.8 as it breaks build
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-        tasks.withType(Javadoc) {
-            options.addStringOption('Xdoclint:none', '-quiet')
-        }
-    }
-}
-
 /**
  * Configure common tasks on all the submodules
  */
