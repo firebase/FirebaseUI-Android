@@ -6,6 +6,7 @@
     <string name="progress_dialog_loading">Loading…</string>
     <string name="sign_in_default">Sign in</string>
     <string name="general_error">An error has occurred.</string>
+    <string name="error_user_collision">An account already exists with that email address.</string>
 
     <!-- Reauth Dialog -->
     <string name="reauth_dialog_title">This action requires you to sign in before continuing.</string>
@@ -40,7 +41,6 @@
         <item quantity="other">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item>
     </plurals>
     <string name="email_account_creation_error">Email account registration unsuccessful</string>
-    <string name="error_user_collision">An account already exists with that email address.</string>
     <string name="create_account_preamble">"By tapping SAVE you are indicating that you agree to the "</string>
     <string name="terms_of_service">Terms of Service</string>
 

@@ -74,7 +74,7 @@ public class EditDisplayNameActivity extends SaveFieldActivity {
                 new UserProfileChangeRequest.Builder()
                 .setPhotoUri(null)
                 .build())
-        .addOnSuccessListener(new OnSuccessListener<Void>() {
+        .addOnSuccessListener(this, new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.e(TAG, "successfully removed profile image");

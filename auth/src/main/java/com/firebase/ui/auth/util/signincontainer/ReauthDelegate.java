@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.ui.accountmanagement;
+package com.firebase.ui.auth.util.signincontainer;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;

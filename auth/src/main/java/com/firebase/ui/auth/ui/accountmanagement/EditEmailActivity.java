@@ -5,19 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 /**
  * TODO javadoc
@@ -40,7 +37,6 @@ public class EditEmailActivity extends SaveFieldActivity {
         mEmailField.setText(mActivityHelper.getCurrentUser().getEmail());
         mEmailInputLayout = (TextInputLayout) findViewById(R.id.email_layout);
         mValidator = new EmailFieldValidator(mEmailInputLayout);
-
     }
 
     @Override
@@ -52,7 +48,13 @@ public class EditEmailActivity extends SaveFieldActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            mEmailInputLayout.setError(e.getLocalizedMessage());
+                            if (e instanceof FirebaseAuthUserCollisionException) {
+                                mEmailInputLayout.setError(
+                                        getResources().getString(R.string.error_user_collision));
+                            } else {
+                                mEmailInputLayout.setError(
+                                        getResources().getString(R.string.general_error));
+                            }
                         }
                     })
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
