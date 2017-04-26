@@ -39,6 +39,19 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
     /**
+     * When keys are added in {@link FirebaseArray}, we need to fetch the data async. This list
+     * contains keys that exist in the backing {@link FirebaseArray}, but their data hasn't been
+     * downloaded yet in this array.
+     */
+    private List<String> mKeysWithPendingData = new ArrayList<>();
+    /**
+     * Moves or deletions don't need to fetch new data so they can be performed instantly once the
+     * backing {@link FirebaseArray} is done updating. This will be true if the backing {@link
+     * FirebaseArray} is in the middle of an update, false otherwise.
+     */
+    private boolean mHasPendingMoveOrDelete;
+
+    /**
      * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
      *
      * @param keyQuery The Firebase location containing the list of keys to be found in {@code
@@ -97,7 +110,10 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
     @Override
     public void onDataChanged() {
-        // No-op, we don't listen to batch events for the key ref
+        if (mHasPendingMoveOrDelete) {
+            notifyListenersOnDataChanged();
+            mHasPendingMoveOrDelete = false;
+        }
     }
 
     @Override
@@ -150,8 +166,10 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     }
 
     protected void onKeyAdded(DataSnapshot data) {
-        DatabaseReference ref = mDataRef.child(data.getKey());
+        String key = data.getKey();
+        DatabaseReference ref = mDataRef.child(key);
 
+        mKeysWithPendingData.add(key);
         // Start listening
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
     }
@@ -161,6 +179,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
         if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = removeData(oldIndex);
+            mHasPendingMoveOrDelete = true;
             mDataSnapshots.add(index, snapshot);
             notifyChangeEventListeners(EventType.MOVED, snapshot, index, oldIndex);
         }
@@ -173,6 +192,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
         if (isKeyAtIndex(key, index)) {
             DataSnapshot snapshot = removeData(index);
+            mHasPendingMoveOrDelete = true;
             notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
         }
     }
@@ -219,16 +239,21 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                     // We already know about this data, just update it
                     updateData(index, snapshot);
                     notifyChangeEventListeners(EventType.CHANGED, snapshot, index);
+                    notifyListenersOnDataChanged();
                 } else {
                     // We don't already know about this data, add it
                     mDataSnapshots.add(index, snapshot);
                     notifyChangeEventListeners(EventType.ADDED, snapshot, index);
+
+                    mKeysWithPendingData.remove(key);
+                    if (mKeysWithPendingData.isEmpty()) notifyListenersOnDataChanged();
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
                     // This data has disappeared, remove it
                     removeData(index);
                     notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
+                    notifyListenersOnDataChanged();
                 } else {
                     // Data does not exist
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
