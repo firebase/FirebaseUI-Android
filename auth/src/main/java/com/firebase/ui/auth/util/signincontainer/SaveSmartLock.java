@@ -175,7 +175,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     }
 
     private void finish() {
-        finish(ResultCodes.OK, IdpResponse.getIntent(mResponse));
+        finish(ResultCodes.OK, mResponse.toIntent());
     }
 
     /**

@@ -18,11 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 public class FakeAuthResult implements AuthResult {
-    private FirebaseUser mFirebaseUser;
-
-    public FakeAuthResult(FirebaseUser firebaseUser) {
-        mFirebaseUser = firebaseUser;
-    }
+    private FirebaseUser mFirebaseUser = BaseHelperShadow.sFirebaseUser;
 
     @Override
     public FirebaseUser getUser() {

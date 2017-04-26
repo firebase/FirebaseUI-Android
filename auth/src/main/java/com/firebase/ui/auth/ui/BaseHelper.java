@@ -108,18 +108,10 @@ public class BaseHelper {
             @Nullable SaveSmartLock saveSmartLock,
             Activity activity,
             FirebaseUser firebaseUser,
-            @NonNull IdpResponse response) {
-        saveCredentialsOrFinish(saveSmartLock, activity, firebaseUser, null, response);
-    }
-
-    public void saveCredentialsOrFinish(
-            @Nullable SaveSmartLock saveSmartLock,
-            Activity activity,
-            FirebaseUser firebaseUser,
             @Nullable String password,
             IdpResponse response) {
         if (saveSmartLock == null) {
-            finishActivity(activity, ResultCodes.OK, IdpResponse.getIntent(response));
+            finishActivity(activity, ResultCodes.OK, response.toIntent());
         } else {
             saveSmartLock.saveCredentialsOrFinish(
                     firebaseUser,

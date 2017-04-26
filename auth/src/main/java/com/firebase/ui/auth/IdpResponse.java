@@ -19,6 +19,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.ui.ExtraConstants;
 
@@ -34,22 +35,6 @@ public class IdpResponse implements Parcelable {
 
     private IdpResponse(int errorCode) {
         this(null, null, null, null, errorCode);
-    }
-
-    public IdpResponse(@NonNull String providerId, @NonNull String email) {
-        this(providerId, email, null, null, ResultCodes.OK);
-    }
-
-    public IdpResponse(@NonNull String providerId, @NonNull String email, @NonNull String token) {
-        this(providerId, email, token, null, ResultCodes.OK);
-    }
-
-    public IdpResponse(
-            @NonNull String providerId,
-            @NonNull String email,
-            @NonNull String token,
-            @NonNull String secret) {
-        this(providerId, email, token, secret, ResultCodes.OK);
     }
 
     private IdpResponse(
@@ -80,12 +65,14 @@ public class IdpResponse implements Parcelable {
         }
     }
 
-    public static Intent getIntent(IdpResponse response) {
-        return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static Intent getErrorCodeIntent(int errorCode) {
+        return new IdpResponse(errorCode).toIntent();
     }
 
-    public static Intent getErrorCodeIntent(int errorCode) {
-        return getIntent(new IdpResponse(errorCode));
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public Intent toIntent() {
+        return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, this);
     }
 
     /**
@@ -156,4 +143,32 @@ public class IdpResponse implements Parcelable {
             return new IdpResponse[size];
         }
     };
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static class Builder implements com.firebase.ui.auth.util.Builder<IdpResponse> {
+        private String mProviderId;
+        private String mEmail;
+        private String mToken;
+        private String mSecret;
+
+        public Builder(@NonNull String providerId, @NonNull String email) {
+            mProviderId = providerId;
+            mEmail = email;
+        }
+
+        public Builder setToken(String token) {
+            mToken = token;
+            return this;
+        }
+
+        public Builder setSecret(String secret) {
+            mSecret = secret;
+            return this;
+        }
+
+        @Override
+        public IdpResponse build() {
+            return new IdpResponse(mProviderId, mEmail, mToken, mSecret, ResultCodes.OK);
+        }
+    }
 }

@@ -293,10 +293,9 @@ public class SignedInActivity extends AppCompatActivity {
             Context context,
             IdpResponse idpResponse,
             SignedInConfig signedInConfig) {
-        Intent in = IdpResponse.getIntent(idpResponse);
-        in.setClass(context, SignedInActivity.class);
-        in.putExtra(EXTRA_SIGNED_IN_CONFIG, signedInConfig);
-        return in;
+        return idpResponse.toIntent()
+                .setClass(context, SignedInActivity.class)
+                .putExtra(EXTRA_SIGNED_IN_CONFIG, signedInConfig);
     }
 
     @Override

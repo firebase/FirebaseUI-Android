@@ -113,11 +113,10 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         }
 
         private IdpResponse createIdpResponse(String email) {
-            return new IdpResponse(
-                    TwitterAuthProvider.PROVIDER_ID,
-                    email,
-                    mTwitterSession.getAuthToken().token,
-                    mTwitterSession.getAuthToken().secret);
+            return new IdpResponse.Builder(TwitterAuthProvider.PROVIDER_ID, email)
+                    .setToken(mTwitterSession.getAuthToken().token)
+                    .setSecret(mTwitterSession.getAuthToken().secret)
+                    .build();
         }
     }
 }

@@ -176,10 +176,9 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     }
 
     private IdpResponse createIdpResponse(String email, LoginResult loginResult) {
-        return new IdpResponse(
-                FacebookAuthProvider.PROVIDER_ID,
-                email,
-                loginResult.getAccessToken().getToken());
+        return new IdpResponse.Builder(FacebookAuthProvider.PROVIDER_ID, email)
+                .setToken(loginResult.getAccessToken().getToken())
+                .build();
     }
 
     private void onSuccess(String email, LoginResult loginResult) {
