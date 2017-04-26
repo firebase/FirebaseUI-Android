@@ -296,7 +296,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                     notifyListenersOnDataChanged();
                 } else {
                     // Data does not exist
-                    mJoinResolver.onJoinFailed(index, snapshot);
+                    mJoinResolver.onJoinFailed(snapshot, index);
                 }
             }
         }
@@ -321,7 +321,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         }
 
         @Override
-        public void onJoinFailed(int index, DataSnapshot snapshot) {
+        public void onJoinFailed(DataSnapshot snapshot, int index) {
             Log.w(TAG, "Key not found at ref " + snapshot.getRef() + " for index " + index);
         }
     }

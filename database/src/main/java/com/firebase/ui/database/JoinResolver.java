@@ -35,9 +35,9 @@ public interface JoinResolver {
     /**
      * Called when a key in {@code keyRef} could not be found in {@code dataRef}.
      *
+     * @param snapshot the snapshot who's key could not be found in {@code dataRef}
      * @param index    index of a {@link DataSnapshot} in {@code keyRef} that could not be found in
      *                 {@code dataRef}
-     * @param snapshot the snapshot who's key could not be found in {@code dataRef}
      */
-    void onJoinFailed(int index, DataSnapshot snapshot);
+    void onJoinFailed(DataSnapshot snapshot, int index);
 }
