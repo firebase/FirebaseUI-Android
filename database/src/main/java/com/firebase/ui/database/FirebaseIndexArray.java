@@ -46,7 +46,8 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     private List<String> mKeysWithPendingData = new ArrayList<>();
     /**
      * Moves or deletions don't need to fetch new data so they can be performed instantly once the
-     * backing {@link FirebaseArray} is done updating.
+     * backing {@link FirebaseArray} is done updating. This will be true if the backing {@link
+     * FirebaseArray} is in the middle of an update, false otherwise.
      */
     private boolean mHasPendingMoveOrDelete;
 
