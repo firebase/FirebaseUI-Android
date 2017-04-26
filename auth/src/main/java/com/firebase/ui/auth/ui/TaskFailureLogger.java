@@ -23,7 +23,7 @@ public class TaskFailureLogger implements OnFailureListener {
     private String mTag;
     private String mMessage;
 
-    public TaskFailureLogger(String tag, String message) {
+    public TaskFailureLogger(@NonNull String tag, @NonNull String message) {
         mTag = tag;
         mMessage = message;
     }

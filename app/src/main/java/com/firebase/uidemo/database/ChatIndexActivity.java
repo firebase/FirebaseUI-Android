@@ -7,7 +7,6 @@ import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -44,17 +43,6 @@ public class ChatIndexActivity extends ChatActivity {
             @Override
             public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
                 holder.bind(chat);
-            }
-
-            @Override
-            public void onChildChanged(EventType type,
-                                       DataSnapshot snapshot,
-                                       int index,
-                                       int oldIndex) {
-                super.onChildChanged(type, snapshot, index, oldIndex);
-
-                // TODO temporary fix for https://github.com/firebase/FirebaseUI-Android/issues/546
-                onDataChanged();
             }
 
             @Override
