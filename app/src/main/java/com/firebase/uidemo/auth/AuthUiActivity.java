@@ -133,6 +133,7 @@ public class AuthUiActivity extends AppCompatActivity {
         if (auth.getCurrentUser() != null) {
             startSignedInActivity(null);
             finish();
+            return;
         }
 
         if (!isGoogleConfigured()) {
