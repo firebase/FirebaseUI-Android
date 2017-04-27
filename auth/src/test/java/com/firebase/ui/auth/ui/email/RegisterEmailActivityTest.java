@@ -128,10 +128,7 @@ public class RegisterEmailActivityTest {
                      .createUserWithEmailAndPassword(
                              TestConstants.EMAIL,
                              TestConstants.PASSWORD))
-                .thenReturn(new AutoCompleteTask<AuthResult>(
-                        new FakeAuthResult(),
-                        true,
-                        null));
+                .thenReturn(new AutoCompleteTask<AuthResult>(FakeAuthResult.INSTANCE, true, null));
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();

@@ -104,7 +104,7 @@ public class WelcomeBackPasswordPromptTest {
         when(ActivityHelperShadow.sFirebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
-                    new AutoCompleteTask<AuthResult>(new FakeAuthResult(), true, null));
+                    new AutoCompleteTask<AuthResult>(FakeAuthResult.INSTANCE, true, null));
 
         Button signIn = (Button) welcomeBackActivity.findViewById(R.id.button_done);
         signIn.performClick();

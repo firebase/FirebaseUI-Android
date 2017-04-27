@@ -127,7 +127,7 @@ public class AuthMethodPickerActivityTest {
                 .thenReturn(Arrays.asList(FacebookAuthProvider.PROVIDER_ID));
         when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential((AuthCredential) any()))
                 .thenReturn(new AutoCompleteTask<AuthResult>(
-                        new FakeAuthResult(), true, null));
+                        FakeAuthResult.INSTANCE, true, null));
 
         List<String> providers = Arrays.asList(AuthUI.FACEBOOK_PROVIDER);
 
@@ -157,7 +157,7 @@ public class AuthMethodPickerActivityTest {
 
         when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential((AuthCredential) any()))
                 .thenReturn(new AutoCompleteTask<AuthResult>(
-                        new FakeAuthResult(), true, null));
+                        FakeAuthResult.INSTANCE, true, null));
 
         Button googleButton = (Button) authMethodPickerActivity.findViewById(R.id.google_button);
 
@@ -179,7 +179,7 @@ public class AuthMethodPickerActivityTest {
 
         when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
                 .thenReturn(new AutoCompleteTask<AuthResult>(
-                        new FakeAuthResult(), true, null));
+                        FakeAuthResult.INSTANCE, true, null));
         Button twitterButton =
                 (Button) authMethodPickerActivity.findViewById(R.id.twitter_button);
 
