@@ -24,6 +24,7 @@ import android.text.TextUtils;
 
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -176,7 +177,8 @@ public class IdpResponse implements Parcelable {
         public IdpResponse build() {
             if ((mProviderId.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)
                     || mProviderId.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)
-                    || mProviderId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID))
+                    || mProviderId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
+                    || mProviderId.equalsIgnoreCase(GithubAuthProvider.PROVIDER_ID))
                     && TextUtils.isEmpty(mToken)) {
                 throw new IllegalStateException(
                         "Token cannot be null when using a non-email provider.");
