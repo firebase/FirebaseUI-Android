@@ -90,13 +90,14 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                             });
                     return;
                 }
+            } else {
+                Log.e(TAG,
+                      "Unexpected exception when signing in with credential "
+                              + mResponse.getProviderType()
+                              + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
+                      task.getException());
             }
 
-            Log.e(TAG,
-                  "Unexpected exception when signing in with credential "
-                          + mResponse.getProviderType()
-                          + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
-                  task.getException());
             mHelper.dismissDialog();
         }
     }
