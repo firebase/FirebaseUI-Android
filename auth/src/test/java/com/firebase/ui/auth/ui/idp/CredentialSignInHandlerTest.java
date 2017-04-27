@@ -99,12 +99,13 @@ public class CredentialSignInHandlerTest {
         ArgumentCaptor<Activity> activityCaptor = ArgumentCaptor.forClass(Activity.class);
         ArgumentCaptor<FirebaseUser> firebaseUserCaptor = ArgumentCaptor.forClass(FirebaseUser.class);
         ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
+        ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
 
         verify(mockActivityHelper).saveCredentialsOrFinish(
                 smartLockCaptor.capture(),
                 activityCaptor.capture(),
                 firebaseUserCaptor.capture(),
-                null,
+                passwordCaptor.capture(), // Needed to make Mockito happy
                 idpResponseCaptor.capture());
 
         assertEquals(smartLock, smartLockCaptor.getValue());
