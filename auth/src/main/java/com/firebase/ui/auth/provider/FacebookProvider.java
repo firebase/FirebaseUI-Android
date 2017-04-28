@@ -83,7 +83,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public String getName(Context context) {
-        return context.getResources().getString(R.string.idp_name_facebook);
+        return context.getString(R.string.idp_name_facebook);
     }
 
     @Override

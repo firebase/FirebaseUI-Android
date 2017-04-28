@@ -97,8 +97,9 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
         return builder.build();
     }
 
+    @Override
     public String getName(Context context) {
-        return context.getResources().getString(R.string.idp_name_google);
+        return context.getString(R.string.idp_name_google);
     }
 
     @Override

@@ -527,7 +527,14 @@ public class AuthUI {
         @Deprecated
         public T setProviders(@NonNull List<IdpConfig> idpConfigs) {
             setAvailableProviders(idpConfigs);
+
+            // Ensure email provider is at the bottom to keep backwards compatibility
+            int emailProviderIndex = mProviders.indexOf(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+            if (emailProviderIndex != -1) {
+                mProviders.add(0, mProviders.remove(emailProviderIndex));
+            }
             Collections.reverse(mProviders);
+
             return (T) this;
         }
 

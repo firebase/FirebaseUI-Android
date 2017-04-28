@@ -81,7 +81,7 @@ public class AuthMethodPickerActivityTest {
         assertEquals(providers.size(),
                      ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
                              .getChildCount());
-        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
+        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_button);
         assertEquals(View.VISIBLE, emailButton.getVisibility());
     }
 
@@ -94,10 +94,10 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
-        assertEquals(providers.size() + 1, // plus one due to the invisible email button
+        assertEquals(providers.size(),
                      ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
                              .getChildCount());
-        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
+        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_button);
         assertEquals(View.GONE, emailButton.getVisibility());
     }
 
@@ -107,7 +107,7 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
-        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
+        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_button);
         emailButton.performClick();
         ShadowActivity.IntentForResult nextIntent =
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
