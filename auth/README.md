@@ -428,8 +428,8 @@ startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setAvailableProviders(Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                               googleIdp,
-                               new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                                             googleIdp,
+                                             new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
         .build(),
     RC_SIGN_IN);
 ```
@@ -454,7 +454,7 @@ startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setAvailableProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                               facebookIdp))
+                                             facebookIdp))
         .build(),
     RC_SIGN_IN);
 ```
