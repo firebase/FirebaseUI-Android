@@ -97,8 +97,6 @@ public class AuthMethodPickerActivityTest {
         assertEquals(providers.size(),
                      ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
                              .getChildCount());
-        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_button);
-        assertEquals(View.GONE, emailButton.getVisibility());
     }
 
     @Test
