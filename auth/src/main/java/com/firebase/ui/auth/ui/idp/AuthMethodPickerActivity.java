@@ -140,6 +140,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
                     }
                 });
                 provider.setAuthenticationCallback(this);
+                // Account for the email provider which should always be at the bottom
                 btnHolder.addView(loginButton, btnHolder.getChildCount() - 1);
             }
         }
