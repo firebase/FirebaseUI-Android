@@ -140,7 +140,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
                     }
                 });
                 provider.setAuthenticationCallback(this);
-                btnHolder.addView(loginButton, 0);
+                btnHolder.addView(loginButton, btnHolder.getChildCount() - 1);
             }
         }
     }
