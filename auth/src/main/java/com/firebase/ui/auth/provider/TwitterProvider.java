@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
@@ -34,7 +35,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     }
 
     public static AuthCredential createAuthCredential(IdpResponse response) {
-        if (!response.getProviderType().equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
+        if (!response.getProviderType().equalsIgnoreCase(AuthUI.TWITTER_PROVIDER)) {
             return null;
         }
         return TwitterAuthProvider.getCredential(response.getIdpToken(), response.getIdpSecret());
@@ -53,8 +54,9 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     }
 
     @Override
+    @AuthUI.SupportedProvider
     public String getProviderId() {
-        return TwitterAuthProvider.PROVIDER_ID;
+        return AuthUI.TWITTER_PROVIDER;
     }
 
     @Override
@@ -113,7 +115,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         }
 
         private IdpResponse createIdpResponse(String email) {
-            return new IdpResponse.Builder(TwitterAuthProvider.PROVIDER_ID, email)
+            return new IdpResponse.Builder(AuthUI.TWITTER_PROVIDER, email)
                     .setToken(mTwitterSession.getAuthToken().token)
                     .setSecret(mTwitterSession.getAuthToken().secret)
                     .build();

@@ -76,7 +76,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     }
 
     public static AuthCredential createAuthCredential(IdpResponse response) {
-        if (!response.getProviderType().equals(FacebookAuthProvider.PROVIDER_ID)) {
+        if (!response.getProviderType().equals(AuthUI.FACEBOOK_PROVIDER)) {
             return null;
         }
         return FacebookAuthProvider.getCredential(response.getIdpToken());
@@ -88,8 +88,9 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     }
 
     @Override
+    @AuthUI.SupportedProvider
     public String getProviderId() {
-        return FacebookAuthProvider.PROVIDER_ID;
+        return AuthUI.FACEBOOK_PROVIDER;
     }
 
     @Override
@@ -182,7 +183,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     }
 
     private IdpResponse createIdpResponse(@Nullable String email, LoginResult loginResult) {
-        return new IdpResponse.Builder(FacebookAuthProvider.PROVIDER_ID, email)
+        return new IdpResponse.Builder(AuthUI.FACEBOOK_PROVIDER, email)
                 .setToken(loginResult.getAccessToken().getToken())
                 .build();
     }

@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
@@ -38,11 +39,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -200,9 +198,9 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         List<String> accounts = new ArrayList<>();
         for (AuthUI.IdpConfig idpConfig : mHelper.getFlowParams().providerInfo) {
             String providerId = idpConfig.getProviderId();
-            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
-                    || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
+            if (providerId.equals(AuthUI.GOOGLE_PROVIDER)
+                    || providerId.equals(AuthUI.FACEBOOK_PROVIDER)
+                    || providerId.equals(AuthUI.TWITTER_PROVIDER)) {
                 accounts.add(providerIdToAccountType(providerId));
             }
         }
@@ -279,7 +277,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         // If the only provider is Email, immediately launch the email flow. Otherwise, launch
         // the auth method picker screen.
         if (visibleProviders.size() == 1) {
-            if (visibleProviders.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
+            if (visibleProviders.get(0).getProviderId().equals(AuthUI.EMAIL_PROVIDER)) {
                 startActivityForResult(
                         RegisterEmailActivity.createIntent(getContext(), flowParams),
                         RC_EMAIL_FLOW);
@@ -306,7 +304,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
      */
     private void signInWithEmailAndPassword(String email, String password) {
         final IdpResponse response =
-                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email).build();
+                new IdpResponse.Builder(AuthUI.EMAIL_PROVIDER, email).build();
 
         mHelper.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)

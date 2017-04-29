@@ -23,10 +23,6 @@ import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.ui.ExtraConstants;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.GithubAuthProvider;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 /**
  * A container that encapsulates the result of authenticating with an Identity Provider.
@@ -84,6 +80,7 @@ public class IdpResponse implements Parcelable {
      * Get the type of provider. e.g. {@link AuthUI#GOOGLE_PROVIDER}
      */
     @NonNull
+    @AuthUI.SupportedProvider
     public String getProviderType() {
         return mProviderId;
     }
@@ -158,7 +155,8 @@ public class IdpResponse implements Parcelable {
         private String mToken;
         private String mSecret;
 
-        public Builder(@NonNull String providerId, @Nullable String email) {
+        public Builder(@AuthUI.SupportedProvider @NonNull String providerId,
+                       @Nullable String email) {
             mProviderId = providerId;
             mEmail = email;
         }
@@ -175,15 +173,14 @@ public class IdpResponse implements Parcelable {
 
         @Override
         public IdpResponse build() {
-            if ((mProviderId.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)
-                    || mProviderId.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)
-                    || mProviderId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
-                    || mProviderId.equalsIgnoreCase(GithubAuthProvider.PROVIDER_ID))
+            if ((mProviderId.equalsIgnoreCase(AuthUI.GOOGLE_PROVIDER)
+                    || mProviderId.equalsIgnoreCase(AuthUI.FACEBOOK_PROVIDER)
+                    || mProviderId.equalsIgnoreCase(AuthUI.TWITTER_PROVIDER))
                     && TextUtils.isEmpty(mToken)) {
                 throw new IllegalStateException(
                         "Token cannot be null when using a non-email provider.");
             }
-            if (mProviderId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
+            if (mProviderId.equalsIgnoreCase(AuthUI.TWITTER_PROVIDER)
                     && TextUtils.isEmpty(mSecret)) {
                 throw new IllegalStateException(
                         "Secret cannot be null when using the Twitter provider.");

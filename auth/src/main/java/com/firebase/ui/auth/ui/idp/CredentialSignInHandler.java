@@ -20,6 +20,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
@@ -107,7 +108,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
         public void onSuccess(@NonNull ProviderQueryResult result) {
             mHelper.dismissDialog();
 
-            String provider = result.getProviders().get(0);
+            @AuthUI.SupportedProvider String provider = result.getProviders().get(0);
             if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
                 // Start email welcome back flow
                 mActivity.startActivityForResult(

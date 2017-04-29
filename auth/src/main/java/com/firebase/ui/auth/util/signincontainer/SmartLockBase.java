@@ -9,6 +9,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -16,11 +17,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
 import java.util.ArrayList;
@@ -39,18 +36,18 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     private Pair<Integer, Intent> mActivityResultPair;
 
     /**
-     * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to
+     * Translate a Firebase Auth provider ID (such as {@link AuthUI#GOOGLE_PROVIDER}) to
      * a Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
      */
-    public static String providerIdToAccountType(@NonNull String providerId) {
+    public static String providerIdToAccountType(@AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
-            case GoogleAuthProvider.PROVIDER_ID:
+            case AuthUI.GOOGLE_PROVIDER:
                 return IdentityProviders.GOOGLE;
-            case FacebookAuthProvider.PROVIDER_ID:
+            case AuthUI.FACEBOOK_PROVIDER:
                 return IdentityProviders.FACEBOOK;
-            case TwitterAuthProvider.PROVIDER_ID:
+            case AuthUI.TWITTER_PROVIDER:
                 return IdentityProviders.TWITTER;
-            case EmailAuthProvider.PROVIDER_ID:
+            case AuthUI.EMAIL_PROVIDER:
                 // The account type for email/password creds is null
                 return null;
             default:
@@ -58,14 +55,15 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         }
     }
 
+    @AuthUI.SupportedProvider
     public static String accountTypeToProviderId(@NonNull String accountType) {
         switch (accountType) {
             case IdentityProviders.GOOGLE:
-                return GoogleAuthProvider.PROVIDER_ID;
+                return AuthUI.GOOGLE_PROVIDER;
             case IdentityProviders.FACEBOOK:
-                return FacebookAuthProvider.PROVIDER_ID;
+                return AuthUI.FACEBOOK_PROVIDER;
             case IdentityProviders.TWITTER:
-                return TwitterAuthProvider.PROVIDER_ID;
+                return AuthUI.TWITTER_PROVIDER;
             default:
                 return null;
         }
@@ -84,7 +82,7 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         List<Credential> credentials = new ArrayList<>();
         for (UserInfo userInfo : user.getProviderData()) {
             // Get provider ID from Firebase Auth
-            String providerId = userInfo.getProviderId();
+            @AuthUI.SupportedProvider String providerId = userInfo.getProviderId();
 
             // Convert to Credentials API account type
             String accountType = providerIdToAccountType(providerId);

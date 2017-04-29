@@ -32,7 +32,6 @@ import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.User;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.junit.Before;
@@ -134,7 +133,7 @@ public class RegisterEmailActivityTest {
         button.performClick();
 
         TestHelper.verifySmartLockSave(
-                EmailAuthProvider.PROVIDER_ID,
+                AuthUI.EMAIL_PROVIDER,
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
     }

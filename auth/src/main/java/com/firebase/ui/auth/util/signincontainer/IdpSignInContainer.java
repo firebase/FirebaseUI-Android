@@ -41,9 +41,6 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class IdpSignInContainer extends FragmentBase implements IdpCallback {
@@ -103,15 +100,15 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
             return;
         }
 
-        if (provider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
+        if (provider.equalsIgnoreCase(AuthUI.GOOGLE_PROVIDER)) {
             mIdpProvider = new GoogleProvider(
                     getActivity(),
                     providerConfig,
                     user.getEmail());
-        } else if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
+        } else if (provider.equalsIgnoreCase(AuthUI.FACEBOOK_PROVIDER)) {
             mIdpProvider = new FacebookProvider(
                     getContext(), providerConfig, mHelper.getFlowParams().themeId);
-        } else if (provider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
+        } else if (provider.equalsIgnoreCase(AuthUI.TWITTER_PROVIDER)) {
             mIdpProvider = new TwitterProvider(getContext());
         }
 

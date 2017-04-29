@@ -42,9 +42,6 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,15 +112,15 @@ public class AuthMethodPickerActivity extends AppCompatBase
         for (final IdpProvider provider : mIdpProviders) {
             View loginButton = null;
             switch (provider.getProviderId()) {
-                case GoogleAuthProvider.PROVIDER_ID:
+                case AuthUI.GOOGLE_PROVIDER:
                     loginButton = getLayoutInflater()
                             .inflate(R.layout.idp_button_google, btnHolder, false);
                     break;
-                case FacebookAuthProvider.PROVIDER_ID:
+                case AuthUI.FACEBOOK_PROVIDER:
                     loginButton = getLayoutInflater()
                             .inflate(R.layout.idp_button_facebook, btnHolder, false);
                     break;
-                case TwitterAuthProvider.PROVIDER_ID:
+                case AuthUI.TWITTER_PROVIDER:
                     loginButton = getLayoutInflater()
                             .inflate(R.layout.idp_button_twitter, btnHolder, false);
                     break;
