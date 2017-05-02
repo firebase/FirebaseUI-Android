@@ -37,7 +37,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener, View.OnClickListener {
+public class ChatActivity extends AppCompatActivity
+        implements FirebaseAuth.AuthStateListener, View.OnClickListener {
     private static final String TAG = "RecyclerViewDemo";
 
     private FirebaseAuth mAuth;
@@ -155,7 +156,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
             @Override
             public void onDataChanged() {
-                // If there are no chat messages, show a view that invites the user to add a message.
+                // If there are no chat messages, show a view that invites the user to add a
+                // message.
                 mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         };

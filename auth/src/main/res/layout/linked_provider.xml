@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.firebase.ui.auth.ui.accountmanagement.ProviderView
+    android:id="@+id/provider"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+</com.firebase.ui.auth.ui.accountmanagement.ProviderView>

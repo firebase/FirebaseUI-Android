@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:gravity="center_vertical"
+              android:layout_width="match_parent"
+              android:layout_marginTop="16dp"
+              android:layout_marginBottom="16dp"
+              android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/provider_image"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginRight="16dp"
+        android:padding="5dp"
+        android:background="@drawable/circle_background"
+        />
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1.0"
+        >
+
+        <TextView
+            style="@style/FirebaseUI.Text.T06"
+            android:id="@+id/display_name"
+            android:text="Test Testerson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            style="@style/FirebaseUI.Text.T12"
+            android:textColor="#555"
+            android:layout_below="@id/display_name"
+            android:text="@string/idp_name_google"
+            android:id="@+id/provider_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/unlink_idp_button"
+        android:src="@drawable/ic_delete_black_24dp"
+        android:background="@null"
+        android:tint="#555"
+        android:layout_height="48dp"
+        android:layout_width="48dp"
+        android:padding="10dp"
+        />
+</LinearLayout>

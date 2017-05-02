@@ -35,6 +35,7 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ui.accountmanagement.AccountSettingsActivity;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -57,6 +58,8 @@ public class SignedInActivity extends AppCompatActivity {
 
     private static final int RC_REAUTH = 100;
 
+    private static final int RC_ACCOUNT_MANAGEMENT = 200;
+    
     @BindView(android.R.id.content)
     View mRootView;
 
@@ -96,6 +99,20 @@ public class SignedInActivity extends AppCompatActivity {
         populateIdpToken();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_ACCOUNT_MANAGEMENT
+                && resultCode == AccountSettingsActivity.RESULT_SIGNED_OUT) {
+            startActivity(AuthUiActivity.createIntent(this));
+            finish();
+        } else if (requestCode == RC_REAUTH) {
+            mIdpResponse = IdpResponse.fromResultIntent(data);
+            populateIdpToken();
+            populateProfile();
+        }
+    }
+
     @OnClick(R.id.sign_out)
     public void signOut() {
         AuthUI.getInstance()
@@ -126,6 +143,20 @@ public class SignedInActivity extends AppCompatActivity {
                 .build();
 
         startActivityForResult(reauthIntent, RC_REAUTH);
+    }
+
+    @OnClick(R.id.account_management)
+    public void accountManagement(View view) {
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createAccountManagementBuilder()
+                        .setProviders(mSignedInConfig.providerInfo)
+                        .setIsSmartLockEnabled(mSignedInConfig.isSmartLockEnabled)
+                        .setLogo(mSignedInConfig.logo)
+                        .setTheme(mSignedInConfig.theme)
+                        .setTosUrl(mSignedInConfig.tosUrl)
+                        .build(),
+                RC_ACCOUNT_MANAGEMENT);
     }
 
     @OnClick(R.id.delete_account)
@@ -297,15 +328,5 @@ public class SignedInActivity extends AppCompatActivity {
         in.setClass(context, SignedInActivity.class);
         in.putExtra(EXTRA_SIGNED_IN_CONFIG, signedInConfig);
         return in;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_REAUTH) {
-            mIdpResponse = IdpResponse.fromResultIntent(data);
-            populateIdpToken();
-            populateProfile();
-        }
     }
 }

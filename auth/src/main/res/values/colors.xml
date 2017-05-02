@@ -8,4 +8,9 @@
 
     <color name="errorColor">#DD2C00</color>
     <color name="linkColor">#4285F4</color>
+
+    <color name="gdi_twitter_blue">#4099FF</color>
+    <color name="gdi_facebook_blue">#3C5A99</color>
+    <color name="gdi_email_provider_grey">#eee</color>
+    <color name="gdi_white_background">#fff</color>
 </resources>

@@ -28,6 +28,7 @@ import android.support.v4.app.FragmentActivity;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.accountmanagement.AccountSettingsActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialTaskApi;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
@@ -314,6 +315,10 @@ public class AuthUI {
      */
     public SignInIntentBuilder createSignInIntentBuilder() {
         return new SignInIntentBuilder();
+    }
+
+    public AccountManagementIntentBuilder createAccountManagementBuilder() {
+        return new AccountManagementIntentBuilder();
     }
 
     /**
@@ -668,6 +673,29 @@ public class AuthUI {
                     mTosUrl,
                     mIsSmartLockEnabled,
                     mAllowNewEmailAccounts,
+                    false,
+                    null);
+        }
+    }
+
+
+    public final class AccountManagementIntentBuilder extends AuthIntentBuilder<AccountManagementIntentBuilder> {
+        public Intent build() {
+            return AccountSettingsActivity.createIntent(
+                    mApp.getApplicationContext(),
+                    getFlowParams());
+        }
+
+        @Override
+        public FlowParameters getFlowParams() {
+            return new FlowParameters(
+                    mApp.getName(),
+                    new ArrayList<>(mProviders),
+                    mTheme,
+                    mLogo,
+                    mTosUrl,
+                    mIsSmartLockEnabled,
+                    false,
                     false,
                     null);
         }

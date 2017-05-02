@@ -6,6 +6,7 @@
     <string name="progress_dialog_loading">Loading…</string>
     <string name="sign_in_default">Sign in</string>
     <string name="general_error">An error has occurred.</string>
+    <string name="error_user_collision">An account already exists with that email address.</string>
 
     <!-- Reauth Dialog -->
     <string name="reauth_dialog_title">This action requires you to sign in before continuing.</string>
@@ -41,7 +42,6 @@
         <item quantity="other">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item>
     </plurals>
     <string name="email_account_creation_error">Email account registration unsuccessful</string>
-    <string name="error_user_collision">An account already exists with that email address.</string>
     <string name="create_account_preamble">"By tapping SAVE you are indicating that you agree to the "</string>
     <string name="terms_of_service">Terms of Service</string>
 
@@ -52,11 +52,11 @@
     <string name="welcome_back_email_header">Welcome back!</string>
     <string name="welcome_back_email_header_reauth">Reauthentication required</string>
     <string name="welcome_back_idp_prompt">
-        You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>.
-        Sign in with <xliff:g id="provider_name" example="Google">%2$s</xliff:g> to continue.
+        You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr">%1$s</xliff:g>.
+        Sign in with <xliff:g example="Google" id="provider_name">%2$s</xliff:g> to continue.
     </string>
     <string name="welcome_back_password_prompt_body">
-        You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g>
+        You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr">%1$s</xliff:g>
         to sign in. Enter your password for that account.
     </string>
     <string name="reauth_welcome_back_password_prompt_body">
@@ -65,6 +65,7 @@
     </string>
     <string name="progress_dialog_signing_in">Signing in…</string>
     <string name="trouble_signing_in">Trouble signing in?</string>
+    <string name="signed_in_with_specific_account">Signed in as <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g></string>
 
     <!-- Password recovery -->
     <string name="title_recover_password_activity">Recover password</string>
@@ -78,5 +79,19 @@
 
     <!-- accessibility -->
     <string name="accessibility_logo">App logo</string>
-    <string name="signed_in_with_specific_account">Signed in as <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g></string>
+    <string name="account_settings_title">Account Settings</string>
+    <string name="edit_icon_description">Edit icon</string>
+    <string name="profile_image_description">Profile image</string>
+
+    <!-- account management -->
+    <string name="edit_password_body">To change the email address associated with your <xliff:g example="Example Company" id="app_name">%1$s</xliff:g> account, please re-enter your password.</string>
+    <string name="menu_item_save">Save</string>
+    <string name="linked_accounts">Linked accounts</string>
+    <string name="password">Password</string>
+    <string name="idp_name_email">Email</string>
+    <string name="remove_profile_image">Remove</string>
+    <string name="email_heading">Email</string>
+    <string name="reauth_explanation">To <xliff:g id="action" example="add an email">%1$s</xliff:g>, you will need to sign in again.</string>
+    <string name="reauth_action_add_email">add an email address to your account</string>
+    <string name="reauth_reason_change_password">change your password on your account</string>
 </resources>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,11 +26,12 @@
             android:drawableTop="@drawable/firebase_auth_120dp"
             android:text="@string/signed_in_header"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <Button
                 android:id="@+id/sign_out"
@@ -38,7 +40,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:text="@string/sign_out"/>
+                android:text="@string/sign_out"
+                app:layout_constraintRight_toLeftOf="@+id/reauthenticate"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <Button
                 android:id="@+id/reauthenticate"
@@ -46,20 +53,45 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="16dp"
-                android:text="@string/reauthenticate"/>
+                android:text="@string/reauthenticate"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginRight="16dp"/>
+
+            <Button
+                android:id="@+id/account_management"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_profile_button"
+                android:layout_marginStart="16dp"
+                app:layout_constraintLeft_toRightOf="@+id/reauthenticate"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <Button
                 android:id="@+id/delete_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="16dp"
                 android:text="@string/delete_account_label"
                 android:theme="@style/WarnButton"
-                tools:ignore="ButtonStyle"/>
+                tools:ignore="ButtonStyle"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/reauthenticate"
+                android:layout_marginStart="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginRight="16dp"/>
 
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Subhead"
