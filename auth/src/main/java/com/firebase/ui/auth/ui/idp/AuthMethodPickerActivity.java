@@ -43,10 +43,6 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,41 +108,20 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
 
         ViewGroup btnHolder = (ViewGroup) findViewById(R.id.btn_holder);
         for (final Provider provider : mProviders) {
-            View loginButton = null;
-            switch (provider.getProviderId()) {
-                case GoogleAuthProvider.PROVIDER_ID:
-                    loginButton = getLayoutInflater()
-                            .inflate(R.layout.idp_button_google, btnHolder, false);
-                    break;
-                case FacebookAuthProvider.PROVIDER_ID:
-                    loginButton = getLayoutInflater()
-                            .inflate(R.layout.idp_button_facebook, btnHolder, false);
-                    break;
-                case TwitterAuthProvider.PROVIDER_ID:
-                    loginButton = getLayoutInflater()
-                            .inflate(R.layout.idp_button_twitter, btnHolder, false);
-                    break;
-                case EmailAuthProvider.PROVIDER_ID:
-                    loginButton = getLayoutInflater()
-                            .inflate(R.layout.provider_button_email, btnHolder, false);
-                    break;
-                default:
-                    Log.e(TAG, "No button for provider " + provider.getProviderId());
-            }
+            View loginButton = getLayoutInflater()
+                    .inflate(provider.getButtonLayout(), btnHolder, false);
 
-            if (loginButton != null) {
-                loginButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
-                        provider.startLogin(AuthMethodPickerActivity.this);
-                    }
-                });
-                if (provider instanceof IdpProvider) {
-                    ((IdpProvider) provider).setAuthenticationCallback(this);
+            loginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
+                    provider.startLogin(AuthMethodPickerActivity.this);
                 }
-                btnHolder.addView(loginButton);
+            });
+            if (provider instanceof IdpProvider) {
+                ((IdpProvider) provider).setAuthenticationCallback(this);
             }
+            btnHolder.addView(loginButton);
         }
     }
 

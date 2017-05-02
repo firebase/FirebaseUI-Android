@@ -3,6 +3,7 @@ package com.firebase.ui.auth.provider;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.LayoutRes;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
@@ -29,6 +30,12 @@ public class EmailProvider implements Provider {
     @Override
     public String getProviderId() {
         return EmailAuthProvider.PROVIDER_ID;
+    }
+
+    @Override
+    @LayoutRes
+    public int getButtonLayout() {
+        return R.layout.provider_button_email;
     }
 
     @Override
