@@ -20,7 +20,9 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
@@ -83,9 +85,10 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    // TODO: What to do when signing in with Credential fails
-                                    // and we can't continue to Welcome back flow without
-                                    // knowing providers?
+                                    mHelper.finishActivity(
+                                            mActivity,
+                                            ResultCodes.CANCELED,
+                                            IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
                                 }
                             });
                     return;
