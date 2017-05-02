@@ -263,7 +263,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 ```
 
 Alternatively, you can register a listener for authentication state changes;
-see the Firebase Auth documentation
+see the Firebase Auth documentation to
 [get the currently signed-in user](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user)
 and [register an AuthStateListener](https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.html#addAuthStateListener(com.google.firebase.auth.FirebaseAuth.AuthStateListener)).
 
