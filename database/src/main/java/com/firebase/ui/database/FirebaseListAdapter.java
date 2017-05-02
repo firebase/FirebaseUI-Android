@@ -53,7 +53,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
      *               class
      * @param query  The Firebase location to watch for data changes. Can also be a slice of a
      *               location, using some combination of {@code limit()}, {@code startAt()}, and
-     *               {@code endAt()}.
+     *               {@code endAt()}. <b>Note, this can also be a {@link DatabaseReference}.</b>
      * @see #FirebaseListAdapter(Activity, ObservableSnapshotArray, int)
      */
     public FirebaseListAdapter(Activity activity,
