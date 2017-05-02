@@ -70,22 +70,22 @@ public class AuthUI {
 
     /**
      * Provider identifier for email and password credentials, for use with
-     * {@link SignInIntentBuilder#setProviders}.
+     * {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String EMAIL_PROVIDER = EmailAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Google, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Google, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String GOOGLE_PROVIDER = GoogleAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Facebook, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Facebook, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String FACEBOOK_PROVIDER = FacebookAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
@@ -416,8 +416,9 @@ public class AuthUI {
          *                   configuration parameters for the IDP.
          * @see IdpConfig
          */
-        public T setProviders(@NonNull List<IdpConfig> idpConfigs) {
+        public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
             mProviders.clear();
+
             for (IdpConfig config : idpConfigs) {
                 if (mProviders.contains(config)) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
@@ -427,6 +428,35 @@ public class AuthUI {
                     mProviders.add(config);
                 }
             }
+
+            return (T) this;
+        }
+
+        /**
+         * Specified the set of supported authentication providers. At least one provider must
+         * be specified. There may only be one instance of each provider.
+         * <p>
+         * <p>If no providers are explicitly specified by calling this method, then the email
+         * provider is the default supported provider.
+         *
+         * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
+         *                   configuration parameters for the IDP.
+         * @see IdpConfig
+         * @deprecated because the order in which providers were displayed was the inverse of the
+         * order in which they were supplied. Use {@link #setAvailableProviders(List)} to display
+         * the providers in the order in which they were supplied.
+         */
+        @Deprecated
+        public T setProviders(@NonNull List<IdpConfig> idpConfigs) {
+            setAvailableProviders(idpConfigs);
+
+            // Ensure email provider is at the bottom to keep backwards compatibility
+            int emailProviderIndex = mProviders.indexOf(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+            if (emailProviderIndex != -1) {
+                mProviders.add(0, mProviders.remove(emailProviderIndex));
+            }
+            Collections.reverse(mProviders);
+
             return (T) this;
         }
 

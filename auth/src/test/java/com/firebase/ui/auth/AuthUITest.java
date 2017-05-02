@@ -58,7 +58,7 @@ public class AuthUITest {
     public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
         SignInIntentBuilder startIntent =
                 AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder();
-        startIntent.setProviders(
+        startIntent.setAvailableProviders(
                 Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                               new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()));
     }
@@ -66,9 +66,10 @@ public class AuthUITest {
     @Test
     public void testCreatingStartIntent() {
         FlowParameters flowParameters = AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder()
-                .setProviders(Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                            new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                            new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                .setAvailableProviders(
+                        Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                      new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                      new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
                 .setTosUrl(TestConstants.TOS_URL)
                 .build()
                 .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);

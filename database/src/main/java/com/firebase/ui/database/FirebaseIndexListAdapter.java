@@ -14,7 +14,8 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
      *                 model class
      * @param keyQuery The Firebase location containing the list of keys to be found in {@code
      *                 dataRef}. Can also be a slice of a location, using some combination of {@code
-     *                 limit()}, {@code startAt()}, and {@code endAt()}.
+     *                 limit()}, {@code startAt()}, and {@code endAt()}. <b>Note, this can also be a
+     *                 {@link DatabaseReference}.</b>
      * @param dataRef  The Firebase location to watch for data changes. Each key key found at {@code
      *                 keyQuery}'s location represents a list item in the {@link ListView}.
      * @see FirebaseIndexListAdapter#FirebaseIndexListAdapter(Activity, SnapshotParser, int, Query,
