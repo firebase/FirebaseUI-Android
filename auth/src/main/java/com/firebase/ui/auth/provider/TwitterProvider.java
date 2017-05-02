@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
@@ -57,6 +58,12 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     @AuthUI.SupportedProvider
     public String getProviderId() {
         return AuthUI.TWITTER_PROVIDER;
+    }
+
+    @Override
+    @LayoutRes
+    public int getButtonLayout() {
+        return R.layout.idp_button_twitter;
     }
 
     @Override

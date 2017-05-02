@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.Log;
@@ -84,13 +85,19 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public String getName(Context context) {
-        return context.getResources().getString(R.string.idp_name_facebook);
+        return context.getString(R.string.idp_name_facebook);
     }
 
     @Override
     @AuthUI.SupportedProvider
     public String getProviderId() {
         return AuthUI.FACEBOOK_PROVIDER;
+    }
+
+    @Override
+    @LayoutRes
+    public int getButtonLayout() {
+        return R.layout.idp_button_facebook;
     }
 
     @Override

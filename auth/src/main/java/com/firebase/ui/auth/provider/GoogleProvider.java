@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -98,14 +99,21 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
         return builder.build();
     }
 
+    @Override
     public String getName(Context context) {
-        return context.getResources().getString(R.string.idp_name_google);
+        return context.getString(R.string.idp_name_google);
     }
 
     @Override
     @AuthUI.SupportedProvider
     public String getProviderId() {
         return AuthUI.GOOGLE_PROVIDER;
+    }
+
+    @Override
+    @LayoutRes
+    public int getButtonLayout() {
+        return R.layout.idp_button_google;
     }
 
     @Override
