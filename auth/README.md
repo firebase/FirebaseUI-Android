@@ -161,16 +161,17 @@ is returned to your app in onActivityResult(...). See the [response codes](#resp
 details on receiving the results of the sign in flow.
 
 You can enable sign-in providers like Google Sign-In or Facebook Log In by calling the
-`setProviders` method:
+`setAvailableProviders` method:
 
 ```java
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
+        .setAvailableProviders(
+                Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                              new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                              new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                              new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
         .build(),
     RC_SIGN_IN);
 ```
@@ -181,7 +182,7 @@ If a terms of service URL and a custom theme are required:
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(...)
+        .setAvailableProviders(...)
         .setTosUrl("https://superapp.example.com/terms-of-service.html")
         .setTheme(R.style.SuperAppTheme)
         .build(),
@@ -426,9 +427,9 @@ AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                    googleIdp,
-                                    new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+        .setAvailableProviders(Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                             googleIdp,
+                                             new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
         .build(),
     RC_SIGN_IN);
 ```
@@ -452,8 +453,8 @@ AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROV
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                    facebookIdp))
+        .setAvailableProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                             facebookIdp))
         .build(),
     RC_SIGN_IN);
 ```
