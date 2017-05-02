@@ -1,6 +1,6 @@
 # FirebaseUI Database
 
-## Using FirebaseUI to populate a `RecyclerView`
+## Using FirebaseUI to populate a [`RecyclerView`](https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html)
 
 To use the FirebaseUI to display Firebase data, we need a few things:
 
@@ -113,33 +113,6 @@ protected void onCreate(Bundle savedInstanceState) {
 }
 ```
 
-### Create a custom ViewHolder
-
-A ViewHolder is similar to container of a ViewGroup that allows simple lookup of the sub-views of the group.
-If we use the same layout as before (`android.R.layout.two_line_list_item`), there are two `TextView`s in there.
-We can wrap that in a ViewHolder with:
-
-```java
-public static class ChatHolder extends RecyclerView.ViewHolder {
-    private final TextView mNameField;
-    private final TextView mTextField;
-
-    public ChatHolder(View itemView) {
-        super(itemView);
-        mNameField = (TextView) itemView.findViewById(android.R.id.text1);
-        mTextField = (TextView) itemView.findViewById(android.R.id.text2);
-    }
-
-    public void setName(String name) {
-        mNameField.setText(name);
-    }
-
-    public void setText(String text) {
-        mTextField.setText(text);
-    }
-}
-```
-
 There's nothing magical going on here; we're just mapping numeric IDs and casts into a nice, type-safe contract.
 
 ### Connect to Firebase
@@ -156,6 +129,33 @@ protected void onCreate(Bundle savedInstanceState) {
     messages.setLayoutManager(new LinearLayoutManager(this));
 
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+}
+```
+
+### Create a custom ViewHolder
+
+A ViewHolder is similar to container of a ViewGroup that allows simple lookup of the sub-views of the group.
+If we use the same layout as before (`android.R.layout.two_line_list_item`), there are two `TextView`s in there.
+We can wrap that in a ViewHolder with:
+
+```java
+public static class ChatHolder extends RecyclerView.ViewHolder {
+    private final TextView mNameField;
+    private final TextView mMessageField;
+
+    public ChatHolder(View itemView) {
+        super(itemView);
+        mNameField = (TextView) itemView.findViewById(android.R.id.text1);
+        mMessageField = (TextView) itemView.findViewById(android.R.id.text2);
+    }
+
+    public void setName(String name) {
+        mNameField.setText(name);
+    }
+
+    public void setMessage(String message) {
+        mMessageField.setText(message);
+    }
 }
 ```
 
@@ -177,13 +177,13 @@ protected void onCreate(Bundle savedInstanceState) {
 
     mAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
             Chat.class,
-            ChatHolder.class,
             R.layout.message,
+            ChatHolder.class,
             ref) {
         @Override
         public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
             holder.setName(chat.getName());
-            holder.setText(chat.getMessage());
+            holder.setMessage(chat.getMessage());
         }
     };
 
@@ -235,13 +235,13 @@ protected void onCreate(Bundle savedInstanceState) {
 
     mAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
             Chat.class,
-            ChatHolder.class,
             R.layout.message,
+            ChatHolder.class,
             ref) {
         @Override
         public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
             holder.setName(chat.getName());
-            holder.setText(chat.getMessage());
+            holder.setMessage(chat.getMessage());
         }
     };
 
