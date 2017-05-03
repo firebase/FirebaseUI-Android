@@ -87,25 +87,6 @@ public class AuthMethodPickerActivityTest {
         assertEquals(View.VISIBLE, emailButton.getVisibility());
     }
 
-
-    @Test
-    public void testEmailIsHidden() {
-        List<String> providers = Arrays.asList(
-                AuthUI.FACEBOOK_PROVIDER,
-                AuthUI.GOOGLE_PROVIDER);
-
-        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
-
-        assertEquals(providers.size(),
-                     ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
-                             .getChildCount());
-
-        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_button);
-        Button phoneButton = (Button) authMethodPickerActivity.findViewById(R.id.phone_button);
-        assertEquals(View.GONE, emailButton.getVisibility());
-        assertEquals(View.GONE, phoneButton.getVisibility());
-    }
-
     @Test
     public void testEmailLoginFlow() {
         List<String> providers = Arrays.asList(AuthUI.EMAIL_PROVIDER);

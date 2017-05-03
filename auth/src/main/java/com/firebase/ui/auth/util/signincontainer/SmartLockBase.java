@@ -33,6 +33,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         ResultCallback<R>,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "SmartLockBase";
+    // The account type should not be changed and will result in abandonment of saved accounts
+    // on the client
     public static final String FIREBASE_PHONE_ACCOUNT_TYPE = "https://phone";
 
     protected GoogleApiClient mGoogleApiClient;

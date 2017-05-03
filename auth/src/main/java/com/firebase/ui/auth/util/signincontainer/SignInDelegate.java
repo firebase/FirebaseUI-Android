@@ -388,7 +388,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         }
 
         if (PhoneNumberUtils.isGlobalPhoneNumber(id)
-                && accountType.equals(FIREBASE_PHONE_ACCOUNT_TYPE)) {
+                && (FIREBASE_PHONE_ACCOUNT_TYPE.equals(accountType) || accountType == null)) {
             startActivityForResult(
                     PhoneVerificationActivity.createIntent(
                             getContext(),
