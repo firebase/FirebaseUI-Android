@@ -49,6 +49,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.Twitter;
 
@@ -96,6 +97,11 @@ public class AuthUI {
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
     /**
+     * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setProviders}.
+     */
+    public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
+
+    /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
      */
     public static final int NO_LOGO = -1;
@@ -108,7 +114,8 @@ public class AuthUI {
                     EMAIL_PROVIDER,
                     GOOGLE_PROVIDER,
                     FACEBOOK_PROVIDER,
-                    TWITTER_PROVIDER
+                    TWITTER_PROVIDER,
+                    PHONE_VERIFICATION_PROVIDER
             )));
 
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();

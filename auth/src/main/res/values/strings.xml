@@ -20,10 +20,12 @@
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
     <string name="sign_in_with_twitter">Sign in with Twitter</string>
     <string name="sign_in_with_email">Sign in with email</string>
+    <string name="sign_in_with_phone">Sign in with phone</string>
 
     <!-- Email common-->
     <string name="next_default">Next</string>
     <string name="email_hint">Email</string>
+    <string name="phone_hint">Phone Number</string>
     <string name="password_hint">Password</string>
     <string name="required_field">You can\'t leave this empty.</string>
     <string name="invalid_email_address">That email address isn\'t correct</string>
@@ -78,4 +80,21 @@
     <!-- accessibility -->
     <string name="accessibility_logo">App logo</string>
     <string name="signed_in_with_specific_account">Signed in as <xliff:g id="email_addr" example="jane.doe@example.com">%1$s</xliff:g></string>
+    <string name="verify_phone_number_title">Enter your phone number</string>
+    <string name="invalid_phone_number">Invalid phone format</string>
+    <string name="enter_confirmation_code">Enter the 6-digit code we sent to</string>
+    <string name="resend_code_in">Resend code in 0:%02d</string>
+    <string name="verify_your_phone_title">Verify your phone number</string>
+    <string name="verifying">Verifying …</string>
+    <string name="retrieving_sms">Retrieving sms…</string>
+    <string name="incorrect_code_dialog_body">The code you entered is incorrect. Please try again</string>
+    <string name="incorrect_code_dialog_positive_button_text">OK</string>
+    <string name="sign_in_with_phone_number">Sign in with phone number</string>
+    <string name="done">Done</string>
+    <string name="verified">Verified!</string>
+    <string name="code_sent">Code sent!</string>
+    <string name="resending">Resending…</string>
+    <string name="resend_code">Resend Code</string>
+    <string name="verify_phone_number">Verify Phone Number</string>
+    <string name="continue_phone_login">Continue</string>
 </resources>

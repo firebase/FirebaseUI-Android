@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
@@ -102,6 +103,10 @@ public class BaseHelper {
 
     public SaveSmartLock getSaveSmartLockInstance(FragmentActivity activity) {
         return SaveSmartLock.getInstance(activity, getFlowParams());
+    }
+
+    public PhoneAuthProvider getPhoneAuthProviderInstance() {
+        return PhoneAuthProvider.getInstance();
     }
 
     public void saveCredentialsOrFinish(

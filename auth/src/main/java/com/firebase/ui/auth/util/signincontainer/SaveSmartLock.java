@@ -42,6 +42,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SaveSmartLock extends SmartLockBase<Status> {
@@ -52,6 +53,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     private String mName;
     private String mEmail;
     private String mPassword;
+    private String mPhoneNumber;
     private String mProfilePictureUri;
     private IdpResponse mResponse;
 
@@ -79,12 +81,27 @@ public class SaveSmartLock extends SmartLockBase<Status> {
 
     @Override
     public void onConnected(Bundle bundle) {
-        if (TextUtils.isEmpty(mEmail)) {
+        if (! TextUtils.isEmpty(mEmail)) {
+            saveEmail();
+        } else if (! TextUtils.isEmpty(mPhoneNumber)){
+            savePhone();
+        } else {
             Log.e(TAG, "Unable to save null credential!");
             finish();
             return;
         }
 
+    }
+
+    private void savePhone() {
+        Credential.Builder builder = new Credential.Builder(mPhoneNumber);
+        builder.setAccountType(providerIdToAccountType(mResponse.getProviderType()));
+        mHelper.getCredentialsApi()
+                .save(mGoogleApiClient, builder.build())
+                .setResultCallback(this);
+    }
+
+    private void saveEmail() {
         Credential.Builder builder = new Credential.Builder(mEmail);
         builder.setPassword(mPassword);
         if (mPassword == null && mResponse != null) {
@@ -202,6 +219,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
+        mPhoneNumber = firebaseUser.getPhoneNumber();
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 

@@ -40,6 +40,7 @@ import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
+import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -61,6 +62,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
     private static final String TAG = "AuthMethodPicker";
     private static final int RC_EMAIL_FLOW = 2;
     private static final int RC_ACCOUNT_LINK = 3;
+    private static final int RC_PHONE_FLOW = 4;
 
     private ArrayList<IdpProvider> mIdpProviders;
     @Nullable
@@ -76,6 +78,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
         setContentView(R.layout.auth_method_picker_layout);
         mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
         findViewById(R.id.email_provider).setOnClickListener(this);
+        findViewById(R.id.phone_provider).setOnClickListener(this);
 
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);
 
@@ -104,6 +107,9 @@ public class AuthMethodPickerActivity extends AppCompatBase
                     break;
                 case AuthUI.EMAIL_PROVIDER:
                     findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
+                    break;
+                case AuthUI.PHONE_VERIFICATION_PROVIDER:
+                    findViewById(R.id.phone_provider).setVisibility(View.VISIBLE);
                     break;
                 default:
                     Log.e(TAG, "Encountered unknown IDPProvider parcel with type: "
@@ -148,7 +154,7 @@ public class AuthMethodPickerActivity extends AppCompatBase
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_EMAIL_FLOW) {
+        if (requestCode == RC_EMAIL_FLOW || requestCode == RC_PHONE_FLOW) {
             if (resultCode == ResultCodes.OK) {
                 finish(ResultCodes.OK, data);
             }
@@ -188,6 +194,11 @@ public class AuthMethodPickerActivity extends AppCompatBase
             startActivityForResult(
                     RegisterEmailActivity.createIntent(this, mActivityHelper.getFlowParams()),
                     RC_EMAIL_FLOW);
+        } else if (view.getId() == R.id.phone_provider){
+            startActivityForResult(
+                    PhoneVerificationActivity
+                            .createIntent(this, mActivityHelper.getFlowParams(), null),
+                    RC_PHONE_FLOW);
         }
     }
 

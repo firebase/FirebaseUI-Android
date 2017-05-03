@@ -6,6 +6,7 @@ import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import org.mockito.Mockito;
 import org.robolectric.annotation.Implementation;
@@ -16,6 +17,7 @@ public class BaseHelperShadow {
     public static FirebaseAuth sFirebaseAuth;
     public static CredentialsApi sCredentialsApi;
     public static SaveSmartLock sSaveSmartLock;
+    public static PhoneAuthProvider sPhoneAuthProvider;
 
     public BaseHelperShadow() {
         if (sFirebaseAuth == null) {
@@ -26,6 +28,9 @@ public class BaseHelperShadow {
         }
         if (sSaveSmartLock == null) {
             sSaveSmartLock = Mockito.mock(SaveSmartLock.class);
+        }
+        if(sPhoneAuthProvider == null) {
+            sPhoneAuthProvider = Mockito.mock(PhoneAuthProvider.class);
         }
     }
 
@@ -42,5 +47,10 @@ public class BaseHelperShadow {
     @Implementation
     public SaveSmartLock getSaveSmartLockInstance(FragmentActivity activity) {
         return sSaveSmartLock;
+    }
+
+    @Implementation
+    public PhoneAuthProvider getPhoneAuthProviderInstance() {
+        return sPhoneAuthProvider;
     }
 }

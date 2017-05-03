@@ -69,6 +69,10 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_display_name)
     TextView mUserDisplayName;
 
+
+    @BindView(R.id.user_phone_number)
+    TextView mUserPhoneNumber;
+
     @BindView(R.id.user_enabled_providers)
     TextView mEnabledProviders;
 
@@ -173,6 +177,8 @@ public class SignedInActivity extends AppCompatActivity {
 
         mUserEmail.setText(
                 TextUtils.isEmpty(user.getEmail()) ? "No email" : user.getEmail());
+        mUserPhoneNumber.setText(
+                TextUtils.isEmpty(user.getPhoneNumber()) ? "No phone number" : user.getPhoneNumber());
         mUserDisplayName.setText(
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
 

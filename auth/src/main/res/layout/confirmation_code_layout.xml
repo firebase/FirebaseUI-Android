@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        style="@style/FirebaseUI.WrapperStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/dgts__titleText"
+            style="@style/FirebaseUI.Text.T08"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_confirmation_code" />
+
+        <TextView
+            android:id="@+id/edit_phone_number"
+            style="@style/FirebaseUI.Text.T08"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dgts__titleText"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/linkColor"
+            tools:ignore="SelectableText"/>
+
+
+        <com.firebase.ui.auth.ui.phone.SpacedEditText
+            android:id="@+id/confirmation_code"
+            spacingProportion="1.1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_phone_number"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="@color/transparent"
+            android:cursorVisible="false"
+            android:ems="10"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:textColor="?android:attr/textColor"
+            android:textSize="32sp"
+            android:typeface="monospace" />
+
+        <Button
+            android:id="@+id/submit_confirmation_code"
+            style="@style/FirebaseUI.VerifyPhoneButton"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/confirmation_code"
+            android:text="@string/verify_phone_number" />
+
+        <TextView
+            android:id="@+id/ticker"
+            style="@style/FirebaseUI.Text.T08"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/submit_confirmation_code"
+            android:enabled="false"
+            android:gravity="center"
+            android:paddingTop="16dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?attr/android:textColorSecondary"
+            tools:ignore="SelectableText" />
+
+        <TextView
+            android:id="@+id/resend_code"
+            style="@style/FirebaseUI.Text.T08"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/submit_confirmation_code"
+            android:gravity="center"
+            android:paddingTop="16dp"
+            android:text="@string/resend_code"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/linkColor"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</ScrollView>

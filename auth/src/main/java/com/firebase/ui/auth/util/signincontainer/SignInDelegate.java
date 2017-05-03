@@ -9,8 +9,11 @@ import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
+
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
@@ -23,6 +26,7 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -42,6 +46,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,6 +68,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
     private static final int RC_EMAIL_FLOW = 5;
+    private static final int RC_PHONE_FLOW = 6;
 
     private Credential mCredential;
 
@@ -185,6 +191,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 break;
             case RC_IDP_SIGNIN:
             case RC_AUTH_METHOD_PICKER:
+            case RC_PHONE_FLOW:
             case RC_EMAIL_FLOW:
                 finish(resultCode, data);
                 break;
@@ -202,14 +209,15 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             String providerId = idpConfig.getProviderId();
             if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
                     || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
+                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)
+                    || providerId.equals(PhoneAuthProvider.PROVIDER_ID)) {
                 accounts.add(providerIdToAccountType(providerId));
             }
         }
         return accounts;
     }
 
-    private String getEmailFromCredential() {
+    private String getIdFromCredential() {
         if (mCredential == null) {
             return null;
         }
@@ -232,15 +240,17 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     private void handleCredential(Credential credential) {
         mCredential = credential;
-        String email = getEmailFromCredential();
+        String id = getIdFromCredential();
         String password = getPasswordFromCredential();
-        if (!TextUtils.isEmpty(email)) {
+        if (!TextUtils.isEmpty(id)) {
             if (TextUtils.isEmpty(password)) {
                 // log in with id/provider
-                redirectToIdpSignIn(email, getAccountTypeFromCredential());
+                // can be either email/phone
+                redirectToIdpSignIn(id, getAccountTypeFromCredential());
             } else {
                 // Sign in with the email/password retrieved from SmartLock
-                signInWithEmailAndPassword(email, password);
+                // can never be phone
+                signInWithEmailAndPassword(id, password);
             }
         }
     }
@@ -276,14 +286,22 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         } else {
             visibleProviders = idpConfigs;
         }
-        // If the only provider is Email, immediately launch the email flow. Otherwise, launch
-        // the auth method picker screen.
+        // If the only provider is Email, immediately launch the email flow.
+        // If the only provider is Phone, immediately launch the phone flow.
+        // Otherwise, launch the auth method picker screen.
         if (visibleProviders.size() == 1) {
             if (visibleProviders.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
                 startActivityForResult(
                         RegisterEmailActivity.createIntent(getContext(), flowParams),
                         RC_EMAIL_FLOW);
-            } else {
+            } else if (visibleProviders.get(0).getProviderId().equals(
+                    PhoneAuthProvider.PROVIDER_ID)) {
+                String phone = flowParams.isReauth ? mHelper.getCurrentUser()
+                        .getPhoneNumber() : null;
+                startActivityForResult(
+                        PhoneVerificationActivity.createIntent(getContext(), flowParams, phone),
+                        RC_PHONE_FLOW);
+            } else{
                 String email = flowParams.isReauth ? mHelper.getCurrentUser().getEmail() : null;
                 redirectToIdpSignIn(email,
                                     providerIdToAccountType(visibleProviders.get(0)
@@ -356,14 +374,27 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 });
     }
 
-    private void redirectToIdpSignIn(String email, String accountType) {
+    private void redirectToIdpSignIn(String id, String accountType) {
         if (TextUtils.isEmpty(accountType)) {
+            if (Patterns.EMAIL_ADDRESS.matcher(id).matches()) {
+                startActivityForResult(
+                        RegisterEmailActivity.createIntent(
+                                getContext(),
+                                mHelper.getFlowParams(),
+                                id),
+                        RC_EMAIL_FLOW);
+                return;
+            }
+        }
+
+        if (PhoneNumberUtils.isGlobalPhoneNumber(id)
+                && accountType.equals(FIREBASE_PHONE_ACCOUNT_TYPE)) {
             startActivityForResult(
-                    RegisterEmailActivity.createIntent(
+                    PhoneVerificationActivity.createIntent(
                             getContext(),
                             mHelper.getFlowParams(),
-                            email),
-                    RC_EMAIL_FLOW);
+                            id),
+                    RC_PHONE_FLOW);
             return;
         }
 
@@ -373,7 +404,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             IdpSignInContainer.signIn(
                     getActivity(),
                     mHelper.getFlowParams(),
-                    new User.Builder(email)
+                    new User.Builder(id)
                             .setProvider(accountTypeToProviderId(accountType))
                             .build());
         } else {

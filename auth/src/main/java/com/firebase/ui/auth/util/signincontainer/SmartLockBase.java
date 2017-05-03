@@ -20,6 +20,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
@@ -32,6 +33,7 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         ResultCallback<R>,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "SmartLockBase";
+    public static final String FIREBASE_PHONE_ACCOUNT_TYPE = "https://phone";
 
     protected GoogleApiClient mGoogleApiClient;
 
@@ -50,6 +52,9 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
                 return IdentityProviders.FACEBOOK;
             case TwitterAuthProvider.PROVIDER_ID:
                 return IdentityProviders.TWITTER;
+            case PhoneAuthProvider.PROVIDER_ID:
+                // The account type for phone
+                return FIREBASE_PHONE_ACCOUNT_TYPE;
             case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
                 return null;
@@ -66,6 +71,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
                 return FacebookAuthProvider.PROVIDER_ID;
             case IdentityProviders.TWITTER:
                 return TwitterAuthProvider.PROVIDER_ID;
+            case FIREBASE_PHONE_ACCOUNT_TYPE:
+                return PhoneAuthProvider.PROVIDER_ID;
             default:
                 return null;
         }

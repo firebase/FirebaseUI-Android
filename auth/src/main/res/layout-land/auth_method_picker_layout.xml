@@ -35,6 +35,13 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
+            <Button
+                android:id="@+id/phone_provider"
+                style="@style/FirebaseUI.Button.AccountChooser.PhoneButton"
+                android:text="@string/sign_in_with_phone"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
         </LinearLayout>
 
     </FrameLayout>

@@ -88,7 +88,10 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
     @Override
     public Task<TResult> addOnSuccessListener(@NonNull Activity activity,
                                               @NonNull OnSuccessListener onSuccessListener) {
-        throw new RuntimeException("Method not implemented");
+        if (mSuccess) {
+            onSuccessListener.onSuccess(mResult);
+        }
+        return this;
     }
 
     @NonNull

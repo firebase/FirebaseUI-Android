@@ -28,20 +28,21 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 public class IdpResponse implements Parcelable {
     private final String mProviderId;
     private final String mEmail;
+    private final String mPhoneNumber;
     private final String mToken;
     private final String mSecret;
     private final int mErrorCode;
 
     private IdpResponse(int errorCode) {
-        this(null, null, null, null, errorCode);
+        this(null, null, null, null, null, errorCode);
     }
 
     public IdpResponse(@NonNull String providerId, @NonNull String email) {
-        this(providerId, email, null, null, ResultCodes.OK);
+        this(providerId, email, null, null, null, ResultCodes.OK);
     }
 
     public IdpResponse(@NonNull String providerId, @NonNull String email, @NonNull String token) {
-        this(providerId, email, token, null, ResultCodes.OK);
+        this(providerId, email, null, token, null, ResultCodes.OK);
     }
 
     public IdpResponse(
@@ -49,17 +50,30 @@ public class IdpResponse implements Parcelable {
             @NonNull String email,
             @NonNull String token,
             @NonNull String secret) {
-        this(providerId, email, token, secret, ResultCodes.OK);
+        this(providerId, email, null, token, secret, ResultCodes.OK);
+    }
+
+    public static IdpResponse create(
+            String providerId,
+            String email,
+            String phoneNumber,
+            String token,
+            String secret,
+            int errorCode) {
+        return new IdpResponse(providerId, email, phoneNumber, token, secret, errorCode);
+
     }
 
     private IdpResponse(
             String providerId,
             String email,
+            String phoneNumber,
             String token,
             String secret,
             int errorCode) {
         mProviderId = providerId;
         mEmail = email;
+        mPhoneNumber = phoneNumber;
         mToken = token;
         mSecret = secret;
         mErrorCode = errorCode;
@@ -134,6 +148,7 @@ public class IdpResponse implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mProviderId);
         dest.writeString(mEmail);
+        dest.writeString(mPhoneNumber);
         dest.writeString(mToken);
         dest.writeString(mSecret);
         dest.writeInt(mErrorCode);
@@ -143,6 +158,7 @@ public class IdpResponse implements Parcelable {
         @Override
         public IdpResponse createFromParcel(Parcel in) {
             return new IdpResponse(
+                    in.readString(),
                     in.readString(),
                     in.readString(),
                     in.readString(),

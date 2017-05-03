@@ -99,6 +99,12 @@
         <item name="android:textSize">10sp</item>
     </style>
 
+    <style name="FirebaseUI.Text.T14">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">?android:attr/textColor</item>
+    </style>
+
+
     <!-- Common styles -->
     <style name="FirebaseUI.Text.TextInputLayout">
         <item name="android:paddingTop">8dp</item>
@@ -111,7 +117,6 @@
 
     <style name="FirebaseUI.Text.ErrorText" parent="FirebaseUI.Text.T12">
         <item name="android:textColor">@color/errorColor</item>
-        <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
     </style>
 
@@ -119,6 +124,13 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">right</item>
+        <item name="android:textColor">?attr/android:textColorPrimary</item>
+    </style>
+
+    <style name="FirebaseUI.VerifyPhoneButton" parent="@style/Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:textColor">?attr/android:textColorPrimary</item>
     </style>
 
@@ -145,6 +157,14 @@
     <style name="FirebaseUI.EditText.EmailField">
         <item name="android:hint">@string/email_hint</item>
         <item name="android:inputType">textEmailAddress</item>
+    </style>
+
+    <style name="FirebaseUI.EditText.PhoneField" parent="FirebaseUI.Text.T14">
+        <item name="android:hint">@string/phone_hint</item>
+        <item name="android:inputType">phone</item>
+        <item name="android:imeOptions">actionNext</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">16dp</item>
     </style>
 
     <style name="FirebaseUI.EditText.PasswordField">
@@ -213,6 +233,22 @@
         <item name="android:drawableLeft">@drawable/ic_mail_white_24dp</item>
         <item name="android:background">@drawable/idp_button_background_email</item>
         <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.PhoneButton">
+        <item name="android:drawableLeft">@drawable/ic_settings_phone_white_24dp</item>
+        <item name="android:background">@drawable/idp_button_background_twitter</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="FirebaseUI.CountrySpinner" parent="@style/Widget.AppCompat.Spinner.Underlined">
+        <item name = "android:layout_width">wrap_content</item>
+        <item name = "android:layout_height">wrap_content</item>
+        <item name = "android:layout_gravity">left</item>
+        <item name = "android:paddingBottom">16dp</item>
+        <item name = "android:paddingTop">16dp</item>
+        <item name = "android:textAppearance">?android:attr/textAppearanceMedium</item>
+
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.GoogleButton">

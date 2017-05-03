@@ -34,6 +34,7 @@ import com.firebase.ui.auth.testhelpers.LoginManagerShadow;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
+import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -74,7 +75,8 @@ public class AuthMethodPickerActivityTest {
                 AuthUI.FACEBOOK_PROVIDER,
                 AuthUI.GOOGLE_PROVIDER,
                 AuthUI.TWITTER_PROVIDER,
-                AuthUI.EMAIL_PROVIDER);
+                AuthUI.EMAIL_PROVIDER,
+                AuthUI.PHONE_VERIFICATION_PROVIDER);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
@@ -94,11 +96,13 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
-        assertEquals(providers.size() + 1, // plus one due to the invisible email button
+        assertEquals(providers.size() + 2, // plus two due to the invisible email, phone buttons
                      ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
                              .getChildCount());
         Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
+        Button phoneButton = (Button) authMethodPickerActivity.findViewById(R.id.phone_provider);
         assertEquals(View.GONE, emailButton.getVisibility());
+        assertEquals(View.GONE, phoneButton.getVisibility());
     }
 
     @Test
@@ -114,6 +118,22 @@ public class AuthMethodPickerActivityTest {
 
         assertEquals(
                 RegisterEmailActivity.class.getName(),
+                nextIntent.intent.getComponent().getClassName());
+    }
+
+    @Test
+    public void testPhoneLoginFlow() {
+        List<String> providers = Arrays.asList(AuthUI.PHONE_VERIFICATION_PROVIDER);
+
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
+
+        Button phoneButton = (Button) authMethodPickerActivity.findViewById(R.id.phone_provider);
+        phoneButton.performClick();
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
+
+        assertEquals(
+                PhoneVerificationActivity.class.getName(),
                 nextIntent.intent.getComponent().getClassName());
     }
 

@@ -69,6 +69,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.email_provider)
     CheckBox mUseEmailProvider;
 
+    @BindView(R.id.phone_provider)
+    CheckBox mUsePhoneProvider;
+
     @BindView(R.id.google_provider)
     CheckBox mUseGoogleProvider;
 
@@ -294,6 +297,11 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUseEmailProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
+        }
+
+        if (mUsePhoneProvider.isChecked()) {
+            selectedProviders.add(
+                    new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
         }
 
         if (mUseTwitterProvider.isChecked()) {

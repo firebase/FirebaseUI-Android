@@ -40,6 +40,12 @@
             android:exported="false"/>
 
         <activity
+            android:name=".ui.phone.PhoneVerificationActivity"
+            android:label="@string/sign_in_with_phone_number"
+            android:windowSoftInputMode="stateAlwaysVisible"
+            android:exported="false"/>
+
+        <activity
             android:name=".ui.accountlink.WelcomeBackIdpPrompt"
             android:label="@string/title_welcome_back_idp_prompt"
             android:exported="false"/>

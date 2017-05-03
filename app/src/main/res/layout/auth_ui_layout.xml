@@ -112,6 +112,13 @@
                 android:checked="true"
                 android:text="@string/email_label"/>
 
+            <CheckBox
+                android:id="@+id/phone_provider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/phone_label"/>
+
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="wrap_content"

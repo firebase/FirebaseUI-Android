@@ -98,4 +98,26 @@ public class TestHelper {
                     idpResponseArgumentCaptor.getValue().getProviderType());
         }
     }
+
+    public static void verifySmartLockSave(String providerId, String email, String phoneNumber,
+                                           String password) {
+        ArgumentCaptor<FirebaseUser> userArgumentCaptor =
+                ArgumentCaptor.forClass(FirebaseUser.class);
+        ArgumentCaptor<IdpResponse> idpResponseArgumentCaptor =
+                ArgumentCaptor.forClass(IdpResponse.class);
+        ArgumentCaptor<String> passwordArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(ActivityHelperShadow.sSaveSmartLock)
+                .saveCredentialsOrFinish(userArgumentCaptor.capture(),
+                        passwordArgumentCaptor.capture(), idpResponseArgumentCaptor.capture());
+        assertEquals(email, userArgumentCaptor.getValue().getEmail());
+        assertEquals(phoneNumber, userArgumentCaptor.getValue().getPhoneNumber());
+        assertEquals(password, passwordArgumentCaptor.getValue());
+        if (providerId == null) {
+            assertNull(idpResponseArgumentCaptor.getValue());
+        } else {
+            assertEquals(
+                    providerId,
+                    idpResponseArgumentCaptor.getValue().getProviderType());
+        }
+    }
 }

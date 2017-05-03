@@ -23,6 +23,7 @@
     <string name="no_logo_label">None</string>
     <string name="auth_providers_header">Use auth providers:</string>
     <string name="email_label">Email</string>
+    <string name="phone_label">Phone</string>
     <string name="facebook_label">Facebook</string>
     <string name="facebook_label_missing_config">Facebook - configuration missing</string>
     <string name="twitter_label">Twitter</string>

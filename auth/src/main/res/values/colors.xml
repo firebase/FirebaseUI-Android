@@ -8,4 +8,5 @@
 
     <color name="errorColor">#DD2C00</color>
     <color name="linkColor">#4285F4</color>
+    <color name="transparent">#00000000</color>
 </resources>
