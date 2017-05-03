@@ -164,7 +164,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     Log.e(TAG, "Failed to send Credentials intent.", e);
                 }
             } else {
-                Log.e(TAG, status.getStatusMessage());
+                Log.e(TAG, "Status message:\n" + status.getStatusMessage());
             }
         }
         startAuthMethodChoice();
@@ -408,7 +408,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                             .setProvider(accountTypeToProviderId(accountType))
                             .build());
         } else {
-            Log.w(TAG, "unknown provider: " + accountType);
+            Log.w(TAG, "Unknown provider: " + accountType);
             startActivityForResult(
                     AuthMethodPickerActivity.createIntent(
                             getContext(),

@@ -121,7 +121,7 @@ public class SignedInActivity extends AppCompatActivity {
     public void reauthenticate() {
         Intent reauthIntent = AuthUI.getInstance()
                 .createReauthIntentBuilder()
-                .setProviders(mSignedInConfig.providerInfo)
+                .setAvailableProviders(mSignedInConfig.providerInfo)
                 .setIsSmartLockEnabled(mSignedInConfig.isSmartLockEnabled)
                 .setLogo(mSignedInConfig.logo)
                 .setTheme(mSignedInConfig.theme)

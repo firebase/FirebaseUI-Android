@@ -47,7 +47,7 @@ public class FirebaseIndexArrayTest {
         mRef = databaseInstance.getReference().child("firebasearray");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray");
 
-        mArray = new FirebaseIndexArray(mKeyRef, mRef);
+        mArray = new FirebaseIndexArray(mKeyRef, mRef, Integer.class);
         mRef.removeValue();
         mKeyRef.removeValue();
 

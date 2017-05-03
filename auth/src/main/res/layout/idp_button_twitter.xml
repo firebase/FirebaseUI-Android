@@ -1,5 +1,7 @@
 <Button
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/twitter_button"
     style="@style/FirebaseUI.Button.AccountChooser.TwitterButton"
     android:text="@string/sign_in_with_twitter"
-    android:id="@+id/twitter_button"/>
+    tools:ignore="UnusedIds"/> <!-- Used in tests -->

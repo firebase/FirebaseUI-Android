@@ -83,7 +83,7 @@ public class AuthMethodPickerActivityTest {
         assertEquals(providers.size(),
                      ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
                              .getChildCount());
-        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
+        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_button);
         assertEquals(View.VISIBLE, emailButton.getVisibility());
     }
 
@@ -96,11 +96,12 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
-        assertEquals(providers.size() + 2, // plus two due to the invisible email, phone buttons
+        assertEquals(providers.size(),
                      ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
                              .getChildCount());
-        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
-        Button phoneButton = (Button) authMethodPickerActivity.findViewById(R.id.phone_provider);
+
+        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_button);
+        Button phoneButton = (Button) authMethodPickerActivity.findViewById(R.id.phone_button);
         assertEquals(View.GONE, emailButton.getVisibility());
         assertEquals(View.GONE, phoneButton.getVisibility());
     }
@@ -111,7 +112,7 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
-        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_provider);
+        Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_button);
         emailButton.performClick();
         ShadowActivity.IntentForResult nextIntent =
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
@@ -127,7 +128,7 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
-        Button phoneButton = (Button) authMethodPickerActivity.findViewById(R.id.phone_provider);
+        Button phoneButton = (Button) authMethodPickerActivity.findViewById(R.id.phone_button);
         phoneButton.performClick();
         ShadowActivity.IntentForResult nextIntent =
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();

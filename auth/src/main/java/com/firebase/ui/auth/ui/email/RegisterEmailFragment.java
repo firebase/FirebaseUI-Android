@@ -24,6 +24,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
+import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
@@ -47,7 +48,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RegisterEmailFragment extends FragmentBase implements
-        View.OnClickListener, View.OnFocusChangeListener {
+        View.OnClickListener, View.OnFocusChangeListener, ImeHelper.DonePressedListener {
 
     public static final String TAG = "RegisterEmailFragment";
 
@@ -108,6 +109,8 @@ public class RegisterEmailFragment extends FragmentBase implements
         mAgreementText = (TextView) v.findViewById(R.id.create_account_text);
         mEmailInput = (TextInputLayout) v.findViewById(R.id.email_layout);
         mPasswordInput = (TextInputLayout) v.findViewById(R.id.password_layout);
+
+        ImeHelper.setImeOnDoneListener(mPasswordEditText, this);
 
         mEmailEditText.setOnFocusChangeListener(this);
         mNameEditText.setOnFocusChangeListener(this);
@@ -221,17 +224,26 @@ public class RegisterEmailFragment extends FragmentBase implements
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button_create) {
-            String email = mEmailEditText.getText().toString();
-            String password = mPasswordEditText.getText().toString();
-            String name = mNameEditText.getText().toString();
+            validateAndRegisterUser();
+        }
+    }
 
-            boolean emailValid = mEmailFieldValidator.validate(email);
-            boolean passwordValid = mPasswordFieldValidator.validate(password);
-            boolean nameValid = mNameValidator.validate(name);
-            if (emailValid && passwordValid && nameValid) {
-                mHelper.showLoadingDialog(R.string.progress_dialog_signing_up);
-                registerUser(email, name, password);
-            }
+    @Override
+    public void onDonePressed() {
+        validateAndRegisterUser();
+    }
+
+    private void validateAndRegisterUser() {
+        String email = mEmailEditText.getText().toString();
+        String password = mPasswordEditText.getText().toString();
+        String name = mNameEditText.getText().toString();
+
+        boolean emailValid = mEmailFieldValidator.validate(email);
+        boolean passwordValid = mPasswordFieldValidator.validate(password);
+        boolean nameValid = mNameValidator.validate(name);
+        if (emailValid && passwordValid && nameValid) {
+            mHelper.showLoadingDialog(R.string.progress_dialog_signing_up);
+            registerUser(email, name, password);
         }
     }
 

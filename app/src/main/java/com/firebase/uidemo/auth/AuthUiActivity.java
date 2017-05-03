@@ -185,7 +185,7 @@ public class AuthUiActivity extends AppCompatActivity {
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setTheme(getSelectedTheme())
                         .setLogo(getSelectedLogo())
-                        .setProviders(getSelectedProviders())
+                        .setAvailableProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
                         .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
                         .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
@@ -295,17 +295,11 @@ public class AuthUiActivity extends AppCompatActivity {
     private List<IdpConfig> getSelectedProviders() {
         List<IdpConfig> selectedProviders = new ArrayList<>();
 
-        if (mUseEmailProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
-        }
-
-        if (mUsePhoneProvider.isChecked()) {
+        if (mUseGoogleProvider.isChecked()) {
             selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
-        }
-
-        if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+                    new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
+                            .setPermissions(getGooglePermissions())
+                            .build());
         }
 
         if (mUseFacebookProvider.isChecked()) {
@@ -315,11 +309,17 @@ public class AuthUiActivity extends AppCompatActivity {
                             .build());
         }
 
-        if (mUseGoogleProvider.isChecked()) {
+        if (mUseTwitterProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+        }
+
+        if (mUseEmailProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
+        }
+
+        if (mUsePhoneProvider.isChecked()) {
             selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-                            .setPermissions(getGooglePermissions())
-                            .build());
+                    new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
         }
 
         return selectedProviders;

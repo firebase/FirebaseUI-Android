@@ -27,9 +27,9 @@ import com.google.firebase.database.Query;
 public abstract class FirebaseListAdapter<T> extends BaseAdapter implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseListAdapter";
 
-    protected Activity mActivity;
-    protected ObservableSnapshotArray<T> mSnapshots;
-    protected int mLayout;
+    protected final Activity mActivity;
+    protected final ObservableSnapshotArray<T> mSnapshots;
+    protected final int mLayout;
 
     /**
      * @param activity    The {@link Activity} containing the {@link ListView}
@@ -53,7 +53,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
      *               class
      * @param query  The Firebase location to watch for data changes. Can also be a slice of a
      *               location, using some combination of {@code limit()}, {@code startAt()}, and
-     *               {@code endAt()}.
+     *               {@code endAt()}. <b>Note, this can also be a {@link DatabaseReference}.</b>
      * @see #FirebaseListAdapter(Activity, ObservableSnapshotArray, int)
      */
     public FirebaseListAdapter(Activity activity,

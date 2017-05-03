@@ -28,12 +28,14 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.provider.AuthCredentialHelper;
+import com.firebase.ui.auth.provider.EmailProvider;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.provider.PhoneProvider;
+import com.firebase.ui.auth.provider.Provider;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
@@ -43,9 +45,6 @@ import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,14 +56,12 @@ import java.util.List;
  * the {@link RegisterEmailActivity} is started.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class AuthMethodPickerActivity extends AppCompatBase
-        implements IdpCallback, View.OnClickListener {
+public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallback {
     private static final String TAG = "AuthMethodPicker";
-    private static final int RC_EMAIL_FLOW = 2;
-    private static final int RC_ACCOUNT_LINK = 3;
-    private static final int RC_PHONE_FLOW = 4;
 
-    private ArrayList<IdpProvider> mIdpProviders;
+    private static final int RC_ACCOUNT_LINK = 3;
+
+    private List<Provider> mProviders;
     @Nullable
     private SaveSmartLock mSaveSmartLock;
 
@@ -77,8 +74,6 @@ public class AuthMethodPickerActivity extends AppCompatBase
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
         mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
-        findViewById(R.id.email_provider).setOnClickListener(this);
-        findViewById(R.id.phone_provider).setOnClickListener(this);
 
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);
 
@@ -92,76 +87,59 @@ public class AuthMethodPickerActivity extends AppCompatBase
     }
 
     private void populateIdpList(List<IdpConfig> providers) {
-        mIdpProviders = new ArrayList<>();
+        mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providers) {
             switch (idpConfig.getProviderId()) {
                 case AuthUI.GOOGLE_PROVIDER:
-                    mIdpProviders.add(new GoogleProvider(this, idpConfig));
+                    mProviders.add(new GoogleProvider(this, idpConfig));
                     break;
                 case AuthUI.FACEBOOK_PROVIDER:
-                    mIdpProviders.add(new FacebookProvider(
+                    mProviders.add(new FacebookProvider(
                             this, idpConfig, mActivityHelper.getFlowParams().themeId));
                     break;
                 case AuthUI.TWITTER_PROVIDER:
-                    mIdpProviders.add(new TwitterProvider(this));
+                    mProviders.add(new TwitterProvider(this));
                     break;
                 case AuthUI.EMAIL_PROVIDER:
-                    findViewById(R.id.email_provider).setVisibility(View.VISIBLE);
+                    mProviders.add(new EmailProvider(this, mActivityHelper));
                     break;
                 case AuthUI.PHONE_VERIFICATION_PROVIDER:
-                    findViewById(R.id.phone_provider).setVisibility(View.VISIBLE);
+                    mProviders.add(new PhoneProvider(this, mActivityHelper));
                     break;
                 default:
-                    Log.e(TAG, "Encountered unknown IDPProvider parcel with type: "
+                    Log.e(TAG, "Encountered unknown provider parcel with type: "
                             + idpConfig.getProviderId());
             }
         }
 
         ViewGroup btnHolder = (ViewGroup) findViewById(R.id.btn_holder);
-        for (final IdpProvider provider : mIdpProviders) {
-            View loginButton = null;
-            switch (provider.getProviderId()) {
-                case GoogleAuthProvider.PROVIDER_ID:
-                    loginButton = getLayoutInflater()
-                            .inflate(R.layout.idp_button_google, btnHolder, false);
-                    break;
-                case FacebookAuthProvider.PROVIDER_ID:
-                    loginButton = getLayoutInflater()
-                            .inflate(R.layout.idp_button_facebook, btnHolder, false);
-                    break;
-                case TwitterAuthProvider.PROVIDER_ID:
-                    loginButton = getLayoutInflater()
-                            .inflate(R.layout.idp_button_twitter, btnHolder, false);
-                    break;
-                default:
-                    Log.e(TAG, "No button for provider " + provider.getProviderId());
-            }
+        for (final Provider provider : mProviders) {
+            View loginButton = getLayoutInflater()
+                    .inflate(provider.getButtonLayout(), btnHolder, false);
 
-            if (loginButton != null) {
-                loginButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+            loginButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (provider instanceof IdpProvider) {
                         mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
-                        provider.startLogin(AuthMethodPickerActivity.this);
                     }
-                });
-                provider.setAuthenticationCallback(this);
-                btnHolder.addView(loginButton, 0);
+                    provider.startLogin(AuthMethodPickerActivity.this);
+                }
+            });
+            if (provider instanceof IdpProvider) {
+                ((IdpProvider) provider).setAuthenticationCallback(this);
             }
+            btnHolder.addView(loginButton);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_EMAIL_FLOW || requestCode == RC_PHONE_FLOW) {
-            if (resultCode == ResultCodes.OK) {
-                finish(ResultCodes.OK, data);
-            }
-        } else if (requestCode == RC_ACCOUNT_LINK) {
+        if (requestCode == RC_ACCOUNT_LINK) {
             finish(resultCode, data);
         } else {
-            for (IdpProvider provider : mIdpProviders) {
+            for (Provider provider : mProviders) {
                 provider.onActivityResult(requestCode, resultCode, data);
             }
         }
@@ -189,24 +167,10 @@ public class AuthMethodPickerActivity extends AppCompatBase
     }
 
     @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.email_provider) {
-            startActivityForResult(
-                    RegisterEmailActivity.createIntent(this, mActivityHelper.getFlowParams()),
-                    RC_EMAIL_FLOW);
-        } else if (view.getId() == R.id.phone_provider){
-            startActivityForResult(
-                    PhoneVerificationActivity
-                            .createIntent(this, mActivityHelper.getFlowParams(), null),
-                    RC_PHONE_FLOW);
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mIdpProviders != null) {
-            for (final IdpProvider provider : mIdpProviders) {
+        if (mProviders != null) {
+            for (Provider provider : mProviders) {
                 if (provider instanceof GoogleProvider) {
                     ((GoogleProvider) provider).disconnect();
                 }

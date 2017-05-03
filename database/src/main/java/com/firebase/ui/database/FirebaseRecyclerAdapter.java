@@ -31,9 +31,9 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
-    protected ObservableSnapshotArray<T> mSnapshots;
-    protected Class<VH> mViewHolderClass;
-    protected int mModelLayout;
+    protected final ObservableSnapshotArray<T> mSnapshots;
+    protected final Class<VH> mViewHolderClass;
+    protected final int mModelLayout;
 
     /**
      * @param snapshots       The data used to populate the adapter
@@ -58,7 +58,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      *               class
      * @param query  The Firebase location to watch for data changes. Can also be a slice of a
      *               location, using some combination of {@code limit()}, {@code startAt()}, and
-     *               {@code endAt()}.
+     *               {@code endAt()}. <b>Note, this can also be a {@link DatabaseReference}.</b>
      * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class)
      */
     public FirebaseRecyclerAdapter(SnapshotParser<T> parser,

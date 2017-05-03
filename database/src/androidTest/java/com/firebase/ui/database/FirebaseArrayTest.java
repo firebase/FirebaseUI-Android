@@ -36,14 +36,14 @@ import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
 public class FirebaseArrayTest {
     private static final int INITIAL_SIZE = 3;
     private DatabaseReference mRef;
-    private FirebaseArray mArray;
+    private FirebaseArray<Integer> mArray;
     private ChangeEventListener mListener;
 
     @Before
     public void setUp() throws Exception {
         FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
-        mArray = new FirebaseArray(mRef);
+        mArray = new FirebaseArray(mRef, Integer.class);
         mRef.removeValue();
         mListener = runAndWaitUntil(mArray, new Runnable() {
             @Override
