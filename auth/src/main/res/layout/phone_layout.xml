@@ -38,6 +38,6 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/phone_number_error"
-            android:text="@string/continue_phone_login"/>
+            android:text="@string/verify_phone_number"/>
     </RelativeLayout>
 </ScrollView>

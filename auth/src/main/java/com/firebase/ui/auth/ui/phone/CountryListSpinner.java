@@ -158,6 +158,7 @@ public final class CountryListSpinner extends AppCompatEditText implements
             dialog.setCanceledOnTouchOutside(true);
             final ListView listView = dialog.getListView();
             listView.setFastScrollEnabled(true);
+            listView.setScrollbarFadingEnabled(false);
             listView.postDelayed(new Runnable() {
                 @Override
                 public void run() {

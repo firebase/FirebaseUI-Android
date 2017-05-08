@@ -237,7 +237,7 @@
 
     <style name="FirebaseUI.Button.AccountChooser.PhoneButton">
         <item name="android:drawableLeft">@drawable/ic_settings_phone_white_24dp</item>
-        <item name="android:background">@drawable/idp_button_background_twitter</item>
+        <item name="android:background">@drawable/idp_button_background_phone</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 

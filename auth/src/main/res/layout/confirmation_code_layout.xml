@@ -53,7 +53,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/confirmation_code"
-            android:text="@string/verify_phone_number" />
+            android:text="@string/continue_phone_login" />
 
         <TextView
             android:id="@+id/ticker"
