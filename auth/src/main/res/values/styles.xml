@@ -107,20 +107,28 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="FirebaseUI.EditText">
+    <style name="FirebaseUI.TextInputEditText">
         <item name="android:textSize">16sp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="FirebaseUI.EditText.EmailField">
-        <item name="android:hint">@string/email_hint</item>
+    <style name="FirebaseUI.TextInputEditText.EmailField">
         <item name="android:inputType">textEmailAddress</item>
     </style>
 
-    <style name="FirebaseUI.EditText.PasswordField">
-        <item name="android:hint">@string/password_hint</item>
+    <style name="FirebaseUI.TextInputEditText.PasswordField">
         <item name="android:inputType">textPassword</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputLayout" parent="Widget.Design.TextInputLayout"/>
+
+    <style name="FirebaseUI.TextInputLayout.EmailField">
+        <item name="android:hint">@string/email_hint</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputLayout.PasswordField">
+        <item name="android:hint">@string/password_hint</item>
     </style>
 
     <style name="FirebaseUI.Text.Link">
