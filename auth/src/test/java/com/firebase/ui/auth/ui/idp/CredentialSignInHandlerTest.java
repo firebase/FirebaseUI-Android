@@ -89,10 +89,9 @@ public class CredentialSignInHandlerTest {
                 RC_ACCOUNT_LINK,
                 idpResponse);
 
-        Task signInTask = Tasks.forResult(FakeAuthResult.INSTANCE);
         when(mockActivityHelper.getFlowParams()).thenReturn(
                 TestHelper.getFlowParameters(Collections.<String>emptyList()));
-        credentialSignInHandler.onComplete(signInTask);
+        credentialSignInHandler.onComplete(Tasks.forResult(FakeAuthResult.INSTANCE));
 
         ArgumentCaptor<SaveSmartLock> smartLockCaptor = ArgumentCaptor.forClass(SaveSmartLock.class);
         ArgumentCaptor<Activity> activityCaptor = ArgumentCaptor.forClass(Activity.class);
