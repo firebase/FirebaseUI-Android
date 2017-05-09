@@ -29,7 +29,6 @@ import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -269,16 +268,18 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void saveCredentialsOrFinish(FirebaseUser user) {
-        mActivityHelper.saveCredentialsOrFinish(mSaveSmartLock, this, user, null, IdpResponse
-                .create(PhoneAuthProvider.PROVIDER_ID, null, user.getPhoneNumber(), null, null,
-                        ResultCodes.OK));
+        IdpResponse response = new IdpResponse.Builder(PhoneAuthProvider.PROVIDER_ID, null)
+                .setPhoneNumber(user.getPhoneNumber())
+                .build();
+        mActivityHelper.saveCredentialsOrFinish(mSaveSmartLock, this, user, null, response);
     }
 
     private void showAlertDialog(@NonNull String s, DialogInterface.OnClickListener
             onClickListener) {
-        mAlertDialog = new AlertDialog.Builder(this, R.style.FirebaseUI_Dialog).setMessage(s)
-                .setPositiveButton(R.string.incorrect_code_dialog_positive_button_text,
-                        onClickListener).show();
+        mAlertDialog = new AlertDialog.Builder(this)
+                .setMessage(s)
+                .setPositiveButton(R.string.incorrect_code_dialog_positive_button_text, onClickListener)
+                .show();
     }
 
     private void signingWithCreds(@NonNull PhoneAuthCredential phoneAuthCredential) {

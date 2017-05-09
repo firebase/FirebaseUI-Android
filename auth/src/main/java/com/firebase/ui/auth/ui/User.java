@@ -79,7 +79,7 @@ public class User implements Parcelable {
         dest.writeParcelable(mPhotoUri, flags);
     }
 
-    public static final class Builder {
+    public static class Builder {
         private String mEmail;
         private String mName;
         private String mProvider;

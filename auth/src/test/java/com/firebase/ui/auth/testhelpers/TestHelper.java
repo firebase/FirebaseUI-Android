@@ -30,10 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class TestHelper {
     private static final String APPLICATION_ID = "testAppId";
@@ -71,32 +68,19 @@ public class TestHelper {
                 null  /* reauthReason */);
     }
 
-    public static FirebaseUser makeMockFirebaseUser() {
-        FirebaseUser mockFirebaseUser = mock(FirebaseUser.class);
-        when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
-        when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
-        when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
-        return mockFirebaseUser;
-    }
-
     public static void verifySmartLockSave(String providerId, String email, String password) {
-        ArgumentCaptor<FirebaseUser> userArgumentCaptor =
-                ArgumentCaptor.forClass(FirebaseUser.class);
-        ArgumentCaptor<IdpResponse> idpResponseArgumentCaptor =
-                ArgumentCaptor.forClass(IdpResponse.class);
-        ArgumentCaptor<String> passwordArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(ActivityHelperShadow.sSaveSmartLock)
-                .saveCredentialsOrFinish(userArgumentCaptor.capture(),
-                passwordArgumentCaptor.capture(), idpResponseArgumentCaptor.capture());
-        assertEquals(email, userArgumentCaptor.getValue().getEmail());
-        assertEquals(password, passwordArgumentCaptor.getValue());
-        if (providerId == null) {
-            assertNull(idpResponseArgumentCaptor.getValue());
-        } else {
-            assertEquals(
-                    providerId,
-                    idpResponseArgumentCaptor.getValue().getProviderType());
-        }
+        ArgumentCaptor<FirebaseUser> userCaptor = ArgumentCaptor.forClass(FirebaseUser.class);
+        ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
+
+        verify(ActivityHelperShadow.sSaveSmartLock).saveCredentialsOrFinish(
+                userCaptor.capture(),
+                passwordCaptor.capture(),
+                idpResponseCaptor.capture());
+
+        assertEquals(email, userCaptor.getValue().getEmail());
+        assertEquals(password, passwordCaptor.getValue());
+        assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
     }
 
     public static void verifySmartLockSave(String providerId, String email, String phoneNumber,

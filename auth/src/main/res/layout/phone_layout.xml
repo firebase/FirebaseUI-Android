@@ -14,7 +14,7 @@
 
         <EditText
             android:id="@+id/phone_number"
-            style="@style/FirebaseUI.EditText.PhoneField"
+            style="@style/FirebaseUI.TextInputEditText.PhoneField"
             android:layout_alignBaseline="@id/country_list"
             android:layout_gravity="end"
             android:layout_toRightOf="@id/country_list"

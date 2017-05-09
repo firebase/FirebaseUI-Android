@@ -30,9 +30,7 @@ import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseUser;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +46,6 @@ import java.util.Collections;
 import static com.firebase.ui.auth.testhelpers.TestHelper.verifySmartLockSave;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -65,7 +62,7 @@ public class WelcomeBackPasswordPromptTest {
         Intent startIntent = WelcomeBackPasswordPrompt.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.<String>emptyList()),
-                new IdpResponse(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL));
+                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
         return Robolectric
                 .buildActivity(WelcomeBackPasswordPrompt.class)
                 .withIntent(startIntent)
@@ -103,15 +100,10 @@ public class WelcomeBackPasswordPromptTest {
         EditText passwordField = (EditText) welcomeBackActivity.findViewById(R.id.password);
         passwordField.setText(TestConstants.PASSWORD);
 
-        FirebaseUser mockFirebaseUser = mock(FirebaseUser.class);
-
         when(ActivityHelperShadow.sFirebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
-                    new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser), true, null));
-        when(mockFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
-        when(mockFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
-        when(mockFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
+                new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
 
         Button signIn = (Button) welcomeBackActivity.findViewById(R.id.button_done);
         signIn.performClick();

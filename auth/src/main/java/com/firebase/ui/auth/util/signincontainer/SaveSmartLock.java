@@ -43,7 +43,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SaveSmartLock extends SmartLockBase<Status> {
@@ -201,7 +200,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     }
 
     private void finish() {
-        finish(ResultCodes.OK, IdpResponse.getIntent(mResponse));
+        finish(ResultCodes.OK, mResponse.toIntent());
     }
 
     /**
