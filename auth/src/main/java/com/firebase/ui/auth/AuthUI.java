@@ -29,7 +29,6 @@ import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.Builder;
 import com.firebase.ui.auth.util.CredentialTaskApi;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
@@ -398,7 +397,7 @@ public class AuthUI {
                     '}';
         }
 
-        public static class Builder implements com.firebase.ui.auth.util.Builder<IdpConfig> {
+        public static class Builder {
             private String mProviderId;
             private List<String> mScopes = new ArrayList<>();
 
@@ -435,7 +434,6 @@ public class AuthUI {
                 return this;
             }
 
-            @Override
             public IdpConfig build() {
                 return new IdpConfig(mProviderId, mScopes);
             }
@@ -446,7 +444,7 @@ public class AuthUI {
      * Base builder for both {@link SignInIntentBuilder} and {@link ReauthIntentBuilder}
      */
     @SuppressWarnings(value = "unchecked")
-    private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> implements Builder<Intent> {
+    private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
         int mLogo = NO_LOGO;
         int mTheme = getDefaultTheme();
         List<IdpConfig> mProviders = new ArrayList<>();
@@ -583,7 +581,6 @@ public class AuthUI {
             return (T) this;
         }
 
-        @Override
         @CallSuper
         public Intent build() {
             if (mProviders.isEmpty()) {

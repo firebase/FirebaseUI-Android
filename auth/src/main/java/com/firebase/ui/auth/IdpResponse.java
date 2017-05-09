@@ -152,7 +152,7 @@ public class IdpResponse implements Parcelable {
     };
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static class Builder implements com.firebase.ui.auth.util.Builder<IdpResponse> {
+    public static class Builder {
         private String mProviderId;
         private String mEmail;
         private String mToken;
@@ -173,7 +173,6 @@ public class IdpResponse implements Parcelable {
             return this;
         }
 
-        @Override
         public IdpResponse build() {
             if ((mProviderId.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)
                     || mProviderId.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)
