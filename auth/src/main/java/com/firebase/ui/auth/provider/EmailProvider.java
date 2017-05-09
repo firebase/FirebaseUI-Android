@@ -47,7 +47,7 @@ public class EmailProvider implements Provider {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == ResultCodes.OK) {
+        if (requestCode == RC_EMAIL_FLOW && resultCode == ResultCodes.OK) {
             mHelper.finishActivity(mActivity, ResultCodes.OK, data);
         }
     }

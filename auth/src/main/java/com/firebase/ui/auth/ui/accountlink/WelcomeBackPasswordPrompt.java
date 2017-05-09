@@ -168,7 +168,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                                     mSaveSmartLock,
                                     authResult.getUser(),
                                     password,
-                                    new IdpResponse(EmailAuthProvider.PROVIDER_ID, email));
+                                    new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                            .build());
                         } else {
                             authResult.getUser()
                                     .linkWithCredential(authCredential)

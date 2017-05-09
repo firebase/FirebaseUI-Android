@@ -48,19 +48,19 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     @Nullable
     private SaveSmartLock mSmartLock;
     private IdpResponse mResponse;
-    private int mAccountLinkResultCode;
+    private int mAccountLinkRequestCode;
 
     public CredentialSignInHandler(
             Activity activity,
             BaseHelper helper,
             @Nullable SaveSmartLock smartLock,
-            int accountLinkResultCode,
+            int accountLinkRequestCode,
             IdpResponse response) {
         mActivity = activity;
         mHelper = helper;
         mSmartLock = smartLock;
         mResponse = response;
-        mAccountLinkResultCode = accountLinkResultCode;
+        mAccountLinkRequestCode = accountLinkRequestCode;
     }
 
     @Override
@@ -71,6 +71,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                     mSmartLock,
                     mActivity,
                     firebaseUser,
+                    null,
                     mResponse);
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -93,9 +94,13 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                     return;
                 }
             } else {
-                Log.e(TAG, "Unexpected exception when signing in with credential " + mResponse.getProviderType() + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
+                Log.e(TAG,
+                      "Unexpected exception when signing in with credential "
+                              + mResponse.getProviderType()
+                              + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
                       task.getException());
             }
+
             mHelper.dismissDialog();
         }
     }
@@ -113,9 +118,9 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                                 mActivity,
                                 mHelper.getFlowParams(),
                                 mResponse
-                        ), mAccountLinkResultCode);
+                        ), mAccountLinkRequestCode);
             } else {
-                // Start IDP welcome back flow
+                // Start Idp welcome back flow
                 mActivity.startActivityForResult(
                         WelcomeBackIdpPrompt.createIntent(
                                 mActivity,
@@ -124,7 +129,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                                         .setProvider(provider)
                                         .build(),
                                 mResponse
-                        ), mAccountLinkResultCode);
+                        ), mAccountLinkRequestCode);
             }
         }
     }

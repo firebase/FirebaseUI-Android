@@ -12,13 +12,11 @@
     <color name="material_deep_purple_50">#EDE7F6</color>
     <color name="material_deep_purple_500">#673AB7</color>
     <color name="material_deep_purple_700">#512DA8</color>
-    <color name="material_deep_purple_a200">#E040FB</color>
 
     <color name="material_green_50">#E8F5E9</color>
     <color name="material_green_500">#4CAF50</color>
     <color name="material_green_700">#388E3C</color>
     <color name="material_green_300">#AED581</color>
-    <color name="material_green_a200">#69F0AE</color>
 
     <color name="material_gray_300">#E0E0E0</color>
     <color name="material_gray_850">#ff303030</color>
