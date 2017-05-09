@@ -120,8 +120,9 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     }
 
     private IdpResponse createIdpResponse(GoogleSignInAccount account) {
-        return new IdpResponse(
-                GoogleAuthProvider.PROVIDER_ID, account.getEmail(), account.getIdToken());
+        return new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
+                .setToken(account.getIdToken())
+                .build();
     }
 
     @Override

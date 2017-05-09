@@ -2,17 +2,10 @@
 <resources>
 
     <style name="FirebaseUI" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/authui_colorPrimary</item>
-        <item name="colorPrimaryDark">@color/authui_colorPrimaryDark</item>
-        <item name="colorAccent">@color/authui_colorAccent</item>
-        <item name="colorButtonNormal">@color/authui_colorPrimary</item>
-        <item name="colorControlNormal">@color/authui_colorPrimary</item>
-        <item name="colorControlActivated">@color/authui_colorAccent</item>
-        <item name="colorControlHighlight">@color/authui_colorAccent</item>
-        <item name="android:textColor">@color/authui_inputTextColorDark</item>
-        <item name="android:textColorPrimary">@color/authui_inputTextColor</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:buttonStyle">@style/FirebaseUI.Button</item>
-        <item name="android:editTextStyle">@style/FirebaseUI.EditText</item>
     </style>
 
     <style name="FirebaseUI.Transparent" parent="FirebaseUI">
@@ -23,8 +16,6 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
-
-    <style name="FirebaseUI.Dialog" parent="Base.Theme.AppCompat.Light.Dialog"/>
 
     <style name="FirebaseUI.WrapperStyle">
         <item name="android:layout_height">match_parent</item>
@@ -100,56 +91,34 @@
     </style>
 
     <!-- Common styles -->
-    <style name="FirebaseUI.Text.TextInputLayout">
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:textColorHint">?android:attr/textColor</item>
-    </style>
-
-    <style name="FirebaseUI.Text.HintText" parent="FirebaseUI.Text.T12">
-        <item name="android:textColor">?android:attr/textColor</item>
-    </style>
-
-    <style name="FirebaseUI.Text.ErrorText" parent="FirebaseUI.Text.T12">
-        <item name="android:textColor">@color/errorColor</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-    </style>
-
-    <style name="FirebaseUI.Button" parent="@style/Widget.AppCompat.Button">
+    <style name="FirebaseUI.Button" parent="@style/Widget.AppCompat.Button.Colored">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">right</item>
-        <item name="android:textColor">?attr/android:textColorPrimary</item>
     </style>
 
-    <style name="FirebaseUI.Button.AlertButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">52dp</item>
-        <item name="android:padding">0dp</item>
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:layout_marginBottom">0dp</item>
-        <item name="android:gravity">right|center</item>
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="FirebaseUI.EditText">
-        <item name="android:textColor">?android:textColor</item>
+    <style name="FirebaseUI.TextInputEditText">
         <item name="android:textSize">16sp</item>
-        <item name="android:lineSpacingExtra">8sp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textCursorDrawable">@null</item>
     </style>
 
-    <style name="FirebaseUI.EditText.EmailField">
-        <item name="android:hint">@string/email_hint</item>
+    <style name="FirebaseUI.TextInputEditText.EmailField">
         <item name="android:inputType">textEmailAddress</item>
     </style>
 
-    <style name="FirebaseUI.EditText.PasswordField">
-        <item name="android:hint">@string/password_hint</item>
+    <style name="FirebaseUI.TextInputEditText.PasswordField">
         <item name="android:inputType">textPassword</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputLayout" parent="Widget.Design.TextInputLayout"/>
+
+    <style name="FirebaseUI.TextInputLayout.EmailField">
+        <item name="android:hint">@string/email_hint</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputLayout.PasswordField">
+        <item name="android:hint">@string/password_hint</item>
     </style>
 
     <style name="FirebaseUI.Text.Link">
@@ -162,13 +131,6 @@
     </style>
 
     <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">?android:textColor</item>
-        <item name="android:paddingBottom">16dp</item>
-    </style>
-
-    <style name="FirebaseUI.Text.BodyTextNoColor" parent="FirebaseUI.Text.T08">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingBottom">16dp</item>
@@ -207,6 +169,7 @@
         <item name="android:layout_gravity">left</item>
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:typeface">normal</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.EmailButton">

@@ -161,7 +161,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                                                 TAG, "Error signing in with previous credential " + idpResponse.getProviderType()))
                                         .addOnCompleteListener(new FinishListener(idpResponse));
                             } else {
-                                finish(ResultCodes.OK, IdpResponse.getIntent(idpResponse));
+                                finish(ResultCodes.OK, idpResponse.toIntent());
                             }
                         }
                     })
@@ -200,7 +200,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         }
 
         public void onComplete(@NonNull Task task) {
-            finish(ResultCodes.OK, IdpResponse.getIntent(mIdpResponse));
+            finish(ResultCodes.OK, mIdpResponse.toIntent());
         }
     }
 }

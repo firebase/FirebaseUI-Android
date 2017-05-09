@@ -54,12 +54,7 @@ public class KickoffActivity extends HelperActivityBase {
                     });
 
             if (isPlayServicesAvailable) {
-                final FlowParameters flowParams = mActivityHelper.getFlowParams();
-                if (flowParams.isReauth) {
-                    showReauthDialog();
-                } else {
-                    SignInDelegate.delegate(this, flowParams);
-                }
+                start();
             } else {
                 mIsWaitingForPlayServices = true;
             }
@@ -79,7 +74,7 @@ public class KickoffActivity extends HelperActivityBase {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_PLAY_SERVICES) {
             if (resultCode == ResultCodes.OK) {
-                SignInDelegate.delegate(this, mActivityHelper.getFlowParams());
+                start();
             } else {
                 finish(ResultCodes.CANCELED,
                        IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
@@ -90,23 +85,18 @@ public class KickoffActivity extends HelperActivityBase {
         }
     }
 
-    /**
-     * Check if there is an active or soon-to-be-active network connection.
-     *
-     * @return true if there is no network connection, false otherwise.
-     */
-    private boolean isOffline() {
-        ConnectivityManager manager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return !(manager != null
-                && manager.getActiveNetworkInfo() != null
-                && manager.getActiveNetworkInfo().isConnectedOrConnecting());
+    private void start() {
+        FlowParameters flowParams = mActivityHelper.getFlowParams();
+        if (flowParams.isReauth) {
+            showReauthDialog();
+        } else {
+            SignInDelegate.delegate(this, flowParams);
+        }
     }
 
     private void showReauthDialog() {
         final FlowParameters flowParams = mActivityHelper.getFlowParams();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.FirebaseUI_Dialog)
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle(R.string.reauth_dialog_title)
                 .setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
@@ -132,5 +122,19 @@ public class KickoffActivity extends HelperActivityBase {
         }
 
         builder.create().show();
+    }
+
+    /**
+     * Check if there is an active or soon-to-be-active network connection.
+     *
+     * @return true if there is no network connection, false otherwise.
+     */
+    private boolean isOffline() {
+        ConnectivityManager manager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return !(manager != null
+                && manager.getActiveNetworkInfo() != null
+                && manager.getActiveNetworkInfo().isConnectedOrConnecting());
     }
 }

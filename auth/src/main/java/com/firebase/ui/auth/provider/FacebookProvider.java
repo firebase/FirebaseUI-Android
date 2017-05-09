@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.Log;
 
@@ -173,16 +174,15 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         onFailure(extra);
     }
 
-    private IdpResponse createIdpResponse(String email, LoginResult loginResult) {
-        return new IdpResponse(
-                FacebookAuthProvider.PROVIDER_ID,
-                email,
-                loginResult.getAccessToken().getToken());
-    }
-
-    private void onSuccess(String email, LoginResult loginResult) {
+    private void onSuccess(@Nullable String email, LoginResult loginResult) {
         gcCallbackManager();
         mCallbackObject.onSuccess(createIdpResponse(email, loginResult));
+    }
+
+    private IdpResponse createIdpResponse(@Nullable String email, LoginResult loginResult) {
+        return new IdpResponse.Builder(FacebookAuthProvider.PROVIDER_ID, email)
+                .setToken(loginResult.getAccessToken().getToken())
+                .build();
     }
 
     private void onFailure(Bundle bundle) {

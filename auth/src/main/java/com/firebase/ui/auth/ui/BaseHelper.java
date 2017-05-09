@@ -80,12 +80,8 @@ public class BaseHelper {
         return mProgressDialog != null && mProgressDialog.isShowing();
     }
 
-    public FirebaseApp getFirebaseApp() {
-        return FirebaseApp.getInstance(mFlowParams.appName);
-    }
-
     public FirebaseAuth getFirebaseAuth() {
-        return FirebaseAuth.getInstance(getFirebaseApp());
+        return FirebaseAuth.getInstance(FirebaseApp.getInstance(mFlowParams.appName));
     }
 
     public CredentialsApi getCredentialsApi() {
@@ -104,18 +100,10 @@ public class BaseHelper {
             @Nullable SaveSmartLock saveSmartLock,
             Activity activity,
             FirebaseUser firebaseUser,
-            @NonNull IdpResponse response) {
-        saveCredentialsOrFinish(saveSmartLock, activity, firebaseUser, null, response);
-    }
-
-    public void saveCredentialsOrFinish(
-            @Nullable SaveSmartLock saveSmartLock,
-            Activity activity,
-            FirebaseUser firebaseUser,
             @Nullable String password,
             IdpResponse response) {
         if (saveSmartLock == null) {
-            finishActivity(activity, ResultCodes.OK, IdpResponse.getIntent(response));
+            finishActivity(activity, ResultCodes.OK, response.toIntent());
         } else {
             saveSmartLock.saveCredentialsOrFinish(
                     firebaseUser,

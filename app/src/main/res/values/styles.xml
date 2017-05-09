@@ -1,4 +1,5 @@
 <resources>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -6,33 +7,21 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="PurpleTheme" parent="FirebaseUI">
+    <style name="PurpleTheme">
         <item name="colorPrimary">@color/material_deep_purple_500</item>
         <item name="colorPrimaryDark">@color/material_deep_purple_700</item>
         <item name="colorAccent">@color/material_lime_a700</item>
-        <item name="colorControlNormal">@color/material_deep_purple_500</item>
-        <item name="colorControlActivated">@color/material_deep_purple_a200</item>
-        <item name="colorControlHighlight">@color/material_lime_a700</item>
         <item name="android:windowBackground">@color/material_deep_purple_50</item>
-        <item name="android:textColor">@color/material_gray_900</item>
-        <item name="android:textColorPrimary">@color/material_deep_purple_50</item>
-        <item name="colorButtonNormal">@color/material_deep_purple_500</item>
     </style>
 
-    <style name="GreenTheme" parent="FirebaseUI">
+    <style name="GreenTheme">
         <item name="colorPrimary">@color/material_green_500</item>
         <item name="colorPrimaryDark">@color/material_green_700</item>
         <item name="colorAccent">@color/material_purple_a700</item>
-        <item name="colorControlNormal">@color/material_green_500</item>
-        <item name="colorControlActivated">@color/material_lime_a700</item>
-        <item name="colorControlHighlight">@color/material_green_a200</item>
         <item name="android:windowBackground">@color/material_green_50</item>
-        <item name="android:textColor">@color/material_gray_900</item>
-        <item name="android:textColorPrimary">@color/material_deep_purple_50</item>
-        <item name="colorButtonNormal">@color/material_green_500</item>
     </style>
 
-    <style name="DarkTheme" parent="FirebaseUI">
+    <style name="DarkTheme">
         <item name="colorPrimary">@color/material_gray_900</item>
         <item name="colorPrimaryDark">@android:color/black</item>
         <item name="colorAccent">@android:color/black</item>
@@ -50,4 +39,5 @@
         <item name="colorButtonNormal">@color/material_red_a200</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+
 </resources>

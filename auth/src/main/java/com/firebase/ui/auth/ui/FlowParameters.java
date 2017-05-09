@@ -52,11 +52,9 @@ public class FlowParameters implements Parcelable {
 
     public final boolean allowNewEmailAccounts;
 
-    public final boolean isReauth;
-
     @Nullable
     public final String reauthReason;
-
+    public final boolean isReauth;
 
     public FlowParameters(
             @NonNull String appName,
