@@ -17,8 +17,12 @@ package com.firebase.ui.auth.testhelpers;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
-public enum FakeAuthResult implements AuthResult {
-    INSTANCE;
+public final class FakeAuthResult implements AuthResult {
+    public static final AuthResult INSTANCE = new FakeAuthResult();
+
+    private FakeAuthResult() {
+        // Singleton
+    }
 
     @Override
     public FirebaseUser getUser() {

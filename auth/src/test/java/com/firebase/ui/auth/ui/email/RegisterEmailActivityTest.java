@@ -31,7 +31,6 @@ import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.User;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -128,7 +127,7 @@ public class RegisterEmailActivityTest {
                      .createUserWithEmailAndPassword(
                              TestConstants.EMAIL,
                              TestConstants.PASSWORD))
-                .thenReturn(new AutoCompleteTask<AuthResult>(FakeAuthResult.INSTANCE, true, null));
+                .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();

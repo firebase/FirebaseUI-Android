@@ -35,7 +35,6 @@ import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -124,8 +123,7 @@ public class AuthMethodPickerActivityTest {
         when(BaseHelperShadow.sFirebaseUser.getProviders())
                 .thenReturn(Arrays.asList(FacebookAuthProvider.PROVIDER_ID));
         when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential((AuthCredential) any()))
-                .thenReturn(new AutoCompleteTask<AuthResult>(
-                        FakeAuthResult.INSTANCE, true, null));
+                .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
 
         List<String> providers = Arrays.asList(AuthUI.FACEBOOK_PROVIDER);
 
@@ -154,8 +152,7 @@ public class AuthMethodPickerActivityTest {
                 .thenReturn(Arrays.asList(GoogleAuthProvider.PROVIDER_ID));
 
         when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential((AuthCredential) any()))
-                .thenReturn(new AutoCompleteTask<AuthResult>(
-                        FakeAuthResult.INSTANCE, true, null));
+                .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
 
         Button googleButton = (Button) authMethodPickerActivity.findViewById(R.id.google_button);
 
@@ -176,8 +173,7 @@ public class AuthMethodPickerActivityTest {
                 .thenReturn(Arrays.asList(TwitterAuthProvider.PROVIDER_ID));
 
         when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
-                .thenReturn(new AutoCompleteTask<AuthResult>(
-                        FakeAuthResult.INSTANCE, true, null));
+                .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
         Button twitterButton =
                 (Button) authMethodPickerActivity.findViewById(R.id.twitter_button);
 
