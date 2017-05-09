@@ -29,7 +29,7 @@ public class RecoveryEmailSentDialog extends DialogBase {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return new AlertDialog.Builder(getContext(), R.style.FirebaseUI_Dialog)
+        return new AlertDialog.Builder(getContext())
                 .setTitle(R.string.title_confirm_recover_password)
                 .setMessage(getString(R.string.confirm_recovery_body,
                                       getArguments().getString(ExtraConstants.EXTRA_EMAIL)))

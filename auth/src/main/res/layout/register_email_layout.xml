@@ -16,14 +16,12 @@
         -->
         <android.support.design.widget.TextInputLayout
             android:id="@+id/email_layout"
-            style="@style/FirebaseUI.Text.TextInputLayout"
+            style="@style/Widget.Design.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="16dp"
             android:transitionGroup="true"
             android:transitionName="email_field"
-            app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
-            app:hintTextAppearance="@style/FirebaseUI.Text.HintText"
             tools:ignore="UnusedAttribute">
 
             <android.support.design.widget.TextInputEditText
@@ -34,16 +32,13 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/name_layout"
-            style="@style/FirebaseUI.Text.TextInputLayout"
+            style="@style/Widget.Design.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="112dp"
-            app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
-            app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
+            android:paddingTop="112dp">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/name"
-                style="@style/FirebaseUI.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textCapWords"
@@ -53,12 +48,10 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/password_layout"
-            style="@style/FirebaseUI.Text.TextInputLayout"
+            style="@style/Widget.Design.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="224dp"
-            app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
-            app:hintTextAppearance="@style/FirebaseUI.Text.HintText"
             app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
@@ -71,10 +64,11 @@
 
         <TextView
             android:id="@+id/create_account_text"
+            style="@style/FirebaseUI.Text.BodyText"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginTop="336dp"
-            style="@style/FirebaseUI.Text.BodyText"/>
+            android:textIsSelectable="false"/>
 
 
         <Button
