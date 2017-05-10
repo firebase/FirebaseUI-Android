@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -214,16 +213,13 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
                                                                     .setName(name)
                                                                     .setPhotoUri(photoUri)
                                                                     .build());
+                                    } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(providers.get(0))) {
+                                        mListener.onExistingEmailUser(new User.Builder(email).build());
                                     } else {
-                                        @AuthUI.SupportedProvider String provider = providers.get(0);
-                                        if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
-                                            mListener.onExistingEmailUser(new User.Builder(email).build());
-                                        } else {
-                                            mListener.onExistingIdpUser(
-                                                    new User.Builder(email)
-                                                            .setProvider(provider)
-                                                            .build());
-                                        }
+                                        mListener.onExistingIdpUser(
+                                                new User.Builder(email)
+                                                        .setProvider(providers.get(0))
+                                                        .build());
                                     }
                                 }
                             });

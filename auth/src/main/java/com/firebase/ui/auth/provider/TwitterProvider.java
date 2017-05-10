@@ -36,7 +36,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     }
 
     public static AuthCredential createAuthCredential(IdpResponse response) {
-        if (!response.getProviderType().equalsIgnoreCase(AuthUI.TWITTER_PROVIDER)) {
+        if (!response.getProviderType().equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
             return null;
         }
         return TwitterAuthProvider.getCredential(response.getIdpToken(), response.getIdpSecret());
@@ -57,7 +57,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     @Override
     @AuthUI.SupportedProvider
     public String getProviderId() {
-        return AuthUI.TWITTER_PROVIDER;
+        return TwitterAuthProvider.PROVIDER_ID;
     }
 
     @Override
@@ -122,7 +122,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         }
 
         private IdpResponse createIdpResponse(String email) {
-            return new IdpResponse.Builder(AuthUI.TWITTER_PROVIDER, email)
+            return new IdpResponse.Builder(TwitterAuthProvider.PROVIDER_ID, email)
                     .setToken(mTwitterSession.getAuthToken().token)
                     .setSecret(mTwitterSession.getAuthToken().secret)
                     .build();

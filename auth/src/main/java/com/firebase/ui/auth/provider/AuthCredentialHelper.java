@@ -16,19 +16,21 @@ package com.firebase.ui.auth.provider;
 
 import android.support.annotation.Nullable;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 public final class AuthCredentialHelper {
     @Nullable
     public static AuthCredential getAuthCredential(IdpResponse idpResponse) {
         switch (idpResponse.getProviderType()) {
-            case AuthUI.GOOGLE_PROVIDER:
+            case GoogleAuthProvider.PROVIDER_ID:
                 return GoogleProvider.createAuthCredential(idpResponse);
-            case AuthUI.FACEBOOK_PROVIDER:
+            case FacebookAuthProvider.PROVIDER_ID:
                 return FacebookProvider.createAuthCredential(idpResponse);
-            case AuthUI.TWITTER_PROVIDER:
+            case TwitterAuthProvider.PROVIDER_ID:
                 return TwitterProvider.createAuthCredential(idpResponse);
             default:
                 return null;

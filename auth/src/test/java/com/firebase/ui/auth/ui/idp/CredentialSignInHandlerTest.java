@@ -17,7 +17,6 @@ package com.firebase.ui.auth.ui.idp;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
@@ -37,10 +36,12 @@ import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.ProviderQueryResult;
 
 import org.junit.Before;
@@ -78,7 +79,7 @@ public class CredentialSignInHandlerTest {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         IdpResponse idpResponse =
-                new IdpResponse.Builder(AuthUI.GOOGLE_PROVIDER, TestConstants.EMAIL)
+                new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
                         .setToken(TestConstants.TOKEN)
                         .build();
         SaveSmartLock smartLock = mock(SaveSmartLock.class);
@@ -123,7 +124,7 @@ public class CredentialSignInHandlerTest {
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
         IdpResponse idpResponse =
-                new IdpResponse.Builder(AuthUI.GOOGLE_PROVIDER, TestConstants.EMAIL)
+                new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
                         .setToken(TestConstants.TOKEN)
                         .build();
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
@@ -171,7 +172,7 @@ public class CredentialSignInHandlerTest {
         ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
         IdpResponse idpResponse =
-                new IdpResponse.Builder(AuthUI.GOOGLE_PROVIDER, TestConstants.EMAIL)
+                new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
                         .setToken(TestConstants.TOKEN)
                         .build();
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
@@ -194,7 +195,7 @@ public class CredentialSignInHandlerTest {
         when(mockFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL)).thenReturn(
                 new AutoCompleteTask<ProviderQueryResult>(
                         new FakeProviderQueryResult(
-                                Arrays.asList(AuthUI.EMAIL_PROVIDER)), true, null));
+                                Arrays.asList(EmailAuthProvider.PROVIDER_ID)), true, null));
 
 
         credentialSignInHandler.onComplete(mockTask);

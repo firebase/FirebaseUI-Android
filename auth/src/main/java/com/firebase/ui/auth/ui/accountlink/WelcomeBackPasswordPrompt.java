@@ -31,7 +31,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -49,6 +48,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -168,7 +168,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                                     mSaveSmartLock,
                                     authResult.getUser(),
                                     password,
-                                    new IdpResponse.Builder(AuthUI.EMAIL_PROVIDER, email)
+                                    new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email)
                                             .build());
                         } else {
                             authResult.getUser()

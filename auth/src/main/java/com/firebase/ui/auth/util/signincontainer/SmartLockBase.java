@@ -17,7 +17,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
 import java.util.ArrayList;
@@ -36,18 +40,18 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     private Pair<Integer, Intent> mActivityResultPair;
 
     /**
-     * Translate a Firebase Auth provider ID (such as {@link AuthUI#GOOGLE_PROVIDER}) to
+     * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to
      * a Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
      */
     public static String providerIdToAccountType(@AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
-            case AuthUI.GOOGLE_PROVIDER:
+            case GoogleAuthProvider.PROVIDER_ID:
                 return IdentityProviders.GOOGLE;
-            case AuthUI.FACEBOOK_PROVIDER:
+            case FacebookAuthProvider.PROVIDER_ID:
                 return IdentityProviders.FACEBOOK;
-            case AuthUI.TWITTER_PROVIDER:
+            case TwitterAuthProvider.PROVIDER_ID:
                 return IdentityProviders.TWITTER;
-            case AuthUI.EMAIL_PROVIDER:
+            case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
                 return null;
             default:
@@ -59,11 +63,11 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     public static String accountTypeToProviderId(@NonNull String accountType) {
         switch (accountType) {
             case IdentityProviders.GOOGLE:
-                return AuthUI.GOOGLE_PROVIDER;
+                return GoogleAuthProvider.PROVIDER_ID;
             case IdentityProviders.FACEBOOK:
-                return AuthUI.FACEBOOK_PROVIDER;
+                return FacebookAuthProvider.PROVIDER_ID;
             case IdentityProviders.TWITTER:
-                return AuthUI.TWITTER_PROVIDER;
+                return TwitterAuthProvider.PROVIDER_ID;
             default:
                 return null;
         }

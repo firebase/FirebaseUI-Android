@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -37,6 +36,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
@@ -276,7 +276,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                 getActivity(),
                                                 user,
                                                 password,
-                                                new IdpResponse.Builder(AuthUI.EMAIL_PROVIDER, email)
+                                                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email)
                                                         .build());
                                     }
                                 });

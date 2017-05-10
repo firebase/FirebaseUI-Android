@@ -30,7 +30,6 @@ import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.Builder;
 import com.firebase.ui.auth.util.CredentialTaskApi;
 import com.firebase.ui.auth.util.CredentialsApiHelper;
 import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
@@ -75,7 +74,12 @@ import io.fabric.sdk.android.Fabric;
  * for examples on how to get started with FirebaseUI Auth.
  */
 public class AuthUI {
-    @StringDef({EMAIL_PROVIDER, GOOGLE_PROVIDER, FACEBOOK_PROVIDER, TWITTER_PROVIDER})
+    @StringDef({
+                       EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
+                       GoogleAuthProvider.PROVIDER_ID, GOOGLE_PROVIDER,
+                       FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
+                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER
+               })
     public @interface SupportedProvider {}
 
     /**
@@ -402,7 +406,7 @@ public class AuthUI {
                     '}';
         }
 
-        public static class Builder implements com.firebase.ui.auth.util.Builder<IdpConfig> {
+        public static class Builder {
             @SupportedProvider private String mProviderId;
             private List<String> mScopes = new ArrayList<>();
 
@@ -439,7 +443,6 @@ public class AuthUI {
                 return this;
             }
 
-            @Override
             public IdpConfig build() {
                 return new IdpConfig(mProviderId, mScopes);
             }
@@ -450,7 +453,7 @@ public class AuthUI {
      * Base builder for both {@link SignInIntentBuilder} and {@link ReauthIntentBuilder}
      */
     @SuppressWarnings(value = "unchecked")
-    private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> implements Builder<Intent> {
+    private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
         int mLogo = NO_LOGO;
         int mTheme = getDefaultTheme();
         List<IdpConfig> mProviders = new ArrayList<>();
@@ -587,7 +590,6 @@ public class AuthUI {
             return (T) this;
         }
 
-        @Override
         @CallSuper
         public Intent build() {
             if (mProviders.isEmpty()) {

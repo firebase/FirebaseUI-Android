@@ -133,7 +133,7 @@ public class RegisterEmailActivityTest {
         button.performClick();
 
         TestHelper.verifySmartLockSave(
-                AuthUI.EMAIL_PROVIDER,
+                EmailAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
     }

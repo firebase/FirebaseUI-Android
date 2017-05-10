@@ -107,7 +107,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     @Override
     @AuthUI.SupportedProvider
     public String getProviderId() {
-        return AuthUI.GOOGLE_PROVIDER;
+        return GoogleAuthProvider.PROVIDER_ID;
     }
 
     @Override
@@ -129,7 +129,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     }
 
     private IdpResponse createIdpResponse(GoogleSignInAccount account) {
-        return new IdpResponse.Builder(AuthUI.GOOGLE_PROVIDER, account.getEmail())
+        return new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
                 .setToken(account.getIdToken())
                 .build();
     }

@@ -82,7 +82,7 @@ public class User implements Parcelable {
         dest.writeParcelable(mPhotoUri, flags);
     }
 
-    public static class Builder implements com.firebase.ui.auth.util.Builder<User> {
+    public static class Builder {
         private String mEmail;
         private String mName;
         private String mProvider;

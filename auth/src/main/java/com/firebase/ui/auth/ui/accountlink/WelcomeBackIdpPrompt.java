@@ -25,7 +25,6 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -49,7 +48,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
@@ -82,14 +84,14 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         for (IdpConfig idpConfig : mActivityHelper.getFlowParams().providerInfo) {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
-                    case AuthUI.GOOGLE_PROVIDER:
+                    case GoogleAuthProvider.PROVIDER_ID:
                         mIdpProvider = new GoogleProvider(this, idpConfig, oldUser.getEmail());
                         break;
-                    case AuthUI.FACEBOOK_PROVIDER:
+                    case FacebookAuthProvider.PROVIDER_ID:
                         mIdpProvider = new FacebookProvider(
                                 this, idpConfig, mActivityHelper.getFlowParams().themeId);
                         break;
-                    case AuthUI.TWITTER_PROVIDER:
+                    case TwitterAuthProvider.PROVIDER_ID:
                         mIdpProvider = new TwitterProvider(this);
                         break;
                     default:

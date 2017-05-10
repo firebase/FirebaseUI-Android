@@ -19,7 +19,6 @@ import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -31,6 +30,7 @@ import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
+import com.google.firebase.auth.EmailAuthProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class WelcomeBackPasswordPromptTest {
         Intent startIntent = WelcomeBackPasswordPrompt.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.<String>emptyList()),
-                new IdpResponse.Builder(AuthUI.EMAIL_PROVIDER, TestConstants.EMAIL).build());
+                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
         return Robolectric
                 .buildActivity(WelcomeBackPasswordPrompt.class)
                 .withIntent(startIntent)
@@ -112,6 +112,8 @@ public class WelcomeBackPasswordPromptTest {
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 
-        verifySmartLockSave(AuthUI.EMAIL_PROVIDER, TestConstants.EMAIL, TestConstants.PASSWORD);
+        verifySmartLockSave(EmailAuthProvider.PROVIDER_ID,
+                            TestConstants.EMAIL,
+                            TestConstants.PASSWORD);
     }
 }
