@@ -17,11 +17,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.ImeHelper;
-import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.GoogleApiHelper;
@@ -31,16 +31,10 @@ import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.ProviderQueryResult;
-
-import java.util.List;
 
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that
@@ -95,26 +89,6 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
 
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public static Task<String> fetchTopProvider(FirebaseAuth auth, @NonNull String email) {
-        if (TextUtils.isEmpty(email)) {
-            return Tasks.forException(new IllegalArgumentException("Email cannot be empty"));
-        }
-
-        return auth.fetchProvidersForEmail(email)
-                .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Error fetching providers for email"))
-                .continueWith(new Continuation<ProviderQueryResult, String>() {
-                    @Override
-                    public String then(@NonNull Task<ProviderQueryResult> task) throws Exception {
-                        if (!task.isSuccessful()) return null;
-
-                        List<String> providers = task.getResult().getProviders();
-                        if (providers == null || providers.isEmpty()) return null;
-                        else return providers.get(providers.size() - 1);
-                    }
-                });
     }
 
     @Nullable
@@ -214,7 +188,7 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
 
         final String finalName = name;
         final Uri finalPhotoUri = photoUri;
-        fetchTopProvider(mHelper.getFirebaseAuth(), email)
+        ProviderUtils.fetchTopProvider(mHelper.getFirebaseAuth(), email)
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<String>() {
                     @Override
                     public void onSuccess(String provider) {

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
@@ -45,8 +46,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-
-import static com.firebase.ui.auth.ui.email.CheckEmailFragment.fetchTopProvider;
 
 /**
  * Fragment to display an email/name/password sign up form for new users.
@@ -302,7 +301,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                             // Collision with existing user email, it should be very hard for
                             // the user to even get to this error due to CheckEmailFragment.
 
-                            fetchTopProvider(mHelper.getFirebaseAuth(), email).addOnSuccessListener(
+                            ProviderUtils.fetchTopProvider(mHelper.getFirebaseAuth(), email).addOnSuccessListener(
                                     getActivity(),
                                     new OnSuccessListener<String>() {
                                         @Override
