@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -27,6 +28,8 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
+import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.RequiredFieldValidator;
@@ -42,6 +45,9 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+
+import static com.firebase.ui.auth.ui.email.CheckEmailFragment.CheckEmailListener;
+import static com.firebase.ui.auth.ui.email.CheckEmailFragment.checkAccountExists;
 
 /**
  * Fragment to display an email/name/password sign up form for new users.
@@ -66,7 +72,7 @@ public class RegisterEmailFragment extends FragmentBase implements
 
     private User mUser;
 
-    public static RegisterEmailFragment getInstance(FlowParameters flowParameters, User user) {
+    public static RegisterEmailFragment newInstance(FlowParameters flowParameters, User user) {
         RegisterEmailFragment fragment = new RegisterEmailFragment();
 
         Bundle args = new Bundle();
@@ -276,7 +282,8 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                 getActivity(),
                                                 user,
                                                 password,
-                                                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID,
+                                                                        email)
                                                         .build());
                                     }
                                 });
@@ -297,7 +304,56 @@ public class RegisterEmailFragment extends FragmentBase implements
                         } else if (e instanceof FirebaseAuthUserCollisionException) {
                             // Collision with existing user email, it should be very hard for
                             // the user to even get to this error due to CheckEmailFragment.
-                            mEmailInput.setError(getString(R.string.error_user_collision));
+
+                            checkAccountExists(
+                                    getActivity(),
+                                    mHelper,
+                                    new CheckEmailListener() {
+                                        @Override
+                                        public void onExistingEmailUser(User user) {
+                                            showErrorToast();
+
+                                            getActivity().startActivityForResult(
+                                                    WelcomeBackPasswordPrompt.createIntent(
+                                                            getContext(),
+                                                            mHelper.getFlowParams(),
+                                                            new IdpResponse.Builder(
+                                                                    EmailAuthProvider.PROVIDER_ID,
+                                                                    user.getEmail()).build()),
+                                                    RegisterEmailActivity.RC_WELCOME_BACK_IDP);
+                                        }
+
+                                        @Override
+                                        public void onExistingIdpUser(User user) {
+                                            showErrorToast();
+
+                                            getActivity().startActivityForResult(
+                                                    WelcomeBackIdpPrompt.createIntent(
+                                                            getContext(),
+                                                            mHelper.getFlowParams(),
+                                                            user,
+                                                            new IdpResponse.Builder(
+                                                                    EmailAuthProvider.PROVIDER_ID,
+                                                                    user.getEmail()).build()),
+                                                    RegisterEmailActivity.RC_WELCOME_BACK_IDP);
+                                        }
+
+                                        private void showErrorToast() {
+                                            Toast.makeText(getContext(),
+                                                           R.string.error_user_collision,
+                                                           Toast.LENGTH_LONG)
+                                                    .show();
+                                        }
+
+                                        @Override
+                                        public void onNewUser(User user) {
+                                            throw new IllegalStateException(
+                                                    "onNewUser was called even though we got a FirebaseAuthUserCollisionException");
+                                        }
+                                    },
+                                    email,
+                                    name,
+                                    mUser.getPhotoUri());
                         } else {
                             // General error message, this branch should not be invoked but
                             // covers future API changes

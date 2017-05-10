@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
@@ -63,7 +65,7 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
         void onExistingIdpUser(User user);
 
         /**
-         * Email entered does not beling to an existing user.
+         * Email entered does not belong to an existing user.
          */
         void onNewUser(User user);
 
@@ -83,7 +85,7 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
 
     private Credential mLastCredential;
 
-    public static CheckEmailFragment getInstance(@NonNull FlowParameters flowParameters,
+    public static CheckEmailFragment newInstance(@NonNull FlowParameters flowParameters,
                                                  @Nullable String email) {
         CheckEmailFragment fragment = new CheckEmailFragment();
         Bundle args = new Bundle();
@@ -92,6 +94,52 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
 
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static void checkAccountExists(Activity activity,
+                                          final BaseHelper helper,
+                                          final CheckEmailListener listener,
+                                          @NonNull final String email,
+                                          @Nullable final String name,
+                                          @Nullable final Uri photoUri) {
+        helper.showLoadingDialog(R.string.progress_dialog_checking_accounts);
+
+        if (!TextUtils.isEmpty(email)) {
+            helper.getFirebaseAuth()
+                    .fetchProvidersForEmail(email)
+                    .addOnFailureListener(
+                            new TaskFailureLogger(TAG, "Error fetching providers for email"))
+                    .addOnCompleteListener(
+                            activity,
+                            new OnCompleteListener<ProviderQueryResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
+                                    helper.dismissDialog();
+                                }
+                            })
+                    .addOnSuccessListener(
+                            activity,
+                            new OnSuccessListener<ProviderQueryResult>() {
+                                @Override
+                                public void onSuccess(ProviderQueryResult result) {
+                                    List<String> providers = result.getProviders();
+                                    if (providers == null || providers.isEmpty()) {
+                                        listener.onNewUser(new User.Builder(email)
+                                                                   .setName(name)
+                                                                   .setPhotoUri(photoUri)
+                                                                   .build());
+                                    } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(
+                                            providers.get(0))) {
+                                        listener.onExistingEmailUser(new User.Builder(email).build());
+                                    } else {
+                                        listener.onExistingIdpUser(
+                                                new User.Builder(email)
+                                                        .setProvider(providers.get(0))
+                                                        .build());
+                                    }
+                                }
+                            });
+        }
     }
 
     @Nullable
@@ -171,59 +219,23 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
         }
     }
 
-    public void validateAndProceed() {
+    private void validateAndProceed() {
         String email = mEmailEditText.getText().toString();
         if (mEmailFieldValidator.validate(email)) {
             checkAccountExists(email);
         }
     }
 
-    public void checkAccountExists(@NonNull final String email) {
-        mHelper.showLoadingDialog(R.string.progress_dialog_checking_accounts);
-
-        if (!TextUtils.isEmpty(email)) {
-            mHelper.getFirebaseAuth()
-                    .fetchProvidersForEmail(email)
-                    .addOnFailureListener(
-                            new TaskFailureLogger(TAG, "Error fetching providers for email"))
-                    .addOnCompleteListener(
-                            getActivity(),
-                            new OnCompleteListener<ProviderQueryResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                                    mHelper.dismissDialog();
-                                }
-                            })
-                    .addOnSuccessListener(
-                            getActivity(),
-                            new OnSuccessListener<ProviderQueryResult>() {
-                                @Override
-                                public void onSuccess(ProviderQueryResult result) {
-                                    List<String> providers = result.getProviders();
-                                    if (providers == null || providers.isEmpty()) {
-                                        // Get name from SmartLock, if possible
-                                        String name = null;
-                                        Uri photoUri = null;
-                                        if (mLastCredential != null && mLastCredential.getId().equals(email)) {
-                                            name = mLastCredential.getName();
-                                            photoUri = mLastCredential.getProfilePictureUri();
-                                        }
-
-                                        mListener.onNewUser(new User.Builder(email)
-                                                                    .setName(name)
-                                                                    .setPhotoUri(photoUri)
-                                                                    .build());
-                                    } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(providers.get(0))) {
-                                        mListener.onExistingEmailUser(new User.Builder(email).build());
-                                    } else {
-                                        mListener.onExistingIdpUser(
-                                                new User.Builder(email)
-                                                        .setProvider(providers.get(0))
-                                                        .build());
-                                    }
-                                }
-                            });
+    private void checkAccountExists(@NonNull String email) {
+        // Get name from SmartLock, if possible
+        String name = null;
+        Uri photoUri = null;
+        if (mLastCredential != null && mLastCredential.getId().equals(email)) {
+            name = mLastCredential.getName();
+            photoUri = mLastCredential.getProfilePictureUri();
         }
+
+        checkAccountExists(getActivity(), mHelper, mListener, email, name, photoUri);
     }
 
     private void showEmailAutoCompleteHint() {
