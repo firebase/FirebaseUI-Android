@@ -189,12 +189,38 @@ allprojects { project ->
                             dependenciesNode = asNode().appendNode("dependencies")
                         }
 
-                        // Add all that are 'compile'
+                        def supportLibGroup = 'com.android.support'
+
+                        // Add 'compile' deps
                         configurations.compile.allDependencies.each {
                             def dependencyNode = dependenciesNode.appendNode('dependency')
                             dependencyNode.appendNode('groupId', it.group)
                             dependencyNode.appendNode('artifactId', it.name)
-                            dependencyNode.appendNode('version', "[${it.version},)")
+
+                            if (it.group == 'com.google.android.gms' || it.group == 'cmo.google.firebase') {
+                                // Google dependencies should be allowed to advance their version
+                                dependencyNode.appendNode('version', "[${it.version})")
+                            } else if (it.group == 'com.android.support') {
+                                // Calculate next major version
+                                def nextMajor = (it.version.substring(0, it.version.indexOf('.'))).toInteger() + 1
+                                def nextMajorVersion = nextMajor.toString() + '.0.0'
+
+                                // Version is an exclusive range from this version to the next major
+                                dependencyNode.appendNode('version', "[${it.version},${nextMajorVersion}]")
+                            } else {
+                                // Other dependencies should be fixed
+                                dependencyNode.appendNode('version', "${it.version}")
+                            }
+
+                        }
+
+                        // Add 'provided' deps
+                        configurations.provided.allDependencies.each {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', "${it.version}")
+                            dependencyNode.appendNode('scope', "provided")
                         }
                     }
                 }
