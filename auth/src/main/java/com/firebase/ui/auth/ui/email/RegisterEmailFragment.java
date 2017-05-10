@@ -325,22 +325,18 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                                         email).build()),
                                                         RegisterEmailActivity.RC_WELCOME_BACK_IDP);
                                             } else {
-                                                onExistingIdpUser(new User.Builder(email)
-                                                                          .setProvider(provider)
-                                                                          .build());
+                                                getActivity().startActivityForResult(
+                                                        WelcomeBackIdpPrompt.createIntent(
+                                                                getContext(),
+                                                                mHelper.getFlowParams(),
+                                                                new User.Builder(email)
+                                                                        .setProvider(provider)
+                                                                        .build(),
+                                                                new IdpResponse.Builder(
+                                                                        EmailAuthProvider.PROVIDER_ID,
+                                                                        email).build()),
+                                                        RegisterEmailActivity.RC_WELCOME_BACK_IDP);
                                             }
-                                        }
-
-                                        private void onExistingIdpUser(User user) {
-                                            getActivity().startActivityForResult(
-                                                    WelcomeBackIdpPrompt.createIntent(
-                                                            getContext(),
-                                                            mHelper.getFlowParams(),
-                                                            user,
-                                                            new IdpResponse.Builder(
-                                                                    EmailAuthProvider.PROVIDER_ID,
-                                                                    user.getEmail()).build()),
-                                                    RegisterEmailActivity.RC_WELCOME_BACK_IDP);
                                         }
                                     })
                                     .addOnCompleteListener(new OnCompleteListener<String>() {
