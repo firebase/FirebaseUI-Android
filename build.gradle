@@ -189,15 +189,13 @@ allprojects { project ->
                             dependenciesNode = asNode().appendNode("dependencies")
                         }
 
-                        def supportLibGroup = 'com.android.support'
-
                         // Add 'compile' deps
                         configurations.compile.allDependencies.each {
                             def dependencyNode = dependenciesNode.appendNode('dependency')
                             dependencyNode.appendNode('groupId', it.group)
                             dependencyNode.appendNode('artifactId', it.name)
 
-                            if (it.group == 'com.google.android.gms' || it.group == 'cmo.google.firebase') {
+                            if (it.group == 'com.google.android.gms' || it.group == 'com.google.firebase') {
                                 // Google dependencies should be allowed to advance their version
                                 dependencyNode.appendNode('version', "[${it.version})")
                             } else if (it.group == 'com.android.support') {
