@@ -8,8 +8,8 @@ project.ext {
     targetSdk = 25
     minSdk = 14
 
-    buildTools = '25.0.2'
+    buildTools = '25.0.3'
 
-    firebaseVersion = '10.2.1'
+    firebaseVersion = '10.2.4'
     supportLibraryVersion = '25.3.1'
 }
