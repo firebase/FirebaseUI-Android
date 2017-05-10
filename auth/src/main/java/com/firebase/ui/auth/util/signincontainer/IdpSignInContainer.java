@@ -87,7 +87,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
         mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
 
         User user = User.getUser(getArguments());
-        @AuthUI.SupportedProvider String provider = user.getProvider();
+        String provider = user.getProvider();
 
         AuthUI.IdpConfig providerConfig = null;
         for (AuthUI.IdpConfig config : mHelper.getFlowParams().providerInfo) {

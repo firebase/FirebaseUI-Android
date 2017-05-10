@@ -200,7 +200,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private List<String> getSupportedAccountTypes() {
         List<String> accounts = new ArrayList<>();
         for (AuthUI.IdpConfig idpConfig : mHelper.getFlowParams().providerInfo) {
-            String providerId = idpConfig.getProviderId();
+            @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
             if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
                     || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
                     || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {

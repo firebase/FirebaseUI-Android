@@ -134,10 +134,6 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     @Override
     public void onDestroy() {
         super.onDestroy();
-        cleanup();
-    }
-
-    public void cleanup() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
