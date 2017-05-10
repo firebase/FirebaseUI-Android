@@ -18,6 +18,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.util.Log;
 
@@ -83,12 +85,18 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public String getName(Context context) {
-        return context.getResources().getString(R.string.idp_name_facebook);
+        return context.getString(R.string.idp_name_facebook);
     }
 
     @Override
     public String getProviderId() {
         return FacebookAuthProvider.PROVIDER_ID;
+    }
+
+    @Override
+    @LayoutRes
+    public int getButtonLayout() {
+        return R.layout.idp_button_facebook;
     }
 
     @Override
@@ -146,8 +154,8 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                                 String email = object.getString("email");
                                 onSuccess(email, loginResult);
                             } catch (JSONException e) {
-                                Log.e(TAG, "JSON Exception reading from Facebook GraphRequest", e);
-                                onFailure(new Bundle());
+                                Log.e(TAG, "Failure retrieving Facebook email", e);
+                                onSuccess(null, loginResult);
                             }
                         }
                     }
@@ -175,16 +183,15 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         onFailure(extra);
     }
 
-    private IdpResponse createIdpResponse(String email, LoginResult loginResult) {
-        return new IdpResponse(
-                FacebookAuthProvider.PROVIDER_ID,
-                email,
-                loginResult.getAccessToken().getToken());
-    }
-
-    private void onSuccess(String email, LoginResult loginResult) {
+    private void onSuccess(@Nullable String email, LoginResult loginResult) {
         gcCallbackManager();
         mCallbackObject.onSuccess(createIdpResponse(email, loginResult));
+    }
+
+    private IdpResponse createIdpResponse(@Nullable String email, LoginResult loginResult) {
+        return new IdpResponse.Builder(FacebookAuthProvider.PROVIDER_ID, email)
+                .setToken(loginResult.getAccessToken().getToken())
+                .build();
     }
 
     private void onFailure(Bundle bundle) {

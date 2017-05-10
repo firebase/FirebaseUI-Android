@@ -18,14 +18,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.FragmentActivity;
 
 import com.facebook.login.LoginManager;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.CredentialTaskApi;
@@ -49,15 +50,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.twitter.sdk.android.Twitter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * The entry point to the AuthUI authentication flow, and related utility methods. If your
@@ -73,22 +76,22 @@ public class AuthUI {
 
     /**
      * Provider identifier for email and password credentials, for use with
-     * {@link SignInIntentBuilder#setProviders}.
+     * {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String EMAIL_PROVIDER = EmailAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Google, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Google, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String GOOGLE_PROVIDER = GoogleAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Facebook, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Facebook, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String FACEBOOK_PROVIDER = FacebookAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
@@ -193,6 +196,10 @@ public class AuthUI {
         // Facebook sign out
         LoginManager.getInstance().logOut();
 
+        // Twitter sign out
+        if (!Fabric.isInitialized()) TwitterProvider.initialize(activity);
+        Twitter.logOut();
+
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, googleSignOutTask);
     }
@@ -239,6 +246,10 @@ public class AuthUI {
 
         // Facebook sign out
         LoginManager.getInstance().logOut();
+
+        // Twitter sign out
+        if (!Fabric.isInitialized()) TwitterProvider.initialize(activity);
+        Twitter.logOut();
 
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, signOutTask);
@@ -306,6 +317,13 @@ public class AuthUI {
     }
 
     /**
+     * Starts the reauthentication flow.
+     */
+    public ReauthIntentBuilder createReauthIntentBuilder() {
+        return new ReauthIntentBuilder();
+    }
+
+    /**
      * Configuration for an identity provider.
      * <p>
      * In the simplest case, you can supply the provider ID and build the config like this:
@@ -356,10 +374,32 @@ public class AuthUI {
             parcel.writeStringList(mScopes);
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            IdpConfig config = (IdpConfig) o;
+
+            return mProviderId.equals(config.mProviderId);
+        }
+
+        @Override
+        public int hashCode() {
+            return mProviderId.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "IdpConfig{" +
+                    "mProviderId='" + mProviderId + '\'' +
+                    ", mScopes=" + mScopes +
+                    '}';
+        }
+
         public static class Builder {
             private String mProviderId;
             private List<String> mScopes = new ArrayList<>();
-
 
             /**
              * Builds the configuration parameters for an identity provider.
@@ -401,48 +441,46 @@ public class AuthUI {
     }
 
     /**
-     * Builder for the intent to start the user authentication flow.
+     * Base builder for both {@link SignInIntentBuilder} and {@link ReauthIntentBuilder}
      */
-    public final class SignInIntentBuilder {
-        private int mLogo = NO_LOGO;
-        private int mTheme = getDefaultTheme();
-        private LinkedHashSet<IdpConfig> mProviders = new LinkedHashSet<>();
-        private String mTosUrl;
-        private boolean mIsSmartLockEnabled = true;
-        private boolean mAllowNewEmailAccounts = true;
+    @SuppressWarnings(value = "unchecked")
+    private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
+        int mLogo = NO_LOGO;
+        int mTheme = getDefaultTheme();
+        List<IdpConfig> mProviders = new ArrayList<>();
+        String mTosUrl;
+        boolean mIsSmartLockEnabled = true;
 
-        private SignInIntentBuilder() {
-            mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
-        }
+        private AuthIntentBuilder() {}
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified,
          * a default theme will be used.
          */
-        public SignInIntentBuilder setTheme(@StyleRes int theme) {
+        public T setTheme(@StyleRes int theme) {
             Preconditions.checkValidStyle(
                     mApp.getApplicationContext(),
                     theme,
                     "theme identifier is unknown or not a style definition");
             mTheme = theme;
-            return this;
+            return (T) this;
         }
 
         /**
          * Specifies the logo to use for the {@link AuthMethodPickerActivity}. If no logo
          * is specified, none will be used.
          */
-        public SignInIntentBuilder setLogo(@DrawableRes int logo) {
+        public T setLogo(@DrawableRes int logo) {
             mLogo = logo;
-            return this;
+            return (T) this;
         }
 
         /**
          * Specifies the terms-of-service URL for the application.
          */
-        public SignInIntentBuilder setTosUrl(@Nullable String tosUrl) {
+        public T setTosUrl(@Nullable String tosUrl) {
             mTosUrl = tosUrl;
-            return this;
+            return (T) this;
         }
 
         /**
@@ -456,19 +494,48 @@ public class AuthUI {
          *                   configuration parameters for the IDP.
          * @see IdpConfig
          */
-        public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
+        public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
             mProviders.clear();
-            Set<String> configuredProviders = new HashSet<>();
-            for (IdpConfig idpConfig : idpConfigs) {
-                if (configuredProviders.contains(idpConfig.getProviderId())) {
+
+            for (IdpConfig config : idpConfigs) {
+                if (mProviders.contains(config)) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                                                               + idpConfig.getProviderId()
+                                                               + config.getProviderId()
                                                                + " was set twice.");
+                } else {
+                    mProviders.add(config);
                 }
-                configuredProviders.add(idpConfig.getProviderId());
-                mProviders.add(idpConfig);
             }
-            return this;
+
+            return (T) this;
+        }
+
+        /**
+         * Specified the set of supported authentication providers. At least one provider must
+         * be specified. There may only be one instance of each provider.
+         * <p>
+         * <p>If no providers are explicitly specified by calling this method, then the email
+         * provider is the default supported provider.
+         *
+         * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
+         *                   configuration parameters for the IDP.
+         * @see IdpConfig
+         * @deprecated because the order in which providers were displayed was the inverse of the
+         * order in which they were supplied. Use {@link #setAvailableProviders(List)} to display
+         * the providers in the order in which they were supplied.
+         */
+        @Deprecated
+        public T setProviders(@NonNull List<IdpConfig> idpConfigs) {
+            setAvailableProviders(idpConfigs);
+
+            // Ensure email provider is at the bottom to keep backwards compatibility
+            int emailProviderIndex = mProviders.indexOf(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+            if (emailProviderIndex != -1) {
+                mProviders.add(0, mProviders.remove(emailProviderIndex));
+            }
+            Collections.reverse(mProviders);
+
+            return (T) this;
         }
 
         /**
@@ -484,7 +551,7 @@ public class AuthUI {
          * @see #GOOGLE_PROVIDER
          */
         @Deprecated
-        public SignInIntentBuilder setProviders(@NonNull String... providers) {
+        public T setProviders(@NonNull String... providers) {
             mProviders.clear(); // clear the default email provider
             for (String provider : providers) {
                 if (isIdpAlreadyConfigured(provider)) {
@@ -492,7 +559,16 @@ public class AuthUI {
                 }
                 mProviders.add(new IdpConfig.Builder(provider).build());
             }
-            return this;
+            return (T) this;
+        }
+
+        private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
+            for (IdpConfig config : mProviders) {
+                if (config.getProviderId().equals(providerId)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /**
@@ -500,9 +576,76 @@ public class AuthUI {
          * <p>
          * <p>SmartLock is enabled by default.
          */
-        public SignInIntentBuilder setIsSmartLockEnabled(boolean enabled) {
+        public T setIsSmartLockEnabled(boolean enabled) {
             mIsSmartLockEnabled = enabled;
+            return (T) this;
+        }
+
+        @CallSuper
+        public Intent build() {
+            if (mProviders.isEmpty()) {
+                mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+            }
+
+            return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
+        }
+
+        protected abstract FlowParameters getFlowParams();
+    }
+
+    /**
+     * Builder for the intent to start the reauthentication flow.
+     */
+    public final class ReauthIntentBuilder extends AuthIntentBuilder<ReauthIntentBuilder> {
+        private String mReauthReason;
+
+        private ReauthIntentBuilder() {
+            super();
+        }
+
+        /**
+         * Set an explanation for why reauth was requested e.g. "To delete your account you must
+         * reauthenticate."
+         *
+         * @param reauthReason A string explaining why reauthentication was requested.
+         */
+        public ReauthIntentBuilder setReauthReason(String reauthReason) {
+            mReauthReason = reauthReason;
             return this;
+        }
+
+        @Override
+        public Intent build() {
+            if (FirebaseAuth.getInstance(mApp).getCurrentUser() == null) {
+                throw new IllegalStateException("User must be currently logged in to reauthenticate");
+            }
+
+            return super.build();
+        }
+
+        @Override
+        protected FlowParameters getFlowParams() {
+            return new FlowParameters(
+                    mApp.getName(),
+                    mProviders,
+                    mTheme,
+                    mLogo,
+                    mTosUrl,
+                    mIsSmartLockEnabled,
+                    false,
+                    true,
+                    mReauthReason);
+        }
+    }
+
+    /**
+     * Builder for the intent to start the user authentication flow.
+     */
+    public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
+        private boolean mAllowNewEmailAccounts = true;
+
+        private SignInIntentBuilder() {
+            super();
         }
 
         /**
@@ -515,28 +658,18 @@ public class AuthUI {
             return this;
         }
 
-        private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
-            for (IdpConfig config : mProviders) {
-                if (config.getProviderId().equals(providerId)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public Intent build() {
-            return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
-        }
-
-        @VisibleForTesting()
-        public FlowParameters getFlowParams() {
-            return new FlowParameters(mApp.getName(),
-                                      new ArrayList<>(mProviders),
-                                      mTheme,
-                                      mLogo,
-                                      mTosUrl,
-                                      mIsSmartLockEnabled,
-                                      mAllowNewEmailAccounts);
+        @Override
+        protected FlowParameters getFlowParams() {
+            return new FlowParameters(
+                    mApp.getName(),
+                    mProviders,
+                    mTheme,
+                    mLogo,
+                    mTosUrl,
+                    mIsSmartLockEnabled,
+                    mAllowNewEmailAccounts,
+                    false,
+                    null);
         }
     }
 }

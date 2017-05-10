@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
@@ -33,14 +34,14 @@ public class TestUtils {
                 .build(), APP_NAME);
     }
 
-    public static void runAndWaitUntil(FirebaseArray array,
-                                       Runnable task,
-                                       Callable<Boolean> done) throws InterruptedException {
+    public static ChangeEventListener runAndWaitUntil(ObservableSnapshotArray array,
+                                                      Runnable task,
+                                                      Callable<Boolean> done) throws InterruptedException {
         final Semaphore semaphore = new Semaphore(0);
-
-        array.setOnChangedListener(new ChangeEventListener() {
+        ChangeEventListener listener = array.addChangeEventListener(new ChangeEventListener() {
             @Override
             public void onChildChanged(ChangeEventListener.EventType type,
+                                       DataSnapshot snapshot,
                                        int index,
                                        int oldIndex) {
                 semaphore.release();
@@ -56,6 +57,7 @@ public class TestUtils {
             }
         });
         task.run();
+
         boolean isDone = false;
         long startedAt = System.currentTimeMillis();
         while (!isDone && System.currentTimeMillis() - startedAt < TIMEOUT) {
@@ -68,21 +70,18 @@ public class TestUtils {
             }
         }
         assertTrue("Timed out waiting for expected results on FirebaseArray", isDone);
-        array.setOnChangedListener(null);
+
+        return listener;
     }
 
-    public static boolean isValuesEqual(FirebaseArray array, int[] expected) {
-        if (array.getCount() != expected.length) return false;
-        for (int i = 0; i < array.getCount(); i++) {
-            if (!array.getItem(i).getValue(Integer.class).equals(expected[i])) {
+    public static boolean isValuesEqual(ObservableSnapshotArray<?> array, int[] expected) {
+        if (array.size() != expected.length) return false;
+        for (int i = 0; i < array.size(); i++) {
+            if (!array.get(i).getValue(Integer.class).equals(expected[i])) {
                 return false;
             }
         }
         return true;
-    }
-
-    public static Bean getBean(FirebaseArray array, int index) {
-        return array.getItem(index).getValue(Bean.class);
     }
 
     public static void pushValue(DatabaseReference keyRef,

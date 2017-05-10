@@ -126,15 +126,15 @@ public class AuthUiActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.auth_ui_layout);
+        ButterKnife.bind(this);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            startActivity(SignedInActivity.createIntent(this, null));
+            startSignedInActivity(null);
             finish();
+            return;
         }
-
-        setContentView(R.layout.auth_ui_layout);
-        ButterKnife.bind(this);
 
         if (!isGoogleConfigured()) {
             mUseGoogleProvider.setChecked(false);
@@ -183,7 +183,7 @@ public class AuthUiActivity extends AppCompatActivity {
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setTheme(getSelectedTheme())
                         .setLogo(getSelectedLogo())
-                        .setProviders(getSelectedProviders())
+                        .setAvailableProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
                         .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
                         .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
@@ -208,7 +208,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
         // Successfully signed in
         if (resultCode == ResultCodes.OK) {
-            startActivity(SignedInActivity.createIntent(this, response));
+            startSignedInActivity(response);
             finish();
             return;
         } else {
@@ -231,6 +231,19 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         showSnackbar(R.string.unknown_sign_in_response);
+    }
+
+    private void startSignedInActivity(IdpResponse response) {
+        startActivity(
+                SignedInActivity.createIntent(
+                        this,
+                        response,
+                        new SignedInActivity.SignedInConfig(
+                                getSelectedLogo(),
+                                getSelectedTheme(),
+                                getSelectedProviders(),
+                                getSelectedTosUrl(),
+                                mEnableSmartLock.isChecked())));
     }
 
     @MainThread
@@ -280,12 +293,11 @@ public class AuthUiActivity extends AppCompatActivity {
     private List<IdpConfig> getSelectedProviders() {
         List<IdpConfig> selectedProviders = new ArrayList<>();
 
-        if (mUseEmailProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
-        }
-
-        if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+        if (mUseGoogleProvider.isChecked()) {
+            selectedProviders.add(
+                    new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
+                            .setPermissions(getGooglePermissions())
+                            .build());
         }
 
         if (mUseFacebookProvider.isChecked()) {
@@ -295,11 +307,12 @@ public class AuthUiActivity extends AppCompatActivity {
                             .build());
         }
 
-        if (mUseGoogleProvider.isChecked()) {
-            selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-                            .setPermissions(getGooglePermissions())
-                            .build());
+        if (mUseTwitterProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+        }
+
+        if (mUseEmailProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
         }
 
         return selectedProviders;

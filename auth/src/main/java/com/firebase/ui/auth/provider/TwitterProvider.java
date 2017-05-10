@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -28,11 +29,8 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     private IdpCallback mCallbackObject;
     private TwitterAuthClient mTwitterAuthClient;
 
-    public TwitterProvider(Context appContext) {
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(
-                appContext.getString(R.string.twitter_consumer_key),
-                appContext.getString(R.string.twitter_consumer_secret));
-        Fabric.with(appContext.getApplicationContext(), new Twitter(authConfig));
+    public TwitterProvider(Context context) {
+        initialize(context);
         mTwitterAuthClient = new TwitterAuthClient();
     }
 
@@ -43,6 +41,13 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         return TwitterAuthProvider.getCredential(response.getIdpToken(), response.getIdpSecret());
     }
 
+    public static void initialize(Context context) {
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(
+                context.getString(R.string.twitter_consumer_key),
+                context.getString(R.string.twitter_consumer_secret));
+        Fabric.with(context.getApplicationContext(), new Twitter(authConfig));
+    }
+
     @Override
     public String getName(Context context) {
         return context.getString(R.string.idp_name_twitter);
@@ -51,6 +56,12 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     @Override
     public String getProviderId() {
         return TwitterAuthProvider.PROVIDER_ID;
+    }
+
+    @Override
+    @LayoutRes
+    public int getButtonLayout() {
+        return R.layout.idp_button_twitter;
     }
 
     @Override
@@ -109,11 +120,10 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         }
 
         private IdpResponse createIdpResponse(String email) {
-            return new IdpResponse(
-                    TwitterAuthProvider.PROVIDER_ID,
-                    email,
-                    mTwitterSession.getAuthToken().token,
-                    mTwitterSession.getAuthToken().secret);
+            return new IdpResponse.Builder(TwitterAuthProvider.PROVIDER_ID, email)
+                    .setToken(mTwitterSession.getAuthToken().token)
+                    .setSecret(mTwitterSession.getAuthToken().secret)
+                    .build();
         }
     }
 }

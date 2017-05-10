@@ -66,6 +66,10 @@ public class RegisterEmailActivity extends AppCompatBase implements
         // Get email from intent (can be null)
         String email = getIntent().getExtras().getString(ExtraConstants.EXTRA_EMAIL);
 
+        if (mActivityHelper.getFlowParams().isReauth) {
+            email = mActivityHelper.getCurrentUser().getEmail();
+        }
+
         // Start with check email
         CheckEmailFragment fragment = CheckEmailFragment.getInstance(
                 mActivityHelper.getFlowParams(), email);
@@ -98,7 +102,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
                 WelcomeBackPasswordPrompt.createIntent(
                         this,
                         mActivityHelper.getFlowParams(),
-                        new IdpResponse(EmailAuthProvider.PROVIDER_ID, user.getEmail())),
+                        new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, user.getEmail()).build()),
                 RC_SIGN_IN);
 
         setSlideAnimation();
@@ -111,7 +115,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
                 this,
                 mActivityHelper.getFlowParams(),
                 user,
-                new IdpResponse(EmailAuthProvider.PROVIDER_ID, user.getEmail()));
+                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, user.getEmail()).build());
         mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
 
         setSlideAnimation();

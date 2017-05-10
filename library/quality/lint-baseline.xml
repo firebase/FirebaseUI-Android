@@ -13,42 +13,6 @@
     </issue>
 
     <issue
-        id="UnusedIds"
-        message="The resource `R.id.facebook_button` appears to be unused"
-        errorLine1="    android:id=&quot;@+id/facebook_button&quot;/>
-"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/idp_button_facebook.xml"
-            line="5"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedIds"
-        message="The resource `R.id.google_button` appears to be unused"
-        errorLine1="    android:id=&quot;@+id/google_button&quot;/>
-"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/idp_button_google.xml"
-            line="5"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UnusedIds"
-        message="The resource `R.id.twitter_button` appears to be unused"
-        errorLine1="    android:id=&quot;@+id/twitter_button&quot;/>
-"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/idp_button_twitter.xml"
-            line="5"
-            column="5"/>
-    </issue>
-
-    <issue
         id="SelectableText"
         message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
         errorLine1="        &lt;TextView
