@@ -55,7 +55,7 @@ public final class ProviderUtils {
 
     public static Task<String> fetchTopProvider(FirebaseAuth auth, @NonNull String email) {
         if (TextUtils.isEmpty(email)) {
-            return Tasks.forException(new IllegalArgumentException("Email cannot be empty"));
+            return Tasks.forException(new NullPointerException("Email cannot be empty"));
         }
 
         return auth.fetchProvidersForEmail(email)
