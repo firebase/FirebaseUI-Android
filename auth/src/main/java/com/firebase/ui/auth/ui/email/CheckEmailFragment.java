@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
@@ -33,10 +31,13 @@ import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.ProviderQueryResult;
 
 import java.util.List;
@@ -96,50 +97,24 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
         return fragment;
     }
 
-    public static void checkAccountExists(Activity activity,
-                                          final BaseHelper helper,
-                                          final CheckEmailListener listener,
-                                          @NonNull final String email,
-                                          @Nullable final String name,
-                                          @Nullable final Uri photoUri) {
-        helper.showLoadingDialog(R.string.progress_dialog_checking_accounts);
-
-        if (!TextUtils.isEmpty(email)) {
-            helper.getFirebaseAuth()
-                    .fetchProvidersForEmail(email)
-                    .addOnFailureListener(
-                            new TaskFailureLogger(TAG, "Error fetching providers for email"))
-                    .addOnCompleteListener(
-                            activity,
-                            new OnCompleteListener<ProviderQueryResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<ProviderQueryResult> task) {
-                                    helper.dismissDialog();
-                                }
-                            })
-                    .addOnSuccessListener(
-                            activity,
-                            new OnSuccessListener<ProviderQueryResult>() {
-                                @Override
-                                public void onSuccess(ProviderQueryResult result) {
-                                    List<String> providers = result.getProviders();
-                                    if (providers == null || providers.isEmpty()) {
-                                        listener.onNewUser(new User.Builder(email)
-                                                                   .setName(name)
-                                                                   .setPhotoUri(photoUri)
-                                                                   .build());
-                                    } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(
-                                            providers.get(0))) {
-                                        listener.onExistingEmailUser(new User.Builder(email).build());
-                                    } else {
-                                        listener.onExistingIdpUser(
-                                                new User.Builder(email)
-                                                        .setProvider(providers.get(0))
-                                                        .build());
-                                    }
-                                }
-                            });
+    public static Task<String> fetchTopProvider(FirebaseAuth auth, @NonNull String email) {
+        if (TextUtils.isEmpty(email)) {
+            return Tasks.forException(new IllegalArgumentException("Email cannot be empty"));
         }
+
+        return auth.fetchProvidersForEmail(email)
+                .addOnFailureListener(
+                        new TaskFailureLogger(TAG, "Error fetching providers for email"))
+                .continueWith(new Continuation<ProviderQueryResult, String>() {
+                    @Override
+                    public String then(@NonNull Task<ProviderQueryResult> task) throws Exception {
+                        if (!task.isSuccessful()) return null;
+
+                        List<String> providers = task.getResult().getProviders();
+                        if (providers == null || providers.isEmpty()) return null;
+                        else return providers.get(providers.size() - 1);
+                    }
+                });
     }
 
     @Nullable
@@ -226,7 +201,9 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
         }
     }
 
-    private void checkAccountExists(@NonNull String email) {
+    private void checkAccountExists(@NonNull final String email) {
+        mHelper.showLoadingDialog(R.string.progress_dialog_checking_accounts);
+
         // Get name from SmartLock, if possible
         String name = null;
         Uri photoUri = null;
@@ -235,7 +212,33 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
             photoUri = mLastCredential.getProfilePictureUri();
         }
 
-        checkAccountExists(getActivity(), mHelper, mListener, email, name, photoUri);
+        final String finalName = name;
+        final Uri finalPhotoUri = photoUri;
+        fetchTopProvider(mHelper.getFirebaseAuth(), email)
+                .addOnSuccessListener(getActivity(), new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String provider) {
+                        if (provider == null) {
+                            mListener.onNewUser(new User.Builder(email)
+                                                        .setName(finalName)
+                                                        .setPhotoUri(finalPhotoUri)
+                                                        .build());
+                        } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
+                            mListener.onExistingEmailUser(new User.Builder(email).build());
+                        } else {
+                            mListener.onExistingIdpUser(
+                                    new User.Builder(email).setProvider(provider).build());
+                        }
+                    }
+                })
+                .addOnCompleteListener(
+                        getActivity(),
+                        new OnCompleteListener<String>() {
+                            @Override
+                            public void onComplete(@NonNull Task<String> task) {
+                                mHelper.dismissDialog();
+                            }
+                        });
     }
 
     private void showEmailAutoCompleteHint() {

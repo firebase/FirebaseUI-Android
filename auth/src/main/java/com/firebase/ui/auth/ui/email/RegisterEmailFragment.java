@@ -46,8 +46,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-import static com.firebase.ui.auth.ui.email.CheckEmailFragment.CheckEmailListener;
-import static com.firebase.ui.auth.ui.email.CheckEmailFragment.checkAccountExists;
+import static com.firebase.ui.auth.ui.email.CheckEmailFragment.fetchTopProvider;
 
 /**
  * Fragment to display an email/name/password sign up form for new users.
@@ -292,8 +291,6 @@ public class RegisterEmailFragment extends FragmentBase implements
                 .addOnFailureListener(getActivity(), new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        mHelper.dismissDialog();
-
                         if (e instanceof FirebaseAuthWeakPasswordException) {
                             // Password too weak
                             mPasswordInput.setError(getResources().getQuantityString(
@@ -305,28 +302,37 @@ public class RegisterEmailFragment extends FragmentBase implements
                             // Collision with existing user email, it should be very hard for
                             // the user to even get to this error due to CheckEmailFragment.
 
-                            checkAccountExists(
+                            fetchTopProvider(mHelper.getFirebaseAuth(), email).addOnSuccessListener(
                                     getActivity(),
-                                    mHelper,
-                                    new CheckEmailListener() {
+                                    new OnSuccessListener<String>() {
                                         @Override
-                                        public void onExistingEmailUser(User user) {
-                                            showErrorToast();
+                                        public void onSuccess(String provider) {
+                                            Toast.makeText(getContext(),
+                                                           R.string.error_user_collision,
+                                                           Toast.LENGTH_LONG)
+                                                    .show();
 
-                                            getActivity().startActivityForResult(
-                                                    WelcomeBackPasswordPrompt.createIntent(
-                                                            getContext(),
-                                                            mHelper.getFlowParams(),
-                                                            new IdpResponse.Builder(
-                                                                    EmailAuthProvider.PROVIDER_ID,
-                                                                    user.getEmail()).build()),
-                                                    RegisterEmailActivity.RC_WELCOME_BACK_IDP);
+                                            if (provider == null) {
+                                                throw new IllegalStateException(
+                                                        "User has no providers even though we got a FirebaseAuthUserCollisionException");
+                                            } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(
+                                                    provider)) {
+                                                getActivity().startActivityForResult(
+                                                        WelcomeBackPasswordPrompt.createIntent(
+                                                                getContext(),
+                                                                mHelper.getFlowParams(),
+                                                                new IdpResponse.Builder(
+                                                                        EmailAuthProvider.PROVIDER_ID,
+                                                                        email).build()),
+                                                        RegisterEmailActivity.RC_WELCOME_BACK_IDP);
+                                            } else {
+                                                onExistingIdpUser(new User.Builder(email)
+                                                                          .setProvider(provider)
+                                                                          .build());
+                                            }
                                         }
 
-                                        @Override
-                                        public void onExistingIdpUser(User user) {
-                                            showErrorToast();
-
+                                        private void onExistingIdpUser(User user) {
                                             getActivity().startActivityForResult(
                                                     WelcomeBackIdpPrompt.createIntent(
                                                             getContext(),
@@ -337,28 +343,21 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                                     user.getEmail()).build()),
                                                     RegisterEmailActivity.RC_WELCOME_BACK_IDP);
                                         }
-
-                                        private void showErrorToast() {
-                                            Toast.makeText(getContext(),
-                                                           R.string.error_user_collision,
-                                                           Toast.LENGTH_LONG)
-                                                    .show();
-                                        }
-
+                                    })
+                                    .addOnCompleteListener(new OnCompleteListener<String>() {
                                         @Override
-                                        public void onNewUser(User user) {
-                                            throw new IllegalStateException(
-                                                    "onNewUser was called even though we got a FirebaseAuthUserCollisionException");
+                                        public void onComplete(@NonNull Task<String> task) {
+                                            mHelper.dismissDialog();
                                         }
-                                    },
-                                    email,
-                                    name,
-                                    mUser.getPhotoUri());
+                                    });
+                            return;
                         } else {
                             // General error message, this branch should not be invoked but
                             // covers future API changes
                             mEmailInput.setError(getString(R.string.email_account_creation_error));
                         }
+
+                        mHelper.dismissDialog();
                     }
                 });
     }
