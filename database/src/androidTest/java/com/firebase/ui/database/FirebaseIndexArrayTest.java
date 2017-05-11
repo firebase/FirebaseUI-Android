@@ -37,7 +37,7 @@ public class FirebaseIndexArrayTest {
 
     private DatabaseReference mRef;
     private DatabaseReference mKeyRef;
-    private ObservableSnapshotArray<?> mArray;
+    private ObservableSnapshotArray<Integer> mArray;
     private ChangeEventListener mListener;
 
     @Before
@@ -47,7 +47,7 @@ public class FirebaseIndexArrayTest {
         mRef = databaseInstance.getReference().child("firebasearray");
         mKeyRef = databaseInstance.getReference().child("firebaseindexarray");
 
-        mArray = new FirebaseIndexArray(mKeyRef, mRef);
+        mArray = new FirebaseIndexArray<>(mKeyRef, mRef, Integer.class);
         mRef.removeValue();
         mKeyRef.removeValue();
 
@@ -97,7 +97,7 @@ public class FirebaseIndexArrayTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.get(3).getValue(Integer.class).equals(4);
+                return mArray.getObject(3).equals(4);
             }
         });
     }
@@ -112,8 +112,8 @@ public class FirebaseIndexArrayTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.get(3).getValue(Integer.class).equals(3)
-                        && mArray.get(0).getValue(Integer.class).equals(4);
+                return mArray.getObject(3).equals(3)
+                        && mArray.getObject(0).equals(4);
             }
         });
     }
