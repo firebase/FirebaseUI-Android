@@ -42,7 +42,7 @@ allprojects { project ->
         project.apply plugin: 'com.android.library'
         android {
             compileSdkVersion compileSdk
-            buildToolsVersion "${buildTools}"
+            buildToolsVersion buildTools
         }
 
         // Task to generate sources JAR
