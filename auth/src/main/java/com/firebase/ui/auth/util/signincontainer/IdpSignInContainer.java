@@ -27,7 +27,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.provider.AuthCredentialHelper;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
@@ -130,7 +130,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
 
     @Override
     public void onSuccess(final IdpResponse response) {
-        AuthCredential credential = AuthCredentialHelper.getAuthCredential(response);
+        AuthCredential credential = ProviderUtils.getAuthCredential(response);
         mHelper.getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(

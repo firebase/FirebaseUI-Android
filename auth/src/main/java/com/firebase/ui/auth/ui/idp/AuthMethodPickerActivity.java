@@ -28,7 +28,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.provider.AuthCredentialHelper;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.EmailProvider;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
@@ -147,7 +147,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
 
     @Override
     public void onSuccess(final IdpResponse response) {
-        AuthCredential credential = AuthCredentialHelper.getAuthCredential(response);
+        AuthCredential credential = ProviderUtils.getAuthCredential(response);
         mActivityHelper.getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(
