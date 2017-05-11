@@ -36,7 +36,7 @@
             style="@style/Widget.Design.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="112dp"
+            android:paddingTop="@dimen/register_field_padding_vert"
             android:hint="@string/name_hint">
 
             <android.support.design.widget.TextInputEditText
@@ -52,7 +52,7 @@
             style="@style/FirebaseUI.TextInputLayout.PasswordField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="224dp"
+            android:paddingTop="@dimen/register_field_padding_vert_2x"
             app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
@@ -66,7 +66,7 @@
             style="@style/FirebaseUI.Text.BodyText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="336dp"
+            android:layout_marginTop="@dimen/register_field_padding_vert_3x"
             android:textIsSelectable="false"/>
 
 

@@ -3,4 +3,11 @@
     <dimen name="auth_method_button_width">228dp</dimen>
     <dimen name="auth_method_button_marginBottom">24dp</dimen>
     <dimen name="auth_method_button_drawablePadding">20dp</dimen>
+
+    <dimen name="body_padding_bottom">16dp</dimen>
+    <dimen name="heading_padding_bottom">16dp</dimen>
+    <dimen name="wrapper_padding_horiz">24dp</dimen>
+    <dimen name="register_field_padding_vert">112dp</dimen>
+    <dimen name="register_field_padding_vert_2x">224dp</dimen>
+    <dimen name="register_field_padding_vert_3x">336dp</dimen>
 </resources>
