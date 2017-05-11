@@ -77,8 +77,7 @@ android {
         // using Java 8 nio packages. Safely downgrading them to warning.
         // https://github.com/square/okio/issues/58
         disable 'InvalidPackage',
-                'NewerVersionAvailable', 'GradleDependency', // For reproducible builds
-                'GradleCompatible' // TODO remove once the tools team fixes lint
+                'NewerVersionAvailable', 'GradleDependency' // For reproducible builds
 
         baseline file("$configDir/lint-baseline.xml")
         checkAllWarnings true
