@@ -18,10 +18,12 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
 import java.util.concurrent.Executor;
 
@@ -112,6 +114,16 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
     public Task<TResult> addOnFailureListener(@NonNull Activity activity,
                                               @NonNull OnFailureListener onFailureListener) {
         return addOnFailureListener(onFailureListener);
+    }
+
+    @NonNull
+    @Override
+    public <TContinuationResult> Task<TContinuationResult> continueWith(@NonNull Continuation<TResult, TContinuationResult> continuation) {
+        try {
+            return Tasks.forResult(continuation.then(Tasks.forResult(mResult)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
