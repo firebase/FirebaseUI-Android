@@ -57,6 +57,9 @@ public class PhoneVerificationActivity extends AppCompatBase {
     static final long AUTO_RETRIEVAL_TIMEOUT_MILLIS = 90000;
     static final String ERROR_INVALID_PHONE = "ERROR_INVALID_PHONE_NUMBER";
     static final String ERROR_INVALID_VERIFICATION = "ERROR_INVALID_VERIFICATION_CODE";
+    static final String ERROR_TOO_MANY_REQUESTS = "ERROR_TOO_MANY_REQUESTS";
+    static final String ERROR_QUOTA_EXCEEDED = "ERROR_QUOTA_EXCEEDED";
+    static final String ERROR_SESSION_EXPIRED = "ERROR_SESSION_EXPIRED";
     static final String KEY_VERIFICATION_PHONE = "KEY_VERIFICATION_PHONE";
     static final String KEY_STATE = "KEY_STATE";
 
@@ -197,15 +200,26 @@ public class PhoneVerificationActivity extends AppCompatBase {
         if (verifyPhoneNumberFragment == null) {
             return;
         }
-
-        if (ex instanceof FirebaseAuthException && ((FirebaseAuthException) ex).getErrorCode() ==
-                ERROR_INVALID_PHONE) {
-            verifyPhoneNumberFragment.showError(getString(R.string.invalid_phone_number));
-            dismissLoadingDialog();
-        } else {
-            Log.w(PHONE_VERIFICATION_LOG_TAG, ex.getLocalizedMessage());
-            dismissLoadingDialog();
-            showAlertDialog(ex.getLocalizedMessage(), null);
+        if (ex instanceof FirebaseAuthException) {
+            FirebaseAuthException firebaseAuthException = (FirebaseAuthException) ex;
+            switch (firebaseAuthException.getErrorCode()) {
+                case ERROR_INVALID_PHONE:
+                    verifyPhoneNumberFragment.showError(getString(R.string.invalid_phone_number));
+                    dismissLoadingDialog();
+                    break;
+                case ERROR_TOO_MANY_REQUESTS:
+                    showAlertDialog(getString(R.string.error_too_many_attempts), null);
+                    dismissLoadingDialog();
+                    break;
+                case ERROR_QUOTA_EXCEEDED:
+                    showAlertDialog(getString(R.string.error_quota_exceeded), null);
+                    dismissLoadingDialog();
+                    break;
+                default:
+                    Log.w(PHONE_VERIFICATION_LOG_TAG, ex.getLocalizedMessage());
+                    dismissLoadingDialog();
+                    showAlertDialog(ex.getLocalizedMessage(), null);
+            }
         }
     }
 
@@ -306,19 +320,35 @@ public class PhoneVerificationActivity extends AppCompatBase {
             public void onFailure(@NonNull Exception e) {
                 dismissLoadingDialog();
                 //incorrect confirmation code
-                if (e instanceof FirebaseAuthInvalidCredentialsException && (
-                        (FirebaseAuthInvalidCredentialsException) e).getErrorCode() ==
-                        ERROR_INVALID_VERIFICATION) {
-                    showAlertDialog(getString(R.string.incorrect_code_dialog_body), new
-                            DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            SubmitConfirmationCodeFragment f = getSubmitConfirmationCodeFragment();
-                            f.setConfirmationCode("");
-                        }
-                    });
-                } else {
-                    showAlertDialog(e.getLocalizedMessage(), null);
+                if (e instanceof  FirebaseAuthInvalidCredentialsException) {
+                    FirebaseAuthInvalidCredentialsException firebaseAuthInvalidCredentialsException
+                            = (FirebaseAuthInvalidCredentialsException) e;
+                    switch (firebaseAuthInvalidCredentialsException.getErrorCode()) {
+                        case ERROR_INVALID_VERIFICATION:
+                            showAlertDialog(getString(R.string.incorrect_code_dialog_body), new
+                                    DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    SubmitConfirmationCodeFragment f
+                                            = getSubmitConfirmationCodeFragment();
+                                    f.setConfirmationCode("");
+                                }
+                            });
+                            break;
+                        case ERROR_SESSION_EXPIRED:
+                            showAlertDialog(getString(R.string.error_session_expired), new
+                                    DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    SubmitConfirmationCodeFragment f
+                                            = getSubmitConfirmationCodeFragment();
+                                    f.setConfirmationCode("");
+                                }
+                            });
+                            break;
+                        default:
+                            showAlertDialog(e.getLocalizedMessage(), null);
+                    }
                 }
             }
         });
