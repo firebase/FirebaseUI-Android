@@ -77,8 +77,9 @@
         <Button
             android:id="@+id/button_create"
             style="@style/FirebaseUI.Button"
-            android:layout_gravity="end"
-            android:text="@string/button_text_save"/>
+            android:layout_gravity="right"
+            android:text="@string/button_text_save"
+            tools:ignore="RtlHardcoded"/>
 
     </LinearLayout>
 
