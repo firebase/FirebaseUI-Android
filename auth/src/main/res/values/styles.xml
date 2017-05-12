@@ -21,8 +21,8 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingLeft">24dp</item>
-        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingLeft">@dimen/wrapper_padding_horiz</item>
+        <item name="android:paddingRight">@dimen/wrapper_padding_horiz</item>
     </style>
 
     <style name="FirebaseUI.Text">
@@ -127,13 +127,13 @@
 
     <style name="FirebaseUI.Text.Heading" parent="FirebaseUI.Text.T07">
         <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingBottom">@dimen/heading_padding_bottom</item>
     </style>
 
     <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingBottom">@dimen/body_padding_bottom</item>
     </style>
 
     <!-- Authentication method picker styles -->
