@@ -1,63 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="4" by="lint 2.3.0-alpha2">
+<issues format="4" by="lint 2.4.0-alpha7">
 
     <issue
         id="RtlEnabled"
-        severity="Error"
-        message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest"
-        category="Internationalization:Bidirectional Text"
-        priority="3"
-        summary="Using RTL attributes without enabling RTL support"
-        explanation="To enable right-to-left support, when running on API 17 and higher, you must set the `android:supportsRtl` attribute in the manifest `<application>` element. If you have started adding RTL attributes, but have not yet finished the migration, you can set the attribute to false to satisfy this lint check.">
-        <location file="src/main/AndroidManifest.xml"/>
-    </issue>
-
-    <!-- These ids are used in the AuthMethodPickerActivityTest.java tests -->
-    <issue
-        id="SelectableText"
-        message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
-        errorLine1="        &lt;TextView"
-        errorLine2="        ^">
+        message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
         <location
-            file="src/main/res/layout/register_email_layout.xml"
-            line="79"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="SelectableText"
-        message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
-        errorLine1="    &lt;TextView"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/layout/welcome_back_idp_prompt_layout.xml"
-            line="16"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="SelectableText"
-        message="Consider making the text value selectable by specifying `android:textIsSelectable=&quot;true&quot;`"
-        errorLine1="    &lt;TextView"
-        errorLine2="    ^">
-        <location
-            file="src/main/res/layout/welcome_back_password_prompt_layout.xml"
-            line="15"
-            column="5"/>
+            file="src/main/AndroidManifest.xml"/>
     </issue>
 
     <issue
         id="UnusedResources"
+        severity="Error"
         message="The resource `R.string.google_crash_reporting_api_key` appears to be unused"
-        errorLine1="    &lt;string name=&quot;google_crash_reporting_api_key&quot; translatable=&quot;false&quot;>AIzaSyAZYK9Jx9o0iR0XTVno_lX4a5GmhSt2sKA&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build/generated/res/google-services/release/values/values.xml"
-            line="8"
-            column="13"/>
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds."
+        errorLine1="    &lt;string name=&quot;google_crash_reporting_api_key&quot; translatable=&quot;false&quot;>&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        quickfix="studio">
         <location
             file="build/generated/res/google-services/debug/values/values.xml"
-            line="8"
+            line="7"
+            column="13"/>
+        <location
+            file="build/generated/res/google-services/release/values/values.xml"
+            line="7"
             column="13"/>
     </issue>
 
