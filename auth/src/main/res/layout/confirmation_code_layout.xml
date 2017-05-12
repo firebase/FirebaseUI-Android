@@ -43,7 +43,6 @@
             android:gravity="center"
             android:imeOptions="actionNext"
             android:inputType="number"
-            android:textColor="?android:attr/textColor"
             android:textSize="32sp"
             android:typeface="monospace" />
 
