@@ -31,6 +31,8 @@ import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.ui.BaseHelper;
+import com.google.firebase.auth.AdditionalUserInfo;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -259,9 +261,10 @@ public class PhoneVerificationActivityTest {
         reset(BaseHelperShadow.sSaveSmartLock);
         reset(BaseHelperShadow.sFirebaseAuth);
 
-        when(mockFirebaseUser.getPhoneNumber()).thenReturn(PHONE);
+        when(BaseHelperShadow.sFirebaseUser.getPhoneNumber()).thenReturn(PHONE);
+        when(BaseHelperShadow.sFirebaseUser.getEmail()).thenReturn(null);
         when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
-                .thenReturn(new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser)
+                .thenReturn(new AutoCompleteTask(FakeAuthResult.INSTANCE
                         , true, null));
         mActivity.verifyPhoneNumber(PHONE, false);
         verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
@@ -287,8 +290,11 @@ public class PhoneVerificationActivityTest {
         reset(BaseHelperShadow.sSaveSmartLock);
         when(credential.getSmsCode()).thenReturn("123456");
 
+        when(BaseHelperShadow.sFirebaseUser.getPhoneNumber()).thenReturn(PHONE);
+        when(BaseHelperShadow.sFirebaseUser.getEmail()).thenReturn(null);
+
         when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
-                .thenReturn(new AutoCompleteTask<AuthResult>(new FakeAuthResult(mockFirebaseUser)
+                .thenReturn(new AutoCompleteTask(FakeAuthResult.INSTANCE
                         , true, null));
         PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks =
                 testSendConfirmationCode();
@@ -340,6 +346,10 @@ public class PhoneVerificationActivityTest {
         SubmitConfirmationCodeFragment fragment = (SubmitConfirmationCodeFragment) mActivity
                 .getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
         assertNotNull(fragment);
+
+        SpacedEditText mConfirmationCodeEditText = (SpacedEditText) mActivity
+                .findViewById(R.id.confirmation_code);
+        assertTrue(mConfirmationCodeEditText.isFocused());
 
         return onVerificationStateChangedCallbacks;
     }

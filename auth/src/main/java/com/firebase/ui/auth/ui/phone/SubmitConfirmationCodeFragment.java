@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.phone;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -86,6 +88,14 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         setupResendConfirmationCodeTextView(phoneNumber);
 
         return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mConfirmationCodeEditText.requestFocus();
+        InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imgr.showSoftInput(mConfirmationCodeEditText, 0);
     }
 
     @Override

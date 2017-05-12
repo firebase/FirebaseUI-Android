@@ -220,6 +220,10 @@ public class PhoneVerificationActivity extends AppCompatBase {
                     dismissLoadingDialog();
                     showAlertDialog(ex.getLocalizedMessage(), null);
             }
+        } else {
+            Log.w(PHONE_VERIFICATION_LOG_TAG, ex.getLocalizedMessage());
+            dismissLoadingDialog();
+            showAlertDialog(ex.getLocalizedMessage(), null);
         }
     }
 
@@ -349,6 +353,8 @@ public class PhoneVerificationActivity extends AppCompatBase {
                         default:
                             showAlertDialog(e.getLocalizedMessage(), null);
                     }
+                } else {
+                    showAlertDialog(e.getLocalizedMessage(), null);
                 }
             }
         });
