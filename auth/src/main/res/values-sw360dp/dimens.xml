@@ -7,7 +7,6 @@
     <dimen name="body_padding_bottom">16dp</dimen>
     <dimen name="heading_padding_bottom">16dp</dimen>
     <dimen name="wrapper_padding_horiz">24dp</dimen>
-    <dimen name="register_field_padding_vert">112dp</dimen>
-    <dimen name="register_field_padding_vert_2x">224dp</dimen>
-    <dimen name="register_field_padding_vert_3x">336dp</dimen>
+    <dimen name="field_padding_vert">24dp</dimen>
+    <dimen name="submit_button_margin_top">32dp</dimen>
 </resources>

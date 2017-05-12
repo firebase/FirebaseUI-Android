@@ -6,10 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         style="@style/FirebaseUI.WrapperStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <!--
             Since the TextInputLayouts change size based on whether or not an error
@@ -23,6 +24,7 @@
             android:paddingTop="16dp"
             android:transitionGroup="true"
             android:transitionName="email_field"
+            app:errorEnabled="true"
             tools:ignore="UnusedAttribute">
 
             <android.support.design.widget.TextInputEditText
@@ -36,8 +38,9 @@
             style="@style/Widget.Design.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/register_field_padding_vert"
-            android:hint="@string/name_hint">
+            android:hint="@string/name_hint"
+            android:paddingTop="@dimen/field_padding_vert"
+            app:errorEnabled="true">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/name"
@@ -52,7 +55,8 @@
             style="@style/FirebaseUI.TextInputLayout.PasswordField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/register_field_padding_vert_2x"
+            android:paddingTop="@dimen/field_padding_vert"
+            app:errorEnabled="true"
             app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
@@ -66,18 +70,16 @@
             style="@style/FirebaseUI.Text.BodyText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/register_field_padding_vert_3x"
-            android:textIsSelectable="false"/>
-
+            android:layout_marginTop="@dimen/field_padding_vert"
+            android:textIsSelectable="false"
+            tools:text="@string/create_account_preamble"/>
 
         <Button
             android:id="@+id/button_create"
             style="@style/FirebaseUI.Button"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/create_account_text"
+            android:layout_gravity="end"
             android:text="@string/button_text_save"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </ScrollView>
