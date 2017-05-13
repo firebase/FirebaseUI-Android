@@ -99,20 +99,19 @@ public class RegisterEmailFragment extends FragmentBase implements
 
         View v = inflater.inflate(R.layout.register_email_layout, container, false);
 
-        mPasswordFieldValidator = new PasswordFieldValidator(
-                (TextInputLayout) v.findViewById(R.id.password_layout),
-                getResources().getInteger(R.integer.min_password_length));
-        mNameValidator = new RequiredFieldValidator(
-                (TextInputLayout) v.findViewById(R.id.name_layout));
-        mEmailFieldValidator = new EmailFieldValidator(
-                (TextInputLayout) v.findViewById(R.id.email_layout));
-
         mEmailEditText = (EditText) v.findViewById(R.id.email);
         mNameEditText = (EditText) v.findViewById(R.id.name);
         mPasswordEditText = (EditText) v.findViewById(R.id.password);
         mAgreementText = (TextView) v.findViewById(R.id.create_account_text);
         mEmailInput = (TextInputLayout) v.findViewById(R.id.email_layout);
         mPasswordInput = (TextInputLayout) v.findViewById(R.id.password_layout);
+
+        mPasswordFieldValidator = new PasswordFieldValidator(
+                mPasswordInput,
+                getResources().getInteger(R.integer.min_password_length));
+        mNameValidator = new RequiredFieldValidator(
+                (TextInputLayout) v.findViewById(R.id.name_layout));
+        mEmailFieldValidator = new EmailFieldValidator(mEmailInput);
 
         ImeHelper.setImeOnDoneListener(mPasswordEditText, this);
 

@@ -154,11 +154,6 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                                 status.getResolution().getIntentSender(),
                                 RC_CREDENTIALS_READ);
                         return;
-                    } else if (!getSupportedAccountTypes().isEmpty()) {
-                        mHelper.startIntentSenderForResult(
-                                status.getResolution().getIntentSender(),
-                                RC_CREDENTIALS_READ);
-                        return;
                     }
                 } catch (IntentSender.SendIntentException e) {
                     Log.e(TAG, "Failed to send Credentials intent.", e);

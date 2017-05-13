@@ -43,7 +43,11 @@ public class FirebaseArrayTest {
     public void setUp() throws Exception {
         FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
+<<<<<<< HEAD
         mArray = new FirebaseArray(mRef, Integer.class);
+=======
+        mArray = new FirebaseArray<>(mRef, Integer.class);
+>>>>>>> version-2.0.0-dev
         mRef.removeValue();
         mListener = runAndWaitUntil(mArray, new Runnable() {
             @Override
@@ -91,7 +95,7 @@ public class FirebaseArrayTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.get(3).getValue(Integer.class).equals(4);
+                return mArray.getObject(3).equals(4);
             }
         });
     }
@@ -106,8 +110,8 @@ public class FirebaseArrayTest {
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.get(3).getValue(Integer.class).equals(3)
-                        && mArray.get(0).getValue(Integer.class).equals(4);
+                return mArray.getObject(3).equals(3)
+                        && mArray.getObject(0).equals(4);
             }
         });
     }
