@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="auth_method_button_width">228dp</dimen>
-    <dimen name="auth_method_button_marginBottom">24dp</dimen>
+    <dimen name="auth_method_button_margin">12dp</dimen>
     <dimen name="auth_method_button_drawablePadding">20dp</dimen>
 
     <dimen name="body_padding_bottom">16dp</dimen>

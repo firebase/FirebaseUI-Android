@@ -141,32 +141,30 @@
 
     <style name="FirebaseUI.AuthMethodPicker.Logo">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:contentDescription">@string/accessibility_logo</item>
     </style>
 
     <style name="FirebaseUI.AuthMethodPicker.ButtonHolder">
         <item name="android:layout_width">@dimen/auth_method_button_width</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
         <item name="android:clipToPadding">false</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
     </style>
 
-    <style name="FirebaseUI.AuthMethodPicker.ButtonHolder.Portrait" parent="FirebaseUI.AuthMethodPicker.ButtonHolder">
-        <item name="android:paddingBottom">56dp</item>
-    </style>
-
     <style name="FirebaseUI.Button.AccountChooser">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity"></item>
         <item name="android:textAllCaps">false</item>
         <item name="android:drawablePadding">@dimen/auth_method_button_drawablePadding</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingLeft">12dp</item>
         <item name="android:paddingRight">12dp</item>
-        <item name="android:layout_marginBottom">@dimen/auth_method_button_marginBottom</item>
-        <item name="android:layout_gravity">left</item>
+        <item name="android:layout_marginTop">@dimen/auth_method_button_margin</item>
+        <item name="android:layout_marginBottom">@dimen/auth_method_button_margin</item>
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:typeface">normal</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
