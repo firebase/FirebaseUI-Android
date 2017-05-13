@@ -50,9 +50,13 @@
           <option name="ALIGN_MULTILINE_ANNOTATION_PARAMETERS" value="true" />
         </JavaCodeStyleSettings>
         <MarkdownNavigatorCodeStyleSettings>
+          <option name="WRAP_ON_TYPING" value="1" />
           <option name="LIST_ADD_BLANK_LINE_BEFORE" value="true" />
           <option name="RIGHT_MARGIN" value="-1" />
         </MarkdownNavigatorCodeStyleSettings>
+        <XML>
+          <option name="XML_SPACE_INSIDE_EMPTY_TAG" value="true" />
+        </XML>
         <codeStyleSettings language="JAVA">
           <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
           <option name="CALL_PARAMETERS_WRAP" value="5" />
@@ -62,6 +66,7 @@
           <option name="KEEP_SIMPLE_METHODS_IN_ONE_LINE" value="true" />
           <option name="KEEP_SIMPLE_LAMBDAS_IN_ONE_LINE" value="true" />
           <option name="KEEP_SIMPLE_CLASSES_IN_ONE_LINE" value="true" />
+          <option name="ENUM_CONSTANTS_WRAP" value="5" />
           <arrangement>
             <rules>
               <section>
@@ -323,6 +328,7 @@
           </arrangement>
         </codeStyleSettings>
         <codeStyleSettings language="XML">
+          <option name="FORCE_REARRANGE_MODE" value="1" />
           <indentOptions>
             <option name="CONTINUATION_INDENT_SIZE" value="4" />
           </indentOptions>
@@ -404,17 +410,6 @@
                 <rule>
                   <match>
                     <AND>
-                      <NAME>.*</NAME>
-                      <XML_NAMESPACE>^$</XML_NAMESPACE>
-                    </AND>
-                  </match>
-                  <order>BY_NAME</order>
-                </rule>
-              </section>
-              <section>
-                <rule>
-                  <match>
-                    <AND>
                       <NAME>.*:layout_width</NAME>
                       <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
                     </AND>
@@ -426,6 +421,70 @@
                   <match>
                     <AND>
                       <NAME>.*:layout_height</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_.*Start.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                  <order>BY_NAME</order>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_.*End.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                  <order>BY_NAME</order>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_.*Left.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                  <order>BY_NAME</order>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_.*Right.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                  <order>BY_NAME</order>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_.*Top.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_.*Bottom.*</NAME>
                       <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
                     </AND>
                   </match>
@@ -468,8 +527,139 @@
                 <rule>
                   <match>
                     <AND>
+                      <NAME>.*:.*Start.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:.*End.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:.*Left.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:.*Right.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:.*Top.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:.*Bottom.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
                       <NAME>.*</NAME>
                       <XML_NAMESPACE>http://schemas.android.com/apk/res/android</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                  <order>BY_NAME</order>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_constraintStart.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res-auto</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_constraintEnd.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res-auto</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_constraintLeft.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res-auto</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_constraintRight.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res-auto</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_constraintTop.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res-auto</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*:layout_constraintBottom.*</NAME>
+                      <XML_NAMESPACE>http://schemas.android.com/apk/res-auto</XML_NAMESPACE>
+                    </AND>
+                  </match>
+                </rule>
+              </section>
+              <section>
+                <rule>
+                  <match>
+                    <AND>
+                      <NAME>.*</NAME>
+                      <XML_NAMESPACE>^$</XML_NAMESPACE>
                     </AND>
                   </match>
                   <order>BY_NAME</order>
