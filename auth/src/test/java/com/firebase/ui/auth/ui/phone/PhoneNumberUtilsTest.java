@@ -25,6 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import java.util.Locale;
+
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.RAW_PHONE;
 import static org.junit.Assert.assertEquals;
 
@@ -65,5 +67,12 @@ public class PhoneNumberUtilsTest {
         assertEquals("0" + PhoneTestConstants.PHONE_NO_COUNTRY_CODE, number.getPhoneNumber());
         assertEquals(PhoneTestConstants.US_COUNTRY_CODE, number.getCountryCode());
         assertEquals(PhoneTestConstants.US_ISO2, number.getCountryIso());
+    }
+
+    @Test
+    public void testGetCountryCode() throws Exception {
+        assertEquals(86, PhoneNumberUtils.getCountryCode(Locale.CHINA.getCountry()));
+        assertEquals(1, PhoneNumberUtils.getCountryCode(null));
+        assertEquals(1, PhoneNumberUtils.getCountryCode(new Locale("", "DJJZ").getCountry()));
     }
 }

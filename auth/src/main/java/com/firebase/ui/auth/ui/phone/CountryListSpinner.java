@@ -67,8 +67,9 @@ public final class CountryListSpinner extends AppCompatEditText implements
         dialogPopup = new DialogPopup(countryListAdapter);
         textFormat = "%1$s  +%2$d";
         selectedCountryName = "";
-        final Locale defaultLocale = Locale.US;
-        final int defaultCountryCode = 1;
+        final Locale defaultLocale = Locale.getDefault();
+        final int defaultCountryCode =
+                PhoneNumberUtils.getCountryCode(defaultLocale.getCountry());
 
         setSpinnerText(defaultCountryCode, defaultLocale);
     }

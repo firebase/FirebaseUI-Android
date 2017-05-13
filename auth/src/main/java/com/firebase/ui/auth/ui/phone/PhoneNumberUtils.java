@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 final class PhoneNumberUtils {
     private final static String DEFAULT_COUNTRY_CODE = "1";
+    private final static int DEFAULT_COUNTRY_CODE_INT = 1;
     private final static String DEFAULT_COUNTRY_ISO = "US";
 
     private final static int MAX_COUNTRIES = 291;
@@ -1271,13 +1272,13 @@ final class PhoneNumberUtils {
         return countryCodeByIso;
     }
 
-    private static String getCountryCode(String countryIso) {
-        if (countryIso == null) {
-            return "";
+    public static int getCountryCode(String countryIso) {
+        if(countryIso == null){
+            countryIso = DEFAULT_COUNTRY_ISO;
         }
-        final Integer countryCode = CountryCodeByIsoMap.get(countryIso.toUpperCase(Locale
-                .getDefault()));
-        return countryCode == null ? "" : countryCode.toString();
+        Integer countryCode = CountryCodeByIsoMap.get(countryIso.toUpperCase(Locale.getDefault()));
+
+        return countryCode == null ? DEFAULT_COUNTRY_CODE_INT : countryCode;
     }
 
     private static String stripCountryCode(String phoneNumber, String countryCode) {
