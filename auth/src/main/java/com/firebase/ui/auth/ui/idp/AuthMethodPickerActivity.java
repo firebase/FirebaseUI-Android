@@ -28,13 +28,14 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.EmailProvider;
 import com.firebase.ui.auth.provider.FacebookProvider;
+import com.firebase.ui.auth.provider.GitHubProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.provider.Provider;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
@@ -100,6 +101,9 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                 case AuthUI.EMAIL_PROVIDER:
                     mProviders.add(new EmailProvider(this, mActivityHelper));
                     break;
+                case AuthUI.GITHUB_PROVIDER:
+                    mProviders.add(new GitHubProvider(this, mActivityHelper.getFlowParams()));
+                    break;
                 default:
                     Log.e(TAG, "Encountered unknown provider parcel with type: "
                             + idpConfig.getProviderId());
@@ -145,7 +149,9 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
         mActivityHelper.getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Firebase sign in with credential " + credential.getProvider() + " unsuccessful. Visit https://console.firebase.google.com to enable it."))
+                        new TaskFailureLogger(TAG, "Firebase sign in with credential "
+                                + credential.getProvider() +
+                                " unsuccessful. Visit https://console.firebase.google.com to enable it."))
                 .addOnCompleteListener(new CredentialSignInHandler(
                         this,
                         mActivityHelper,

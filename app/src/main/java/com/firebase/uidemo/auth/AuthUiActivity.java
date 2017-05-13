@@ -78,6 +78,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.twitter_provider)
     CheckBox mUseTwitterProvider;
 
+    @BindView(R.id.github_provider)
+    CheckBox mUseGitHubProvider;
+
     @BindView(R.id.google_tos)
     RadioButton mUseGoogleTos;
 
@@ -172,7 +175,13 @@ public class AuthUiActivity extends AppCompatActivity {
             mUseTwitterProvider.setText(R.string.twitter_label_missing_config);
         }
 
-        if (!isGoogleConfigured() || !isFacebookConfigured() || !isTwitterConfigured()) {
+        if (!isGitHubConfigured()) {
+            mUseGitHubProvider.setChecked(false);
+            mUseGitHubProvider.setEnabled(false);
+            mUseGitHubProvider.setText(R.string.github_label_missing_config);
+        }
+
+        if (!isGoogleConfigured() || !isFacebookConfigured() || !isTwitterConfigured() || !isGitHubConfigured()) {
             showSnackbar(R.string.configuration_required);
         }
     }
@@ -311,6 +320,10 @@ public class AuthUiActivity extends AppCompatActivity {
             selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
         }
 
+        if (mUseGitHubProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.GITHUB_PROVIDER).build());
+        }
+
         if (mUseEmailProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
         }
@@ -347,6 +360,16 @@ public class AuthUiActivity extends AppCompatActivity {
         );
 
         return !twitterConfigs.contains(UNCHANGED_CONFIG_VALUE);
+    }
+
+    @MainThread
+    private boolean isGitHubConfigured() {
+        List<String> gitHubConfigs = Arrays.asList(
+                getString(R.string.github_client_id),
+                getString(R.string.github_client_secret)
+        );
+
+        return !gitHubConfigs.contains(UNCHANGED_CONFIG_VALUE);
     }
 
     @MainThread

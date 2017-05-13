@@ -196,4 +196,10 @@
         <item name="android:textColor">@color/tw__solid_white</item>
     </style>
 
+    <style name="FirebaseUI.Button.AccountChooser.GitHubButton">
+        <item name="android:drawableLeft">@drawable/ic_github_white_24dp</item>
+        <item name="android:background">@drawable/idp_button_background_github</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

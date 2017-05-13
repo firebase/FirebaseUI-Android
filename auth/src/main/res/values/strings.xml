@@ -14,12 +14,14 @@
     <string name="idp_name_google">Google</string>
     <string name="idp_name_facebook">Facebook</string>
     <string name="idp_name_twitter">Twitter</string>
+    <string name="idp_name_github">GitHub</string>
     <string name="provider_name_email">Email</string>
 
     <!-- Auth method picker -->
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
     <string name="sign_in_with_twitter">Sign in with Twitter</string>
+    <string name="sign_in_with_github">Sign in with GitHub</string>
     <string name="sign_in_with_email">Sign in with email</string>
 
     <!-- Email common-->

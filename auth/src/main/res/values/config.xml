@@ -31,13 +31,22 @@
 
 
     <!--
-    Your Twitter Consumer Key. To use Twitter accounts with the demo application, register an
-    application with Twitter and provide the following two values.
+    Your Twitter Consumer Key.
     -->
     <string name="twitter_consumer_key" translatable="false">CHANGE-ME</string>
 
     <!--
-    Your Twitter Consumer Secret
+    Your Twitter Consumer Secret.
     -->
     <string name="twitter_consumer_secret" translatable="false">CHANGE-ME</string>
+
+    <!--
+    Your GitHub Client ID.
+    -->
+    <string name="github_client_id" translatable="false">CHANGE-ME</string>
+
+    <!--
+    Your GitHub Client Secret.
+    -->
+    <string name="github_client_secret" translatable="false">CHANGE-ME</string>
 </resources>

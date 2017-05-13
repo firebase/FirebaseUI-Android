@@ -23,6 +23,7 @@ import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.provider.GitHubLoginHolder;
 import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
@@ -36,6 +37,7 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -72,6 +74,7 @@ public class AuthMethodPickerActivityTest {
                 AuthUI.FACEBOOK_PROVIDER,
                 AuthUI.GOOGLE_PROVIDER,
                 AuthUI.TWITTER_PROVIDER,
+                AuthUI.GITHUB_PROVIDER,
                 AuthUI.EMAIL_PROVIDER);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
@@ -174,8 +177,7 @@ public class AuthMethodPickerActivityTest {
 
         when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
-        Button twitterButton =
-                (Button) authMethodPickerActivity.findViewById(R.id.twitter_button);
+        Button twitterButton = (Button) authMethodPickerActivity.findViewById(R.id.twitter_button);
 
         assertNotNull(twitterButton);
         twitterButton.performClick();
@@ -183,6 +185,30 @@ public class AuthMethodPickerActivityTest {
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
 
         assertTrue(nextIntent.intent.getComponent().getClassName().contains("com.twitter.sdk"));
+    }
+
+    @Test
+    @Config(shadows = {ActivityHelperShadow.class})
+    public void testGitHubLoginFlowStarts() {
+        List<String> providers = Arrays.asList(AuthUI.GITHUB_PROVIDER);
+
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
+
+        when(BaseHelperShadow.sFirebaseUser.getProviders())
+                .thenReturn(Arrays.asList(GithubAuthProvider.PROVIDER_ID));
+
+        when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
+                .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
+        Button gitHubButton = (Button) authMethodPickerActivity.findViewById(R.id.github_button);
+
+        assertNotNull(gitHubButton);
+        gitHubButton.performClick();
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
+
+        assertTrue(nextIntent.intent.getComponent()
+                           .getClassName()
+                           .equals(GitHubLoginHolder.class.getName()));
     }
 
     private AuthMethodPickerActivity createActivity(List<String> providers) {

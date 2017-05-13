@@ -47,6 +47,10 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.22.1'
     compile("com.twitter.sdk.android:twitter:2.3.2@aar") { transitive = true }
 
+    // Retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+
     // The following libraries are needed to prevent incompatibilities with the facebook
     // library when updating com.android.support libraries:
     compile "com.android.support:cardview-v7:$supportLibraryVersion"

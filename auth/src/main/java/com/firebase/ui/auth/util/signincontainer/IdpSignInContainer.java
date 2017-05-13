@@ -27,6 +27,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
+import com.firebase.ui.auth.provider.GitHubProvider;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
@@ -42,6 +43,7 @@ import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -103,16 +105,25 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
             return;
         }
 
-        if (provider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new GoogleProvider(
-                    getActivity(),
-                    providerConfig,
-                    user.getEmail());
-        } else if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new FacebookProvider(
-                    getContext(), providerConfig, mHelper.getFlowParams().themeId);
-        } else if (provider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new TwitterProvider(getContext());
+        switch (provider) {
+            case GoogleAuthProvider.PROVIDER_ID:
+                mIdpProvider = new GoogleProvider(
+                        getActivity(),
+                        providerConfig,
+                        user.getEmail());
+                break;
+            case FacebookAuthProvider.PROVIDER_ID:
+                mIdpProvider = new FacebookProvider(
+                        getContext(), providerConfig, mHelper.getFlowParams().themeId);
+                break;
+            case TwitterAuthProvider.PROVIDER_ID:
+                mIdpProvider = new TwitterProvider(getContext());
+                break;
+            case GithubAuthProvider.PROVIDER_ID:
+                mIdpProvider = new GitHubProvider(getContext(), mHelper.getFlowParams());
+                break;
+            default:
+                throw new IllegalStateException("Unknown provider: " + provider);
         }
 
         mIdpProvider.setAuthenticationCallback(this);

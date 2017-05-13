@@ -30,6 +30,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
+import com.firebase.ui.auth.provider.GitHubProvider;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
@@ -50,6 +51,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -93,6 +95,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
                         mIdpProvider = new TwitterProvider(this);
+                        break;
+                    case GithubAuthProvider.PROVIDER_ID:
+                        mIdpProvider = new GitHubProvider(this, mActivityHelper.getFlowParams());
                         break;
                     default:
                         Log.w(TAG, "Unknown provider: " + providerId);
