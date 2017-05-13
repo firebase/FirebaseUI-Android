@@ -35,7 +35,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.provider.AuthCredentialHelper;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -159,7 +159,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         AuthCredential authCredential =
-                                AuthCredentialHelper.getAuthCredential(mIdpResponse);
+                                ProviderUtils.getAuthCredential(mIdpResponse);
 
                         // If authCredential is null, the user only has an email account.
                         // Otherwise, the user has an email account that we need to link to an idp.

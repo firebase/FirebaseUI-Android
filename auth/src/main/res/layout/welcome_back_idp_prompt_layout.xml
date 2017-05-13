@@ -18,6 +18,7 @@
         android:id="@+id/welcome_back_idp_prompt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textIsSelectable="false"
         tools:text="Good news! You've already used jane.doe@example.com. Sign in with Google to continue to SuperApp"/>
 
     <Button
