@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: '../library/quality/quality.gradle'
+check.dependsOn 'compileDebugAndroidTestJavaWithJavac'
 
 android {
     compileSdkVersion compileSdk
@@ -22,13 +23,13 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
+    // Needed to override play services
+    compile "com.android.support:support-v4:$supportLibraryVersion"
 
     compile "com.google.firebase:firebase-database:$firebaseVersion"
 
     androidTestCompile 'junit:junit:4.12'
-    androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
 }
