@@ -74,10 +74,10 @@ public class TestUtils {
         return listener;
     }
 
-    public static boolean isValuesEqual(ObservableSnapshotArray<?> array, int[] expected) {
+    public static boolean isValuesEqual(ObservableSnapshotArray<Integer> array, int[] expected) {
         if (array.size() != expected.length) return false;
         for (int i = 0; i < array.size(); i++) {
-            if (!array.get(i).getValue(Integer.class).equals(expected[i])) {
+            if (!array.getObject(i).equals(expected[i])) {
                 return false;
             }
         }
