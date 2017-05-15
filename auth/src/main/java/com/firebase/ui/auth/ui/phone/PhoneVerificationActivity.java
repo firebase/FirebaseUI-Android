@@ -233,7 +233,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         mVerificationState = VerificationState.VERIFICATION_STARTED;
 
         mActivityHelper.getPhoneAuthProviderInstance().verifyPhoneNumber(phoneNumber,
-                AUTO_RETRIEVAL_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS, new PhoneAuthProvider
+                AUTO_RETRIEVAL_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS, this, new PhoneAuthProvider
                         .OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {

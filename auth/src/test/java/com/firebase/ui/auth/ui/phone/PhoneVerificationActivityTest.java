@@ -162,7 +162,7 @@ public class PhoneVerificationActivityTest {
 
         //was upstream method invoked
         verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
-                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS),
+                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS), eq(mActivity),
                 callbacksArgumentCaptor.capture(), isNull(PhoneAuthProvider.ForceResendingToken
                         .class));
 
@@ -182,7 +182,7 @@ public class PhoneVerificationActivityTest {
 
         mActivity.verifyPhoneNumber(PHONE, false);
         verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
-                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS),
+                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS), eq(mActivity),
                 callbacksArgumentCaptor.capture(), isNull(PhoneAuthProvider.ForceResendingToken
                         .class));
 
@@ -250,7 +250,7 @@ public class PhoneVerificationActivityTest {
 
         //verify resend code was called
         verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
-                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS),
+                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS), eq(mActivity),
                 callbacksArgumentCaptor.capture(), eq(forceResendingToken));
     }
 
@@ -268,7 +268,7 @@ public class PhoneVerificationActivityTest {
                         , true, null));
         mActivity.verifyPhoneNumber(PHONE, false);
         verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
-                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS),
+                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS), eq(mActivity),
                 callbacksArgumentCaptor.capture(), isNull(PhoneAuthProvider.ForceResendingToken
                         .class));
 
@@ -331,7 +331,7 @@ public class PhoneVerificationActivityTest {
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks testSendConfirmationCode() {
         mActivity.verifyPhoneNumber(PHONE, false);
         verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
-                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS),
+                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS), eq(mActivity),
                 callbacksArgumentCaptor.capture(), isNull(PhoneAuthProvider.ForceResendingToken
                         .class));
 
