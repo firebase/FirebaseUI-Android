@@ -106,6 +106,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         }
 
         // Check for phone
+        // It is assumed that the phone number that are being wired in via Credential Selector
+        // are e164 since we store it.
         String phone = getArguments().getString(ExtraConstants.EXTRA_PHONE);
         if (!TextUtils.isEmpty(phone)) {
             // Use phone passed in
@@ -125,11 +127,22 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
             if (data != null) {
                 Credential cred = data.getParcelableExtra(Credential.EXTRA_KEY);
                 if (cred != null) {
-                    // Hint provided by telephony only sometimes contains country codes
-                    // This is gracefully handled by the PhoneNumberUtils
-                    PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(cred.getId());
-                    setPhoneNumber(phoneNumber);
-                    setCountryCode(phoneNumber);
+                    // Hint selector does not always return phone numbers in e164 format.
+                    // To accommodate either case, we normalize to e164 with best effort
+                    final String unformattedPhone = cred.getId();
+                    final String formattedPhone =
+                            PhoneNumberUtils
+                                    .formatPhoneNumberUsingCurrentCountry(unformattedPhone,
+                                                                          getContext());
+                    if(formattedPhone == null) {
+                        Log.e(TAG, "Unable to normalize phone number from hint selector:"
+                                + unformattedPhone);
+                        return;
+                    }
+                    final PhoneNumber phoneNumberObj =
+                            PhoneNumberUtils.getPhoneNumber(formattedPhone);
+                    setPhoneNumber(phoneNumberObj);
+                    setCountryCode(phoneNumberObj);
                 }
             }
         }
@@ -147,16 +160,14 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
 
     @Nullable
     String getPseudoValidPhoneNumber() {
-        final int countryCode = ((CountryInfo) countryListSpinner.getTag()).countryCode;
+        final CountryInfo countryInfo = (CountryInfo) countryListSpinner.getTag();
         final String everythingElse = mPhoneEditText.getText().toString();
 
         if (TextUtils.isEmpty(everythingElse)) {
             return null;
         }
 
-        String ret = "+" + String.valueOf(countryCode) + everythingElse.replaceAll("[^\\d.]", "");
-
-        return PhoneNumberUtils.normalize(ret);
+        return PhoneNumberUtils.formatPhoneNumber(everythingElse, countryInfo);
     }
 
     private void setUpCountrySpinner() {

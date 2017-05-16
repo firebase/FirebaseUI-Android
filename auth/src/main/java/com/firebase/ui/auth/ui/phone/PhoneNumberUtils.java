@@ -17,8 +17,12 @@
  */
 package com.firebase.ui.auth.ui.phone;
 
+import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,9 +33,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 final class PhoneNumberUtils {
-    private final static String DEFAULT_COUNTRY_CODE = "1";
     private final static int DEFAULT_COUNTRY_CODE_INT = 1;
-    private final static String DEFAULT_COUNTRY_ISO = "US";
+    private final static String DEFAULT_COUNTRY_CODE = String.valueOf(DEFAULT_COUNTRY_CODE_INT);
+    private final static Locale DEFAULT_LOCALE = Locale.US;
+    private final static CountryInfo DEFAULT_COUNTRY =
+            new CountryInfo(DEFAULT_LOCALE, DEFAULT_COUNTRY_CODE_INT);
 
     private final static int MAX_COUNTRIES = 291;
     private final static int MAX_COUNTRY_CODES = 286;
@@ -54,27 +60,75 @@ final class PhoneNumberUtils {
     static void load() {
     }
 
+    /**
+     * This method works as follow:
+     * <ol><li>When the android version is LOLLIPOP or greater, the reliable
+     * {{@link android.telephony.PhoneNumberUtils#formatNumberToE164}} is used to format.</li>
+     * <li>For lower versions, we construct a value with the input phone number stripped of
+     * non numeric characters and prefix it with a "+" and country code</li>
+     * </ol>
+
+     * @param phoneNumber that may or may not itself have country code
+     * @param countryInfo must have locale with ISO 3166 2-letter code for country
+     * @return
+     */
+    @Nullable
+    static String formatPhoneNumber(@NonNull String phoneNumber, @NonNull CountryInfo countryInfo) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return android.telephony.PhoneNumberUtils
+                    .formatNumberToE164(phoneNumber,countryInfo.locale.getCountry());
+        }
+        return phoneNumber.startsWith("+")
+                ? phoneNumber
+                : ("+" + String.valueOf(countryInfo.countryCode)
+                        + phoneNumber.replaceAll("[^\\d.]", ""));
+    }
+
+
+    /**
+     * This method uses the country returned by  {@link #getCurrentCountryInfo(Context)} to
+     * format the phone number. Internall invokes {@link #formatPhoneNumber(String, CountryInfo)}
+     * @param phoneNumber that may or may not itself have country code
+     * @return
+     */
 
     @Nullable
-    static String normalize(String phone) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return android.telephony.PhoneNumberUtils.isGlobalPhoneNumber(phone) ? android
-                    .telephony.PhoneNumberUtils.normalizeNumber(phone) : null;
+    static String formatPhoneNumberUsingCurrentCountry(
+            @NonNull String phoneNumber, Context context) {
+        final CountryInfo currentCountry = PhoneNumberUtils.getCurrentCountryInfo(context);
+        return formatPhoneNumber(phoneNumber, currentCountry);
+    }
+
+    @NonNull
+    static CountryInfo getCurrentCountryInfo(@NonNull Context context) {
+        Locale locale = getSimBasedLocale(context);
+
+        if (locale == null) {
+            locale = getOSLocale();
         }
-        return android.telephony.PhoneNumberUtils.isGlobalPhoneNumber(phone) ? phone : null;
+
+        if (locale == null) {
+            return DEFAULT_COUNTRY;
+        }
+
+        Integer countryCode = PhoneNumberUtils.getCountryCode(locale.getCountry());
+
+        return countryCode == null ? DEFAULT_COUNTRY : new CountryInfo(locale, countryCode);
     }
 
     /**
      * This method should not be called on UI thread. Potentially creates a country code by iso
-     * * map which can take long in some devices
-     * TODO(ashwinraghav)
+     * map which can take long in some devices
+     * @param providedPhoneNumber works best when formatted as e164
      *
      * @return an instance of the PhoneNumber using the SIM information
      */
 
-    protected static PhoneNumber getPhoneNumber(String providedPhoneNumber) {
+    protected static PhoneNumber getPhoneNumber(@NonNull String providedPhoneNumber) {
         String countryCode = DEFAULT_COUNTRY_CODE;
-        String countryIso = DEFAULT_COUNTRY_ISO;
+        String countryIso = DEFAULT_LOCALE.getCountry();
+
         String phoneNumber = providedPhoneNumber;
         if (providedPhoneNumber.startsWith("+")) {
             countryCode = countryCodeForPhoneNumber(providedPhoneNumber);
@@ -89,7 +143,7 @@ final class PhoneNumberUtils {
         if (countries != null) {
             return countries.get(0);
         }
-        return DEFAULT_COUNTRY_ISO;
+        return DEFAULT_LOCALE.getCountry();
     }
 
     /**
@@ -1272,16 +1326,25 @@ final class PhoneNumberUtils {
         return countryCodeByIso;
     }
 
-    public static int getCountryCode(String countryIso) {
-        if(countryIso == null){
-            countryIso = DEFAULT_COUNTRY_ISO;
-        }
-        Integer countryCode = CountryCodeByIsoMap.get(countryIso.toUpperCase(Locale.getDefault()));
-
-        return countryCode == null ? DEFAULT_COUNTRY_CODE_INT : countryCode;
+    @Nullable
+    public static Integer getCountryCode(String countryIso) {
+        return countryIso == null
+                ? null
+                : CountryCodeByIsoMap.get(countryIso.toUpperCase(Locale.getDefault()));
     }
 
     private static String stripCountryCode(String phoneNumber, String countryCode) {
         return phoneNumber.replaceFirst("^\\+?" + countryCode, "");
+    }
+
+    private static Locale getSimBasedLocale(@NonNull Context context) {
+        final TelephonyManager tm =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        final String countryIso = tm != null ? tm.getSimCountryIso() : null;
+        return TextUtils.isEmpty(countryIso) ? null : new Locale("", countryIso);
+    }
+
+    private static Locale getOSLocale() {
+        return Locale.getDefault();
     }
 }
