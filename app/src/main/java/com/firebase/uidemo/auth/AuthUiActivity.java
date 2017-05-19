@@ -102,8 +102,11 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.no_logo)
     RadioButton mNoLogo;
 
-    @BindView(R.id.smartlock_enabled)
-    CheckBox mEnableSmartLock;
+    @BindView(R.id.credential_selector_enabled)
+    CheckBox mEnableCredentialSelector;
+
+    @BindView(R.id.hint_selector_enabled)
+    CheckBox mEnableHintSelector;
 
     @BindView(R.id.allow_new_email_accounts)
     CheckBox mAllowNewEmailAccounts;
@@ -188,7 +191,8 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setLogo(getSelectedLogo())
                         .setAvailableProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
-                        .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
+                        .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
+                                               mEnableHintSelector.isChecked())
                         .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
                 RC_SIGN_IN);
@@ -246,7 +250,8 @@ public class AuthUiActivity extends AppCompatActivity {
                                 getSelectedTheme(),
                                 getSelectedProviders(),
                                 getSelectedTosUrl(),
-                                mEnableSmartLock.isChecked())));
+                                mEnableCredentialSelector.isChecked(),
+                                mEnableHintSelector.isChecked())));
     }
 
     @MainThread

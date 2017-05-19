@@ -456,7 +456,8 @@ public class AuthUI {
         int mTheme = getDefaultTheme();
         List<IdpConfig> mProviders = new ArrayList<>();
         String mTosUrl;
-        boolean mIsSmartLockEnabled = true;
+        boolean mEnableCredentials = true;
+        boolean mEnableHints = true;
 
         private AuthIntentBuilder() {}
 
@@ -580,11 +581,31 @@ public class AuthUI {
 
         /**
          * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
+         * To (en)disable hint selector and credential selector independently
+         * use {@link #setIsSmartLockEnabled(boolean, boolean)}
          * <p>
          * <p>SmartLock is enabled by default.
+         *
+         * @param enabled enables smartlock's credential selector and hint selector
          */
         public T setIsSmartLockEnabled(boolean enabled) {
-            mIsSmartLockEnabled = enabled;
+            setIsSmartLockEnabled(enabled, enabled);
+            return (T) this;
+        }
+
+        /**
+         * Enables or disables the use of Smart Lock for Passwords credential selector and hint
+         * selector.
+         * <p>
+         * <p>Both selectors are enabled by default.
+
+         * @param enableCredentials enables credential selector before signup
+         * @param enableHints enable hint selector in respective signup screens
+         * @return
+         */
+        public T setIsSmartLockEnabled(boolean enableCredentials, boolean enableHints) {
+            mEnableCredentials = enableCredentials;
+            mEnableHints = enableHints;
             return (T) this;
         }
 
@@ -638,7 +659,8 @@ public class AuthUI {
                     mTheme,
                     mLogo,
                     mTosUrl,
-                    mIsSmartLockEnabled,
+                    mEnableCredentials,
+                    mEnableHints,
                     false,
                     true,
                     mReauthReason);
@@ -673,7 +695,8 @@ public class AuthUI {
                     mTheme,
                     mLogo,
                     mTosUrl,
-                    mIsSmartLockEnabled,
+                    mEnableCredentials,
+                    mEnableHints,
                     mAllowNewEmailAccounts,
                     false,
                     null);

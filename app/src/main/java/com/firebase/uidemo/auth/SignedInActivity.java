@@ -122,7 +122,8 @@ public class SignedInActivity extends AppCompatActivity {
         Intent reauthIntent = AuthUI.getInstance()
                 .createReauthIntentBuilder()
                 .setAvailableProviders(mSignedInConfig.providerInfo)
-                .setIsSmartLockEnabled(mSignedInConfig.isSmartLockEnabled)
+                .setIsSmartLockEnabled(mSignedInConfig.isCredentialSelectorEnabled,
+                                       mSignedInConfig.isHintSelectorEnabled)
                 .setLogo(mSignedInConfig.logo)
                 .setTheme(mSignedInConfig.theme)
                 .setTosUrl(mSignedInConfig.tosUrl)
@@ -245,18 +246,21 @@ public class SignedInActivity extends AppCompatActivity {
         int theme;
         List<IdpConfig> providerInfo;
         String tosUrl;
-        boolean isSmartLockEnabled;
+        boolean isCredentialSelectorEnabled;
+        boolean isHintSelectorEnabled;
 
         SignedInConfig(int logo,
                        int theme,
                        List<IdpConfig> providerInfo,
                        String tosUrl,
-                       boolean isSmartLockEnabled) {
+                       boolean isCredentialSelectorEnabled,
+                       boolean isHintSelectorEnabled) {
             this.logo = logo;
             this.theme = theme;
             this.providerInfo = providerInfo;
             this.tosUrl = tosUrl;
-            this.isSmartLockEnabled = isSmartLockEnabled;
+            this.isCredentialSelectorEnabled = isCredentialSelectorEnabled;
+            this.isHintSelectorEnabled = isHintSelectorEnabled;
         }
 
         SignedInConfig(Parcel in) {
@@ -265,7 +269,8 @@ public class SignedInActivity extends AppCompatActivity {
             providerInfo = new ArrayList<>();
             in.readList(providerInfo, IdpConfig.class.getClassLoader());
             tosUrl = in.readString();
-            isSmartLockEnabled = in.readInt() != 0;
+            isCredentialSelectorEnabled = in.readInt() != 0;
+            isHintSelectorEnabled = in.readInt() != 0;
         }
 
         public static final Creator<SignedInConfig> CREATOR = new Creator<SignedInConfig>() {
@@ -291,7 +296,8 @@ public class SignedInActivity extends AppCompatActivity {
             dest.writeInt(theme);
             dest.writeList(providerInfo);
             dest.writeString(tosUrl);
-            dest.writeInt(isSmartLockEnabled ? 1 : 0);
+            dest.writeInt(isCredentialSelectorEnabled ? 1 : 0);
+            dest.writeInt(isHintSelectorEnabled ? 1 : 0);
         }
     }
 

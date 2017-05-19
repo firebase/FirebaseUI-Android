@@ -133,7 +133,7 @@ public class CheckEmailFragment extends FragmentBase implements View.OnClickList
             // Use email passed in
             mEmailEditText.setText(email);
             validateAndProceed();
-        } else if (mHelper.getFlowParams().smartLockEnabled) {
+        } else if (mHelper.getFlowParams().enableHints) {
             // Try SmartLock email autocomplete hint
             showEmailAutoCompleteHint();
         }

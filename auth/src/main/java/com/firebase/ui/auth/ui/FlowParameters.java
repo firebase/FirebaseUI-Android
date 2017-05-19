@@ -48,13 +48,14 @@ public class FlowParameters implements Parcelable {
     @Nullable
     public final String termsOfServiceUrl;
 
-    public final boolean smartLockEnabled;
-
     public final boolean allowNewEmailAccounts;
 
     @Nullable
     public final String reauthReason;
     public final boolean isReauth;
+
+    public final boolean enableCredentials;
+    public final boolean enableHints;
 
     public FlowParameters(
             @NonNull String appName,
@@ -62,7 +63,8 @@ public class FlowParameters implements Parcelable {
             @StyleRes int themeId,
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
-            boolean smartLockEnabled,
+            boolean enableCredentials,
+            boolean enableHints,
             boolean allowNewEmailAccounts,
             boolean isReauth,
             String reauthReason) {
@@ -72,7 +74,8 @@ public class FlowParameters implements Parcelable {
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
-        this.smartLockEnabled = smartLockEnabled;
+        this.enableCredentials = enableCredentials;
+        this.enableHints = enableHints;
         this.allowNewEmailAccounts = allowNewEmailAccounts;
         this.isReauth = isReauth;
         this.reauthReason = reauthReason;
@@ -85,7 +88,8 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(themeId);
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
-        dest.writeInt(smartLockEnabled ? 1 : 0);
+        dest.writeInt(enableCredentials ? 1 : 0);
+        dest.writeInt(enableHints ? 1 : 0);
         dest.writeInt(allowNewEmailAccounts ? 1 : 0);
         dest.writeInt(isReauth ? 1 : 0);
         dest.writeString(reauthReason);
@@ -104,7 +108,8 @@ public class FlowParameters implements Parcelable {
             int themeId = in.readInt();
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
-            boolean smartLockEnabled = in.readInt() != 0;
+            boolean enableCredentials = in.readInt() != 0;
+            boolean enableHints = in.readInt() != 0;
             boolean allowNewEmailAccounts = in.readInt() != 0;
             boolean isReauth = in.readInt() != 0;
             String reauthReason = in.readString();
@@ -115,7 +120,8 @@ public class FlowParameters implements Parcelable {
                     themeId,
                     logoId,
                     termsOfServiceUrl,
-                    smartLockEnabled,
+                    enableCredentials,
+                    enableHints,
                     allowNewEmailAccounts,
                     isReauth,
                     reauthReason);

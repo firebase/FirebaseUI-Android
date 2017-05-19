@@ -277,10 +277,6 @@ public class PhoneVerificationActivityTest {
 
         onVerificationStateChangedCallbacks.onVerificationCompleted(credential);
         verify(ActivityHelperShadow.sFirebaseAuth).signInWithCredential(any(AuthCredential.class));
-
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
-        //verify smart lock invocation
-        TestHelper.verifySmartLockSave(PhoneAuthProvider.PROVIDER_ID, null, PHONE, null);
     }
 
     @Test

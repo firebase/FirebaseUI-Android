@@ -236,11 +236,18 @@
                 android:text="@string/other_options_header"/>
 
             <CheckBox
-                android:id="@+id/smartlock_enabled"
+                android:id="@+id/credential_selector_enabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/enable_smartlock"/>
+                android:text="@string/enable_credential_selector"/>
+
+            <CheckBox
+                android:id="@+id/hint_selector_enabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/enable_hint_selector"/>
 
             <CheckBox
                 android:id="@+id/allow_new_email_accounts"

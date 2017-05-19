@@ -29,6 +29,7 @@ import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -115,12 +116,12 @@ public class PhoneVerificationActivity extends AppCompatBase {
         // 4) VERIFIED
         // For the first three cases, we can simply resubscribe to the
         // OnVerificationStateChangedCallbacks
-        // For 4, we simply finish the activity after saving to smartlock
+        // For 4, we simply finish the activity
         if (mVerificationState.equals(VerificationState.VERIFICATION_STARTED)) {
             sendCode(mPhoneNumber, false);
         } else if (mVerificationState == VerificationState.VERIFIED) {
             // activity was recreated when verified dialog was displayed
-            saveCredentialsOrFinish(mActivityHelper.getFirebaseAuth().getCurrentUser());
+            finish(mActivityHelper.getFirebaseAuth().getCurrentUser());
         }
     }
 
@@ -285,11 +286,12 @@ public class PhoneVerificationActivity extends AppCompatBase {
         }
     }
 
-    private void saveCredentialsOrFinish(FirebaseUser user) {
+    private void finish(FirebaseUser user) {
         IdpResponse response = new IdpResponse.Builder(PhoneAuthProvider.PROVIDER_ID, null)
                 .setPhoneNumber(user.getPhoneNumber())
                 .build();
-        mActivityHelper.saveCredentialsOrFinish(mSaveSmartLock, this, user, null, response);
+        setResult(ResultCodes.OK, response.toIntent());
+        finish();
     }
 
     private void showAlertDialog(@NonNull String s, DialogInterface.OnClickListener
@@ -314,7 +316,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
                     public void run() {
                         if (!mIsDestroyed) {
                             dismissLoadingDialog();
-                            saveCredentialsOrFinish(authResult.getUser());
+                            finish(authResult.getUser());
                         }
                     }
                 }, SHORT_DELAY_MILLIS);

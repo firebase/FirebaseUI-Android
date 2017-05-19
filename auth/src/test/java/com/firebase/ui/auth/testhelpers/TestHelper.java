@@ -63,7 +63,8 @@ public class TestHelper {
                 AuthUI.getDefaultTheme(),
                 AuthUI.NO_LOGO,
                 null  /* tosUrl */,
-                true  /* smartLockEnabled */,
+                true  /* credentialPickerEnabled */,
+                true  /* hintSelectorEnabled */,
                 true  /* allowNewEmailAccounts */,
                 false /* isReauth */,
                 null  /* reauthReason */);

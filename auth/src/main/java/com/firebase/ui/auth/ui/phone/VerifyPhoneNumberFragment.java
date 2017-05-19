@@ -114,7 +114,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
             PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(phone);
             setPhoneNumber(phoneNumber);
             setCountryCode(phoneNumber);
-        } else if (mHelper.getFlowParams().smartLockEnabled) {
+        } else if (mHelper.getFlowParams().enableHints) {
             // Try SmartLock phone autocomplete hint
             showPhoneAutoCompleteHint();
         }

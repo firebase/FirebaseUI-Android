@@ -33,9 +33,6 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         ResultCallback<R>,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "SmartLockBase";
-    // The account type should not be changed and will result in abandonment of saved accounts
-    // on the client
-    public static final String FIREBASE_PHONE_ACCOUNT_TYPE = "https://phone";
 
     protected GoogleApiClient mGoogleApiClient;
 
@@ -54,9 +51,6 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
                 return IdentityProviders.FACEBOOK;
             case TwitterAuthProvider.PROVIDER_ID:
                 return IdentityProviders.TWITTER;
-            case PhoneAuthProvider.PROVIDER_ID:
-                // The account type for phone
-                return FIREBASE_PHONE_ACCOUNT_TYPE;
             case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
                 return null;
@@ -73,8 +67,6 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
                 return FacebookAuthProvider.PROVIDER_ID;
             case IdentityProviders.TWITTER:
                 return TwitterAuthProvider.PROVIDER_ID;
-            case FIREBASE_PHONE_ACCOUNT_TYPE:
-                return PhoneAuthProvider.PROVIDER_ID;
             default:
                 return null;
         }
