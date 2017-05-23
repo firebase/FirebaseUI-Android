@@ -28,6 +28,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.TermsTextView;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
@@ -59,7 +60,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     private EditText mEmailEditText;
     private EditText mNameEditText;
     private EditText mPasswordEditText;
-    private TextView mAgreementText;
+    private TermsTextView mAgreementText;
     private TextInputLayout mEmailInput;
     private TextInputLayout mPasswordInput;
 
@@ -102,7 +103,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         mEmailEditText = (EditText) v.findViewById(R.id.email);
         mNameEditText = (EditText) v.findViewById(R.id.name);
         mPasswordEditText = (EditText) v.findViewById(R.id.password);
-        mAgreementText = (TextView) v.findViewById(R.id.create_account_text);
+        mAgreementText = (TermsTextView) v.findViewById(R.id.create_account_text);
         mEmailInput = (TextInputLayout) v.findViewById(R.id.email_layout);
         mPasswordInput = (TextInputLayout) v.findViewById(R.id.password_layout);
 
@@ -181,33 +182,8 @@ public class RegisterEmailFragment extends FragmentBase implements
         if (TextUtils.isEmpty(mHelper.getFlowParams().termsOfServiceUrl)) {
             return;
         }
-
-        ForegroundColorSpan foregroundColorSpan =
-                new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.linkColor));
-
-        String preamble = getString(R.string.create_account_preamble);
-        String link = getString(R.string.terms_of_service);
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
-        int start = preamble.length();
-        spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
-
-        mAgreementText.setText(spannableStringBuilder);
-        mAgreementText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Getting default color
-                TypedValue typedValue = new TypedValue();
-                getActivity().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-                @ColorInt int color = typedValue.data;
-
-                new CustomTabsIntent.Builder()
-                        .setToolbarColor(color)
-                        .build()
-                        .launchUrl(
-                                getActivity(),
-                                Uri.parse(mHelper.getFlowParams().termsOfServiceUrl));
-            }
-        });
+        mAgreementText.showTermsForUri(Uri.parse(mHelper.getFlowParams().termsOfServiceUrl),
+                                       R.string.button_text_save);
     }
 
     @Override

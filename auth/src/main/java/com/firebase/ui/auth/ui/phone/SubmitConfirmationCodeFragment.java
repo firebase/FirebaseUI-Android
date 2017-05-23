@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.phone;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,6 +34,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
+import com.firebase.ui.auth.ui.TermsTextView;
 
 /**
  * Display confirmation code to verify phone numbers input in {{@link VerifyPhoneNumberFragment}}
@@ -49,6 +51,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     Button mSubmitConfirmationButton;
     CustomCountDownTimer mCountdownTimer;
     PhoneVerificationActivity mVerifier;
+    TermsTextView mAgreementText;
     long mMillisUntilFinished;
     private String EXTRA_MILLIS_UNTIL_FINISHED = "EXTRA_MILLIS_UNTIL_FINISHED";
 
@@ -72,11 +75,12 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         View v = inflater.inflate(R.layout.confirmation_code_layout, container, false);
         FragmentActivity parentActivity = getActivity();
 
-        this.mEditPhoneTextView = (TextView) v.findViewById(R.id.edit_phone_number);
-        this.mCountDownTextView = (TextView) v.findViewById(R.id.ticker);
-        this.mResendCodeTextView = (TextView) v.findViewById(R.id.resend_code);
+        mEditPhoneTextView = (TextView) v.findViewById(R.id.edit_phone_number);
+        mCountDownTextView = (TextView) v.findViewById(R.id.ticker);
+        mResendCodeTextView = (TextView) v.findViewById(R.id.resend_code);
         mConfirmationCodeEditText = (SpacedEditText) v.findViewById(R.id.confirmation_code);
-        this.mSubmitConfirmationButton = (Button) v.findViewById(R.id.submit_confirmation_code);
+        mSubmitConfirmationButton = (Button) v.findViewById(R.id.submit_confirmation_code);
+        mAgreementText = (TermsTextView) v.findViewById(R.id.create_account_tos);
 
         final String phoneNumber = getArguments().getString(ExtraConstants.EXTRA_PHONE);
 
@@ -86,7 +90,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         setupCountDown(RESEND_WAIT_MILLIS);
         setupSubmitConfirmationCodeButton();
         setupResendConfirmationCodeTextView(phoneNumber);
-
+        setUpTermsOfService();
         return v;
     }
 
@@ -216,6 +220,14 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         if (mCountdownTimer != null) {
             mCountdownTimer.cancel();
         }
+    }
+
+    private void setUpTermsOfService() {
+        if (TextUtils.isEmpty(mHelper.getFlowParams().termsOfServiceUrl)) {
+            return;
+        }
+        mAgreementText.showTermsForUri(Uri.parse(mHelper.getFlowParams().termsOfServiceUrl),
+                                       R.string.continue_phone_login);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)

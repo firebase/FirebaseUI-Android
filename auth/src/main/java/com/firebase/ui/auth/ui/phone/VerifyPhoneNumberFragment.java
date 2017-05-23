@@ -57,6 +57,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     TextView errorEditText;
     Button sendCodeButton;
     PhoneVerificationActivity mVerifier;
+    TextView mSmsTermsText;
 
     private static final int RC_PHONE_HINT = 22;
 
@@ -83,13 +84,21 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         mPhoneEditText = (EditText) v.findViewById(R.id.phone_number);
         errorEditText = (TextView) v.findViewById(R.id.phone_number_error);
         sendCodeButton = (Button) v.findViewById(R.id.send_code);
+        mSmsTermsText = (TextView) v.findViewById(R.id.send_sms_tos);
 
         FragmentActivity parentActivity = getActivity();
         parentActivity.setTitle(getString(R.string.verify_phone_number_title));
         setUpCountrySpinner();
         setupSendCodeButton();
+        setupTerms();
 
         return v;
+    }
+
+    private void setupTerms() {
+        final String verifyPhoneButtonText = getString(R.string.verify_phone_number);
+        final String terms = getString(R.string.sms_terms_of_service, verifyPhoneButtonText);
+        mSmsTermsText.setText(terms);
     }
 
     @Override

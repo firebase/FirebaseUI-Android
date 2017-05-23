@@ -45,7 +45,7 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Email account registration unsuccessful</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">An account already exists with that email address.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">"By tapping SAVE you are indicating that you agree to the "</string>
+    <string name="create_account_preamble" translation_description="Terms of service preamble">"By tapping &quot;%1$s&quot; you are indicating that you agree to the "</string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Terms of Service</string>
 
     <!-- Idp/Email welcome back -->
@@ -104,4 +104,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Resend Code</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Verify Phone Number</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Continue</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button" >By tapping &quot;%1$s&quot;, an SMS may be sent. Message &amp; data rates may apply.</string>
 </resources>
