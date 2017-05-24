@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
 public class PhoneVerificationActivity extends AppCompatBase {
     private static final String PHONE_VERIFICATION_LOG_TAG = "PhoneVerification";
     static final long SHORT_DELAY_MILLIS = 750;
-    static final long AUTO_RETRIEVAL_TIMEOUT_MILLIS = 90000;
+    static final long AUTO_RETRIEVAL_TIMEOUT_MILLIS = 120000;
     static final String ERROR_INVALID_PHONE = "ERROR_INVALID_PHONE_NUMBER";
     static final String ERROR_INVALID_VERIFICATION = "ERROR_INVALID_VERIFICATION_CODE";
     static final String ERROR_TOO_MANY_REQUESTS = "ERROR_TOO_MANY_REQUESTS";
