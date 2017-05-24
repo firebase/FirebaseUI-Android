@@ -120,8 +120,8 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_scope_drive_file)
     CheckBox mGoogleScopeDriveFile;
 
-    @BindView(R.id.google_scope_games)
-    CheckBox mGoogleScopeGames;
+    @BindView(R.id.google_scope_youtube_data)
+    CheckBox mGoogleScopeYoutubeData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -250,7 +250,7 @@ public class AuthUiActivity extends AppCompatActivity {
     private void setGoogleScopesEnabled(boolean enabled) {
         mGoogleScopesLabel.setEnabled(enabled);
         mGoogleScopeDriveFile.setEnabled(enabled);
-        mGoogleScopeGames.setEnabled(enabled);
+        mGoogleScopeYoutubeData.setEnabled(enabled);
     }
 
     @MainThread
@@ -369,8 +369,8 @@ public class AuthUiActivity extends AppCompatActivity {
     @MainThread
     private List<String> getGooglePermissions() {
         List<String> result = new ArrayList<>();
-        if (mGoogleScopeGames.isChecked()) {
-            result.add(Scopes.GAMES);
+        if (mGoogleScopeYoutubeData.isChecked()) {
+            result.add("https://www.googleapis.com/auth/youtube.readonly");
         }
         if (mGoogleScopeDriveFile.isChecked()) {
             result.add(Scopes.DRIVE_FILE);

@@ -207,18 +207,18 @@
                 android:text="@string/extra_google_scopes"/>
 
             <CheckBox
-                android:id="@+id/google_scope_games"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="@string/games"/>
-
-            <CheckBox
                 android:id="@+id/google_scope_drive_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="@string/drive_file"/>
+                android:text="@string/drive_file_scope"/>
+
+            <CheckBox
+                android:id="@+id/google_scope_youtube_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/youtube_data_scope"/>
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
