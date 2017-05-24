@@ -54,32 +54,48 @@
             android:layout_below="@id/confirmation_code"
             android:text="@string/continue_phone_login" />
 
-        <TextView
-            android:id="@+id/ticker"
-            style="@style/FirebaseUI.Text.T08"
+        <LinearLayout
+            android:id="@+id/resend_code_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/submit_confirmation_code"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/ticker"
+                style="@style/FirebaseUI.Text.T08"
+                tools:text = "Resend in 0:01"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:gravity="center"
+                android:paddingTop="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="?attr/android:textColorSecondary"
+                tools:ignore="SelectableText" />
+
+            <TextView
+                android:id="@+id/resend_code"
+                style="@style/FirebaseUI.Text.T08"
+                tools:text = "Resend code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="16dp"
+                android:text="@string/resend_code"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/linkColor"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <com.firebase.ui.auth.ui.TermsTextView
+            android:id="@+id/create_account_tos"
+            style="@style/FirebaseUI.Text.BodyText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/submit_confirmation_code"
-            android:enabled="false"
-            android:gravity="center"
-            android:paddingTop="16dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="?attr/android:textColorSecondary"
-            tools:ignore="SelectableText" />
-
-        <TextView
-            android:id="@+id/resend_code"
-            style="@style/FirebaseUI.Text.T08"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/submit_confirmation_code"
-            android:gravity="center"
-            android:paddingTop="16dp"
-            android:text="@string/resend_code"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/linkColor"
-            android:visibility="gone" />
-
+            android:layout_marginTop="@dimen/field_padding_vert"
+            android:textIsSelectable="false"
+            android:layout_below="@id/resend_code_layout"
+            tools:text="@string/create_account_preamble"/>
     </RelativeLayout>
 
 </ScrollView>
