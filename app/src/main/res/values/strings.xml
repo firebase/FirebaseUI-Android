@@ -31,7 +31,9 @@
     <string name="google_label_missing_config">Google - configuration missing</string>
     <string name="google_tos_label">Google TOS</string>
     <string name="firebase_tos_label">Firebase TOS</string>
+    <string name="google_privacy_label">Google Privacy Policy</string>
     <string name="tos_header">Terms of Service URL:</string>
+    <string name="privacy_policy_header">Privacy Policy URL:</string>
     <string name="unknown_response">Unexpected onActivityResult response code</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
