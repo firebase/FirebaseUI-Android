@@ -2,7 +2,7 @@
     <string name="app_name">ui_flow</string>
 
     <!-- Common -->
-    <string name="default_toolbar_title" translation_description="Do not translate">@string/app_name</string>
+    <string name="default_toolbar_title" translatable="false">@string/app_name</string>
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Sign in</string>
     <string name="general_error" translation_description="Toast text flashing general error">An error has occurred.</string>
@@ -49,8 +49,8 @@
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Terms of Service</string>
 
     <!-- Idp/Email welcome back -->
-    <string name="title_welcome_back_idp_prompt" translation_description="Do not translate">@string/sign_in_default</string>
-    <string name="title_welcome_back_password_prompt" translation_description="Do not translate">@string/sign_in_default</string>
+    <string name="title_welcome_back_idp_prompt" translatable="false">@string/sign_in_default</string>
+    <string name="title_welcome_back_password_prompt" translatable="false">@string/sign_in_default</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">You already have an account</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Welcome back!</string>
     <string name="welcome_back_email_header_reauth" translation_description="Prompt for users that need to reauthenticate (for any reason)">Reauthentication required</string>
