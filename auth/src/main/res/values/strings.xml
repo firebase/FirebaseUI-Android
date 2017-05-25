@@ -44,6 +44,7 @@
     <string name="error_user_collision">An account already exists with that email address.</string>
     <string name="create_account_preamble">"By tapping SAVE you are indicating that you agree to the "</string>
     <string name="terms_of_service">Terms of Service</string>
+    <string name="privacy_policy">Privacy Policy</string>
 
     <!-- Idp/Email welcome back -->
     <string name="title_welcome_back_idp_prompt">@string/sign_in_default</string>

@@ -9,8 +9,10 @@ import android.support.annotation.RestrictTo;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -165,6 +167,7 @@ public class RegisterEmailFragment extends FragmentBase implements
 
         mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
         setUpTermsOfService();
+        setUpPrivacyPolicy();
     }
 
     @Override
@@ -206,6 +209,39 @@ public class RegisterEmailFragment extends FragmentBase implements
                         .launchUrl(
                                 getActivity(),
                                 Uri.parse(mHelper.getFlowParams().termsOfServiceUrl));
+            }
+        });
+    }
+
+    private void setUpPrivacyPolicy() {
+        if (TextUtils.isEmpty(mHelper.getFlowParams().privacyPolicyUrl)) {
+            return;
+        }
+
+        ForegroundColorSpan foregroundColorSpan =
+                new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.linkColor));
+
+        String link = getString(R.string.privacy_policy);
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(link);
+        int start = mAgreementText.length();
+        spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
+
+        mAgreementText.append(" and the ");
+        mAgreementText.append(spannableStringBuilder);
+        mAgreementText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Getting default color
+                TypedValue typedValue = new TypedValue();
+                getActivity().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+                @ColorInt int color = typedValue.data;
+
+                new CustomTabsIntent.Builder()
+                        .setToolbarColor(color)
+                        .build()
+                        .launchUrl(
+                                getActivity(),
+                                Uri.parse(mHelper.getFlowParams().privacyPolicyUrl));
             }
         });
     }
