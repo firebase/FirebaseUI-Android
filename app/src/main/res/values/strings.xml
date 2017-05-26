@@ -32,6 +32,7 @@
     <string name="google_tos_label">Google TOS</string>
     <string name="firebase_tos_label">Firebase TOS</string>
     <string name="google_privacy_label">Google Privacy Policy</string>
+    <string name="firebase_privacy_label">Firebase Privacy Policy</string>
     <string name="tos_header">Terms of Service URL:</string>
     <string name="privacy_policy_header">Privacy Policy URL:</string>
     <string name="unknown_response">Unexpected onActivityResult response code</string>
