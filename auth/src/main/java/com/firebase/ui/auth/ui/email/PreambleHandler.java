@@ -56,11 +56,7 @@ public class PreambleHandler {
     }
 
     private void replaceTarget(String target, @StringRes int replacementRes, String url) {
-        char[] currentPreambleChars = new char[mBuilder.length()];
-        mBuilder.getChars(0, mBuilder.length(), currentPreambleChars, 0);
-        String currentPreamble = String.valueOf(currentPreambleChars);
-
-        int targetIndex = currentPreamble.indexOf(target);
+        int targetIndex = mBuilder.toString().indexOf(target);
         if (targetIndex != -1) {
             String replacement = mContext.getString(replacementRes);
             mBuilder.replace(targetIndex, targetIndex + target.length(), replacement);
