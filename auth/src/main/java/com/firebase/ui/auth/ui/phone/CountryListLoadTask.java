@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-
 // We need to move away from ListView and AsyncTask in the future and use (say)
 // RecyclerView and Task/ThreadPoolExecutor .
 final class CountryListLoadTask extends AsyncTask<Void, Void, List<CountryInfo>> {

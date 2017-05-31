@@ -198,12 +198,19 @@ public class AuthUI {
                 });
 
         // Facebook sign out
-        LoginManager.getInstance().logOut();
+        try {
+            LoginManager.getInstance().logOut();
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
 
         // Twitter sign out
-        TwitterProvider.signout(activity);
-
-
+        try {
+            TwitterProvider.signout(activity);
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
+        
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, googleSignOutTask);
     }
@@ -249,11 +256,18 @@ public class AuthUI {
         Task<Status> signOutTask = credentialsHelper.signOut();
 
         // Facebook sign out
-        LoginManager.getInstance().logOut();
+        try {
+            LoginManager.getInstance().logOut();
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
 
         // Twitter sign out
-        TwitterProvider.signout(activity);
-
+        try {
+            TwitterProvider.signout(activity);
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, signOutTask);
     }
@@ -517,6 +531,26 @@ public class AuthUI {
                                                                + " was set twice.");
                 } else {
                     mProviders.add(config);
+                }
+
+                if(config.getProviderId().equals(FACEBOOK_PROVIDER)) {
+                    try {
+                        Class c = com.facebook.FacebookCallback.class;
+                    } catch (NoClassDefFoundError e) {
+                        throw new RuntimeException("Facebook provider cannot be configured " +
+                               "without dependency. Did you forget to add " +
+                               "'com.facebook.android:facebook-android-sdk:VERSION' dependency?");
+                    }
+                }
+
+                if(config.getProviderId().equals(TWITTER_PROVIDER)) {
+                    try {
+                        Class c = com.twitter.sdk.android.core.TwitterCore.class;
+                    } catch (NoClassDefFoundError e) {
+                        throw new RuntimeException("Twitter provider cannot be configured " +
+                               "without dependency. Did you forget to add " +
+                               "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
+                    }
                 }
             }
 

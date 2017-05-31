@@ -228,13 +228,13 @@
     <style name="FirebaseUI.Button.AccountChooser.FacebookButton">
         <item name="android:drawableLeft">@drawable/ic_facebook_white_22dp</item>
         <item name="android:background">@drawable/idp_button_background_facebook</item>
-        <item name="android:textColor">@color/com_facebook_button_text_color</item>
+        <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.TwitterButton">
         <item name="android:drawableLeft">@drawable/ic_twitter_bird_white_24dp</item>
         <item name="android:background">@drawable/idp_button_background_twitter</item>
-        <item name="android:textColor">@color/tw__solid_white</item>
+        <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
 </resources>
