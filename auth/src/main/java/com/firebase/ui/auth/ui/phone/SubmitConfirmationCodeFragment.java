@@ -15,7 +15,6 @@
 package com.firebase.ui.auth.ui.phone;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -223,11 +222,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void setUpTermsOfService() {
-        if (TextUtils.isEmpty(mHelper.getFlowParams().termsOfServiceUrl)) {
-            return;
-        }
-        mAgreementText.showTermsForUri(Uri.parse(mHelper.getFlowParams().termsOfServiceUrl),
-                                       R.string.continue_phone_login);
+        mAgreementText.showTerms(mHelper.getFlowParams(), R.string.continue_phone_login);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)

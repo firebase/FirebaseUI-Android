@@ -456,6 +456,7 @@ public class AuthUI {
         int mTheme = getDefaultTheme();
         List<IdpConfig> mProviders = new ArrayList<>();
         String mTosUrl;
+        String mPrivacyPolicyUrl;
         boolean mEnableCredentials = true;
         boolean mEnableHints = true;
 
@@ -488,6 +489,14 @@ public class AuthUI {
          */
         public T setTosUrl(@Nullable String tosUrl) {
             mTosUrl = tosUrl;
+            return (T) this;
+        }
+
+        /**
+         * Specifies the privacy policy URL for the application.
+         */
+        public T setPrivacyPolicyUrl(@Nullable String privacyPolicyUrl) {
+            mPrivacyPolicyUrl = privacyPolicyUrl;
             return (T) this;
         }
 
@@ -659,6 +668,7 @@ public class AuthUI {
                     mTheme,
                     mLogo,
                     mTosUrl,
+                    mPrivacyPolicyUrl,
                     mEnableCredentials,
                     mEnableHints,
                     false,
@@ -695,6 +705,7 @@ public class AuthUI {
                     mTheme,
                     mLogo,
                     mTosUrl,
+                    mPrivacyPolicyUrl,
                     mEnableCredentials,
                     mEnableHints,
                     mAllowNewEmailAccounts,

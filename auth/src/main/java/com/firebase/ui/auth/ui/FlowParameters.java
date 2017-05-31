@@ -48,6 +48,9 @@ public class FlowParameters implements Parcelable {
     @Nullable
     public final String termsOfServiceUrl;
 
+    @Nullable
+    public final String privacyPolicyUrl;
+
     public final boolean allowNewEmailAccounts;
 
     @Nullable
@@ -63,6 +66,7 @@ public class FlowParameters implements Parcelable {
             @StyleRes int themeId,
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
+            @Nullable String privacyPolicyUrl,
             boolean enableCredentials,
             boolean enableHints,
             boolean allowNewEmailAccounts,
@@ -74,6 +78,7 @@ public class FlowParameters implements Parcelable {
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
+        this.privacyPolicyUrl = privacyPolicyUrl;
         this.enableCredentials = enableCredentials;
         this.enableHints = enableHints;
         this.allowNewEmailAccounts = allowNewEmailAccounts;
@@ -88,6 +93,7 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(themeId);
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
+        dest.writeString(privacyPolicyUrl);
         dest.writeInt(enableCredentials ? 1 : 0);
         dest.writeInt(enableHints ? 1 : 0);
         dest.writeInt(allowNewEmailAccounts ? 1 : 0);
@@ -108,6 +114,7 @@ public class FlowParameters implements Parcelable {
             int themeId = in.readInt();
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
+            String privacyPolicyUrl = in.readString();
             boolean enableCredentials = in.readInt() != 0;
             boolean enableHints = in.readInt() != 0;
             boolean allowNewEmailAccounts = in.readInt() != 0;
@@ -120,6 +127,7 @@ public class FlowParameters implements Parcelable {
                     themeId,
                     logoId,
                     termsOfServiceUrl,
+                    privacyPolicyUrl,
                     enableCredentials,
                     enableHints,
                     allowNewEmailAccounts,

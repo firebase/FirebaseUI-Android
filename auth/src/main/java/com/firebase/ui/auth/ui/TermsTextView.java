@@ -15,18 +15,10 @@
 package com.firebase.ui.auth.ui;
 
 import android.content.Context;
-import android.net.Uri;
-import android.support.annotation.ColorInt;
 import android.support.annotation.StringRes;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.v4.content.ContextCompat;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.View;
 
-import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.ui.email.PreambleHandler;
 
 /**
  * Text view to display terms of service before completing signup.
@@ -47,37 +39,11 @@ public class TermsTextView extends android.support.v7.widget.AppCompatTextView {
     }
 
     /**
-     * @param uri        uri to link when the user clicks on Terms of Service
+     * @param params     FlowParameters containing terms URLs.
      * @param buttonText for the button that represents the "action" described in the terms.
      */
-    public void showTermsForUri(final Uri uri, @StringRes int buttonText) {
-        // Format the terms interpolating the action string
-        String buttonTextString = getContext().getString(buttonText);
-        String preamble = getContext().getString(R.string.create_account_preamble,
-                                                 buttonTextString);
-        //Apply the link color on the part of the string that links to the TOS upon clicking
-        String link = getContext().getString(R.string.terms_of_service);
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
-        int start = preamble.length();
-        ForegroundColorSpan foregroundColorSpan =
-                new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.linkColor));
-        spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
-        setText(spannableStringBuilder);
-
-        // Open in custom tabs on click
-        setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Getting default color
-                TypedValue typedValue = new TypedValue();
-                getContext().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-                @ColorInt int color = typedValue.data;
-
-                new CustomTabsIntent.Builder()
-                        .setToolbarColor(color)
-                        .build()
-                        .launchUrl(getContext(), uri);
-            }
-        });
+    public void showTerms(FlowParameters params, @StringRes int buttonText) {
+        PreambleHandler handler = new PreambleHandler(getContext(), params, buttonText);
+        handler.setPreamble(this);
     }
 }

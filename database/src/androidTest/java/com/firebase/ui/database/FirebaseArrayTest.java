@@ -43,11 +43,7 @@ public class FirebaseArrayTest {
     public void setUp() throws Exception {
         FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
-<<<<<<< HEAD
-        mArray = new FirebaseArray(mRef, Integer.class);
-=======
         mArray = new FirebaseArray<>(mRef, Integer.class);
->>>>>>> version-2.0.0-dev
         mRef.removeValue();
         mListener = runAndWaitUntil(mArray, new Runnable() {
             @Override

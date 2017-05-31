@@ -1,23 +1,15 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -165,7 +157,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         getActivity().setTitle(R.string.title_register_email);
 
         mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
-        setUpTermsOfService();
+        mAgreementText.showTerms(mHelper.getFlowParams(), R.string.button_text_save);
     }
 
     @Override
@@ -176,14 +168,6 @@ public class RegisterEmailFragment extends FragmentBase implements
                                        .setPhotoUri(mUser.getPhotoUri())
                                        .build());
         super.onSaveInstanceState(outState);
-    }
-
-    private void setUpTermsOfService() {
-        if (TextUtils.isEmpty(mHelper.getFlowParams().termsOfServiceUrl)) {
-            return;
-        }
-        mAgreementText.showTermsForUri(Uri.parse(mHelper.getFlowParams().termsOfServiceUrl),
-                                       R.string.button_text_save);
     }
 
     @Override
