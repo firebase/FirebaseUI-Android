@@ -18,12 +18,13 @@
 
 package com.firebase.ui.auth.ui.phone;
 
+import android.os.AsyncTask;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 // We need to move away from ListView and AsyncTask in the future and use (say)
 // RecyclerView and Task/ThreadPoolExecutor .

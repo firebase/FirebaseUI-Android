@@ -11,17 +11,18 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.TwitterAuthProvider;
-import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterConfig;
+import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 import java.lang.ref.WeakReference;
 
-import io.fabric.sdk.android.Fabric;
 
 public class TwitterProvider extends Callback<TwitterSession> implements IdpProvider {
     private static final String TAG = "TwitterProvider";
@@ -45,7 +46,19 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         TwitterAuthConfig authConfig = new TwitterAuthConfig(
                 context.getString(R.string.twitter_consumer_key),
                 context.getString(R.string.twitter_consumer_secret));
-        Fabric.with(context.getApplicationContext(), new Twitter(authConfig));
+        TwitterConfig config = new TwitterConfig.Builder(context)
+                .twitterAuthConfig(authConfig)
+                .build();
+        Twitter.initialize(config);
+    }
+
+    public static void signout(Context context) {
+        try {
+            signOut();
+        } catch (IllegalStateException e) {
+            initialize(context);
+            signOut();
+        }
     }
 
     @Override
@@ -125,5 +138,9 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
                     .setSecret(mTwitterSession.getAuthToken().secret)
                     .build();
         }
+    }
+
+    private static void signOut() throws IllegalStateException {
+        TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 }

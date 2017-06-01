@@ -51,7 +51,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
-import com.twitter.sdk.android.Twitter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,8 +59,6 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
-
-import io.fabric.sdk.android.Fabric;
 
 /**
  * The entry point to the AuthUI authentication flow, and related utility methods. If your
@@ -204,8 +201,8 @@ public class AuthUI {
         LoginManager.getInstance().logOut();
 
         // Twitter sign out
-        if (!Fabric.isInitialized()) TwitterProvider.initialize(activity);
-        Twitter.logOut();
+        TwitterProvider.signout(activity);
+
 
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, googleSignOutTask);
@@ -255,8 +252,7 @@ public class AuthUI {
         LoginManager.getInstance().logOut();
 
         // Twitter sign out
-        if (!Fabric.isInitialized()) TwitterProvider.initialize(activity);
-        Twitter.logOut();
+        TwitterProvider.signout(activity);
 
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, signOutTask);
