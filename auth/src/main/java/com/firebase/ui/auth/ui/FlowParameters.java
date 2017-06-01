@@ -55,10 +55,6 @@ public class FlowParameters implements Parcelable {
 
     public final boolean allowNewEmailAccounts;
 
-    @Nullable
-    public final String reauthReason;
-    public final boolean isReauth;
-
     public FlowParameters(
             @NonNull String appName,
             @NonNull List<IdpConfig> providerInfo,
@@ -67,9 +63,7 @@ public class FlowParameters implements Parcelable {
             @Nullable String termsOfServiceUrl,
             @Nullable String privacyPolicyUrl,
             boolean smartLockEnabled,
-            boolean allowNewEmailAccounts,
-            boolean isReauth,
-            String reauthReason) {
+            boolean allowNewEmailAccounts) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Collections.unmodifiableList(
                 Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null"));
@@ -79,8 +73,6 @@ public class FlowParameters implements Parcelable {
         this.privacyPolicyUrl = privacyPolicyUrl;
         this.smartLockEnabled = smartLockEnabled;
         this.allowNewEmailAccounts = allowNewEmailAccounts;
-        this.isReauth = isReauth;
-        this.reauthReason = reauthReason;
     }
 
     @Override
@@ -93,8 +85,6 @@ public class FlowParameters implements Parcelable {
         dest.writeString(privacyPolicyUrl);
         dest.writeInt(smartLockEnabled ? 1 : 0);
         dest.writeInt(allowNewEmailAccounts ? 1 : 0);
-        dest.writeInt(isReauth ? 1 : 0);
-        dest.writeString(reauthReason);
     }
 
     @Override
@@ -124,9 +114,7 @@ public class FlowParameters implements Parcelable {
                     termsOfServiceUrl,
                     privacyPolicyUrl,
                     smartLockEnabled,
-                    allowNewEmailAccounts,
-                    isReauth,
-                    reauthReason);
+                    allowNewEmailAccounts);
         }
 
         @Override
