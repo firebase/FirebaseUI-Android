@@ -67,8 +67,6 @@
     <string name="choose_image">Choose Image</string>
     <string name="accessibility_downloaded_image">Downloaded image</string>
     <string name="allow_new_email_acccount">Allow account creation if email does not exist.</string>
-    <string name="reauthenticate">Reauth</string>
-    <string name="reauthentication_reason">Reauth was requested from the test app. Please login to continue.</string>
 
     <!-- strings for database demo activities -->
     <string name="start_chatting">No messages. Start chatting at the bottom!</string>
