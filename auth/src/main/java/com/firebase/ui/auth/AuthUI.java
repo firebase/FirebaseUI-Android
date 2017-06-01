@@ -317,13 +317,6 @@ public class AuthUI {
     }
 
     /**
-     * Starts the reauthentication flow.
-     */
-    public ReauthIntentBuilder createReauthIntentBuilder() {
-        return new ReauthIntentBuilder();
-    }
-
-    /**
      * Configuration for an identity provider.
      * <p>
      * In the simplest case, you can supply the provider ID and build the config like this:
@@ -441,7 +434,7 @@ public class AuthUI {
     }
 
     /**
-     * Base builder for both {@link SignInIntentBuilder} and {@link ReauthIntentBuilder}
+     * Base builder for both {@link SignInIntentBuilder}.
      */
     @SuppressWarnings(value = "unchecked")
     private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
@@ -603,52 +596,6 @@ public class AuthUI {
     }
 
     /**
-     * Builder for the intent to start the reauthentication flow.
-     */
-    public final class ReauthIntentBuilder extends AuthIntentBuilder<ReauthIntentBuilder> {
-        private String mReauthReason;
-
-        private ReauthIntentBuilder() {
-            super();
-        }
-
-        /**
-         * Set an explanation for why reauth was requested e.g. "To delete your account you must
-         * reauthenticate."
-         *
-         * @param reauthReason A string explaining why reauthentication was requested.
-         */
-        public ReauthIntentBuilder setReauthReason(String reauthReason) {
-            mReauthReason = reauthReason;
-            return this;
-        }
-
-        @Override
-        public Intent build() {
-            if (FirebaseAuth.getInstance(mApp).getCurrentUser() == null) {
-                throw new IllegalStateException("User must be currently logged in to reauthenticate");
-            }
-
-            return super.build();
-        }
-
-        @Override
-        protected FlowParameters getFlowParams() {
-            return new FlowParameters(
-                    mApp.getName(),
-                    mProviders,
-                    mTheme,
-                    mLogo,
-                    mTosUrl,
-                    mPrivacyPolicyUrl,
-                    mIsSmartLockEnabled,
-                    false,
-                    true,
-                    mReauthReason);
-        }
-    }
-
-    /**
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
@@ -678,9 +625,7 @@ public class AuthUI {
                     mTosUrl,
                     mPrivacyPolicyUrl,
                     mIsSmartLockEnabled,
-                    mAllowNewEmailAccounts,
-                    false,
-                    null);
+                    mAllowNewEmailAccounts);
         }
     }
 }
