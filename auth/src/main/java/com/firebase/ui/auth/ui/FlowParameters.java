@@ -53,10 +53,6 @@ public class FlowParameters implements Parcelable {
 
     public final boolean allowNewEmailAccounts;
 
-    @Nullable
-    public final String reauthReason;
-    public final boolean isReauth;
-
     public final boolean enableCredentials;
     public final boolean enableHints;
 
@@ -69,9 +65,7 @@ public class FlowParameters implements Parcelable {
             @Nullable String privacyPolicyUrl,
             boolean enableCredentials,
             boolean enableHints,
-            boolean allowNewEmailAccounts,
-            boolean isReauth,
-            String reauthReason) {
+            boolean allowNewEmailAccounts) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Collections.unmodifiableList(
                 Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null"));
@@ -82,8 +76,6 @@ public class FlowParameters implements Parcelable {
         this.enableCredentials = enableCredentials;
         this.enableHints = enableHints;
         this.allowNewEmailAccounts = allowNewEmailAccounts;
-        this.isReauth = isReauth;
-        this.reauthReason = reauthReason;
     }
 
     @Override
@@ -97,8 +89,6 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(enableCredentials ? 1 : 0);
         dest.writeInt(enableHints ? 1 : 0);
         dest.writeInt(allowNewEmailAccounts ? 1 : 0);
-        dest.writeInt(isReauth ? 1 : 0);
-        dest.writeString(reauthReason);
     }
 
     @Override
@@ -118,8 +108,6 @@ public class FlowParameters implements Parcelable {
             boolean enableCredentials = in.readInt() != 0;
             boolean enableHints = in.readInt() != 0;
             boolean allowNewEmailAccounts = in.readInt() != 0;
-            boolean isReauth = in.readInt() != 0;
-            String reauthReason = in.readString();
 
             return new FlowParameters(
                     appName,
@@ -130,9 +118,7 @@ public class FlowParameters implements Parcelable {
                     privacyPolicyUrl,
                     enableCredentials,
                     enableHints,
-                    allowNewEmailAccounts,
-                    isReauth,
-                    reauthReason);
+                    allowNewEmailAccounts);
         }
 
         @Override
