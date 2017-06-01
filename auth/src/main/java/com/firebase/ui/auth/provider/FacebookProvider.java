@@ -89,6 +89,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     }
 
     @Override
+    @AuthUI.SupportedProvider
     public String getProviderId() {
         return FacebookAuthProvider.PROVIDER_ID;
     }

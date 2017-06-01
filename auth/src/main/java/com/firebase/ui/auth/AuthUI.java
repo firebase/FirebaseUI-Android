@@ -22,6 +22,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.FragmentActivity;
 
@@ -73,6 +74,13 @@ import io.fabric.sdk.android.Fabric;
  * for examples on how to get started with FirebaseUI Auth.
  */
 public class AuthUI {
+    @StringDef({
+                       EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
+                       GoogleAuthProvider.PROVIDER_ID, GOOGLE_PROVIDER,
+                       FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
+                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER
+               })
+    public @interface SupportedProvider {}
 
     /**
      * Provider identifier for email and password credentials, for use with
@@ -326,7 +334,7 @@ public class AuthUI {
         private final String mProviderId;
         private final List<String> mScopes;
 
-        private IdpConfig(@NonNull String providerId, List<String> scopes) {
+        private IdpConfig(@SupportedProvider @NonNull String providerId, List<String> scopes) {
             mProviderId = providerId;
             mScopes = Collections.unmodifiableList(scopes);
         }
@@ -336,6 +344,7 @@ public class AuthUI {
             mScopes = Collections.unmodifiableList(in.createStringArrayList());
         }
 
+        @SupportedProvider
         public String getProviderId() {
             return mProviderId;
         }
@@ -391,7 +400,7 @@ public class AuthUI {
         }
 
         public static class Builder {
-            private String mProviderId;
+            @SupportedProvider private String mProviderId;
             private List<String> mScopes = new ArrayList<>();
 
             /**
@@ -401,7 +410,7 @@ public class AuthUI {
              *                   AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for
              *                   the complete list of supported Identity providers
              */
-            public Builder(@NonNull String providerId) {
+            public Builder(@SupportedProvider @NonNull String providerId) {
                 if (!SUPPORTED_PROVIDERS.contains(providerId)) {
                     throw new IllegalArgumentException("Unkown provider: " + providerId);
                 }
