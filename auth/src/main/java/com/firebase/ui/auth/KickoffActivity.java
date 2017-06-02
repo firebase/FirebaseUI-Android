@@ -2,14 +2,12 @@ package com.firebase.ui.auth;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.RestrictTo;
-import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.util.Log;
+
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -87,41 +85,7 @@ public class KickoffActivity extends HelperActivityBase {
 
     private void start() {
         FlowParameters flowParams = mActivityHelper.getFlowParams();
-        if (flowParams.isReauth) {
-            showReauthDialog();
-        } else {
-            SignInDelegate.delegate(this, flowParams);
-        }
-    }
-
-    private void showReauthDialog() {
-        final FlowParameters flowParams = mActivityHelper.getFlowParams();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setTitle(R.string.reauth_dialog_title)
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        finish(ResultCodes.CANCELED, new Intent());
-                    }
-                })
-                .setPositiveButton(R.string.sign_in_default, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SignInDelegate.delegate(KickoffActivity.this, flowParams);
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish(ResultCodes.CANCELED, new Intent());
-                    }
-                });
-
-        if (!TextUtils.isEmpty(flowParams.reauthReason)) {
-            builder.setMessage(flowParams.reauthReason);
-        }
-
-        builder.create().show();
+        SignInDelegate.delegate(this, flowParams);
     }
 
     /**

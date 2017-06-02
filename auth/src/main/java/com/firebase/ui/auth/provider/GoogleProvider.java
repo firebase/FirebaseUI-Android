@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -97,6 +98,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     }
 
     @Override
+    @AuthUI.SupportedProvider
     public String getProviderId() {
         return GoogleAuthProvider.PROVIDER_ID;
     }

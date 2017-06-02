@@ -94,14 +94,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         ImeHelper.setImeOnDoneListener(mPasswordField, this);
 
         // Create welcome back text with email bolded.
-        String bodyText;
+        String bodyText = getString(R.string.welcome_back_password_prompt_body, mEmail);
         FlowParameters flowParameters = mActivityHelper.getFlowParams();
-        if (flowParameters.isReauth) {
-            welcomeBackHeader.setText(getString(R.string.welcome_back_email_header_reauth));
-            bodyText = getString(R.string.reauth_welcome_back_password_prompt_body, mEmail);
-        } else {
-            bodyText = getString(R.string.welcome_back_password_prompt_body, mEmail);
-        }
+
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
