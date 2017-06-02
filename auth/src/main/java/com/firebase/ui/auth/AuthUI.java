@@ -22,6 +22,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.FragmentActivity;
 
@@ -71,6 +72,14 @@ import java.util.Set;
  * for examples on how to get started with FirebaseUI Auth.
  */
 public class AuthUI {
+    @StringDef({
+                       EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
+                       PhoneAuthProvider.PROVIDER_ID, PHONE_VERIFICATION_PROVIDER,
+                       GoogleAuthProvider.PROVIDER_ID, GOOGLE_PROVIDER,
+                       FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
+                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER,
+               })
+    public @interface SupportedProvider {}
 
     /**
      * Provider identifier for email and password credentials, for use with
@@ -334,13 +343,6 @@ public class AuthUI {
     }
 
     /**
-     * Starts the reauthentication flow.
-     */
-    public ReauthIntentBuilder createReauthIntentBuilder() {
-        return new ReauthIntentBuilder();
-    }
-
-    /**
      * Configuration for an identity provider.
      * <p>
      * In the simplest case, you can supply the provider ID and build the config like this:
@@ -350,7 +352,7 @@ public class AuthUI {
         private final String mProviderId;
         private final List<String> mScopes;
 
-        private IdpConfig(@NonNull String providerId, List<String> scopes) {
+        private IdpConfig(@SupportedProvider @NonNull String providerId, List<String> scopes) {
             mProviderId = providerId;
             mScopes = Collections.unmodifiableList(scopes);
         }
@@ -360,6 +362,7 @@ public class AuthUI {
             mScopes = Collections.unmodifiableList(in.createStringArrayList());
         }
 
+        @SupportedProvider
         public String getProviderId() {
             return mProviderId;
         }
@@ -415,7 +418,7 @@ public class AuthUI {
         }
 
         public static class Builder {
-            private String mProviderId;
+            @SupportedProvider private String mProviderId;
             private List<String> mScopes = new ArrayList<>();
 
             /**
@@ -425,7 +428,7 @@ public class AuthUI {
              *                   AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for
              *                   the complete list of supported Identity providers
              */
-            public Builder(@NonNull String providerId) {
+            public Builder(@SupportedProvider @NonNull String providerId) {
                 if (!SUPPORTED_PROVIDERS.contains(providerId)) {
                     throw new IllegalArgumentException("Unkown provider: " + providerId);
                 }
@@ -458,7 +461,7 @@ public class AuthUI {
     }
 
     /**
-     * Base builder for both {@link SignInIntentBuilder} and {@link ReauthIntentBuilder}
+     * Base builder for both {@link SignInIntentBuilder}.
      */
     @SuppressWarnings(value = "unchecked")
     private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
@@ -661,53 +664,6 @@ public class AuthUI {
     }
 
     /**
-     * Builder for the intent to start the reauthentication flow.
-     */
-    public final class ReauthIntentBuilder extends AuthIntentBuilder<ReauthIntentBuilder> {
-        private String mReauthReason;
-
-        private ReauthIntentBuilder() {
-            super();
-        }
-
-        /**
-         * Set an explanation for why reauth was requested e.g. "To delete your account you must
-         * reauthenticate."
-         *
-         * @param reauthReason A string explaining why reauthentication was requested.
-         */
-        public ReauthIntentBuilder setReauthReason(String reauthReason) {
-            mReauthReason = reauthReason;
-            return this;
-        }
-
-        @Override
-        public Intent build() {
-            if (FirebaseAuth.getInstance(mApp).getCurrentUser() == null) {
-                throw new IllegalStateException("User must be currently logged in to reauthenticate");
-            }
-
-            return super.build();
-        }
-
-        @Override
-        protected FlowParameters getFlowParams() {
-            return new FlowParameters(
-                    mApp.getName(),
-                    mProviders,
-                    mTheme,
-                    mLogo,
-                    mTosUrl,
-                    mPrivacyPolicyUrl,
-                    mEnableCredentials,
-                    mEnableHints,
-                    false,
-                    true,
-                    mReauthReason);
-        }
-    }
-
-    /**
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
@@ -738,9 +694,7 @@ public class AuthUI {
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
                     mEnableHints,
-                    mAllowNewEmailAccounts,
-                    false,
-                    null);
+                    mAllowNewEmailAccounts);
         }
     }
 }

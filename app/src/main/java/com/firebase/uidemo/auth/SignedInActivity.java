@@ -53,9 +53,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SignedInActivity extends AppCompatActivity {
-    private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
 
-    private static final int RC_REAUTH = 100;
+    private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
 
     @BindView(android.R.id.content)
     View mRootView;
@@ -115,22 +114,6 @@ public class SignedInActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }
-
-    @OnClick(R.id.reauthenticate)
-    public void reauthenticate() {
-        Intent reauthIntent = AuthUI.getInstance()
-                .createReauthIntentBuilder()
-                .setAvailableProviders(mSignedInConfig.providerInfo)
-                .setIsSmartLockEnabled(mSignedInConfig.isCredentialSelectorEnabled,
-                                       mSignedInConfig.isHintSelectorEnabled)
-                .setLogo(mSignedInConfig.logo)
-                .setTheme(mSignedInConfig.theme)
-                .setTosUrl(mSignedInConfig.tosUrl)
-                .setReauthReason(getString(R.string.reauthentication_reason))
-                .build();
-
-        startActivityForResult(reauthIntent, RC_REAUTH);
     }
 
     @OnClick(R.id.delete_account)
@@ -309,15 +292,5 @@ public class SignedInActivity extends AppCompatActivity {
 
         return startIntent.setClass(context, SignedInActivity.class)
                 .putExtra(EXTRA_SIGNED_IN_CONFIG, signedInConfig);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_REAUTH) {
-            mIdpResponse = IdpResponse.fromResultIntent(data);
-            populateIdpToken();
-            populateProfile();
-        }
     }
 }

@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/send_code"
             android:textColor="?android:textColorTertiary"
+            android:textIsSelectable="true"
             android:layout_marginTop="@dimen/field_padding_vert"/>
     </RelativeLayout>
 </ScrollView>

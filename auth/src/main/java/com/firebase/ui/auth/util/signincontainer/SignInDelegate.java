@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils   ;
 import android.util.Log;
+
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
@@ -94,15 +95,6 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         }
 
         FlowParameters flowParams = mHelper.getFlowParams();
-        if (flowParams.isReauth) {
-            // if it's a reauth and it's not an email account, skip Smart Lock.
-            List<String> providers = mHelper.getCurrentUser().getProviders();
-            if (providers == null || providers.size() > 0) {
-                // this is a non-email user, skip Smart Lock
-                startAuthMethodChoice();
-                return;
-            }
-        }
         if (flowParams.enableCredentials) {
             mHelper.showLoadingDialog(R.string.progress_dialog_loading);
 
@@ -194,7 +186,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private List<String> getSupportedAccountTypes() {
         List<String> accounts = new ArrayList<>();
         for (AuthUI.IdpConfig idpConfig : mHelper.getFlowParams().providerInfo) {
-            String providerId = idpConfig.getProviderId();
+            @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
             if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
                     || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
                     || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
@@ -248,29 +240,8 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             providerIdToConfig.put(providerConfig.getProviderId(), providerConfig);
         }
 
-        List<IdpConfig> visibleProviders = new ArrayList<>();
-        if (flowParams.isReauth) {
-            // For reauth flow we only want to show the IDPs which the user has associated with
-            // their account.
-            List<String> providerIds = mHelper.getCurrentUser().getProviders();
-            if (providerIds.size() == 0) {
-                // zero providers indicates that it is an email account
-                visibleProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
-            } else {
-                for (String providerId : providerIds) {
-                    IdpConfig idpConfig = providerIdToConfig.get(providerId);
-                    if (idpConfig == null) {
-                        Log.e(TAG, "User has provider " + providerId + " associated with their "
-                                + "account, but only the following IDPs have been configured: "
-                                + TextUtils.join(", ", providerIdToConfig.keySet()));
-                    } else {
-                        visibleProviders.add(idpConfig);
-                    }
-                }
-            }
-        } else {
-            visibleProviders = idpConfigs;
-        }
+        List<IdpConfig> visibleProviders = idpConfigs;
+
         // If the only provider is Email, immediately launch the email flow. Otherwise, launch
         // the auth method picker screen.
         if (visibleProviders.size() == 1) {
@@ -279,10 +250,8 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                         RegisterEmailActivity.createIntent(getContext(), flowParams),
                         RC_EMAIL_FLOW);
             } else {
-                String email = flowParams.isReauth ? mHelper.getCurrentUser().getEmail() : null;
-                redirectToIdpSignIn(email,
-                                    providerIdToAccountType(visibleProviders.get(0)
-                                                                    .getProviderId()));
+                redirectToIdpSignIn(null, providerIdToAccountType(
+                        visibleProviders.get(0).getProviderId()));
             }
         } else {
             startActivityForResult(
