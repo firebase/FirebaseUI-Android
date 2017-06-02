@@ -83,12 +83,14 @@ public class AuthUITest {
                                       new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
                                       new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
                 .setTosUrl(TestConstants.TOS_URL)
+                .setPrivacyPolicyUrl(TestConstants.PRIVACY_URL)
                 .build()
                 .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
 
         assertEquals(3, flowParameters.providerInfo.size());
         assertEquals(mFirebaseApp.getName(), flowParameters.appName);
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
+        assertEquals(TestConstants.PRIVACY_URL, flowParameters.privacyPolicyUrl);
         assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);
     }
 }

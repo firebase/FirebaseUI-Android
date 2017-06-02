@@ -52,6 +52,8 @@ public class AuthUiActivity extends AppCompatActivity {
     private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
+    private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google.com/policies/privacy/";
+    private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google.com/terms/analytics/#7_privacy";
     private static final int RC_SIGN_IN = 100;
 
     @BindView(R.id.default_theme)
@@ -86,6 +88,12 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @BindView(R.id.firebase_tos)
     RadioButton mUseFirebaseTos;
+
+    @BindView(R.id.google_privacy)
+    RadioButton mUseGooglePrivacyPolicy;
+
+    @BindView(R.id.firebase_privacy)
+    RadioButton mUseFirebasePrivacyPolicy;
 
     @BindView(R.id.sign_in)
     Button mSignIn;
@@ -123,8 +131,8 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_scope_drive_file)
     CheckBox mGoogleScopeDriveFile;
 
-    @BindView(R.id.google_scope_games)
-    CheckBox mGoogleScopeGames;
+    @BindView(R.id.google_scope_youtube_data)
+    CheckBox mGoogleScopeYoutubeData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -194,6 +202,7 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setLogo(getSelectedLogo())
                         .setAvailableProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
+                        .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
                         .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
@@ -259,7 +268,7 @@ public class AuthUiActivity extends AppCompatActivity {
     private void setGoogleScopesEnabled(boolean enabled) {
         mGoogleScopesLabel.setEnabled(enabled);
         mGoogleScopeDriveFile.setEnabled(enabled);
-        mGoogleScopeGames.setEnabled(enabled);
+        mGoogleScopeYoutubeData.setEnabled(enabled);
     }
 
     @MainThread
@@ -341,6 +350,15 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @MainThread
+    private String getSelectedPrivacyPolicyUrl() {
+        if (mUseGooglePrivacyPolicy.isChecked()) {
+            return GOOGLE_PRIVACY_POLICY_URL;
+        }
+
+        return FIREBASE_PRIVACY_POLICY_URL;
+    }
+
+    @MainThread
     private boolean isGoogleConfigured() {
         return !UNCHANGED_CONFIG_VALUE.equals(
                 getString(R.string.default_web_client_id));
@@ -392,8 +410,8 @@ public class AuthUiActivity extends AppCompatActivity {
     @MainThread
     private List<String> getGooglePermissions() {
         List<String> result = new ArrayList<>();
-        if (mGoogleScopeGames.isChecked()) {
-            result.add(Scopes.GAMES);
+        if (mGoogleScopeYoutubeData.isChecked()) {
+            result.add("https://www.googleapis.com/auth/youtube.readonly");
         }
         if (mGoogleScopeDriveFile.isChecked()) {
             result.add(Scopes.DRIVE_FILE);

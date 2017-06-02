@@ -9,6 +9,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.provider.GitHubProvider;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -45,7 +46,7 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
      * a Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
      */
     @Nullable
-    public static String providerIdToAccountType(@NonNull String providerId) {
+    public static String providerIdToAccountType(@AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
                 return IdentityProviders.GOOGLE;
@@ -64,6 +65,7 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     }
 
     @Nullable
+    @AuthUI.SupportedProvider
     public static String accountTypeToProviderId(@NonNull String accountType) {
         switch (accountType) {
             case IdentityProviders.GOOGLE:
@@ -92,7 +94,7 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         List<Credential> credentials = new ArrayList<>();
         for (UserInfo userInfo : user.getProviderData()) {
             // Get provider ID from Firebase Auth
-            String providerId = userInfo.getProviderId();
+            @AuthUI.SupportedProvider String providerId = userInfo.getProviderId();
 
             // Convert to Credentials API account type
             String accountType = providerIdToAccountType(providerId);

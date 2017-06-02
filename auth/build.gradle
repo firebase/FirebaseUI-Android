@@ -44,7 +44,7 @@ dependencies {
     compile "com.google.firebase:firebase-auth:$firebaseVersion"
     compile "com.google.android.gms:play-services-auth:$firebaseVersion"
 
-    compile 'com.facebook.android:facebook-android-sdk:4.22.1'
+    compile 'com.facebook.android:facebook-android-sdk:4.23.0'
     compile("com.twitter.sdk.android:twitter:2.3.2@aar") { transitive = true }
 
     // Retrofit
