@@ -62,10 +62,9 @@ public class TestHelper {
                 AuthUI.getDefaultTheme(),
                 AuthUI.NO_LOGO,
                 null  /* tosUrl */,
+                null /* privacyPolicyUrl */,
                 true  /* smartLockEnabled */,
-                true  /* allowNewEmailAccounts */,
-                false /* isReauth */,
-                null  /* reauthReason */);
+                true  /* allowNewEmailAccounts */);
     }
 
     public static void verifySmartLockSave(String providerId, String email, String password) {
