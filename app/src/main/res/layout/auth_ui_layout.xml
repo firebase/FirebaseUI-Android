@@ -146,6 +146,34 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="16dp"
+                android:text="@string/privacy_policy_header"/>
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/google_privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/google_privacy_label"/>
+
+                <RadioButton
+                    android:id="@+id/firebase_privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/firebase_privacy_label"/>
+
+            </RadioGroup>
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/logo_header"/>
 
             <RadioGroup
@@ -207,18 +235,18 @@
                 android:text="@string/extra_google_scopes"/>
 
             <CheckBox
-                android:id="@+id/google_scope_games"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="@string/games"/>
-
-            <CheckBox
                 android:id="@+id/google_scope_drive_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="@string/drive_file"/>
+                android:text="@string/drive_file_scope"/>
+
+            <CheckBox
+                android:id="@+id/google_scope_youtube_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/youtube_data_scope"/>
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
