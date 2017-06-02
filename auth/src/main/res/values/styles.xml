@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="FirebaseUI" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -21,8 +21,8 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingLeft">24dp</item>
-        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingLeft">@dimen/wrapper_padding_horiz</item>
+        <item name="android:paddingRight">@dimen/wrapper_padding_horiz</item>
     </style>
 
     <style name="FirebaseUI.Text">
@@ -31,62 +31,62 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
-    <style name="FirebaseUI.Text.T01">
+    <style name="FirebaseUI.Text.T01" tools:ignore="UnusedResources">
         <item name="android:textSize">112sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T02">
+    <style name="FirebaseUI.Text.T02" tools:ignore="UnusedResources">
         <item name="android:textSize">64sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T03">
+    <style name="FirebaseUI.Text.T03" tools:ignore="UnusedResources">
         <item name="android:textSize">48sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T04">
+    <style name="FirebaseUI.Text.T04" tools:ignore="UnusedResources">
         <item name="android:textSize">36sp</item>
         <item name="android:lineSpacingExtra">12sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T05">
+    <style name="FirebaseUI.Text.T05" tools:ignore="UnusedResources">
         <item name="android:textSize">24sp</item>
         <item name="android:lineSpacingExtra">8sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T06">
+    <style name="FirebaseUI.Text.T06" tools:ignore="UnusedResources">
         <item name="android:textSize">18sp</item>
         <item name="android:lineSpacingExtra">6sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T07">
+    <style name="FirebaseUI.Text.T07" tools:ignore="UnusedResources">
         <item name="android:textSize">20sp</item>
         <item name="android:lineSpacingExtra">4sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="FirebaseUI.Text.T08">
+    <style name="FirebaseUI.Text.T08" tools:ignore="UnusedResources">
         <item name="android:textSize">16sp</item>
         <item name="android:lineSpacingExtra">8sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T09">
+    <style name="FirebaseUI.Text.T09" tools:ignore="UnusedResources">
         <item name="android:textSize">16sp</item>
         <item name="android:lineSpacingExtra">4sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="FirebaseUI.Text.T11">
+    <style name="FirebaseUI.Text.T11" tools:ignore="UnusedResources">
         <item name="android:textSize">14sp</item>
         <item name="android:lineSpacingExtra">6sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="FirebaseUI.Text.T12">
+    <style name="FirebaseUI.Text.T12" tools:ignore="UnusedResources">
         <item name="android:textSize">12sp</item>
         <item name="android:lineSpacingExtra">4sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T13">
+    <style name="FirebaseUI.Text.T13" tools:ignore="UnusedResources">
         <item name="android:textSize">10sp</item>
     </style>
 
@@ -127,13 +127,13 @@
 
     <style name="FirebaseUI.Text.Heading" parent="FirebaseUI.Text.T07">
         <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingBottom">@dimen/heading_padding_bottom</item>
     </style>
 
     <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingBottom">@dimen/body_padding_bottom</item>
     </style>
 
     <!-- Authentication method picker styles -->

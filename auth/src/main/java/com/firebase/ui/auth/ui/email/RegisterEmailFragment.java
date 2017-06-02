@@ -1,18 +1,11 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,20 +92,19 @@ public class RegisterEmailFragment extends FragmentBase implements
 
         View v = inflater.inflate(R.layout.register_email_layout, container, false);
 
-        mPasswordFieldValidator = new PasswordFieldValidator(
-                (TextInputLayout) v.findViewById(R.id.password_layout),
-                getResources().getInteger(R.integer.min_password_length));
-        mNameValidator = new RequiredFieldValidator(
-                (TextInputLayout) v.findViewById(R.id.name_layout));
-        mEmailFieldValidator = new EmailFieldValidator(
-                (TextInputLayout) v.findViewById(R.id.email_layout));
-
         mEmailEditText = (EditText) v.findViewById(R.id.email);
         mNameEditText = (EditText) v.findViewById(R.id.name);
         mPasswordEditText = (EditText) v.findViewById(R.id.password);
         mAgreementText = (TextView) v.findViewById(R.id.create_account_text);
         mEmailInput = (TextInputLayout) v.findViewById(R.id.email_layout);
         mPasswordInput = (TextInputLayout) v.findViewById(R.id.password_layout);
+
+        mPasswordFieldValidator = new PasswordFieldValidator(
+                mPasswordInput,
+                getResources().getInteger(R.integer.min_password_length));
+        mNameValidator = new RequiredFieldValidator(
+                (TextInputLayout) v.findViewById(R.id.name_layout));
+        mEmailFieldValidator = new EmailFieldValidator(mEmailInput);
 
         ImeHelper.setImeOnDoneListener(mPasswordEditText, this);
 
@@ -165,7 +157,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         getActivity().setTitle(R.string.title_register_email);
 
         mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
-        setUpTermsOfService();
+        new PreambleHandler(getContext(), mHelper.getFlowParams()).setPreamble(mAgreementText);
     }
 
     @Override
@@ -176,39 +168,6 @@ public class RegisterEmailFragment extends FragmentBase implements
                                        .setPhotoUri(mUser.getPhotoUri())
                                        .build());
         super.onSaveInstanceState(outState);
-    }
-
-    private void setUpTermsOfService() {
-        if (TextUtils.isEmpty(mHelper.getFlowParams().termsOfServiceUrl)) {
-            return;
-        }
-
-        ForegroundColorSpan foregroundColorSpan =
-                new ForegroundColorSpan(ContextCompat.getColor(getContext(), R.color.linkColor));
-
-        String preamble = getString(R.string.create_account_preamble);
-        String link = getString(R.string.terms_of_service);
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
-        int start = preamble.length();
-        spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
-
-        mAgreementText.setText(spannableStringBuilder);
-        mAgreementText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Getting default color
-                TypedValue typedValue = new TypedValue();
-                getActivity().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-                @ColorInt int color = typedValue.data;
-
-                new CustomTabsIntent.Builder()
-                        .setToolbarColor(color)
-                        .build()
-                        .launchUrl(
-                                getActivity(),
-                                Uri.parse(mHelper.getFlowParams().termsOfServiceUrl));
-            }
-        });
     }
 
     @Override
