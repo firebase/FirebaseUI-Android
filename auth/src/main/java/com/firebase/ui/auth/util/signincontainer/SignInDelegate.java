@@ -24,6 +24,7 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -43,6 +44,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +66,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
     private static final int RC_EMAIL_FLOW = 5;
+    private static final int RC_PHONE_FLOW = 6;
 
     private Credential mCredential;
 
@@ -242,16 +245,22 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         List<IdpConfig> visibleProviders = idpConfigs;
 
-        // If the only provider is Email, immediately launch the email flow. Otherwise, launch
-        // the auth method picker screen.
+        // If there is only one provider selected, launch the flow directly
         if (visibleProviders.size() == 1) {
-            if (visibleProviders.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
+            String firstProvider = visibleProviders.get(0).getProviderId();
+            if (firstProvider.equals(EmailAuthProvider.PROVIDER_ID)) {
+                // Go directly to email flow
                 startActivityForResult(
                         RegisterEmailActivity.createIntent(getContext(), flowParams),
                         RC_EMAIL_FLOW);
+            } else if (firstProvider.equals(PhoneAuthProvider.PROVIDER_ID)) {
+                // Go directly to phone flow
+                startActivityForResult(
+                        PhoneVerificationActivity.createIntent(getContext(), flowParams, null),
+                        RC_PHONE_FLOW);
             } else {
-                redirectToIdpSignIn(null, providerIdToAccountType(
-                        visibleProviders.get(0).getProviderId()));
+                // Launch IDP flow
+                redirectToIdpSignIn(null, providerIdToAccountType(firstProvider));
             }
         } else {
             startActivityForResult(
