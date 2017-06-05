@@ -12,7 +12,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
-public class GoogleSignInHelper extends GoogleApiHelper implements CredentialTaskApi {
+public class GoogleSignInHelper extends GoogleApiHelper {
     protected GoogleSignInHelper(FragmentActivity activity, GoogleApiClient.Builder builder) {
         super(activity, builder);
     }
@@ -38,7 +38,6 @@ public class GoogleSignInHelper extends GoogleApiHelper implements CredentialTas
         return statusTask.getTask();
     }
 
-    @Override
     public Task<Status> disableAutoSignIn() {
         final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
         getConnectedApiTask().addOnCompleteListener(new ExceptionForwarder<>(
@@ -53,7 +52,6 @@ public class GoogleSignInHelper extends GoogleApiHelper implements CredentialTas
         return statusTask.getTask();
     }
 
-    @Override
     public Task<Status> delete(final Credential credential) {
         final TaskCompletionSource<Status> statusTask = new TaskCompletionSource<>();
         getConnectedApiTask().addOnCompleteListener(new ExceptionForwarder<>(

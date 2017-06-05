@@ -44,18 +44,6 @@ public class AuthUITest {
     }
 
     @Test
-    public void testCreateStartIntent_deprecatedSetProvidersShouldStillWork() {
-        FlowParameters flowParameters = AuthUI
-                .getInstance(mFirebaseApp)
-                .createSignInIntentBuilder()
-                .setProviders(new String[]{AuthUI.EMAIL_PROVIDER, AuthUI.TWITTER_PROVIDER})
-                .build()
-                .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
-        assertEquals(2, flowParameters.providerInfo.size());
-        assertEquals(AuthUI.EMAIL_PROVIDER, flowParameters.providerInfo.get(0).getProviderId());
-    }
-
-    @Test
     public void testCreateStartIntent_shouldHaveEmailAsDefaultProvider() {
         FlowParameters flowParameters = AuthUI
                 .getInstance(mFirebaseApp)
