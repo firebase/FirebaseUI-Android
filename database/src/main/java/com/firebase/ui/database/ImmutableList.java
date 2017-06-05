@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class ImmutableList<E> implements List<E> {
     /**
      * Guaranteed to throw an exception and leave the collection unmodified.
@@ -129,6 +130,7 @@ public abstract class ImmutableList<E> implements List<E> {
         throw new UnsupportedOperationException();
     }
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     protected final class ImmutableIterator implements Iterator<E> {
         protected Iterator<E> mIterator;
 
@@ -147,6 +149,7 @@ public abstract class ImmutableList<E> implements List<E> {
         }
     }
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     protected final class ImmutableListIterator implements ListIterator<E> {
         protected ListIterator<E> mListIterator;
 
