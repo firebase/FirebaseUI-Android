@@ -56,6 +56,7 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
         for (int i = 0; i < size(); i++) {
             listener.onChildChanged(ChangeEventListener.EventType.ADDED, get(i), i, -1);
         }
+        listener.onDataChanged();
 
         return listener;
     }
