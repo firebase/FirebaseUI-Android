@@ -71,6 +71,11 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
     @CallSuper
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
         mListeners.remove(listener);
+
+        // Reset mHasDataChanged if there are no more listeners
+        if (!isListening()) {
+            mHasDataChanged = false;
+        }
     }
 
     /**
