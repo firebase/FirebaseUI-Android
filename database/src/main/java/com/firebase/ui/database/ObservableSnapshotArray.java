@@ -23,6 +23,8 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
     protected final List<ChangeEventListener> mListeners = new CopyOnWriteArrayList<>();
     protected final SnapshotParser<E> mParser;
 
+    private boolean mHasDataChanged = false;
+
     /**
      * Create an ObservableSnapshotArray where snapshots are parsed as objects of a particular
      * class.
@@ -56,7 +58,9 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
         for (int i = 0; i < size(); i++) {
             listener.onChildChanged(ChangeEventListener.EventType.ADDED, get(i), i, -1);
         }
-        listener.onDataChanged();
+        if (mHasDataChanged) {
+            listener.onDataChanged();
+        }
 
         return listener;
     }
@@ -99,6 +103,7 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
     }
 
     protected final void notifyListenersOnDataChanged() {
+        mHasDataChanged = true;
         for (ChangeEventListener listener : mListeners) {
             listener.onDataChanged();
         }
