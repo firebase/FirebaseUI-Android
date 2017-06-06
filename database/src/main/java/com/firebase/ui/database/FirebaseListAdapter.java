@@ -113,6 +113,11 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     @Override
+    public ObservableSnapshotArray<T> getSnapshots() {
+        return mSnapshots;
+    }
+
+    @Override
     public int getCount() {
         return mSnapshots.size();
     }
