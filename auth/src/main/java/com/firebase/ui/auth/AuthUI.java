@@ -108,6 +108,16 @@ public class AuthUI {
                     TWITTER_PROVIDER
             )));
 
+    /**
+     * The list of all supported authentication providers in Firebase Auth UI in their basic
+     * {@link IdpConfig} form.
+     */
+    public static final List<IdpConfig> ALL_PROVIDERS =
+            Arrays.asList(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build(),
+                          new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                          new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                          new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
+
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
 
     private final FirebaseApp mApp;
