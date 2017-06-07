@@ -40,7 +40,7 @@ public class BaseHelperShadow {
         if (sSaveSmartLock == null) {
             sSaveSmartLock = Mockito.mock(SaveSmartLock.class);
         }
-        if(sPhoneAuthProvider == null) {
+        if (sPhoneAuthProvider == null) {
             sPhoneAuthProvider = Mockito.mock(PhoneAuthProvider.class);
         }
     }

@@ -121,7 +121,8 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
 
     @NonNull
     @Override
-    public <TContinuationResult> Task<TContinuationResult> continueWith(@NonNull Continuation<TResult, TContinuationResult> continuation) {
+    public <TContinuationResult> Task<TContinuationResult> continueWith(
+            @NonNull Continuation<TResult, TContinuationResult> continuation) {
         try {
             return Tasks.forResult(continuation.then(Tasks.forResult(mResult)));
         } catch (Exception e) {

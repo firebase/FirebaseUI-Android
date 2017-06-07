@@ -143,7 +143,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
                             PhoneNumberUtils
                                     .formatPhoneNumberUsingCurrentCountry(unformattedPhone,
                                                                           getContext());
-                    if(formattedPhone == null) {
+                    if (formattedPhone == null) {
                         Log.e(TAG, "Unable to normalize phone number from hint selector:"
                                 + unformattedPhone);
                         return;

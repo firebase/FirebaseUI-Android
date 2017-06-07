@@ -43,7 +43,10 @@ import com.google.firebase.auth.EmailAuthProvider;
  * Host Activities should implement {@link CheckEmailListener}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class CheckEmailFragment extends FragmentBase implements View.OnClickListener, ImeHelper.DonePressedListener {
+public class CheckEmailFragment extends FragmentBase implements
+        View.OnClickListener,
+        ImeHelper.DonePressedListener {
+
     /**
      * Interface to be implemented by Activities hosting this Fragment.
      */

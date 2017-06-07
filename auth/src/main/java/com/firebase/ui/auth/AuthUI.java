@@ -451,7 +451,7 @@ public class AuthUI {
                     mProviders.add(config);
                 }
 
-                if(config.getProviderId().equals(FACEBOOK_PROVIDER)) {
+                if (config.getProviderId().equals(FACEBOOK_PROVIDER)) {
                     try {
                         Class c = com.facebook.FacebookCallback.class;
                     } catch (NoClassDefFoundError e) {
@@ -461,7 +461,7 @@ public class AuthUI {
                     }
                 }
 
-                if(config.getProviderId().equals(TWITTER_PROVIDER)) {
+                if (config.getProviderId().equals(TWITTER_PROVIDER)) {
                     try {
                         Class c = com.twitter.sdk.android.core.TwitterCore.class;
                     } catch (NoClassDefFoundError e) {

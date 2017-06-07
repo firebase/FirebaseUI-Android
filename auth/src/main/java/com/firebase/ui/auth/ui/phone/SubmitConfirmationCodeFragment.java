@@ -40,8 +40,11 @@ import com.firebase.ui.auth.ui.TermsTextView;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SubmitConfirmationCodeFragment extends FragmentBase {
-    private static long RESEND_WAIT_MILLIS = 15000;
+
     public static final String TAG = "SubmitConfirmationCodeFragment";
+
+    private static final long RESEND_WAIT_MILLIS = 15000;
+    private static final String EXTRA_MILLIS_UNTIL_FINISHED = "EXTRA_MILLIS_UNTIL_FINISHED";
 
     TextView mEditPhoneTextView;
     TextView mResendCodeTextView;
@@ -52,7 +55,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     PhoneVerificationActivity mVerifier;
     TermsTextView mAgreementText;
     long mMillisUntilFinished;
-    private String EXTRA_MILLIS_UNTIL_FINISHED = "EXTRA_MILLIS_UNTIL_FINISHED";
+
 
 
     public static SubmitConfirmationCodeFragment getInstance(FlowParameters flowParameters,
@@ -97,7 +100,8 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     public void onStart() {
         super.onStart();
         mConfirmationCodeEditText.requestFocus();
-        InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
         imgr.showSoftInput(mConfirmationCodeEditText, 0);
     }
 

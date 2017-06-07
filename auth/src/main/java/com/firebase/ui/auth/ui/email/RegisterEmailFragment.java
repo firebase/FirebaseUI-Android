@@ -271,8 +271,11 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                     .show();
 
                                             if (provider == null) {
-                                                throw new IllegalStateException(
-                                                        "User has no providers even though we got a FirebaseAuthUserCollisionException");
+                                                String msg =
+                                                        "User has no providers even though " +
+                                                        "we got a " +
+                                                        "FirebaseAuthUserCollisionException";
+                                                throw new IllegalStateException(msg);
                                             } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(
                                                     provider)) {
                                                 getActivity().startActivityForResult(

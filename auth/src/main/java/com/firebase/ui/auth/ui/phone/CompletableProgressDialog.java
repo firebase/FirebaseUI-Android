@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 
-final public class CompletableProgressDialog extends ProgressDialog {
+public final class CompletableProgressDialog extends ProgressDialog {
     private ProgressBar mProgress;
     private TextView mMessageView;
     private CharSequence mMessage;

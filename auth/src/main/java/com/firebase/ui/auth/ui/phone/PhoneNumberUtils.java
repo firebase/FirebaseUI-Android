@@ -33,14 +33,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 final class PhoneNumberUtils {
-    private final static int DEFAULT_COUNTRY_CODE_INT = 1;
-    private final static String DEFAULT_COUNTRY_CODE = String.valueOf(DEFAULT_COUNTRY_CODE_INT);
-    private final static Locale DEFAULT_LOCALE = Locale.US;
-    private final static CountryInfo DEFAULT_COUNTRY =
+    private static final int DEFAULT_COUNTRY_CODE_INT = 1;
+    private static final String DEFAULT_COUNTRY_CODE = String.valueOf(DEFAULT_COUNTRY_CODE_INT);
+    private static final Locale DEFAULT_LOCALE = Locale.US;
+    private static final CountryInfo DEFAULT_COUNTRY =
             new CountryInfo(DEFAULT_LOCALE, DEFAULT_COUNTRY_CODE_INT);
 
-    private final static int MAX_COUNTRIES = 291;
-    private final static int MAX_COUNTRY_CODES = 286;
+    private static final int MAX_COUNTRIES = 291;
+    private static final int MAX_COUNTRY_CODES = 286;
     private static final int MAX_LENGTH_COUNTRY_CODE = 3;
 
     private static final Map<Integer, List<String>> CountryCodeToRegionCodeMap;
@@ -77,7 +77,7 @@ final class PhoneNumberUtils {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return android.telephony.PhoneNumberUtils
-                    .formatNumberToE164(phoneNumber,countryInfo.locale.getCountry());
+                    .formatNumberToE164(phoneNumber, countryInfo.locale.getCountry());
         }
         return phoneNumber.startsWith("+")
                 ? phoneNumber
@@ -1075,7 +1075,7 @@ final class PhoneNumberUtils {
         return countryCodeToRegionCodeMap;
     }
 
-    private synchronized static Map<String, Integer> createCountryCodeByIsoMap() {
+    private static synchronized Map<String, Integer> createCountryCodeByIsoMap() {
         final Map<String, Integer> countryCodeByIso = new HashMap<>(MAX_COUNTRIES);
         countryCodeByIso.put("AF", 93);
         countryCodeByIso.put("AX", 358);
