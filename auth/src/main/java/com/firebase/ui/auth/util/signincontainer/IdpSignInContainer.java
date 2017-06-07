@@ -109,8 +109,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                     providerConfig,
                     user.getEmail());
         } else if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new FacebookProvider(
-                    getContext(), providerConfig, mHelper.getFlowParams().themeId);
+            mIdpProvider = new FacebookProvider(providerConfig, mHelper.getFlowParams().themeId);
         } else if (provider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new TwitterProvider(getContext());
         }
