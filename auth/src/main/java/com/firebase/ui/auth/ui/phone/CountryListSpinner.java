@@ -80,7 +80,7 @@ public final class CountryListSpinner extends AppCompatEditText implements
         final String countryName = locale.getDisplayName();
         if (!TextUtils.isEmpty(countryName) && !TextUtils.isEmpty(countryCode)) {
             selectedCountryName = countryName;
-            setSpinnerText(Integer.valueOf(countryCode), locale);
+            setSpinnerText(Integer.parseInt(countryCode), locale);
         }
     }
 

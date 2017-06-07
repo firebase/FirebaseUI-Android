@@ -14,9 +14,10 @@
 
 package com.firebase.ui.auth.testhelpers;
 
-import android.app.Activity;
+import android.support.annotation.StyleRes;
 
 import com.facebook.login.LoginResult;
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
@@ -24,8 +25,6 @@ import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
-
-import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -46,7 +45,7 @@ public class FacebookProviderShadow {
     }
 
     @SuppressWarnings("checkstyle:methodname")
-    public void __constructor__(Activity activity, List<String> scopes) {}
+    public void __constructor__(AuthUI.IdpConfig idpConfig, @StyleRes int theme) {}
 
     @Implementation
     public void setAuthenticationCallback(IdpCallback idpCallback) {

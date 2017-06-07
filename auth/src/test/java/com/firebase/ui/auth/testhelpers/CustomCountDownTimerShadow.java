@@ -2,13 +2,9 @@ package com.firebase.ui.auth.testhelpers;
 
 import android.os.CountDownTimer;
 
-import com.firebase.ui.auth.ui.BaseHelper;
-import com.google.firebase.auth.PhoneAuthProvider;
-
 import org.mockito.Mock;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
-import org.robolectric.annotation.RealObject;
 
 @Implements(CountDownTimer.class)
 public class CustomCountDownTimerShadow {
@@ -22,6 +18,7 @@ public class CustomCountDownTimerShadow {
     public CustomCountDownTimerShadow() {
     }
 
+    @SuppressWarnings("checkstyle:methodname")
     public void __constructor__(long millisInFuture, long countDownInterval) {
         this.countDownInterval = countDownInterval;
         this.millisInFuture = millisInFuture;

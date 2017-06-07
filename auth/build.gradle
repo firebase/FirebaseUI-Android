@@ -56,6 +56,7 @@ dependencies {
     testCompile 'org.robolectric:robolectric:3.2.2'
     // See https://github.com/robolectric/robolectric/issues/1932#issuecomment-219796474
     testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+    testCompile 'com.facebook.android:facebook-android-sdk:4.23.0'
 }
 
 javadoc.exclude([
