@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.testhelpers;
 
+import android.app.Activity;
 import android.support.annotation.StyleRes;
 
 import com.facebook.login.LoginResult;
@@ -46,6 +47,10 @@ public class FacebookProviderShadow {
 
     @SuppressWarnings("checkstyle:methodname")
     public void __constructor__(AuthUI.IdpConfig idpConfig, @StyleRes int theme) {}
+
+    public void startLogin(Activity activity) {
+        onSuccess(null);
+    }
 
     @Implementation
     public void setAuthenticationCallback(IdpCallback idpCallback) {

@@ -11,9 +11,9 @@ public class CustomCountDownTimerShadow {
     private boolean started;
     private long countDownInterval;
     private long millisInFuture;
-    @Mock
-    public static CountDownTimer countDownTimer;
 
+    @Mock
+    public CountDownTimer countDownTimer;
 
     public CustomCountDownTimerShadow() {
     }

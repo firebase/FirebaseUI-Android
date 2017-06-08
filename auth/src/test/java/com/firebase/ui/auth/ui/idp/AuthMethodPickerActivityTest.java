@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
@@ -132,7 +131,6 @@ public class AuthMethodPickerActivityTest {
         List<String> providers = Arrays.asList(AuthUI.FACEBOOK_PROVIDER);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
-        FacebookSdk.sdkInitialize(authMethodPickerActivity);
 
         Button facebookButton = (Button) authMethodPickerActivity.findViewById(R.id.facebook_button);
         assertNotNull(facebookButton);
