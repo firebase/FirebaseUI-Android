@@ -101,6 +101,14 @@ public class IdpResponse implements Parcelable {
     }
 
     /**
+     * Get the phone number used to sign in.
+     */
+    @Nullable
+    public String getPhoneNumber() {
+        return mPhoneNumber;
+    }
+
+    /**
      * Get the token received as a result of logging in with the specified IDP
      */
     @Nullable

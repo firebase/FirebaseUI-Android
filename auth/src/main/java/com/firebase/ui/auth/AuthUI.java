@@ -453,7 +453,7 @@ public class AuthUI {
 
                 if (config.getProviderId().equals(FACEBOOK_PROVIDER)) {
                     try {
-                        Class c = com.facebook.FacebookCallback.class;
+                        Class c = com.facebook.FacebookSdk.class;
                     } catch (NoClassDefFoundError e) {
                         throw new RuntimeException("Facebook provider cannot be configured " +
                                "without dependency. Did you forget to add " +

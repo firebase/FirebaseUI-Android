@@ -55,6 +55,9 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
             case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
                 return null;
+            case PhoneAuthProvider.PROVIDER_ID:
+                // The account type for phone creds is null
+                return null;
             default:
                 return null;
         }

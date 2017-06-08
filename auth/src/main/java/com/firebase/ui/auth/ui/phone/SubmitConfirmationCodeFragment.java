@@ -46,19 +46,17 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private static final long RESEND_WAIT_MILLIS = 15000;
     private static final String EXTRA_MILLIS_UNTIL_FINISHED = "EXTRA_MILLIS_UNTIL_FINISHED";
 
-    TextView mEditPhoneTextView;
-    TextView mResendCodeTextView;
-    TextView mCountDownTextView;
-    SpacedEditText mConfirmationCodeEditText;
-    Button mSubmitConfirmationButton;
-    CustomCountDownTimer mCountdownTimer;
-    PhoneVerificationActivity mVerifier;
-    TermsTextView mAgreementText;
-    long mMillisUntilFinished;
+    private TextView mEditPhoneTextView;
+    private TextView mResendCodeTextView;
+    private TextView mCountDownTextView;
+    private SpacedEditText mConfirmationCodeEditText;
+    private Button mSubmitConfirmationButton;
+    private CustomCountDownTimer mCountdownTimer;
+    private PhoneVerificationActivity mVerifier;
+    private TermsTextView mAgreementText;
+    private long mMillisUntilFinished;
 
-
-
-    public static SubmitConfirmationCodeFragment getInstance(FlowParameters flowParameters,
+    public static SubmitConfirmationCodeFragment newInstance(FlowParameters flowParameters,
                                                              String phoneNumber) {
         SubmitConfirmationCodeFragment fragment = new SubmitConfirmationCodeFragment();
 

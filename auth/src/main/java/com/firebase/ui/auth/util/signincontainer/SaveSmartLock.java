@@ -93,6 +93,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
             finish();
             return;
         }
+
         Credential.Builder builder = new Credential.Builder(mEmail);
         builder.setPassword(mPassword);
         if (mPassword == null && mResponse != null) {

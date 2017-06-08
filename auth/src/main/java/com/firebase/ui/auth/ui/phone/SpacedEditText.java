@@ -20,6 +20,7 @@ package com.firebase.ui.auth.ui.phone;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -33,7 +34,7 @@ import com.firebase.ui.auth.R;
  * spaces using spannables.
  * This is required since Android's letter spacing is not available until API 21.
  */
-public final class SpacedEditText extends android.support.v7.widget.AppCompatEditText {
+public final class SpacedEditText extends AppCompatEditText {
     private float proportion;
     private SpannableStringBuilder originalText;
 

@@ -70,6 +70,12 @@ public class TestHelper {
     }
 
     public static void verifySmartLockSave(String providerId, String email, String password) {
+        verifySmartLockSave(providerId, email, password, null);
+    }
+
+    public static void verifySmartLockSave(String providerId, String email,
+                                           String password, String phoneNumber) {
+
         ArgumentCaptor<FirebaseUser> userCaptor = ArgumentCaptor.forClass(FirebaseUser.class);
         ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
@@ -79,30 +85,20 @@ public class TestHelper {
                 passwordCaptor.capture(),
                 idpResponseCaptor.capture());
 
+        // Check email and password
         assertEquals(email, userCaptor.getValue().getEmail());
         assertEquals(password, passwordCaptor.getValue());
-        assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
-    }
 
-    public static void verifySmartLockSave(String providerId, String email, String phoneNumber,
-                                           String password) {
-        ArgumentCaptor<FirebaseUser> userArgumentCaptor =
-                ArgumentCaptor.forClass(FirebaseUser.class);
-        ArgumentCaptor<IdpResponse> idpResponseArgumentCaptor =
-                ArgumentCaptor.forClass(IdpResponse.class);
-        ArgumentCaptor<String> passwordArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(ActivityHelperShadow.sSaveSmartLock)
-                .saveCredentialsOrFinish(userArgumentCaptor.capture(),
-                        passwordArgumentCaptor.capture(), idpResponseArgumentCaptor.capture());
-        assertEquals(email, userArgumentCaptor.getValue().getEmail());
-        assertEquals(phoneNumber, userArgumentCaptor.getValue().getPhoneNumber());
-        assertEquals(password, passwordArgumentCaptor.getValue());
+        // Check phone number (if necessary)
+        if (phoneNumber != null) {
+            assertEquals(phoneNumber, userCaptor.getValue().getPhoneNumber());
+        }
+
+        // Check provider id
         if (providerId == null) {
-            assertNull(idpResponseArgumentCaptor.getValue());
+            assertNull(idpResponseCaptor.getValue());
         } else {
-            assertEquals(
-                    providerId,
-                    idpResponseArgumentCaptor.getValue().getProviderType());
+            assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
         }
     }
 }

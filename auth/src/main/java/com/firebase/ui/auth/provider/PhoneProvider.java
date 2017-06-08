@@ -3,7 +3,9 @@ package com.firebase.ui.auth.provider;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.LayoutRes;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.BaseHelper;
@@ -28,11 +30,13 @@ public class PhoneProvider implements Provider {
     }
 
     @Override
+    @AuthUI.SupportedProvider
     public String getProviderId() {
         return PhoneAuthProvider.PROVIDER_ID;
     }
 
     @Override
+    @LayoutRes
     public int getButtonLayout() {
         return R.layout.provider_button_phone;
     }

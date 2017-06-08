@@ -55,11 +55,12 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
 
     public static void signout(Context context) {
         try {
-            signOut();
+            Twitter.getInstance();
         } catch (IllegalStateException e) {
             initialize(context);
-            signOut();
         }
+
+        signOut();
     }
 
     @Override

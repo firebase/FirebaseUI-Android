@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import com.firebase.ui.auth.ui.email.PreambleHandler;
@@ -25,7 +26,7 @@ import com.firebase.ui.auth.ui.email.PreambleHandler;
  * The view helps display TOS linking to the provided custom URI.
  * It handles the styling of the link and opens the uri in a CustomTabs on click.
  */
-public class TermsTextView extends android.support.v7.widget.AppCompatTextView {
+public class TermsTextView extends AppCompatTextView {
     public TermsTextView(Context context) {
         super(context);
     }

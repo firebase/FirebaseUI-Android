@@ -16,7 +16,6 @@ package com.firebase.ui.auth.testhelpers;
 
 import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
-import com.google.firebase.auth.PhoneAuthProvider;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;

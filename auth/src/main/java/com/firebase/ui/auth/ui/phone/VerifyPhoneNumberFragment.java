@@ -52,17 +52,17 @@ import java.util.Locale;
 public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnClickListener {
     public static final String TAG = "VerifyPhoneFragment";
 
-    CountryListSpinner countryListSpinner;
-    EditText mPhoneEditText;
-    TextView errorEditText;
-    Button sendCodeButton;
-    PhoneVerificationActivity mVerifier;
-    TextView mSmsTermsText;
+    private CountryListSpinner countryListSpinner;
+    private EditText mPhoneEditText;
+    private TextView errorEditText;
+    private Button sendCodeButton;
+    private PhoneVerificationActivity mVerifier;
+    private TextView mSmsTermsText;
 
     private static final int RC_PHONE_HINT = 22;
 
-    public static VerifyPhoneNumberFragment getInstance(FlowParameters flowParameters, String
-            phone) {
+    public static VerifyPhoneNumberFragment newInstance(FlowParameters flowParameters,
+                                                        String phone) {
         VerifyPhoneNumberFragment fragment = new VerifyPhoneNumberFragment();
 
         Bundle args = new Bundle();

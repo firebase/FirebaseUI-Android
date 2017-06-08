@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -53,9 +54,7 @@ public final class CountryListSpinner extends AppCompatEditText implements
         init();
     }
 
-    /**
-     * Only for Testing
-     */
+    @VisibleForTesting
     void setDialogPopup(DialogPopup dialog) {
         this.dialogPopup = dialog;
     }
