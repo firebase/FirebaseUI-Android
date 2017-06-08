@@ -133,7 +133,8 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
         mHelper.getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Failure authenticating with credential " + credential.getProvider()))
+                        new TaskFailureLogger(TAG, "Failure authenticating with credential " +
+                                credential.getProvider()))
                 .addOnCompleteListener(new CredentialSignInHandler(
                         getActivity(),
                         mHelper,

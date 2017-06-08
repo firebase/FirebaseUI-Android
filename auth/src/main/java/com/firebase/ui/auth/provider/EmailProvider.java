@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.BaseHelper;
@@ -28,6 +29,7 @@ public class EmailProvider implements Provider {
     }
 
     @Override
+    @AuthUI.SupportedProvider
     public String getProviderId() {
         return EmailAuthProvider.PROVIDER_ID;
     }

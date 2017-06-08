@@ -44,8 +44,8 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
-import com.twitter.sdk.android.Twitter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,8 +54,6 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
-
-import io.fabric.sdk.android.Fabric;
 
 /**
  * The entry point to the AuthUI authentication flow, and related utility methods. If your
@@ -70,9 +68,10 @@ import io.fabric.sdk.android.Fabric;
 public class AuthUI {
     @StringDef({
                        EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
+                       PhoneAuthProvider.PROVIDER_ID, PHONE_VERIFICATION_PROVIDER,
                        GoogleAuthProvider.PROVIDER_ID, GOOGLE_PROVIDER,
                        FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
-                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER
+                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER,
                })
     public @interface SupportedProvider {}
 
@@ -98,6 +97,11 @@ public class AuthUI {
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
     /**
+     * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setProviders}.
+     */
+    public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
+
+    /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
      */
     public static final int NO_LOGO = -1;
@@ -110,7 +114,8 @@ public class AuthUI {
                     EMAIL_PROVIDER,
                     GOOGLE_PROVIDER,
                     FACEBOOK_PROVIDER,
-                    TWITTER_PROVIDER
+                    TWITTER_PROVIDER,
+                    PHONE_VERIFICATION_PROVIDER
             )));
 
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
@@ -179,12 +184,18 @@ public class AuthUI {
         Task<Status> signOutTask = signInHelper.signOut();
 
         // Facebook sign out
-        LoginManager.getInstance().logOut();
+        try {
+            LoginManager.getInstance().logOut();
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
 
         // Twitter sign out
-        if (!Fabric.isInitialized()) TwitterProvider.initialize(activity);
-        Twitter.logOut();
-
+        try {
+            TwitterProvider.signout(activity);
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, signOutTask);
     }
@@ -374,7 +385,8 @@ public class AuthUI {
         List<IdpConfig> mProviders = new ArrayList<>();
         String mTosUrl;
         String mPrivacyPolicyUrl;
-        boolean mIsSmartLockEnabled = true;
+        boolean mEnableCredentials = true;
+        boolean mEnableHints = true;
 
         private AuthIntentBuilder() {}
 
@@ -438,6 +450,26 @@ public class AuthUI {
                 } else {
                     mProviders.add(config);
                 }
+
+                if (config.getProviderId().equals(FACEBOOK_PROVIDER)) {
+                    try {
+                        Class c = com.facebook.FacebookSdk.class;
+                    } catch (NoClassDefFoundError e) {
+                        throw new RuntimeException("Facebook provider cannot be configured " +
+                               "without dependency. Did you forget to add " +
+                               "'com.facebook.android:facebook-android-sdk:VERSION' dependency?");
+                    }
+                }
+
+                if (config.getProviderId().equals(TWITTER_PROVIDER)) {
+                    try {
+                        Class c = com.twitter.sdk.android.core.TwitterCore.class;
+                    } catch (NoClassDefFoundError e) {
+                        throw new RuntimeException("Twitter provider cannot be configured " +
+                               "without dependency. Did you forget to add " +
+                               "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
+                    }
+                }
             }
 
             return (T) this;
@@ -473,11 +505,31 @@ public class AuthUI {
 
         /**
          * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
+         * To (en)disable hint selector and credential selector independently
+         * use {@link #setIsSmartLockEnabled(boolean, boolean)}
          * <p>
          * <p>SmartLock is enabled by default.
+         *
+         * @param enabled enables smartlock's credential selector and hint selector
          */
         public T setIsSmartLockEnabled(boolean enabled) {
-            mIsSmartLockEnabled = enabled;
+            setIsSmartLockEnabled(enabled, enabled);
+            return (T) this;
+        }
+
+        /**
+         * Enables or disables the use of Smart Lock for Passwords credential selector and hint
+         * selector.
+         * <p>
+         * <p>Both selectors are enabled by default.
+
+         * @param enableCredentials enables credential selector before signup
+         * @param enableHints enable hint selector in respective signup screens
+         * @return
+         */
+        public T setIsSmartLockEnabled(boolean enableCredentials, boolean enableHints) {
+            mEnableCredentials = enableCredentials;
+            mEnableHints = enableHints;
             return (T) this;
         }
 
@@ -522,7 +574,8 @@ public class AuthUI {
                     mLogo,
                     mTosUrl,
                     mPrivacyPolicyUrl,
-                    mIsSmartLockEnabled,
+                    mEnableCredentials,
+                    mEnableHints,
                     mAllowNewEmailAccounts);
         }
     }

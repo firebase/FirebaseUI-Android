@@ -31,5 +31,4 @@ public class ActivityHelperShadow extends BaseHelperShadow {
     public SaveSmartLock getSaveSmartLockInstance() {
         return sSaveSmartLock;
     }
-
 }
