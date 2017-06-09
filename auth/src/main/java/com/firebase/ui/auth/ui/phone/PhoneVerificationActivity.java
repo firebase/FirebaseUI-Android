@@ -29,7 +29,6 @@ import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -109,7 +108,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     @Override
     protected void onStart() {
         super.onStart();
-        //Actvitiy can be restarted in any of the following states
+        // Activity can be restarted in any of the following states
         // 1) VERIFICATION_STARTED
         // 2) SMS_RETRIEVED
         // 3) INSTANT_VERIFIED
@@ -290,7 +289,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         IdpResponse response = new IdpResponse.Builder(PhoneAuthProvider.PROVIDER_ID, null)
                 .setPhoneNumber(user.getPhoneNumber())
                 .build();
-        setResult(ResultCodes.OK, response.toIntent());
+        setResult(RESULT_OK, response.toIntent());
         finish();
     }
 

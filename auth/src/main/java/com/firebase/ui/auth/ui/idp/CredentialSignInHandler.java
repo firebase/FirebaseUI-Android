@@ -20,10 +20,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.User;
@@ -84,7 +82,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                                 public void onFailure(@NonNull Exception e) {
                                     mHelper.finishActivity(
                                             mActivity,
-                                            ResultCodes.CANCELED,
+                                            Activity.RESULT_CANCELED,
                                             IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
                                 }
                             });

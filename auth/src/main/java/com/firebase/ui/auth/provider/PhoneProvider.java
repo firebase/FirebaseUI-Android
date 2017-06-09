@@ -7,7 +7,6 @@ import android.support.annotation.LayoutRes;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -50,8 +49,8 @@ public class PhoneProvider implements Provider {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_PHONE_FLOW && resultCode == ResultCodes.OK) {
-            mHelper.finishActivity(mActivity, ResultCodes.OK, data);
+        if (requestCode == RC_PHONE_FLOW && resultCode == Activity.RESULT_OK) {
+            mHelper.finishActivity(mActivity, Activity.RESULT_OK, data);
         }
     }
 }

@@ -11,7 +11,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
@@ -108,7 +107,7 @@ public class BaseHelper {
             @Nullable String password,
             IdpResponse response) {
         if (saveSmartLock == null) {
-            finishActivity(activity, ResultCodes.OK, response.toIntent());
+            finishActivity(activity, Activity.RESULT_OK, response.toIntent());
         } else {
             saveSmartLock.saveCredentialsOrFinish(
                     firebaseUser,
