@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.util.signincontainer;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentHelper;
@@ -46,6 +46,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -164,7 +165,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_CREDENTIALS_READ:
-                if (resultCode == ResultCodes.OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     // credential selected from SmartLock, log in with that credential
                     Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
                     handleCredential(credential);
@@ -274,7 +275,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     /**
      * Begin sign in process with email and password from a SmartLock credential. On success, finish
-     * with {@link ResultCodes#OK RESULT_OK}. On failure, delete the credential from SmartLock (if
+     * with {@link Activity#RESULT_OK}. On failure, delete the credential from SmartLock (if
      * applicable) and then launch the auth method picker flow.
      */
     private void signInWithEmailAndPassword(String email, String password) {
@@ -288,7 +289,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        finish(ResultCodes.OK, response.toIntent());
+                        finish(Activity.RESULT_OK, response.toIntent());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
