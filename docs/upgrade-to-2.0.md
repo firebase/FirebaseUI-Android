@@ -14,15 +14,19 @@ For a full, machine-generated compatibility report see the `docs/compat_reports`
     Google/Email/Phone authentication.
   * **Sign Out and Delete** - The `AuthUI#delete(Activity)` and `AuthUI#signOut(Activity)` 
     methods have been removed, please use the versions that accept `FragmentActivity`.
-  * **Error Codes** - The `ResultCodes` class has been removed, instead in `onActivityResult` you 
-    should check for `RESULT_CANCELED` and then use `IdpResponse#getErrorCode()` to determine the \
-    source of the error.
+  * **Error Codes** - `ResultCodes.RESULT_NO_NETWORK` has been removed. Instead you should use
+    `IdpResponse.fromResultIntent(data)` to get the response from the `AuthUI` intent and then
+    check if `IdpResponse#getErrorCode()` is `ErrorCodes.NO_NETWORK`.
   * **Choosing Providers** - `setProviders` has been deprecated, please use `setAvailableProviders`
-    which now respects the order in which you provide them.
+    which now respects the order in which you provide them.  The varargs version of `setProviders`
+    has been removed completely.
   * **Facebook and Google Scopes** - setting scopes via `string` resources is no longer supported,
     please set scopes in code using `IdpConfig`.
-  * **Themes** - AppCompat theme properties such as `colorPrimary` or `colorAccent` are now
-    respected, please double-check to make sure your UI still looks as expected.
+  * **Themes** - AppCompat theme properties such as `colorPrimary` and `colorAccent` are now used 
+    to style FirebaseUI automatically without any need for customization. Unless your auth UI 
+    needs a different theme than the rest of your app, please remove 
+    `AuthUI.SignInIntentBuilder#setTheme(int)` and its related xml theme from your auth intent
+    builder and check to make sure that the auth UI has been themed correctly.
   * **SmartLock for Passwords** - `setIsSmartLockEnabled` has added a two-argument overload. 
     There are now separate flags for enabling the hint select and enabling
     the saving/retrieving of full credentials from the API. Setting the same value for each flag
