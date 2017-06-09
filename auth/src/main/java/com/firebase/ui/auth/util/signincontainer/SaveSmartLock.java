@@ -203,7 +203,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                                         @Nullable IdpResponse response) {
         mResponse = response;
 
-        if (!mHelper.getFlowParams().smartLockEnabled) {
+        if (!mHelper.getFlowParams().enableCredentials) {
             finish();
             return;
         }

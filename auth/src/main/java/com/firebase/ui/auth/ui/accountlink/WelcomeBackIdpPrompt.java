@@ -89,7 +89,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         mIdpProvider = new FacebookProvider(
-                                this, idpConfig, mActivityHelper.getFlowParams().themeId);
+                                idpConfig, mActivityHelper.getFlowParams().themeId);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
                         mIdpProvider = new TwitterProvider(this);
@@ -158,7 +158,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                                 result.getUser()
                                         .linkWithCredential(mPrevCredential)
                                         .addOnFailureListener(new TaskFailureLogger(
-                                                TAG, "Error signing in with previous credential " + idpResponse.getProviderType()))
+                                                TAG, "Error signing in with previous credential " +
+                                                idpResponse.getProviderType()))
                                         .addOnCompleteListener(new FinishListener(idpResponse));
                             } else {
                                 finish(ResultCodes.OK, idpResponse.toIntent());
@@ -172,12 +173,14 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                         }
                     })
                     .addOnFailureListener(
-                            new TaskFailureLogger(TAG, "Error signing in with new credential " + idpResponse.getProviderType()));
+                            new TaskFailureLogger(TAG, "Error signing in with new credential " +
+                                    idpResponse.getProviderType()));
         } else {
             currentUser
                     .linkWithCredential(newCredential)
                     .addOnFailureListener(
-                            new TaskFailureLogger(TAG, "Error linking with credential " + idpResponse.getProviderType()))
+                            new TaskFailureLogger(TAG, "Error linking with credential " +
+                                    idpResponse.getProviderType()))
                     .addOnCompleteListener(new FinishListener(idpResponse));
         }
     }

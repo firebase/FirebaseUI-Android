@@ -19,18 +19,21 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.FlowParameters;
 
 public class PreambleHandler {
+    private static final String BTN_TARGET = "%BTN%";
     private static final String TOS_TARGET = "%TOS%";
     private static final String PP_TARGET = "%PP%";
 
     private final Context mContext;
     private final FlowParameters mFlowParameters;
+    private final int mButtonText;
     private final ForegroundColorSpan mLinkSpan;
 
     private SpannableStringBuilder mBuilder;
 
-    public PreambleHandler(Context context, FlowParameters parameters) {
+    public PreambleHandler(Context context, FlowParameters parameters, @StringRes int buttonText) {
         mContext = context;
         mFlowParameters = parameters;
+        mButtonText = buttonText;
         mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.linkColor));
 
         setupCreateAccountPreamble();
@@ -51,11 +54,20 @@ public class PreambleHandler {
                 mContext.getResources().getStringArray(R.array.create_account_preamble);
         mBuilder = new SpannableStringBuilder(preambles[preambleType]);
 
-        replaceTarget(TOS_TARGET, R.string.terms_of_service, mFlowParameters.termsOfServiceUrl);
-        replaceTarget(PP_TARGET, R.string.privacy_policy, mFlowParameters.privacyPolicyUrl);
+        replaceTarget(BTN_TARGET, mButtonText);
+        replaceUrlTarget(TOS_TARGET, R.string.terms_of_service, mFlowParameters.termsOfServiceUrl);
+        replaceUrlTarget(PP_TARGET, R.string.privacy_policy, mFlowParameters.privacyPolicyUrl);
     }
 
-    private void replaceTarget(String target, @StringRes int replacementRes, String url) {
+    private void replaceTarget(String target, @StringRes int replacementRes) {
+        int targetIndex = mBuilder.toString().indexOf(target);
+        if (targetIndex != -1) {
+            String replacement = mContext.getString(replacementRes);
+            mBuilder.replace(targetIndex, targetIndex + target.length(), replacement);
+        }
+    }
+
+    private void replaceUrlTarget(String target, @StringRes int replacementRes, String url) {
         int targetIndex = mBuilder.toString().indexOf(target);
         if (targetIndex != -1) {
             String replacement = mContext.getString(replacementRes);
