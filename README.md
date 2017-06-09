@@ -12,6 +12,7 @@ A compatible FirebaseUI client is also available for [iOS](https://github.com/fi
 
   1. [Usage](#usage)
   1. [Installation](#installation)
+  1. [Upgrading](#upgrading)
   1. [Dependencies](#dependencies)
   1. [Sample App](#sample-app)
   1. [Contributing](#contributing)
@@ -56,6 +57,13 @@ If you're including the `firebase-ui-auth` dependency, there's a little
 required.
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
+
+## Upgrading
+
+If you are using an old version of FirebaseUI and upgrading, please see the appropriate
+migration guide:
+
+  * [Upgrade from 1.2.0 to 2.0](./docs/upgrade-to-2.0.md)
 
 ## Dependencies
 
