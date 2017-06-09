@@ -184,7 +184,7 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
-If a terms of service URL and a custom theme are required:
+If a terms of service URL, privacy policy URL, and a custom theme are required:
 
 ```java
 startActivityForResult(
@@ -192,6 +192,7 @@ startActivityForResult(
         .createSignInIntentBuilder()
         .setAvailableProviders(...)
         .setTosUrl("https://superapp.example.com/terms-of-service.html")
+        .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
         .setTheme(R.style.SuperAppTheme)
         .build(),
     RC_SIGN_IN);
