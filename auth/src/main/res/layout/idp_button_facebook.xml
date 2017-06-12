@@ -4,4 +4,4 @@
     android:id="@+id/facebook_button"
     style="@style/FirebaseUI.Button.AccountChooser.FacebookButton"
     android:text="@string/sign_in_with_facebook"
-    tools:ignore="UnusedIds" /> <!-- Used in tests -->
+    tools:ignore="UnusedIds"/> <!-- Used in tests -->

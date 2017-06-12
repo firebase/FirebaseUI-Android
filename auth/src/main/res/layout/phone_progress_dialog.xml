@@ -1,18 +1,18 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+       xmlns:tools="http://schemas.android.com/tools"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/dgts_body"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingStart="8dip"
+        android:paddingEnd="8dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="10dip"
         android:baselineAligned="false"
         android:orientation="horizontal"
-        android:paddingBottom="10dip"
-        android:paddingEnd="8dip"
-        android:paddingStart="8dip"
-        android:paddingTop="10dip"
         tools:ignore="UnusedIds">
 
         <ProgressBar
@@ -39,6 +39,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            tools:ignore="SelectableText" />
+            tools:ignore="SelectableText"/>
     </LinearLayout>
 </merge>

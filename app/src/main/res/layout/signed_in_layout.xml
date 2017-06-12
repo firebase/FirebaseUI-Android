@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:paddingBottom="16dp"
     android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:clipToPadding="false"
     tools:context=".auth.SignedInActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
+        android:layout_marginBottom="16dp"
         android:orientation="vertical">
 
         <TextView

@@ -3,5 +3,5 @@
     <translate
         android:duration="@android:integer/config_mediumAnimTime"
         android:fromXDelta="100%p"
-        android:toXDelta="0%p" />
+        android:toXDelta="0%p"/>
 </set>

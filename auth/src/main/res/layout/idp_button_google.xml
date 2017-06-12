@@ -4,4 +4,4 @@
     android:id="@+id/google_button"
     style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
     android:text="@string/sign_in_with_google"
-    tools:ignore="UnusedIds" /> <!-- Used in tests -->
+    tools:ignore="UnusedIds"/> <!-- Used in tests -->

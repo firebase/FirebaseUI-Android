@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
-        android:shortcutId="storage"
         android:enabled="true"
         android:icon="@mipmap/ic_launcher"
+        android:shortcutId="storage"
         android:shortcutShortLabel="@string/name_image">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.firebase.uidemo"
-            android:targetClass="com.firebase.uidemo.storage.ImageActivity"/>
+            android:targetClass="com.firebase.uidemo.storage.ImageActivity"
+            android:targetPackage="com.firebase.uidemo"/>
     </shortcut>
 
     <shortcut
-        android:shortcutId="auth"
         android:enabled="true"
         android:icon="@drawable/firebase_auth_120dp"
+        android:shortcutId="auth"
         android:shortcutShortLabel="@string/name_auth_ui">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.firebase.uidemo"
-            android:targetClass="com.firebase.uidemo.auth.AuthUiActivity"/>
+            android:targetClass="com.firebase.uidemo.auth.AuthUiActivity"
+            android:targetPackage="com.firebase.uidemo"/>
     </shortcut>
 
     <shortcut
-        android:shortcutId="database"
         android:enabled="true"
         android:icon="@mipmap/ic_launcher"
+        android:shortcutId="database"
         android:shortcutShortLabel="@string/name_chat">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="com.firebase.uidemo"
-            android:targetClass="com.firebase.uidemo.database.ChatActivity"/>
+            android:targetClass="com.firebase.uidemo.database.ChatActivity"
+            android:targetPackage="com.firebase.uidemo"/>
     </shortcut>
 </shortcuts>
