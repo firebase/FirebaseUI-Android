@@ -14,57 +14,141 @@
 
 package com.firebase.ui.database;
 
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-class FirebaseIndexArray extends FirebaseArray {
-    private static final String TAG = FirebaseIndexArray.class.getSimpleName();
+public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> implements ChangeEventListener {
+    private static final String TAG = "FirebaseIndexArray";
 
-    private Query mQuery;
-    private ChangeEventListener mListener;
-    private Map<Query, ValueEventListener> mRefs = new HashMap<>();
+    private DatabaseReference mDataRef;
+    private Map<DatabaseReference, ValueEventListener> mRefs = new HashMap<>();
+
+    private FirebaseArray<String> mKeySnapshots;
     private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
-    public FirebaseIndexArray(Query keyRef, Query dataRef) {
-        super(keyRef);
-        mQuery = dataRef;
+    /**
+     * When keys are added in {@link FirebaseArray}, we need to fetch the data async. This list
+     * contains keys that exist in the backing {@link FirebaseArray}, but their data hasn't been
+     * downloaded yet in this array.
+     */
+    private List<String> mKeysWithPendingData = new ArrayList<>();
+    /**
+     * Moves or deletions don't need to fetch new data so they can be performed instantly once the
+     * backing {@link FirebaseArray} is done updating. This will be true if the backing {@link
+     * FirebaseArray} is in the middle of an update, false otherwise.
+     */
+    private boolean mHasPendingMoveOrDelete;
+
+    /**
+     * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
+     *
+     * @param keyQuery The Firebase location containing the list of keys to be found in {@code
+     *                 dataRef}. Can also be a slice of a location, using some combination of {@code
+     *                 limit()}, {@code startAt()}, and {@code endAt()}.
+     * @param dataRef  The Firebase location to watch for data changes. Each key key found at {@code
+     *                 keyQuery}'s location represents a list item in the {@link RecyclerView}.
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(Class)
+     */
+    public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, Class<T> tClass) {
+        super(tClass);
+        init(keyQuery, dataRef);
+    }
+
+    /**
+     * Create a new FirebaseIndexArray with a custom {@link SnapshotParser}.
+     *
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
+     * @see FirebaseIndexArray#FirebaseIndexArray(Query, DatabaseReference, Class)
+     */
+    public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, SnapshotParser<T> parser) {
+        super(parser);
+        init(keyQuery, dataRef);
+    }
+
+    private void init(Query keyQuery, DatabaseReference dataRef) {
+        mDataRef = dataRef;
+        mKeySnapshots = new FirebaseArray<>(keyQuery, new SnapshotParser<String>() {
+            @Override
+            public String parseSnapshot(DataSnapshot snapshot) {
+                return snapshot.getKey();
+            }
+        });
+
+        mKeySnapshots.addChangeEventListener(this);
     }
 
     @Override
-    public void cleanup() {
-        super.cleanup();
-        Set<Query> refs = new HashSet<>(mRefs.keySet());
-        for (Query ref : refs) {
-            ref.removeEventListener(mRefs.remove(ref));
+    public void onChildChanged(EventType type, DataSnapshot snapshot, int index, int oldIndex) {
+        switch (type) {
+            case ADDED:
+                onKeyAdded(snapshot);
+                break;
+            case MOVED:
+                onKeyMoved(snapshot, index, oldIndex);
+                break;
+            case CHANGED:
+                // This is a no-op, we don't care when a key 'changes' since that should not
+                // be a supported operation
+                break;
+            case REMOVED:
+                onKeyRemoved(snapshot, index);
+                break;
         }
     }
 
     @Override
-    public int getCount() {
-        return mDataSnapshots.size();
+    public void onDataChanged() {
+        if (mHasPendingMoveOrDelete || mKeySnapshots.isEmpty()) {
+            notifyListenersOnDataChanged();
+            mHasPendingMoveOrDelete = false;
+        }
     }
 
     @Override
-    public DataSnapshot getItem(int index) {
-        return mDataSnapshots.get(index);
+    public void onCancelled(DatabaseError error) {
+        Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
+    }
+
+    @Override
+    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
+        super.removeChangeEventListener(listener);
+        if (!isListening()) {
+            for (DatabaseReference ref : mRefs.keySet()) {
+                ref.removeEventListener(mRefs.get(ref));
+            }
+
+            clearData();
+        }
+    }
+
+    @Override
+    protected List<DataSnapshot> getSnapshots() {
+        return mDataSnapshots;
+    }
+
+    @Override
+    protected void clearData() {
+        super.clearData();
+        mRefs.clear();
     }
 
     private int getIndexForKey(String key) {
-        int dataCount = getCount();
+        int dataCount = size();
         int index = 0;
         for (int keyIndex = 0; index < dataCount; keyIndex++) {
-            String superKey = super.getItem(keyIndex).getKey();
+            String superKey = mKeySnapshots.getObject(keyIndex);
             if (key.equals(superKey)) {
                 break;
             } else if (mDataSnapshots.get(index).getKey().equals(superKey)) {
@@ -74,91 +158,104 @@ class FirebaseIndexArray extends FirebaseArray {
         return index;
     }
 
+    /**
+     * Determines if a DataSnapshot with the given key is present at the given index.
+     */
     private boolean isKeyAtIndex(String key, int index) {
-        return index >= 0 && index < getCount() && mDataSnapshots.get(index).getKey().equals(key);
+        return index >= 0 && index < size() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
-    @Override
-    public void onChildAdded(DataSnapshot keySnapshot, String previousChildKey) {
-        super.setOnChangedListener(null);
-        super.onChildAdded(keySnapshot, previousChildKey);
-        super.setOnChangedListener(mListener);
+    protected void onKeyAdded(DataSnapshot data) {
+        String key = data.getKey();
+        DatabaseReference ref = mDataRef.child(key);
 
-        Query ref = mQuery.getRef().child(keySnapshot.getKey());
+        mKeysWithPendingData.add(key);
+        // Start listening
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
     }
 
-    @Override
-    public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
-        super.setOnChangedListener(null);
-        super.onChildChanged(snapshot, previousChildKey);
-        super.setOnChangedListener(mListener);
-    }
-
-    @Override
-    public void onChildRemoved(DataSnapshot keySnapshot) {
-        String key = keySnapshot.getKey();
-        int index = getIndexForKey(key);
-        mQuery.getRef().child(key).removeEventListener(mRefs.remove(mQuery.getRef().child(key)));
-
-        super.setOnChangedListener(null);
-        super.onChildRemoved(keySnapshot);
-        super.setOnChangedListener(mListener);
-
-        if (isKeyAtIndex(key, index)) {
-            mDataSnapshots.remove(index);
-            notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
-        }
-    }
-
-    @Override
-    public void onChildMoved(DataSnapshot keySnapshot, String previousChildKey) {
-        String key = keySnapshot.getKey();
-        int oldIndex = getIndexForKey(key);
-
-        super.setOnChangedListener(null);
-        super.onChildMoved(keySnapshot, previousChildKey);
-        super.setOnChangedListener(mListener);
+    protected void onKeyMoved(DataSnapshot data, int index, int oldIndex) {
+        String key = data.getKey();
 
         if (isKeyAtIndex(key, oldIndex)) {
-            DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
-            int newIndex = getIndexForKey(key);
-            mDataSnapshots.add(newIndex, snapshot);
-            notifyChangedListeners(ChangeEventListener.EventType.MOVED, newIndex, oldIndex);
+            DataSnapshot snapshot = removeData(oldIndex);
+            mHasPendingMoveOrDelete = true;
+            mDataSnapshots.add(index, snapshot);
+            notifyChangeEventListeners(EventType.MOVED, snapshot, index, oldIndex);
+        }
+    }
+
+    protected void onKeyRemoved(DataSnapshot data, int index) {
+        String key = data.getKey();
+        ValueEventListener listener = mRefs.remove(mDataRef.getRef().child(key));
+        if (listener != null) mDataRef.child(key).removeEventListener(listener);
+
+        if (isKeyAtIndex(key, index)) {
+            DataSnapshot snapshot = removeData(index);
+            mHasPendingMoveOrDelete = true;
+            notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
         }
     }
 
     @Override
-    public void onCancelled(DatabaseError error) {
-        Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
-        super.onCancelled(error);
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
+
+        FirebaseIndexArray array = (FirebaseIndexArray) obj;
+
+        return mDataRef.equals(array.mDataRef) && mDataSnapshots.equals(array.mDataSnapshots);
     }
 
     @Override
-    public void setOnChangedListener(ChangeEventListener listener) {
-        super.setOnChangedListener(listener);
-        mListener = listener;
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + mDataRef.hashCode();
+        result = 31 * result + mDataSnapshots.hashCode();
+        return result;
     }
 
-    private class DataRefListener implements ValueEventListener {
+    @Override
+    public String toString() {
+        if (isListening()) {
+            return "FirebaseIndexArray is listening at " + mDataRef + ":\n" + mDataSnapshots;
+        } else {
+            return "FirebaseIndexArray is inactive";
+        }
+    }
+
+    /**
+     * A ValueEventListener attached to the joined child data.
+     */
+    protected class DataRefListener implements ValueEventListener {
         @Override
         public void onDataChange(DataSnapshot snapshot) {
             String key = snapshot.getKey();
             int index = getIndexForKey(key);
 
             if (snapshot.getValue() != null) {
-                if (!isKeyAtIndex(key, index)) {
-                    mDataSnapshots.add(index, snapshot);
-                    notifyChangedListeners(ChangeEventListener.EventType.ADDED, index);
+                if (isKeyAtIndex(key, index)) {
+                    // We already know about this data, just update it
+                    updateData(index, snapshot);
+                    notifyChangeEventListeners(EventType.CHANGED, snapshot, index);
+                    notifyListenersOnDataChanged();
                 } else {
-                    mDataSnapshots.set(index, snapshot);
-                    notifyChangedListeners(ChangeEventListener.EventType.CHANGED, index);
+                    // We don't already know about this data, add it
+                    mDataSnapshots.add(index, snapshot);
+                    notifyChangeEventListeners(EventType.ADDED, snapshot, index);
+
+                    mKeysWithPendingData.remove(key);
+                    if (mKeysWithPendingData.isEmpty()) notifyListenersOnDataChanged();
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
-                    mDataSnapshots.remove(index);
-                    notifyChangedListeners(ChangeEventListener.EventType.REMOVED, index);
+                    // This data has disappeared, remove it
+                    removeData(index);
+                    notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
+                    notifyListenersOnDataChanged();
                 } else {
+                    // Data does not exist
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
                 }
             }
@@ -166,7 +263,7 @@ class FirebaseIndexArray extends FirebaseArray {
 
         @Override
         public void onCancelled(DatabaseError error) {
-            notifyCancelledListeners(error);
+            notifyListenersOnCancelled(error);
         }
     }
 }

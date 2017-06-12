@@ -18,9 +18,11 @@ import android.net.Uri;
 
 public class TestConstants {
     public static final String EMAIL = "test@example.com";
+    public static final String PHONE = "+15555555555";
     public static final String PASSWORD = "hunter2";
     public static final String NAME = "Test Testerson";
-    public static final String PHOTO_URL = "http://example.com/profile.png";
-    public static final Uri PHOTO_URI = Uri.parse(PHOTO_URL);
+    public static final String TOKEN = "token";
     public static final String TOS_URL = "http://www.google.com";
+    public static final String PRIVACY_URL = "https://www.google.com/policies/privacy/";
+    public static final Uri PHOTO_URI = Uri.parse("http://example.com/profile.png");
 }

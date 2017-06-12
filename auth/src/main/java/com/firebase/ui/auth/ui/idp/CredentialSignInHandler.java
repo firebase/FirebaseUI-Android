@@ -20,9 +20,12 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.ResultCodes;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.BaseHelper;
-import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
@@ -35,7 +38,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.ProviderQueryResult;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
@@ -46,19 +48,19 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     @Nullable
     private SaveSmartLock mSmartLock;
     private IdpResponse mResponse;
-    private int mAccountLinkResultCode;
+    private int mAccountLinkRequestCode;
 
     public CredentialSignInHandler(
             Activity activity,
             BaseHelper helper,
             @Nullable SaveSmartLock smartLock,
-            int accountLinkResultCode,
+            int accountLinkRequestCode,
             IdpResponse response) {
         mActivity = activity;
         mHelper = helper;
         mSmartLock = smartLock;
         mResponse = response;
-        mAccountLinkResultCode = accountLinkResultCode;
+        mAccountLinkRequestCode = accountLinkRequestCode;
     }
 
     @Override
@@ -69,50 +71,55 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                     mSmartLock,
                     mActivity,
                     firebaseUser,
+                    null,
                     mResponse);
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                final String email = mResponse.getEmail();
+                String email = mResponse.getEmail();
                 if (email != null) {
-                    mHelper.getFirebaseAuth()
-                            .fetchProvidersForEmail(email)
-                            .addOnFailureListener(new TaskFailureLogger(
-                                    TAG, "Error fetching providers for email"))
+                    ProviderUtils.fetchTopProvider(mHelper.getFirebaseAuth(), email)
                             .addOnSuccessListener(new StartWelcomeBackFlow())
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    // TODO: What to do when signing in with Credential fails
-                                    // and we can't continue to Welcome back flow without
-                                    // knowing providers?
+                                    mHelper.finishActivity(
+                                            mActivity,
+                                            ResultCodes.CANCELED,
+                                            IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
                                 }
                             });
                     return;
                 }
             } else {
-                Log.e(TAG, "Unexpected exception when signing in with credential " + mResponse.getProviderType() + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
+                Log.e(TAG,
+                      "Unexpected exception when signing in with credential "
+                              + mResponse.getProviderType()
+                              + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
                       task.getException());
             }
+
             mHelper.dismissDialog();
         }
     }
 
-    private class StartWelcomeBackFlow implements OnSuccessListener<ProviderQueryResult> {
+    private class StartWelcomeBackFlow implements OnSuccessListener<String> {
         @Override
-        public void onSuccess(@NonNull ProviderQueryResult result) {
+        public void onSuccess(String provider) {
             mHelper.dismissDialog();
 
-            String provider = result.getProviders().get(0);
-            if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
+            if (provider == null) {
+                throw new IllegalStateException(
+                        "No provider even though we received a FirebaseAuthUserCollisionException");
+            } else if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
                 // Start email welcome back flow
                 mActivity.startActivityForResult(
                         WelcomeBackPasswordPrompt.createIntent(
                                 mActivity,
                                 mHelper.getFlowParams(),
-                                mResponse
-                        ), mAccountLinkResultCode);
+                                mResponse),
+                        mAccountLinkRequestCode);
             } else {
-                // Start IDP welcome back flow
+                // Start Idp welcome back flow
                 mActivity.startActivityForResult(
                         WelcomeBackIdpPrompt.createIntent(
                                 mActivity,
@@ -120,8 +127,8 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                                 new User.Builder(mResponse.getEmail())
                                         .setProvider(provider)
                                         .build(),
-                                mResponse
-                        ), mAccountLinkResultCode);
+                                mResponse),
+                        mAccountLinkRequestCode);
             }
         }
     }

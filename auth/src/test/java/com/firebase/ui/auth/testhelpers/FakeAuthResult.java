@@ -14,18 +14,24 @@
 
 package com.firebase.ui.auth.testhelpers;
 
+import com.google.firebase.auth.AdditionalUserInfo;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
-public class FakeAuthResult implements AuthResult {
-    private FirebaseUser mFirebaseUser;
+public final class FakeAuthResult implements AuthResult {
+    public static final AuthResult INSTANCE = new FakeAuthResult();
 
-    public FakeAuthResult(FirebaseUser firebaseUser) {
-        mFirebaseUser = firebaseUser;
+    private FakeAuthResult() {
+        // Singleton
     }
 
     @Override
     public FirebaseUser getUser() {
-        return mFirebaseUser;
+        return BaseHelperShadow.sFirebaseUser;
+    }
+
+    @Override
+    public AdditionalUserInfo getAdditionalUserInfo() {
+        return null;
     }
 }

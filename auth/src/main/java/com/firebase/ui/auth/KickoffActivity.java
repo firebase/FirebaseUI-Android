@@ -9,9 +9,9 @@ import android.support.annotation.RestrictTo;
 import android.util.Log;
 
 import com.firebase.ui.auth.ui.ActivityHelper;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.firebase.ui.auth.util.signincontainer.SignInDelegate;
 
@@ -34,7 +34,7 @@ public class KickoffActivity extends HelperActivityBase {
         if (savedInstance == null || savedInstance.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
             if (isOffline()) {
                 Log.d(TAG, "No network connection");
-                finish(ErrorCodes.NO_NETWORK,
+                finish(ResultCodes.CANCELED,
                        IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
                 return;
             }
@@ -52,7 +52,7 @@ public class KickoffActivity extends HelperActivityBase {
                     });
 
             if (isPlayServicesAvailable) {
-                SignInDelegate.delegate(this, mActivityHelper.getFlowParams());
+                start();
             } else {
                 mIsWaitingForPlayServices = true;
             }
@@ -72,7 +72,7 @@ public class KickoffActivity extends HelperActivityBase {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_PLAY_SERVICES) {
             if (resultCode == ResultCodes.OK) {
-                SignInDelegate.delegate(this, mActivityHelper.getFlowParams());
+                start();
             } else {
                 finish(ResultCodes.CANCELED,
                        IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
@@ -81,6 +81,11 @@ public class KickoffActivity extends HelperActivityBase {
             SignInDelegate delegate = SignInDelegate.getInstance(this);
             if (delegate != null) delegate.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void start() {
+        FlowParameters flowParams = mActivityHelper.getFlowParams();
+        SignInDelegate.delegate(this, flowParams);
     }
 
     /**

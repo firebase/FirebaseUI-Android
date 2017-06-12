@@ -54,13 +54,13 @@
                     android:id="@+id/default_theme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:checked="true"
                     android:text="@string/default_theme"/>
 
                 <RadioButton
                     android:id="@+id/purple_theme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"
                     android:text="@string/purple_theme"/>
 
                 <RadioButton
@@ -112,6 +112,13 @@
                 android:checked="true"
                 android:text="@string/email_label"/>
 
+            <CheckBox
+                android:id="@+id/phone_provider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/phone_label"/>
+
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="wrap_content"
@@ -137,6 +144,34 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/firebase_tos_label"/>
+
+            </RadioGroup>
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/privacy_policy_header"/>
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/google_privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/google_privacy_label"/>
+
+                <RadioButton
+                    android:id="@+id/firebase_privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/firebase_privacy_label"/>
 
             </RadioGroup>
 
@@ -207,18 +242,18 @@
                 android:text="@string/extra_google_scopes"/>
 
             <CheckBox
-                android:id="@+id/google_scope_games"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="@string/games"/>
-
-            <CheckBox
                 android:id="@+id/google_scope_drive_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="@string/drive_file"/>
+                android:text="@string/drive_file_scope"/>
+
+            <CheckBox
+                android:id="@+id/google_scope_youtube_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/youtube_data_scope"/>
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
@@ -229,11 +264,18 @@
                 android:text="@string/other_options_header"/>
 
             <CheckBox
-                android:id="@+id/smartlock_enabled"
+                android:id="@+id/credential_selector_enabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/enable_smartlock"/>
+                android:text="@string/enable_credential_selector"/>
+
+            <CheckBox
+                android:id="@+id/hint_selector_enabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/enable_hint_selector"/>
 
             <CheckBox
                 android:id="@+id/allow_new_email_accounts"

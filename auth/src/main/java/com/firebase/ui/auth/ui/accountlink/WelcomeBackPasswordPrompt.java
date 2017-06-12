@@ -35,11 +35,12 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.provider.AuthCredentialHelper;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
@@ -55,7 +56,8 @@ import com.google.firebase.auth.FirebaseAuth;
  * the password before initiating a link.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnClickListener {
+public class WelcomeBackPasswordPrompt extends AppCompatBase
+        implements View.OnClickListener, ImeHelper.DonePressedListener {
     private static final String TAG = "WelcomeBackPassword";
 
     private String mEmail;
@@ -85,11 +87,16 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
+        TextView welcomeBackHeader = (TextView) findViewById(R.id.welcome_back_email_header);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 
-        // Create welcome back text with email bolded
+        ImeHelper.setImeOnDoneListener(mPasswordField, this);
+
+        // Create welcome back text with email bolded.
         String bodyText = getString(R.string.welcome_back_password_prompt_body, mEmail);
+        FlowParameters flowParameters = mActivityHelper.getFlowParams();
+
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
@@ -109,7 +116,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
     public void onClick(View view) {
         final int id = view.getId();
         if (id == R.id.button_done) {
-            next(mEmail, mPasswordField.getText().toString());
+            validateAndSignIn();
         } else if (id == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
                     this,
@@ -119,7 +126,16 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
         }
     }
 
-    private void next(final String email, final String password) {
+    @Override
+    public void onDonePressed() {
+        validateAndSignIn();
+    }
+
+    private void validateAndSignIn() {
+        validateAndSignIn(mEmail, mPasswordField.getText().toString());
+    }
+
+    private void validateAndSignIn(final String email, final String password) {
         // Check for null or empty password
         if (TextUtils.isEmpty(password)) {
             mPasswordLayout.setError(getString(R.string.required_field));
@@ -138,7 +154,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         AuthCredential authCredential =
-                                AuthCredentialHelper.getAuthCredential(mIdpResponse);
+                                ProviderUtils.getAuthCredential(mIdpResponse);
 
                         // If authCredential is null, the user only has an email account.
                         // Otherwise, the user has an email account that we need to link to an idp.
@@ -147,12 +163,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase implements View.OnC
                                     mSaveSmartLock,
                                     authResult.getUser(),
                                     password,
-                                    new IdpResponse(EmailAuthProvider.PROVIDER_ID, email));
+                                    new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                            .build());
                         } else {
                             authResult.getUser()
                                     .linkWithCredential(authCredential)
                                     .addOnFailureListener(new TaskFailureLogger(
-                                            TAG, "Error signing in with credential " + authCredential.getProvider()))
+                                            TAG, "Error signing in with credential " +
+                                            authCredential.getProvider()))
                                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                         @Override
                                         public void onSuccess(AuthResult authResult) {

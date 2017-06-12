@@ -18,12 +18,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -49,6 +52,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     private FragmentActivity mActivity;
     private IdpConfig mIdpConfig;
     private IdpCallback mIdpCallback;
+    private boolean mSpecificAccount;
 
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig) {
         this(activity, idpConfig, null);
@@ -57,7 +61,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig, @Nullable String email) {
         mActivity = activity;
         mIdpConfig = idpConfig;
-
+        mSpecificAccount = !TextUtils.isEmpty(email);
         mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
                 .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(email))
@@ -76,13 +80,6 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
                         .requestEmail()
                         .requestIdToken(clientId);
 
-        if (mActivity.getResources().getIdentifier(
-                "google_permissions", "array", mActivity.getPackageName()) != 0) {
-            Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.google_permissions but that is"
-                    + " no longer respected as of FirebaseUI 1.0.0. Please see README for IDP scope"
-                    + " configuration instructions.");
-        }
-
         // Add additional scopes
         for (String scopeString : mIdpConfig.getScopes()) {
             builder.requestScopes(new Scope(scopeString));
@@ -95,13 +92,21 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
         return builder.build();
     }
 
+    @Override
     public String getName(Context context) {
-        return context.getResources().getString(R.string.idp_name_google);
+        return context.getString(R.string.idp_name_google);
     }
 
     @Override
+    @AuthUI.SupportedProvider
     public String getProviderId() {
         return GoogleAuthProvider.PROVIDER_ID;
+    }
+
+    @Override
+    @LayoutRes
+    public int getButtonLayout() {
+        return R.layout.idp_button_google;
     }
 
     @Override
@@ -117,8 +122,9 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     }
 
     private IdpResponse createIdpResponse(GoogleSignInAccount account) {
-        return new IdpResponse(
-                GoogleAuthProvider.PROVIDER_ID, account.getEmail(), account.getIdToken());
+        return new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
+                .setToken(account.getIdToken())
+                .build();
     }
 
     @Override
@@ -127,6 +133,14 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result != null) {
                 if (result.isSuccess()) {
+                    if (mSpecificAccount) {
+                        Toast.makeText(
+                                mActivity,
+                                mActivity.getString(
+                                        R.string.signed_in_with_specific_account,
+                                        result.getSignInAccount().getEmail()),
+                                Toast.LENGTH_SHORT).show();
+                    }
                     mIdpCallback.onSuccess(createIdpResponse(result.getSignInAccount()));
                 } else {
                     onError(result);

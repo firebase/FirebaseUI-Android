@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.util.signincontainer;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
@@ -49,6 +50,8 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     private static final int RC_SAVE = 100;
     private static final int RC_UPDATE_SERVICE = 28;
 
+    private Context mAppContext;
+
     private String mName;
     private String mEmail;
     private String mPassword;
@@ -75,6 +78,12 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         }
 
         return result;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mAppContext = context.getApplicationContext();
     }
 
     @Override
@@ -145,7 +154,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                     finish();
                 }
             } else {
-                Log.w(TAG, status.getStatusMessage());
+                Log.w(TAG, "Status message:\n" + status.getStatusMessage());
                 finish();
             }
         }
@@ -175,7 +184,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     }
 
     private void finish() {
-        finish(ResultCodes.OK, IdpResponse.getIntent(mResponse));
+        finish(ResultCodes.OK, mResponse.toIntent());
     }
 
     /**
@@ -194,7 +203,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                                         @Nullable IdpResponse response) {
         mResponse = response;
 
-        if (!mHelper.getFlowParams().smartLockEnabled) {
+        if (!mHelper.getFlowParams().enableCredentials) {
             finish();
             return;
         }
@@ -205,7 +214,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
                 .toString() : null;
 
-        mGoogleApiClient = new Builder(getContext().getApplicationContext())
+        mGoogleApiClient = new Builder(mAppContext)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Auth.CREDENTIALS_API)

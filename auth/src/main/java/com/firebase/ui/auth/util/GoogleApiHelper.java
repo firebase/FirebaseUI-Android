@@ -20,7 +20,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * A {@link Task} based wrapper to get a connect {@link GoogleApiClient}.
  */
-public abstract class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public abstract class GoogleApiHelper implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
+
     private static final AtomicInteger SAFE_ID = new AtomicInteger(10);
 
     protected GoogleApiClient mClient;

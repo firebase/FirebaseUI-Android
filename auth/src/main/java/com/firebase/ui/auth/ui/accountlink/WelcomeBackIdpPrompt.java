@@ -30,7 +30,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.provider.AuthCredentialHelper;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
@@ -76,7 +76,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         setContentView(R.layout.welcome_back_idp_prompt_layout);
 
         IdpResponse newUserIdpResponse = IdpResponse.fromResultIntent(getIntent());
-        mPrevCredential = AuthCredentialHelper.getAuthCredential(newUserIdpResponse);
+        mPrevCredential = ProviderUtils.getAuthCredential(newUserIdpResponse);
 
         User oldUser = User.getUser(getIntent());
 
@@ -89,7 +89,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         mIdpProvider = new FacebookProvider(
-                                this, idpConfig, mActivityHelper.getFlowParams().themeId);
+                                idpConfig, mActivityHelper.getFlowParams().themeId);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
                         mIdpProvider = new TwitterProvider(this);
@@ -140,7 +140,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
             return; // do nothing
         }
 
-        AuthCredential newCredential = AuthCredentialHelper.getAuthCredential(idpResponse);
+        AuthCredential newCredential = ProviderUtils.getAuthCredential(idpResponse);
         if (newCredential == null) {
             Log.e(TAG, "No credential returned");
             finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
@@ -158,10 +158,11 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                                 result.getUser()
                                         .linkWithCredential(mPrevCredential)
                                         .addOnFailureListener(new TaskFailureLogger(
-                                                TAG, "Error signing in with previous credential " + idpResponse.getProviderType()))
+                                                TAG, "Error signing in with previous credential " +
+                                                idpResponse.getProviderType()))
                                         .addOnCompleteListener(new FinishListener(idpResponse));
                             } else {
-                                finish(ResultCodes.OK, IdpResponse.getIntent(idpResponse));
+                                finish(ResultCodes.OK, idpResponse.toIntent());
                             }
                         }
                     })
@@ -172,12 +173,14 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                         }
                     })
                     .addOnFailureListener(
-                            new TaskFailureLogger(TAG, "Error signing in with new credential " + idpResponse.getProviderType()));
+                            new TaskFailureLogger(TAG, "Error signing in with new credential " +
+                                    idpResponse.getProviderType()));
         } else {
             currentUser
                     .linkWithCredential(newCredential)
                     .addOnFailureListener(
-                            new TaskFailureLogger(TAG, "Error linking with credential " + idpResponse.getProviderType()))
+                            new TaskFailureLogger(TAG, "Error linking with credential " +
+                                    idpResponse.getProviderType()))
                     .addOnCompleteListener(new FinishListener(idpResponse));
         }
     }
@@ -200,7 +203,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         }
 
         public void onComplete(@NonNull Task task) {
-            finish(ResultCodes.OK, IdpResponse.getIntent(mIdpResponse));
+            finish(ResultCodes.OK, mIdpResponse.toIntent());
         }
     }
 }

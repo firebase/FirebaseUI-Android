@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="FirebaseUI" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/authui_colorPrimary</item>
-        <item name="colorPrimaryDark">@color/authui_colorPrimaryDark</item>
-        <item name="colorAccent">@color/authui_colorAccent</item>
-        <item name="colorButtonNormal">@color/authui_colorPrimary</item>
-        <item name="colorControlNormal">@color/authui_colorPrimary</item>
-        <item name="colorControlActivated">@color/authui_colorAccent</item>
-        <item name="colorControlHighlight">@color/authui_colorAccent</item>
-        <item name="android:textColor">@color/authui_inputTextColorDark</item>
-        <item name="android:textColorPrimary">@color/authui_inputTextColor</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:buttonStyle">@style/FirebaseUI.Button</item>
-        <item name="android:editTextStyle">@style/FirebaseUI.EditText</item>
     </style>
 
     <style name="FirebaseUI.Transparent" parent="FirebaseUI">
@@ -24,14 +17,12 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="FirebaseUI.Dialog" parent="Base.Theme.AppCompat.Light.Dialog"/>
-
     <style name="FirebaseUI.WrapperStyle">
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingLeft">24dp</item>
-        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingLeft">@dimen/wrapper_padding_horiz</item>
+        <item name="android:paddingRight">@dimen/wrapper_padding_horiz</item>
     </style>
 
     <style name="FirebaseUI.Text">
@@ -40,116 +31,119 @@
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
-    <style name="FirebaseUI.Text.T01">
+    <style name="FirebaseUI.Text.T01" tools:ignore="UnusedResources">
         <item name="android:textSize">112sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T02">
+    <style name="FirebaseUI.Text.T02" tools:ignore="UnusedResources">
         <item name="android:textSize">64sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T03">
+    <style name="FirebaseUI.Text.T03" tools:ignore="UnusedResources">
         <item name="android:textSize">48sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T04">
+    <style name="FirebaseUI.Text.T04" tools:ignore="UnusedResources">
         <item name="android:textSize">36sp</item>
         <item name="android:lineSpacingExtra">12sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T05">
+    <style name="FirebaseUI.Text.T05" tools:ignore="UnusedResources">
         <item name="android:textSize">24sp</item>
         <item name="android:lineSpacingExtra">8sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T06">
+    <style name="FirebaseUI.Text.T06" tools:ignore="UnusedResources">
         <item name="android:textSize">18sp</item>
         <item name="android:lineSpacingExtra">6sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T07">
+    <style name="FirebaseUI.Text.T07" tools:ignore="UnusedResources">
         <item name="android:textSize">20sp</item>
         <item name="android:lineSpacingExtra">4sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="FirebaseUI.Text.T08">
+    <style name="FirebaseUI.Text.T08" tools:ignore="UnusedResources">
         <item name="android:textSize">16sp</item>
         <item name="android:lineSpacingExtra">8sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T09">
+    <style name="FirebaseUI.Text.T09" tools:ignore="UnusedResources">
         <item name="android:textSize">16sp</item>
         <item name="android:lineSpacingExtra">4sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="FirebaseUI.Text.T11">
+    <style name="FirebaseUI.Text.T11" tools:ignore="UnusedResources">
         <item name="android:textSize">14sp</item>
         <item name="android:lineSpacingExtra">6sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="FirebaseUI.Text.T12">
+    <style name="FirebaseUI.Text.T12" tools:ignore="UnusedResources">
         <item name="android:textSize">12sp</item>
         <item name="android:lineSpacingExtra">4sp</item>
     </style>
 
-    <style name="FirebaseUI.Text.T13">
+    <style name="FirebaseUI.Text.T13" tools:ignore="UnusedResources">
         <item name="android:textSize">10sp</item>
     </style>
 
-    <!-- Common styles -->
-    <style name="FirebaseUI.Text.TextInputLayout">
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:textColorHint">?android:attr/textColor</item>
-    </style>
-
-    <style name="FirebaseUI.Text.HintText" parent="FirebaseUI.Text.T12">
+    <style name="FirebaseUI.Text.T14">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:textColor">?android:attr/textColor</item>
     </style>
 
-    <style name="FirebaseUI.Text.ErrorText" parent="FirebaseUI.Text.T12">
-        <item name="android:textColor">@color/errorColor</item>
-        <item name="android:paddingTop">4dp</item>
-        <item name="android:paddingBottom">4dp</item>
-    </style>
 
-    <style name="FirebaseUI.Button" parent="@style/Widget.AppCompat.Button">
+    <!-- Common styles -->
+    <style name="FirebaseUI.Button" parent="@style/Widget.AppCompat.Button.Colored">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">right</item>
-        <item name="android:textColor">?attr/android:textColorPrimary</item>
     </style>
 
-    <style name="FirebaseUI.Button.AlertButton">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">52dp</item>
-        <item name="android:padding">0dp</item>
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:layout_marginBottom">0dp</item>
-        <item name="android:gravity">right|center</item>
-        <item name="android:background">@android:color/transparent</item>
-    </style>
-
-    <style name="FirebaseUI.EditText">
-        <item name="android:textColor">?android:textColor</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:lineSpacingExtra">8sp</item>
+    <style name="FirebaseUI.VerifyPhoneButton" parent="FirebaseUI.Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
-    <style name="FirebaseUI.EditText.EmailField">
-        <item name="android:hint">@string/email_hint</item>
+    <style name="FirebaseUI.SMSTermsText" parent="FirebaseUI.Text.BodyText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">?android:textColorTertiary</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputEditText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputEditText.EmailField">
         <item name="android:inputType">textEmailAddress</item>
     </style>
 
-    <style name="FirebaseUI.EditText.PasswordField">
-        <item name="android:hint">@string/password_hint</item>
+    <style name="FirebaseUI.TextInputEditText.PhoneField">
+        <item name="android:hint">@string/phone_hint</item>
+        <item name="android:inputType">phone</item>
+        <item name="android:imeOptions">actionNext</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputEditText.PasswordField">
         <item name="android:inputType">textPassword</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputLayout" parent="Widget.Design.TextInputLayout"/>
+
+    <style name="FirebaseUI.TextInputLayout.EmailField">
+        <item name="android:hint">@string/email_hint</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputLayout.PasswordField">
+        <item name="android:hint">@string/password_hint</item>
     </style>
 
     <style name="FirebaseUI.Text.Link">
@@ -158,20 +152,13 @@
 
     <style name="FirebaseUI.Text.Heading" parent="FirebaseUI.Text.T07">
         <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingBottom">@dimen/heading_padding_bottom</item>
     </style>
 
     <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">?android:textColor</item>
-        <item name="android:paddingBottom">16dp</item>
-    </style>
-
-    <style name="FirebaseUI.Text.BodyTextNoColor" parent="FirebaseUI.Text.T08">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingBottom">@dimen/body_padding_bottom</item>
     </style>
 
     <!-- Authentication method picker styles -->
@@ -207,12 +194,29 @@
         <item name="android:layout_gravity">left</item>
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:typeface">normal</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.EmailButton">
         <item name="android:drawableLeft">@drawable/ic_mail_white_24dp</item>
         <item name="android:background">@drawable/idp_button_background_email</item>
         <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.PhoneButton">
+        <item name="android:drawableLeft">@drawable/ic_settings_phone_white_24dp</item>
+        <item name="android:background">@drawable/idp_button_background_phone</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
+    <style name="FirebaseUI.CountrySpinner" parent="@style/Widget.AppCompat.Spinner.Underlined">
+        <item name = "android:layout_width">wrap_content</item>
+        <item name = "android:layout_height">wrap_content</item>
+        <item name = "android:layout_gravity">left</item>
+        <item name = "android:paddingBottom">16dp</item>
+        <item name = "android:paddingTop">16dp</item>
+        <item name = "android:textAppearance">?android:attr/textAppearanceMedium</item>
+
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.GoogleButton">
@@ -224,13 +228,13 @@
     <style name="FirebaseUI.Button.AccountChooser.FacebookButton">
         <item name="android:drawableLeft">@drawable/ic_facebook_white_22dp</item>
         <item name="android:background">@drawable/idp_button_background_facebook</item>
-        <item name="android:textColor">@color/com_facebook_button_text_color</item>
+        <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.TwitterButton">
         <item name="android:drawableLeft">@drawable/ic_twitter_bird_white_24dp</item>
         <item name="android:background">@drawable/idp_button_background_twitter</item>
-        <item name="android:textColor">@color/tw__solid_white</item>
+        <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
 </resources>

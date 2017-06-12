@@ -1,12 +1,15 @@
 package com.firebase.ui.auth.util.signincontainer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -18,6 +21,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
@@ -32,13 +36,15 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     private static final String TAG = "SmartLockBase";
 
     protected GoogleApiClient mGoogleApiClient;
+
     private boolean mWasProgressDialogShowing;
+    private Pair<Integer, Intent> mActivityResultPair;
 
     /**
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to
      * a Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
      */
-    public static String providerIdToAccountType(@NonNull String providerId) {
+    public static String providerIdToAccountType(@AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
                 return IdentityProviders.GOOGLE;
@@ -49,11 +55,15 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
             case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
                 return null;
+            case PhoneAuthProvider.PROVIDER_ID:
+                // The account type for phone creds is null
+                return null;
             default:
                 return null;
         }
     }
 
+    @AuthUI.SupportedProvider
     public static String accountTypeToProviderId(@NonNull String accountType) {
         switch (accountType) {
             case IdentityProviders.GOOGLE:
@@ -80,7 +90,7 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         List<Credential> credentials = new ArrayList<>();
         for (UserInfo userInfo : user.getProviderData()) {
             // Get provider ID from Firebase Auth
-            String providerId = userInfo.getProviderId();
+            @AuthUI.SupportedProvider String providerId = userInfo.getProviderId();
 
             // Convert to Credentials API account type
             String accountType = providerIdToAccountType(providerId);
@@ -110,7 +120,9 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     @Override
     public void onStart() {
         super.onStart();
-        if (mWasProgressDialogShowing) {
+        if (mActivityResultPair != null) {
+            mHelper.finish(mActivityResultPair.first, mActivityResultPair.second);
+        } else if (mWasProgressDialogShowing) {
             mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
             mWasProgressDialogShowing = false;
         }
@@ -126,12 +138,20 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     @Override
     public void onDestroy() {
         super.onDestroy();
-        cleanup();
-    }
-
-    public void cleanup() {
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void finish(int resultCode, Intent resultIntent) {
+        if (getActivity() == null) {
+            // Because this fragment lives beyond the activity lifecycle, Fragment#getActivity()
+            // might return null and we'll throw a NPE. To get around this, we wait until the
+            // activity comes back to life in onStart and we finish it there.
+            mActivityResultPair = new Pair<>(resultCode, resultIntent);
+        } else {
+            super.finish(resultCode, resultIntent);
         }
     }
 

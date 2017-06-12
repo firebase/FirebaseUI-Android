@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'io.fabric'
 apply from: '../library/quality/quality.gradle'
 
 android {
@@ -18,7 +17,7 @@ android {
             manifestPlaceholders = [enableFbLogging: true]
 
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
+            consumerProguardFiles getDefaultProguardFile('proguard-android.txt'), 'auth-proguard.pro'
         }
 
         debug {
@@ -44,19 +43,20 @@ dependencies {
     compile "com.google.firebase:firebase-auth:$firebaseVersion"
     compile "com.google.android.gms:play-services-auth:$firebaseVersion"
 
-    compile 'com.facebook.android:facebook-android-sdk:4.19.0'
-    compile("com.twitter.sdk.android:twitter:2.3.0@aar") { transitive = true }
+    provided 'com.facebook.android:facebook-android-sdk:4.23.0'
+    provided("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
 
     // The following libraries are needed to prevent incompatibilities with the facebook
     // library when updating com.android.support libraries:
     compile "com.android.support:cardview-v7:$supportLibraryVersion"
 
     testCompile 'junit:junit:4.12'
-    //noinspection NewerVersionAvailable, GradleDynamicVersion
-    testCompile 'org.mockito:mockito-core:2.6.+'
+    //noinspection GradleDynamicVersion
+    testCompile 'org.mockito:mockito-core:2.8.+'
     testCompile 'org.robolectric:robolectric:3.2.2'
     // See https://github.com/robolectric/robolectric/issues/1932#issuecomment-219796474
     testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+    testCompile 'com.facebook.android:facebook-android-sdk:4.23.0'
 }
 
 javadoc.exclude([

@@ -19,6 +19,7 @@ import com.firebase.ui.auth.AuthUI.SignInIntentBuilder;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.firebase.FirebaseApp;
 
@@ -43,22 +44,12 @@ public class AuthUITest {
     }
 
     @Test
-    public void testCreateStartIntent_deprecatedSetProvidersShouldStillWork() {
-        FlowParameters flowParameters = AuthUI
-                .getInstance(mFirebaseApp)
-                .createSignInIntentBuilder()
-                .setProviders(new String[]{AuthUI.EMAIL_PROVIDER, AuthUI.TWITTER_PROVIDER})
-                .getFlowParams();
-        assertEquals(2, flowParameters.providerInfo.size());
-        assertEquals(AuthUI.EMAIL_PROVIDER, flowParameters.providerInfo.get(0).getProviderId());
-    }
-
-    @Test
     public void testCreateStartIntent_shouldHaveEmailAsDefaultProvider() {
         FlowParameters flowParameters = AuthUI
                 .getInstance(mFirebaseApp)
                 .createSignInIntentBuilder()
-                .getFlowParams();
+                .build()
+                .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
         assertEquals(1, flowParameters.providerInfo.size());
         assertEquals(AuthUI.EMAIL_PROVIDER, flowParameters.providerInfo.get(0).getProviderId());
     }
@@ -67,7 +58,7 @@ public class AuthUITest {
     public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
         SignInIntentBuilder startIntent =
                 AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder();
-        startIntent.setProviders(
+        startIntent.setAvailableProviders(
                 Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                               new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()));
     }
@@ -75,15 +66,19 @@ public class AuthUITest {
     @Test
     public void testCreatingStartIntent() {
         FlowParameters flowParameters = AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder()
-                .setProviders(Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                            new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                            new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                .setAvailableProviders(
+                        Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                      new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                      new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
                 .setTosUrl(TestConstants.TOS_URL)
-                .getFlowParams();
+                .setPrivacyPolicyUrl(TestConstants.PRIVACY_URL)
+                .build()
+                .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
 
         assertEquals(3, flowParameters.providerInfo.size());
         assertEquals(mFirebaseApp.getName(), flowParameters.appName);
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
+        assertEquals(TestConstants.PRIVACY_URL, flowParameters.privacyPolicyUrl);
         assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);
     }
 }

@@ -10,10 +10,21 @@ A compatible FirebaseUI client is also available for [iOS](https://github.com/fi
 
 ## Table of Contents
 
-  1. [Installation](#installation)
   1. [Usage](#usage)
+  1. [Installation](#installation)
+  1. [Upgrading](#upgrading)
+  1. [Dependencies](#dependencies)
   1. [Sample App](#sample-app)
   1. [Contributing](#contributing)
+
+## Usage
+
+FirebaseUI has separate modules for using Firebase Database, Auth, and Storage. To
+get started, see the individual instructions for each module:
+
+  * [firebase-ui-database](database/README.md)
+  * [firebase-ui-auth](auth/README.md)
+  * [firebase-ui-storage](storage/README.md)
 
 ## Installation
 
@@ -47,6 +58,15 @@ required.
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
 
+## Upgrading
+
+If you are using an old version of FirebaseUI and upgrading, please see the appropriate
+migration guide:
+
+  * [Upgrade from 1.2.0 to 2.0](./docs/upgrade-to-2.0.md)
+
+## Dependencies
+
 ### Compatibility with Firebase / Google Play Services Libraries
 
 FirebaseUI libraries have the following transitive dependencies on the Firebase SDK:
@@ -67,7 +87,7 @@ in `common/constants.gradle`.  If you are using any dependencies in your app of 
 `compile 'com.google.firebase:firebase-*:x.y.z'` or `compile 'com.google.android.gms:play-services-*:x.y.z'`
 you need to make sure that you use the same version that your chosen version of FirebaseUI requires.
 
-For convenience, here are some examples:
+For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
@@ -75,21 +95,44 @@ For convenience, here are some examples:
 | 1.1.1              | 10.0.0 or 10.0.1               |
 | 1.0.1              | 10.0.0 or 10.0.1               |
 | 1.0.0              | 9.8.0                          |
-| 0.6.2              | 9.8.0                          |
-| 0.6.1              | 9.6.1                          |
-| 0.6.0              | 9.6.0                          |
-| 0.5.3              | 9.4.0                          |
-| 0.4.4              | 9.4.0                          |
-| 0.4.3              | 9.2.1                          |
-| 0.4.2              | 9.2.0                          |
-| 0.4.1              | 9.0.2                          |
-| 0.4.0              | 9.0.0                          |
 
-## Usage
 
-  * [firebase-ui-database](database/README.md)
-  * [firebase-ui-auth](auth/README.md)
-  * [firebase-ui-storage](storage/README.md)
+## Upgrading dependencies
+
+If you would like to use a newer version of one of FirebaseUI's transitive dependencies, such
+as Firebase, Play services, or the Android support libraries you need add explicit
+`compile` declarations in your `build.gradle` for all of FirebaseUI's dependencies at the version
+you want to use. For example if you want to use Play services/Firebase version `FOO` and support
+libraries version `BAR` add the following extra lines for each FirebaseUI module you're using:
+
+Auth:
+
+```groovy
+compile "com.google.firebase:firebase-auth:$FOO"
+compile "com.google.android.gms:play-services-auth:$FOO"
+
+compile "com.android.support:design:$BAR"
+compile "com.android.support:customtabs:$BAR"
+compile "com.android.support:cardview-v7:$BAR"
+```
+
+Database:
+
+```groovy
+compile "com.google.firebase:firebase-database:$FOO"
+
+compile "com.android.support:recyclerview-v7:$BAR"
+compile "com.android.support:support-v4:$BAR"
+```
+
+Storage:
+
+```groovy
+compile "com.google.firebase:firebase-storage:$FOO"
+
+compile "com.android.support:appcompat-v7:$BAR"
+compile "com.android.support:palette-v7:$BAR"
+```
 
 ## Sample App
 

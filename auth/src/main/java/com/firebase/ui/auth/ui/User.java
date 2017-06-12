@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
+import com.firebase.ui.auth.AuthUI;
+
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class User implements Parcelable {
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -57,6 +59,7 @@ public class User implements Parcelable {
     }
 
     @Nullable
+    @AuthUI.SupportedProvider
     public String getProvider() {
         return mProvider;
     }
@@ -79,7 +82,7 @@ public class User implements Parcelable {
         dest.writeParcelable(mPhotoUri, flags);
     }
 
-    public static final class Builder {
+    public static class Builder {
         private String mEmail;
         private String mName;
         private String mProvider;
@@ -94,7 +97,7 @@ public class User implements Parcelable {
             return this;
         }
 
-        public Builder setProvider(String provider) {
+        public Builder setProvider(@AuthUI.SupportedProvider String provider) {
             mProvider = provider;
             return this;
         }

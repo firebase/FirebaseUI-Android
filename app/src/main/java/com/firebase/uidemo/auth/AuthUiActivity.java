@@ -52,6 +52,8 @@ public class AuthUiActivity extends AppCompatActivity {
     private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
+    private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google.com/policies/privacy/";
+    private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google.com/terms/analytics/#7_privacy";
     private static final int RC_SIGN_IN = 100;
 
     @BindView(R.id.default_theme)
@@ -69,6 +71,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.email_provider)
     CheckBox mUseEmailProvider;
 
+    @BindView(R.id.phone_provider)
+    CheckBox mUsePhoneProvider;
+
     @BindView(R.id.google_provider)
     CheckBox mUseGoogleProvider;
 
@@ -83,6 +88,12 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @BindView(R.id.firebase_tos)
     RadioButton mUseFirebaseTos;
+
+    @BindView(R.id.google_privacy)
+    RadioButton mUseGooglePrivacyPolicy;
+
+    @BindView(R.id.firebase_privacy)
+    RadioButton mUseFirebasePrivacyPolicy;
 
     @BindView(R.id.sign_in)
     Button mSignIn;
@@ -99,8 +110,11 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.no_logo)
     RadioButton mNoLogo;
 
-    @BindView(R.id.smartlock_enabled)
-    CheckBox mEnableSmartLock;
+    @BindView(R.id.credential_selector_enabled)
+    CheckBox mEnableCredentialSelector;
+
+    @BindView(R.id.hint_selector_enabled)
+    CheckBox mEnableHintSelector;
 
     @BindView(R.id.allow_new_email_accounts)
     CheckBox mAllowNewEmailAccounts;
@@ -120,21 +134,21 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_scope_drive_file)
     CheckBox mGoogleScopeDriveFile;
 
-    @BindView(R.id.google_scope_games)
-    CheckBox mGoogleScopeGames;
+    @BindView(R.id.google_scope_youtube_data)
+    CheckBox mGoogleScopeYoutubeData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.auth_ui_layout);
+        ButterKnife.bind(this);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            startActivity(SignedInActivity.createIntent(this, null));
+            startSignedInActivity(null);
             finish();
+            return;
         }
-
-        setContentView(R.layout.auth_ui_layout);
-        ButterKnife.bind(this);
 
         if (!isGoogleConfigured()) {
             mUseGoogleProvider.setChecked(false);
@@ -183,9 +197,11 @@ public class AuthUiActivity extends AppCompatActivity {
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setTheme(getSelectedTheme())
                         .setLogo(getSelectedLogo())
-                        .setProviders(getSelectedProviders())
+                        .setAvailableProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
-                        .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
+                        .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
+                        .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
+                                               mEnableHintSelector.isChecked())
                         .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
                 RC_SIGN_IN);
@@ -208,7 +224,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
         // Successfully signed in
         if (resultCode == ResultCodes.OK) {
-            startActivity(SignedInActivity.createIntent(this, response));
+            startSignedInActivity(response);
             finish();
             return;
         } else {
@@ -233,11 +249,25 @@ public class AuthUiActivity extends AppCompatActivity {
         showSnackbar(R.string.unknown_sign_in_response);
     }
 
+    private void startSignedInActivity(IdpResponse response) {
+        startActivity(
+                SignedInActivity.createIntent(
+                        this,
+                        response,
+                        new SignedInActivity.SignedInConfig(
+                                getSelectedLogo(),
+                                getSelectedTheme(),
+                                getSelectedProviders(),
+                                getSelectedTosUrl(),
+                                mEnableCredentialSelector.isChecked(),
+                                mEnableHintSelector.isChecked())));
+    }
+
     @MainThread
     private void setGoogleScopesEnabled(boolean enabled) {
         mGoogleScopesLabel.setEnabled(enabled);
         mGoogleScopeDriveFile.setEnabled(enabled);
-        mGoogleScopeGames.setEnabled(enabled);
+        mGoogleScopeYoutubeData.setEnabled(enabled);
     }
 
     @MainThread
@@ -280,12 +310,11 @@ public class AuthUiActivity extends AppCompatActivity {
     private List<IdpConfig> getSelectedProviders() {
         List<IdpConfig> selectedProviders = new ArrayList<>();
 
-        if (mUseEmailProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
-        }
-
-        if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+        if (mUseGoogleProvider.isChecked()) {
+            selectedProviders.add(
+                    new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
+                            .setPermissions(getGooglePermissions())
+                            .build());
         }
 
         if (mUseFacebookProvider.isChecked()) {
@@ -295,11 +324,17 @@ public class AuthUiActivity extends AppCompatActivity {
                             .build());
         }
 
-        if (mUseGoogleProvider.isChecked()) {
+        if (mUseTwitterProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+        }
+
+        if (mUseEmailProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
+        }
+
+        if (mUsePhoneProvider.isChecked()) {
             selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-                            .setPermissions(getGooglePermissions())
-                            .build());
+                    new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
         }
 
         return selectedProviders;
@@ -312,6 +347,15 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         return FIREBASE_TOS_URL;
+    }
+
+    @MainThread
+    private String getSelectedPrivacyPolicyUrl() {
+        if (mUseGooglePrivacyPolicy.isChecked()) {
+            return GOOGLE_PRIVACY_POLICY_URL;
+        }
+
+        return FIREBASE_PRIVACY_POLICY_URL;
     }
 
     @MainThread
@@ -356,8 +400,8 @@ public class AuthUiActivity extends AppCompatActivity {
     @MainThread
     private List<String> getGooglePermissions() {
         List<String> result = new ArrayList<>();
-        if (mGoogleScopeGames.isChecked()) {
-            result.add(Scopes.GAMES);
+        if (mGoogleScopeYoutubeData.isChecked()) {
+            result.add("https://www.googleapis.com/auth/youtube.readonly");
         }
         if (mGoogleScopeDriveFile.isChecked()) {
             result.add(Scopes.DRIVE_FILE);

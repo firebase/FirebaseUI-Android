@@ -18,26 +18,22 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
-import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.FragmentActivity;
 
 import com.facebook.login.LoginManager;
+import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.CredentialTaskApi;
-import com.firebase.ui.auth.util.CredentialsApiHelper;
-import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.signincontainer.SmartLockBase;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -48,6 +44,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
@@ -55,7 +52,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -70,27 +66,40 @@ import java.util.Set;
  * for examples on how to get started with FirebaseUI Auth.
  */
 public class AuthUI {
+    @StringDef({
+                       EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
+                       PhoneAuthProvider.PROVIDER_ID, PHONE_VERIFICATION_PROVIDER,
+                       GoogleAuthProvider.PROVIDER_ID, GOOGLE_PROVIDER,
+                       FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
+                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER,
+               })
+    public @interface SupportedProvider {}
 
     /**
      * Provider identifier for email and password credentials, for use with
-     * {@link SignInIntentBuilder#setProviders}.
+     * {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String EMAIL_PROVIDER = EmailAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Google, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Google, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String GOOGLE_PROVIDER = GoogleAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Facebook, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Facebook, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String FACEBOOK_PROVIDER = FacebookAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
+
+    /**
+     * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setProviders}.
+     */
+    public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
 
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
@@ -105,7 +114,8 @@ public class AuthUI {
                     EMAIL_PROVIDER,
                     GOOGLE_PROVIDER,
                     FACEBOOK_PROVIDER,
-                    TWITTER_PROVIDER
+                    TWITTER_PROVIDER,
+                    PHONE_VERIFICATION_PROVIDER
             )));
 
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
@@ -155,70 +165,6 @@ public class AuthUI {
     /**
      * Signs the current user out, if one is signed in.
      *
-     * @param activity The activity requesting the user be signed out.
-     * @return a task which, upon completion, signals that the user has been signed out ({@code
-     * result.isSuccess()}, or that the sign-out attempt failed unexpectedly ({@code
-     * !result.isSuccess()}).
-     * @deprecated use {@link #signOut(FragmentActivity)} instead
-     */
-    @Deprecated
-    public Task<Void> signOut(@NonNull Activity activity) {
-        // Get helper for Google Sign In and Credentials API
-        GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
-        taskHelper.getBuilder()
-                .addApi(Auth.CREDENTIALS_API)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN);
-
-        // Get Credentials Helper
-        CredentialTaskApi credentialsHelper = CredentialsApiHelper.getInstance(taskHelper);
-
-        // Firebase Sign out
-        mAuth.signOut();
-
-        // Disable credentials auto sign-in
-        Task<Status> disableCredentialsTask = credentialsHelper.disableAutoSignIn();
-
-        // Google sign out
-        Task<Void> googleSignOutTask = taskHelper.getConnectedGoogleApiClient()
-                .continueWith(new Continuation<GoogleApiClient, Void>() {
-                    @Override
-                    public Void then(@NonNull Task<GoogleApiClient> task) throws Exception {
-                        if (task.isSuccessful()) {
-                            Auth.GoogleSignInApi.signOut(task.getResult());
-                        }
-                        return null;
-                    }
-                });
-
-        // Facebook sign out
-        LoginManager.getInstance().logOut();
-
-        // Wait for all tasks to complete
-        return Tasks.whenAll(disableCredentialsTask, googleSignOutTask);
-    }
-
-    /**
-     * Delete the use from FirebaseAuth and delete any associated credentials from the Credentials
-     * API. Returns a {@code Task} that succeeds if the Firebase Auth user deletion succeeds and
-     * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
-     * silently.
-     *
-     * @param activity the calling {@link Activity}.
-     * @deprecated use {@link #delete(FragmentActivity)} instead
-     */
-    @Deprecated
-    public Task<Void> delete(@NonNull Activity activity) {
-        // Initialize SmartLock helper
-        GoogleApiClientTaskHelper gacHelper = GoogleApiClientTaskHelper.getInstance(activity);
-        gacHelper.getBuilder().addApi(Auth.CREDENTIALS_API);
-        CredentialTaskApi credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
-
-        return getDeleteTask(credentialHelper);
-    }
-
-    /**
-     * Signs the current user out, if one is signed in.
-     *
      * @param activity the activity requesting the user be signed out
      * @return A task which, upon completion, signals that the user has been signed out ({@link
      * Task#isSuccessful()}, or that the sign-out attempt failed unexpectedly !{@link
@@ -226,20 +172,30 @@ public class AuthUI {
      */
     public Task<Void> signOut(@NonNull FragmentActivity activity) {
         // Get Credentials Helper
-        GoogleSignInHelper credentialsHelper = GoogleSignInHelper.getInstance(activity);
+        GoogleSignInHelper signInHelper = GoogleSignInHelper.getInstance(activity);
 
         // Firebase Sign out
         mAuth.signOut();
 
         // Disable credentials auto sign-in
-        Task<Status> disableCredentialsTask = credentialsHelper.disableAutoSignIn();
+        Task<Status> disableCredentialsTask = signInHelper.disableAutoSignIn();
 
         // Google sign out
-        Task<Status> signOutTask = credentialsHelper.signOut();
+        Task<Status> signOutTask = signInHelper.signOut();
 
         // Facebook sign out
-        LoginManager.getInstance().logOut();
+        try {
+            LoginManager.getInstance().logOut();
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
 
+        // Twitter sign out
+        try {
+            TwitterProvider.signout(activity);
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, signOutTask);
     }
@@ -254,12 +210,8 @@ public class AuthUI {
      */
     public Task<Void> delete(@NonNull FragmentActivity activity) {
         // Initialize SmartLock helper
-        CredentialTaskApi credentialHelper = GoogleSignInHelper.getInstance(activity);
+        GoogleSignInHelper signInHelper = GoogleSignInHelper.getInstance(activity);
 
-        return getDeleteTask(credentialHelper);
-    }
-
-    private Task<Void> getDeleteTask(CredentialTaskApi credentialHelper) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser == null) {
             // If the current user is null, return a failed task immediately
@@ -275,7 +227,7 @@ public class AuthUI {
         // For each Credential in the list, create a task to delete it.
         List<Task<?>> credentialTasks = new ArrayList<>();
         for (Credential credential : credentials) {
-            credentialTasks.add(credentialHelper.delete(credential));
+            credentialTasks.add(signInHelper.delete(credential));
         }
 
         // Create a combined task that will succeed when all credential delete operations
@@ -315,7 +267,7 @@ public class AuthUI {
         private final String mProviderId;
         private final List<String> mScopes;
 
-        private IdpConfig(@NonNull String providerId, List<String> scopes) {
+        private IdpConfig(@SupportedProvider @NonNull String providerId, List<String> scopes) {
             mProviderId = providerId;
             mScopes = Collections.unmodifiableList(scopes);
         }
@@ -325,6 +277,7 @@ public class AuthUI {
             mScopes = Collections.unmodifiableList(in.createStringArrayList());
         }
 
+        @SupportedProvider
         public String getProviderId() {
             return mProviderId;
         }
@@ -356,10 +309,32 @@ public class AuthUI {
             parcel.writeStringList(mScopes);
         }
 
-        public static class Builder {
-            private String mProviderId;
-            private List<String> mScopes = new ArrayList<>();
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
 
+            IdpConfig config = (IdpConfig) o;
+
+            return mProviderId.equals(config.mProviderId);
+        }
+
+        @Override
+        public int hashCode() {
+            return mProviderId.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "IdpConfig{" +
+                    "mProviderId='" + mProviderId + '\'' +
+                    ", mScopes=" + mScopes +
+                    '}';
+        }
+
+        public static class Builder {
+            @SupportedProvider private String mProviderId;
+            private List<String> mScopes = new ArrayList<>();
 
             /**
              * Builds the configuration parameters for an identity provider.
@@ -368,7 +343,7 @@ public class AuthUI {
              *                   AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for
              *                   the complete list of supported Identity providers
              */
-            public Builder(@NonNull String providerId) {
+            public Builder(@SupportedProvider @NonNull String providerId) {
                 if (!SUPPORTED_PROVIDERS.contains(providerId)) {
                     throw new IllegalArgumentException("Unkown provider: " + providerId);
                 }
@@ -401,48 +376,56 @@ public class AuthUI {
     }
 
     /**
-     * Builder for the intent to start the user authentication flow.
+     * Base builder for both {@link SignInIntentBuilder}.
      */
-    public final class SignInIntentBuilder {
-        private int mLogo = NO_LOGO;
-        private int mTheme = getDefaultTheme();
-        private LinkedHashSet<IdpConfig> mProviders = new LinkedHashSet<>();
-        private String mTosUrl;
-        private boolean mIsSmartLockEnabled = true;
-        private boolean mAllowNewEmailAccounts = true;
+    @SuppressWarnings(value = "unchecked")
+    private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
+        int mLogo = NO_LOGO;
+        int mTheme = getDefaultTheme();
+        List<IdpConfig> mProviders = new ArrayList<>();
+        String mTosUrl;
+        String mPrivacyPolicyUrl;
+        boolean mEnableCredentials = true;
+        boolean mEnableHints = true;
 
-        private SignInIntentBuilder() {
-            mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
-        }
+        private AuthIntentBuilder() {}
 
         /**
          * Specifies the theme to use for the application flow. If no theme is specified,
          * a default theme will be used.
          */
-        public SignInIntentBuilder setTheme(@StyleRes int theme) {
+        public T setTheme(@StyleRes int theme) {
             Preconditions.checkValidStyle(
                     mApp.getApplicationContext(),
                     theme,
                     "theme identifier is unknown or not a style definition");
             mTheme = theme;
-            return this;
+            return (T) this;
         }
 
         /**
          * Specifies the logo to use for the {@link AuthMethodPickerActivity}. If no logo
          * is specified, none will be used.
          */
-        public SignInIntentBuilder setLogo(@DrawableRes int logo) {
+        public T setLogo(@DrawableRes int logo) {
             mLogo = logo;
-            return this;
+            return (T) this;
         }
 
         /**
          * Specifies the terms-of-service URL for the application.
          */
-        public SignInIntentBuilder setTosUrl(@Nullable String tosUrl) {
+        public T setTosUrl(@Nullable String tosUrl) {
             mTosUrl = tosUrl;
-            return this;
+            return (T) this;
+        }
+
+        /**
+         * Specifies the privacy policy URL for the application.
+         */
+        public T setPrivacyPolicyUrl(@Nullable String privacyPolicyUrl) {
+            mPrivacyPolicyUrl = privacyPolicyUrl;
+            return (T) this;
         }
 
         /**
@@ -456,53 +439,120 @@ public class AuthUI {
          *                   configuration parameters for the IDP.
          * @see IdpConfig
          */
-        public SignInIntentBuilder setProviders(@NonNull List<IdpConfig> idpConfigs) {
+        public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
             mProviders.clear();
-            Set<String> configuredProviders = new HashSet<>();
-            for (IdpConfig idpConfig : idpConfigs) {
-                if (configuredProviders.contains(idpConfig.getProviderId())) {
+
+            for (IdpConfig config : idpConfigs) {
+                if (mProviders.contains(config)) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                                                               + idpConfig.getProviderId()
+                                                               + config.getProviderId()
                                                                + " was set twice.");
+                } else {
+                    mProviders.add(config);
                 }
-                configuredProviders.add(idpConfig.getProviderId());
-                mProviders.add(idpConfig);
+
+                if (config.getProviderId().equals(FACEBOOK_PROVIDER)) {
+                    try {
+                        Class c = com.facebook.FacebookSdk.class;
+                    } catch (NoClassDefFoundError e) {
+                        throw new RuntimeException("Facebook provider cannot be configured " +
+                               "without dependency. Did you forget to add " +
+                               "'com.facebook.android:facebook-android-sdk:VERSION' dependency?");
+                    }
+                }
+
+                if (config.getProviderId().equals(TWITTER_PROVIDER)) {
+                    try {
+                        Class c = com.twitter.sdk.android.core.TwitterCore.class;
+                    } catch (NoClassDefFoundError e) {
+                        throw new RuntimeException("Twitter provider cannot be configured " +
+                               "without dependency. Did you forget to add " +
+                               "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
+                    }
+                }
             }
-            return this;
+
+            return (T) this;
         }
 
         /**
-         * Specifies the set of supported authentication providers. At least one provider
-         * must be specified, and the set of providers must be a subset of
-         * {@link #SUPPORTED_PROVIDERS}. There may only be one instance of each provider.
+         * Specified the set of supported authentication providers. At least one provider must
+         * be specified. There may only be one instance of each provider.
          * <p>
-         * <p>If no providers are explicitly specified by calling this method, then
-         * {@link #EMAIL_PROVIDER email} is the default supported provider.
+         * <p>If no providers are explicitly specified by calling this method, then the email
+         * provider is the default supported provider.
          *
-         * @see #EMAIL_PROVIDER
-         * @see #FACEBOOK_PROVIDER
-         * @see #GOOGLE_PROVIDER
+         * @param idpConfigs a list of {@link IdpConfig}s, where each {@link IdpConfig} contains the
+         *                   configuration parameters for the IDP.
+         * @see IdpConfig
+         * @deprecated because the order in which providers were displayed was the inverse of the
+         * order in which they were supplied. Use {@link #setAvailableProviders(List)} to display
+         * the providers in the order in which they were supplied.
          */
         @Deprecated
-        public SignInIntentBuilder setProviders(@NonNull String... providers) {
-            mProviders.clear(); // clear the default email provider
-            for (String provider : providers) {
-                if (isIdpAlreadyConfigured(provider)) {
-                    throw new IllegalArgumentException("Provider already configured: " + provider);
-                }
-                mProviders.add(new IdpConfig.Builder(provider).build());
+        public T setProviders(@NonNull List<IdpConfig> idpConfigs) {
+            setAvailableProviders(idpConfigs);
+
+            // Ensure email provider is at the bottom to keep backwards compatibility
+            int emailProviderIndex = mProviders.indexOf(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+            if (emailProviderIndex != -1) {
+                mProviders.add(0, mProviders.remove(emailProviderIndex));
             }
-            return this;
+            Collections.reverse(mProviders);
+
+            return (T) this;
         }
 
         /**
          * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
+         * To (en)disable hint selector and credential selector independently
+         * use {@link #setIsSmartLockEnabled(boolean, boolean)}
          * <p>
          * <p>SmartLock is enabled by default.
+         *
+         * @param enabled enables smartlock's credential selector and hint selector
          */
-        public SignInIntentBuilder setIsSmartLockEnabled(boolean enabled) {
-            mIsSmartLockEnabled = enabled;
-            return this;
+        public T setIsSmartLockEnabled(boolean enabled) {
+            setIsSmartLockEnabled(enabled, enabled);
+            return (T) this;
+        }
+
+        /**
+         * Enables or disables the use of Smart Lock for Passwords credential selector and hint
+         * selector.
+         * <p>
+         * <p>Both selectors are enabled by default.
+
+         * @param enableCredentials enables credential selector before signup
+         * @param enableHints enable hint selector in respective signup screens
+         * @return
+         */
+        public T setIsSmartLockEnabled(boolean enableCredentials, boolean enableHints) {
+            mEnableCredentials = enableCredentials;
+            mEnableHints = enableHints;
+            return (T) this;
+        }
+
+        @CallSuper
+        public Intent build() {
+            if (mProviders.isEmpty()) {
+                mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+            }
+
+            return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
+        }
+
+        protected abstract FlowParameters getFlowParams();
+    }
+
+    /**
+     * Builder for the intent to start the user authentication flow.
+     */
+    public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
+        private boolean mAllowNewEmailAccounts = true;
+
+        private SignInIntentBuilder() {
+            super();
         }
 
         /**
@@ -515,28 +565,18 @@ public class AuthUI {
             return this;
         }
 
-        private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
-            for (IdpConfig config : mProviders) {
-                if (config.getProviderId().equals(providerId)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public Intent build() {
-            return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
-        }
-
-        @VisibleForTesting()
-        public FlowParameters getFlowParams() {
-            return new FlowParameters(mApp.getName(),
-                                      new ArrayList<>(mProviders),
-                                      mTheme,
-                                      mLogo,
-                                      mTosUrl,
-                                      mIsSmartLockEnabled,
-                                      mAllowNewEmailAccounts);
+        @Override
+        protected FlowParameters getFlowParams() {
+            return new FlowParameters(
+                    mApp.getName(),
+                    mProviders,
+                    mTheme,
+                    mLogo,
+                    mTosUrl,
+                    mPrivacyPolicyUrl,
+                    mEnableCredentials,
+                    mEnableHints,
+                    mAllowNewEmailAccounts);
         }
     }
 }

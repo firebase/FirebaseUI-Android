@@ -19,8 +19,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.ui.ExtraConstants;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GithubAuthProvider;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 /**
  * A container that encapsulates the result of authenticating with an Identity Provider.
@@ -28,38 +34,25 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 public class IdpResponse implements Parcelable {
     private final String mProviderId;
     private final String mEmail;
+    private final String mPhoneNumber;
     private final String mToken;
     private final String mSecret;
     private final int mErrorCode;
 
     private IdpResponse(int errorCode) {
-        this(null, null, null, null, errorCode);
-    }
-
-    public IdpResponse(@NonNull String providerId, @NonNull String email) {
-        this(providerId, email, null, null, ResultCodes.OK);
-    }
-
-    public IdpResponse(@NonNull String providerId, @NonNull String email, @NonNull String token) {
-        this(providerId, email, token, null, ResultCodes.OK);
-    }
-
-    public IdpResponse(
-            @NonNull String providerId,
-            @NonNull String email,
-            @NonNull String token,
-            @NonNull String secret) {
-        this(providerId, email, token, secret, ResultCodes.OK);
+        this(null, null, null, null, null, errorCode);
     }
 
     private IdpResponse(
             String providerId,
             String email,
+            String phoneNumber,
             String token,
             String secret,
             int errorCode) {
         mProviderId = providerId;
         mEmail = email;
+        mPhoneNumber = phoneNumber;
         mToken = token;
         mSecret = secret;
         mErrorCode = errorCode;
@@ -80,17 +73,21 @@ public class IdpResponse implements Parcelable {
         }
     }
 
-    public static Intent getIntent(IdpResponse response) {
-        return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static Intent getErrorCodeIntent(int errorCode) {
+        return new IdpResponse(errorCode).toIntent();
     }
 
-    public static Intent getErrorCodeIntent(int errorCode) {
-        return getIntent(new IdpResponse(errorCode));
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public Intent toIntent() {
+        return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, this);
     }
 
     /**
      * Get the type of provider. e.g. {@link AuthUI#GOOGLE_PROVIDER}
      */
+    @NonNull
+    @AuthUI.SupportedProvider
     public String getProviderType() {
         return mProviderId;
     }
@@ -98,8 +95,17 @@ public class IdpResponse implements Parcelable {
     /**
      * Get the email used to sign in.
      */
+    @Nullable
     public String getEmail() {
         return mEmail;
+    }
+
+    /**
+     * Get the phone number used to sign in.
+     */
+    @Nullable
+    public String getPhoneNumber() {
+        return mPhoneNumber;
     }
 
     /**
@@ -134,6 +140,7 @@ public class IdpResponse implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mProviderId);
         dest.writeString(mEmail);
+        dest.writeString(mPhoneNumber);
         dest.writeString(mToken);
         dest.writeString(mSecret);
         dest.writeInt(mErrorCode);
@@ -147,6 +154,7 @@ public class IdpResponse implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readString(),
+                    in.readString(),
                     in.readInt()
             );
         }
@@ -156,4 +164,51 @@ public class IdpResponse implements Parcelable {
             return new IdpResponse[size];
         }
     };
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static class Builder {
+        private String mProviderId;
+        private String mEmail;
+        private String mPhoneNumber;
+        private String mToken;
+        private String mSecret;
+
+        public Builder(@AuthUI.SupportedProvider @NonNull String providerId, @Nullable String email) {
+            mProviderId = providerId;
+            mEmail = email;
+        }
+
+        public Builder setPhoneNumber(String phoneNumber) {
+            mPhoneNumber = phoneNumber;
+            return this;
+        }
+
+        public Builder setToken(String token) {
+            mToken = token;
+            return this;
+        }
+
+        public Builder setSecret(String secret) {
+            mSecret = secret;
+            return this;
+        }
+
+        public IdpResponse build() {
+            if ((mProviderId.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)
+                    || mProviderId.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)
+                    || mProviderId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
+                    || mProviderId.equalsIgnoreCase(GithubAuthProvider.PROVIDER_ID))
+                    && TextUtils.isEmpty(mToken)) {
+                throw new IllegalStateException(
+                        "Token cannot be null when using a non-email provider.");
+            }
+            if (mProviderId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
+                    && TextUtils.isEmpty(mSecret)) {
+                throw new IllegalStateException(
+                        "Secret cannot be null when using the Twitter provider.");
+            }
+
+            return new IdpResponse(mProviderId, mEmail, mPhoneNumber, mToken, mSecret, ResultCodes.OK);
+        }
+    }
 }

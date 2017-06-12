@@ -47,17 +47,12 @@ Gradle, add the dependency:
 dependencies {
     // ...
     compile 'com.firebaseui:firebase-ui-auth:1.2.0'
-}
-```
-
-and add the Fabric repository
-
-```groovy
-allprojects {
-    repositories {
-        // ...
-        maven { url 'https://maven.fabric.io/public' }
-    }
+    
+    // Required only if Facebook login support is required
+    compile('com.facebook.android:facebook-android-sdk:4.22.1')
+    
+    // Required only if Twitter login support is required
+    compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
 }
 ```
 
@@ -69,6 +64,7 @@ these authentication methods are first configured in the Firebase console.
 FirebaseUI client-side configuration for Google sign-in is then provided
 automatically by the
 [google-services gradle plugin](https://developers.google.com/android/guides/google-services-plugin).
+
 If support for Facebook Login is also required, define the
 resource string `facebook_application_id` to match the application ID in
 the [Facebook developer dashboard](https://developers.facebook.com):
@@ -95,6 +91,17 @@ Twitter app as reported by the [Twitter application manager](https://apps.twitte
 
 In addition, you must enable the "Request email addresses from users" permission
 in the "Permissions" tab of your Twitter app.
+
+In order to resolve the Twitter SDK, add the following repository to your `build.gradle`:
+
+```groovy
+allprojects {
+    repositories {
+        // ...
+        maven { url 'https://maven.fabric.io/public' }
+    }
+}
+```
 
 ## Using FirebaseUI for Authentication
 
@@ -161,16 +168,18 @@ is returned to your app in onActivityResult(...). See the [response codes](#resp
 details on receiving the results of the sign in flow.
 
 You can enable sign-in providers like Google Sign-In or Facebook Log In by calling the
-`setProviders` method:
+`setAvailableProviders` method:
 
 ```java
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                                    new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
+        .setAvailableProviders(
+                Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                              new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVDER).build(),
+                              new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                              new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                              new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
         .build(),
     RC_SIGN_IN);
 ```
@@ -181,7 +190,7 @@ If a terms of service URL, privacy policy URL, and a custom theme are required:
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(...)
+        .setAvailableProviders(...)
         .setTosUrl("https://superapp.example.com/terms-of-service.html")
         .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
         .setTheme(R.style.SuperAppTheme)
@@ -212,6 +221,18 @@ startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+        .build(),
+    RC_SIGN_IN);
+```
+
+If you'd like to keep SmartLock's "hints" but disable the saving/retrieving of credentials, then
+you can use the two-argument version of `setIsSmartLockEnabled`:
+
+```java
+startActivityForResult(
+    AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setIsSmartLockEnabled(false, true)
         .build(),
     RC_SIGN_IN);
 ```
@@ -264,9 +285,9 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 ```
 
 Alternatively, you can register a listener for authentication state changes;
-see the
-[Firebase Auth documentation](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user)
-for more information.
+see the Firebase Auth documentation to
+[get the currently signed-in user](https://firebase.google.com/docs/auth/android/manage-users#get_the_currently_signed-in_user)
+and [register an AuthStateListener](https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.html#addAuthStateListener(com.google.firebase.auth.FirebaseAuth.AuthStateListener)).
 
 ##### ID Tokens
 To retrieve the ID token that the IDP returned, you can extract an `IdpResponse` from the result
@@ -427,9 +448,9 @@ AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                    googleIdp,
-                                    new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+        .setAvailableProviders(Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                             googleIdp,
+                                             new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
         .build(),
     RC_SIGN_IN);
 ```
@@ -453,8 +474,8 @@ AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROV
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                    facebookIdp))
+        .setAvailableProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                             facebookIdp))
         .build(),
     RC_SIGN_IN);
 ```

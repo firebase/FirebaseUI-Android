@@ -1,15 +1,15 @@
 project.ext {
     submodules = ['database', 'auth', 'storage']
     group = 'com.firebaseui'
-    version = '1.2.0'
+    version = '2.0.0-SNAPSHOT'
     pomdesc = 'Firebase UI Android'
 
     compileSdk = 25
     targetSdk = 25
     minSdk = 14
 
-    buildTools = '25.0.2'
+    buildTools = '25.0.3'
 
-    firebaseVersion = '10.2.0'
-    supportLibraryVersion = '25.1.1'
+    firebaseVersion = '11.0.0'
+    supportLibraryVersion = '25.3.1'
 }

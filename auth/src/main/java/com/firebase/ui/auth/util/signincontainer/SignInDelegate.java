@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
@@ -23,6 +24,7 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -42,10 +44,12 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Attempts to acquire a credential from Smart Lock for Passwords to sign in
@@ -62,6 +66,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
     private static final int RC_EMAIL_FLOW = 5;
+    private static final int RC_PHONE_FLOW = 6;
 
     private Credential mCredential;
 
@@ -92,7 +97,8 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             return;
         }
 
-        if (mHelper.getFlowParams().smartLockEnabled) {
+        FlowParameters flowParams = mHelper.getFlowParams();
+        if (flowParams.enableCredentials) {
             mHelper.showLoadingDialog(R.string.progress_dialog_loading);
 
             mGoogleApiClient = new GoogleApiClient.Builder(getContext().getApplicationContext())
@@ -129,21 +135,20 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             // Auto sign-in success
             handleCredential(result.getCredential());
             return;
-        } else if (status.hasResolution()) {
-            try {
-                if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-                    mHelper.startIntentSenderForResult(
-                            status.getResolution().getIntentSender(),
-                            RC_CREDENTIALS_READ);
-                    return;
-                } else if (!getSupportedAccountTypes().isEmpty()) {
-                    mHelper.startIntentSenderForResult(
-                            status.getResolution().getIntentSender(),
-                            RC_CREDENTIALS_READ);
-                    return;
+        } else {
+            if (status.hasResolution()) {
+                try {
+                    if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+                        mHelper.startIntentSenderForResult(
+                                status.getResolution().getIntentSender(),
+                                RC_CREDENTIALS_READ);
+                        return;
+                    }
+                } catch (IntentSender.SendIntentException e) {
+                    Log.e(TAG, "Failed to send Credentials intent.", e);
                 }
-            } catch (IntentSender.SendIntentException e) {
-                Log.e(TAG, "Failed to send Credentials intent.", e);
+            } else {
+                Log.e(TAG, "Status message:\n" + status.getStatusMessage());
             }
         }
         startAuthMethodChoice();
@@ -184,7 +189,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private List<String> getSupportedAccountTypes() {
         List<String> accounts = new ArrayList<>();
         for (AuthUI.IdpConfig idpConfig : mHelper.getFlowParams().providerInfo) {
-            String providerId = idpConfig.getProviderId();
+            @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
             if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
                     || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
                     || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
@@ -231,36 +236,51 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     }
 
     private void startAuthMethodChoice() {
-        List<AuthUI.IdpConfig> idpConfigs = mHelper.getFlowParams().providerInfo;
+        FlowParameters flowParams = mHelper.getFlowParams();
+        List<AuthUI.IdpConfig> idpConfigs = flowParams.providerInfo;
+        Map<String, IdpConfig> providerIdToConfig = new HashMap<>();
+        for (IdpConfig providerConfig : idpConfigs) {
+            providerIdToConfig.put(providerConfig.getProviderId(), providerConfig);
+        }
 
-        // If the only provider is Email, immediately launch the email flow. Otherwise, launch
-        // the auth method picker screen.
-        if (idpConfigs.size() == 1) {
-            if (idpConfigs.get(0).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
+        List<IdpConfig> visibleProviders = idpConfigs;
+
+        // If there is only one provider selected, launch the flow directly
+        if (visibleProviders.size() == 1) {
+            String firstProvider = visibleProviders.get(0).getProviderId();
+            if (firstProvider.equals(EmailAuthProvider.PROVIDER_ID)) {
+                // Go directly to email flow
                 startActivityForResult(
-                        RegisterEmailActivity.createIntent(getContext(), mHelper.getFlowParams()),
+                        RegisterEmailActivity.createIntent(getContext(), flowParams),
                         RC_EMAIL_FLOW);
+            } else if (firstProvider.equals(PhoneAuthProvider.PROVIDER_ID)) {
+                // Go directly to phone flow
+                startActivityForResult(
+                        PhoneVerificationActivity.createIntent(getContext(), flowParams, null),
+                        RC_PHONE_FLOW);
             } else {
-                redirectToIdpSignIn(null,
-                                    providerIdToAccountType(idpConfigs.get(0).getProviderId()));
+                // Launch IDP flow
+                redirectToIdpSignIn(null, providerIdToAccountType(firstProvider));
             }
         } else {
             startActivityForResult(
                     AuthMethodPickerActivity.createIntent(
                             getContext(),
-                            mHelper.getFlowParams()),
+                            flowParams),
                     RC_AUTH_METHOD_PICKER);
         }
         mHelper.dismissDialog();
     }
 
     /**
-     * Begin sign in process with email and password from a SmartLock credential.
-     * On success, finish with {@link ResultCodes#OK RESULT_OK}.
-     * On failure, delete the credential from SmartLock (if applicable) and then launch the
-     * auth method picker flow.
+     * Begin sign in process with email and password from a SmartLock credential. On success, finish
+     * with {@link ResultCodes#OK RESULT_OK}. On failure, delete the credential from SmartLock (if
+     * applicable) and then launch the auth method picker flow.
      */
-    private void signInWithEmailAndPassword(final String email, String password) {
+    private void signInWithEmailAndPassword(String email, String password) {
+        final IdpResponse response =
+                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email).build();
+
         mHelper.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(
@@ -268,9 +288,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        finish(ResultCodes.OK,
-                               IdpResponse.getIntent(new IdpResponse(EmailAuthProvider.PROVIDER_ID,
-                                                                     email)));
+                        finish(ResultCodes.OK, response.toIntent());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -289,8 +307,8 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     }
 
     /**
-     * Delete the last credential retrieved from SmartLock and then redirect to the
-     * auth method choice flow.
+     * Delete the last credential retrieved from SmartLock and then redirect to the auth method
+     * choice flow.
      */
     private void deleteCredentialAndRedirect() {
         if (mCredential == null) {
@@ -333,7 +351,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                             .setProvider(accountTypeToProviderId(accountType))
                             .build());
         } else {
-            Log.w(TAG, "unknown provider: " + accountType);
+            Log.w(TAG, "Unknown provider: " + accountType);
             startActivityForResult(
                     AuthMethodPickerActivity.createIntent(
                             getContext(),

@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -42,8 +41,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 public class RegisterEmailActivity extends AppCompatBase implements
         CheckEmailFragment.CheckEmailListener {
 
+    public static final int RC_WELCOME_BACK_IDP = 18;
     private static final int RC_SIGN_IN = 17;
-    private static final int RC_WELCOME_BACK_IDP = 18;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createIntent(context, flowParams, null);
@@ -67,7 +66,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
         String email = getIntent().getExtras().getString(ExtraConstants.EXTRA_EMAIL);
 
         // Start with check email
-        CheckEmailFragment fragment = CheckEmailFragment.getInstance(
+        CheckEmailFragment fragment = CheckEmailFragment.newInstance(
                 mActivityHelper.getFlowParams(), email);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
@@ -98,7 +97,8 @@ public class RegisterEmailActivity extends AppCompatBase implements
                 WelcomeBackPasswordPrompt.createIntent(
                         this,
                         mActivityHelper.getFlowParams(),
-                        new IdpResponse(EmailAuthProvider.PROVIDER_ID, user.getEmail())),
+                        new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID,
+                                                user.getEmail()).build()),
                 RC_SIGN_IN);
 
         setSlideAnimation();
@@ -111,7 +111,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
                 this,
                 mActivityHelper.getFlowParams(),
                 user,
-                new IdpResponse(EmailAuthProvider.PROVIDER_ID, user.getEmail()));
+                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, user.getEmail()).build());
         mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
 
         setSlideAnimation();
@@ -122,22 +122,20 @@ public class RegisterEmailActivity extends AppCompatBase implements
         // New user, direct them to create an account with email/password
         // if account creation is enabled in SignInIntentBuilder
 
-        boolean createAccount = mActivityHelper.getFlowParams().allowNewEmailAccounts;
+        TextInputLayout emailLayout = (TextInputLayout) findViewById(R.id.email_layout);
 
-        TextInputLayout mEmailLayout = (TextInputLayout) findViewById(R.id.email_layout);
-
-        if (createAccount) {
-            RegisterEmailFragment fragment = RegisterEmailFragment.getInstance(
+        if (mActivityHelper.getFlowParams().allowNewEmailAccounts) {
+            RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(
                     mActivityHelper.getFlowParams(),
                     user);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
 
-            if (mEmailLayout != null) ft.addSharedElement(mEmailLayout, "email_field");
+            if (emailLayout != null) ft.addSharedElement(emailLayout, "email_field");
 
             ft.disallowAddToBackStack().commit();
         } else {
-            mEmailLayout.setError(getString(R.string.error_email_does_not_exist));
+            emailLayout.setError(getString(R.string.error_email_does_not_exist));
         }
     }
 

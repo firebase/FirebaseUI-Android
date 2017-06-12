@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
@@ -80,16 +81,8 @@ public class BaseHelper {
         return mProgressDialog != null && mProgressDialog.isShowing();
     }
 
-    public String getAppName() {
-        return mFlowParams.appName;
-    }
-
-    public FirebaseApp getFirebaseApp() {
-        return FirebaseApp.getInstance(mFlowParams.appName);
-    }
-
     public FirebaseAuth getFirebaseAuth() {
-        return FirebaseAuth.getInstance(getFirebaseApp());
+        return FirebaseAuth.getInstance(FirebaseApp.getInstance(mFlowParams.appName));
     }
 
     public CredentialsApi getCredentialsApi() {
@@ -104,12 +97,8 @@ public class BaseHelper {
         return SaveSmartLock.getInstance(activity, getFlowParams());
     }
 
-    public void saveCredentialsOrFinish(
-            @Nullable SaveSmartLock saveSmartLock,
-            Activity activity,
-            FirebaseUser firebaseUser,
-            @NonNull IdpResponse response) {
-        saveCredentialsOrFinish(saveSmartLock, activity, firebaseUser, null, response);
+    public PhoneAuthProvider getPhoneAuthProviderInstance() {
+        return PhoneAuthProvider.getInstance();
     }
 
     public void saveCredentialsOrFinish(
@@ -119,7 +108,7 @@ public class BaseHelper {
             @Nullable String password,
             IdpResponse response) {
         if (saveSmartLock == null) {
-            finishActivity(activity, ResultCodes.OK, IdpResponse.getIntent(response));
+            finishActivity(activity, ResultCodes.OK, response.toIntent());
         } else {
             saveSmartLock.saveCredentialsOrFinish(
                     firebaseUser,

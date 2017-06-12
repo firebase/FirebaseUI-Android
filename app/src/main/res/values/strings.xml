@@ -23,6 +23,7 @@
     <string name="no_logo_label">None</string>
     <string name="auth_providers_header">Use auth providers:</string>
     <string name="email_label">Email</string>
+    <string name="phone_label">Phone</string>
     <string name="facebook_label">Facebook</string>
     <string name="facebook_label_missing_config">Facebook - configuration missing</string>
     <string name="twitter_label">Twitter</string>
@@ -31,7 +32,10 @@
     <string name="google_label_missing_config">Google - configuration missing</string>
     <string name="google_tos_label">Google TOS</string>
     <string name="firebase_tos_label">Firebase TOS</string>
+    <string name="google_privacy_label">Google Privacy Policy</string>
+    <string name="firebase_privacy_label">Firebase Privacy Policy</string>
     <string name="tos_header">Terms of Service URL:</string>
+    <string name="privacy_policy_header">Privacy Policy URL:</string>
     <string name="unknown_response">Unexpected onActivityResult response code</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
@@ -46,11 +50,11 @@
     <string name="default_theme">Default theme</string>
     <string name="configuration_required">Configuration is required - see README.md</string>
     <string name="other_options_header">Other Options:</string>
-    <string name="enable_smartlock">Enable SmartLock for Passwords</string>
     <string name="rational_image_perm">This sample will read an image from local storage to upload to Cloud Storage.</string>
     <string name="anonymous_auth_failed_msg">Anonymous authentication failed, various components of the demo will not work. Make sure your device is online and that Anonymous Auth is configured in your Firebase project(https://console.firebase.google.com/project/_/authentication/providers)</string>
     <string name="extra_google_scopes">Example extra Google scopes</string>
-    <string name="games">Games</string>
+    <string name="drive_file_scope">Drive File</string>
+    <string name="youtube_data_scope">Youtube data</string>
     <string name="extra_facebook_scopes">Example extra Facebook scopes</string>
     <string name="friends">Friends</string>
     <string name="photos">Photos</string>
@@ -62,10 +66,11 @@
     <string name="upload">Upload</string>
     <string name="choose_image">Choose Image</string>
     <string name="accessibility_downloaded_image">Downloaded image</string>
-    <string name="drive_file">Drive File</string>
     <string name="allow_new_email_acccount">Allow account creation if email does not exist.</string>
 
     <!-- strings for database demo activities -->
     <string name="start_chatting">No messages. Start chatting at the bottom!</string>
     <string name="signed_in">Signed In</string>
+    <string name="enable_credential_selector">Enable Smart Lock\'s credential selector</string>
+    <string name="enable_hint_selector">Enable Smart Lock\'s hint selector</string>
 </resources>
