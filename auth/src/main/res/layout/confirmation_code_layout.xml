@@ -27,7 +27,6 @@
             android:textColor="@color/linkColor"
             tools:ignore="SelectableText" />
 
-
         <com.firebase.ui.auth.ui.phone.SpacedEditText
             android:id="@+id/confirmation_code"
             spacingProportion="1.1"
@@ -87,6 +86,7 @@
                 android:textColor="@color/linkColor"
                 android:visibility="gone"
                 tools:text="Resend code" />
+
         </LinearLayout>
 
         <com.firebase.ui.auth.ui.TermsTextView
@@ -98,6 +98,7 @@
             android:layout_below="@id/resend_code_layout"
             android:textIsSelectable="false"
             tools:text="@string/create_account_preamble" />
+
     </RelativeLayout>
 
 </ScrollView>

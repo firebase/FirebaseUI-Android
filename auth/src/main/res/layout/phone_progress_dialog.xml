@@ -41,5 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             tools:ignore="SelectableText" />
+
     </LinearLayout>
+
 </merge>
