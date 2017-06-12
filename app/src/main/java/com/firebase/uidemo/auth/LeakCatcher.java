@@ -2,12 +2,17 @@ package com.firebase.uidemo.auth;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
 public class LeakCatcher extends Application {
     private RefWatcher mRefWatcher;
+
+    static {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+    }
 
     public static RefWatcher getRefWatcher(Context context) {
         return ((LeakCatcher) context.getApplicationContext()).mRefWatcher;
