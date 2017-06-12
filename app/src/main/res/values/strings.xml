@@ -10,7 +10,7 @@
     <string name="desc_image">Demonstrates displaying an image from Cloud Storage using Glide.</string>
 
     <!-- strings for Auth UI demo activities -->
-    <eat-comment />
+    <eat-comment/>
     <string name="launch_title">FirebaseUI Auth Demo</string>
     <string name="sign_in">Start</string>
     <string name="green_theme">Green Theme</string>
