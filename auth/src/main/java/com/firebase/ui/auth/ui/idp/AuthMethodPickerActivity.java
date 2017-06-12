@@ -34,6 +34,7 @@ import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.provider.PhoneProvider;
 import com.firebase.ui.auth.provider.Provider;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -41,6 +42,7 @@ import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
+import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
 
@@ -51,11 +53,13 @@ import java.util.List;
  * Presents the list of authentication options for this app to the user. If an
  * identity provider option is selected, a {@link CredentialSignInHandler}
  * is launched to manage the IDP-specific sign-in flow. If email authentication is chosen,
- * the {@link RegisterEmailActivity} is started.
+ * the {@link RegisterEmailActivity} is started. if phone authentication is chosen, the
+ * {@link com.firebase.ui.auth.ui.phone.PhoneVerificationActivity} is started.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallback {
     private static final String TAG = "AuthMethodPicker";
+
     private static final int RC_ACCOUNT_LINK = 3;
 
     private List<Provider> mProviders;
@@ -92,13 +96,16 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                     break;
                 case AuthUI.FACEBOOK_PROVIDER:
                     mProviders.add(new FacebookProvider(
-                            this, idpConfig, mActivityHelper.getFlowParams().themeId));
+                            idpConfig, mActivityHelper.getFlowParams().themeId));
                     break;
                 case AuthUI.TWITTER_PROVIDER:
                     mProviders.add(new TwitterProvider(this));
                     break;
                 case AuthUI.EMAIL_PROVIDER:
                     mProviders.add(new EmailProvider(this, mActivityHelper));
+                    break;
+                case AuthUI.PHONE_VERIFICATION_PROVIDER:
+                    mProviders.add(new PhoneProvider(this, mActivityHelper));
                     break;
                 default:
                     Log.e(TAG, "Encountered unknown provider parcel with type: "
@@ -145,7 +152,9 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
         mActivityHelper.getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Firebase sign in with credential " + credential.getProvider() + " unsuccessful. Visit https://console.firebase.google.com to enable it."))
+                        new TaskFailureLogger(TAG, "Firebase sign in with credential "
+                                + credential.getProvider() + " unsuccessful. " +
+                                "Visit https://console.firebase.google.com to enable it."))
                 .addOnCompleteListener(new CredentialSignInHandler(
                         this,
                         mActivityHelper,

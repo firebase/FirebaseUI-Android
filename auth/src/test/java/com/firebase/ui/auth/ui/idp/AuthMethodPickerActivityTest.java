@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
@@ -34,6 +33,7 @@ import com.firebase.ui.auth.testhelpers.LoginManagerShadow;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
+import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -72,7 +72,8 @@ public class AuthMethodPickerActivityTest {
                 AuthUI.FACEBOOK_PROVIDER,
                 AuthUI.GOOGLE_PROVIDER,
                 AuthUI.TWITTER_PROVIDER,
-                AuthUI.EMAIL_PROVIDER);
+                AuthUI.EMAIL_PROVIDER,
+                AuthUI.PHONE_VERIFICATION_PROVIDER);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
@@ -81,20 +82,6 @@ public class AuthMethodPickerActivityTest {
                              .getChildCount());
         Button emailButton = (Button) authMethodPickerActivity.findViewById(R.id.email_button);
         assertEquals(View.VISIBLE, emailButton.getVisibility());
-    }
-
-
-    @Test
-    public void testEmailIsHidden() {
-        List<String> providers = Arrays.asList(
-                AuthUI.FACEBOOK_PROVIDER,
-                AuthUI.GOOGLE_PROVIDER);
-
-        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
-
-        assertEquals(providers.size(),
-                     ((LinearLayout) authMethodPickerActivity.findViewById(R.id.btn_holder))
-                             .getChildCount());
     }
 
     @Test
@@ -114,6 +101,22 @@ public class AuthMethodPickerActivityTest {
     }
 
     @Test
+    public void testPhoneLoginFlow() {
+        List<String> providers = Arrays.asList(AuthUI.PHONE_VERIFICATION_PROVIDER);
+
+        AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
+
+        Button phoneButton = (Button) authMethodPickerActivity.findViewById(R.id.phone_button);
+        phoneButton.performClick();
+        ShadowActivity.IntentForResult nextIntent =
+                Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
+
+        assertEquals(
+                PhoneVerificationActivity.class.getName(),
+                nextIntent.intent.getComponent().getClassName());
+    }
+
+    @Test
     @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
     public void testFacebookLoginFlow() {
         // initialize mocks
@@ -128,7 +131,6 @@ public class AuthMethodPickerActivityTest {
         List<String> providers = Arrays.asList(AuthUI.FACEBOOK_PROVIDER);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
-        FacebookSdk.sdkInitialize(authMethodPickerActivity);
 
         Button facebookButton = (Button) authMethodPickerActivity.findViewById(R.id.facebook_button);
         assertNotNull(facebookButton);

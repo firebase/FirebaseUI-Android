@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -21,6 +20,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.ui.TermsTextView;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
@@ -52,7 +52,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     private EditText mEmailEditText;
     private EditText mNameEditText;
     private EditText mPasswordEditText;
-    private TextView mAgreementText;
+    private TermsTextView mAgreementText;
     private TextInputLayout mEmailInput;
     private TextInputLayout mPasswordInput;
 
@@ -95,7 +95,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         mEmailEditText = (EditText) v.findViewById(R.id.email);
         mNameEditText = (EditText) v.findViewById(R.id.name);
         mPasswordEditText = (EditText) v.findViewById(R.id.password);
-        mAgreementText = (TextView) v.findViewById(R.id.create_account_text);
+        mAgreementText = (TermsTextView) v.findViewById(R.id.create_account_text);
         mEmailInput = (TextInputLayout) v.findViewById(R.id.email_layout);
         mPasswordInput = (TextInputLayout) v.findViewById(R.id.password_layout);
 
@@ -157,7 +157,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         getActivity().setTitle(R.string.title_register_email);
 
         mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
-        new PreambleHandler(getContext(), mHelper.getFlowParams()).setPreamble(mAgreementText);
+        mAgreementText.showTerms(mHelper.getFlowParams(), R.string.button_text_save);
     }
 
     @Override
@@ -271,8 +271,11 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                     .show();
 
                                             if (provider == null) {
-                                                throw new IllegalStateException(
-                                                        "User has no providers even though we got a FirebaseAuthUserCollisionException");
+                                                String msg =
+                                                        "User has no providers even though " +
+                                                        "we got a " +
+                                                        "FirebaseAuthUserCollisionException";
+                                                throw new IllegalStateException(msg);
                                             } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(
                                                     provider)) {
                                                 getActivity().startActivityForResult(

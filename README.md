@@ -12,6 +12,7 @@ A compatible FirebaseUI client is also available for [iOS](https://github.com/fi
 
   1. [Usage](#usage)
   1. [Installation](#installation)
+  1. [Upgrading](#upgrading)
   1. [Dependencies](#dependencies)
   1. [Sample App](#sample-app)
   1. [Contributing](#contributing)
@@ -38,16 +39,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:1.2.0'
+    compile 'com.firebaseui:firebase-ui-database:2.0.0'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:1.2.0'
+    compile 'com.firebaseui:firebase-ui-auth:2.0.0'
 
     // FirebaseUI Storage only
-    compile 'com.firebaseui:firebase-ui-storage:1.2.0'
+    compile 'com.firebaseui:firebase-ui-storage:2.0.0'
 
     // Single target that includes all FirebaseUI libraries above
-    compile 'com.firebaseui:firebase-ui:1.2.0'
+    compile 'com.firebaseui:firebase-ui:2.0.0'
 }
 ```
 
@@ -56,6 +57,13 @@ If you're including the `firebase-ui-auth` dependency, there's a little
 required.
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
+
+## Upgrading
+
+If you are using an old version of FirebaseUI and upgrading, please see the appropriate
+migration guide:
+
+  * [Upgrade from 1.2.0 to 2.0](./docs/upgrade-to-2.0.md)
 
 ## Dependencies
 
@@ -83,6 +91,7 @@ For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 2.0.0              | 11.0.0                         |
 | 1.2.0              | 10.2.0                         |
 | 1.1.1              | 10.0.0 or 10.0.1               |
 | 1.0.1              | 10.0.0 or 10.0.1               |
