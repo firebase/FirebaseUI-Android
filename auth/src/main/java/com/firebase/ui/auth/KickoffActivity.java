@@ -34,7 +34,7 @@ public class KickoffActivity extends HelperActivityBase {
         if (savedInstance == null || savedInstance.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
             if (isOffline()) {
                 Log.d(TAG, "No network connection");
-                finish(ErrorCodes.NO_NETWORK,
+                finish(ResultCodes.CANCELED,
                        IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
                 return;
             }

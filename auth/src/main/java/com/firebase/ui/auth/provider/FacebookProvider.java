@@ -57,16 +57,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     // DO NOT USE DIRECTLY: see onSuccess(String, LoginResult) and onFailure(Bundle) below
     private IdpCallback mCallbackObject;
 
-    public FacebookProvider(Context context, AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
-        Context appContext = context.getApplicationContext();
-
-        if (appContext.getResources().getIdentifier(
-                "facebook_permissions", "array", appContext.getPackageName()) != 0) {
-            Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.facebook_permissions but that"
-                    + " is no longer respected as of FirebaseUI 1.0.0. Please see README for IDP"
-                    + " scope configuration instructions.");
-        }
-
+    public FacebookProvider(AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
         List<String> scopes = idpConfig.getScopes();
         if (scopes == null) {
             mScopes = new ArrayList<>();

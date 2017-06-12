@@ -110,7 +110,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
     @Override
     public void onDataChanged() {
-        if (mHasPendingMoveOrDelete) {
+        if (mHasPendingMoveOrDelete || mKeySnapshots.isEmpty()) {
             notifyListenersOnDataChanged();
             mHasPendingMoveOrDelete = false;
         }

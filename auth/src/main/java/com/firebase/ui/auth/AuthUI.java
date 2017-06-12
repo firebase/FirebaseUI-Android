@@ -30,16 +30,10 @@ import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.CredentialTaskApi;
-import com.firebase.ui.auth.util.CredentialsApiHelper;
-import com.firebase.ui.auth.util.GoogleApiClientTaskHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.signincontainer.SmartLockBase;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -50,8 +44,8 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
-import com.twitter.sdk.android.Twitter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,8 +54,6 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
-
-import io.fabric.sdk.android.Fabric;
 
 /**
  * The entry point to the AuthUI authentication flow, and related utility methods. If your
@@ -76,9 +68,10 @@ import io.fabric.sdk.android.Fabric;
 public class AuthUI {
     @StringDef({
                        EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
+                       PhoneAuthProvider.PROVIDER_ID, PHONE_VERIFICATION_PROVIDER,
                        GoogleAuthProvider.PROVIDER_ID, GOOGLE_PROVIDER,
                        FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
-                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER
+                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER,
                })
     public @interface SupportedProvider {}
 
@@ -104,6 +97,11 @@ public class AuthUI {
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
     /**
+     * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setProviders}.
+     */
+    public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
+
+    /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
      */
     public static final int NO_LOGO = -1;
@@ -116,7 +114,8 @@ public class AuthUI {
                     EMAIL_PROVIDER,
                     GOOGLE_PROVIDER,
                     FACEBOOK_PROVIDER,
-                    TWITTER_PROVIDER
+                    TWITTER_PROVIDER,
+                    PHONE_VERIFICATION_PROVIDER
             )));
 
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
@@ -166,74 +165,6 @@ public class AuthUI {
     /**
      * Signs the current user out, if one is signed in.
      *
-     * @param activity The activity requesting the user be signed out.
-     * @return a task which, upon completion, signals that the user has been signed out ({@code
-     * result.isSuccess()}, or that the sign-out attempt failed unexpectedly ({@code
-     * !result.isSuccess()}).
-     * @deprecated use {@link #signOut(FragmentActivity)} instead
-     */
-    @Deprecated
-    public Task<Void> signOut(@NonNull Activity activity) {
-        // Get helper for Google Sign In and Credentials API
-        GoogleApiClientTaskHelper taskHelper = GoogleApiClientTaskHelper.getInstance(activity);
-        taskHelper.getBuilder()
-                .addApi(Auth.CREDENTIALS_API)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN);
-
-        // Get Credentials Helper
-        CredentialTaskApi credentialsHelper = CredentialsApiHelper.getInstance(taskHelper);
-
-        // Firebase Sign out
-        mAuth.signOut();
-
-        // Disable credentials auto sign-in
-        Task<Status> disableCredentialsTask = credentialsHelper.disableAutoSignIn();
-
-        // Google sign out
-        Task<Void> googleSignOutTask = taskHelper.getConnectedGoogleApiClient()
-                .continueWith(new Continuation<GoogleApiClient, Void>() {
-                    @Override
-                    public Void then(@NonNull Task<GoogleApiClient> task) throws Exception {
-                        if (task.isSuccessful()) {
-                            Auth.GoogleSignInApi.signOut(task.getResult());
-                        }
-                        return null;
-                    }
-                });
-
-        // Facebook sign out
-        LoginManager.getInstance().logOut();
-
-        // Twitter sign out
-        if (!Fabric.isInitialized()) TwitterProvider.initialize(activity);
-        Twitter.logOut();
-
-        // Wait for all tasks to complete
-        return Tasks.whenAll(disableCredentialsTask, googleSignOutTask);
-    }
-
-    /**
-     * Delete the use from FirebaseAuth and delete any associated credentials from the Credentials
-     * API. Returns a {@code Task} that succeeds if the Firebase Auth user deletion succeeds and
-     * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
-     * silently.
-     *
-     * @param activity the calling {@link Activity}.
-     * @deprecated use {@link #delete(FragmentActivity)} instead
-     */
-    @Deprecated
-    public Task<Void> delete(@NonNull Activity activity) {
-        // Initialize SmartLock helper
-        GoogleApiClientTaskHelper gacHelper = GoogleApiClientTaskHelper.getInstance(activity);
-        gacHelper.getBuilder().addApi(Auth.CREDENTIALS_API);
-        CredentialTaskApi credentialHelper = CredentialsApiHelper.getInstance(gacHelper);
-
-        return getDeleteTask(credentialHelper);
-    }
-
-    /**
-     * Signs the current user out, if one is signed in.
-     *
      * @param activity the activity requesting the user be signed out
      * @return A task which, upon completion, signals that the user has been signed out ({@link
      * Task#isSuccessful()}, or that the sign-out attempt failed unexpectedly !{@link
@@ -241,24 +172,30 @@ public class AuthUI {
      */
     public Task<Void> signOut(@NonNull FragmentActivity activity) {
         // Get Credentials Helper
-        GoogleSignInHelper credentialsHelper = GoogleSignInHelper.getInstance(activity);
+        GoogleSignInHelper signInHelper = GoogleSignInHelper.getInstance(activity);
 
         // Firebase Sign out
         mAuth.signOut();
 
         // Disable credentials auto sign-in
-        Task<Status> disableCredentialsTask = credentialsHelper.disableAutoSignIn();
+        Task<Status> disableCredentialsTask = signInHelper.disableAutoSignIn();
 
         // Google sign out
-        Task<Status> signOutTask = credentialsHelper.signOut();
+        Task<Status> signOutTask = signInHelper.signOut();
 
         // Facebook sign out
-        LoginManager.getInstance().logOut();
+        try {
+            LoginManager.getInstance().logOut();
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
 
         // Twitter sign out
-        if (!Fabric.isInitialized()) TwitterProvider.initialize(activity);
-        Twitter.logOut();
-
+        try {
+            TwitterProvider.signout(activity);
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
         // Wait for all tasks to complete
         return Tasks.whenAll(disableCredentialsTask, signOutTask);
     }
@@ -273,12 +210,8 @@ public class AuthUI {
      */
     public Task<Void> delete(@NonNull FragmentActivity activity) {
         // Initialize SmartLock helper
-        CredentialTaskApi credentialHelper = GoogleSignInHelper.getInstance(activity);
+        GoogleSignInHelper signInHelper = GoogleSignInHelper.getInstance(activity);
 
-        return getDeleteTask(credentialHelper);
-    }
-
-    private Task<Void> getDeleteTask(CredentialTaskApi credentialHelper) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser == null) {
             // If the current user is null, return a failed task immediately
@@ -294,7 +227,7 @@ public class AuthUI {
         // For each Credential in the list, create a task to delete it.
         List<Task<?>> credentialTasks = new ArrayList<>();
         for (Credential credential : credentials) {
-            credentialTasks.add(credentialHelper.delete(credential));
+            credentialTasks.add(signInHelper.delete(credential));
         }
 
         // Create a combined task that will succeed when all credential delete operations
@@ -452,7 +385,8 @@ public class AuthUI {
         List<IdpConfig> mProviders = new ArrayList<>();
         String mTosUrl;
         String mPrivacyPolicyUrl;
-        boolean mIsSmartLockEnabled = true;
+        boolean mEnableCredentials = true;
+        boolean mEnableHints = true;
 
         private AuthIntentBuilder() {}
 
@@ -516,6 +450,26 @@ public class AuthUI {
                 } else {
                     mProviders.add(config);
                 }
+
+                if (config.getProviderId().equals(FACEBOOK_PROVIDER)) {
+                    try {
+                        Class c = com.facebook.FacebookSdk.class;
+                    } catch (NoClassDefFoundError e) {
+                        throw new RuntimeException("Facebook provider cannot be configured " +
+                               "without dependency. Did you forget to add " +
+                               "'com.facebook.android:facebook-android-sdk:VERSION' dependency?");
+                    }
+                }
+
+                if (config.getProviderId().equals(TWITTER_PROVIDER)) {
+                    try {
+                        Class c = com.twitter.sdk.android.core.TwitterCore.class;
+                    } catch (NoClassDefFoundError e) {
+                        throw new RuntimeException("Twitter provider cannot be configured " +
+                               "without dependency. Did you forget to add " +
+                               "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
+                    }
+                }
             }
 
             return (T) this;
@@ -550,45 +504,32 @@ public class AuthUI {
         }
 
         /**
-         * Specifies the set of supported authentication providers. At least one provider
-         * must be specified, and the set of providers must be a subset of
-         * {@link #SUPPORTED_PROVIDERS}. There may only be one instance of each provider.
+         * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
+         * To (en)disable hint selector and credential selector independently
+         * use {@link #setIsSmartLockEnabled(boolean, boolean)}
          * <p>
-         * <p>If no providers are explicitly specified by calling this method, then
-         * {@link #EMAIL_PROVIDER email} is the default supported provider.
+         * <p>SmartLock is enabled by default.
          *
-         * @see #EMAIL_PROVIDER
-         * @see #FACEBOOK_PROVIDER
-         * @see #GOOGLE_PROVIDER
+         * @param enabled enables smartlock's credential selector and hint selector
          */
-        @Deprecated
-        public T setProviders(@NonNull String... providers) {
-            mProviders.clear(); // clear the default email provider
-            for (String provider : providers) {
-                if (isIdpAlreadyConfigured(provider)) {
-                    throw new IllegalArgumentException("Provider already configured: " + provider);
-                }
-                mProviders.add(new IdpConfig.Builder(provider).build());
-            }
+        public T setIsSmartLockEnabled(boolean enabled) {
+            setIsSmartLockEnabled(enabled, enabled);
             return (T) this;
         }
 
-        private boolean isIdpAlreadyConfigured(@NonNull String providerId) {
-            for (IdpConfig config : mProviders) {
-                if (config.getProviderId().equals(providerId)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
         /**
-         * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
+         * Enables or disables the use of Smart Lock for Passwords credential selector and hint
+         * selector.
          * <p>
-         * <p>SmartLock is enabled by default.
+         * <p>Both selectors are enabled by default.
+
+         * @param enableCredentials enables credential selector before signup
+         * @param enableHints enable hint selector in respective signup screens
+         * @return
          */
-        public T setIsSmartLockEnabled(boolean enabled) {
-            mIsSmartLockEnabled = enabled;
+        public T setIsSmartLockEnabled(boolean enableCredentials, boolean enableHints) {
+            mEnableCredentials = enableCredentials;
+            mEnableHints = enableHints;
             return (T) this;
         }
 
@@ -633,7 +574,8 @@ public class AuthUI {
                     mLogo,
                     mTosUrl,
                     mPrivacyPolicyUrl,
-                    mIsSmartLockEnabled,
+                    mEnableCredentials,
+                    mEnableHints,
                     mAllowNewEmailAccounts);
         }
     }

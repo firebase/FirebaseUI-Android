@@ -23,6 +23,7 @@
     <string name="no_logo_label">None</string>
     <string name="auth_providers_header">Use auth providers:</string>
     <string name="email_label">Email</string>
+    <string name="phone_label">Phone</string>
     <string name="facebook_label">Facebook</string>
     <string name="facebook_label_missing_config">Facebook - configuration missing</string>
     <string name="twitter_label">Twitter</string>
@@ -49,7 +50,6 @@
     <string name="default_theme">Default theme</string>
     <string name="configuration_required">Configuration is required - see README.md</string>
     <string name="other_options_header">Other Options:</string>
-    <string name="enable_smartlock">Enable SmartLock for Passwords</string>
     <string name="rational_image_perm">This sample will read an image from local storage to upload to Cloud Storage.</string>
     <string name="anonymous_auth_failed_msg">Anonymous authentication failed, various components of the demo will not work. Make sure your device is online and that Anonymous Auth is configured in your Firebase project(https://console.firebase.google.com/project/_/authentication/providers)</string>
     <string name="extra_google_scopes">Example extra Google scopes</string>
@@ -71,4 +71,6 @@
     <!-- strings for database demo activities -->
     <string name="start_chatting">No messages. Start chatting at the bottom!</string>
     <string name="signed_in">Signed In</string>
+    <string name="enable_credential_selector">Enable Smart Lock\'s credential selector</string>
+    <string name="enable_hint_selector">Enable Smart Lock\'s hint selector</string>
 </resources>
