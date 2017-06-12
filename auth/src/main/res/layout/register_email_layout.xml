@@ -29,7 +29,7 @@
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/email"
-                style="@style/FirebaseUI.TextInputEditText.EmailField"/>
+                style="@style/FirebaseUI.TextInputEditText.EmailField" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -46,7 +46,7 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapWords"/>
+                android:inputType="textCapWords" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -61,7 +61,7 @@
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/password"
-                style="@style/FirebaseUI.TextInputEditText.PasswordField"/>
+                style="@style/FirebaseUI.TextInputEditText.PasswordField" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -72,14 +72,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/field_padding_vert"
             android:textIsSelectable="false"
-            tools:text="@string/create_account_preamble"/>
+            tools:text="@string/create_account_preamble" />
 
         <Button
             android:id="@+id/button_create"
             style="@style/FirebaseUI.Button"
             android:layout_gravity="right"
             android:text="@string/button_text_save"
-            tools:ignore="RtlHardcoded"/>
+            tools:ignore="RtlHardcoded" />
 
     </LinearLayout>
 

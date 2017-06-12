@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="@string/start_chatting"/>
+        android:text="@string/start_chatting" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messagesList"
@@ -23,7 +23,7 @@
         android:layout_above="@+id/footer"
         android:clipToPadding="false"
         android:padding="16dp"
-        tools:listitem="@layout/message"/>
+        tools:listitem="@layout/message" />
 
     <LinearLayout
         android:id="@+id/footer"
@@ -42,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="text"/>
+            android:inputType="text" />
 
         <Button
             android:id="@+id/sendButton"
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:text="@string/send"/>
+            android:text="@string/send" />
 
     </LinearLayout>
 

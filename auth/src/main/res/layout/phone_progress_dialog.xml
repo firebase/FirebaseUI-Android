@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dip"
-            android:max="10000"/>
+            android:max="10000" />
 
         <ImageView
             android:id="@+id/progress_success_imaage"
@@ -32,13 +32,13 @@
             android:contentDescription="@string/done"
             android:max="10000"
             android:src="@drawable/done_check_mark"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/progress_msg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            tools:ignore="SelectableText"/>
+            tools:ignore="SelectableText" />
     </LinearLayout>
 </merge>

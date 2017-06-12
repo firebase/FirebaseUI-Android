@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:drawableTop="@drawable/firebase_auth_120dp"
-                android:text="@string/launch_title"/>
+                android:text="@string/launch_title" />
 
             <Button
                 android:id="@+id/sign_in"
@@ -36,14 +36,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:text="@string/sign_in"/>
+                android:text="@string/sign_in" />
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@string/use_theme_header"/>
+                android:text="@string/use_theme_header" />
 
             <RadioGroup
                 android:layout_width="wrap_content"
@@ -55,25 +55,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/default_theme"/>
+                    android:text="@string/default_theme" />
 
                 <RadioButton
                     android:id="@+id/purple_theme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/purple_theme"/>
+                    android:text="@string/purple_theme" />
 
                 <RadioButton
                     android:id="@+id/green_theme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/green_theme"/>
+                    android:text="@string/green_theme" />
 
                 <RadioButton
                     android:id="@+id/dark_theme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/dark_theme"/>
+                    android:text="@string/dark_theme" />
             </RadioGroup>
 
             <TextView
@@ -82,42 +82,42 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/auth_providers_header"/>
+                android:text="@string/auth_providers_header" />
 
             <CheckBox
                 android:id="@+id/google_provider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/google_label"/>
+                android:text="@string/google_label" />
 
             <CheckBox
                 android:id="@+id/facebook_provider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/facebook_label"/>
+                android:text="@string/facebook_label" />
 
             <CheckBox
                 android:id="@+id/twitter_provider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/twitter_label"/>
+                android:text="@string/twitter_label" />
 
             <CheckBox
                 android:id="@+id/email_provider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/email_label"/>
+                android:text="@string/email_label" />
 
             <CheckBox
                 android:id="@+id/phone_provider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/phone_label"/>
+                android:text="@string/phone_label" />
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/tos_header"/>
+                android:text="@string/tos_header" />
 
             <RadioGroup
                 android:layout_width="wrap_content"
@@ -137,13 +137,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/google_tos_label"/>
+                    android:text="@string/google_tos_label" />
 
                 <RadioButton
                     android:id="@+id/firebase_tos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/firebase_tos_label"/>
+                    android:text="@string/firebase_tos_label" />
 
             </RadioGroup>
 
@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/privacy_policy_header"/>
+                android:text="@string/privacy_policy_header" />
 
             <RadioGroup
                 android:layout_width="wrap_content"
@@ -165,13 +165,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/google_privacy_label"/>
+                    android:text="@string/google_privacy_label" />
 
                 <RadioButton
                     android:id="@+id/firebase_privacy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/firebase_privacy_label"/>
+                    android:text="@string/firebase_privacy_label" />
 
             </RadioGroup>
 
@@ -181,7 +181,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/logo_header"/>
+                android:text="@string/logo_header" />
 
             <RadioGroup
                 android:layout_width="wrap_content"
@@ -193,19 +193,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/firebase_logo_label"/>
+                    android:text="@string/firebase_logo_label" />
 
                 <RadioButton
                     android:id="@+id/google_logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/google_logo_label"/>
+                    android:text="@string/google_logo_label" />
 
                 <RadioButton
                     android:id="@+id/no_logo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/no_logo_label"/>
+                    android:text="@string/no_logo_label" />
 
             </RadioGroup>
 
@@ -216,21 +216,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/extra_facebook_scopes"/>
+                android:text="@string/extra_facebook_scopes" />
 
             <CheckBox
                 android:id="@+id/facebook_scope_friends"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="@string/friends"/>
+                android:text="@string/friends" />
 
             <CheckBox
                 android:id="@+id/facebook_scope_photos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="@string/photos"/>
+                android:text="@string/photos" />
 
             <TextView
                 android:id="@+id/google_scopes_label"
@@ -239,21 +239,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/extra_google_scopes"/>
+                android:text="@string/extra_google_scopes" />
 
             <CheckBox
                 android:id="@+id/google_scope_drive_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="@string/drive_file_scope"/>
+                android:text="@string/drive_file_scope" />
 
             <CheckBox
                 android:id="@+id/google_scope_youtube_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="@string/youtube_data_scope"/>
+                android:text="@string/youtube_data_scope" />
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
@@ -261,28 +261,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/other_options_header"/>
+                android:text="@string/other_options_header" />
 
             <CheckBox
                 android:id="@+id/credential_selector_enabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/enable_credential_selector"/>
+                android:text="@string/enable_credential_selector" />
 
             <CheckBox
                 android:id="@+id/hint_selector_enabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/enable_hint_selector"/>
+                android:text="@string/enable_hint_selector" />
 
             <CheckBox
                 android:id="@+id/allow_new_email_accounts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/allow_new_email_acccount"/>
+                android:text="@string/allow_new_email_acccount" />
 
         </LinearLayout>
 

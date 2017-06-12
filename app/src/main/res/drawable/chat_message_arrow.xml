@@ -9,7 +9,7 @@
         android:shape="rectangle">
         <stroke
             android:width="10dp"
-            android:color="@android:color/transparent"/>
-        <solid android:color="@color/material_gray_300"/>
+            android:color="@android:color/transparent" />
+        <solid android:color="@color/material_gray_300" />
     </shape>
 </rotate>

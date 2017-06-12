@@ -10,7 +10,7 @@
 
         <com.firebase.ui.auth.ui.phone.CountryListSpinner
             android:id="@+id/country_list"
-            style="@style/FirebaseUI.CountrySpinner"/>
+            style="@style/FirebaseUI.CountrySpinner" />
 
         <EditText
             android:id="@+id/phone_number"
@@ -18,7 +18,7 @@
             android:layout_toEndOf="@id/country_list"
             android:layout_toRightOf="@id/country_list"
             android:layout_alignBaseline="@id/country_list"
-            android:layout_gravity="end"/>
+            android:layout_gravity="end" />
 
         <TextView
             android:id="@+id/phone_number_error"
@@ -30,7 +30,7 @@
             android:paddingStart="2dp"
             android:paddingEnd="2dp"
             android:text=""
-            android:textColor="@color/errorColor"/>
+            android:textColor="@color/errorColor" />
 
         <Button
             android:id="@+id/send_code"
@@ -38,7 +38,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/phone_number_error"
-            android:text="@string/verify_phone_number"/>
+            android:text="@string/verify_phone_number" />
 
         <TextView
             android:id="@+id/send_sms_tos"
@@ -48,6 +48,6 @@
             android:layout_marginTop="@dimen/field_padding_vert"
             android:layout_below="@id/send_code"
             android:textColor="?android:textColorTertiary"
-            android:textIsSelectable="true"/>
+            android:textIsSelectable="true" />
     </RelativeLayout>
 </ScrollView>

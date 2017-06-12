@@ -15,20 +15,20 @@
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/upload"/>
+        android:text="@string/upload" />
 
     <Button
         android:id="@+id/button_choose_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/choose_image"/>
+        android:text="@string/choose_image" />
 
     <TextView
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/download"/>
+        android:text="@string/download" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="@string/download"/>
+            android:text="@string/download" />
 
     </LinearLayout>
 
@@ -52,6 +52,6 @@
         android:scaleType="centerCrop"
         android:src="#E6E6E6"
         android:visibility="invisible"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </LinearLayout>
