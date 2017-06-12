@@ -68,6 +68,10 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_display_name)
     TextView mUserDisplayName;
 
+
+    @BindView(R.id.user_phone_number)
+    TextView mUserPhoneNumber;
+
     @BindView(R.id.user_enabled_providers)
     TextView mEnabledProviders;
 
@@ -157,6 +161,8 @@ public class SignedInActivity extends AppCompatActivity {
 
         mUserEmail.setText(
                 TextUtils.isEmpty(user.getEmail()) ? "No email" : user.getEmail());
+        mUserPhoneNumber.setText(
+                TextUtils.isEmpty(user.getPhoneNumber()) ? "No phone number" : user.getPhoneNumber());
         mUserDisplayName.setText(
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
 
@@ -223,18 +229,21 @@ public class SignedInActivity extends AppCompatActivity {
         int theme;
         List<IdpConfig> providerInfo;
         String tosUrl;
-        boolean isSmartLockEnabled;
+        boolean isCredentialSelectorEnabled;
+        boolean isHintSelectorEnabled;
 
         SignedInConfig(int logo,
                        int theme,
                        List<IdpConfig> providerInfo,
                        String tosUrl,
-                       boolean isSmartLockEnabled) {
+                       boolean isCredentialSelectorEnabled,
+                       boolean isHintSelectorEnabled) {
             this.logo = logo;
             this.theme = theme;
             this.providerInfo = providerInfo;
             this.tosUrl = tosUrl;
-            this.isSmartLockEnabled = isSmartLockEnabled;
+            this.isCredentialSelectorEnabled = isCredentialSelectorEnabled;
+            this.isHintSelectorEnabled = isHintSelectorEnabled;
         }
 
         SignedInConfig(Parcel in) {
@@ -243,7 +252,8 @@ public class SignedInActivity extends AppCompatActivity {
             providerInfo = new ArrayList<>();
             in.readList(providerInfo, IdpConfig.class.getClassLoader());
             tosUrl = in.readString();
-            isSmartLockEnabled = in.readInt() != 0;
+            isCredentialSelectorEnabled = in.readInt() != 0;
+            isHintSelectorEnabled = in.readInt() != 0;
         }
 
         public static final Creator<SignedInConfig> CREATOR = new Creator<SignedInConfig>() {
@@ -269,7 +279,8 @@ public class SignedInActivity extends AppCompatActivity {
             dest.writeInt(theme);
             dest.writeList(providerInfo);
             dest.writeString(tosUrl);
-            dest.writeInt(isSmartLockEnabled ? 1 : 0);
+            dest.writeInt(isCredentialSelectorEnabled ? 1 : 0);
+            dest.writeInt(isHintSelectorEnabled ? 1 : 0);
         }
     }
 

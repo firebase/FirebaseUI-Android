@@ -2,15 +2,12 @@ package com.firebase.ui.database;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.annotation.RestrictTo;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.AbstractList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -19,9 +16,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @param <E> a POJO class to which the DataSnapshots can be converted.
  */
-public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnapshot> {
+public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapshot> {
     protected final List<ChangeEventListener> mListeners = new CopyOnWriteArrayList<>();
     protected final SnapshotParser<E> mParser;
+
+    private boolean mHasDataChanged = false;
 
     /**
      * Create an ObservableSnapshotArray where snapshots are parsed as objects of a particular
@@ -56,6 +55,9 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
         for (int i = 0; i < size(); i++) {
             listener.onChildChanged(ChangeEventListener.EventType.ADDED, get(i), i, -1);
         }
+        if (mHasDataChanged) {
+            listener.onDataChanged();
+        }
 
         return listener;
     }
@@ -66,6 +68,11 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
     @CallSuper
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
         mListeners.remove(listener);
+
+        // Reset mHasDataChanged if there are no more listeners
+        if (!isListening()) {
+            mHasDataChanged = false;
+        }
     }
 
     /**
@@ -98,6 +105,7 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
     }
 
     protected final void notifyListenersOnDataChanged() {
+        mHasDataChanged = true;
         for (ChangeEventListener listener : mListeners) {
             listener.onDataChanged();
         }
@@ -134,69 +142,12 @@ public abstract class ObservableSnapshotArray<E> extends ImmutableList<DataSnaps
     }
 
     @Override
-    public int size() {
-        return getSnapshots().size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return getSnapshots().isEmpty();
-    }
-
-    @Override
-    public boolean contains(Object o) {
-        return getSnapshots().contains(o);
-    }
-
-    @Override
-    public Iterator<DataSnapshot> iterator() {
-        return new ImmutableIterator(getSnapshots().iterator());
-    }
-
-    @Override
-    public DataSnapshot[] toArray() {
-        return getSnapshots().toArray(new DataSnapshot[getSnapshots().size()]);
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return getSnapshots().containsAll(c);
-    }
-
-    @Override
     public DataSnapshot get(int index) {
         return getSnapshots().get(index);
     }
 
     @Override
-    public int indexOf(Object o) {
-        return getSnapshots().indexOf(o);
-    }
-
-    @Override
-    public int lastIndexOf(Object o) {
-        return getSnapshots().lastIndexOf(o);
-    }
-
-    @Override
-    public ListIterator<DataSnapshot> listIterator() {
-        return new ImmutableListIterator(getSnapshots().listIterator());
-    }
-
-    @Override
-    public ListIterator<DataSnapshot> listIterator(int index) {
-        return new ImmutableListIterator(getSnapshots().listIterator(index));
-    }
-
-    /**
-     * Guaranteed to throw an exception. Use {@link #toArray()} instead to get an array of {@link
-     * DataSnapshot}s.
-     *
-     * @throws UnsupportedOperationException always
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    @Override
-    public final <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException();
+    public int size() {
+        return getSnapshots().size();
     }
 }

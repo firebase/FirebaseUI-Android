@@ -21,6 +21,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
@@ -53,6 +54,9 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
                 return IdentityProviders.TWITTER;
             case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
+                return null;
+            case PhoneAuthProvider.PROVIDER_ID:
+                // The account type for phone creds is null
                 return null;
             default:
                 return null;
