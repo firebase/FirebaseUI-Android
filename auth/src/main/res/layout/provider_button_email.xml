@@ -5,4 +5,4 @@
     android:id="@+id/email_button"
     style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
     android:text="@string/sign_in_with_email"
-    tools:ignore="UnusedIds"/> <!-- Used in tests -->
+    tools:ignore="UnusedIds" /> <!-- Used in tests -->

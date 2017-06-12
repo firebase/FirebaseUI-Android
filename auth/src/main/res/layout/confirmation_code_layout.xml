@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         style="@style/FirebaseUI.WrapperStyle"
@@ -24,18 +25,17 @@
             android:layout_below="@+id/dgts__titleText"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/linkColor"
-            tools:ignore="SelectableText"/>
-
+            tools:ignore="SelectableText" />
 
         <com.firebase.ui.auth.ui.phone.SpacedEditText
             android:id="@+id/confirmation_code"
             spacingProportion="1.1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:layout_below="@+id/edit_phone_number"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
             android:background="@color/transparent"
             android:cursorVisible="false"
             android:ems="10"
@@ -60,31 +60,33 @@
             android:layout_height="match_parent"
             android:layout_below="@id/submit_confirmation_code"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/ticker"
                 style="@style/FirebaseUI.Text.T08"
-                tools:text = "Resend in 0:01"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="16dp"
                 android:enabled="false"
                 android:gravity="center"
-                android:paddingTop="16dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="?attr/android:textColorSecondary"
-                tools:ignore="SelectableText" />
+                tools:ignore="SelectableText"
+                tools:text="Resend in 0:01" />
 
             <TextView
                 android:id="@+id/resend_code"
                 style="@style/FirebaseUI.Text.T08"
-                tools:text = "Resend code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:paddingTop="16dp"
+                android:gravity="center"
                 android:text="@string/resend_code"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/linkColor"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:text="Resend code" />
+
         </LinearLayout>
 
         <com.firebase.ui.auth.ui.TermsTextView
@@ -93,9 +95,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/field_padding_vert"
-            android:textIsSelectable="false"
             android:layout_below="@id/resend_code_layout"
-            tools:text="@string/create_account_preamble"/>
+            android:textIsSelectable="false"
+            tools:text="@string/create_account_preamble" />
+
     </RelativeLayout>
 
 </ScrollView>

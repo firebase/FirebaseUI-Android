@@ -5,17 +5,17 @@
     android:id="@+id/message_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="5dp"
-    android:paddingTop="5dp">
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <FrameLayout
         android:id="@+id/left_arrow"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="2dp"
         android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
         android:background="@drawable/chat_message_arrow"
-        android:rotation="180"/>
+        android:rotation="180" />
 
 
     <LinearLayout
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:textIsSelectable="true"
             android:textStyle="bold"
-            tools:text="Hey this is a message, look!"/>
+            tools:text="Hey this is a message, look!" />
 
         <TextView
             android:id="@+id/name_text"
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textIsSelectable="true"
-            tools:text="Some User"/>
+            tools:text="Some User" />
 
     </LinearLayout>
 
@@ -52,11 +52,11 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignEnd="@+id/message"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/message"
         android:layout_marginEnd="25dp"
+        android:layout_alignRight="@+id/message"
         android:layout_marginRight="25dp"
+        android:layout_alignParentTop="true"
         android:background="@drawable/chat_message_arrow"
-        android:rotation="180"/>
+        android:rotation="180" />
 
 </RelativeLayout>

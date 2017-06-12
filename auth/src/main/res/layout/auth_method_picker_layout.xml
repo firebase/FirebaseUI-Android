@@ -8,11 +8,11 @@
     android:gravity="center|bottom"
     android:orientation="vertical">
 
-    <include layout="@layout/include_auth_method_picker_logo"/>
+    <include layout="@layout/include_auth_method_picker_logo" />
 
     <LinearLayout
         android:id="@+id/btn_holder"
         style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder.Portrait"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
