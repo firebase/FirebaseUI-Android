@@ -176,6 +176,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             case RC_IDP_SIGNIN:
             case RC_AUTH_METHOD_PICKER:
             case RC_EMAIL_FLOW:
+            case RC_PHONE_FLOW:
                 finish(resultCode, data);
                 break;
             default:
