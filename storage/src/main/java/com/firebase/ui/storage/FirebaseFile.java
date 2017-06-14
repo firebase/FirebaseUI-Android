@@ -217,7 +217,7 @@ public class FirebaseFile {
                     mStorageRef.putFile(mUri) : mStorageRef.putBytes(mBytes);
 
             // Listen for results of the upload, then chain the FileInfo attachment operation
-            wrapTask(uploadTask).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<FileInfo>>() {
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<FileInfo>>() {
                 @Override
                 public Task<FileInfo> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     // Get the result of the task, re-throwing the exception if applicable
@@ -424,34 +424,4 @@ public class FirebaseFile {
             return getPath(reference.getParent()) + "/" + reference.getKey();
         }
     }
-
-    /**
-     * Wrap a Task in another Task so that all methods are implemented. Some Tasks extend from
-     * Task and not TaskImpl and therefore can throw UnsupportedOperationException at surprising
-     * times, but the implementation of Task returned by TaskCompletionSource implements
-     * all methods correctly.
-     *
-     * TODO(samstern): remove this method once the Firebase Storage SDK releases an update
-     * that implements all Task methods.
-     */
-    private static <T> Task<T> wrapTask(Task<T> task) {
-        final TaskCompletionSource<T> source = new TaskCompletionSource<>();
-
-        task.addOnSuccessListener(new OnSuccessListener<T>() {
-            @Override
-            public void onSuccess(T t) {
-                source.setResult(t);
-            }
-        });
-
-        task.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                source.setException(e);
-            }
-        });
-
-        return source.getTask();
-    }
-
 }
