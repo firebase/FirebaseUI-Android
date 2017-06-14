@@ -37,7 +37,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener, View.OnClickListener {
+public class ChatActivity extends AppCompatActivity implements
+        FirebaseAuth.AuthStateListener, View.OnClickListener {
     private static final String TAG = "RecyclerViewDemo";
 
     private FirebaseAuth mAuth;

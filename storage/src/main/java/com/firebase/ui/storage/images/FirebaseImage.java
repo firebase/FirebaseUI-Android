@@ -231,12 +231,14 @@ public class FirebaseImage {
             if (mMatchDimension == MATCH_WIDTH) {
                 // Scale to fill the width of the image view
                 float heightToWidthRatio = (float) info.height / info.width;
-                result.width = mImageView.getWidth() - mImageView.getPaddingLeft() - mImageView.getPaddingRight();
+                int totalPadding = mImageView.getPaddingLeft() + mImageView.getPaddingRight();
+                result.width = mImageView.getWidth() - totalPadding;
                 result.height = (int) (heightToWidthRatio * result.width);
             } else if (mMatchDimension == MATCH_HEIGHT) {
                 // Scale to fill the height of the image view
                 float widthToHeightRatio = (float) info.width / info.height;
-                result.height = mImageView.getHeight() - mImageView.getPaddingTop() - mImageView.getPaddingBottom();
+                int totalPadding = mImageView.getPaddingTop() + mImageView.getPaddingBottom();
+                result.height = mImageView.getHeight() - totalPadding;
                 result.width = (int) (widthToHeightRatio * result.height);
             }
 
@@ -248,7 +250,7 @@ public class FirebaseImage {
     /**
      * Class to simplify listening to a Glide load.
      */
-    private static abstract class SimpleGlideListener<M, T> implements RequestListener<M, T> {
+    private abstract static class SimpleGlideListener<M, T> implements RequestListener<M, T> {
 
         public abstract void onReady();
         public abstract void onException(Exception e);

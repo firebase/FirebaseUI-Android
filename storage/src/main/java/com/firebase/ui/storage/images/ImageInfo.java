@@ -43,8 +43,8 @@ public class ImageInfo implements Serializable {
     @Override
     public String toString() {
         return "{ " +
-                "w:" + width +", " +
-                "h:" + height +", " +
+                "w:" + width + ", " +
+                "h:" + height + ", " +
                 "palette:" + paletteInfo +
                 " }";
     }

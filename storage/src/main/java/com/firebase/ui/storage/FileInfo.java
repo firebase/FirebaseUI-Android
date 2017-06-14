@@ -47,8 +47,8 @@ public class FileInfo implements Serializable {
     @Override
     public String toString() {
         return "{ " +
-                "storagePath:" + storagePath +", " +
-                "bytes:" + bytes +", " +
+                "storagePath:" + storagePath + ", " +
+                "bytes:" + bytes + ", " +
                 "imageInfo:" + imageInfo +
                 " }";
     }

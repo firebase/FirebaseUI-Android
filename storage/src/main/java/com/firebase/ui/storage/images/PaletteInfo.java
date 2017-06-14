@@ -79,7 +79,7 @@ public class PaletteInfo implements Serializable {
     @Override
     public String toString() {
         return "{ " +
-                "vibrant:" + getVibrantColor() +", " +
+                "vibrant:" + getVibrantColor() + ", " +
                 "muted:" + getMutedColor() +
                 " }";
     }
