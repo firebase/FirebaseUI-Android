@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Firebase UI</string>
+    <string name="accessibility_downloaded_image">תמונה מהאינטרנט</string>
+    <string name="allow_new_email_acccount">אשר יצירת חשבון אם המייל לא קיים</string>
+    <string name="auth_providers_header">התחבר עם:</string>
+    <string name="choose_image">בחר תמונה</string>
+</resources>
