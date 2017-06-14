@@ -51,7 +51,7 @@
     <string name="configuration_required">Configuration is required - see README.md</string>
     <string name="other_options_header">Other Options:</string>
     <string name="rational_image_perm">This sample will read an image from local storage to upload to Cloud Storage.</string>
-    <string name="anonymous_auth_failed_msg">Anonymous authentication failed, various components of the demo will not work. Make sure your device is online and that Anonymous Auth is configured in your Firebase project(https://console.firebase.google.com/project/_/authentication/providers)</string>
+    <string name="anonymous_auth_failed_msg" translatable="false">Anonymous authentication failed, various components of the demo will not work. Make sure your device is online and that Anonymous Auth is configured in your Firebase project(https://console.firebase.google.com/project/_/authentication/providers)</string>
     <string name="extra_google_scopes">Example extra Google scopes</string>
     <string name="drive_file_scope">Drive File</string>
     <string name="youtube_data_scope">Youtube data</string>
