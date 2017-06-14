@@ -17,16 +17,16 @@ package com.firebase.ui.storage.images;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.firebase.ui.storage.R;
 
 /**
  * ImageView that matches the aspect ratio from an {@link ImageInfo} object.
  */
-public class RatioImageView extends ImageView {
+public class RatioImageView extends AppCompatImageView {
 
     private static final String TAG = "RatioImageView";
 

@@ -63,6 +63,8 @@
     <string name="unknown_error">An unknown error occurred</string>
     <string name="send">Send</string>
     <string name="download">Download</string>
+    <string name="download_indirect">Download (Indirect)</string>
+    <string name="download_bytes">Download (Bytes)</string>
     <string name="upload">Upload</string>
     <string name="choose_image">Choose Image</string>
     <string name="accessibility_downloaded_image">Downloaded image</string>

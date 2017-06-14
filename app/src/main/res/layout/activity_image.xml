@@ -37,13 +37,15 @@
         android:orientation="horizontal">
 
         <Button
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:id="@+id/button_download_indirect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Download (Indirect)" />
+            android:text="@string/download_indirect" />
 
         <Button
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:id="@+id/button_download_direct"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,16 +55,18 @@
     </LinearLayout>
 
     <Button
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
         android:id="@+id/button_download_bytes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="Download (Bytes)" />
+        android:text="@string/download_bytes" />
 
     <com.firebase.ui.storage.images.RatioImageView
         android:id="@+id/first_image"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/accessibility_downloaded_image"
         android:scaleType="fitXY"
         android:src="#E6E6E6"
         android:visibility="invisible"

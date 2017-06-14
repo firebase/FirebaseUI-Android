@@ -1,6 +1,7 @@
 package com.firebase.uidemo.storage;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,11 +29,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +40,9 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class ImageActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+@SuppressLint("LogConditional")
+public class ImageActivity extends AppCompatActivity
+        implements EasyPermissions.PermissionCallbacks {
 
     private static final String TAG = "ImageDemo";
     private static final int RC_CHOOSE_PHOTO = 101;
