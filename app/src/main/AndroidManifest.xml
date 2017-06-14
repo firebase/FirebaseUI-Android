@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.firebase.uidemo">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".auth.LeakCatcher"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:supportsRtl="false"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".ChooserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -24,6 +29,9 @@
         <!-- Chat demo -->
         <activity
             android:name=".database.ChatActivity"
+            android:label="@string/name_chat"/>
+        <activity
+            android:name=".database.ChatIndexActivity"
             android:label="@string/name_chat"/>
 
         <!-- Auth UI demo -->

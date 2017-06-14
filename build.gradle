@@ -1,18 +1,15 @@
-apply from: 'common/constants.gradle'
+apply from: 'constants.gradle'
 
 buildscript {
     repositories {
         jcenter()
         mavenLocal()
-        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.3.1'
         classpath 'com.google.gms:google-services:3.0.0'
-        classpath 'io.fabric.tools:gradle:1.+'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
 }
 
@@ -21,7 +18,6 @@ allprojects {
         jcenter()
         mavenLocal()
         mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
     }
 }
 
@@ -39,10 +35,9 @@ if (JavaVersion.current().isJava8Compatible()) {
  */
 allprojects { project ->
 
-
     // Get constants, this is where we store things
     // like the list of submodules or the version
-    project.apply from: "$rootDir/common/constants.gradle"
+    project.apply from: "$rootDir/constants.gradle"
 
     def isLibrary = 'library'.equals(project.name)
     def isSubmodule = submodules.contains(project.name)
@@ -53,7 +48,7 @@ allprojects { project ->
         project.apply plugin: 'com.android.library'
         android {
             compileSdkVersion compileSdk
-            buildToolsVersion "${buildTools}"
+            buildToolsVersion buildTools
         }
 
         // Task to generate sources JAR
@@ -241,15 +236,15 @@ allprojects { project ->
         def publicationName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
         def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"
 
-        group = group
-        version = version
+        group = project.ext.group
+        version = project.ext.version
 
-        def versionName = version
+        def versionName = project.ext.version
 
         bintray {
             user = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
             key = hasProperty('BINTRAY_KEY') ? getProperty('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
-            publications = [ publicationName ]
+            publications = [publicationName]
 
             filesSpec {
                 from pomLoc
@@ -259,13 +254,13 @@ allprojects { project ->
                 }
             }
 
-            configurations = [ 'archives' ]
+            configurations = ['archives']
 
             pkg {
                 repo = 'firebase-ui'
                 name = archivesBaseName
                 userOrg = 'firebaseui'
-                licenses = [ 'Apache-2.0' ]
+                licenses = ['Apache-2.0']
                 vcsUrl = 'https://github.com/firebase/FirebaseUI-Android.git'
 
                 version {

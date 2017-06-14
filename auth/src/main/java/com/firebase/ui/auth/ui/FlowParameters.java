@@ -18,20 +18,21 @@ import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.util.Preconditions;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Encapsulates the core parameters and data captured during the authentication flow, in
  * a serializable manner, in order to pass data between activities.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FlowParameters implements Parcelable {
-
     @NonNull
     public final String appName;
 
@@ -47,7 +48,13 @@ public class FlowParameters implements Parcelable {
     @Nullable
     public final String termsOfServiceUrl;
 
-    public final boolean smartLockEnabled;
+    @Nullable
+    public final String privacyPolicyUrl;
+
+    public final boolean allowNewEmailAccounts;
+
+    public final boolean enableCredentials;
+    public final boolean enableHints;
 
     public FlowParameters(
             @NonNull String appName,
@@ -55,13 +62,20 @@ public class FlowParameters implements Parcelable {
             @StyleRes int themeId,
             @DrawableRes int logoId,
             @Nullable String termsOfServiceUrl,
-            boolean smartLockEnabled) {
+            @Nullable String privacyPolicyUrl,
+            boolean enableCredentials,
+            boolean enableHints,
+            boolean allowNewEmailAccounts) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
-        this.providerInfo = Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null");
+        this.providerInfo = Collections.unmodifiableList(
+                Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null"));
         this.themeId = themeId;
         this.logoId = logoId;
         this.termsOfServiceUrl = termsOfServiceUrl;
-        this.smartLockEnabled = smartLockEnabled;
+        this.privacyPolicyUrl = privacyPolicyUrl;
+        this.enableCredentials = enableCredentials;
+        this.enableHints = enableHints;
+        this.allowNewEmailAccounts = allowNewEmailAccounts;
     }
 
     @Override
@@ -71,7 +85,10 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(themeId);
         dest.writeInt(logoId);
         dest.writeString(termsOfServiceUrl);
-        dest.writeInt(smartLockEnabled ? 1 : 0);
+        dest.writeString(privacyPolicyUrl);
+        dest.writeInt(enableCredentials ? 1 : 0);
+        dest.writeInt(enableHints ? 1 : 0);
+        dest.writeInt(allowNewEmailAccounts ? 1 : 0);
     }
 
     @Override
@@ -87,8 +104,10 @@ public class FlowParameters implements Parcelable {
             int themeId = in.readInt();
             int logoId = in.readInt();
             String termsOfServiceUrl = in.readString();
-            int smartLockEnabledInt = in.readInt();
-            boolean smartLockEnabled = (smartLockEnabledInt != 0);
+            String privacyPolicyUrl = in.readString();
+            boolean enableCredentials = in.readInt() != 0;
+            boolean enableHints = in.readInt() != 0;
+            boolean allowNewEmailAccounts = in.readInt() != 0;
 
             return new FlowParameters(
                     appName,
@@ -96,7 +115,10 @@ public class FlowParameters implements Parcelable {
                     themeId,
                     logoId,
                     termsOfServiceUrl,
-                    smartLockEnabled);
+                    privacyPolicyUrl,
+                    enableCredentials,
+                    enableHints,
+                    allowNewEmailAccounts);
         }
 
         @Override

@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+check.dependsOn 'testAll', 'prepareArtifacts'
 
 android {
     compileSdkVersion compileSdk
@@ -9,6 +10,8 @@ android {
         targetSdkVersion targetSdk
         versionCode 1
         versionName "0.0.0"
+
+        consumerProguardFiles 'consumer-proguard-rules.pro'
     }
 
     buildTypes {
@@ -16,6 +19,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
         }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 

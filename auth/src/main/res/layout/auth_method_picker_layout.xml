@@ -8,29 +8,11 @@
     android:gravity="center|bottom"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1.0"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/logo"
-            style="@style/FirebaseUI.AuthMethodPicker.Logo"
-            android:contentDescription="@string/accessibility_logo"/>
-
-    </LinearLayout>
+    <include layout="@layout/include_auth_method_picker_logo" />
 
     <LinearLayout
         android:id="@+id/btn_holder"
-        android:layout_weight="0"
-        style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder">
-
-        <Button
-            android:id="@+id/email_provider"
-            style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
-            android:text="@string/sign_in_with_email"/>
-
-    </LinearLayout>
+        style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder.Portrait"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

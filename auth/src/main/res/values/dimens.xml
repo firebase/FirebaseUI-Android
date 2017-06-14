@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="auth_method_button_width">208dp</dimen>
+    <dimen name="auth_method_button_marginBottom">8dp</dimen>
+    <dimen name="auth_method_button_drawablePadding">12dp</dimen>
+
+    <dimen name="body_padding_bottom">12dp</dimen>
+    <dimen name="heading_padding_bottom">12dp</dimen>
+    <dimen name="wrapper_padding_horiz">16dp</dimen>
+    <dimen name="field_padding_vert">16dp</dimen>
+    <dimen name="submit_button_margin_top">24dp</dimen>
+</resources>

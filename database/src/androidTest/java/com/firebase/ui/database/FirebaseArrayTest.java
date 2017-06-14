@@ -14,9 +14,8 @@
 
 package com.firebase.ui.database;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.InstrumentationTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
@@ -34,57 +33,50 @@ import static com.firebase.ui.database.TestUtils.isValuesEqual;
 import static com.firebase.ui.database.TestUtils.runAndWaitUntil;
 
 @RunWith(AndroidJUnit4.class)
-@SmallTest
-public class FirebaseArrayTest extends InstrumentationTestCase {
+public class FirebaseArrayTest {
+    private static final int INITIAL_SIZE = 3;
     private DatabaseReference mRef;
-    private FirebaseArray mArray;
+    private FirebaseArray<Integer> mArray;
+    private ChangeEventListener mListener;
 
     @Before
     public void setUp() throws Exception {
-        FirebaseApp app = getAppInstance(getInstrumentation().getContext());
+        FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
-        mArray = new FirebaseArray(mRef);
+        mArray = new FirebaseArray<>(mRef, Integer.class);
         mRef.removeValue();
-        runAndWaitUntil(mArray, new Runnable() {
+        mListener = runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
-                for (int i = 1; i <= 3; i++) {
+                for (int i = 1; i <= INITIAL_SIZE; i++) {
                     mRef.push().setValue(i, i);
                 }
             }
         }, new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
-                return mArray.getCount() == 3;
+                return mArray.size() == INITIAL_SIZE;
             }
         });
     }
 
     @After
     public void tearDown() throws Exception {
-        if (mRef != null) {
-            mRef.getRoot().removeValue();
-        }
-
-        if (mArray != null) {
-            mArray.cleanup();
-        }
-    }
-
-    @Test
-    public void testSize() throws Exception {
-        assertEquals(3, mArray.getCount());
+        mArray.removeChangeEventListener(mListener);
+        mRef.getRoot().removeValue();
     }
 
     @Test
     public void testPushIncreasesSize() throws Exception {
-        assertEquals(3, mArray.getCount());
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mRef.push().setValue(4);
             }
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.getCount() == 4;
+                return mArray.size() == 4;
             }
         });
     }
@@ -92,13 +84,14 @@ public class FirebaseArrayTest extends InstrumentationTestCase {
     @Test
     public void testPushAppends() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mRef.push().setValue(4, 4);
             }
         }, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return mArray.getItem(3).getValue(Integer.class).equals(4);
+                return mArray.getObject(3).equals(4);
             }
         });
     }
@@ -106,26 +99,45 @@ public class FirebaseArrayTest extends InstrumentationTestCase {
     @Test
     public void testAddValueWithPriority() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
                 mRef.push().setValue(4, 0.5);
             }
         }, new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
-                return mArray.getItem(3).getValue(Integer.class).equals(3)
-                        && mArray.getItem(0).getValue(Integer.class).equals(4);
+                return mArray.getObject(3).equals(3)
+                        && mArray.getObject(0).equals(4);
             }
         });
     }
 
     @Test
-    public void testChangePriorities() throws Exception {
+    public void testChangePriorityBackToFront() throws Exception {
         runAndWaitUntil(mArray, new Runnable() {
+            @Override
             public void run() {
-                mArray.getItem(2).getRef().setPriority(0.5);
+                mArray.get(2).getRef().setPriority(0.5);
             }
         }, new Callable<Boolean>() {
+            @Override
             public Boolean call() throws Exception {
                 return isValuesEqual(mArray, new int[]{3, 1, 2});
+            }
+        });
+    }
+
+    @Test
+    public void testChangePriorityFrontToBack() throws Exception {
+        runAndWaitUntil(mArray, new Runnable() {
+            @Override
+            public void run() {
+                mArray.get(0).getRef().setPriority(4);
+            }
+        }, new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return isValuesEqual(mArray, new int[]{2, 3, 1});
             }
         });
     }

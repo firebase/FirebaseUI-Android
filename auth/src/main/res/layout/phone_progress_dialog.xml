@@ -1,0 +1,47 @@
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/dgts_body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="8dip"
+        android:paddingEnd="8dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="10dip"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        tools:ignore="UnusedIds">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dip"
+            android:max="10000" />
+
+        <ImageView
+            android:id="@+id/progress_success_imaage"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dip"
+            android:contentDescription="@string/done"
+            android:max="10000"
+            android:src="@drawable/done_check_mark"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/progress_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            tools:ignore="SelectableText" />
+
+    </LinearLayout>
+
+</merge>

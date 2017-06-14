@@ -18,37 +18,41 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class GoogleProvider implements
-        IdpProvider, OnClickListener, GoogleApiClient.OnConnectionFailedListener {
-
+public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "GoogleProvider";
-    private static final int AUTO_MANAGE_ID = 1;
     private static final int RC_SIGN_IN = 20;
     private static final String ERROR_KEY = "error";
+
     private GoogleApiClient mGoogleApiClient;
-    private Activity mActivity;
-    private IdpCallback mIDPCallback;
+    private FragmentActivity mActivity;
+    private IdpConfig mIdpConfig;
+    private IdpCallback mIdpCallback;
+    private boolean mSpecificAccount;
 
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig) {
         this(activity, idpConfig, null);
@@ -56,22 +60,28 @@ public class GoogleProvider implements
 
     public GoogleProvider(FragmentActivity activity, IdpConfig idpConfig, @Nullable String email) {
         mActivity = activity;
-        String mClientId = activity.getString(R.string.default_web_client_id);
+        mIdpConfig = idpConfig;
+        mSpecificAccount = !TextUtils.isEmpty(email);
+        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
+                .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(email))
+                .build();
+    }
+
+    public static AuthCredential createAuthCredential(IdpResponse response) {
+        return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
+    }
+
+    private GoogleSignInOptions getSignInOptions(@Nullable String email) {
+        String clientId = mActivity.getString(R.string.default_web_client_id);
 
         GoogleSignInOptions.Builder builder =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestEmail()
-                        .requestIdToken(mClientId);
-
-        if (activity.getResources().getIdentifier(
-                "google_permissions", "array", activity.getPackageName()) != 0) {
-            Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.google_permissions but that is"
-                    + " no longer respected as of FirebaseUI 1.0.0. Please see README for IDP scope"
-                    + " configuration instructions.");
-        }
+                        .requestIdToken(clientId);
 
         // Add additional scopes
-        for (String scopeString : idpConfig.getScopes()) {
+        for (String scopeString : mIdpConfig.getScopes()) {
             builder.requestScopes(new Scope(scopeString));
         }
 
@@ -79,29 +89,29 @@ public class GoogleProvider implements
             builder.setAccountName(email);
         }
 
-        mGoogleApiClient = new GoogleApiClient.Builder(activity)
-                .enableAutoManage(activity, AUTO_MANAGE_ID, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, builder.build())
-                .build();
-    }
-
-    public String getName(Context context) {
-        return context.getResources().getString(R.string.idp_name_google);
+        return builder.build();
     }
 
     @Override
+    public String getName(Context context) {
+        return context.getString(R.string.idp_name_google);
+    }
+
+    @Override
+    @AuthUI.SupportedProvider
     public String getProviderId() {
         return GoogleAuthProvider.PROVIDER_ID;
     }
 
-
-    public static AuthCredential createAuthCredential(IdpResponse response) {
-        return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
+    @Override
+    @LayoutRes
+    public int getButtonLayout() {
+        return R.layout.idp_button_google;
     }
 
     @Override
     public void setAuthenticationCallback(IdpCallback callback) {
-        mIDPCallback = callback;
+        mIdpCallback = callback;
     }
 
     public void disconnect() {
@@ -111,9 +121,10 @@ public class GoogleProvider implements
         }
     }
 
-    private IdpResponse createIDPResponse(GoogleSignInAccount account) {
-        return new IdpResponse(
-                GoogleAuthProvider.PROVIDER_ID, account.getEmail(), account.getIdToken());
+    private IdpResponse createIdpResponse(GoogleSignInAccount account) {
+        return new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
+                .setToken(account.getIdToken())
+                .build();
     }
 
     @Override
@@ -122,7 +133,15 @@ public class GoogleProvider implements
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result != null) {
                 if (result.isSuccess()) {
-                    mIDPCallback.onSuccess(createIDPResponse(result.getSignInAccount()));
+                    if (mSpecificAccount) {
+                        Toast.makeText(
+                                mActivity,
+                                mActivity.getString(
+                                        R.string.signed_in_with_specific_account,
+                                        result.getSignInAccount().getEmail()),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    mIdpCallback.onSuccess(createIdpResponse(result.getSignInAccount()));
                 } else {
                     onError(result);
                 }
@@ -139,21 +158,26 @@ public class GoogleProvider implements
     }
 
     private void onError(GoogleSignInResult result) {
-        String errorMessage = result.getStatus().getStatusMessage();
-        onError(String.valueOf(result.getStatus().getStatusCode()) + " " + errorMessage);
+        Status status = result.getStatus();
+
+        if (status.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
+            mGoogleApiClient.stopAutoManage(mActivity);
+            mGoogleApiClient.disconnect();
+            mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
+                    .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(null))
+                    .build();
+            startLogin(mActivity);
+        } else {
+            onError(status.getStatusCode() + " " + status.getStatusMessage());
+        }
     }
 
     private void onError(String errorMessage) {
         Log.e(TAG, "Error logging in with Google. " + errorMessage);
         Bundle extra = new Bundle();
         extra.putString(ERROR_KEY, errorMessage);
-        mIDPCallback.onFailure(extra);
-    }
-
-    @Override
-    public void onClick(View view) {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        startLogin(mActivity);
+        mIdpCallback.onFailure(extra);
     }
 
     @Override

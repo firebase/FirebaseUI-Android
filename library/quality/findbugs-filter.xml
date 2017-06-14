@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Class name="com.firebase.ui.database.TestUtils"/>
+        <Bug pattern="RV_RETURN_VALUE_IGNORED"/>
+    </Match>
+</FindBugsFilter>

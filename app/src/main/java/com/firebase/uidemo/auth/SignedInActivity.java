@@ -18,6 +18,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -28,11 +30,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,10 +43,18 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class SignedInActivity extends AppCompatActivity {
-    private static final String EXTRA_IDP_RESPONSE = "extra_idp_response";
+
+    private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
 
     @BindView(android.R.id.content)
     View mRootView;
@@ -59,8 +68,16 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_display_name)
     TextView mUserDisplayName;
 
+
+    @BindView(R.id.user_phone_number)
+    TextView mUserPhoneNumber;
+
     @BindView(R.id.user_enabled_providers)
     TextView mEnabledProviders;
+
+    private IdpResponse mIdpResponse;
+
+    private SignedInConfig mSignedInConfig;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,6 +89,9 @@ public class SignedInActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        mIdpResponse = IdpResponse.fromResultIntent(getIntent());
+        mSignedInConfig = getIntent().getParcelableExtra(EXTRA_SIGNED_IN_CONFIG);
 
         setContentView(R.layout.signed_in_layout);
         ButterKnife.bind(this);
@@ -141,10 +161,12 @@ public class SignedInActivity extends AppCompatActivity {
 
         mUserEmail.setText(
                 TextUtils.isEmpty(user.getEmail()) ? "No email" : user.getEmail());
+        mUserPhoneNumber.setText(
+                TextUtils.isEmpty(user.getPhoneNumber()) ? "No phone number" : user.getPhoneNumber());
         mUserDisplayName.setText(
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
 
-        StringBuilder providerList = new StringBuilder();
+        StringBuilder providerList = new StringBuilder(100);
 
         providerList.append("Providers used: ");
 
@@ -174,20 +196,25 @@ public class SignedInActivity extends AppCompatActivity {
     }
 
     private void populateIdpToken() {
-        IdpResponse idpResponse = getIntent().getParcelableExtra(EXTRA_IDP_RESPONSE);
-        if (idpResponse != null) {
-            String token = idpResponse.getIdpToken();
-            String secret = idpResponse.getIdpSecret();
-            if (token == null) {
-                findViewById(R.id.idp_token_layout).setVisibility(View.GONE);
-            } else {
-                ((TextView) findViewById(R.id.idp_token)).setText(token);
-            }
-            if (secret == null) {
-                findViewById(R.id.idp_secret_layout).setVisibility(View.GONE);
-            } else {
-                ((TextView) findViewById(R.id.idp_secret)).setText(secret);
-            }
+        String token = null;
+        String secret = null;
+        if (mIdpResponse != null) {
+            token = mIdpResponse.getIdpToken();
+            secret = mIdpResponse.getIdpSecret();
+        }
+        View idpTokenLayout = findViewById(R.id.idp_token_layout);
+        if (token == null) {
+            idpTokenLayout.setVisibility(View.GONE);
+        } else {
+            idpTokenLayout.setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.idp_token)).setText(token);
+        }
+        View idpSecretLayout = findViewById(R.id.idp_secret_layout);
+        if (secret == null) {
+            idpSecretLayout.setVisibility(View.GONE);
+        } else {
+            idpSecretLayout.setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.idp_secret)).setText(secret);
         }
     }
 
@@ -197,10 +224,73 @@ public class SignedInActivity extends AppCompatActivity {
                 .show();
     }
 
-    public static Intent createIntent(Context context, IdpResponse idpResponse) {
-        Intent in = new Intent();
-        in.setClass(context, SignedInActivity.class);
-        in.putExtra(EXTRA_IDP_RESPONSE, idpResponse);
-        return in;
+    static final class SignedInConfig implements Parcelable {
+        int logo;
+        int theme;
+        List<IdpConfig> providerInfo;
+        String tosUrl;
+        boolean isCredentialSelectorEnabled;
+        boolean isHintSelectorEnabled;
+
+        SignedInConfig(int logo,
+                       int theme,
+                       List<IdpConfig> providerInfo,
+                       String tosUrl,
+                       boolean isCredentialSelectorEnabled,
+                       boolean isHintSelectorEnabled) {
+            this.logo = logo;
+            this.theme = theme;
+            this.providerInfo = providerInfo;
+            this.tosUrl = tosUrl;
+            this.isCredentialSelectorEnabled = isCredentialSelectorEnabled;
+            this.isHintSelectorEnabled = isHintSelectorEnabled;
+        }
+
+        SignedInConfig(Parcel in) {
+            logo = in.readInt();
+            theme = in.readInt();
+            providerInfo = new ArrayList<>();
+            in.readList(providerInfo, IdpConfig.class.getClassLoader());
+            tosUrl = in.readString();
+            isCredentialSelectorEnabled = in.readInt() != 0;
+            isHintSelectorEnabled = in.readInt() != 0;
+        }
+
+        public static final Creator<SignedInConfig> CREATOR = new Creator<SignedInConfig>() {
+            @Override
+            public SignedInConfig createFromParcel(Parcel in) {
+                return new SignedInConfig(in);
+            }
+
+            @Override
+            public SignedInConfig[] newArray(int size) {
+                return new SignedInConfig[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(logo);
+            dest.writeInt(theme);
+            dest.writeList(providerInfo);
+            dest.writeString(tosUrl);
+            dest.writeInt(isCredentialSelectorEnabled ? 1 : 0);
+            dest.writeInt(isHintSelectorEnabled ? 1 : 0);
+        }
+    }
+
+    public static Intent createIntent(
+            Context context,
+            IdpResponse idpResponse,
+            SignedInConfig signedInConfig) {
+        Intent startIntent = idpResponse == null ? new Intent() : idpResponse.toIntent();
+
+        return startIntent.setClass(context, SignedInActivity.class)
+                .putExtra(EXTRA_SIGNED_IN_CONFIG, signedInConfig);
     }
 }

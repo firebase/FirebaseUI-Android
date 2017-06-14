@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:gravity="center|bottom"
+    android:orientation="horizontal">
+
+    <include
+        layout="@layout/include_auth_method_picker_logo"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0" />
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0">
+
+
+        <LinearLayout
+            android:id="@+id/btn_holder"
+            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="@dimen/auth_method_button_marginBottom" />
+
+    </FrameLayout>
+
+</LinearLayout>

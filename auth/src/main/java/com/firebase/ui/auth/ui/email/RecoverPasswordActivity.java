@@ -18,42 +18,47 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
+import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 /**
  * Activity to initiate the "forgot password" flow by asking for the user's email.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
     private static final String TAG = "RecoverPasswordActivity";
-    private static final int RC_CONFIRM = 3;
 
     private EditText mEmailEditText;
     private EmailFieldValidator mEmailFieldValidator;
+
+    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
+        return BaseHelper.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forgot_password_layout);
-        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
 
-        mEmailFieldValidator = new EmailFieldValidator(
-                (TextInputLayout) findViewById(R.id.email_layout));
-
+        mEmailFieldValidator =
+                new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
         mEmailEditText = (EditText) findViewById(R.id.email);
+
+        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         if (email != null) {
             mEmailEditText.setText(email);
         }
@@ -62,20 +67,15 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     }
 
     private void next(final String email) {
-        FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
-        firebaseAuth.sendPasswordResetEmail(email)
+        mActivityHelper.getFirebaseAuth()
+                .sendPasswordResetEmail(email)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Error sending password reset email"))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         mActivityHelper.dismissDialog();
-
-                        Intent confirmIntent = ConfirmRecoverPasswordActivity.createIntent(
-                                RecoverPasswordActivity.this,
-                                mActivityHelper.getFlowParams(),
-                                email);
-                        startActivityForResult(confirmIntent, RC_CONFIRM);
+                        RecoveryEmailSentDialog.show(email, getSupportFragmentManager());
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
@@ -91,26 +91,13 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 });
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_CONFIRM) {
-            finish(RESULT_OK, new Intent());
-        }
-    }
-
-
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.button_done) {
-            if (!mEmailFieldValidator.validate(mEmailEditText.getText())) {
-                return;
+            if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
+                mActivityHelper.showLoadingDialog(R.string.progress_dialog_sending);
+                next(mEmailEditText.getText().toString());
             }
-            mActivityHelper.showLoadingDialog(R.string.progress_dialog_sending);
-            next(mEmailEditText.getText().toString());
         }
-    }
-
-    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return ActivityHelper.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 }

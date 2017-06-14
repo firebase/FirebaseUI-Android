@@ -16,209 +16,131 @@ package com.firebase.ui.auth.ui.email;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.util.TypedValue;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.support.v4.app.FragmentTransaction;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.field_validators.EmailFieldValidator;
-import com.firebase.ui.auth.ui.email.field_validators.PasswordFieldValidator;
-import com.firebase.ui.auth.ui.email.field_validators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.SmartLock;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
+import com.firebase.ui.auth.ui.User;
+import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
+import com.google.firebase.auth.EmailAuthProvider;
 
 /**
- * Activity displaying a form to create a new email/password account.
+ * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment}
+ * and {@link RegisterEmailFragment} and triggers {@link WelcomeBackPasswordPrompt}
+ * and {@link WelcomeBackIdpPrompt}.
  */
-public class RegisterEmailActivity extends AppCompatBase implements View.OnClickListener {
-    private static final String TAG = "RegisterEmailActivity";
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+public class RegisterEmailActivity extends AppCompatBase implements
+        CheckEmailFragment.CheckEmailListener {
 
-    private EditText mEmailEditText;
-    private EditText mPasswordEditText;
-    private EditText mNameEditText;
-    private EmailFieldValidator mEmailFieldValidator;
-    private PasswordFieldValidator mPasswordFieldValidator;
-    private RequiredFieldValidator mNameValidator;
-    @Nullable
-    private SmartLock mSmartLock;
+    public static final int RC_WELCOME_BACK_IDP = 18;
+    private static final int RC_SIGN_IN = 17;
+
+    public static Intent createIntent(Context context, FlowParameters flowParams) {
+        return createIntent(context, flowParams, null);
+    }
+
+    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
+        return BaseHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
+                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register_email_layout);
+        setContentView(R.layout.activity_register_email);
 
-        mSmartLock = mActivityHelper.getSmartLockInstance(this, TAG);
-
-        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
-        mEmailEditText = (EditText) findViewById(R.id.email);
-
-        TypedValue visibleIcon = new TypedValue();
-        TypedValue slightlyVisibleIcon = new TypedValue();
-
-        getResources().getValue(R.dimen.visible_icon, visibleIcon, true);
-        getResources().getValue(R.dimen.slightly_visible_icon, slightlyVisibleIcon, true);
-
-        mPasswordEditText = (EditText) findViewById(R.id.password);
-        ((TextInputLayout) findViewById(R.id.password_layout)).setPasswordVisibilityToggleEnabled(false);
-        ImageView togglePasswordImage = (ImageView) findViewById(R.id.toggle_visibility);
-
-        mPasswordEditText.setOnFocusChangeListener(new ImageFocusTransparencyChanger(
-                togglePasswordImage,
-                visibleIcon.getFloat(),
-                slightlyVisibleIcon.getFloat()));
-
-        togglePasswordImage.setOnClickListener(new PasswordToggler(mPasswordEditText));
-
-        mNameEditText = (EditText) findViewById(R.id.name);
-
-        mPasswordFieldValidator = new PasswordFieldValidator((TextInputLayout)
-                findViewById(R.id.password_layout),
-                getResources().getInteger(R.integer.min_password_length));
-        mNameValidator = new RequiredFieldValidator((TextInputLayout) findViewById(R.id.name_layout));
-        mEmailFieldValidator = new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
-
-        if (email != null) {
-            mEmailEditText.setText(email);
-            mEmailEditText.setEnabled(false);
-        }
-        setUpTermsOfService();
-        Button createButton = (Button) findViewById(R.id.button_create);
-        createButton.setOnClickListener(this);
-    }
-
-    private void setUpTermsOfService() {
-        if (mActivityHelper.getFlowParams().termsOfServiceUrl == null) {
+        if (savedInstanceState != null) {
             return;
         }
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(ContextCompat.getColor
-                (getApplicationContext(), R.color.linkColor));
 
-        String preamble = getResources().getString(R.string.create_account_preamble);
-        String link = getResources().getString(R.string.terms_of_service);
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(preamble + link);
-        int start = preamble.length();
-        spannableStringBuilder.setSpan(foregroundColorSpan, start, start + link.length(), 0);
+        // Get email from intent (can be null)
+        String email = getIntent().getExtras().getString(ExtraConstants.EXTRA_EMAIL);
 
-        TextView agreementText = (TextView) findViewById(R.id.create_account_text);
-        agreementText.setText(spannableStringBuilder);
-        agreementText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse
-                        (mActivityHelper.getFlowParams().termsOfServiceUrl));
-                startActivity(intent);
-            }
-        });
-    }
-
-    private void registerUser(final String email, final String name, final String password) {
-        final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
-        // create the user
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        final FirebaseUser firebaseUser = authResult.getUser();
-                        UserProfileChangeRequest changeNameRequest =
-                                new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(name).build();
-
-                        // Set display name
-                        firebaseUser.updateProfile(changeNameRequest)
-                                .addOnFailureListener(new TaskFailureLogger(
-                                        TAG, "Error setting display name"))
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        // This executes even if the name change fails, since
-                                        // the account creation succeeded and we want to save
-                                        // the credential to SmartLock (if enabled).
-                                        mActivityHelper.saveCredentialsOrFinish(
-                                                mSmartLock,
-                                                RegisterEmailActivity.this,
-                                                firebaseUser,
-                                                password);
-                                    }
-                                });
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        mActivityHelper.dismissDialog();
-
-                        TextInputLayout emailInput =
-                                (TextInputLayout) findViewById(R.id.email_layout);
-                        TextInputLayout passwordInput =
-                                (TextInputLayout) findViewById(R.id.password_layout);
-
-                        if (e instanceof FirebaseAuthWeakPasswordException) {
-                            // Password too weak
-                            passwordInput.setError(getString(R.string.error_weak_password));
-                        } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                            // Email address is malformed
-                            emailInput.setError(getString(R.string.invalid_email_address));
-                        } else if (e instanceof FirebaseAuthUserCollisionException) {
-                            // Collision with existing user email
-                            emailInput.setError(getString(R.string.error_user_collision));
-                        } else {
-                            // General error message, this branch should not be invoked but
-                            // covers future API changes
-                            emailInput.setError(getString(R.string.email_account_creation_error));
-                        }
-                    }
-                });
+        // Start with check email
+        CheckEmailFragment fragment = CheckEmailFragment.newInstance(
+                mActivityHelper.getFlowParams(), email);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
+                .disallowAddToBackStack()
+                .commit();
     }
 
     @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.button_create) {
-            String email = mEmailEditText.getText().toString();
-            String password = mPasswordEditText.getText().toString();
-            String name = mNameEditText.getText().toString();
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
+        super.onSaveInstanceState(outState);
+    }
 
-            boolean emailValid = mEmailFieldValidator.validate(email);
-            boolean passwordValid = mPasswordFieldValidator.validate(password);
-            boolean nameValid = mNameValidator.validate(name);
-            if (emailValid && passwordValid && nameValid) {
-                mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_up);
-                registerUser(email, name, password);
-            }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case RC_SIGN_IN:
+            case RC_WELCOME_BACK_IDP:
+                finish(resultCode, data);
         }
     }
 
-    public static Intent createIntent(
-            Context context,
-            FlowParameters flowParams,
-            String email) {
-        return ActivityHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+    @Override
+    public void onExistingEmailUser(User user) {
+        // Existing email user, direct them to sign in with their password.
+        startActivityForResult(
+                WelcomeBackPasswordPrompt.createIntent(
+                        this,
+                        mActivityHelper.getFlowParams(),
+                        new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID,
+                                                user.getEmail()).build()),
+                RC_SIGN_IN);
+
+        setSlideAnimation();
+    }
+
+    @Override
+    public void onExistingIdpUser(User user) {
+        // Existing social user, direct them to sign in using their chosen provider.
+        Intent intent = WelcomeBackIdpPrompt.createIntent(
+                this,
+                mActivityHelper.getFlowParams(),
+                user,
+                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, user.getEmail()).build());
+        mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
+
+        setSlideAnimation();
+    }
+
+    @Override
+    public void onNewUser(User user) {
+        // New user, direct them to create an account with email/password
+        // if account creation is enabled in SignInIntentBuilder
+
+        TextInputLayout emailLayout = (TextInputLayout) findViewById(R.id.email_layout);
+
+        if (mActivityHelper.getFlowParams().allowNewEmailAccounts) {
+            RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(
+                    mActivityHelper.getFlowParams(),
+                    user);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
+
+            if (emailLayout != null) ft.addSharedElement(emailLayout, "email_field");
+
+            ft.disallowAddToBackStack().commit();
+        } else {
+            emailLayout.setError(getString(R.string.error_email_does_not_exist));
+        }
+    }
+
+    private void setSlideAnimation() {
+        // Make the next activity slide in
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 }

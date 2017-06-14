@@ -1,97 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         style="@style/FirebaseUI.WrapperStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <!--
             Since the TextInputLayouts change size based on whether or not an error
             is showing we use a relative layout to position them absolutely
         -->
         <android.support.design.widget.TextInputLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/email_layout"
-            style="@style/FirebaseUI.Text.TextInputLayout"
-            android:paddingTop="16dp"
+            style="@style/FirebaseUI.TextInputLayout.EmailField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
-            app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
+            android:paddingTop="16dp"
+            android:transitionGroup="true"
+            android:transitionName="email_field"
+            app:errorEnabled="true"
+            tools:ignore="UnusedAttribute">
 
             <android.support.design.widget.TextInputEditText
-                style="@style/FirebaseUI.EditText.EmailField"
-                android:id="@+id/email"/>
+                android:id="@+id/email"
+                style="@style/FirebaseUI.TextInputEditText.EmailField" />
 
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/name_layout"
-            style="@style/FirebaseUI.Text.TextInputLayout"
+            style="@style/Widget.Design.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="112dp"
-            app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
-            app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
+            android:paddingTop="@dimen/field_padding_vert"
+            android:hint="@string/name_hint"
+            app:errorEnabled="true">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/name"
-                style="@style/FirebaseUI.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:hint="@string/name_hint"/>
+                android:inputType="textCapWords" />
 
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/password_layout"
-            style="@style/FirebaseUI.Text.TextInputLayout"
+            style="@style/FirebaseUI.TextInputLayout.PasswordField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="224dp"
-            app:errorTextAppearance="@style/FirebaseUI.Text.ErrorText"
-            app:hintTextAppearance="@style/FirebaseUI.Text.HintText">
+            android:paddingTop="@dimen/field_padding_vert"
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
 
             <android.support.design.widget.TextInputEditText
-                style="@style/FirebaseUI.EditText.PasswordField"
                 android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                style="@style/FirebaseUI.TextInputEditText.PasswordField" />
 
         </android.support.design.widget.TextInputLayout>
 
-        <ImageView
-            style="@style/FirebaseUI.ImageView.VisibilityToggle"
-            android:id="@+id/toggle_visibility"
-            android:layout_alignEnd="@id/password_layout"
-            android:paddingTop="242dp"
-            android:layout_alignRight="@id/password_layout"
-            android:contentDescription="@string/accessibility_toggle">
-        </ImageView>
-
-        <TextView
+        <com.firebase.ui.auth.ui.TermsTextView
             android:id="@+id/create_account_text"
-            android:layout_height="wrap_content"
+            style="@style/FirebaseUI.Text.BodyText"
             android:layout_width="match_parent"
-            android:layout_marginTop="336dp"
-            style="@style/FirebaseUI.Text.BodyText"/>
-
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/field_padding_vert"
+            android:textIsSelectable="false"
+            tools:text="@string/create_account_preamble" />
 
         <Button
-            style="@style/FirebaseUI.Button"
-            android:layout_below="@id/create_account_text"
             android:id="@+id/button_create"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/button_text_save"/>
+            style="@style/FirebaseUI.Button"
+            android:layout_gravity="right"
+            android:text="@string/button_text_save"
+            tools:ignore="RtlHardcoded" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </ScrollView>

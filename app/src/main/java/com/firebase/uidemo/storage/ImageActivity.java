@@ -21,27 +21,32 @@ import com.firebase.ui.storage.UploadResult;
 import com.firebase.ui.storage.images.FirebaseImage;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.firebase.uidemo.R;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class ImageActivity extends AppCompatActivity {
+public class ImageActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
 
     private static final String TAG = "ImageDemo";
     private static final int RC_CHOOSE_PHOTO = 101;
     private static final int RC_IMAGE_PERMS = 102;
+    private static final String PERMS = Manifest.permission.READ_EXTERNAL_STORAGE;
 
     private StorageReference mImageRef;
 
@@ -68,7 +73,7 @@ public class ImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image);
         ButterKnife.bind(this);
 
-        // By default, Firebase Storage files require authentication to read or write.
+        // By default, Cloud Storage files require authentication to read or write.
         // For this sample to function correctly, enable Anonymous Auth in the Firebase console:
         // https://console.firebase.google.com/project/_/authentication/providers
 
@@ -76,20 +81,9 @@ public class ImageActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         // Authenticate so that uploading/downloading works
-        FirebaseAuth.getInstance().signInAnonymously()
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInAnonymously:" + task.isSuccessful());
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, getString(R.string.anonymous_auth_failed_msg), task.getException());
-
-                            Toast.makeText(ImageActivity.this,
-                                    getString(R.string.anonymous_auth_failed_toast),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+        FirebaseAuth.getInstance()
+                .signInAnonymously()
+                .addOnCompleteListener(new SignInResultNotifier(this));
     }
 
     @Override
@@ -103,22 +97,18 @@ public class ImageActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "No image chosen", Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE
+                && EasyPermissions.hasPermissions(this, PERMS)) {
+            choosePhoto();
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     @OnClick(R.id.button_choose_photo)
     @AfterPermissionGranted(RC_IMAGE_PERMS)
     protected void choosePhoto() {
-        String perm = Manifest.permission.READ_EXTERNAL_STORAGE;
-        if (!EasyPermissions.hasPermissions(this, perm)) {
+        if (!EasyPermissions.hasPermissions(this, PERMS)) {
             EasyPermissions.requestPermissions(this, getString(R.string.rational_image_perm),
-                    RC_IMAGE_PERMS, perm);
+                                               RC_IMAGE_PERMS, PERMS);
             return;
         }
 
@@ -127,11 +117,11 @@ public class ImageActivity extends AppCompatActivity {
     }
 
     protected void uploadPhoto(Uri uri) {
-        // Ref to a random object where we will upload/download an image
-        mDatabase = mDatabase.child("imagedemo").push();
-
         // Reset UI
         hideDownloadUI();
+
+        // Ref to a random object where we will upload/download an image
+        mDatabase = mDatabase.child("imagedemo").push();
 
         Toast.makeText(this, "Uploading...", Toast.LENGTH_SHORT).show();
         FirebaseFile.upload(this, mDatabase)
@@ -143,7 +133,7 @@ public class ImageActivity extends AppCompatActivity {
                     public void onSuccess(UploadResult uploadResult) {
                         Log.d(TAG, "uploadPhoto:onSuccess:" + uploadResult.getInfo().storagePath);
                         Toast.makeText(ImageActivity.this, "Image uploaded",
-                                Toast.LENGTH_SHORT).show();
+                                       Toast.LENGTH_SHORT).show();
 
                         mImageRef = uploadResult.getInfo().getReference();
                         showDownloadUI();
@@ -154,7 +144,7 @@ public class ImageActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "uploadPhoto:onError", e);
                         Toast.makeText(ImageActivity.this, "Upload failed",
-                                Toast.LENGTH_SHORT).show();
+                                       Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -224,5 +214,26 @@ public class ImageActivity extends AppCompatActivity {
         mDownloadBytesButton.setEnabled(true);
 
         mImageView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        // See #choosePhoto with @AfterPermissionGranted
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this,
+                                                            Collections.singletonList(PERMS))) {
+            new AppSettingsDialog.Builder(this).build().show();
+        }
     }
 }
