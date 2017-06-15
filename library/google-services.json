@@ -1,43 +1,35 @@
 {
   "project_info": {
-    "project_number": "",
-    "firebase_url": "",
-    "project_id": "",
-    "storage_bucket": ""
+    "project_number": "123456789000",
+    "firebase_url": "https://firebase-ui.firebaseio.com",
+    "project_id": "firebase-ui",
+    "storage_bucket": "firebase-ui.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "",
+        "mobilesdk_app_id": "1:123456789000:android:f1bf012572b04063",
         "android_client_info": {
           "package_name": "com.firebase.uidemo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "",
+          "client_id": "123456789000-hjugbg6ud799v4c49dim8ce2usclthar.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.firebase.uidemo",
-            "certificate_hash": ""
+            "certificate_hash": "4C20644DE36B8F89D25650C7D1FF9FBAE650FDF7"
           }
         },
         {
-          "client_id": "316052285104-forh4hpe453p0u45ij8j68hk61pjfnvf.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.firebase.uidemo",
-            "certificate_hash": "FE3B409037A5F3C394E4DA3F697A1A737205EC67"
-          }
-        },
-        {
-          "client_id": "316052285104-rjq9h4q1gbv4cio1nbfht08p4fl3977d.apps.googleusercontent.com",
+          "client_id": "123456789000-e4uksm38sne0bqrj6uvkbo4oiu4hvigl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": ""
+          "current_key": "AIzbSzCn1N6LWIe6wthYyrgUUSAlUsdqMb-wvTo"
         }
       ],
       "services": {
