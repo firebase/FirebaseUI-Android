@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-public class LeakCatcher extends Application {
+public class FirebaseUIDemo extends Application {
     private RefWatcher mRefWatcher;
 
     static {
@@ -15,7 +15,7 @@ public class LeakCatcher extends Application {
     }
 
     public static RefWatcher getRefWatcher(Context context) {
-        return ((LeakCatcher) context.getApplicationContext()).mRefWatcher;
+        return ((FirebaseUIDemo) context.getApplicationContext()).mRefWatcher;
     }
 
     @Override
