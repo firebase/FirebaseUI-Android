@@ -2,8 +2,6 @@ language: android
 jdk: oraclejdk8
 # See https://github.com/travis-ci/travis-ci/issues/5582
 sudo: required
-env:
-  - BUILD_TOOLS_VERSION=25.0.3
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -23,7 +21,7 @@ android:
     - tools
 before_script:
   - mv library/google-services.json app/google-services.json
-  - ${ANDROID_HOME}tools/bin/sdkmanager --channel=3 "tools" "platform-tools" "build-tools;${BUILD_TOOLS_VERSION}" "platforms;android-25" "extras;google;m2repository"
+  - ${ANDROID_HOME}tools/bin/sdkmanager --channel=3 "tools" "platform-tools" "build-tools;25.0.3" "platforms;android-25" "extras;google;m2repository"
 script: ./gradlew clean assembleDebug check
 after_failure:
   # tests

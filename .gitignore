@@ -6,7 +6,7 @@
 .DS_Store
 build
 google-services.json
+!/library/google-services.json
 
 crashlytics-build.properties
 auth/src/main/res/values/com_crashlytics_export_strings.xml
-
