@@ -19,6 +19,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +30,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.EmailProvider;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
@@ -36,13 +37,13 @@ import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.provider.PhoneProvider;
 import com.firebase.ui.auth.provider.Provider;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
-import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
 
@@ -81,6 +82,13 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
         int logoId = mActivityHelper.getFlowParams().logoId;
         if (logoId == AuthUI.NO_LOGO) {
             findViewById(R.id.logo).setVisibility(View.GONE);
+
+            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.root);
+            ConstraintSet constraints = new ConstraintSet();
+            constraints.clone(layout);
+            constraints.setHorizontalBias(R.id.container, 0.5f);
+            constraints.setVerticalBias(R.id.container, 0.5f);
+            constraints.applyTo(layout);
         } else {
             ImageView logo = (ImageView) findViewById(R.id.logo);
             logo.setImageResource(logoId);
