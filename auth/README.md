@@ -176,7 +176,7 @@ startActivityForResult(
         .createSignInIntentBuilder()
         .setAvailableProviders(
                 Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                              new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVDER).build(),
+                              new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
                               new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
                               new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
                               new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
