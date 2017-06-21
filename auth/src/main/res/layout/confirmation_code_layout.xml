@@ -29,7 +29,6 @@
 
         <com.firebase.ui.auth.ui.phone.SpacedEditText
             android:id="@+id/confirmation_code"
-            spacingProportion="1.1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -44,7 +43,8 @@
             android:imeOptions="actionNext"
             android:inputType="number"
             android:textSize="32sp"
-            android:typeface="monospace" />
+            android:typeface="monospace"
+            spacingProportion="1.1" />
 
         <Button
             android:id="@+id/submit_confirmation_code"

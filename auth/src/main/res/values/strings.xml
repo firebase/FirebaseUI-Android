@@ -42,7 +42,7 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Email account registration unsuccessful</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">An account already exists with that email address.</string>
-    <string-array name="create_account_preamble" translation_description="Terms of service preamble" formatted="false">
+    <string-array name="create_account_preamble" formatted="false" translation_description="Terms of service preamble">
         <item>By tapping %BTN% you are indicating that you agree to the %TOS% and the %PP%.</item>
         <item>By tapping %BTN% you are indicating that you agree to the %TOS%.</item>
         <item>By tapping %BTN% you are indicating that you agree to the %PP%.</item>
@@ -56,11 +56,11 @@
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">You already have an account</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Welcome back!</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">
-        You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com" translation_description="">%1$s</xliff:g>.
-        Sign in with <xliff:g id="provider_name" example="Google" translation_description="">%2$s</xliff:g> to continue.
+        You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>.
+        Sign in with <xliff:g example="Google" id="provider_name" translation_description="">%2$s</xliff:g> to continue.
     </string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">
-        You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com" translation_description="">%1$s</xliff:g>
+        You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>
         to sign in. Enter your password for that account.
     </string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Signing in…</string>
@@ -78,7 +78,7 @@
 
     <!-- accessibility -->
     <string name="accessibility_logo" translation_description="Content description for app logo">App logo</string>
-    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Signed in as <xliff:g id="email_addr" example="jane.doe@example.com" translation_description="">%1$s</xliff:g></string>
+    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Signed in as <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g></string>
 
     <!-- phone number auth -->
     <string name="verify_phone_number_title" translation_description="Phone number entry form title">Enter your phone number</string>
