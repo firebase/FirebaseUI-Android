@@ -1,10 +1,9 @@
 <resources>
     <string name="app_name">ui_flow</string>
-    <string name="default_toolbar_title" translatable="false">@string/app_name</string>
+    
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">लोड करत आहे...</string>
     <string name="sign_in_default" translation_description="Button text to sign in">साइन इन करा</string>
     <string name="general_error" translation_description="Toast text flashing general error">एक एरर आला आहे.</string>
-    <string name="reauth_dialog_title" translation_description="Alert text request user to re authenticate">ही अ‍ॅक्शन पुढे चालू ठेवण्यापूर्वी तुम्ही साइन इन करणे आवश्यक आहे.</string>
     <string name="idp_name_google">Google</string>
     <string name="idp_name_facebook">Facebook</string>
     <string name="idp_name_twitter">Twitter</string>
@@ -35,14 +34,12 @@
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">त्या ईमेल अॅड्रेसवर आधीपासूनच एक खाते नोंदवलेले आहे.</string>
     <string name="create_account_preamble" translation_description="Terms of service preamble">\"%1$s\" टॅप करून, तुम्‍ही सूचित करता की तुम्‍ही सहमत आहात </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">सेवा अटी</string>
-    <string name="title_welcome_back_idp_prompt" translatable="false">@string/sign_in_default</string>
-    <string name="title_welcome_back_password_prompt" translatable="false">@string/sign_in_default</string>
+    
+    
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">तुमचे आधीच एक खाते आहे</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">पुन्हा एकदा स्वागत आहे!</string>
-    <string name="welcome_back_email_header_reauth" translation_description="Prompt for users that need to reauthenticate (for any reason)">पुन्हा प्रमाणीकरण होणे आवश्यक आहे</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">तुम्ही %1$s आधीच वापरला आहे. सुरू ठेवण्यासाठी %2$s ने साइन इन करा.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">तुम्ही %1$s आधीच वापरला आहे. साइन इन करण्यासाठी तुमचा त्या खात्याचा पासवर्ड टाका.</string>
-    <string name="reauth_welcome_back_password_prompt_body" translation_description="Message to enter password for a detected account">सुरू ठेवण्यासाठी तुम्ही पुन्हा प्रमाणीकरण करणे आवश्यक आहे. कृपया %1$s या ईमेल खात्याचा पासवर्ड टाका.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">साइन इन करत आहे...</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">साइन इन करताना समस्या आली?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">पासवर्ड पुन्हा मिळवा</string>

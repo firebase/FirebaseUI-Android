@@ -1,10 +1,9 @@
 <resources>
     <string name="app_name">ui_flow</string>
-    <string name="default_toolbar_title" translatable="false">@string/app_name</string>
+    
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">S\'està carregant…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Inicia la sessió</string>
     <string name="general_error" translation_description="Toast text flashing general error">S\'ha produït un error.</string>
-    <string name="reauth_dialog_title" translation_description="Alert text request user to re authenticate">Per continuar, cal iniciar la sessió.</string>
     <string name="idp_name_google">Google</string>
     <string name="idp_name_facebook">Facebook</string>
     <string name="idp_name_twitter">Twitter</string>
@@ -35,17 +34,14 @@
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Ja hi ha un compte amb aquesta adreça electrònica.</string>
     <string name="create_account_preamble" translation_description="Terms of service preamble">En tocar %1$s, indiques que acceptes les </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Condicions del servei</string>
-    <string name="title_welcome_back_idp_prompt" translatable="false">@string/sign_in_default</string>
-    <string name="title_welcome_back_password_prompt" translatable="false">@string/sign_in_default</string>
+    
+    
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Ja tens un compte</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Benvingut de nou!</string>
-    <string name="welcome_back_email_header_reauth" translation_description="Prompt for users that need to reauthenticate (for any reason)">Cal tornar a autenticar el compte</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Ja has utilitzat l\'adreça electrònica %1$s.
         Inicia la sessió amb %2$s per continuar.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Ja has utilitzat l\'adreça electrònica %1$s
         per iniciar la sessió. Introdueix la contrasenya d\'aquest compte.</string>
-    <string name="reauth_welcome_back_password_prompt_body" translation_description="Message to enter password for a detected account">Per continuar, cal tornar a autenticar el compte. Introdueix la contrasenya del compte amb l\'adreça electrònica
-        %1$s.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">S\'està iniciant la sessió…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">No pots iniciar la sessió?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Recupera la contrasenya</string>
