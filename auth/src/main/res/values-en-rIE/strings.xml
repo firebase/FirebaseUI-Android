@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ui_flow</string>
     <string name="default_toolbar_title" translatable="false">@string/app_name</string>
-    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Loading...</string>
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Sign in</string>
     <string name="general_error" translation_description="Toast text flashing general error">An error has occurred.</string>
     <string name="reauth_dialog_title" translation_description="Alert text request user to re authenticate">This action requires you to sign in before continuing.</string>

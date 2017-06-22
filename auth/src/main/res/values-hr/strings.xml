@@ -22,11 +22,11 @@
     <string name="required_field" translation_description="Inline error for required field">Ne možete to ostaviti prazno.</string>
     <string name="invalid_email_address" translation_description="Inline error for invalid email address">Ta e-adresa nije točna</string>
     <string name="missing_email_address" translation_description="Inline error for empty email address in input field">Unesite svoju e-adresu za nastavak</string>
-    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Traženje postojećih računa...</string>
+    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Traženje postojećih računa…</string>
     <string name="title_register_email" translation_description="Title for signup form">Registracija</string>
     <string name="name_hint" translation_description="Hint for last name input field">Ime i prezime</string>
     <string name="button_text_save" translation_description="Button text to save input form">Spremi</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registriranje....</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registriranje….</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item>
         <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item>
@@ -47,7 +47,7 @@
         Unesite zaporku za taj račun.</string>
     <string name="reauth_welcome_back_password_prompt_body" translation_description="Message to enter password for a detected account">Za nastavak morate izvršiti ponovnu autentifikaciju. Unesite zaporku za račun čija je e-adresa
         %1$s.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prijava...</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prijava…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Problem s prijavom?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Ponovno postavljanje zaporke</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Provjerite e-poštu</string>

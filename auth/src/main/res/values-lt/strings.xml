@@ -63,7 +63,7 @@ Jei norite tęsti, prisijunkite per „%2$s“.</string>
     <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Siųsti kodą iš naujo po 0:%02d</string>
     <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Patvirtinti telefono numerį</string>
     <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Patvirtinama…</string>
-    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Gaunama SMS...</string>
+    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Gaunama SMS…</string>
     <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Klaidingas kodas. Bandykite dar kartą.</string>
     <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">Gerai</string>
     <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Šis telefono numeris panaudotas per daug kartų</string>

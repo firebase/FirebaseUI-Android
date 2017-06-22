@@ -46,7 +46,7 @@
         登入。請輸入這個帳戶的密碼。</string>
     <string name="reauth_welcome_back_password_prompt_body" translation_description="Message to enter password for a detected account">如要繼續，請重新驗證。請輸入該帳戶連結的電子郵件地址 %1$s 以及密碼
       登入。</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">登入中...</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">登入中…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">無法登入嗎？</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">重新取得密碼</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">請查看您的電子郵件信箱</string>

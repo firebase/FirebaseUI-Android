@@ -26,7 +26,7 @@
     <string name="title_register_email" translation_description="Title for signup form">اشتراك</string>
     <string name="name_hint" translation_description="Hint for last name input field">الاسم الأول واسم العائلة</string>
     <string name="button_text_save" translation_description="Button text to save input form">حفظ</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">جارٍ الاشتراك...</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">جارٍ الاشتراك…</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="zero">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item>
         <item quantity="one">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقم واحد (%1$d) على الأقل ومزيج من الأحرف والأرقام</item>
@@ -50,7 +50,7 @@
         لتسجيل الدخول. يُرجى إدخال كلمة المرور لهذا الحساب.</string>
     <string name="reauth_welcome_back_password_prompt_body" translation_description="Message to enter password for a detected account">يجب إعادة المصادقة للمتابعة. يُرجى إدخال كلمة المرور للحساب الذي يستخدم البريد الإلكتروني
         %1$s.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">جارٍ تسجيل الدخول...</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">جارٍ تسجيل الدخول…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">هل تواجه مشكلة في تسجيل الدخول؟</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">استرداد كلمة المرور</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">إثبات ملكية بريدك الإلكتروني</string>
@@ -67,7 +67,7 @@
     <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى</string>
     <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">إعادة إرسال الرمز بعد 0:%02d</string>
     <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">إثبات ملكية رقم هاتفك</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">جارٍ إثبات الملكية ...</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">جارٍ إثبات الملكية …</string>
     <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">جارٍ استرداد الرسائل القصيرة SMS…</string>
     <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">الرمز غير صحيح. يُرجى المحاولة مجددًا.</string>
     <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">موافق</string>

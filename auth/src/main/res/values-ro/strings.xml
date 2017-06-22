@@ -26,7 +26,7 @@
     <string name="title_register_email" translation_description="Title for signup form">Înscrieți-vă</string>
     <string name="name_hint" translation_description="Hint for last name input field">Prenume și nume de familie</string>
     <string name="button_text_save" translation_description="Button text to save input form">Salvați</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Se creează un cont...</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Se creează un cont…</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">Parola nu este suficient de puternică. Folosiți cel puțin %1$d caracter și o combinație de litere și cifre.</item>
         <item quantity="few">Parola nu este suficient de puternică. Folosiți cel puțin %1$d caractere și o combinație de litere și cifre.</item>
@@ -44,7 +44,7 @@
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Ați folosit deja %1$s. Pentru a continua, conectați-vă cu %2$s.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Ați folosit deja %1$s pentru a vă conecta. Introduceți parola acestui cont.</string>
     <string name="reauth_welcome_back_password_prompt_body" translation_description="Message to enter password for a detected account">Pentru a continua, trebuie să vă autentificați din nou. Introduceți parola contului cu adresa de e-mail %1$s.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Se conectează...</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Se conectează…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Nu reușiți să vă conectați?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Recuperați parola</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Verificați căsuța de e-mail</string>
@@ -60,7 +60,7 @@
     <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Introduceți codul din 6 cifre pe care l-am trimis la</string>
     <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Retrimiteți codul în 00:%02d</string>
     <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Confirmați numărul de telefon</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Se confirmă...</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Se confirmă…</string>
     <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Se obține SMS-ul…</string>
     <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Cod greșit. Încercați din nou.</string>
     <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>

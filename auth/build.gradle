@@ -5,6 +5,14 @@ android {
     compileSdkVersion compileSdk
     buildToolsVersion buildTools
 
+    lintOptions{
+        disable 'MissingTranslation'
+        disable 'ExtraTranslation'
+        disable 'UnusedResources'
+        disable 'UnusedQuantity'
+        disable 'TypographyQuotes'
+    }
+
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion targetSdk

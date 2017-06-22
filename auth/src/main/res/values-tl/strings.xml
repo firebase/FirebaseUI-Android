@@ -26,7 +26,7 @@
     <string name="title_register_email" translation_description="Title for signup form">Mag-sign up</string>
     <string name="name_hint" translation_description="Hint for last name input field">Pangalan at apelyido</string>
     <string name="button_text_save" translation_description="Button text to save input form">I-save</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Nagsa-sign up...</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Nagsa-sign up…</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">Hindi masyadong malakas ang password. Gumamit ng %1$d character man lang at kumbinasyon ng mga titik at mga numero</item>
         <item quantity="other">Hindi masyadong malakas ang password. Gumamit ng %1$d na character man lang at kumbinasyon ng mga titik at mga numero</item>
@@ -54,7 +54,7 @@
         i-reset ang iyong password.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Ipadala</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Sundin ang mga tagubilin na ipinadala sa %1$s upang ma-recover ang iyong password.</string>
-    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Ipinapadala...</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Ipinapadala…</string>
     <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Hindi tumutugma ang email address na iyon sa isang kasalukuyang account</string>
     <string name="accessibility_logo" translation_description="Content description for app logo">Logo ng app</string>
     <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Naka-sign in bilang %1$s</string>

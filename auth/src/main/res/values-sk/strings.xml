@@ -26,7 +26,7 @@
     <string name="title_register_email" translation_description="Title for signup form">Registrovať sa</string>
     <string name="name_hint" translation_description="Hint for last name input field">Krstné meno a priezvisko</string>
     <string name="button_text_save" translation_description="Button text to save input form">Uložiť</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Prebieha registrácia...</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Prebieha registrácia…</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">Heslo nie je dostatočne silné. Použite aspoň %1$d znak a kombináciu písmen a čísel</item>
         <item quantity="few">Heslo nie je dostatočne silné. Použite aspoň %1$d znaky a kombináciu písmen a čísel</item>
@@ -65,7 +65,7 @@
     <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Zadajte 6-ciferný kód, ktorý sme odoslali na adresu</string>
     <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Kód sa znova odošle o 0:%02d</string>
     <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Overiť telefónne číslo</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Overuje sa...</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Overuje sa…</string>
     <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Načítava sa SMS…</string>
     <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Nesprávny kód. Skúste to znova.</string>
     <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
