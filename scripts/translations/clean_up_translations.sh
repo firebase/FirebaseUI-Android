@@ -8,6 +8,10 @@ function find_files {
     find . -path "*/src/main/res/values-*" -type f -name "string*.xml"
 }
 
+# Move locales that our system misconfigures
+mv auth/src/main/res/{values-he,values-iw}
+mv auth/src/main/res/{values-id,values-in}
+
 # Process each file
 find_files | while read file;
 do
