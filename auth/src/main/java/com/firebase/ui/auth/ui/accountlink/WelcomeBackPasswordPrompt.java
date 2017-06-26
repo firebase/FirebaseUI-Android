@@ -143,7 +143,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } else {
             mPasswordLayout.setError(null);
         }
-        mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
+        mProgressDialogHolder.showLoadingDialog(R.string.progress_dialog_signing_in);
 
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         // Sign in with known email and the password provided
@@ -186,7 +186,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        mActivityHelper.dismissDialog();
+                        mProgressDialogHolder.dismissDialog();
                         String error = e.getLocalizedMessage();
                         mPasswordLayout.setError(error);
                     }

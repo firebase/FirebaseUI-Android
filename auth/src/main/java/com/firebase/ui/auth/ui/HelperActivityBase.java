@@ -16,21 +16,27 @@ import com.google.firebase.auth.FirebaseUser;
 public class HelperActivityBase extends AppCompatActivity {
 
     protected BaseHelper mActivityHelper;
+    protected ProgressDialogHolder mProgressDialogHolder;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         mActivityHelper = new BaseHelper(this, getIntent());
+        mProgressDialogHolder = new ProgressDialogHolder(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mActivityHelper.dismissDialog();
+        mProgressDialogHolder.dismissDialog();
     }
 
     public void finish(int resultCode, Intent intent) {
         BaseHelper.finishActivity(this, resultCode, intent);
+    }
+
+    public ProgressDialogHolder getDialogHolder() {
+        return mProgressDialogHolder;
     }
 
     public void saveCredentialsOrFinish(
@@ -47,5 +53,6 @@ public class HelperActivityBase extends AppCompatActivity {
             IdpResponse response) {
         mActivityHelper.saveCredentialsOrFinish(saveSmartLock, this, firebaseUser, null, response);
     }
+
 }
 

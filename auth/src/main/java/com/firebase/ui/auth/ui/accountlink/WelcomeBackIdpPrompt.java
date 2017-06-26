@@ -118,7 +118,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
+                mProgressDialogHolder.showLoadingDialog(R.string.progress_dialog_signing_in);
                 mIdpProvider.startLogin(WelcomeBackIdpPrompt.this);
             }
         });

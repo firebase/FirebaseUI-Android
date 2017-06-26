@@ -179,7 +179,7 @@ public class CheckEmailFragment extends FragmentBase implements
     }
 
     private void checkAccountExists(@NonNull final String email) {
-        mHelper.showLoadingDialog(R.string.progress_dialog_checking_accounts);
+        mProgressDialogHolder.showLoadingDialog(R.string.progress_dialog_checking_accounts);
 
         // Get name from SmartLock, if possible
         String name = null;
@@ -213,7 +213,7 @@ public class CheckEmailFragment extends FragmentBase implements
                         new OnCompleteListener<String>() {
                             @Override
                             public void onComplete(@NonNull Task<String> task) {
-                                mHelper.dismissDialog();
+                                mProgressDialogHolder.dismissDialog();
                             }
                         });
     }

@@ -99,7 +99,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         FlowParameters flowParams = mHelper.getFlowParams();
         if (flowParams.enableCredentials) {
-            mHelper.showLoadingDialog(R.string.progress_dialog_loading);
+            mProgressDialogHolder.showLoadingDialog(R.string.progress_dialog_loading);
 
             mGoogleApiClient = new GoogleApiClient.Builder(getContext().getApplicationContext())
                     .addConnectionCallbacks(this)
@@ -270,7 +270,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                             flowParams),
                     RC_AUTH_METHOD_PICKER);
         }
-        mHelper.dismissDialog();
+        mProgressDialogHolder.dismissDialog();
     }
 
     /**
@@ -358,7 +358,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                             getContext(),
                             mHelper.getFlowParams()),
                     RC_IDP_SIGNIN);
-            mHelper.dismissDialog();
+            mProgressDialogHolder.dismissDialog();
         }
     }
 }

@@ -36,6 +36,7 @@ import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
@@ -49,6 +50,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     private static final String TAG = "IDPSignInContainer";
     private static final int RC_WELCOME_BACK_IDP = 4;
 
+    private HelperActivityBase mActivity;
     private IdpProvider mIdpProvider;
     @Nullable
     private SaveSmartLock mSaveSmartLock;
@@ -121,6 +123,17 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (!(getActivity() instanceof HelperActivityBase)) {
+            throw new RuntimeException("Can only attach IdpSignInContainer to HelperActivityBase.");
+        }
+
+        mActivity = (HelperActivityBase) getActivity();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
         super.onSaveInstanceState(outState);
@@ -135,7 +148,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                         new TaskFailureLogger(TAG, "Failure authenticating with credential " +
                                 credential.getProvider()))
                 .addOnCompleteListener(new CredentialSignInHandler(
-                        getActivity(),
+                        mActivity,
                         mHelper,
                         mSaveSmartLock,
                         RC_WELCOME_BACK_IDP,

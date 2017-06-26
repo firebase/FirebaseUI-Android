@@ -74,14 +74,14 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        mActivityHelper.dismissDialog();
+                        mProgressDialogHolder.dismissDialog();
                         RecoveryEmailSentDialog.show(email, getSupportFragmentManager());
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        mActivityHelper.dismissDialog();
+                        mProgressDialogHolder.dismissDialog();
 
                         if (e instanceof FirebaseAuthInvalidUserException) {
                             // No FirebaseUser exists with this email address, show error.
@@ -95,7 +95,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     public void onClick(View view) {
         if (view.getId() == R.id.button_done) {
             if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
-                mActivityHelper.showLoadingDialog(R.string.progress_dialog_sending);
+                mProgressDialogHolder.showLoadingDialog(R.string.progress_dialog_sending);
                 next(mEmailEditText.getText().toString());
             }
         }

@@ -1,13 +1,11 @@
 package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentActivity;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -26,7 +24,6 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 public class BaseHelper {
     private final FlowParameters mFlowParams;
     protected Context mContext;
-    protected ProgressDialog mProgressDialog;
 
     public BaseHelper(Context context, FlowParameters parameters) {
         mContext = context;
@@ -55,34 +52,6 @@ public class BaseHelper {
     public static void finishActivity(Activity activity, int resultCode, Intent intent) {
         activity.setResult(resultCode, intent);
         activity.finish();
-    }
-
-    public void showLoadingDialog(String message) {
-        dismissDialog();
-
-        if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(mContext);
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setTitle("");
-        }
-
-        mProgressDialog.setMessage(message);
-        mProgressDialog.show();
-    }
-
-    public void showLoadingDialog(@StringRes int stringResource) {
-        showLoadingDialog(mContext.getString(stringResource));
-    }
-
-    public void dismissDialog() {
-        if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
-        }
-    }
-
-    public boolean isProgressDialogShowing() {
-        return mProgressDialog != null && mProgressDialog.isShowing();
     }
 
     public FirebaseAuth getFirebaseAuth() {
