@@ -3,7 +3,6 @@ package com.firebase.ui.auth.ui;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 import android.view.ContextThemeWrapper;
@@ -16,12 +15,6 @@ public class FragmentHelper extends BaseHelper {
         super(fragment.getContext().getApplicationContext(),
               (FlowParameters) fragment.getArguments().getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS));
         mFragment = fragment;
-    }
-
-    public static Bundle getFlowParamsBundle(FlowParameters params) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, params);
-        return bundle;
     }
 
     public void finish(int resultCode, Intent intent) {

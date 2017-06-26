@@ -19,7 +19,6 @@ import android.widget.Button;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
@@ -57,13 +56,13 @@ public class RecoverPasswordActivityTest {
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {BaseHelperShadow.class})
     public void testNextButton_sendsEmail() {
         RecoverPasswordActivity recoverPasswordActivity = createActivity();
         Button nextButton = (Button) recoverPasswordActivity.findViewById(R.id.button_done);
-        when(ActivityHelperShadow.sFirebaseAuth.sendPasswordResetEmail(TestConstants.EMAIL))
+        when(BaseHelperShadow.sFirebaseAuth.sendPasswordResetEmail(TestConstants.EMAIL))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
         nextButton.performClick();
-        verify(ActivityHelperShadow.sFirebaseAuth).sendPasswordResetEmail(TestConstants.EMAIL);
+        verify(BaseHelperShadow.sFirebaseAuth).sendPasswordResetEmail(TestConstants.EMAIL);
     }
 }

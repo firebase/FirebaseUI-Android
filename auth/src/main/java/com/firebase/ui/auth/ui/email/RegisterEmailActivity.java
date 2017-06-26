@@ -112,8 +112,8 @@ public class RegisterEmailActivity extends AppCompatBase implements
                 mActivityHelper.getFlowParams(),
                 user,
                 new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, user.getEmail()).build());
-        mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
 
+        startActivityForResult(intent, RC_WELCOME_BACK_IDP);
         setSlideAnimation();
     }
 

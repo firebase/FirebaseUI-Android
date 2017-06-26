@@ -88,7 +88,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_register_phone);
 
-        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance(this);
         mHandler = new Handler();
         mVerificationState = VerificationState.VERIFICATION_NOT_STARTED;
         if (savedInstance != null && !savedInstance.isEmpty()) {

@@ -19,7 +19,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
@@ -46,6 +45,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +75,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         Fragment fragment = fm.findFragmentByTag(TAG);
         if (!(fragment instanceof SignInDelegate)) {
             SignInDelegate result = new SignInDelegate();
-            result.setArguments(FragmentHelper.getFlowParamsBundle(params));
+            result.setArguments(params.toBundle());
             fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
         }
     }

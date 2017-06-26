@@ -13,6 +13,7 @@
  */
 package com.firebase.ui.auth.ui;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
@@ -76,6 +77,16 @@ public class FlowParameters implements Parcelable {
         this.enableCredentials = enableCredentials;
         this.enableHints = enableHints;
         this.allowNewEmailAccounts = allowNewEmailAccounts;
+    }
+
+    /**
+     * Create a bundle containing this FlowParameters object as
+     * {@link ExtraConstants#EXTRA_FLOW_PARAMS}.
+     */
+    public Bundle toBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, this);
+        return bundle;
     }
 
     @Override

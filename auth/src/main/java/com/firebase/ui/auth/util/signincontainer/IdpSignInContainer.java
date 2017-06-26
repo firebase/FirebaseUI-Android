@@ -27,16 +27,15 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
@@ -60,7 +59,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
         if (!(fragment instanceof IdpSignInContainer)) {
             IdpSignInContainer result = new IdpSignInContainer();
 
-            Bundle bundle = FragmentHelper.getFlowParamsBundle(parameters);
+            Bundle bundle = parameters.toBundle();
             bundle.putParcelable(ExtraConstants.EXTRA_USER, user);
             result.setArguments(bundle);
 

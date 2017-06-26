@@ -23,7 +23,6 @@ import android.widget.EditText;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
@@ -100,7 +99,7 @@ public class RegisterEmailActivityTest {
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {BaseHelperShadow.class})
     public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
         // init mocks
         new BaseHelperShadow();

@@ -19,7 +19,6 @@ import android.content.Intent;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
@@ -27,8 +26,8 @@ import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.FakeProviderQueryResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
-import com.firebase.ui.auth.ui.ActivityHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
@@ -61,7 +60,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 25, shadows = {ActivityHelperShadow.class})
+@Config(constants = BuildConfig.class, sdk = 25)
 public class CredentialSignInHandlerTest {
     private static final int RC_ACCOUNT_LINK = 3;
     private static final String LINKING_ERROR = "ERROR_TEST_LINKING";
@@ -77,7 +76,7 @@ public class CredentialSignInHandlerTest {
     @Config(shadows = {BaseHelperShadow.class})
     public void testSignInSucceeded() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
-        ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
+        BaseHelper mockActivityHelper = mock(BaseHelper.class);
         IdpResponse idpResponse =
                 new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
                         .setToken(TestConstants.TOKEN)
@@ -121,7 +120,7 @@ public class CredentialSignInHandlerTest {
     @Test
     public void testSignInFailed_withFacebookAlreadyLinked() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
-        ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
+        BaseHelper mockActivityHelper = mock(BaseHelper.class);
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
         IdpResponse idpResponse =
                 new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
@@ -169,7 +168,7 @@ public class CredentialSignInHandlerTest {
     @Test
     public void testSignInFailed_withPasswordAccountAlreadyLinked() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
-        ActivityHelper mockActivityHelper = mock(ActivityHelper.class);
+        BaseHelper mockActivityHelper = mock(BaseHelper.class);
         FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
         IdpResponse idpResponse =
                 new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)

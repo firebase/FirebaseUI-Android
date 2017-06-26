@@ -33,6 +33,10 @@ public class BaseHelper {
         mFlowParams = parameters;
     }
 
+    public BaseHelper(Context context, Intent intent) {
+        this(context, (FlowParameters) intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS));
+    }
+
     public static Intent createBaseIntent(
             @NonNull Context context,
             @NonNull Class<? extends Activity> target,
@@ -48,7 +52,7 @@ public class BaseHelper {
         return mFlowParams;
     }
 
-    public void finishActivity(Activity activity, int resultCode, Intent intent) {
+    public static void finishActivity(Activity activity, int resultCode, Intent intent) {
         activity.setResult(resultCode, intent);
         activity.finish();
     }

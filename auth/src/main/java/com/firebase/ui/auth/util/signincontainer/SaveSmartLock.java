@@ -34,7 +34,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.FragmentHelper;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -66,7 +65,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         Fragment fragment = fm.findFragmentByTag(TAG);
         if (!(fragment instanceof SaveSmartLock)) {
             result = new SaveSmartLock();
-            result.setArguments(FragmentHelper.getFlowParamsBundle(parameters));
+            result.setArguments(parameters.toBundle());
             try {
                 fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
             } catch (IllegalStateException e) {

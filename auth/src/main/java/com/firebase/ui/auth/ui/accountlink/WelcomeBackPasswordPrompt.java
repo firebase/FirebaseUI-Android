@@ -83,7 +83,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
+        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance(this);
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
@@ -159,7 +159,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                         // If authCredential is null, the user only has an email account.
                         // Otherwise, the user has an email account that we need to link to an idp.
                         if (authCredential == null) {
-                            mActivityHelper.saveCredentialsOrFinish(
+                            saveCredentialsOrFinish(
                                     mSaveSmartLock,
                                     authResult.getUser(),
                                     password,
@@ -174,7 +174,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                         @Override
                                         public void onSuccess(AuthResult authResult) {
-                                            mActivityHelper.saveCredentialsOrFinish(
+                                            saveCredentialsOrFinish(
                                                     mSaveSmartLock,
                                                     authResult.getUser(),
                                                     mIdpResponse);

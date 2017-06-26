@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
-import com.firebase.ui.auth.ui.ActivityHelper;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
@@ -24,7 +24,7 @@ public class KickoffActivity extends HelperActivityBase {
     private boolean mIsWaitingForPlayServices = false;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return ActivityHelper.createBaseIntent(context, KickoffActivity.class, flowParams);
+        return BaseHelper.createBaseIntent(context, KickoffActivity.class, flowParams);
     }
 
     @Override
