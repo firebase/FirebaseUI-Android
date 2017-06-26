@@ -139,7 +139,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             if (status.hasResolution()) {
                 try {
                     if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-                        mHelper.startIntentSenderForResult(
+                        startIntentSenderForResult(
                                 status.getResolution().getIntentSender(),
                                 RC_CREDENTIALS_READ);
                         return;

@@ -129,7 +129,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                                                          connectionResult.getErrorCode(),
                                                          RC_UPDATE_SERVICE);
         try {
-            mHelper.startIntentSenderForResult(resolution.getIntentSender(), RC_UPDATE_SERVICE);
+            startIntentSenderForResult(resolution.getIntentSender(), RC_UPDATE_SERVICE);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "STATUS: Failed to send resolution.", e);
             finish();
@@ -145,8 +145,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                 // Try to resolve the save request. This will prompt the user if
                 // the credential is new.
                 try {
-                    mHelper.startIntentSenderForResult(status.getResolution().getIntentSender(),
-                                                       RC_SAVE);
+                    startIntentSenderForResult(status.getResolution().getIntentSender(), RC_SAVE);
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);

@@ -10,6 +10,7 @@ import android.util.Pair;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -121,7 +122,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     public void onStart() {
         super.onStart();
         if (mActivityResultPair != null) {
-            mHelper.finish(mActivityResultPair.first, mActivityResultPair.second);
+            BaseHelper.finishActivity(
+                    getActivity(), mActivityResultPair.first, mActivityResultPair.second);
         } else if (mWasProgressDialogShowing) {
             mProgressDialogHolder.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
             mWasProgressDialogShowing = false;

@@ -220,7 +220,7 @@ public class CheckEmailFragment extends FragmentBase implements
 
     private void showEmailAutoCompleteHint() {
         try {
-            mHelper.startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT);
+            startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }

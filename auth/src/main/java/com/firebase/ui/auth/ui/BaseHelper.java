@@ -3,9 +3,11 @@ package com.firebase.ui.auth.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -32,6 +34,11 @@ public class BaseHelper {
 
     public BaseHelper(Context context, Intent intent) {
         this(context, (FlowParameters) intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS));
+    }
+
+    public BaseHelper(Fragment fragment, Bundle arguments) {
+        this(fragment.getContext().getApplicationContext(),
+             (FlowParameters) arguments.getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS));
     }
 
     public static Intent createBaseIntent(
