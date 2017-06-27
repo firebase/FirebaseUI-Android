@@ -224,7 +224,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void setUpTermsOfService() {
-        mAgreementText.showTerms(mHelper.getFlowParams(), R.string.continue_phone_login);
+        mAgreementText.showTerms(getFlowParams(), R.string.continue_phone_login);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)

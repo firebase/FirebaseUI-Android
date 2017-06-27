@@ -123,7 +123,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
             PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(phone);
             setPhoneNumber(phoneNumber);
             setCountryCode(phoneNumber);
-        } else if (mHelper.getFlowParams().enableHints) {
+        } else if (getFlowParams().enableHints) {
             // Try SmartLock phone autocomplete hint
             showPhoneAutoCompleteHint();
         }
@@ -195,8 +195,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
 
     private void showPhoneAutoCompleteHint() {
         try {
-            mHelper.startIntentSenderForResult(getPhoneHintIntent().getIntentSender(),
-                                               RC_PHONE_HINT);
+            startIntentSenderForResult(getPhoneHintIntent().getIntentSender(), RC_PHONE_HINT);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }
