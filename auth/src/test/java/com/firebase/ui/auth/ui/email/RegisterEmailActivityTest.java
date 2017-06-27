@@ -23,9 +23,8 @@ import android.widget.EditText;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
+import com.firebase.ui.auth.testhelpers.AuthInstancesShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
-import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
@@ -100,11 +99,10 @@ public class RegisterEmailActivityTest {
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {AuthInstancesShadow.class})
     public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
         // init mocks
-        new BaseHelperShadow();
-        reset(BaseHelperShadow.sSaveSmartLock);
+        reset(AuthInstancesShadow.sSaveSmartLock);
 
         TestHelper.initializeApp(RuntimeEnvironment.application);
         RegisterEmailActivity registerEmailActivity = createActivity();
@@ -120,10 +118,10 @@ public class RegisterEmailActivityTest {
         name.setText(TestConstants.NAME);
         password.setText(TestConstants.PASSWORD);
 
-        when(BaseHelperShadow.sFirebaseUser.updateProfile(any(UserProfileChangeRequest.class)))
+        when(AuthInstancesShadow.sFirebaseUser.updateProfile(any(UserProfileChangeRequest.class)))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
-        when(BaseHelperShadow.sFirebaseAuth
+        when(AuthInstancesShadow.sFirebaseAuth
                      .createUserWithEmailAndPassword(
                              TestConstants.EMAIL,
                              TestConstants.PASSWORD))

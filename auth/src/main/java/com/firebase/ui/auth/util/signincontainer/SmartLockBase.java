@@ -121,9 +121,9 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     public void onStart() {
         super.onStart();
         if (mActivityResultPair != null) {
-            mHelper.finish(mActivityResultPair.first, mActivityResultPair.second);
+            finish(mActivityResultPair.first, mActivityResultPair.second);
         } else if (mWasProgressDialogShowing) {
-            mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
+            getDialogHolder().showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
             mWasProgressDialogShowing = false;
         }
     }
@@ -131,8 +131,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     @Override
     public void onStop() {
         super.onStop();
-        mWasProgressDialogShowing = mHelper.isProgressDialogShowing();
-        mHelper.dismissDialog();
+        mWasProgressDialogShowing = getDialogHolder().isProgressDialogShowing();
+        getDialogHolder().dismissDialog();
     }
 
     @Override
