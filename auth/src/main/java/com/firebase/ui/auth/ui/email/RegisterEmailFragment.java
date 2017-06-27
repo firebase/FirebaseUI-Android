@@ -215,7 +215,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         boolean passwordValid = mPasswordFieldValidator.validate(password);
         boolean nameValid = mNameValidator.validate(name);
         if (emailValid && passwordValid && nameValid) {
-            mProgressDialogHolder.showLoadingDialog(R.string.progress_dialog_signing_up);
+            getDialogHolder().showLoadingDialog(R.string.progress_dialog_signing_up);
             registerUser(email, name, password);
         }
     }
@@ -311,7 +311,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                                     .addOnCompleteListener(new OnCompleteListener<String>() {
                                         @Override
                                         public void onComplete(@NonNull Task<String> task) {
-                                            mProgressDialogHolder.dismissDialog();
+                                            getDialogHolder().dismissDialog();
                                         }
                                     });
                             return;
@@ -321,7 +321,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                             mEmailInput.setError(getString(R.string.email_account_creation_error));
                         }
 
-                        mProgressDialogHolder.dismissDialog();
+                        getDialogHolder().dismissDialog();
                     }
                 });
     }

@@ -144,7 +144,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } else {
             mPasswordLayout.setError(null);
         }
-        mProgressDialogHolder.showLoadingDialog(R.string.progress_dialog_signing_in);
+        getDialogHolder().showLoadingDialog(R.string.progress_dialog_signing_in);
 
         final FirebaseAuth firebaseAuth = AuthInstances.getFirebaseAuth(getFlowParams());
 
@@ -188,7 +188,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        mProgressDialogHolder.dismissDialog();
+                        getDialogHolder().dismissDialog();
                         String error = e.getLocalizedMessage();
                         mPasswordLayout.setError(error);
                     }

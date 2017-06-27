@@ -11,8 +11,8 @@ import android.view.ContextThemeWrapper;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FragmentBase extends Fragment {
 
-    protected FlowParameters mFlowParameters;
-    protected ProgressDialogHolder mProgressDialogHolder;
+    private FlowParameters mFlowParameters;
+    private ProgressDialogHolder mProgressDialogHolder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +35,10 @@ public class FragmentBase extends Fragment {
         }
 
         return mFlowParameters;
+    }
+
+    public ProgressDialogHolder getDialogHolder() {
+        return mProgressDialogHolder;
     }
 
     public void finish(int resultCode, Intent resultIntent) {

@@ -122,7 +122,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                 @Override
                 public void onClick(View view) {
                     if (provider instanceof IdpProvider) {
-                        mProgressDialogHolder.showLoadingDialog(R.string.progress_dialog_loading);
+                        getDialogHolder().showLoadingDialog(R.string.progress_dialog_loading);
                     }
                     provider.startLogin(AuthMethodPickerActivity.this);
                 }
@@ -165,7 +165,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     @Override
     public void onFailure(Bundle extra) {
         // stay on this screen
-        mProgressDialogHolder.dismissDialog();
+        getDialogHolder().dismissDialog();
     }
 
     @Override

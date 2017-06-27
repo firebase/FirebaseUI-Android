@@ -20,8 +20,8 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class HelperActivityBase extends AppCompatActivity {
 
-    protected FlowParameters mFlowParameters;
-    protected ProgressDialogHolder mProgressDialogHolder;
+    private FlowParameters mFlowParameters;
+    private ProgressDialogHolder mProgressDialogHolder;
 
     public static Intent createBaseIntent(
             @NonNull Context context,
@@ -54,13 +54,13 @@ public class HelperActivityBase extends AppCompatActivity {
         return mFlowParameters;
     }
 
+    public ProgressDialogHolder getDialogHolder() {
+        return mProgressDialogHolder;
+    }
+
     public void finish(int resultCode, Intent intent) {
         setResult(resultCode, intent);
         finish();
-    }
-
-    public ProgressDialogHolder getDialogHolder() {
-        return mProgressDialogHolder;
     }
 
     public void saveCredentialsOrFinish(
