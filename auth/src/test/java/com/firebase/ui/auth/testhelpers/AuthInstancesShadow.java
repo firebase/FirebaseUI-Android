@@ -19,17 +19,13 @@ import static org.mockito.Mockito.when;
 @Implements(AuthInstances.class)
 public class AuthInstancesShadow {
 
-    public static FirebaseAuth sFirebaseAuth;
-    public static FirebaseUser sFirebaseUser;
-    public static CredentialsApi sCredentialsApi;
-    public static SaveSmartLock sSaveSmartLock;
-    public static PhoneAuthProvider sPhoneAuthProvider;
+    public static final FirebaseAuth sFirebaseAuth;
+    public static final FirebaseUser sFirebaseUser;
+    public static final CredentialsApi sCredentialsApi;
+    public static final SaveSmartLock sSaveSmartLock;
+    public static final PhoneAuthProvider sPhoneAuthProvider;
 
     static {
-        // FirebaseAuth
-        sFirebaseAuth = Mockito.mock(FirebaseAuth.class);
-        when(sFirebaseAuth.getCurrentUser()).thenReturn(sFirebaseUser);
-
         // CredentialsApi
         sCredentialsApi = Mockito.mock(CredentialsApi.class);
 
@@ -38,6 +34,10 @@ public class AuthInstancesShadow {
         when(sFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
         when(sFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
         when(sFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
+
+        // FirebaseAuth
+        sFirebaseAuth = Mockito.mock(FirebaseAuth.class);
+        when(sFirebaseAuth.getCurrentUser()).thenReturn(sFirebaseUser);
 
         // SaveSmartLock
         sSaveSmartLock = Mockito.mock(SaveSmartLock.class);
