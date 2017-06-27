@@ -13,6 +13,7 @@
  */
 package com.firebase.ui.auth.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -77,6 +78,20 @@ public class FlowParameters implements Parcelable {
         this.enableCredentials = enableCredentials;
         this.enableHints = enableHints;
         this.allowNewEmailAccounts = allowNewEmailAccounts;
+    }
+
+    /**
+     * Extract FlowParameters from an Intent.
+     */
+    public static FlowParameters fromIntent(Intent intent) {
+        return intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
+    }
+
+    /**
+     * Extract FlowParameters from a Bundle.
+     */
+    public static FlowParameters fromBundle(Bundle bundle) {
+        return bundle.getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS);
     }
 
     /**

@@ -31,9 +31,10 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.BaseHelper;
+import com.firebase.ui.auth.ui.ActivityUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -79,7 +80,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     private VerificationState mVerificationState;
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String phone) {
-        return BaseHelper.createBaseIntent(context, PhoneVerificationActivity.class, flowParams)
+        return ActivityUtils.createBaseIntent(context, PhoneVerificationActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_PHONE, phone);
     }
 
@@ -88,7 +89,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_register_phone);
 
-        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance(this);
+        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(this, getFlowParams());
         mHandler = new Handler();
         mVerificationState = VerificationState.VERIFICATION_NOT_STARTED;
         if (savedInstance != null && !savedInstance.isEmpty()) {
@@ -101,7 +102,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
 
         String phone = getIntent().getExtras().getString(ExtraConstants.EXTRA_PHONE);
         VerifyPhoneNumberFragment fragment = VerifyPhoneNumberFragment.newInstance
-                (mActivityHelper.getFlowParams(), phone);
+                (getFlowParams(), phone);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_verify_phone,
                 fragment, VerifyPhoneNumberFragment.TAG).disallowAddToBackStack().commit();
     }
@@ -121,7 +122,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
             sendCode(mPhoneNumber, false);
         } else if (mVerificationState == VerificationState.VERIFIED) {
             // activity was recreated when verified dialog was displayed
-            finish(mActivityHelper.getFirebaseAuth().getCurrentUser());
+            finish(AuthInstances.getCurrentUser(getFlowParams()));
         }
     }
 
@@ -233,7 +234,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         mPhoneNumber = phoneNumber;
         mVerificationState = VerificationState.VERIFICATION_STARTED;
 
-        mActivityHelper.getPhoneAuthProviderInstance().verifyPhoneNumber(phoneNumber,
+        AuthInstances.getPhoneAuthProviderInstance().verifyPhoneNumber(phoneNumber,
                 AUTO_RETRIEVAL_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS, this, new PhoneAuthProvider
                         .OnVerificationStateChangedCallbacks() {
             @Override
@@ -274,8 +275,8 @@ public class PhoneVerificationActivity extends AppCompatBase {
     private void showSubmitCodeFragment() {
         // idempotent function
         if (getSubmitConfirmationCodeFragment() == null) {
-            SubmitConfirmationCodeFragment f = SubmitConfirmationCodeFragment.newInstance
-                    (mActivityHelper.getFlowParams(), mPhoneNumber);
+            SubmitConfirmationCodeFragment f = SubmitConfirmationCodeFragment.newInstance(
+                    getFlowParams(), mPhoneNumber);
             FragmentTransaction t = getSupportFragmentManager().beginTransaction().replace(R.id
                     .fragment_verify_phone, f, SubmitConfirmationCodeFragment.TAG).addToBackStack
                     (null);
@@ -303,7 +304,8 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void signingWithCreds(@NonNull PhoneAuthCredential phoneAuthCredential) {
-        mActivityHelper.getFirebaseAuth().signInWithCredential(phoneAuthCredential)
+        AuthInstances.getFirebaseAuth(getFlowParams())
+                .signInWithCredential(phoneAuthCredential)
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(final AuthResult authResult) {

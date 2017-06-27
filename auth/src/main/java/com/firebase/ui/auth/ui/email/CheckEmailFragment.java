@@ -24,6 +24,7 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
+import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -35,6 +36,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that
@@ -136,7 +138,7 @@ public class CheckEmailFragment extends FragmentBase implements
             // Use email passed in
             mEmailEditText.setText(email);
             validateAndProceed();
-        } else if (mHelper.getFlowParams().enableHints) {
+        } else if (getFlowParams().enableHints) {
             // Try SmartLock email autocomplete hint
             showEmailAutoCompleteHint();
         }
@@ -191,7 +193,9 @@ public class CheckEmailFragment extends FragmentBase implements
 
         final String finalName = name;
         final Uri finalPhotoUri = photoUri;
-        ProviderUtils.fetchTopProvider(mHelper.getFirebaseAuth(), email)
+
+        FirebaseAuth auth = AuthInstances.getFirebaseAuth(getFlowParams());
+        ProviderUtils.fetchTopProvider(auth, email)
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<String>() {
                     @Override
                     public void onSuccess(String provider) {

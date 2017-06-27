@@ -40,6 +40,7 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
+import com.firebase.ui.auth.util.AuthInstances;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -85,13 +86,13 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
+        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(getActivity(), getFlowParams());
 
         User user = User.getUser(getArguments());
         String provider = user.getProvider();
 
         AuthUI.IdpConfig providerConfig = null;
-        for (AuthUI.IdpConfig config : mHelper.getFlowParams().providerInfo) {
+        for (AuthUI.IdpConfig config : getFlowParams().providerInfo) {
             if (config.getProviderId().equalsIgnoreCase(provider)) {
                 providerConfig = config;
                 break;
@@ -110,7 +111,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                     providerConfig,
                     user.getEmail());
         } else if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new FacebookProvider(providerConfig, mHelper.getFlowParams().themeId);
+            mIdpProvider = new FacebookProvider(providerConfig, getFlowParams().themeId);
         } else if (provider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new TwitterProvider(getContext());
         }
@@ -142,7 +143,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onSuccess(final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        mHelper.getFirebaseAuth()
+        AuthInstances.getFirebaseAuth(getFlowParams())
                 .signInWithCredential(credential)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Failure authenticating with credential " +

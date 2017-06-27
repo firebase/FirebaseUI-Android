@@ -3,43 +3,19 @@ package com.firebase.ui.auth.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.credentials.CredentialsApi;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthProvider;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class BaseHelper {
-    private final FlowParameters mFlowParams;
-    protected Context mContext;
-
-    public BaseHelper(Context context, FlowParameters parameters) {
-        mContext = context;
-        mFlowParams = parameters;
-    }
-
-    public BaseHelper(Context context, Intent intent) {
-        this(context, (FlowParameters) intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS));
-    }
-
-    public BaseHelper(Fragment fragment, Bundle arguments) {
-        this(fragment.getContext().getApplicationContext(),
-             (FlowParameters) arguments.getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS));
-    }
+public class ActivityUtils {
 
     public static Intent createBaseIntent(
             @NonNull Context context,
@@ -52,36 +28,12 @@ public class BaseHelper {
                           checkNotNull(flowParams, "flowParams cannot be null"));
     }
 
-    public FlowParameters getFlowParams() {
-        return mFlowParams;
-    }
-
     public static void finishActivity(Activity activity, int resultCode, Intent intent) {
         activity.setResult(resultCode, intent);
         activity.finish();
     }
 
-    public FirebaseAuth getFirebaseAuth() {
-        return FirebaseAuth.getInstance(FirebaseApp.getInstance(mFlowParams.appName));
-    }
-
-    public CredentialsApi getCredentialsApi() {
-        return Auth.CredentialsApi;
-    }
-
-    public FirebaseUser getCurrentUser() {
-        return getFirebaseAuth().getCurrentUser();
-    }
-
-    public SaveSmartLock getSaveSmartLockInstance(FragmentActivity activity) {
-        return SaveSmartLock.getInstance(activity, getFlowParams());
-    }
-
-    public PhoneAuthProvider getPhoneAuthProviderInstance() {
-        return PhoneAuthProvider.getInstance();
-    }
-
-    public void saveCredentialsOrFinish(
+    public static void saveCredentialsOrFinish(
             @Nullable SaveSmartLock saveSmartLock,
             Activity activity,
             FirebaseUser firebaseUser,

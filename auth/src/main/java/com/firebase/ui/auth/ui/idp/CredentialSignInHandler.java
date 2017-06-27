@@ -23,11 +23,12 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.provider.ProviderUtils;
-import com.firebase.ui.auth.ui.BaseHelper;
+import com.firebase.ui.auth.ui.ActivityUtils;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,6 +36,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -43,7 +45,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private static final String TAG = "CredentialSignInHandler";
 
     private HelperActivityBase mActivity;
-    private BaseHelper mHelper;
+    private ActivityUtils mHelper;
     @Nullable
     private SaveSmartLock mSmartLock;
     private IdpResponse mResponse;
@@ -51,7 +53,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
 
     public CredentialSignInHandler(
             HelperActivityBase activity,
-            BaseHelper helper,
+            ActivityUtils helper,
             @Nullable SaveSmartLock smartLock,
             int accountLinkRequestCode,
             IdpResponse response) {
@@ -66,7 +68,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
             FirebaseUser firebaseUser = task.getResult().getUser();
-            mHelper.saveCredentialsOrFinish(
+            ActivityUtils.saveCredentialsOrFinish(
                     mSmartLock,
                     mActivity,
                     firebaseUser,
@@ -76,12 +78,13 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 String email = mResponse.getEmail();
                 if (email != null) {
-                    ProviderUtils.fetchTopProvider(mHelper.getFirebaseAuth(), email)
+                    FirebaseAuth auth = AuthInstances.getFirebaseAuth(mActivity.getFlowParams());
+                    ProviderUtils.fetchTopProvider(auth, email)
                             .addOnSuccessListener(new StartWelcomeBackFlow())
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    BaseHelper.finishActivity(
+                                    ActivityUtils.finishActivity(
                                             mActivity,
                                             ResultCodes.CANCELED,
                                             IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
@@ -114,7 +117,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                 mActivity.startActivityForResult(
                         WelcomeBackPasswordPrompt.createIntent(
                                 mActivity,
-                                mHelper.getFlowParams(),
+                                mActivity.getFlowParams(),
                                 mResponse),
                         mAccountLinkRequestCode);
             } else {
@@ -122,7 +125,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                 mActivity.startActivityForResult(
                         WelcomeBackIdpPrompt.createIntent(
                                 mActivity,
-                                mHelper.getFlowParams(),
+                                mActivity.getFlowParams(),
                                 new User.Builder(mResponse.getEmail())
                                         .setProvider(provider)
                                         .build(),

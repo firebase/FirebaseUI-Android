@@ -15,13 +15,12 @@ import com.google.firebase.auth.FirebaseUser;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class HelperActivityBase extends AppCompatActivity {
 
-    protected BaseHelper mActivityHelper;
+    protected FlowParameters mFlowParameters;
     protected ProgressDialogHolder mProgressDialogHolder;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        mActivityHelper = new BaseHelper(this, getIntent());
         mProgressDialogHolder = new ProgressDialogHolder(this);
     }
 
@@ -31,8 +30,16 @@ public class HelperActivityBase extends AppCompatActivity {
         mProgressDialogHolder.dismissDialog();
     }
 
+    public FlowParameters getFlowParams() {
+        if (mFlowParameters == null) {
+            mFlowParameters = FlowParameters.fromIntent(getIntent());
+        }
+
+        return mFlowParameters;
+    }
+
     public void finish(int resultCode, Intent intent) {
-        BaseHelper.finishActivity(this, resultCode, intent);
+        ActivityUtils.finishActivity(this, resultCode, intent);
     }
 
     public ProgressDialogHolder getDialogHolder() {
@@ -44,14 +51,14 @@ public class HelperActivityBase extends AppCompatActivity {
             FirebaseUser firebaseUser,
             @NonNull String password,
             IdpResponse response) {
-        mActivityHelper.saveCredentialsOrFinish(saveSmartLock, this, firebaseUser, password, response);
+        ActivityUtils.saveCredentialsOrFinish(saveSmartLock, this, firebaseUser, password, response);
     }
 
     public void saveCredentialsOrFinish(
             @Nullable SaveSmartLock saveSmartLock,
             FirebaseUser firebaseUser,
             IdpResponse response) {
-        mActivityHelper.saveCredentialsOrFinish(saveSmartLock, this, firebaseUser, null, response);
+        ActivityUtils.saveCredentialsOrFinish(saveSmartLock, this, firebaseUser, null, response);
     }
 
 }

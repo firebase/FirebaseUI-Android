@@ -10,16 +10,15 @@ import android.view.ContextThemeWrapper;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class DialogBase extends DialogFragment {
 
-    protected BaseHelper mHelper;
+    protected FlowParameters mFlowParameters;
     protected ProgressDialogHolder mProgressDialogHolder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHelper = new BaseHelper(this, getArguments());
 
         ContextThemeWrapper context = new ContextThemeWrapper(
-                getContext(), mHelper.getFlowParams().themeId);
+                getContext(), mFlowParameters.themeId);
         mProgressDialogHolder = new ProgressDialogHolder(context);
     }
 
@@ -29,7 +28,15 @@ public class DialogBase extends DialogFragment {
         mProgressDialogHolder.dismissDialog();
     }
 
+    public FlowParameters getFlowParams() {
+        if (mFlowParameters == null) {
+            mFlowParameters = FlowParameters.fromBundle(getArguments());
+        }
+
+        return mFlowParameters;
+    }
+
     public void finish(int resultCode, Intent resultIntent) {
-        BaseHelper.finishActivity(getActivity(), resultCode, resultIntent);
+        ActivityUtils.finishActivity(getActivity(), resultCode, resultIntent);
     }
 }

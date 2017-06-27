@@ -34,6 +34,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -114,7 +115,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
             builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
         }
 
-        mHelper.getCredentialsApi()
+        AuthInstances.getCredentialsApi()
                 .save(mGoogleApiClient, builder.build())
                 .setResultCallback(this);
     }
@@ -171,7 +172,8 @@ public class SaveSmartLock extends SmartLockBase<Status> {
             if (resultCode == ResultCodes.OK) {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
                         .build();
-                mHelper.getCredentialsApi()
+
+                AuthInstances.getCredentialsApi()
                         .save(mGoogleApiClient, credential)
                         .setResultCallback(this);
             } else {
@@ -201,7 +203,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                                         @Nullable IdpResponse response) {
         mResponse = response;
 
-        if (!mHelper.getFlowParams().enableCredentials) {
+        if (!getFlowParams().enableCredentials) {
             finish();
             return;
         }

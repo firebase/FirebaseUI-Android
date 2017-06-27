@@ -25,11 +25,12 @@ import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.BaseHelper;
+import com.firebase.ui.auth.ui.ActivityUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
+import com.firebase.ui.auth.util.AuthInstances;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -45,7 +46,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     private EmailFieldValidator mEmailFieldValidator;
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return BaseHelper.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
+        return ActivityUtils.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 
@@ -67,7 +68,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     }
 
     private void next(final String email) {
-        mActivityHelper.getFirebaseAuth()
+        AuthInstances.getFirebaseAuth(getFlowParams())
                 .sendPasswordResetEmail(email)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Error sending password reset email"))

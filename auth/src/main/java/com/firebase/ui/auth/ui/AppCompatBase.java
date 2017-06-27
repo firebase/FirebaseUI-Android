@@ -31,7 +31,7 @@ public class AppCompatBase extends HelperActivityBase {
 
     private void configureTheme() {
         setTheme(R.style.FirebaseUI); // Provides default values
-        setTheme(mActivityHelper.getFlowParams().themeId);
+        setTheme(getFlowParams().themeId);
     }
 
 }
