@@ -38,8 +38,8 @@ import com.firebase.ui.auth.provider.PhoneProvider;
 import com.firebase.ui.auth.provider.Provider;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ActivityUtils;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.util.AuthInstances;
@@ -67,7 +67,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     private SaveSmartLock mSaveSmartLock;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return ActivityUtils.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
+        return HelperActivityBase.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
     }
 
     @Override
@@ -157,7 +157,6 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                                 "Visit https://console.firebase.google.com to enable it."))
                 .addOnCompleteListener(new CredentialSignInHandler(
                         this,
-                        mActivityHelper,
                         mSaveSmartLock,
                         RC_ACCOUNT_LINK,
                         response));

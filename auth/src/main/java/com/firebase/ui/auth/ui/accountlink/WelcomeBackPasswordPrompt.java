@@ -37,9 +37,9 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ActivityUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
@@ -72,7 +72,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             Context context,
             FlowParameters flowParams,
             IdpResponse response) {
-        return ActivityUtils.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
+        return HelperActivityBase.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }
 

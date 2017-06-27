@@ -15,10 +15,10 @@ import android.widget.Toast;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.ProviderUtils;
-import com.firebase.ui.auth.ui.ActivityUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.TermsTextView;
@@ -51,6 +51,8 @@ public class RegisterEmailFragment extends FragmentBase implements
         View.OnClickListener, View.OnFocusChangeListener, ImeHelper.DonePressedListener {
 
     public static final String TAG = "RegisterEmailFragment";
+
+    private HelperActivityBase mActivity;
 
     private EditText mEmailEditText;
     private EditText mNameEditText;
@@ -159,6 +161,11 @@ public class RegisterEmailFragment extends FragmentBase implements
         super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(R.string.title_register_email);
 
+        if (!(getActivity() instanceof HelperActivityBase)) {
+            throw new RuntimeException("Must be attached to a HelperActivityBase.");
+        }
+
+        mActivity = (HelperActivityBase) getActivity();
         mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(getActivity(), getFlowParams());
         mAgreementText.showTerms(getFlowParams(), R.string.button_text_save);
     }
@@ -237,11 +244,8 @@ public class RegisterEmailFragment extends FragmentBase implements
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
-                                        ActivityUtils.saveCredentialsOrFinish(
-                                                mSaveSmartLock,
-                                                getActivity(),
-                                                user,
-                                                password,
+                                        mActivity.saveCredentialsOrFinish(
+                                                mSaveSmartLock, user, password,
                                                 new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID,
                                                                         email).build());
                                     }

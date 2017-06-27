@@ -150,7 +150,6 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                                 credential.getProvider()))
                 .addOnCompleteListener(new CredentialSignInHandler(
                         mActivity,
-                        mHelper,
                         mSaveSmartLock,
                         RC_WELCOME_BACK_IDP,
                         response));

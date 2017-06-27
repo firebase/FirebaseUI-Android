@@ -13,14 +13,16 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.DialogBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.ui.FlowParameters;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RecoveryEmailSentDialog extends DialogBase {
     private static final String TAG = "RecoveryEmailSentDialog";
 
-    public static void show(String email, FragmentManager manager) {
+    public static void show(String email, FlowParameters parameters, FragmentManager manager) {
         RecoveryEmailSentDialog result = new RecoveryEmailSentDialog();
         Bundle bundle = new Bundle();
+        bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, parameters);
         bundle.putString(ExtraConstants.EXTRA_EMAIL, email);
         result.setArguments(bundle);
         result.show(manager, TAG);

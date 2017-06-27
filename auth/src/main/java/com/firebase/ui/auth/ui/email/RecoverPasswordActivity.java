@@ -25,9 +25,9 @@ import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ActivityUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.AuthInstances;
@@ -46,7 +46,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     private EmailFieldValidator mEmailFieldValidator;
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return ActivityUtils.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
+        return HelperActivityBase.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 
@@ -76,7 +76,8 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                     @Override
                     public void onSuccess(Void aVoid) {
                         mProgressDialogHolder.dismissDialog();
-                        RecoveryEmailSentDialog.show(email, getSupportFragmentManager());
+                        RecoveryEmailSentDialog.show(
+                                email, getFlowParams(), getSupportFragmentManager());
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {

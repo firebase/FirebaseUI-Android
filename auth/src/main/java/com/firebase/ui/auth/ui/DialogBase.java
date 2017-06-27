@@ -18,7 +18,7 @@ public class DialogBase extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         ContextThemeWrapper context = new ContextThemeWrapper(
-                getContext(), mFlowParameters.themeId);
+                getContext(), getFlowParams().themeId);
         mProgressDialogHolder = new ProgressDialogHolder(context);
     }
 

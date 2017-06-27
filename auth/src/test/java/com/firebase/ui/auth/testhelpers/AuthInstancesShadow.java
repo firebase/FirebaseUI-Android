@@ -25,55 +25,52 @@ public class AuthInstancesShadow {
     public static SaveSmartLock sSaveSmartLock;
     public static PhoneAuthProvider sPhoneAuthProvider;
 
+    static {
+        // FirebaseAuth
+        sFirebaseAuth = Mockito.mock(FirebaseAuth.class);
+        when(sFirebaseAuth.getCurrentUser()).thenReturn(sFirebaseUser);
+
+        // CredentialsApi
+        sCredentialsApi = Mockito.mock(CredentialsApi.class);
+
+        // FirebaseUser
+        sFirebaseUser = Mockito.mock(FirebaseUser.class);
+        when(sFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
+        when(sFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
+        when(sFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
+
+        // SaveSmartLock
+        sSaveSmartLock = Mockito.mock(SaveSmartLock.class);
+
+        // PhoneAuthProvider
+        sPhoneAuthProvider = Mockito.mock(PhoneAuthProvider.class);
+    }
+
     private AuthInstancesShadow() {}
 
     @Implementation
     public static FirebaseAuth getFirebaseAuth(FlowParameters parameters) {
-        if (sFirebaseAuth == null) {
-            sFirebaseAuth = Mockito.mock(FirebaseAuth.class);
-            when(sFirebaseAuth.getCurrentUser()).thenReturn(sFirebaseUser);
-        }
-
         return sFirebaseAuth;
     }
 
     @Implementation
     public static CredentialsApi getCredentialsApi() {
-        if (sCredentialsApi == null) {
-            sCredentialsApi = Mockito.mock(CredentialsApi.class);
-        }
-
         return sCredentialsApi;
     }
 
     @Implementation
     public static FirebaseUser getCurrentUser(FlowParameters parameters) {
-        if (sFirebaseUser == null) {
-            sFirebaseUser = Mockito.mock(FirebaseUser.class);
-            when(sFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
-            when(sFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
-            when(sFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
-        }
-
         return sFirebaseUser;
     }
 
     @Implementation
     public static SaveSmartLock getSaveSmartLockInstance(FragmentActivity activity,
                                                          FlowParameters parameters) {
-        if (sSaveSmartLock == null) {
-            sSaveSmartLock = Mockito.mock(SaveSmartLock.class);
-        }
-
         return sSaveSmartLock;
     }
 
     @Implementation
     public static PhoneAuthProvider getPhoneAuthProviderInstance() {
-        if (sPhoneAuthProvider == null) {
-            sPhoneAuthProvider = Mockito.mock(PhoneAuthProvider.class);
-        }
-
         return sPhoneAuthProvider;
     }
 

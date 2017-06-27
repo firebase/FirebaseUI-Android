@@ -24,9 +24,9 @@ import android.support.v4.app.FragmentTransaction;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ActivityUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
@@ -49,7 +49,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
     }
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return ActivityUtils.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
+        return HelperActivityBase.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 
