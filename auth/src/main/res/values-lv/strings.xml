@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">ui_flow</string>
-    
+
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">Notiek ielāde…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Pierakstīties</string>
     <string name="general_error" translation_description="Toast text flashing general error">Ir radusies kļūda.</string>
@@ -33,10 +33,9 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Nesekmīga e-pasta konta reģistrācija</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Ar šo e-pasta adresi jau pastāv konts.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">Pieskaroties pogai %1$s, jūs norādāt, ka piekrītat šādiem noteikumiem: </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Pakalpojumu sniegšanas noteikumi</string>
-    
-    
+
+
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Jums jau ir konts</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Laipni lūdzam atpakaļ!</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Esat jau izmantojis e-pasta adresi %1$s.
