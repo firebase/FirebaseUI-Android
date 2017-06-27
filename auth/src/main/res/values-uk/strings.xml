@@ -34,7 +34,6 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Не вдалося зареєструвати обліковий запис електронної пошти</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Обліковий запис із такою електронною адресою вже існує.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">Торкаючись опції \"%1$s\", ви приймаєте </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Умови використання</string>
 
 
@@ -76,5 +75,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Повторно надіслати код</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Підтвердити номер телефону</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Продовжити</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Коли ви торкнетеся опції “%1$s”, вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Коли ви торкнетеся опції \"%1$s\", вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
 </resources>

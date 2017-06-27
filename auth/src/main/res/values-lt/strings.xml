@@ -34,7 +34,6 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">El. pašto paskyros užregistruoti nepavyko</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Šiuo el. pašto adresu jau užregistruota paskyra.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">Paliesdami „%1$s“ nurodote, kad sutinkate su </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Paslaugų teikimo sąlygomis</string>
 
 

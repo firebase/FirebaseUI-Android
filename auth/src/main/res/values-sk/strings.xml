@@ -34,7 +34,6 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Registrácia e-mailového účtu nebola úspešná</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Už existuje účet s touto e-mailovou adresou.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">Klepnutím na položku %1$s vyjadrujete svoj súhlas s dokumentom </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Zmluvné podmienky</string>
 
 

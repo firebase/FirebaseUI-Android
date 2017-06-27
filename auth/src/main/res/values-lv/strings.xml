@@ -33,7 +33,6 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Nesekmīga e-pasta konta reģistrācija</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Ar šo e-pasta adresi jau pastāv konts.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">Pieskaroties pogai %1$s, jūs norādāt, ka piekrītat šādiem noteikumiem: </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Pakalpojumu sniegšanas noteikumi</string>
 
 

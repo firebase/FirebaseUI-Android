@@ -32,7 +32,6 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">No s\'ha pogut registrar el compte de correu electrònic</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Ja hi ha un compte amb aquesta adreça electrònica.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">En tocar %1$s, indiques que acceptes les </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Condicions del servei</string>
 
 

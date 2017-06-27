@@ -32,7 +32,6 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">ای میل اکاؤنٹ کی رجسٹریشن نا کام رہی</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">اس ای میل پتہ کے ساتھ ایک اکاؤنٹ پہلے سے ہی موجود ہے۔</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">\"%1$s\" تھپتھپا کر آپ نشاندہی کرتے ہیں کہ آپ اتفاق کرتے ہیں </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">سروس کی شرائط</string>
 
 
@@ -74,5 +73,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">کوڈ دوبارہ بھیجیں</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">فون نمبر کی توثیق کریں</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">جاری رکھیں</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">“%1$s” تھپتھپانے پر ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">\"%1$s\" تھپتھپانے پر ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
 </resources>

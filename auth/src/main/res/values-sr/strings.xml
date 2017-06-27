@@ -33,7 +33,6 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Регистрација налога преко имејла није успела</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Већ постоји налог са том имејл адресом.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">Ако додирнете „%1$s“, потврђујете да прихватате </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Услови коришћења услуге</string>
 
 

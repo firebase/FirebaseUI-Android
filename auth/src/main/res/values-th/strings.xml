@@ -1,6 +1,5 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">โฟลว์ UI</string>
-
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">กำลังโหลด…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">ลงชื่อเข้าใช้</string>
     <string name="general_error" translation_description="Toast text flashing general error">เกิดข้อผิดพลาด</string>
@@ -32,10 +31,11 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">การลงทะเบียนบัญชีอีเมลไม่สำเร็จ</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">มีบัญชีที่ใช้ที่อยู่อีเมลนี้อยู่แล้ว</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">การแตะ \"%1$s\" แสดงว่าคุณยอมรับ </string>
+    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">การแตะ%1$sแสดงว่าคุณยอมรับ%2$sและ%3$s</string>
+    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">การแตะ%1$sแสดงว่าคุณยอมรับ%2$s</string>
+    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">การแตะ%1$sแสดงว่าคุณยอมรับ%2$s</string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">ข้อกำหนดในการให้บริการ</string>
-
-
+    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">นโยบายความเป็นส่วนตัว</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">คุณมีบัญชีอยู่แล้ว</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">ยินดีต้อนรับอีกครั้ง!</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">คุณใช้ %1$s อยู่แล้ว ลงชื่อเข้าใช้ด้วย %2$s เพื่อดำเนินการต่อ</string>
@@ -71,5 +71,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">ส่งรหัสอีกครั้ง</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">ยืนยันหมายเลขโทรศัพท์</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">ต่อไป</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">เมื่อคุณแตะ “%1$s” ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">เมื่อคุณแตะ \"%1$s\" ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
 </resources>

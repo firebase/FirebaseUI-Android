@@ -32,7 +32,6 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Η εγγραφή του λογαριασμού ηλεκτρονικού ταχυδρομείου δεν ήταν επιτυχής</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Υπάρχει ήδη λογαριασμός με αυτήν τη διεύθυνση ηλεκτρονικού ταχυδρομείου.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">Αν πατήσετε \"%1$s\", δηλώνετε ότι συμφωνείτε με τους </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Όρους Παροχής Υπηρεσιών</string>
 
 
@@ -74,5 +73,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Επανάληψη αποστολής κωδικού</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Επαλήθευση αριθμού τηλεφώνου</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Συνέχεια</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Αν πατήσετε “%1$s”, μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Αν πατήσετε \"%1$s\", μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
 </resources>
