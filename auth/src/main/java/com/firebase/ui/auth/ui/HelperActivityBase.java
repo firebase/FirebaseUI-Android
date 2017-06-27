@@ -55,13 +55,13 @@ public class HelperActivityBase extends AppCompatActivity {
     }
 
     public void finish(int resultCode, Intent intent) {
-        ActivityUtils.finishActivity(this, resultCode, intent);
+        setResult(resultCode, intent);
+        finish();
     }
 
     public ProgressDialogHolder getDialogHolder() {
         return mProgressDialogHolder;
     }
-
 
     public void saveCredentialsOrFinish(
             @Nullable SaveSmartLock saveSmartLock,
@@ -77,7 +77,7 @@ public class HelperActivityBase extends AppCompatActivity {
             IdpResponse response) {
 
         if (saveSmartLock == null) {
-            ActivityUtils.finishActivity(this, ResultCodes.OK, response.toIntent());
+            finish(ResultCodes.OK, response.toIntent());
         } else {
             saveSmartLock.saveCredentialsOrFinish(firebaseUser, password, response);
         }

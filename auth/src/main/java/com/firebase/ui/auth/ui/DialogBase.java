@@ -37,6 +37,7 @@ public class DialogBase extends DialogFragment {
     }
 
     public void finish(int resultCode, Intent resultIntent) {
-        ActivityUtils.finishActivity(getActivity(), resultCode, resultIntent);
+        getActivity().setResult(resultCode, resultIntent);
+        getActivity().finish();
     }
 }

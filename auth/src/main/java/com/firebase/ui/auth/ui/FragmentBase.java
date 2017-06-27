@@ -38,7 +38,8 @@ public class FragmentBase extends Fragment {
     }
 
     public void finish(int resultCode, Intent resultIntent) {
-        ActivityUtils.finishActivity(getActivity(), resultCode, resultIntent);
+        getActivity().setResult(resultCode, resultIntent);
+        getActivity().finish();
     }
 
     public void startIntentSenderForResult(IntentSender sender, int requestCode)
