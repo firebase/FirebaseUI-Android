@@ -54,11 +54,11 @@
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">You already have an account</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Welcome back!</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">
-        You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>.
-        Sign in with <xliff:g example="Google" id="provider_name" translation_description="">%2$s</xliff:g> to continue.
+        You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com" translation_description="">%1$s</xliff:g>.
+        Sign in with <xliff:g id="provider_name" example="Google" translation_description="">%2$s</xliff:g> to continue.
     </string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">
-        You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>
+        You\'ve already used <xliff:g id="email_addr" example="jane.doe@example.com" translation_description="">%1$s</xliff:g>
         to sign in. Enter your password for that account.
     </string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Signing in…</string>
@@ -76,7 +76,7 @@
 
     <!-- accessibility -->
     <string name="accessibility_logo" translation_description="Content description for app logo">App logo</string>
-    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Signed in as <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g></string>
+    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Signed in as <xliff:g id="email_addr" example="jane.doe@example.com" translation_description="">%1$s</xliff:g></string>
 
     <!-- phone number auth -->
     <string name="verify_phone_number_title" translation_description="Phone number entry form title">Enter your phone number</string>
@@ -99,5 +99,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Resend Code</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Verify Phone Number</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Continue</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping &#8220;%1$s&#8220;, an SMS may be sent. Message &amp; data rates may apply.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, an SMS may be sent. Message &amp; data rates may apply.</string>
 </resources>
