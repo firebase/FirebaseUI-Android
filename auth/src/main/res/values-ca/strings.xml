@@ -1,6 +1,5 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">ui_flow</string>
-
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">S\'està carregant…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Inicia la sessió</string>
     <string name="general_error" translation_description="Toast text flashing general error">S\'ha produït un error.</string>
@@ -32,9 +31,11 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">No s\'ha pogut registrar el compte de correu electrònic</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Ja hi ha un compte amb aquesta adreça electrònica.</string>
+    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">En tocar %1$s, indiques que acceptes les %2$s i la %3$s.</string>
+    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">En tocar %1$s, indiques que acceptes les %2$s.</string>
+    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">En tocar %1$s, indiques que acceptes la %2$s.</string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Condicions del servei</string>
-
-
+    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">política de privadesa</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Ja tens un compte</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Benvingut de nou!</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Ja has utilitzat l\'adreça electrònica %1$s.

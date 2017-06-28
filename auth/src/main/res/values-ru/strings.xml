@@ -49,7 +49,7 @@
     <string name="password_recovery_body" translation_description="Password recovery message body">На этот адрес будет отправлено письмо с инструкциями по сбросу пароля.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Отправить</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">На адрес %1$s отправлено письмо с инструкциями по сбросу пароля.</string>
-    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Отправка…</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Отправка...</string>
     <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Нет аккаунта с таким адресом электронной почты.</string>
     <string name="accessibility_logo" translation_description="Content description for app logo">Логотип приложения</string>
     <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Вы вошли как %1$s</string>
