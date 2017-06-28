@@ -70,5 +70,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Ipadala Muli ang Code</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">I-verify ang Numero ng Telepono</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Magpatuloy</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Sa pamamagitan ng pag-tap sa \"%1$s,\" maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Sa pamamagitan ng pag-tap sa “%1$s,” maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
 </resources>
