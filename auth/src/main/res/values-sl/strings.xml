@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ui_flow</string>
 
-    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Nalaganje ...</string>
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Nalaganje …</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Prijava</string>
     <string name="general_error" translation_description="Toast text flashing general error">Prišlo je do napake.</string>
     <string name="idp_name_google">Google</string>
@@ -25,7 +25,7 @@
     <string name="title_register_email" translation_description="Title for signup form">Registrirajte se</string>
     <string name="name_hint" translation_description="Hint for last name input field">Ime in priimek</string>
     <string name="button_text_save" translation_description="Button text to save input form">Shrani</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registriranje ...</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registriranje …</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znak in kombinacijo črk ter številk.</item>
         <item quantity="two">Geslo ni dovolj zapleteno. Uporabite vsaj %1$d znaka in kombinacijo črk ter številk.</item>
@@ -39,19 +39,16 @@
 
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Račun že imate</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Dobrodošli nazaj!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">E-poštni naslov %1$s ste že uporabili.
-        Če želite nadaljevati, se prijavite z računom za %2$s.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">E-poštni naslov %1$s ste že uporabili
-        za prijavo. Vnesite geslo za ta račun.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prijavljanje ...</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">E-poštni naslov %1$s ste že uporabili. Če želite nadaljevati, se prijavite z računom za %2$s.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">E-poštni naslov %1$s ste že uporabili za prijavo. Vnesite geslo za ta račun.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prijavljanje …</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Ali imate težave pri prijavi?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Obnovitev gesla</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Preverite e-pošto</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Na ta e-poštni naslov vam bomo poslali navodila za
-        ponastavitev gesla.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Na ta e-poštni naslov vam bomo poslali navodila za ponastavitev gesla.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Pošlji</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Če želite obnoviti geslo, upoštevajte navodila, poslana na naslov %1$s.</string>
-    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Pošiljanje ...</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Pošiljanje …</string>
     <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">E-poštni naslov se ne ujema z obstoječim računom</string>
     <string name="accessibility_logo" translation_description="Content description for app logo">Logotip aplikacije</string>
     <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Prijavljeni ste kot %1$s</string>
@@ -60,7 +57,7 @@
     <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Vnesite 6-mestno kodo, ki smo jo poslali na številko</string>
     <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Ponovno pošlji kodo čez 0:%02d</string>
     <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Preverjanje telefonske številke</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Preverjanje ...</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Preverjanje …</string>
     <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Pridobivanje sporočila SMS …</string>
     <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Napačna koda. Poskusite znova.</string>
     <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">V redu</string>

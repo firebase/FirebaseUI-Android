@@ -21,4 +21,5 @@ do
 
     # Remove non-translatable strings
     python $DIR/remove_non_translatable.py $file
+    python $DIR/fix_typography.py $file
 done

@@ -1,7 +1,5 @@
 # coding=UTF-8
 
-import os
-import re
 import sys
 
 from base_string_script import BaseStringScript
@@ -9,18 +7,33 @@ from base_string_script import BaseStringScript
 BAD_ELLIPSIS = "..."
 GOOD_ELLIPSIS = "…"
 
-BAD_ELLIPSIS = "..."
-GOOD_ELLIPSIS = "…"
+BAD_DOUBLE_QUOTE = "\\\"%1$s\\\""
+GOOD_DOUBLE_QUOTE = "“%1$s”"
+
 
 class FixTypographyScript(BaseStringScript):
+    def ProcessTag(self, oldLine):
+        lineString = ''.join(oldLine) \
+            .replace(BAD_ELLIPSIS, GOOD_ELLIPSIS) \
+            .replace(BAD_DOUBLE_QUOTE, GOOD_DOUBLE_QUOTE)
+        newLine = lineString.split("(?!^)")
 
-    def ProcessTag(self, lines):
-        if NON_TRANSLATABLE in '\n'.join(lines):
-            return []
-        else:
-            return lines
+        minimizedWhitespaceLine = []
+        for idx, char in enumerate(''.join(newLine)):
+            if len(minimizedWhitespaceLine) < 1:
+                minimizedWhitespaceLine.append(char)
+                continue
+
+            # print char
+            if minimizedWhitespaceLine[-1] == " " and char == " " and "<" in minimizedWhitespaceLine:
+                pass
+            else:
+                minimizedWhitespaceLine.append(char)
+
+        return ''.join(minimizedWhitespaceLine).split("(?!^)")
+
 
 # Process all files
 for file_name in sys.argv[1:]:
-    rnts = RemoveNonTranslatableScript()
+    rnts = FixTypographyScript()
     rnts.ProcessFile(file_name)

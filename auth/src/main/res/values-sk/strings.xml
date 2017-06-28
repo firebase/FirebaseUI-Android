@@ -39,16 +39,13 @@
 
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Už máte účet</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Vitajte späť!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Už ste použili adresu %1$s.
-        Ak chcete pokračovať, prihláste sa pomocou účtu %2$s.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Na prihlásenie ste už použili adresu %1$s.
-        Zadajte svoje heslo pre daný účet.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Už ste použili adresu %1$s. Ak chcete pokračovať, prihláste sa pomocou účtu %2$s.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Na prihlásenie ste už použili adresu %1$s. Zadajte svoje heslo pre daný účet.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prihlasovanie…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Máte problémy s prihlásením?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Obnovenie hesla</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Skontrolujte si e-mail</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Nechajte si na tento e-mail poslať pokyny s vysvetlením, ako
-        obnoviť svoje heslo.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Nechajte si na tento e-mail poslať pokyny s vysvetlením, ako obnoviť svoje heslo.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Odoslať</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Obnovte si heslo podľa pokynov odoslaných na adresu %1$s.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Odosiela sa…</string>

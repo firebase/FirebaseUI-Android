@@ -37,8 +37,7 @@
 
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Du har redan ett konto</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Välkommen tillbaka!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har redan använt %1$s.
-        Logga in med %2$s om du vill fortsätta.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har redan använt %1$s. Logga in med %2$s om du vill fortsätta.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har redan loggat in med %1$s. Ange lösenordet för det kontot.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Loggar in…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Har du problem med att logga in?</string>

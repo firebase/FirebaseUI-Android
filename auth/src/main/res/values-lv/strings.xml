@@ -38,16 +38,13 @@
 
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Jums jau ir konts</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Laipni lūdzam atpakaļ!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Esat jau izmantojis e-pasta adresi %1$s.
-        Pierakstieties pakalpojumā %2$s, lai turpinātu.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Esat jau izmantojis e-pasta adresi %1$s,
-        lai pierakstītos. Ievadiet šī konta paroli.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Esat jau izmantojis e-pasta adresi %1$s. Pierakstieties pakalpojumā %2$s, lai turpinātu.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Esat jau izmantojis e-pasta adresi %1$s, lai pierakstītos. Ievadiet šī konta paroli.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Notiek pierakstīšanās…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Vai jums ir problēmas ar pierakstīšanos?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Paroles atgūšana</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Pārbaudiet savu e-pastu</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Saņemiet uz šo e-pasta adresi nosūtītus norādījumus ar skaidrojumu,
-        kā atiestatīt paroli.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Saņemiet uz šo e-pasta adresi nosūtītus norādījumus ar skaidrojumu, kā atiestatīt paroli.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Sūtīt</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Izpildiet uz e-pasta adresi %1$s nosūtītos norādījumus, lai atgūtu paroli.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Notiek sūtīšana…</string>

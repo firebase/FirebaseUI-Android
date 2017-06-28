@@ -71,5 +71,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">ส่งรหัสอีกครั้ง</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">ยืนยันหมายเลขโทรศัพท์</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">ต่อไป</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">เมื่อคุณแตะ \"%1$s\" ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">เมื่อคุณแตะ “%1$s” ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
 </resources>

@@ -24,7 +24,7 @@
     <string name="title_register_email" translation_description="Title for signup form">Inscrever-se</string>
     <string name="name_hint" translation_description="Hint for last name input field">Nome e sobrenome</string>
     <string name="button_text_save" translation_description="Button text to save input form">Salvar</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Concluindo sua inscrição...</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Concluindo sua inscrição…</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">A senha não é forte o suficiente. Use pelo menos %1$d caractere e combine letras e números</item>
         <item quantity="other">A senha não é forte o suficiente. Use pelo menos %1$d caracteres e combine letras e números</item>
@@ -40,7 +40,7 @@
     <string name="welcome_back_email_header" translation_description="Message for returning users">Bem-vindo novamente!</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Você já usou o e-mail %1$s. Faça login com o %2$s para continuar.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Você já usou o e-mail %1$s para fazer login. Insira a senha dessa conta.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Fazendo login...</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Fazendo login…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Problemas com login?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Recuperar a senha</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Verifique seu e-mail</string>
@@ -56,7 +56,7 @@
     <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Insira o código de 6 dígitos enviado para</string>
     <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Reenviar código em 0:%02d</string>
     <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Confirmar seu número de telefone</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Verificando...</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Verificando…</string>
     <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Recuperando SMS…</string>
     <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Código incorreto. Tente novamente.</string>
     <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">Ok</string>
@@ -71,5 +71,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Reenviar código</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Confirmar número de telefone</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Continuar</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Um SMS pode ser enviado quando você tocar em \"%1$s\". Tarifas de mensagens e dados podem ser cobradas.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Um SMS pode ser enviado quando você tocar em “%1$s”. Tarifas de mensagens e dados podem ser cobradas.</string>
 </resources>

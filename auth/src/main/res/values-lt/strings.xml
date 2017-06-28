@@ -39,8 +39,7 @@
 
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Jūs jau turite paskyrą</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Sveiki sugrįžę!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Jau panaudojote %1$s.
-Jei norite tęsti, prisijunkite per „%2$s“.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Jau panaudojote %1$s.Jei norite tęsti, prisijunkite per „%2$s“.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Jūs jau prisijungėte naudodami %1$s. Įveskite tos paskyros slaptažodį.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prisijungiama…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Kyla problemų prisijungiant?</string>

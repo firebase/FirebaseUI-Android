@@ -37,16 +37,13 @@
 
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Sinulla on jo tili.</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Tervetuloa takaisin!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Olet jo käyttänyt osoitetta %1$s.
-        Jatka kirjautumalla palvelun %2$s kautta.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Olet jo käyttänyt osoitetta %1$s
-        kirjautumiseen. Anna kyseisen tilin salasana.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Olet jo käyttänyt osoitetta %1$s. Jatka kirjautumalla palvelun %2$s kautta.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Olet jo käyttänyt osoitetta %1$s kirjautumiseen. Anna kyseisen tilin salasana.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Kirjaudutaan sisään…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Eikö kirjautuminen onnistu?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Palauta salasana</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Tarkista sähköpostisi</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Tilaa tähän sähköpostiin ohjeet, joissa neuvotaan, miten
-        voit nollata salasanan.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Tilaa tähän sähköpostiin ohjeet, joissa neuvotaan, miten voit nollata salasanan.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Lähetä</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Palauta salasana noudattamalla osoitteeseen %1$s lähetettyjä ohjeita.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Lähetetään…</string>

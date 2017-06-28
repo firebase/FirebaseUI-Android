@@ -37,16 +37,13 @@
 
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Du har allerede en konto</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Velkommen tilbake!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har allerede brukt %1$s.
-        Logg på med %2$s for å fortsette.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har allerede brukt %1$s
-        for å logge på. Angi passordet ditt for denne kontoen.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har allerede brukt %1$s. Logg på med %2$s for å fortsette.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har allerede brukt %1$s for å logge på. Angi passordet ditt for denne kontoen.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Logger på …</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Har du problemer med å logge på?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Gjenopprett passordet</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Sjekk e-posten din</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Få instruksjoner sendt til denne e-postadressen for hvordan du
-        tilbakestiller passordet ditt.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Få instruksjoner sendt til denne e-postadressen for hvordan du tilbakestiller passordet ditt.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Send</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Følg veiledningen som er sendt til %1$s, for å gjenopprette passordet ditt.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Sender …</string>

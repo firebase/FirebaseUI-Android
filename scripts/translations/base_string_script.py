@@ -10,8 +10,8 @@ END_STR = '</string'
 
 class BaseStringScript:
 
-  def ProcessTag(self, lines):
-    return lines
+  def ProcessTag(self, line):
+    return line
 
   def ProcessFile(self, file_name):
     lines = []
@@ -41,4 +41,3 @@ class BaseStringScript:
 
     with open(file_name, 'w') as myfile:
       myfile.write('\n'.join(lines))
-

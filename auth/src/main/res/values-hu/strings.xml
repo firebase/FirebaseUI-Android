@@ -37,16 +37,13 @@
 
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Már rendelkezik fiókkal</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Örülünk, hogy visszatért!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Már használta a következő e-mail-címet: %1$s.
-        A folytatáshoz jelentkezzen be %2$s-fiókjával.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Ezt az e-mail-fiókot (%1$s) már használta
-        bejelentkezésre. Adja meg a fiókhoz tartozó jelszót.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Már használta a következő e-mail-címet: %1$s. A folytatáshoz jelentkezzen be %2$s-fiókjával.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Ezt az e-mail-fiókot (%1$s) már használta bejelentkezésre. Adja meg a fiókhoz tartozó jelszót.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Bejelentkezés…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Problémái vannak a bejelentkezéssel?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Jelszó visszaállítása</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Ellenőrizze az e-mailjeit.</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Olvassa el az e-mailben elküldött utasításokat, amelyekből megtudhatja, hogyan
-        állíthatja vissza a jelszavát.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Olvassa el az e-mailben elküldött utasításokat, amelyekből megtudhatja, hogyan állíthatja vissza a jelszavát.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Küldés</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">A jelszó visszaállításához kövesse az ide (%1$s) elküldött utasításokat.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Küldés…</string>

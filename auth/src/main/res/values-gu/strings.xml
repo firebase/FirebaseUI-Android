@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ui_flow</string>
 
-    <string name="progress_dialog_loading" translation_description="Loading text in dialog">લોડ કરી રહ્યું છે...</string>
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">લોડ કરી રહ્યું છે…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">સાઇન ઇન કરો</string>
     <string name="general_error" translation_description="Toast text flashing general error">એક ભૂલ આવી છે.</string>
     <string name="idp_name_google">Google</string>
@@ -21,7 +21,7 @@
     <string name="required_field" translation_description="Inline error for required field">તમારે આ ફીલ્ડ ભરવું આવશ્યક છે.</string>
     <string name="invalid_email_address" translation_description="Inline error for invalid email address">તે ઇમેઇલ ઍડ્રેસ સાચું નથી</string>
     <string name="missing_email_address" translation_description="Inline error for empty email address in input field">આગળ વધવા માટે તમારું ઇમેઇલ ઍડ્રેસ દાખલ કરો</string>
-    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">વર્તમાન એકાઉન્ટ તપાસી રહ્યાં છીએ...</string>
+    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">વર્તમાન એકાઉન્ટ તપાસી રહ્યાં છીએ…</string>
     <string name="title_register_email" translation_description="Title for signup form">સાઇન અપ</string>
     <string name="name_hint" translation_description="Hint for last name input field">નામ અને અટક</string>
     <string name="button_text_save" translation_description="Button text to save input form">સાચવો</string>
@@ -37,16 +37,13 @@
 
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">તમારી પાસે પહેલેથી જ એક એકાઉન્ટ છે</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">ફરી સ્વાગત છે!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">તમે પહેલાંથી જ %1$sનો ઉપયોગ કરી લીધો છે.
-        આગળ વધવા માટે %2$s વડે સાઇન ઇન કરો.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">તમે સાઇન ઇન કરવા માટે પહેલેથી %1$sનો
-        ઉપયોગ કરી લીધો છે. તે એકાઉન્ટ માટેનો તમારો પાસવર્ડ દાખલ કરો.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">તમે પહેલાંથી જ %1$sનો ઉપયોગ કરી લીધો છે. આગળ વધવા માટે %2$s વડે સાઇન ઇન કરો.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">તમે સાઇન ઇન કરવા માટે પહેલેથી %1$sનો ઉપયોગ કરી લીધો છે. તે એકાઉન્ટ માટેનો તમારો પાસવર્ડ દાખલ કરો.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">સાઇન ઇન કરી રહ્યાં છીએ…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">સાઇન ઇન કરવામાં સમસ્યા આવી રહી છે?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">પાસવર્ડ પુનઃપ્રાપ્ત કરો</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">તમારું ઇમેઇલ ઍડ્રેસ તપાસો</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">આ ઇમેઇલમાં મોકલવામાં આવેલ સૂચનાઓ મેળવો જે તમારો
-        પાસવર્ડ કેવી રીતે રીસેટ કરવો તે સમજાવે છે.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">આ ઇમેઇલમાં મોકલવામાં આવેલ સૂચનાઓ મેળવો જે તમારો પાસવર્ડ કેવી રીતે રીસેટ કરવો તે સમજાવે છે.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">મોકલો</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">તમારો પાસવર્ડ પુનઃપ્રાપ્ત કરવા માટે %1$s પર મોકલેલ સૂચનાઓનું પાલન કરો.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">મોકલી રહ્યાં છીએ…</string>
@@ -73,5 +70,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">કોડ ફરીથી મોકલો</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">ફોન નંબર ચકાસો</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">આગળ વધો</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">\"%1$s\"ને ટૅપ કર્યા બાદ, કદાચ એક SMS મોકલવામાં આવી શકે છે. સંદેશ અને ડેટા શુલ્ક લાગુ થઈ શકે છે.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">“%1$s”ને ટૅપ કર્યા બાદ, કદાચ એક SMS મોકલવામાં આવી શકે છે. સંદેશ અને ડેટા શુલ્ક લાગુ થઈ શકે છે.</string>
 </resources>
