@@ -1,10 +1,9 @@
 <resources>
     <string name="app_name">ui_flow</string>
-    <string name="default_toolbar_title" translatable="false">@string/app_name</string>
+
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">Učitavanje…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Prijava</string>
     <string name="general_error" translation_description="Toast text flashing general error">Došlo je do pogreške.</string>
-    <string name="reauth_dialog_title" translation_description="Alert text request user to re authenticate">Za tu je radnju potrebna prijava prije nastavka.</string>
     <string name="idp_name_google">Google</string>
     <string name="idp_name_facebook">Facebook</string>
     <string name="idp_name_twitter">Twitter</string>
@@ -22,11 +21,11 @@
     <string name="required_field" translation_description="Inline error for required field">Ne možete to ostaviti prazno.</string>
     <string name="invalid_email_address" translation_description="Inline error for invalid email address">Ta e-adresa nije točna</string>
     <string name="missing_email_address" translation_description="Inline error for empty email address in input field">Unesite svoju e-adresu za nastavak</string>
-    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Traženje postojećih računa…</string>
+    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Traženje postojećih računa...</string>
     <string name="title_register_email" translation_description="Title for signup form">Registracija</string>
     <string name="name_hint" translation_description="Hint for last name input field">Ime i prezime</string>
     <string name="button_text_save" translation_description="Button text to save input form">Spremi</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registriranje….</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registriranje....</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item>
         <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item>
@@ -34,20 +33,16 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Registracija računa putem e-adrese nije uspjela</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Račun s tom e-adresom već postoji.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">Ako dodirnete \"%1$s\", navodite da prihvaćate dokument </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Uvjeti pružanja usluge</string>
-    <string name="title_welcome_back_idp_prompt" translatable="false">@string/sign_in_default</string>
-    <string name="title_welcome_back_password_prompt" translatable="false">@string/sign_in_default</string>
+
+
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Već imate račun</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Dobro došli natrag!</string>
-    <string name="welcome_back_email_header_reauth" translation_description="Prompt for users that need to reauthenticate (for any reason)">Potrebna je ponovna autentifikacija</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Već ste upotrijebili e-adresu %1$s.
         Za nastavak se prijavite putem usluge %2$s.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Za prijavu ste već upotrijebili e-adresu %1$s.
         Unesite zaporku za taj račun.</string>
-    <string name="reauth_welcome_back_password_prompt_body" translation_description="Message to enter password for a detected account">Za nastavak morate izvršiti ponovnu autentifikaciju. Unesite zaporku za račun čija je e-adresa
-        %1$s.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prijava…</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prijava...</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Problem s prijavom?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Ponovno postavljanje zaporke</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Provjerite e-poštu</string>

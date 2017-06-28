@@ -34,7 +34,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.FragmentHelper;
+import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -66,7 +66,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         Fragment fragment = fm.findFragmentByTag(TAG);
         if (!(fragment instanceof SaveSmartLock)) {
             result = new SaveSmartLock();
-            result.setArguments(FragmentHelper.getFlowParamsBundle(parameters));
+            result.setArguments(parameters.toBundle());
             try {
                 fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
             } catch (IllegalStateException e) {
@@ -115,7 +115,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
             builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
         }
 
-        mHelper.getCredentialsApi()
+        AuthInstances.getCredentialsApi()
                 .save(mGoogleApiClient, builder.build())
                 .setResultCallback(this);
     }
@@ -130,7 +130,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                                                          connectionResult.getErrorCode(),
                                                          RC_UPDATE_SERVICE);
         try {
-            mHelper.startIntentSenderForResult(resolution.getIntentSender(), RC_UPDATE_SERVICE);
+            startIntentSenderForResult(resolution.getIntentSender(), RC_UPDATE_SERVICE);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "STATUS: Failed to send resolution.", e);
             finish();
@@ -146,8 +146,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                 // Try to resolve the save request. This will prompt the user if
                 // the credential is new.
                 try {
-                    mHelper.startIntentSenderForResult(status.getResolution().getIntentSender(),
-                                                       RC_SAVE);
+                    startIntentSenderForResult(status.getResolution().getIntentSender(), RC_SAVE);
                 } catch (IntentSender.SendIntentException e) {
                     // Could not resolve the request
                     Log.e(TAG, "STATUS: Failed to send resolution.", e);
@@ -173,7 +172,8 @@ public class SaveSmartLock extends SmartLockBase<Status> {
             if (resultCode == ResultCodes.OK) {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
                         .build();
-                mHelper.getCredentialsApi()
+
+                AuthInstances.getCredentialsApi()
                         .save(mGoogleApiClient, credential)
                         .setResultCallback(this);
             } else {
@@ -203,7 +203,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                                         @Nullable IdpResponse response) {
         mResponse = response;
 
-        if (!mHelper.getFlowParams().enableCredentials) {
+        if (!getFlowParams().enableCredentials) {
             finish();
             return;
         }

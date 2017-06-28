@@ -8,13 +8,13 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-        android:name=".auth.LeakCatcher"
+        android:name=".auth.FirebaseUIDemo"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:supportsRtl="false"
+        android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".ChooserActivity">
             <intent-filter>

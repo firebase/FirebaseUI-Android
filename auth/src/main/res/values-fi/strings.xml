@@ -1,10 +1,9 @@
 <resources>
     <string name="app_name">ui_flow</string>
-    <string name="default_toolbar_title" translatable="false">@string/app_name</string>
+
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">Ladataan…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Kirjaudu sisään</string>
     <string name="general_error" translation_description="Toast text flashing general error">Tapahtui virhe.</string>
-    <string name="reauth_dialog_title" translation_description="Alert text request user to re authenticate">Tämä toiminto edellyttää kirjautumista sisään.</string>
     <string name="idp_name_google">Google</string>
     <string name="idp_name_facebook">Facebook</string>
     <string name="idp_name_twitter">Twitter</string>
@@ -33,19 +32,15 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Sähköpostitilin rekisteröinti epäonnistui.</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Kyseisellä sähköpostiosoitteella on jo rekisteröity tili.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">Napauttamalla %1$s hyväksyt </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Käyttöehdot</string>
-    <string name="title_welcome_back_idp_prompt" translatable="false">@string/sign_in_default</string>
-    <string name="title_welcome_back_password_prompt" translatable="false">@string/sign_in_default</string>
+
+
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Sinulla on jo tili.</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Tervetuloa takaisin!</string>
-    <string name="welcome_back_email_header_reauth" translation_description="Prompt for users that need to reauthenticate (for any reason)">Uudelleentodennus on pakollinen.</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Olet jo käyttänyt osoitetta %1$s.
         Jatka kirjautumalla palvelun %2$s kautta.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Olet jo käyttänyt osoitetta %1$s
         kirjautumiseen. Anna kyseisen tilin salasana.</string>
-    <string name="reauth_welcome_back_password_prompt_body" translation_description="Message to enter password for a detected account">Sinun täytyy todentaa itsesi uudelleen. Anna salasana tilille, jonka sähköpostiosoite on
-        %1$s.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Kirjaudutaan sisään…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Eikö kirjautuminen onnistu?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Palauta salasana</string>

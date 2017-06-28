@@ -1,10 +1,9 @@
 <resources>
     <string name="app_name">ui_flow</string>
-    <string name="default_toolbar_title" translatable="false">@string/app_name</string>
+
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">ಲೋಡ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">ಸೈನ್ ಇನ್‌</string>
     <string name="general_error" translation_description="Toast text flashing general error">ದೋಷ ಸಂಭವಿಸಿದೆ.</string>
-    <string name="reauth_dialog_title" translation_description="Alert text request user to re authenticate">ನೀವು ಮುಂದುವರಿಯುವ ಮೊದಲು ಈ ಕ್ರಿಯೆಗೆ ಸೈನ್ ಇನ್ ಮಾಡುವ ಅಗತ್ಯವಿದೆ.</string>
     <string name="idp_name_google">Google</string>
     <string name="idp_name_facebook">Facebook</string>
     <string name="idp_name_twitter">Twitter</string>
@@ -33,16 +32,13 @@
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">ಇಮೇಲ್ ಖಾತೆ ನೋಂದಣಿ ಮಾಡುವಿಕೆಯು ವಿಫಲವಾಗಿದೆ</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">ಆ ಇಮೇಲ್ ವಿಳಾಸದ ಜೊತೆಗೆ ಈಗಾಗಲೇ ಖಾತೆಯೊಂದು ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ.</string>
-    <string name="create_account_preamble" translation_description="Terms of service preamble">\"%1$s\" ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ ಅದನ್ನು ನೀವು ಒಪ್ಪುತ್ತೀರಿ ಎಂದು ಸೂಚಿಸುತ್ತಿದ್ದೀರಿ </string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">ಸೇವಾ ನಿಯಮಗಳು</string>
-    <string name="title_welcome_back_idp_prompt" translatable="false">@string/sign_in_default</string>
-    <string name="title_welcome_back_password_prompt" translatable="false">@string/sign_in_default</string>
+
+
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">ನೀವು ಈಗಾಗಲೇ ಖಾತೆಯನ್ನು ಹೊಂದಿರುವಿರಿ</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">ಮರಳಿ ಸುಸ್ವಾಗತ!</string>
-    <string name="welcome_back_email_header_reauth" translation_description="Prompt for users that need to reauthenticate (for any reason)">ಮರುಪ್ರಮಾಣೀಕರಣದ ಅಗತ್ಯವಿದೆ</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">ನೀವು ಈಗಾಗಲೇ %1$s ಅನ್ನು ಬಳಸುತ್ತಿರುವಿರಿ. ಮುಂದುವರಿಸಲು %2$s ಜೊತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">ನೀವು ಈಗಾಗಲೇ ಸೈನ್ ಇನ್ ಮಾಡಲು %1$sನ್ನು ಬಳಸಿದ್ದೀರಿ. ಆ ಖಾತೆಗೆ ಸೈನ್ ಇನ್ ಆಗಲು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನಮೂದಿಸಿ.</string>
-    <string name="reauth_welcome_back_password_prompt_body" translation_description="Message to enter password for a detected account">ನೀವು ಮುಂದುವರಿಸಲು ಮರುಪ್ರಮಾಣೀಕರಣ ಮಾಡಬೇಕು. %1$s ಇಮೇಲ್‌ ಜೊತೆಗೆ ಖಾತೆಯ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">ಸೈನ್ ಇನ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">ಸೈನ್ ಇನ್ ಮಾಡುವಲ್ಲಿ ಸಮಸ್ಯೆ ಕಂಡುಬಂದಿದೆಯೇ?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">ಪಾಸ್‌ವರ್ಡ್ ಹಿಂಪಡೆಯಿರಿ</string>
