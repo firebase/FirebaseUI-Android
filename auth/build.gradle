@@ -6,11 +6,7 @@ android {
     buildToolsVersion buildTools
 
     lintOptions{
-        disable 'MissingTranslation'
-        disable 'ExtraTranslation'
-        disable 'UnusedResources'
-        disable 'UnusedQuantity'
-        disable 'TypographyQuotes'
+        disable 'UnusedQuantity', 'TypographyEllipsis', 'TypographyQuotes'
     }
 
     defaultConfig {
