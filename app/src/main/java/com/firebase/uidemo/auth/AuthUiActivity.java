@@ -366,14 +366,12 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @MainThread
     private boolean isGoogleMisconfigured() {
-        return UNCHANGED_CONFIG_VALUE.equals(
-                getString(R.string.default_web_client_id));
+        return UNCHANGED_CONFIG_VALUE.equals(getString(R.string.default_web_client_id));
     }
 
     @MainThread
     private boolean isFacebookMisconfigured() {
-        return UNCHANGED_CONFIG_VALUE.equals(
-                getString(R.string.facebook_application_id));
+        return UNCHANGED_CONFIG_VALUE.equals(getString(R.string.facebook_application_id));
     }
 
     @MainThread
