@@ -103,10 +103,10 @@ public class SpacedEditTextTest {
     }
 
     /**
-     * 1. Tests whether the content is set to the expected value. 2. Tests whether the original
-     * content is set to the original value. 3. Tests that the styles applied have the expected
-     * proportion 4. Tests that the styles have been applied only on the spaces to preserve fonts
-     * appearance.
+     * 1. Tests whether the content is set to the expected value.
+     * 2. Tests whether the original content is set to the original value.
+     * 3. Tests that the styles applied have the expected proportion
+     * 4. Tests that the styles have been applied only on the spaces to preserve fonts appearance.
      */
     private void testSpacing(String expectedSpacedText, String expectedOriginalText,
                              SpacedEditText editText) {
