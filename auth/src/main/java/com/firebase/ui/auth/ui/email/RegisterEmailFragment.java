@@ -166,7 +166,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
 
         mActivity = (HelperActivityBase) getActivity();
-        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(getActivity(), getFlowParams());
+        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(mActivity);
         new PreambleHandler(getContext(), getFlowParams(), R.string.button_text_save)
                 .setPreamble(mAgreementText);
     }
@@ -222,7 +222,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     }
 
     private void registerUser(final String email, final String name, final String password) {
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        AuthInstances.getFirebaseAuth()
                 .createUserWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -267,7 +267,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                             // Collision with existing user email, it should be very hard for
                             // the user to even get to this error due to CheckEmailFragment.
 
-                            FirebaseAuth auth = AuthInstances.getFirebaseAuth(getFlowParams());
+                            FirebaseAuth auth = AuthInstances.getFirebaseAuth();
                             ProviderUtils.fetchTopProvider(auth, email).addOnSuccessListener(
                                     getActivity(),
                                     new OnSuccessListener<String>() {

@@ -68,7 +68,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     }
 
     private void next(final String email) {
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        AuthInstances.getFirebaseAuth()
                 .sendPasswordResetEmail(email)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Error sending password reset email"))

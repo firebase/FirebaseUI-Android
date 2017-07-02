@@ -1,9 +1,9 @@
 package com.firebase.ui.auth.util;
 
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
@@ -17,9 +17,14 @@ import com.google.firebase.auth.PhoneAuthProvider;
  * injection.
  */
 public class AuthInstances {
+    private static FlowParameters sFlowParams;
 
-    public static FirebaseAuth getFirebaseAuth(FlowParameters parameters) {
-        return FirebaseAuth.getInstance(FirebaseApp.getInstance(parameters.appName));
+    public static void init(FlowParameters params) {
+        sFlowParams = params;
+    }
+
+    public static FirebaseAuth getFirebaseAuth() {
+        return FirebaseAuth.getInstance(FirebaseApp.getInstance(sFlowParams.appName));
     }
 
     public static CredentialsApi getCredentialsApi() {
@@ -27,13 +32,12 @@ public class AuthInstances {
     }
 
     @Nullable
-    public static FirebaseUser getCurrentUser(FlowParameters parameters) {
-        return getFirebaseAuth(parameters).getCurrentUser();
+    public static FirebaseUser getCurrentUser() {
+        return getFirebaseAuth().getCurrentUser();
     }
 
-    public static SaveSmartLock getSaveSmartLockInstance(FragmentActivity activity,
-                                                         FlowParameters parameters) {
-        return SaveSmartLock.getInstance(activity, parameters);
+    public static SaveSmartLock getSaveSmartLockInstance(HelperActivityBase activity) {
+        return SaveSmartLock.getInstance(activity);
     }
 
     public static PhoneAuthProvider getPhoneAuthProviderInstance() {

@@ -84,12 +84,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(
-                this, getFlowParams());
+        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(this);
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
-        TextView welcomeBackHeader = (TextView) findViewById(R.id.welcome_back_email_header);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 
@@ -146,7 +144,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
         getDialogHolder().showLoadingDialog(R.string.progress_dialog_signing_in);
 
-        final FirebaseAuth firebaseAuth = AuthInstances.getFirebaseAuth(getFlowParams());
+        final FirebaseAuth firebaseAuth = AuthInstances.getFirebaseAuth();
 
         // Sign in with known email and the password provided
         firebaseAuth.signInWithEmailAndPassword(email, password)

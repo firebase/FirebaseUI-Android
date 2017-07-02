@@ -122,7 +122,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
             sendCode(mPhoneNumber, false);
         } else if (mVerificationState == VerificationState.VERIFIED) {
             // activity was recreated when verified dialog was displayed
-            finish(AuthInstances.getCurrentUser(getFlowParams()));
+            finish(AuthInstances.getCurrentUser());
         }
     }
 
@@ -306,7 +306,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void signingWithCreds(@NonNull PhoneAuthCredential phoneAuthCredential) {
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        AuthInstances.getFirebaseAuth()
                 .signInWithCredential(phoneAuthCredential)
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override

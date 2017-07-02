@@ -193,7 +193,7 @@ public class CheckEmailFragment extends FragmentBase implements
         final String finalName = name;
         final Uri finalPhotoUri = photoUri;
 
-        FirebaseAuth auth = AuthInstances.getFirebaseAuth(getFlowParams());
+        FirebaseAuth auth = AuthInstances.getFirebaseAuth();
         ProviderUtils.fetchTopProvider(auth, email)
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<String>() {
                     @Override

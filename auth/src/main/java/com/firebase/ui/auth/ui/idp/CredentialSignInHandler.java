@@ -70,7 +70,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 String email = mResponse.getEmail();
                 if (email != null) {
-                    FirebaseAuth auth = AuthInstances.getFirebaseAuth(mActivity.getFlowParams());
+                    FirebaseAuth auth = AuthInstances.getFirebaseAuth();
                     ProviderUtils.fetchTopProvider(auth, email)
                             .addOnSuccessListener(new StartWelcomeBackFlow())
                             .addOnFailureListener(new OnFailureListener() {

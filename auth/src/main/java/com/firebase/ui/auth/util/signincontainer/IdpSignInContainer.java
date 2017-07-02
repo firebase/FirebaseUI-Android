@@ -86,7 +86,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(getActivity(), getFlowParams());
+        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(mActivity);
 
         User user = User.getUser(getArguments());
         String provider = user.getProvider();
@@ -143,7 +143,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onSuccess(final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        AuthInstances.getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Failure authenticating with credential " +

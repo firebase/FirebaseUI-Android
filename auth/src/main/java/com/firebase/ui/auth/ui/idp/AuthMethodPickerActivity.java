@@ -74,7 +74,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.auth_method_picker_layout);
-        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(this, getFlowParams());
+        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(this);
 
         populateIdpList(getFlowParams().providerInfo);
 
@@ -149,7 +149,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     @Override
     public void onSuccess(final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        AuthInstances.getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Firebase sign in with credential "

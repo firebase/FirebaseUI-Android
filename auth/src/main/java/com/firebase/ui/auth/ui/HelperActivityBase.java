@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
+import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -37,6 +38,7 @@ public class HelperActivityBase extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        AuthInstances.init(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
     }
 

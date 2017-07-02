@@ -148,9 +148,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
             return;
         }
 
-        FirebaseUser currentUser = AuthInstances.getCurrentUser(getFlowParams());
+        FirebaseUser currentUser = AuthInstances.getCurrentUser();
         if (currentUser == null) {
-            AuthInstances.getFirebaseAuth(getFlowParams())
+            AuthInstances.getFirebaseAuth()
                     .signInWithCredential(newCredential)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override

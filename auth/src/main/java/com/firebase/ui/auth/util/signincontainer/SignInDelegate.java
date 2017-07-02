@@ -276,7 +276,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         final IdpResponse response =
                 new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email).build();
 
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        AuthInstances.getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(
                         TAG, "Error signing in with email and password"))
