@@ -34,6 +34,20 @@ final class CountryInfo implements Comparable<CountryInfo> {
         this.countryCode = countryCode;
     }
 
+    public static String localeToEmoji(Locale locale) {
+        String countryCode = locale.getCountry();
+        // 0x41 is Letter A
+        // 0x1F1E6 is Regional Indicator Symbol Letter A
+        // Example :
+        // firstLetter U => 20 + 0x1F1E6
+        // secondLetter S => 18 + 0x1F1E6
+        // See: https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
+        int firstLetter = Character.codePointAt(countryCode, 0) - 0x41 + 0x1F1E6;
+        int secondLetter = Character.codePointAt(countryCode, 1) - 0x41 + 0x1F1E6;
+        return new String(Character.toChars(firstLetter)) + new String(Character.toChars
+                (secondLetter));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -55,20 +69,6 @@ final class CountryInfo implements Comparable<CountryInfo> {
     @Override
     public String toString() {
         return localeToEmoji(locale) + " " + this.locale.getDisplayCountry() + " +" + countryCode;
-    }
-
-    public static String localeToEmoji(Locale locale) {
-        String countryCode = locale.getCountry();
-        // 0x41 is Letter A
-        // 0x1F1E6 is Regional Indicator Symbol Letter A
-        // Example :
-        // firstLetter U => 20 + 0x1F1E6
-        // secondLetter S => 18 + 0x1F1E6
-        // See: https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
-        int firstLetter = Character.codePointAt(countryCode, 0) - 0x41 + 0x1F1E6;
-        int secondLetter = Character.codePointAt(countryCode, 1) - 0x41 + 0x1F1E6;
-        return new String(Character.toChars(firstLetter)) + new String(Character.toChars
-                (secondLetter));
     }
 
     @Override

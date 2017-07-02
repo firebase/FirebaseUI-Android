@@ -33,9 +33,9 @@ import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.google.firebase.auth.EmailAuthProvider;
 
 /**
- * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment}
- * and {@link RegisterEmailFragment} and triggers {@link WelcomeBackPasswordPrompt}
- * and {@link WelcomeBackIdpPrompt}.
+ * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment} and
+ * {@link RegisterEmailFragment} and triggers {@link WelcomeBackPasswordPrompt} and {@link
+ * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RegisterEmailActivity extends AppCompatBase implements

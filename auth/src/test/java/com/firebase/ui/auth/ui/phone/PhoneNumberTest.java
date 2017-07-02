@@ -42,20 +42,27 @@ public class PhoneNumberTest {
 
     @Test
     public void testIsValid_emptyMembers() throws Exception {
-        PhoneNumber invalidPhoneNumber = new PhoneNumber("", PhoneTestConstants.US_ISO2, PhoneTestConstants
-                .US_COUNTRY_CODE);
+        PhoneNumber invalidPhoneNumber = new PhoneNumber(
+                "",
+                PhoneTestConstants.US_ISO2,
+                PhoneTestConstants.US_COUNTRY_CODE);
         assertFalse(PhoneNumber.isValid(invalidPhoneNumber));
         invalidPhoneNumber = new PhoneNumber(PhoneTestConstants.PHONE, "", PhoneTestConstants
                 .US_COUNTRY_CODE);
         assertFalse(PhoneNumber.isValid(invalidPhoneNumber));
-        invalidPhoneNumber = new PhoneNumber(PhoneTestConstants.PHONE, PhoneTestConstants.US_ISO2, "");
+        invalidPhoneNumber = new PhoneNumber(
+                PhoneTestConstants.PHONE,
+                PhoneTestConstants.US_ISO2,
+                "");
         assertFalse(PhoneNumber.isValid(invalidPhoneNumber));
     }
 
     @Test
     public void testIsValid() throws Exception {
-        final PhoneNumber validPhoneNumber = new PhoneNumber(PhoneTestConstants.PHONE, PhoneTestConstants
-                .US_ISO2, PhoneTestConstants.US_COUNTRY_CODE);
+        final PhoneNumber validPhoneNumber = new PhoneNumber(
+                PhoneTestConstants.PHONE,
+                PhoneTestConstants.US_ISO2,
+                PhoneTestConstants.US_COUNTRY_CODE);
         assertTrue(PhoneNumber.isValid(validPhoneNumber));
     }
 
@@ -71,7 +78,10 @@ public class PhoneNumberTest {
 
     @Test
     public void testIsCountryValid_emptyMembers() throws Exception {
-        PhoneNumber invalidPhoneNumber = new PhoneNumber("", "", PhoneTestConstants.US_COUNTRY_CODE);
+        PhoneNumber invalidPhoneNumber = new PhoneNumber(
+                "",
+                "",
+                PhoneTestConstants.US_COUNTRY_CODE);
         assertFalse(PhoneNumber.isCountryValid(invalidPhoneNumber));
         invalidPhoneNumber = new PhoneNumber("", PhoneTestConstants.US_ISO2, "");
         assertFalse(PhoneNumber.isCountryValid(invalidPhoneNumber));
@@ -79,7 +89,9 @@ public class PhoneNumberTest {
 
     @Test
     public void testIsCountryValid() throws Exception {
-        final PhoneNumber validPhoneNumber = new PhoneNumber("", PhoneTestConstants.US_ISO2,
+        final PhoneNumber validPhoneNumber = new PhoneNumber(
+                "",
+                PhoneTestConstants.US_ISO2,
                 PhoneTestConstants.US_COUNTRY_CODE);
         assertTrue(PhoneNumber.isCountryValid(validPhoneNumber));
     }

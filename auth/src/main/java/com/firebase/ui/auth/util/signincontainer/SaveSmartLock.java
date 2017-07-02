@@ -191,8 +191,8 @@ public class SaveSmartLock extends SmartLockBase<Status> {
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise, finish the calling Activity with {@link ResultCodes#OK RESULT_OK}.
      * <p>
-     * Note: saveCredentialsOrFinish cannot be called immediately after getInstance because
-     * onCreate has not yet been called.
+     * Note: saveCredentialsOrFinish cannot be called immediately after getInstance because onCreate
+     * has not yet been called.
      *
      * @param firebaseUser Firebase user to save in Credential.
      * @param password     (optional) password for email credential.

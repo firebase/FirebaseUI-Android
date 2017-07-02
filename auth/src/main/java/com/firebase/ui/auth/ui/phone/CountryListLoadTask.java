@@ -28,6 +28,10 @@ import java.util.Locale;
 // We need to move away from ListView and AsyncTask in the future and use (say)
 // RecyclerView and Task/ThreadPoolExecutor .
 final class CountryListLoadTask extends AsyncTask<Void, Void, List<CountryInfo>> {
+    public interface Listener {
+        void onLoadComplete(List<CountryInfo> result);
+    }
+
     private static final int MAX_COUNTRIES = 291;
 
     private final Listener listener;
@@ -294,9 +298,5 @@ final class CountryListLoadTask extends AsyncTask<Void, Void, List<CountryInfo>>
         if (listener != null) {
             listener.onLoadComplete(result);
         }
-    }
-
-    public interface Listener {
-        void onLoadComplete(List<CountryInfo> result);
     }
 }

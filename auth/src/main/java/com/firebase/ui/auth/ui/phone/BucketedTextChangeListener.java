@@ -38,6 +38,20 @@ import java.util.Collections;
  * 764176
  */
 final class BucketedTextChangeListener implements TextWatcher {
+    interface ContentChangeCallback {
+        /**
+         * Idempotent function invoked by the listener when the edit text changes and is of expected
+         * length
+         */
+        void whileComplete();
+
+        /**
+         * Idempotent function invoked by the listener when the edit text changes and is not of
+         * expected length
+         */
+        void whileIncomplete();
+    }
+
     private final EditText editText;
     private final ContentChangeCallback callback;
     private final String[] postFixes;
@@ -107,19 +121,5 @@ final class BucketedTextChangeListener implements TextWatcher {
         }
 
         return ret;
-    }
-
-    interface ContentChangeCallback {
-        /**
-         * Idempotent function invoked by the listener when the edit text changes and is of
-         * expected length
-         */
-        void whileComplete();
-
-        /**
-         * Idempotent function invoked by the listener when the edit text changes and is not of
-         * expected length
-         */
-        void whileIncomplete();
     }
 }

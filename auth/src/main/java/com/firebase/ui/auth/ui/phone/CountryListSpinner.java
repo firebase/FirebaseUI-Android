@@ -54,6 +54,14 @@ public final class CountryListSpinner extends AppCompatEditText implements
         init();
     }
 
+    public static void hideKeyboard(Context context, View view) {
+        final InputMethodManager imm = (InputMethodManager) context.getSystemService(Context
+                                                                                             .INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     @VisibleForTesting
     void setDialogPopup(DialogPopup dialog) {
         this.dialogPopup = dialog;
@@ -171,14 +179,6 @@ public final class CountryListSpinner extends AppCompatEditText implements
             selectedCountryName = countryInfo.locale.getDisplayCountry();
             setSpinnerText(countryInfo.countryCode, countryInfo.locale);
             dismiss();
-        }
-    }
-
-    public static void hideKeyboard(Context context, View view) {
-        final InputMethodManager imm = (InputMethodManager) context.getSystemService(Context
-                .INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

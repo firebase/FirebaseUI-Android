@@ -53,8 +53,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
- * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming
- * the password before initiating a link.
+ * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
+ * password before initiating a link.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackPasswordPrompt extends AppCompatBase

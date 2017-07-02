@@ -39,8 +39,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
- * Fragment that shows a form with an email field and checks for existing accounts with that
- * email.
+ * Fragment that shows a form with an email field and checks for existing accounts with that email.
  * <p>
  * Host Activities should implement {@link CheckEmailListener}.
  */

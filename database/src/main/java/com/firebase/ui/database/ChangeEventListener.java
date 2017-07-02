@@ -59,8 +59,8 @@ public interface ChangeEventListener {
     void onDataChanged();
 
     /**
-     * This method will be triggered in the event that this listener either failed at the server,
-     * or is removed as a result of the security and Firebase Database rules.
+     * This method will be triggered in the event that this listener either failed at the server, or
+     * is removed as a result of the security and Firebase Database rules.
      *
      * @param error A description of the error that occurred
      */

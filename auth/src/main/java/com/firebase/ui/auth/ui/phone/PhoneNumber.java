@@ -39,6 +39,19 @@ final class PhoneNumber {
         return EMPTY_PHONE_NUMBER;
     }
 
+    public static boolean isValid(PhoneNumber phoneNumber) {
+        return phoneNumber != null && !EMPTY_PHONE_NUMBER.equals(phoneNumber) && !TextUtils
+                .isEmpty(phoneNumber.getPhoneNumber()) && !TextUtils.isEmpty(phoneNumber
+                                                                                     .getCountryCode()) && !TextUtils
+                .isEmpty(phoneNumber.getCountryIso());
+    }
+
+    public static boolean isCountryValid(PhoneNumber phoneNumber) {
+        return phoneNumber != null && !EMPTY_PHONE_NUMBER.equals(phoneNumber) && !TextUtils
+                .isEmpty(phoneNumber.getCountryCode()) && !TextUtils.isEmpty(phoneNumber
+                                                                                     .getCountryIso());
+    }
+
     /**
      * Returns country code
      */
@@ -58,17 +71,5 @@ final class PhoneNumber {
      */
     public String getCountryIso() {
         return countryIso;
-    }
-
-    public static boolean isValid(PhoneNumber phoneNumber) {
-        return phoneNumber != null && !EMPTY_PHONE_NUMBER.equals(phoneNumber) && !TextUtils
-                .isEmpty(phoneNumber.getPhoneNumber()) && !TextUtils.isEmpty(phoneNumber
-                .getCountryCode()) && !TextUtils.isEmpty(phoneNumber.getCountryIso());
-    }
-
-    public static boolean isCountryValid(PhoneNumber phoneNumber) {
-        return phoneNumber != null && !EMPTY_PHONE_NUMBER.equals(phoneNumber) && !TextUtils
-                .isEmpty(phoneNumber.getCountryCode()) && !TextUtils.isEmpty(phoneNumber
-                .getCountryIso());
     }
 }

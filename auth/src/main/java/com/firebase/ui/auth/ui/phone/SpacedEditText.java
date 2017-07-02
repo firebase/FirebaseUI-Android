@@ -31,8 +31,8 @@ import com.firebase.ui.auth.R;
 
 /**
  * This element inserts spaces between characters in the edit text and expands the width of the
- * spaces using spannables.
- * This is required since Android's letter spacing is not available until API 21.
+ * spaces using spannables. This is required since Android's letter spacing is not available until
+ * API 21.
  */
 public final class SpacedEditText extends AppCompatEditText {
     private float proportion;
@@ -64,8 +64,6 @@ public final class SpacedEditText extends AppCompatEditText {
 
     /**
      * Set the selection after recalculating the index intended by the caller.
-     *
-     * @param index
      */
     @Override
     public void setSelection(int index) {
@@ -94,7 +92,7 @@ public final class SpacedEditText extends AppCompatEditText {
             builder.append(" ");
             lastSpaceIndex += 2;
             builder.setSpan(new ScaleXSpan(proportion), lastSpaceIndex, lastSpaceIndex + 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         //Append the last character
