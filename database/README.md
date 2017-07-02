@@ -27,7 +27,7 @@ public static class Chat {
         // Needed for Firebase
     }
 
-    public Chat(String name, String message, String uid) {
+    public Chat(String name, String uid, String message) {
         mName = name;
         mMessage = message;
         mUid = uid;
