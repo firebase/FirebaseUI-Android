@@ -16,7 +16,7 @@ public class ProgressDialogHolder {
         mContext = context;
     }
 
-    public void showLoadingDialog(String message) {
+    private void showLoadingDialog(String message) {
         dismissDialog();
 
         if (mProgressDialog == null) {

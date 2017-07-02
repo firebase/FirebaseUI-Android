@@ -53,7 +53,7 @@ public final class CountryListSpinner extends AppCompatEditText implements
         init();
     }
 
-    public static void hideKeyboard(Context context, View view) {
+    private static void hideKeyboard(Context context, View view) {
         final InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);

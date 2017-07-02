@@ -17,7 +17,6 @@ package com.firebase.ui.auth.provider;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -175,9 +174,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
 
     private void onError(String errorMessage) {
         Log.e(TAG, "Error logging in with Google. " + errorMessage);
-        Bundle extra = new Bundle();
-        extra.putString(ERROR_KEY, errorMessage);
-        mIdpCallback.onFailure(extra);
+        mIdpCallback.onFailure();
     }
 
     @Override

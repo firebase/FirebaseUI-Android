@@ -14,15 +14,13 @@
 
 package com.firebase.ui.auth.provider;
 
-import android.os.Bundle;
-
 import com.firebase.ui.auth.IdpResponse;
 
 public interface IdpProvider extends Provider {
     interface IdpCallback {
         void onSuccess(IdpResponse idpResponse);
 
-        void onFailure(Bundle extra);
+        void onFailure();
     }
 
     void setAuthenticationCallback(IdpCallback callback);

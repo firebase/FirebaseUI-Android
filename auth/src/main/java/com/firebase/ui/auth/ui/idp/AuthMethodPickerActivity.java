@@ -163,7 +163,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     }
 
     @Override
-    public void onFailure(Bundle extra) {
+    public void onFailure() {
         // stay on this screen
         getDialogHolder().dismissDialog();
     }
