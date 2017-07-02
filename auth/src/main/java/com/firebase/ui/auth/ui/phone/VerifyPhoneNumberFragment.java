@@ -176,7 +176,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     }
 
     @Nullable
-    String getPseudoValidPhoneNumber() {
+    private String getPseudoValidPhoneNumber() {
         final CountryInfo countryInfo = (CountryInfo) countryListSpinner.getTag();
         final String everythingElse = mPhoneEditText.getText().toString();
 

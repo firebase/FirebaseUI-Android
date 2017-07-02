@@ -156,7 +156,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     }
 
     @Override
-    public void onFailure(Bundle extra) {
+    public void onFailure() {
         finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
     }
 

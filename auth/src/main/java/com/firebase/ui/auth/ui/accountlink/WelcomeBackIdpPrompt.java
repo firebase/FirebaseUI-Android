@@ -187,7 +187,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     @Override
-    public void onFailure(Bundle extra) {
+    public void onFailure() {
         finishWithError();
     }
 

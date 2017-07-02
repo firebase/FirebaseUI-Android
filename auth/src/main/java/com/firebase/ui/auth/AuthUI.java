@@ -97,7 +97,7 @@ public class AuthUI {
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
 

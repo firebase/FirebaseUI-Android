@@ -3,7 +3,6 @@ package com.firebase.ui.auth.provider;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.util.Log;
 
@@ -43,7 +42,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         return TwitterAuthProvider.getCredential(response.getIdpToken(), response.getIdpSecret());
     }
 
-    public static void initialize(Context context) {
+    private static void initialize(Context context) {
         TwitterAuthConfig authConfig = new TwitterAuthConfig(
                 context.getString(R.string.twitter_consumer_key),
                 context.getString(R.string.twitter_consumer_secret));
@@ -108,7 +107,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     @Override
     public void failure(TwitterException exception) {
         Log.e(TAG, "Failure logging in to Twitter. " + exception.getMessage());
-        mCallbackObject.onFailure(new Bundle());
+        mCallbackObject.onFailure();
     }
 
     private static class EmailCallback extends Callback<String> {

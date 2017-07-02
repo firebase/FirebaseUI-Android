@@ -135,12 +135,12 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                         if (requestError != null) {
                             Log.e(TAG,
                                   "Received Facebook error: " + requestError.getErrorMessage());
-                            onFailure(new Bundle());
+                            onFailure();
                             return;
                         }
                         if (object == null) {
                             Log.w(TAG, "Received null response from Facebook GraphRequest");
-                            onFailure(new Bundle());
+                            onFailure();
                         } else {
                             try {
                                 String email = object.getString("email");
@@ -161,18 +161,13 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void onCancel() {
-        Bundle extra = new Bundle();
-        extra.putString(ERROR, "cancelled");
-        onFailure(extra);
+        onFailure();
     }
 
     @Override
     public void onError(FacebookException error) {
         Log.e(TAG, "Error logging in with Facebook. " + error.getMessage());
-        Bundle extra = new Bundle();
-        extra.putString(ERROR, "error");
-        extra.putString(ERROR_MSG, error.getMessage());
-        onFailure(extra);
+        onFailure();
     }
 
     private void onSuccess(@Nullable String email, LoginResult loginResult) {
@@ -186,9 +181,9 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                 .build();
     }
 
-    private void onFailure(Bundle bundle) {
+    private void onFailure() {
         gcCallbackManager();
-        mCallbackObject.onFailure(bundle);
+        mCallbackObject.onFailure();
     }
 
     private void gcCallbackManager() {
