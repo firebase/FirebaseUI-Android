@@ -1,8 +1,6 @@
 package com.firebase.ui.auth.testhelpers;
 
-import android.support.v4.app.FragmentActivity;
-
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
@@ -49,7 +47,7 @@ public class AuthInstancesShadow {
     private AuthInstancesShadow() {}
 
     @Implementation
-    public static FirebaseAuth getFirebaseAuth(FlowParameters parameters) {
+    public static FirebaseAuth getFirebaseAuth() {
         return sFirebaseAuth;
     }
 
@@ -59,13 +57,12 @@ public class AuthInstancesShadow {
     }
 
     @Implementation
-    public static FirebaseUser getCurrentUser(FlowParameters parameters) {
+    public static FirebaseUser getCurrentUser() {
         return sFirebaseUser;
     }
 
     @Implementation
-    public static SaveSmartLock getSaveSmartLockInstance(FragmentActivity activity,
-                                                         FlowParameters parameters) {
+    public static SaveSmartLock getSaveSmartLockInstance(HelperActivityBase activity) {
         return sSaveSmartLock;
     }
 
