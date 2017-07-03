@@ -98,7 +98,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                         mIdpProvider = new TwitterProvider(this);
                         break;
                     case GithubAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new GitHubProvider(this, mActivityHelper.getFlowParams());
+                        mIdpProvider = new GitHubProvider(this);
                         break;
                     default:
                         Log.w(TAG, "Unknown provider: " + providerId);

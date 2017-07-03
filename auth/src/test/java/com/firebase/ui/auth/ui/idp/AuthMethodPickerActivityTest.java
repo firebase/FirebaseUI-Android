@@ -22,10 +22,9 @@ import android.widget.LinearLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.provider.GitHubLoginHolder;
-import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
-import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
+import com.firebase.ui.auth.provider.GitHubRedirectActivity;
 import com.firebase.ui.auth.testhelpers.AuthInstancesShadow;
+import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FacebookProviderShadow;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
@@ -208,7 +207,7 @@ public class AuthMethodPickerActivityTest {
 
         assertTrue(nextIntent.intent.getComponent()
                            .getClassName()
-                           .equals(GitHubLoginHolder.class.getName()));    }
+                           .equals(GitHubRedirectActivity.class.getName()));    }
 
     private AuthMethodPickerActivity createActivity(List<String> providers) {
         Intent startIntent = AuthMethodPickerActivity.createIntent(

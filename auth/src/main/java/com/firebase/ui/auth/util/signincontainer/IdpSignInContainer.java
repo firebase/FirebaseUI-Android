@@ -121,7 +121,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                 mIdpProvider = new TwitterProvider(getContext());
                 break;
             case GithubAuthProvider.PROVIDER_ID:
-                mIdpProvider = new GitHubProvider(getContext(), getFlowParams());
+                mIdpProvider = new GitHubProvider(getContext());
                 break;
             default:
                 throw new IllegalStateException("Unknown provider: " + provider);

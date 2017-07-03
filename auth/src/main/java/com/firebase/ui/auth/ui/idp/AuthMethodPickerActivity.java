@@ -109,7 +109,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                     mProviders.add(new PhoneProvider(this, getFlowParams()));
                     break;
                 case AuthUI.GITHUB_PROVIDER:
-                    mProviders.add(new GitHubProvider(this, mActivityHelper.getFlowParams()));
+                    mProviders.add(new GitHubProvider(this));
                     break;
                 default:
                     Log.e(TAG, "Encountered unknown provider parcel with type: "
@@ -171,17 +171,5 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     public void onFailure(Bundle extra) {
         // stay on this screen
         getDialogHolder().dismissDialog();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mProviders != null) {
-            for (Provider provider : mProviders) {
-                if (provider instanceof GoogleProvider) {
-                    ((GoogleProvider) provider).disconnect();
-                }
-            }
-        }
     }
 }

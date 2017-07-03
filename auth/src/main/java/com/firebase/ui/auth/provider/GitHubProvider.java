@@ -1,20 +1,27 @@
 package com.firebase.ui.auth.provider;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.gson.JsonObject;
+
+import java.lang.ref.WeakReference;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,8 +35,13 @@ import retrofit2.http.Query;
 
 public class GitHubProvider implements IdpProvider, Callback<JsonObject> {
     public static final String IDENTITY = "https://github.com";
-    public static final String GITHUB_OAUTH_BASE = "https://github.com/login/oauth/";
+
+    public static final String RESULT_CODE = "result_code";
     public static final String KEY_GITHUB_CODE = "github_code";
+
+    private static final String GITHUB_OAUTH_BASE = "https://github.com/login/oauth/";
+    private static final String AUTHORIZE_QUERY = "authorize?client_id=";
+    private static final String SCOPE_QUERY = "&scope=";
 
     private static final GitHubOAuth RETROFIT_GITHUB_OAUTH = new Retrofit.Builder()
             .baseUrl(GITHUB_OAUTH_BASE)
@@ -42,11 +54,11 @@ public class GitHubProvider implements IdpProvider, Callback<JsonObject> {
             .build()
             .create(GitHubApi.class);
 
-    private static final int RC_SIGN_IN = 967;
     private static final String KEY_ACCESS_TOKEN = "access_token";
 
+    private static GitHubRedirectReceiver sReceiver;
+
     private final Context mContext;
-    private final FlowParameters mFlowParameters;
     private IdpCallback mCallback;
 
     public static AuthCredential createAuthCredential(IdpResponse response) {
@@ -56,9 +68,32 @@ public class GitHubProvider implements IdpProvider, Callback<JsonObject> {
         return GithubAuthProvider.getCredential(response.getIdpToken());
     }
 
-    public GitHubProvider(Context context, FlowParameters flowParameters) {
-        mContext = context;
-        mFlowParameters = flowParameters;
+    public GitHubProvider(Context context) {
+        mContext = context.getApplicationContext();
+
+        if (sReceiver != null) handleRedirectResult(this, sReceiver.getStoredResult());
+    }
+
+    public static IntentFilter getGitHubRedirectFilter(Context context) {
+        return new IntentFilter(
+                context.getApplicationContext().getPackageName() + ".github_redirect");
+    }
+
+    private static void handleRedirectResult(GitHubProvider provider, Intent intent) {
+        if (intent != null
+                && intent.getIntExtra(RESULT_CODE, Activity.RESULT_CANCELED) == Activity.RESULT_OK
+                && !TextUtils.isEmpty(intent.getStringExtra(KEY_GITHUB_CODE))) {
+            RETROFIT_GITHUB_OAUTH.getAuthToken(
+                    "application/json",
+                    provider.mContext.getString(R.string.github_client_id),
+                    provider.mContext.getString(R.string.github_client_secret),
+                    intent.getStringExtra(KEY_GITHUB_CODE))
+                    .enqueue(provider);
+        } else {
+            provider.mCallback.onFailure(new Bundle());
+        }
+
+        sReceiver = null;
     }
 
     @Override
@@ -84,24 +119,28 @@ public class GitHubProvider implements IdpProvider, Callback<JsonObject> {
 
     @Override
     public void startLogin(Activity activity) {
-        activity.startActivityForResult(
-                GitHubLoginHolder.createIntent(activity, mFlowParameters), RC_SIGN_IN);
+        sReceiver = new GitHubRedirectReceiver(this);
+
+        LocalBroadcastManager.getInstance(mContext)
+                .registerReceiver(sReceiver, getGitHubRedirectFilter(mContext));
+
+        CustomTabsIntent intent = new CustomTabsIntent.Builder()
+                .setShowTitle(true)
+                .setToolbarColor(ContextCompat.getColor(mContext, R.color.colorPrimary))
+                .build();
+        intent.launchUrl(
+                mContext,
+                Uri.parse(GITHUB_OAUTH_BASE + AUTHORIZE_QUERY + activity.getString(R.string.github_client_id)
+                                  + SCOPE_QUERY + getScopeList()));
+    }
+
+    private String getScopeList() {
+        return "user:email";
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != RC_SIGN_IN) return;
-
-        if (resultCode != Activity.RESULT_OK ||
-                data == null || TextUtils.isEmpty(data.getStringExtra(KEY_GITHUB_CODE))) {
-            mCallback.onFailure(new Bundle());
-        } else {
-            RETROFIT_GITHUB_OAUTH.getAuthToken("application/json",
-                                               mContext.getString(R.string.github_client_id),
-                                               mContext.getString(R.string.github_client_secret),
-                                               data.getStringExtra(KEY_GITHUB_CODE))
-                    .enqueue(this);
-        }
+        // We use a broadcast receiver for GitHub OAuth
     }
 
     @Override
@@ -152,5 +191,33 @@ public class GitHubProvider implements IdpProvider, Callback<JsonObject> {
     private interface GitHubApi {
         @GET("user")
         Call<JsonObject> getUser(@Header("Authorization") String token);
+    }
+
+    private static class GitHubRedirectReceiver extends BroadcastReceiver {
+        private final WeakReference<GitHubProvider> mGitHubProvider;
+
+        @Nullable private Intent mStoredResult;
+
+        public GitHubRedirectReceiver(GitHubProvider provider) {
+            mGitHubProvider = new WeakReference<>(provider);
+        }
+
+        @Nullable
+        private Intent getStoredResult() {
+            return mStoredResult;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            GitHubProvider provider = mGitHubProvider.get();
+            if (provider == null) {
+                mStoredResult = intent;
+                LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
+                return;
+            }
+
+            handleRedirectResult(provider, intent);
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
+        }
     }
 }

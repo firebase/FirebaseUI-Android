@@ -31,9 +31,8 @@
             android:theme="@style/FirebaseUI.Transparent"/>
 
         <activity
-            android:name=".provider.GitHubLoginHolder"
+            android:name=".provider.GitHubRedirectActivity"
             android:label=""
-            android:launchMode="singleInstance"
             android:theme="@style/FirebaseUI.Transparent">
 
             <intent-filter>

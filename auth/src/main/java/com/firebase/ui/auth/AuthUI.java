@@ -68,11 +68,12 @@ import java.util.Set;
  */
 public class AuthUI {
     @StringDef({
-                       EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
-                       PhoneAuthProvider.PROVIDER_ID, PHONE_VERIFICATION_PROVIDER,
                        GoogleAuthProvider.PROVIDER_ID, GOOGLE_PROVIDER,
                        FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
-                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER
+                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER,
+                       GithubAuthProvider.PROVIDER_ID, GITHUB_PROVIDER,
+                       EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
+                       PhoneAuthProvider.PROVIDER_ID, PHONE_VERIFICATION_PROVIDER
                })
     public @interface SupportedProvider {}
 
