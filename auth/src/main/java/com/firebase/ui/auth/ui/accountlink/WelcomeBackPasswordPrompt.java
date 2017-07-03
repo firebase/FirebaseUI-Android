@@ -37,12 +37,13 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
+import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -71,7 +72,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             Context context,
             FlowParameters flowParams,
             IdpResponse response) {
-        return BaseHelper.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
+        return HelperActivityBase.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }
 
@@ -83,7 +84,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
+        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(
+                this, getFlowParams());
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
@@ -95,7 +97,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
         // Create welcome back text with email bolded.
         String bodyText = getString(R.string.welcome_back_password_prompt_body, mEmail);
-        FlowParameters flowParameters = mActivityHelper.getFlowParams();
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
@@ -120,7 +121,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } else if (id == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
                     this,
-                    mActivityHelper.getFlowParams(),
+                    getFlowParams(),
                     mEmail));
             finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
         }
@@ -143,9 +144,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } else {
             mPasswordLayout.setError(null);
         }
-        mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
+        getDialogHolder().showLoadingDialog(R.string.progress_dialog_signing_in);
 
-        final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
+        final FirebaseAuth firebaseAuth = AuthInstances.getFirebaseAuth(getFlowParams());
+
         // Sign in with known email and the password provided
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(
@@ -159,7 +161,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                         // If authCredential is null, the user only has an email account.
                         // Otherwise, the user has an email account that we need to link to an idp.
                         if (authCredential == null) {
-                            mActivityHelper.saveCredentialsOrFinish(
+                            saveCredentialsOrFinish(
                                     mSaveSmartLock,
                                     authResult.getUser(),
                                     password,
@@ -169,11 +171,12 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                             authResult.getUser()
                                     .linkWithCredential(authCredential)
                                     .addOnFailureListener(new TaskFailureLogger(
-                                            TAG, "Error signing in with credential " + authCredential.getProvider()))
+                                            TAG, "Error signing in with credential " +
+                                            authCredential.getProvider()))
                                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                                         @Override
                                         public void onSuccess(AuthResult authResult) {
-                                            mActivityHelper.saveCredentialsOrFinish(
+                                            saveCredentialsOrFinish(
                                                     mSaveSmartLock,
                                                     authResult.getUser(),
                                                     mIdpResponse);
@@ -185,7 +188,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        mActivityHelper.dismissDialog();
+                        getDialogHolder().dismissDialog();
                         String error = e.getLocalizedMessage();
                         mPasswordLayout.setError(error);
                     }

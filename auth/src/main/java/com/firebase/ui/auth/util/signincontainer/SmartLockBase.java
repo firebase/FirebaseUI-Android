@@ -23,6 +23,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
@@ -58,6 +59,9 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
                 return GitHubProvider.IDENTITY;
             case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
+                return null;
+            case PhoneAuthProvider.PROVIDER_ID:
+                // The account type for phone creds is null
                 return null;
             default:
                 return null;
@@ -125,9 +129,9 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     public void onStart() {
         super.onStart();
         if (mActivityResultPair != null) {
-            mHelper.finish(mActivityResultPair.first, mActivityResultPair.second);
+            finish(mActivityResultPair.first, mActivityResultPair.second);
         } else if (mWasProgressDialogShowing) {
-            mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
+            getDialogHolder().showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
             mWasProgressDialogShowing = false;
         }
     }
@@ -135,8 +139,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     @Override
     public void onStop() {
         super.onStop();
-        mWasProgressDialogShowing = mHelper.isProgressDialogShowing();
-        mHelper.dismissDialog();
+        mWasProgressDialogShowing = getDialogHolder().isProgressDialogShowing();
+        getDialogHolder().dismissDialog();
     }
 
     @Override

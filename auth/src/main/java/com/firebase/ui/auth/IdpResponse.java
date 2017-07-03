@@ -34,22 +34,25 @@ import com.google.firebase.auth.TwitterAuthProvider;
 public class IdpResponse implements Parcelable {
     private final String mProviderId;
     private final String mEmail;
+    private final String mPhoneNumber;
     private final String mToken;
     private final String mSecret;
     private final int mErrorCode;
 
     private IdpResponse(int errorCode) {
-        this(null, null, null, null, errorCode);
+        this(null, null, null, null, null, errorCode);
     }
 
     private IdpResponse(
             String providerId,
             String email,
+            String phoneNumber,
             String token,
             String secret,
             int errorCode) {
         mProviderId = providerId;
         mEmail = email;
+        mPhoneNumber = phoneNumber;
         mToken = token;
         mSecret = secret;
         mErrorCode = errorCode;
@@ -98,6 +101,14 @@ public class IdpResponse implements Parcelable {
     }
 
     /**
+     * Get the phone number used to sign in.
+     */
+    @Nullable
+    public String getPhoneNumber() {
+        return mPhoneNumber;
+    }
+
+    /**
      * Get the token received as a result of logging in with the specified IDP
      */
     @Nullable
@@ -129,6 +140,7 @@ public class IdpResponse implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mProviderId);
         dest.writeString(mEmail);
+        dest.writeString(mPhoneNumber);
         dest.writeString(mToken);
         dest.writeString(mSecret);
         dest.writeInt(mErrorCode);
@@ -138,6 +150,7 @@ public class IdpResponse implements Parcelable {
         @Override
         public IdpResponse createFromParcel(Parcel in) {
             return new IdpResponse(
+                    in.readString(),
                     in.readString(),
                     in.readString(),
                     in.readString(),
@@ -156,12 +169,18 @@ public class IdpResponse implements Parcelable {
     public static class Builder {
         private String mProviderId;
         private String mEmail;
+        private String mPhoneNumber;
         private String mToken;
         private String mSecret;
 
         public Builder(@AuthUI.SupportedProvider @NonNull String providerId, @Nullable String email) {
             mProviderId = providerId;
             mEmail = email;
+        }
+
+        public Builder setPhoneNumber(String phoneNumber) {
+            mPhoneNumber = phoneNumber;
+            return this;
         }
 
         public Builder setToken(String token) {
@@ -189,7 +208,7 @@ public class IdpResponse implements Parcelable {
                         "Secret cannot be null when using the Twitter provider.");
             }
 
-            return new IdpResponse(mProviderId, mEmail, mToken, mSecret, ResultCodes.OK);
+            return new IdpResponse(mProviderId, mEmail, mPhoneNumber, mToken, mSecret, ResultCodes.OK);
         }
     }
 }

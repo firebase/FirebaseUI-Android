@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
-    android:paddingBottom="16dp"
     android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:clipToPadding="false"
     tools:context=".auth.SignedInActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
+        android:layout_marginBottom="16dp"
         android:orientation="vertical">
 
         <TextView
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:drawableTop="@drawable/firebase_auth_120dp"
-            android:text="@string/signed_in_header"/>
+            android:text="@string/signed_in_header" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="16dp"
-                android:text="@string/sign_out"/>
+                android:text="@string/sign_out" />
 
             <Button
                 android:id="@+id/delete_account"
@@ -48,7 +48,7 @@
                 android:layout_margin="16dp"
                 android:text="@string/delete_account_label"
                 android:theme="@style/WarnButton"
-                tools:ignore="ButtonStyle"/>
+                tools:ignore="ButtonStyle" />
 
         </LinearLayout>
 
@@ -56,7 +56,7 @@
             style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/user_profile_header"/>
+            android:text="@string/user_profile_header" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,7 +71,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="16dp"
                 android:contentDescription="@string/profile_picture_content_desc"
-                android:src="@drawable/anon_user_48dp"/>
+                android:src="@drawable/anon_user_48dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -82,19 +82,25 @@
                     android:id="@+id/user_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textIsSelectable="true"/>
+                    android:textIsSelectable="true" />
+
+                <TextView
+                    android:id="@+id/user_phone_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textIsSelectable="true" />
 
                 <TextView
                     android:id="@+id/user_display_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textIsSelectable="true"/>
+                    android:textIsSelectable="true" />
 
                 <TextView
                     android:id="@+id/user_enabled_providers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textIsSelectable="true"/>
+                    android:textIsSelectable="true" />
 
             </LinearLayout>
 
@@ -110,13 +116,13 @@
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/idp_token"/>
+                android:text="@string/idp_token" />
 
             <TextView
                 android:id="@+id/idp_token"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textIsSelectable="true"/>
+                android:textIsSelectable="true" />
 
         </LinearLayout>
 
@@ -130,13 +136,13 @@
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/idp_secret"/>
+                android:text="@string/idp_secret" />
 
             <TextView
                 android:id="@+id/idp_secret"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textIsSelectable="true"/>
+                android:textIsSelectable="true" />
 
         </LinearLayout>
 

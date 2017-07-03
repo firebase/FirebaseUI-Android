@@ -2,25 +2,24 @@ apply from: 'constants.gradle'
 
 buildscript {
     repositories {
+        google()
         jcenter()
         mavenLocal()
-        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
-        classpath 'com.google.gms:google-services:3.0.0'
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.google.gms:google-services:3.1.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
 }
 
 allprojects {
     repositories {
+        google()
         jcenter()
         mavenLocal()
         mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
     }
 }
 

@@ -71,6 +71,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.email_provider)
     CheckBox mUseEmailProvider;
 
+    @BindView(R.id.phone_provider)
+    CheckBox mUsePhoneProvider;
+
     @BindView(R.id.google_provider)
     CheckBox mUseGoogleProvider;
 
@@ -110,8 +113,11 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.no_logo)
     RadioButton mNoLogo;
 
-    @BindView(R.id.smartlock_enabled)
-    CheckBox mEnableSmartLock;
+    @BindView(R.id.credential_selector_enabled)
+    CheckBox mEnableCredentialSelector;
+
+    @BindView(R.id.hint_selector_enabled)
+    CheckBox mEnableHintSelector;
 
     @BindView(R.id.allow_new_email_accounts)
     CheckBox mAllowNewEmailAccounts;
@@ -203,7 +209,8 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setAvailableProviders(getSelectedProviders())
                         .setTosUrl(getSelectedTosUrl())
                         .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
-                        .setIsSmartLockEnabled(mEnableSmartLock.isChecked())
+                        .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
+                                               mEnableHintSelector.isChecked())
                         .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
                 RC_SIGN_IN);
@@ -261,7 +268,8 @@ public class AuthUiActivity extends AppCompatActivity {
                                 getSelectedTheme(),
                                 getSelectedProviders(),
                                 getSelectedTosUrl(),
-                                mEnableSmartLock.isChecked())));
+                                mEnableCredentialSelector.isChecked(),
+                                mEnableHintSelector.isChecked())));
     }
 
     @MainThread
@@ -335,6 +343,11 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUseEmailProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
+        }
+
+        if (mUsePhoneProvider.isChecked()) {
+            selectedProviders.add(
+                    new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
         }
 
         return selectedProviders;

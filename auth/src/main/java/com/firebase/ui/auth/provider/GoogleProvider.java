@@ -80,13 +80,6 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
                         .requestEmail()
                         .requestIdToken(clientId);
 
-        if (mActivity.getResources().getIdentifier(
-                "google_permissions", "array", mActivity.getPackageName()) != 0) {
-            Log.w(TAG, "DEVELOPER WARNING: You have defined R.array.google_permissions but that is"
-                    + " no longer respected as of FirebaseUI 1.0.0. Please see README for IDP scope"
-                    + " configuration instructions.");
-        }
-
         // Add additional scopes
         for (String scopeString : mIdpConfig.getScopes()) {
             builder.requestScopes(new Scope(scopeString));

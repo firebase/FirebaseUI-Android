@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.testhelpers;
 
+import com.google.firebase.auth.AdditionalUserInfo;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -26,6 +27,11 @@ public final class FakeAuthResult implements AuthResult {
 
     @Override
     public FirebaseUser getUser() {
-        return BaseHelperShadow.sFirebaseUser;
+        return AuthInstancesShadow.getCurrentUser(null);
+    }
+
+    @Override
+    public AdditionalUserInfo getAdditionalUserInfo() {
+        return null;
     }
 }

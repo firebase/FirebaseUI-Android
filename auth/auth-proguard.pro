@@ -1,0 +1,2 @@
+-dontwarn com.twitter.**
+-dontwarn com.facebook.**
