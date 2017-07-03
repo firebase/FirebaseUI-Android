@@ -24,7 +24,7 @@ android {
         }
     }
 
-    lintOptions{
+    lintOptions {
         disable 'MissingTranslation'
     }
 }

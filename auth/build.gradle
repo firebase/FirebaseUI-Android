@@ -27,7 +27,7 @@ android {
         }
     }
 
-    lintOptions{
+    lintOptions {
         disable 'UnusedQuantity'
     }
 
