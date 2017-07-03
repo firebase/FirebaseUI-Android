@@ -43,6 +43,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -67,11 +68,12 @@ import java.util.Set;
  */
 public class AuthUI {
     @StringDef({
-                       EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
-                       PhoneAuthProvider.PROVIDER_ID, PHONE_VERIFICATION_PROVIDER,
                        GoogleAuthProvider.PROVIDER_ID, GOOGLE_PROVIDER,
                        FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
                        TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER,
+                       GithubAuthProvider.PROVIDER_ID, GITHUB_PROVIDER,
+                       EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
+                       PhoneAuthProvider.PROVIDER_ID, PHONE_VERIFICATION_PROVIDER
                })
     public @interface SupportedProvider {}
 
@@ -97,6 +99,11 @@ public class AuthUI {
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
     /**
+     * Provider identifier for GitHub, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
+     */
+    public static final String GITHUB_PROVIDER = GithubAuthProvider.PROVIDER_ID;
+
+    /**
      * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setProviders}.
      */
     public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
@@ -115,6 +122,7 @@ public class AuthUI {
                     GOOGLE_PROVIDER,
                     FACEBOOK_PROVIDER,
                     TWITTER_PROVIDER,
+                    GITHUB_PROVIDER,
                     PHONE_VERIFICATION_PROVIDER
             )));
 

@@ -7,7 +7,7 @@ code and promote best practices (both user experience and security) for
 authentication.
 
 A simple API is provided for drop-in user authentication which handles the flow
-of signing in users with email addresses and passwords, and federated identity
+of signing in users with email addresses and passwords, phone numbers, and federated identity
 providers such as Google Sign-In, and Facebook Login. It is built on top of
 [Firebase Auth](https://firebase.google.com/docs/auth).
 
@@ -46,7 +46,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    compile 'com.firebaseui:firebase-ui-auth:1.2.0'
+    compile 'com.firebaseui:firebase-ui-auth:2.0.1'
     
     // Required only if Facebook login support is required
     compile('com.facebook.android:facebook-android-sdk:4.22.1')
@@ -176,7 +176,7 @@ startActivityForResult(
         .createSignInIntentBuilder()
         .setAvailableProviders(
                 Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                              new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVDER).build(),
+                              new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
                               new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
                               new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
                               new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))

@@ -11,6 +11,7 @@
     <string name="idp_name_google">Google</string>
     <string name="idp_name_facebook">Facebook</string>
     <string name="idp_name_twitter">Twitter</string>
+    <string name="idp_name_github">GitHub</string>
     <string name="provider_name_email">Email</string>
     <string name="provider_name_phone">Phone</string>
 
@@ -18,6 +19,7 @@
     <string name="sign_in_with_google" translation_description="Sign in button text">Sign in with Google</string>
     <string name="sign_in_with_facebook" translation_description="Sign in button text">Sign in with Facebook</string>
     <string name="sign_in_with_twitter" translation_description="Sign in button text">Sign in with Twitter</string>
+    <string name="sign_in_with_github">Sign in with GitHub</string>
     <string name="sign_in_with_email" translation_description="Sign in button text">Sign in with email</string>
     <string name="sign_in_with_phone" translation_description="Sign in button text">Sign in with phone</string>
 
@@ -101,5 +103,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Resend Code</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Verify Phone Number</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Continue</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button" >By tapping &#8220;%1$s&#8220;, an SMS may be sent. Message &amp; data rates may apply.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping &#8220;%1$s&#8220;, an SMS may be sent. Message &amp; data rates may apply.</string>
 </resources>

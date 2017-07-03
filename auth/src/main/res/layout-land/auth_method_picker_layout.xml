@@ -13,7 +13,7 @@
         layout="@layout/include_auth_method_picker_logo"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1.0"/>
+        android:layout_weight="1.0" />
 
     <FrameLayout
         android:layout_width="0dp"
@@ -26,7 +26,7 @@
             style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingTop="@dimen/auth_method_button_marginBottom"/>
+            android:paddingTop="@dimen/auth_method_button_marginBottom" />
 
     </FrameLayout>
 

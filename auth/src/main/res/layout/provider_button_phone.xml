@@ -5,4 +5,4 @@
     android:id="@+id/phone_button"
     style="@style/FirebaseUI.Button.AccountChooser.PhoneButton"
     android:text="@string/sign_in_with_phone"
-    tools:ignore="UnusedIds"/> <!-- Used in tests -->
+    tools:ignore="UnusedIds" /> <!-- Used in tests -->

@@ -31,6 +31,22 @@
             android:theme="@style/FirebaseUI.Transparent"/>
 
         <activity
+            android:name=".provider.GitHubRedirectActivity"
+            android:label=""
+            android:theme="@style/FirebaseUI.Transparent">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="foobar"/>
+            </intent-filter>
+
+        </activity>
+
+        <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/title_recover_password_activity"
             android:exported="false"/>

@@ -6,16 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.ui.DialogBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class RecoveryEmailSentDialog extends DialogBase {
+public class RecoveryEmailSentDialog extends DialogFragment {
     private static final String TAG = "RecoveryEmailSentDialog";
 
     public static void show(String email, FragmentManager manager) {
@@ -41,5 +41,10 @@ public class RecoveryEmailSentDialog extends DialogBase {
                 })
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    public void finish(int resultCode, Intent resultIntent) {
+        getActivity().setResult(resultCode, resultIntent);
+        getActivity().finish();
     }
 }

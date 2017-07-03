@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="FirebaseUI" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="FirebaseUI" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -136,7 +136,7 @@
         <item name="android:inputType">textPassword</item>
     </style>
 
-    <style name="FirebaseUI.TextInputLayout" parent="Widget.Design.TextInputLayout"/>
+    <style name="FirebaseUI.TextInputLayout" parent="Widget.Design.TextInputLayout" />
 
     <style name="FirebaseUI.TextInputLayout.EmailField">
         <item name="android:hint">@string/email_hint</item>
@@ -162,7 +162,7 @@
     </style>
 
     <!-- Authentication method picker styles -->
-    <style name="FirebaseUI.AuthMethodPicker"/>
+    <style name="FirebaseUI.AuthMethodPicker" />
 
     <style name="FirebaseUI.AuthMethodPicker.Logo">
         <item name="android:layout_width">wrap_content</item>
@@ -210,12 +210,12 @@
     </style>
 
     <style name="FirebaseUI.CountrySpinner" parent="@style/Widget.AppCompat.Spinner.Underlined">
-        <item name = "android:layout_width">wrap_content</item>
-        <item name = "android:layout_height">wrap_content</item>
-        <item name = "android:layout_gravity">left</item>
-        <item name = "android:paddingBottom">16dp</item>
-        <item name = "android:paddingTop">16dp</item>
-        <item name = "android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
 
     </style>
 
@@ -235,6 +235,12 @@
         <item name="android:drawableLeft">@drawable/ic_twitter_bird_white_24dp</item>
         <item name="android:background">@drawable/idp_button_background_twitter</item>
         <item name="android:textColor">#FFFFFFFF</item>
+    </style>
+
+    <style name="FirebaseUI.Button.AccountChooser.GitHubButton">
+        <item name="android:drawableLeft">@drawable/ic_github_white_24dp</item>
+        <item name="android:background">@drawable/idp_button_background_github</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
 </resources>

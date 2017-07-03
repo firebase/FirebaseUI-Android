@@ -114,13 +114,6 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
         mIdpCallback = callback;
     }
 
-    public void disconnect() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-            mGoogleApiClient = null;
-        }
-    }
-
     private IdpResponse createIdpResponse(GoogleSignInAccount account) {
         return new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
                 .setToken(account.getIdToken())

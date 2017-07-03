@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.ui.phone;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -52,6 +53,8 @@ import java.util.Locale;
 public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnClickListener {
     public static final String TAG = "VerifyPhoneFragment";
 
+    private Context mAppContext;
+
     private CountryListSpinner countryListSpinner;
     private EditText mPhoneEditText;
     private TextView errorEditText;
@@ -71,6 +74,12 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
 
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mAppContext = context.getApplicationContext();
     }
 
     @Nullable
@@ -123,7 +132,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
             PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(phone);
             setPhoneNumber(phoneNumber);
             setCountryCode(phoneNumber);
-        } else if (mHelper.getFlowParams().enableHints) {
+        } else if (getFlowParams().enableHints) {
             // Try SmartLock phone autocomplete hint
             showPhoneAutoCompleteHint();
         }
@@ -142,7 +151,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
                     final String formattedPhone =
                             PhoneNumberUtils
                                     .formatPhoneNumberUsingCurrentCountry(unformattedPhone,
-                                                                          getContext());
+                                                                          mAppContext);
                     if (formattedPhone == null) {
                         Log.e(TAG, "Unable to normalize phone number from hint selector:"
                                 + unformattedPhone);
@@ -195,8 +204,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
 
     private void showPhoneAutoCompleteHint() {
         try {
-            mHelper.startIntentSenderForResult(getPhoneHintIntent().getIntentSender(),
-                                               RC_PHONE_HINT);
+            startIntentSenderForResult(getPhoneHintIntent().getIntentSender(), RC_PHONE_HINT);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }

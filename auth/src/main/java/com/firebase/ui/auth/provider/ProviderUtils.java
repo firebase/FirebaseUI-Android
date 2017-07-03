@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -48,6 +49,8 @@ public final class ProviderUtils {
                 return FacebookProvider.createAuthCredential(idpResponse);
             case TwitterAuthProvider.PROVIDER_ID:
                 return TwitterProvider.createAuthCredential(idpResponse);
+            case GithubAuthProvider.PROVIDER_ID:
+                return GitHubProvider.createAuthCredential(idpResponse);
             default:
                 return null;
         }
@@ -68,7 +71,7 @@ public final class ProviderUtils {
 
                         List<String> providers = task.getResult().getProviders();
                         return providers == null || providers.isEmpty()
-                                ? null : providers.get(0);
+                                ? null : providers.get(providers.size() - 1);
                     }
                 });
     }

@@ -10,6 +10,7 @@ import android.util.Pair;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.provider.GitHubProvider;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
@@ -20,6 +21,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -44,6 +46,7 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to
      * a Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
      */
+    @Nullable
     public static String providerIdToAccountType(@AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
             case GoogleAuthProvider.PROVIDER_ID:
@@ -52,6 +55,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
                 return IdentityProviders.FACEBOOK;
             case TwitterAuthProvider.PROVIDER_ID:
                 return IdentityProviders.TWITTER;
+            case GithubAuthProvider.PROVIDER_ID:
+                return GitHubProvider.IDENTITY;
             case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
                 return null;
@@ -63,6 +68,7 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         }
     }
 
+    @Nullable
     @AuthUI.SupportedProvider
     public static String accountTypeToProviderId(@NonNull String accountType) {
         switch (accountType) {
@@ -72,6 +78,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
                 return FacebookAuthProvider.PROVIDER_ID;
             case IdentityProviders.TWITTER:
                 return TwitterAuthProvider.PROVIDER_ID;
+            case GitHubProvider.IDENTITY:
+                return GithubAuthProvider.PROVIDER_ID;
             default:
                 return null;
         }
@@ -121,9 +129,9 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     public void onStart() {
         super.onStart();
         if (mActivityResultPair != null) {
-            mHelper.finish(mActivityResultPair.first, mActivityResultPair.second);
+            finish(mActivityResultPair.first, mActivityResultPair.second);
         } else if (mWasProgressDialogShowing) {
-            mHelper.showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
+            getDialogHolder().showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
             mWasProgressDialogShowing = false;
         }
     }
@@ -131,8 +139,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     @Override
     public void onStop() {
         super.onStop();
-        mWasProgressDialogShowing = mHelper.isProgressDialogShowing();
-        mHelper.dismissDialog();
+        mWasProgressDialogShowing = getDialogHolder().isProgressDialogShowing();
+        getDialogHolder().dismissDialog();
     }
 
     @Override
