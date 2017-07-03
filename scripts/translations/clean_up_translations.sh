@@ -11,8 +11,7 @@ function find_files {
 
 # Move locales that our system misconfigured
 chmod -R +wx auth/src/main/res/values-*
-rm -rf auth/src/main/res/values-iw && mv auth/src/main/res/values-{he,iw}
-rm -rf auth/src/main/res/values-in && mv auth/src/main/res/values-{id,in}
+rm -rf auth/src/main/res/values-{he,id}
 
 # Process each file
 find_files | while read file;

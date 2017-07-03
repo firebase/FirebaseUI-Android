@@ -1,0 +1,80 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">ui_flow</string>
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">טוען…</string>
+    <string name="sign_in_default" translation_description="Button text to sign in">כניסה</string>
+    <string name="general_error" translation_description="Toast text flashing general error">אירעה שגיאה.</string>
+    <string name="idp_name_google">Google</string>
+    <string name="idp_name_facebook">Facebook</string>
+    <string name="idp_name_twitter">Twitter</string>
+    <string name="provider_name_email">אימייל</string>
+    <string name="provider_name_phone">טלפון</string>
+    <string name="sign_in_with_google" translation_description="Sign in button text">כניסה באמצעות Google</string>
+    <string name="sign_in_with_facebook" translation_description="Sign in button text">כניסה באמצעות Facebook</string>
+    <string name="sign_in_with_twitter" translation_description="Sign in button text">כניסה באמצעות Twitter</string>
+    <string name="sign_in_with_email" translation_description="Sign in button text">כניסה באמצעות אימייל</string>
+    <string name="sign_in_with_phone" translation_description="Sign in button text">כניסה באמצעות הטלפון</string>
+    <string name="next_default" translation_description="Button text to continue">הבא‏</string>
+    <string name="email_hint" translation_description="Hint in email input field">אימייל</string>
+    <string name="phone_hint" translation_description="Hint for phone input field">מספר טלפון</string>
+    <string name="password_hint" translation_description="Hint for password input field">סיסמה</string>
+    <string name="required_field" translation_description="Inline error for required field">אי אפשר להשאיר את השדה הזה ריק.</string>
+    <string name="invalid_email_address" translation_description="Inline error for invalid email address">כתובת האימייל שגויה</string>
+    <string name="missing_email_address" translation_description="Inline error for empty email address in input field">כדי להמשיך, עליך להזין כתובת אימייל</string>
+    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">מחפש חשבונות קיימים...</string>
+    <string name="title_register_email" translation_description="Title for signup form">הרשמה</string>
+    <string name="name_hint" translation_description="Hint for last name input field">שם מלא</string>
+    <string name="button_text_save" translation_description="Button text to save input form">שמור</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">אנחנו רושמים אותך...</string>
+    <plurals name="error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך תו אחד (%1$d) לפחות שמכילה אותיות ומספרים</item>
+        <item quantity="two">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item>
+        <item quantity="many">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item>
+        <item quantity="other">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item>
+    </plurals>
+    <string name="email_account_creation_error" translation_description="Inline error for signup failure">לא הצלחנו להשלים את הרישום לחשבון באמצעות כתובת האימייל</string>
+    <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">כבר קיים חשבון המשויך לכתובת האימייל הזו.</string>
+    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">הקשה על %1$s תתפרש כהסכמה ל%2$s ול%3$s.</string>
+    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">הקשה על %1$s תתפרש כהסכמה ל%2$s.</string>
+    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">הקשה על %1$s תתפרש כהסכמה ל%2$s.</string>
+    <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">תנאים והגבלות</string>
+    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">מדיניות הפרטיות</string>
+    <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">כבר יש לך חשבון</string>
+    <string name="welcome_back_email_header" translation_description="Message for returning users">ברוכים השבים!</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">כבר השתמשת בכתובת %1$s.
+        כדי להמשיך, עליך להיכנס באמצעות %2$s.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">כבר השתמשת בכתובת %1$s.
+        כדי להיכנס. עליך להזין את הסיסמה לחשבון המשויך אליה.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">נכנס...</string>
+    <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">לא מצליח להיכנס?</string>
+    <string name="title_recover_password_activity" translation_description="Recover password screen title">שחזור הסיסמה</string>
+    <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">שלחנו לך אימייל</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">אנחנו יכולים לשלוח לכתובת הזו הוראות
+        לאיפוס הסיסמה.</string>
+    <string name="button_text_send" translation_description="Button text to send recovery email">שלח</string>
+    <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">כדי לשחזר את הסיסמה, עליך לפעול לפי ההוראות ששלחנו לכתובת %1$s.</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">מתבצעת שליחה...</string>
+    <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">אין חשבון המשויך לכתובת האימייל הזו</string>
+    <string name="accessibility_logo" translation_description="Content description for app logo">הלוגו של האפליקציה</string>
+    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">מחובר כ-%1$s</string>
+    <string name="verify_phone_number_title" translation_description="Phone number entry form title">הזן את מספר הטלפון שלך</string>
+    <string name="invalid_phone_number" translation_description="Inline error when phone number entered is invalid">מספר הטלפון שהזנת לא תקין</string>
+    <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">הזן את הקוד בן 6 הספרות ששלחנו אל</string>
+    <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">שולח קוד חדש בעוד %02d:0</string>
+    <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">אמת את מספר הטלפון</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">מאמת …</string>
+    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">מאחזר SMS...</string>
+    <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">הקוד שגוי. נסה שוב.</string>
+    <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">אישור</string>
+    <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">למספר הטלפון הזה כבר נשלחו יותר מדי קודים</string>
+    <string name="error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">אירעה בעיה באימות של מספר הטלפון</string>
+    <string name="error_session_expired" translation_description="Error message when SMS confirmation code has expired.">הקוד הזה כבר לא בתוקף</string>
+    <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">כניסה באמצעות מספר טלפון</string>
+    <string name="done" translation_description="Progress dialog success transition once sms is sent">סיום</string>
+    <string name="verified" translation_description="Progress dialog success transition when phone number was verified">אומת.</string>
+    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">הקוד נשלח.</string>
+    <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">שולח קוד חדש...</string>
+    <string name="resend_code" translation_description="Link text to resend verification sms">שלח קוד חדש</string>
+    <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">אמת את מספר הטלפון</string>
+    <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">המשך</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">הקשה על \'%1$s\' תגרום לשליחה של הודעת SMS. ייתכנו חיובים על ההודעה ועל נתונים.</string>
+</resources>
