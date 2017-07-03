@@ -110,7 +110,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     @Override
     protected void onStart() {
         super.onStart();
-        //Actvitiy can be restarted in any of the following states
+        // Activity can be restarted in any of the following states
         // 1) VERIFICATION_STARTED
         // 2) SMS_RETRIEVED
         // 3) INSTANT_VERIFIED
