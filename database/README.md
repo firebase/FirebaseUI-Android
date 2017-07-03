@@ -18,7 +18,7 @@ So say we have these chat messages in our Firebase database:
 We can represent a chat message with this Java class:
 
 ```java
-public static class Chat {
+public class Chat {
     private String mName;
     private String mMessage;
     private String mUid;
