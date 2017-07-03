@@ -217,29 +217,6 @@
             </RadioGroup>
 
             <TextView
-                android:id="@+id/facebook_scopes_label"
-                style="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/extra_facebook_scopes" />
-
-            <CheckBox
-                android:id="@+id/facebook_scope_friends"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="@string/friends" />
-
-            <CheckBox
-                android:id="@+id/facebook_scope_photos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="false"
-                android:text="@string/photos" />
-
-            <TextView
                 android:id="@+id/google_scopes_label"
                 style="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:layout_width="wrap_content"
@@ -261,6 +238,52 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:text="@string/youtube_data_scope" />
+
+            <TextView
+                android:id="@+id/facebook_scopes_label"
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/extra_facebook_scopes" />
+
+            <CheckBox
+                android:id="@+id/facebook_scope_friends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/facebook_scope_friends" />
+
+            <CheckBox
+                android:id="@+id/facebook_scope_photos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/facebook_scope_photos" />
+
+            <TextView
+                android:id="@+id/github_scopes_label"
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/extra_github_scopes" />
+
+            <CheckBox
+                android:id="@+id/github_scope_repo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/github_scope_repo" />
+
+            <CheckBox
+                android:id="@+id/github_scope_gist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/github_scope_gist" />
 
             <TextView
                 style="@style/Base.TextAppearance.AppCompat.Subhead"

@@ -122,6 +122,15 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.allow_new_email_accounts)
     CheckBox mAllowNewEmailAccounts;
 
+    @BindView(R.id.google_scopes_label)
+    TextView mGoogleScopesLabel;
+
+    @BindView(R.id.google_scope_drive_file)
+    CheckBox mGoogleScopeDriveFile;
+
+    @BindView(R.id.google_scope_youtube_data)
+    CheckBox mGoogleScopeYoutubeData;
+
     @BindView(R.id.facebook_scopes_label)
     TextView mFacebookScopesLabel;
 
@@ -131,14 +140,14 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.facebook_scope_photos)
     CheckBox mFacebookScopePhotos;
 
-    @BindView(R.id.google_scopes_label)
-    TextView mGoogleScopesLabel;
+    @BindView(R.id.github_scopes_label)
+    TextView mGitHubScopesLabel;
 
-    @BindView(R.id.google_scope_drive_file)
-    CheckBox mGoogleScopeDriveFile;
+    @BindView(R.id.github_scope_repo)
+    CheckBox mGitHubScopeRepo;
 
-    @BindView(R.id.google_scope_youtube_data)
-    CheckBox mGoogleScopeYoutubeData;
+    @BindView(R.id.github_scope_gist)
+    CheckBox mGitHubScopeGist;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -193,6 +202,15 @@ public class AuthUiActivity extends AppCompatActivity {
             mUseGitHubProvider.setChecked(false);
             mUseGitHubProvider.setEnabled(false);
             mUseGitHubProvider.setText(R.string.github_label_missing_config);
+            setGitHubScopesEnabled(false);
+        } else {
+            setGitHubScopesEnabled(mUseGoogleProvider.isChecked());
+            mUseGitHubProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    setGitHubScopesEnabled(checked);
+                }
+            });
         }
 
         if (!isGoogleConfigured() || !isFacebookConfigured() || !isTwitterConfigured() || !isGitHubConfigured()) {
@@ -287,6 +305,13 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @MainThread
+    private void setGitHubScopesEnabled(boolean enabled) {
+        mGitHubScopesLabel.setEnabled(enabled);
+        mGitHubScopeRepo.setEnabled(enabled);
+        mGitHubScopeGist.setEnabled(enabled);
+    }
+
+    @MainThread
     @StyleRes
     private int getSelectedTheme() {
         if (mUseDefaultTheme.isChecked()) {
@@ -338,7 +363,9 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         if (mUseGitHubProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.GITHUB_PROVIDER).build());
+            selectedProviders.add(new IdpConfig.Builder(AuthUI.GITHUB_PROVIDER)
+                    .setPermissions(getGitHubPermissions())
+                                          .build());
         }
 
         if (mUseEmailProvider.isChecked()) {
@@ -409,6 +436,18 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @MainThread
+    private List<String> getGooglePermissions() {
+        List<String> result = new ArrayList<>();
+        if (mGoogleScopeYoutubeData.isChecked()) {
+            result.add("https://www.googleapis.com/auth/youtube.readonly");
+        }
+        if (mGoogleScopeDriveFile.isChecked()) {
+            result.add(Scopes.DRIVE_FILE);
+        }
+        return result;
+    }
+
+    @MainThread
     private List<String> getFacebookPermissions() {
         List<String> result = new ArrayList<>();
         if (mFacebookScopeFriends.isChecked()) {
@@ -421,13 +460,13 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @MainThread
-    private List<String> getGooglePermissions() {
+    private List<String> getGitHubPermissions() {
         List<String> result = new ArrayList<>();
-        if (mGoogleScopeYoutubeData.isChecked()) {
-            result.add("https://www.googleapis.com/auth/youtube.readonly");
+        if (mGitHubScopeRepo.isChecked()) {
+            result.add("repo");
         }
-        if (mGoogleScopeDriveFile.isChecked()) {
-            result.add(Scopes.DRIVE_FILE);
+        if (mGitHubScopeGist.isChecked()) {
+            result.add("gist");
         }
         return result;
     }

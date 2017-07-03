@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
@@ -22,6 +23,8 @@ import com.google.firebase.auth.GithubAuthProvider;
 import com.google.gson.JsonObject;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,10 +58,12 @@ public class GitHubProvider implements IdpProvider, Callback<JsonObject> {
             .create(GitHubApi.class);
 
     private static final String KEY_ACCESS_TOKEN = "access_token";
+    private static final String EMAIL = "user:email";
 
     private static GitHubRedirectReceiver sReceiver;
 
     private final Context mContext;
+    private final AuthUI.IdpConfig mConfig;
     private IdpCallback mCallback;
 
     public static AuthCredential createAuthCredential(IdpResponse response) {
@@ -68,8 +73,9 @@ public class GitHubProvider implements IdpProvider, Callback<JsonObject> {
         return GithubAuthProvider.getCredential(response.getIdpToken());
     }
 
-    public GitHubProvider(Context context) {
+    public GitHubProvider(Context context, AuthUI.IdpConfig config) {
         mContext = context.getApplicationContext();
+        mConfig = config;
 
         if (sReceiver != null) handleRedirectResult(this, sReceiver.getStoredResult());
     }
@@ -129,13 +135,18 @@ public class GitHubProvider implements IdpProvider, Callback<JsonObject> {
                 .setToolbarColor(ContextCompat.getColor(mContext, R.color.colorPrimary))
                 .build();
         intent.launchUrl(
-                mContext,
+                activity,
                 Uri.parse(GITHUB_OAUTH_BASE + AUTHORIZE_QUERY + activity.getString(R.string.github_client_id)
                                   + SCOPE_QUERY + getScopeList()));
     }
 
     private String getScopeList() {
-        return "user:email";
+        List<String> scopes = new ArrayList<>(mConfig.getScopes());
+        if (!scopes.contains(EMAIL)) {
+            scopes.add(EMAIL);
+        }
+
+        return TextUtils.join(",", scopes);
     }
 
     @Override
@@ -148,7 +159,7 @@ public class GitHubProvider implements IdpProvider, Callback<JsonObject> {
         if (response.isSuccessful()) {
             final String token = response.body().get(KEY_ACCESS_TOKEN).getAsString();
 
-            if (response.body().get("scope").getAsString().contains("user:email")) {
+            if (response.body().get("scope").getAsString().contains(EMAIL)) {
                 RETROFIT_GITHUB.getUser("token " + token).enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

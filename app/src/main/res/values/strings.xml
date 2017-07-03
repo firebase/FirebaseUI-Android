@@ -58,8 +58,11 @@
     <string name="drive_file_scope">Drive File</string>
     <string name="youtube_data_scope">Youtube data</string>
     <string name="extra_facebook_scopes">Example extra Facebook scopes</string>
-    <string name="friends">Friends</string>
-    <string name="photos">Photos</string>
+    <string name="facebook_scope_friends">Friends</string>
+    <string name="facebook_scope_photos">Photos</string>
+    <string name="extra_github_scopes">Example extra GitHub scopes</string>
+    <string name="github_scope_repo">Repo</string>
+    <string name="github_scope_gist">Gist</string>
     <string name="idp_token">IDP Token</string>
     <string name="idp_secret">IDP Secret</string>
     <string name="unknown_error">An unknown error occurred</string>

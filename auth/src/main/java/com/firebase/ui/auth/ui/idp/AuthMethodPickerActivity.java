@@ -109,7 +109,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                     mProviders.add(new PhoneProvider(this, getFlowParams()));
                     break;
                 case AuthUI.GITHUB_PROVIDER:
-                    mProviders.add(new GitHubProvider(this));
+                    mProviders.add(new GitHubProvider(this, idpConfig));
                     break;
                 default:
                     Log.e(TAG, "Encountered unknown provider parcel with type: "
