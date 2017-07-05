@@ -127,8 +127,8 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         PendingIntent resolution =
                 PlayServicesHelper.getGoogleApiAvailability()
                         .getErrorResolutionPendingIntent(getContext(),
-                                                         connectionResult.getErrorCode(),
-                                                         RC_UPDATE_SERVICE);
+                                connectionResult.getErrorCode(),
+                                RC_UPDATE_SERVICE);
         try {
             startIntentSenderForResult(resolution.getIntentSender(), RC_UPDATE_SERVICE);
         } catch (IntentSender.SendIntentException e) {

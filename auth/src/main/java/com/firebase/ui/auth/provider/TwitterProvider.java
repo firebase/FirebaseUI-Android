@@ -102,7 +102,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     @Override
     public void success(Result<TwitterSession> result) {
         mTwitterAuthClient.requestEmail(result.data,
-                                        new EmailCallback(result.data, mCallbackObject));
+                new EmailCallback(result.data, mCallbackObject));
     }
 
     @Override

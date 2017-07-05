@@ -134,7 +134,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     private void setTimer(long millisUntilFinished) {
         mCountDownTextView.setText(String.format(getString(R.string.resend_code_in),
-                                                 timeRoundedToSeconds(millisUntilFinished)));
+                timeRoundedToSeconds(millisUntilFinished)));
     }
 
     private void setupResendConfirmationCodeTextView(final String phoneNumber) {
@@ -145,7 +145,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
                 mResendCodeTextView.setVisibility(View.GONE);
                 mCountDownTextView.setVisibility(View.VISIBLE);
                 mCountDownTextView.setText(String.format(getString(R.string.resend_code_in),
-                                                         RESEND_WAIT_MILLIS / 1000));
+                        RESEND_WAIT_MILLIS / 1000));
                 mCountdownTimer.renew();
             }
         });
@@ -157,7 +157,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
         //create a countdown
         mCountdownTimer = createCountDownTimer(mCountDownTextView, mResendCodeTextView, this,
-                                               startTimeMillis);
+                startTimeMillis);
 
         //start the countdown
         startTimer();
@@ -208,7 +208,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     private BucketedTextChangeListener createBucketedTextChangeListener() {
         return new BucketedTextChangeListener(this.mConfirmationCodeEditText, 6, "-",
-                                              createBucketOnEditCallback(mSubmitConfirmationButton));
+                createBucketOnEditCallback(mSubmitConfirmationButton));
     }
 
     private void startTimer() {
@@ -229,7 +229,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    CustomCountDownTimer getmCountdownTimer() {
+    CustomCountDownTimer getCountdownTimer() {
         return mCountdownTimer;
     }
 

@@ -32,7 +32,7 @@ public class RecoveryEmailSentDialog extends DialogFragment {
         return new AlertDialog.Builder(getContext())
                 .setTitle(R.string.title_confirm_recover_password)
                 .setMessage(getString(R.string.confirm_recovery_body,
-                                      getArguments().getString(ExtraConstants.EXTRA_EMAIL)))
+                        getArguments().getString(ExtraConstants.EXTRA_EMAIL)))
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface anInterface) {

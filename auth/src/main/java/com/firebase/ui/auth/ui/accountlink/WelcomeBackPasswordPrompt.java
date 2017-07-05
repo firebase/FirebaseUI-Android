@@ -101,9 +101,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
-                                       emailStart,
-                                       emailStart + mEmail.length(),
-                                       Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                emailStart,
+                emailStart + mEmail.length(),
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         TextView bodyTextView = ((TextView) findViewById(R.id.welcome_back_password_body));
         bodyTextView.setText(spannableStringBuilder);

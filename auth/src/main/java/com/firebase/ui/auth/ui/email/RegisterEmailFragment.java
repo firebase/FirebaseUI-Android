@@ -174,10 +174,10 @@ public class RegisterEmailFragment extends FragmentBase implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(ExtraConstants.EXTRA_USER,
-                               new User.Builder(mEmailEditText.getText().toString())
-                                       .setName(mNameEditText.getText().toString())
-                                       .setPhotoUri(mUser.getPhotoUri())
-                                       .build());
+                new User.Builder(mEmailEditText.getText().toString())
+                        .setName(mNameEditText.getText().toString())
+                        .setPhotoUri(mUser.getPhotoUri())
+                        .build());
         super.onSaveInstanceState(outState);
     }
 
@@ -248,7 +248,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                                         mActivity.saveCredentialsOrFinish(
                                                 mSaveSmartLock, user, password,
                                                 new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID,
-                                                                        email).build());
+                                                        email).build());
                                     }
                                 });
                     }
@@ -274,8 +274,8 @@ public class RegisterEmailFragment extends FragmentBase implements
                                         @Override
                                         public void onSuccess(String provider) {
                                             Toast.makeText(getContext(),
-                                                           R.string.error_user_collision,
-                                                           Toast.LENGTH_LONG)
+                                                    R.string.error_user_collision,
+                                                    Toast.LENGTH_LONG)
                                                     .show();
 
                                             if (provider == null) {

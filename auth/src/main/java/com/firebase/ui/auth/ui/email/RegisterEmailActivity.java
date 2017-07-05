@@ -96,8 +96,8 @@ public class RegisterEmailActivity extends AppCompatBase implements
                 WelcomeBackPasswordPrompt.createIntent(
                         this,
                         getFlowParams(),
-                        new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID,
-                                                user.getEmail()).build()),
+                        new IdpResponse.Builder(
+                                EmailAuthProvider.PROVIDER_ID, user.getEmail()).build()),
                 RC_SIGN_IN);
 
         setSlideAnimation();
