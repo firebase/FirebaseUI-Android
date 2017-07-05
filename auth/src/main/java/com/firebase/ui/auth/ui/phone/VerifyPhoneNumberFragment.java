@@ -244,7 +244,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     private void setCountryCode(PhoneNumber phoneNumber) {
         if (PhoneNumber.isCountryValid(phoneNumber)) {
             countryListSpinner.setSelectedForCountry(new Locale("", phoneNumber.getCountryIso()),
-                                                     phoneNumber.getCountryCode());
+                    phoneNumber.getCountryCode());
         }
     }
 

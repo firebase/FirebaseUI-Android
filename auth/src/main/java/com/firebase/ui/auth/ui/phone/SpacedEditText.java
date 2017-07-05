@@ -92,7 +92,7 @@ public final class SpacedEditText extends AppCompatEditText {
             builder.append(" ");
             lastSpaceIndex += 2;
             builder.setSpan(new ScaleXSpan(proportion), lastSpaceIndex, lastSpaceIndex + 1,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         //Append the last character
