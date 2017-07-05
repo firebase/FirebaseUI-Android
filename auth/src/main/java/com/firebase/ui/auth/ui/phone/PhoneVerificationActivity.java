@@ -325,41 +325,46 @@ public class PhoneVerificationActivity extends AppCompatBase {
                             }
                         }, SHORT_DELAY_MILLIS);
                     }
-                }).addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                dismissLoadingDialog();
-                //incorrect confirmation code
-                if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    FirebaseAuthInvalidCredentialsException firebaseAuthInvalidCredentialsException
-                            = (FirebaseAuthInvalidCredentialsException) e;
-                    switch (firebaseAuthInvalidCredentialsException.getErrorCode()) {
-                        case ERROR_INVALID_VERIFICATION:
-                            showAlertDialog(getString(R.string.incorrect_code_dialog_body), new
-                                    DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            getSubmitConfirmationCodeFragment().setConfirmationCode("");
-                                        }
-                                    });
-                            break;
-                        case ERROR_SESSION_EXPIRED:
-                            showAlertDialog(getString(R.string.error_session_expired), new
-                                    DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            getSubmitConfirmationCodeFragment().setConfirmationCode("");
-                                        }
-                                    });
-                            break;
-                        default:
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        dismissLoadingDialog();
+                        //incorrect confirmation code
+                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                            FirebaseAuthInvalidCredentialsException firebaseAuthInvalidCredentialsException
+                                    = (FirebaseAuthInvalidCredentialsException) e;
+                            switch (firebaseAuthInvalidCredentialsException.getErrorCode()) {
+                                case ERROR_INVALID_VERIFICATION:
+                                    showAlertDialog(
+                                            getString(R.string.incorrect_code_dialog_body),
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    getSubmitConfirmationCodeFragment()
+                                                            .setConfirmationCode("");
+                                                }
+                                            });
+                                    break;
+                                case ERROR_SESSION_EXPIRED:
+                                    showAlertDialog(
+                                            getString(R.string.error_session_expired),
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    getSubmitConfirmationCodeFragment()
+                                                            .setConfirmationCode("");
+                                                }
+                                            });
+                                    break;
+                                default:
+                                    showAlertDialog(e.getLocalizedMessage(), null);
+                            }
+                        } else {
                             showAlertDialog(e.getLocalizedMessage(), null);
+                        }
                     }
-                } else {
-                    showAlertDialog(e.getLocalizedMessage(), null);
-                }
-            }
-        });
+                });
     }
 
     private void completeLoadingDialog(String content) {
