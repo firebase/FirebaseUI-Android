@@ -148,9 +148,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
                     // To accommodate either case, we normalize to e164 with best effort
                     final String unformattedPhone = cred.getId();
                     final String formattedPhone =
-                            PhoneNumberUtils
-                                    .formatPhoneNumberUsingCurrentCountry(unformattedPhone,
-                                                                          mAppContext);
+                            PhoneNumberUtils.formatPhoneNumberUsingCurrentCountry(unformattedPhone,
+                                    mAppContext);
                     if (formattedPhone == null) {
                         Log.e(TAG, "Unable to normalize phone number from hint selector:"
                                 + unformattedPhone);

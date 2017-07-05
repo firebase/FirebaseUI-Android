@@ -106,10 +106,10 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
             AuthInstances.getCredentialsApi()
                     .request(mGoogleApiClient,
-                             new CredentialRequest.Builder()
-                                     .setPasswordLoginSupported(true)
-                                     .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
-                                     .build())
+                            new CredentialRequest.Builder()
+                                    .setPasswordLoginSupported(true)
+                                    .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
+                                    .build())
                     .setResultCallback(this);
         } else {
             startAuthMethodChoice();

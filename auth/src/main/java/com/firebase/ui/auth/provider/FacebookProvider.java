@@ -48,8 +48,6 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private static final String TAG = "FacebookProvider";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
-    private static final String ERROR = "err";
-    private static final String ERROR_MSG = "err_msg";
 
     private static CallbackManager sCallbackManager;
 
@@ -77,12 +75,6 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     @Override
     public String getName(Context context) {
         return context.getString(R.string.idp_name_facebook);
-    }
-
-    @Override
-    @AuthUI.SupportedProvider
-    public String getProviderId() {
-        return FacebookAuthProvider.PROVIDER_ID;
     }
 
     @Override
@@ -133,8 +125,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         FacebookRequestError requestError = response.getError();
                         if (requestError != null) {
-                            Log.e(TAG,
-                                  "Received Facebook error: " + requestError.getErrorMessage());
+                            Log.e(TAG, "Received Facebook error: " + requestError.getErrorMessage());
                             onFailure();
                             return;
                         }

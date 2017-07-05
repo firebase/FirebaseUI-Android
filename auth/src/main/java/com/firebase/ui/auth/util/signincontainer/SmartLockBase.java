@@ -158,8 +158,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(getContext(),
-                       com.firebase.ui.auth.R.string.general_error,
-                       Toast.LENGTH_SHORT).show();
+                com.firebase.ui.auth.R.string.general_error,
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override

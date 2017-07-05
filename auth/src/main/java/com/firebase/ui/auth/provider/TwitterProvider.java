@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.util.Log;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
@@ -72,12 +71,6 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     }
 
     @Override
-    @AuthUI.SupportedProvider
-    public String getProviderId() {
-        return TwitterAuthProvider.PROVIDER_ID;
-    }
-
-    @Override
     @LayoutRes
     public int getButtonLayout() {
         return R.layout.idp_button_twitter;
@@ -101,7 +94,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     @Override
     public void success(Result<TwitterSession> result) {
         mTwitterAuthClient.requestEmail(result.data,
-                                        new EmailCallback(result.data, mCallbackObject));
+                new EmailCallback(result.data, mCallbackObject));
     }
 
     @Override

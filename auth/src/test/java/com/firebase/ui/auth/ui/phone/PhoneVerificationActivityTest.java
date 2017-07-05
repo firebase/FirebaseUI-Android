@@ -248,7 +248,7 @@ public class PhoneVerificationActivityTest {
         //assert resend visible after timeout
         SubmitConfirmationCodeFragment fragment = (SubmitConfirmationCodeFragment) mActivity
                 .getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
-        fragment.getmCountdownTimer().onFinish();
+        fragment.getCountdownTimer().onFinish();
         assertEquals(View.VISIBLE, r.getVisibility());
         r.performClick();
 

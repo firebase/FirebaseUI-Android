@@ -25,7 +25,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -45,7 +44,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "GoogleProvider";
     private static final int RC_SIGN_IN = 20;
-    private static final String ERROR_KEY = "error";
 
     private GoogleApiClient mGoogleApiClient;
     private FragmentActivity mActivity;
@@ -94,12 +92,6 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     @Override
     public String getName(Context context) {
         return context.getString(R.string.idp_name_google);
-    }
-
-    @Override
-    @AuthUI.SupportedProvider
-    public String getProviderId() {
-        return GoogleAuthProvider.PROVIDER_ID;
     }
 
     @Override

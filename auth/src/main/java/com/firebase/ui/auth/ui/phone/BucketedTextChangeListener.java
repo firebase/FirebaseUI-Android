@@ -86,7 +86,7 @@ final class BucketedTextChangeListener implements TextWatcher {
         final String enteredContent = numericContents.substring(0, enteredContentLength);
 
         // 3) Reset the text to be the content + required hyphens. The SET automatically inserts
-        // spaces requires for aesthetics. This requires removing and reseting the listener to
+        // spaces requires for aesthetics. This requires removing and resetting the listener to
         // avoid recursion.
         editText.removeTextChangedListener(this);
         editText.setText(enteredContent + postFixes[expectedContentLength - enteredContentLength]);
