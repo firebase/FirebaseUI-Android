@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
-import com.google.firebase.auth.EmailAuthProvider;
 
 public class EmailProvider implements Provider {
     private static final int RC_EMAIL_FLOW = 2;
@@ -26,12 +24,6 @@ public class EmailProvider implements Provider {
     @Override
     public String getName(Context context) {
         return context.getString(R.string.provider_name_email);
-    }
-
-    @Override
-    @AuthUI.SupportedProvider
-    public String getProviderId() {
-        return EmailAuthProvider.PROVIDER_ID;
     }
 
     @Override
