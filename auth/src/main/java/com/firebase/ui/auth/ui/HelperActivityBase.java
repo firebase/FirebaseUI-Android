@@ -89,5 +89,5 @@ public class HelperActivityBase extends AppCompatActivity {
             saveSmartLock.saveCredentialsOrFinish(firebaseUser, password, response);
         }
     }
-}
 
+}
