@@ -130,6 +130,7 @@ public class CredentialSignInHandlerTest {
 
         AuthHelper mockAuthHelper = mock(AuthHelper.class);
         when(mockActivity.getAuthHelper()).thenReturn(mockAuthHelper);
+        AuthHelperShadow.getFirebaseAuth(); // Force static initialization
         when(mockAuthHelper.getFirebaseAuth()).thenReturn(AuthHelperShadow.getFirebaseAuth());
 
         ProgressDialogHolder mockHolder = mock(ProgressDialogHolder.class);
@@ -183,6 +184,7 @@ public class CredentialSignInHandlerTest {
 
         AuthHelper mockAuthHelper = mock(AuthHelper.class);
         when(mockActivity.getAuthHelper()).thenReturn(mockAuthHelper);
+        AuthHelperShadow.getFirebaseAuth(); // Force static initialization
         when(mockAuthHelper.getFirebaseAuth()).thenReturn(AuthHelperShadow.getFirebaseAuth());
 
         ProgressDialogHolder mockHolder = mock(ProgressDialogHolder.class);
