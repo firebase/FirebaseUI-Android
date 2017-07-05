@@ -3,63 +3,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.firebase.ui.auth">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
+            android:value="@integer/google_play_services_version" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="@string/twitter_consumer_secret"/>
+            android:value="@string/twitter_consumer_secret" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_application_id"/>
+            android:value="@string/facebook_application_id" />
 
         <meta-data
             android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
-            android:value="${enableFbLogging}"/>
+            android:value="${enableFbLogging}" />
 
         <activity
             android:name=".KickoffActivity"
             android:label=""
             android:exported="false"
-            android:theme="@style/FirebaseUI.Transparent"/>
+            android:theme="@style/FirebaseUI.Transparent" />
 
         <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/title_recover_password_activity"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".ui.email.RegisterEmailActivity"
             android:label="@string/sign_in_default"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".ui.phone.PhoneVerificationActivity"
             android:label="@string/sign_in_with_phone_number"
-            android:windowSoftInputMode="stateAlwaysVisible"
-            android:exported="false"/>
+            android:exported="false"
+            android:windowSoftInputMode="stateAlwaysVisible" />
 
         <activity
             android:name=".ui.accountlink.WelcomeBackIdpPrompt"
             android:label="@string/title_welcome_back_idp_prompt"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".ui.accountlink.WelcomeBackPasswordPrompt"
             android:label="@string/title_welcome_back_password_prompt"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".ui.idp.AuthMethodPickerActivity"
             android:label="@string/default_toolbar_title"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -72,12 +72,12 @@
             android:exported="true"
             tools:ignore="MissingRegistered">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="@string/facebook_login_protocol_scheme"/>
+                <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>
 

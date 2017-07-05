@@ -63,6 +63,10 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         signOut();
     }
 
+    private static void signOut() throws IllegalStateException {
+        TwitterCore.getInstance().getSessionManager().clearActiveSession();
+    }
+
     @Override
     public String getName(Context context) {
         return context.getString(R.string.idp_name_twitter);
@@ -98,7 +102,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     @Override
     public void success(Result<TwitterSession> result) {
         mTwitterAuthClient.requestEmail(result.data,
-                                        new EmailCallback(result.data, mCallbackObject));
+                new EmailCallback(result.data, mCallbackObject));
     }
 
     @Override
@@ -141,9 +145,5 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
                     .setSecret(mTwitterSession.getAuthToken().secret)
                     .build();
         }
-    }
-
-    private static void signOut() throws IllegalStateException {
-        TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 }

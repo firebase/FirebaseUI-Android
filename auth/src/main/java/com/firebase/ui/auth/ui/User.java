@@ -16,10 +16,11 @@ public class User implements Parcelable {
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override
         public User createFromParcel(Parcel in) {
-            return new User(in.readString(),
-                            in.readString(),
-                            in.readString(),
-                            in.<Uri>readParcelable(Uri.class.getClassLoader()));
+            return new User(
+                    in.readString(),
+                    in.readString(),
+                    in.readString(),
+                    in.<Uri>readParcelable(Uri.class.getClassLoader()));
         }
 
         @Override

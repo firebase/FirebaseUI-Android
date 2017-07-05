@@ -53,12 +53,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Attempts to acquire a credential from Smart Lock for Passwords to sign in
- * an existing account. If this succeeds, an attempt is made to sign the user in
- * with this credential. If it does not, the
- * {@link AuthMethodPickerActivity authentication method picker activity}
- * is started, unless only email is supported, in which case the
- * {@link RegisterEmailActivity} is started.
+ * Attempts to acquire a credential from Smart Lock for Passwords to sign in an existing account. If
+ * this succeeds, an attempt is made to sign the user in with this credential. If it does not, the
+ * {@link AuthMethodPickerActivity authentication method picker activity} is started, unless only
+ * email is supported, in which case the {@link RegisterEmailActivity} is started.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
@@ -111,10 +109,10 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
             AuthInstances.getCredentialsApi()
                     .request(mGoogleApiClient,
-                             new CredentialRequest.Builder()
-                                     .setPasswordLoginSupported(true)
-                                     .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
-                                     .build())
+                            new CredentialRequest.Builder()
+                                    .setPasswordLoginSupported(true)
+                                    .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
+                                    .build())
                     .setResultCallback(this);
         } else {
             startAuthMethodChoice();

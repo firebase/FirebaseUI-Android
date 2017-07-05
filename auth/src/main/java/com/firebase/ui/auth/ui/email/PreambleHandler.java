@@ -80,10 +80,8 @@ public class PreambleHandler {
     }
 
     /**
-     * 0 means we have both a TOS and a PP
-     * <p>1 means we only have a TOS
-     * <p>2 means we only have a PP
-     * <p>-1 means we have neither
+     * 0 means we have both a TOS and a PP <p>1 means we only have a TOS <p>2 means we only have a
+     * PP <p>-1 means we have neither
      */
     private int getPreambleType() {
         int preambleType;

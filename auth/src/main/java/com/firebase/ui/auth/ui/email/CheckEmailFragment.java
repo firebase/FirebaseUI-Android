@@ -39,8 +39,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
- * Fragment that shows a form with an email field and checks for existing accounts with that
- * email.
+ * Fragment that shows a form with an email field and checks for existing accounts with that email.
  * <p>
  * Host Activities should implement {@link CheckEmailListener}.
  */
@@ -201,9 +200,9 @@ public class CheckEmailFragment extends FragmentBase implements
                     public void onSuccess(String provider) {
                         if (provider == null) {
                             mListener.onNewUser(new User.Builder(email)
-                                                        .setName(finalName)
-                                                        .setPhotoUri(finalPhotoUri)
-                                                        .build());
+                                    .setName(finalName)
+                                    .setPhotoUri(finalPhotoUri)
+                                    .build());
                         } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
                             mListener.onExistingEmailUser(new User.Builder(email).build());
                         } else {
@@ -234,19 +233,18 @@ public class CheckEmailFragment extends FragmentBase implements
         GoogleApiClient client = new GoogleApiClient.Builder(getContext())
                 .addApi(Auth.CREDENTIALS_API)
                 .enableAutoManage(getActivity(), GoogleApiHelper.getSafeAutoManageId(),
-                                  new GoogleApiClient.OnConnectionFailedListener() {
-                                      @Override
-                                      public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                                          Log.e(TAG,
-                                                "Client connection failed: " + connectionResult.getErrorMessage());
-                                      }
-                                  })
+                        new GoogleApiClient.OnConnectionFailedListener() {
+                            @Override
+                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                                Log.e(TAG, "Client connection failed: " + connectionResult.getErrorMessage());
+                            }
+                        })
                 .build();
 
         HintRequest hintRequest = new HintRequest.Builder()
                 .setHintPickerConfig(new CredentialPickerConfig.Builder()
-                                             .setShowCancelButton(true)
-                                             .build())
+                        .setShowCancelButton(true)
+                        .build())
                 .setEmailAddressIdentifierSupported(true)
                 .build();
 

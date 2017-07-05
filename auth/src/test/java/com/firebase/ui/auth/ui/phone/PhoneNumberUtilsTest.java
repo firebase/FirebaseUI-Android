@@ -26,19 +26,19 @@ import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Locale;
 
-import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.*;
+import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.formatPhoneNumber;
+import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.getCountryCode;
+import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.getCurrentCountryInfo;
+import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.getPhoneNumber;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.RAW_PHONE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(CustomRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
@@ -53,8 +53,7 @@ public class PhoneNumberUtilsTest {
 
     @Test
     public void testGetPhoneNumber_withLongestCountryCode() throws Exception {
-        final PhoneNumber phoneNumber = getPhoneNumber(PhoneTestConstants
-                .YE_RAW_PHONE);
+        final PhoneNumber phoneNumber = getPhoneNumber(PhoneTestConstants.YE_RAW_PHONE);
         assertEquals(PhoneTestConstants.PHONE_NO_COUNTRY_CODE, phoneNumber.getPhoneNumber());
         assertEquals(PhoneTestConstants.YE_COUNTRY_CODE, phoneNumber.getCountryCode());
         assertEquals(PhoneTestConstants.YE_ISO2, phoneNumber.getCountryIso());
@@ -79,7 +78,7 @@ public class PhoneNumberUtilsTest {
 
     @Test
     public void testGetCountryCode() throws Exception {
-        assertEquals(new Integer(86), getCountryCode(Locale.CHINA.getCountry()));
+        assertEquals(Integer.valueOf(86), getCountryCode(Locale.CHINA.getCountry()));
         assertEquals(null, getCountryCode(null));
         assertEquals(null, getCountryCode(new Locale("", "DJJZ").getCountry()));
     }
@@ -111,9 +110,8 @@ public class PhoneNumberUtilsTest {
         assertNull(formatPhoneNumber("999474735", indiaCountryInfo));
 
         // incorrect country with unformattednumber
-        assertNull(validPhoneNumber, formatPhoneNumber("919994947354",
-                                                         new CountryInfo(
-                                                                 new Locale("", "US"), 1)));
+        assertNull(validPhoneNumber, formatPhoneNumber(
+                "919994947354", new CountryInfo(new Locale("", "US"), 1)));
         //incorrect country, incorrect phone number
         assertNull(formatPhoneNumber("+914349873457", new CountryInfo(
                 new Locale("", "US"), 1)));
@@ -165,8 +163,8 @@ public class PhoneNumberUtilsTest {
     public void testGetCurrentCountryInfo_noTelephonyReturnsDefaultLocale() {
         Context context = mock(Context.class);
         assertEquals(new CountryInfo(
-                Locale.getDefault(),
-                PhoneNumberUtils.getCountryCode(Locale.getDefault().getCountry())),
-                getCurrentCountryInfo(context));
+                             Locale.getDefault(),
+                             PhoneNumberUtils.getCountryCode(Locale.getDefault().getCountry())),
+                     getCurrentCountryInfo(context));
     }
 }

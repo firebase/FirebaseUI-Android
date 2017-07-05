@@ -27,8 +27,8 @@ public final class Preconditions {
     }
 
     /**
-     * Ensures that the provided value is not null, and throws a {@link NullPointerException}
-     * if it is null, with a message constructed from the provided error template and arguments.
+     * Ensures that the provided value is not null, and throws a {@link NullPointerException} if it
+     * is null, with a message constructed from the provided error template and arguments.
      */
     public static <T> T checkNotNull(
             T val,
@@ -41,9 +41,9 @@ public final class Preconditions {
     }
 
     /**
-     * Ensures that the provided identifier matches a known style resource, and throws
-     * an {@link IllegalArgumentException} if the resource cannot be found, or is not
-     * a style resource, with a message constructed from the provided error template and arguments.
+     * Ensures that the provided identifier matches a known style resource, and throws an {@link
+     * IllegalArgumentException} if the resource cannot be found, or is not a style resource, with a
+     * message constructed from the provided error template and arguments.
      */
     @StyleRes
     public static int checkValidStyle(

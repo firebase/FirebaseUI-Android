@@ -133,8 +133,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         FacebookRequestError requestError = response.getError();
                         if (requestError != null) {
-                            Log.e(TAG,
-                                  "Received Facebook error: " + requestError.getErrorMessage());
+                            Log.e(TAG, "Received Facebook error: " + requestError.getErrorMessage());
                             onFailure(new Bundle());
                             return;
                         }

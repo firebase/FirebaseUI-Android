@@ -47,30 +47,26 @@ final class PhoneNumberUtils {
     private static final Map<String, Integer> CountryCodeByIsoMap;
 
     static {
-        CountryCodeToRegionCodeMap = Collections.unmodifiableMap(createCountryCodeToRegionCodeMap
-                ());
+        CountryCodeToRegionCodeMap = Collections.unmodifiableMap(createCountryCodeToRegionCodeMap());
         CountryCodeByIsoMap = Collections.unmodifiableMap(createCountryCodeByIsoMap());
     }
 
     /**
-     * This method may be used to force initialize the static members in the class.
-     * It is recommended to do this in the background since the HashMaps created above
-     * may be time consuming operations on some devices.
+     * This method may be used to force initialize the static members in the class. It is
+     * recommended to do this in the background since the HashMaps created above may be time
+     * consuming operations on some devices.
      */
     static void load() {
     }
 
     /**
-     * This method works as follow:
-     * <ol><li>When the android version is LOLLIPOP or greater, the reliable
-     * {{@link android.telephony.PhoneNumberUtils#formatNumberToE164}} is used to format.</li>
-     * <li>For lower versions, we construct a value with the input phone number stripped of
-     * non numeric characters and prefix it with a "+" and country code</li>
-     * </ol>
-
+     * This method works as follow: <ol><li>When the android version is LOLLIPOP or greater, the
+     * reliable {{@link android.telephony.PhoneNumberUtils#formatNumberToE164}} is used to
+     * format.</li> <li>For lower versions, we construct a value with the input phone number
+     * stripped of non numeric characters and prefix it with a "+" and country code</li> </ol>
+     *
      * @param phoneNumber that may or may not itself have country code
      * @param countryInfo must have locale with ISO 3166 2-letter code for country
-     * @return
      */
     @Nullable
     static String formatPhoneNumber(@NonNull String phoneNumber, @NonNull CountryInfo countryInfo) {
@@ -87,10 +83,10 @@ final class PhoneNumberUtils {
 
 
     /**
-     * This method uses the country returned by  {@link #getCurrentCountryInfo(Context)} to
-     * format the phone number. Internall invokes {@link #formatPhoneNumber(String, CountryInfo)}
+     * This method uses the country returned by  {@link #getCurrentCountryInfo(Context)} to format
+     * the phone number. Internall invokes {@link #formatPhoneNumber(String, CountryInfo)}
+     *
      * @param phoneNumber that may or may not itself have country code
-     * @return
      */
 
     @Nullable
@@ -118,10 +114,10 @@ final class PhoneNumberUtils {
     }
 
     /**
-     * This method should not be called on UI thread. Potentially creates a country code by iso
-     * map which can take long in some devices
-     * @param providedPhoneNumber works best when formatted as e164
+     * This method should not be called on UI thread. Potentially creates a country code by iso map
+     * which can take long in some devices
      *
+     * @param providedPhoneNumber works best when formatted as e164
      * @return an instance of the PhoneNumber using the SIM information
      */
 

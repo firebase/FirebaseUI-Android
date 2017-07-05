@@ -52,6 +52,7 @@ import java.util.Locale;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnClickListener {
     public static final String TAG = "VerifyPhoneFragment";
+    private static final int RC_PHONE_HINT = 22;
 
     private Context mAppContext;
 
@@ -61,8 +62,6 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     private Button sendCodeButton;
     private PhoneVerificationActivity mVerifier;
     private TextView mSmsTermsText;
-
-    private static final int RC_PHONE_HINT = 22;
 
     public static VerifyPhoneNumberFragment newInstance(FlowParameters flowParameters,
                                                         String phone) {
@@ -149,9 +148,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
                     // To accommodate either case, we normalize to e164 with best effort
                     final String unformattedPhone = cred.getId();
                     final String formattedPhone =
-                            PhoneNumberUtils
-                                    .formatPhoneNumberUsingCurrentCountry(unformattedPhone,
-                                                                          mAppContext);
+                            PhoneNumberUtils.formatPhoneNumberUsingCurrentCountry(unformattedPhone,
+                                    mAppContext);
                     if (formattedPhone == null) {
                         Log.e(TAG, "Unable to normalize phone number from hint selector:"
                                 + unformattedPhone);
@@ -211,20 +209,27 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     }
 
     private PendingIntent getPhoneHintIntent() {
-        GoogleApiClient client = new GoogleApiClient.Builder(getContext()).addApi(Auth
-                .CREDENTIALS_API).enableAutoManage(getActivity(), GoogleApiHelper
-                .getSafeAutoManageId(), new GoogleApiClient.OnConnectionFailedListener() {
-            @Override
-            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                Log.e(TAG, "Client connection failed: " + connectionResult.getErrorMessage());
-            }
-        }).build();
+        GoogleApiClient client = new GoogleApiClient.Builder(getContext())
+                .addApi(Auth.CREDENTIALS_API)
+                .enableAutoManage(
+                        getActivity(),
+                        GoogleApiHelper.getSafeAutoManageId(),
+                        new GoogleApiClient.OnConnectionFailedListener() {
+                            @Override
+                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                                Log.e(TAG,
+                                      "Client connection failed: " + connectionResult.getErrorMessage());
+                            }
+                        })
+                .build();
 
 
-        HintRequest hintRequest = new HintRequest.Builder().setHintPickerConfig(new
-                CredentialPickerConfig.Builder().setShowCancelButton(true).build())
-                .setPhoneNumberIdentifierSupported(true).setEmailAddressIdentifierSupported
-                        (false).build();
+        HintRequest hintRequest = new HintRequest.Builder()
+                .setHintPickerConfig(
+                        new CredentialPickerConfig.Builder().setShowCancelButton(true).build())
+                .setPhoneNumberIdentifierSupported(true)
+                .setEmailAddressIdentifierSupported(false)
+                .build();
 
         return Auth.CredentialsApi.getHintPickerIntent(client, hintRequest);
     }

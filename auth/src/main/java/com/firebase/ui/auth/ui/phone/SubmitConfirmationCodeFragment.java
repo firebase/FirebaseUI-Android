@@ -33,7 +33,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.TermsTextView;
+import com.firebase.ui.auth.ui.email.PreambleHandler;
 
 /**
  * Display confirmation code to verify phone numbers input in {{@link VerifyPhoneNumberFragment}}
@@ -53,7 +53,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private Button mSubmitConfirmationButton;
     private CustomCountDownTimer mCountdownTimer;
     private PhoneVerificationActivity mVerifier;
-    private TermsTextView mAgreementText;
+    private TextView mAgreementText;
     private long mMillisUntilFinished;
 
     public static SubmitConfirmationCodeFragment newInstance(FlowParameters flowParameters,
@@ -80,7 +80,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mResendCodeTextView = (TextView) v.findViewById(R.id.resend_code);
         mConfirmationCodeEditText = (SpacedEditText) v.findViewById(R.id.confirmation_code);
         mSubmitConfirmationButton = (Button) v.findViewById(R.id.submit_confirmation_code);
-        mAgreementText = (TermsTextView) v.findViewById(R.id.create_account_tos);
+        mAgreementText = (TextView) v.findViewById(R.id.create_account_tos);
 
         final String phoneNumber = getArguments().getString(ExtraConstants.EXTRA_PHONE);
 
@@ -224,11 +224,12 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void setUpTermsOfService() {
-        mAgreementText.showTerms(getFlowParams(), R.string.continue_phone_login);
+        new PreambleHandler(getContext(), getFlowParams(), R.string.continue_phone_login)
+                .setPreamble(mAgreementText);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    CustomCountDownTimer getmCountdownTimer() {
+    CustomCountDownTimer getCountdownTimer() {
         return mCountdownTimer;
     }
 

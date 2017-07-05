@@ -65,7 +65,7 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <com.firebase.ui.auth.ui.TermsTextView
+        <TextView
             android:id="@+id/create_account_text"
             style="@style/FirebaseUI.Text.BodyText"
             android:layout_width="match_parent"

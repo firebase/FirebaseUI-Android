@@ -137,6 +137,12 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_scope_youtube_data)
     CheckBox mGoogleScopeYoutubeData;
 
+    public static Intent createIntent(Context context) {
+        Intent in = new Intent();
+        in.setClass(context, AuthUiActivity.class);
+        return in;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -407,11 +413,5 @@ public class AuthUiActivity extends AppCompatActivity {
             result.add(Scopes.DRIVE_FILE);
         }
         return result;
-    }
-
-    public static Intent createIntent(Context context) {
-        Intent in = new Intent();
-        in.setClass(context, AuthUiActivity.class);
-        return in;
     }
 }
