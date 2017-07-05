@@ -89,7 +89,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
-        TextView welcomeBackHeader = (TextView) findViewById(R.id.welcome_back_email_header);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 

@@ -48,8 +48,6 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private static final String TAG = "FacebookProvider";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
-    private static final String ERROR = "err";
-    private static final String ERROR_MSG = "err_msg";
 
     private static CallbackManager sCallbackManager;
 

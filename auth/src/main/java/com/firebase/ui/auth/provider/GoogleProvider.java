@@ -45,7 +45,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = "GoogleProvider";
     private static final int RC_SIGN_IN = 20;
-    private static final String ERROR_KEY = "error";
 
     private GoogleApiClient mGoogleApiClient;
     private FragmentActivity mActivity;
