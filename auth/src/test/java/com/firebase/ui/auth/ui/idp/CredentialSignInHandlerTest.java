@@ -31,9 +31,11 @@ import com.firebase.ui.auth.ui.ProgressDialogHolder;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -126,6 +128,10 @@ public class CredentialSignInHandlerTest {
         FlowParameters mockFlowParams = mock(FlowParameters.class);
         when(mockActivity.getFlowParams()).thenReturn(mockFlowParams);
 
+        AuthHelper mockAuthHelper = mock(AuthHelper.class);
+        when(mockActivity.getAuthHelper()).thenReturn(mockAuthHelper);
+        when(mockAuthHelper.getFirebaseAuth()).thenReturn(AuthHelperShadow.getFirebaseAuth());
+
         ProgressDialogHolder mockHolder = mock(ProgressDialogHolder.class);
         when(mockActivity.getDialogHolder()).thenReturn(mockHolder);
 
@@ -137,7 +143,7 @@ public class CredentialSignInHandlerTest {
                                 Arrays.asList(FacebookAuthProvider.PROVIDER_ID)), true, null));
 
         // pretend there was already an account with this email
-        Task exceptionTask = Tasks.forException(
+        Task<AuthResult> exceptionTask = Tasks.forException(
                 new FirebaseAuthUserCollisionException(LINKING_ERROR, LINKING_EXPLANATION));
         credentialSignInHandler.onComplete(exceptionTask);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
@@ -174,6 +180,10 @@ public class CredentialSignInHandlerTest {
 
         FlowParameters mockFlowParams = mock(FlowParameters.class);
         when(mockActivity.getFlowParams()).thenReturn(mockFlowParams);
+
+        AuthHelper mockAuthHelper = mock(AuthHelper.class);
+        when(mockActivity.getAuthHelper()).thenReturn(mockAuthHelper);
+        when(mockAuthHelper.getFirebaseAuth()).thenReturn(AuthHelperShadow.getFirebaseAuth());
 
         ProgressDialogHolder mockHolder = mock(ProgressDialogHolder.class);
         when(mockActivity.getDialogHolder()).thenReturn(mockHolder);

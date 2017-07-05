@@ -44,7 +44,7 @@ public class AuthHelperShadow {
         sPhoneAuthProvider = Mockito.mock(PhoneAuthProvider.class);
     }
 
-    private AuthHelperShadow() {}
+    public AuthHelperShadow() {}
 
     @Implementation
     public static FirebaseAuth getFirebaseAuth() {
