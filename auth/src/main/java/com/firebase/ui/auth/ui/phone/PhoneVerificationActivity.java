@@ -314,52 +314,57 @@ public class PhoneVerificationActivity extends AppCompatBase {
                         mVerificationState = VerificationState.VERIFIED;
                         completeLoadingDialog(getString(R.string.verified));
 
-                // Activity can be recreated before this message is handled
-                mHandler.postDelayed(new Runnable() {
+                        // Activity can be recreated before this message is handled
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!mIsDestroyed) {
+                                    dismissLoadingDialog();
+                                    finish(authResult.getUser());
+                                }
+                            }
+                        }, SHORT_DELAY_MILLIS);
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
                     @Override
-                    public void run() {
-                        if (!mIsDestroyed) {
-                            dismissLoadingDialog();
-                            finish(authResult.getUser());
+                    public void onFailure(@NonNull Exception e) {
+                        dismissLoadingDialog();
+                        //incorrect confirmation code
+                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                            FirebaseAuthInvalidCredentialsException firebaseAuthInvalidCredentialsException
+                                    = (FirebaseAuthInvalidCredentialsException) e;
+                            switch (firebaseAuthInvalidCredentialsException.getErrorCode()) {
+                                case ERROR_INVALID_VERIFICATION:
+                                    showAlertDialog(
+                                            getString(R.string.incorrect_code_dialog_body),
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    getSubmitConfirmationCodeFragment()
+                                                            .setConfirmationCode("");
+                                                }
+                                            });
+                                    break;
+                                case ERROR_SESSION_EXPIRED:
+                                    showAlertDialog(
+                                            getString(R.string.error_session_expired),
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    getSubmitConfirmationCodeFragment()
+                                                            .setConfirmationCode("");
+                                                }
+                                            });
+                                    break;
+                                default:
+                                    showAlertDialog(e.getLocalizedMessage(), null);
+                            }
+                        } else {
+                            showAlertDialog(e.getLocalizedMessage(), null);
                         }
                     }
-                }, SHORT_DELAY_MILLIS);
-            }
-        }).addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                dismissLoadingDialog();
-                //incorrect confirmation code
-                if (e instanceof  FirebaseAuthInvalidCredentialsException) {
-                    FirebaseAuthInvalidCredentialsException firebaseAuthInvalidCredentialsException
-                            = (FirebaseAuthInvalidCredentialsException) e;
-                    switch (firebaseAuthInvalidCredentialsException.getErrorCode()) {
-                        case ERROR_INVALID_VERIFICATION:
-                            showAlertDialog(getString(R.string.incorrect_code_dialog_body),
-                                    newDialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                     getSubmitConfirmationCodeFragment().setConfirmationCode("");
-                                }
-                            });
-                            break;
-                        case ERROR_SESSION_EXPIRED:
-                            showAlertDialog(getString(R.string.error_session_expired),
-                                    newDialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                     getSubmitConfirmationCodeFragment().setConfirmationCode("");
-                                }
-                            });
-                            break;
-                        default:
-                            showAlertDialog(e.getLocalizedMessage(), null);
-                    }
-                } else {
-                    showAlertDialog(e.getLocalizedMessage(), null);
-                }
-            }
-        });
+                });
     }
 
     private void completeLoadingDialog(String content) {
