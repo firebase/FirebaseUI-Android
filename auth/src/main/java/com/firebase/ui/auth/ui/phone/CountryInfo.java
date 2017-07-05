@@ -55,8 +55,8 @@ final class CountryInfo implements Comparable<CountryInfo> {
 
         final CountryInfo that = (CountryInfo) o;
 
-        if (countryCode != that.countryCode) return false;
-        return locale != null ? locale.equals(that.locale) : that.locale == null;
+        return countryCode == that.countryCode
+                && (locale != null ? locale.equals(that.locale) : that.locale == null);
     }
 
     @Override
