@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.util.AuthInstances;
+import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -22,6 +22,7 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 public class HelperActivityBase extends AppCompatActivity {
 
     private FlowParameters mFlowParameters;
+    private AuthHelper mAuthHelper;
     private ProgressDialogHolder mProgressDialogHolder;
 
     public static Intent createBaseIntent(
@@ -38,7 +39,7 @@ public class HelperActivityBase extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        AuthInstances.init(getFlowParams());
+        mAuthHelper = new AuthHelper(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
     }
 
@@ -54,6 +55,10 @@ public class HelperActivityBase extends AppCompatActivity {
         }
 
         return mFlowParameters;
+    }
+
+    public AuthHelper getAuthHelper() {
+        return mAuthHelper;
     }
 
     public ProgressDialogHolder getDialogHolder() {
@@ -84,6 +89,5 @@ public class HelperActivityBase extends AppCompatActivity {
             saveSmartLock.saveCredentialsOrFinish(firebaseUser, password, response);
         }
     }
-
 }
 

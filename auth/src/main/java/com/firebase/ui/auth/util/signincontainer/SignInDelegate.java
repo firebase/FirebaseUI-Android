@@ -23,7 +23,6 @@ import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -104,7 +103,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     .build();
             mGoogleApiClient.connect();
 
-            AuthInstances.getCredentialsApi()
+            getAuthHelper().getCredentialsApi()
                     .request(mGoogleApiClient,
                             new CredentialRequest.Builder()
                                     .setPasswordLoginSupported(true)
@@ -276,7 +275,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         final IdpResponse response =
                 new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email).build();
 
-        AuthInstances.getFirebaseAuth()
+        getAuthHelper().getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(
                         TAG, "Error signing in with email and password"))

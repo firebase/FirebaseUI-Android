@@ -43,7 +43,6 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -84,7 +83,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(this);
+        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(this);
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
@@ -144,7 +143,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
         getDialogHolder().showLoadingDialog(R.string.progress_dialog_signing_in);
 
-        final FirebaseAuth firebaseAuth = AuthInstances.getFirebaseAuth();
+        final FirebaseAuth firebaseAuth = getAuthHelper().getFirebaseAuth();
 
         // Sign in with known email and the password provided
         firebaseAuth.signInWithEmailAndPassword(email, password)

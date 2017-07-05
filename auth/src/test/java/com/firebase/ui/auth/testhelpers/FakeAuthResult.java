@@ -27,7 +27,7 @@ public final class FakeAuthResult implements AuthResult {
 
     @Override
     public FirebaseUser getUser() {
-        return AuthInstancesShadow.getCurrentUser();
+        return AuthHelperShadow.getCurrentUser();
     }
 
     @Override

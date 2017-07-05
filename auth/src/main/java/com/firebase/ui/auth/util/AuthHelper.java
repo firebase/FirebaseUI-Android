@@ -16,33 +16,31 @@ import com.google.firebase.auth.PhoneAuthProvider;
  * Factory for instances of authentication classes. Should eventually be replaced by dependency
  * injection.
  */
-public class AuthInstances {
-    private static FlowParameters sFlowParams;
+public class AuthHelper {
+    private final FlowParameters mFlowParams;
 
-    public static void init(FlowParameters params) {
-        sFlowParams = params;
+    public AuthHelper(FlowParameters params) {
+        mFlowParams = params;
     }
 
-    public static FirebaseAuth getFirebaseAuth() {
-        return FirebaseAuth.getInstance(FirebaseApp.getInstance(sFlowParams.appName));
+    public FirebaseAuth getFirebaseAuth() {
+        return FirebaseAuth.getInstance(FirebaseApp.getInstance(mFlowParams.appName));
     }
 
-    public static CredentialsApi getCredentialsApi() {
+    public CredentialsApi getCredentialsApi() {
         return Auth.CredentialsApi;
     }
 
     @Nullable
-    public static FirebaseUser getCurrentUser() {
+    public FirebaseUser getCurrentUser() {
         return getFirebaseAuth().getCurrentUser();
     }
 
-    public static SaveSmartLock getSaveSmartLockInstance(HelperActivityBase activity) {
+    public SaveSmartLock getSaveSmartLockInstance(HelperActivityBase activity) {
         return SaveSmartLock.getInstance(activity);
     }
 
-    public static PhoneAuthProvider getPhoneAuthProviderInstance() {
+    public PhoneAuthProvider getPhoneAuthProviderInstance() {
         return PhoneAuthProvider.getInstance();
     }
-
-
 }

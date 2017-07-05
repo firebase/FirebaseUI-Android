@@ -42,7 +42,6 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -148,9 +147,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
             return;
         }
 
-        FirebaseUser currentUser = AuthInstances.getCurrentUser();
+        FirebaseUser currentUser = getAuthHelper().getCurrentUser();
         if (currentUser == null) {
-            AuthInstances.getFirebaseAuth()
+            getAuthHelper().getFirebaseAuth()
                     .signInWithCredential(newCredential)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override

@@ -1,7 +1,7 @@
 package com.firebase.ui.auth.testhelpers;
 
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.AuthInstances;
+import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,8 +14,8 @@ import org.robolectric.annotation.Implements;
 
 import static org.mockito.Mockito.when;
 
-@Implements(AuthInstances.class)
-public class AuthInstancesShadow {
+@Implements(AuthHelper.class)
+public class AuthHelperShadow {
 
     public static final FirebaseAuth sFirebaseAuth;
     public static final FirebaseUser sFirebaseUser;
@@ -44,7 +44,7 @@ public class AuthInstancesShadow {
         sPhoneAuthProvider = Mockito.mock(PhoneAuthProvider.class);
     }
 
-    private AuthInstancesShadow() {}
+    private AuthHelperShadow() {}
 
     @Implementation
     public static FirebaseAuth getFirebaseAuth() {

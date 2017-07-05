@@ -18,7 +18,7 @@ import android.content.Intent;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.testhelpers.AuthInstancesShadow;
+import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
@@ -72,7 +72,7 @@ public class CredentialSignInHandlerTest {
     }
 
     @Test
-    @Config(shadows = {AuthInstancesShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testSignInSucceeded() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         IdpResponse idpResponse =
@@ -100,7 +100,7 @@ public class CredentialSignInHandlerTest {
                 idpResponseCaptor.capture());
 
         assertEquals(smartLock, smartLockCaptor.getValue());
-        assertEquals(AuthInstancesShadow.sFirebaseUser, firebaseUserCaptor.getValue());
+        assertEquals(AuthHelperShadow.sFirebaseUser, firebaseUserCaptor.getValue());
 
         IdpResponse response = idpResponseCaptor.getValue();
         assertEquals(idpResponse.getProviderType(), response.getProviderType());
@@ -110,7 +110,7 @@ public class CredentialSignInHandlerTest {
     }
 
     @Test
-    @Config(shadows = {AuthInstancesShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testSignInFailed_withFacebookAlreadyLinked() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         IdpResponse idpResponse =
@@ -130,7 +130,7 @@ public class CredentialSignInHandlerTest {
         when(mockActivity.getDialogHolder()).thenReturn(mockHolder);
 
         // pretend the account has Facebook linked already
-        FirebaseAuth mockFirebaseAuth = AuthInstancesShadow.sFirebaseAuth;
+        FirebaseAuth mockFirebaseAuth = AuthHelperShadow.sFirebaseAuth;
         when(mockFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL)).thenReturn(
                 new AutoCompleteTask<ProviderQueryResult>(
                         new FakeProviderQueryResult(
@@ -159,7 +159,7 @@ public class CredentialSignInHandlerTest {
     }
 
     @Test
-    @Config(shadows = {AuthInstancesShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testSignInFailed_withPasswordAccountAlreadyLinked() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         IdpResponse idpResponse =
@@ -184,7 +184,7 @@ public class CredentialSignInHandlerTest {
                 new FirebaseAuthUserCollisionException(LINKING_ERROR, LINKING_EXPLANATION));
 
         // pretend the account has a Password account linked already
-        FirebaseAuth mockFirebaseAuth = AuthInstancesShadow.sFirebaseAuth;
+        FirebaseAuth mockFirebaseAuth = AuthHelperShadow.sFirebaseAuth;
         when(mockFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL)).thenReturn(
                 new AutoCompleteTask<ProviderQueryResult>(
                         new FakeProviderQueryResult(

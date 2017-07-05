@@ -33,7 +33,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -114,7 +113,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
             builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
         }
 
-        AuthInstances.getCredentialsApi()
+        getAuthHelper().getCredentialsApi()
                 .save(mGoogleApiClient, builder.build())
                 .setResultCallback(this);
     }
@@ -172,7 +171,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
                         .build();
 
-                AuthInstances.getCredentialsApi()
+                getAuthHelper().getCredentialsApi()
                         .save(mGoogleApiClient, credential)
                         .setResultCallback(this);
             } else {
