@@ -137,6 +137,12 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_scope_youtube_data)
     CheckBox mGoogleScopeYoutubeData;
 
+    public static Intent createIntent(Context context) {
+        Intent in = new Intent();
+        in.setClass(context, AuthUiActivity.class);
+        return in;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,7 +156,7 @@ public class AuthUiActivity extends AppCompatActivity {
             return;
         }
 
-        if (!isGoogleConfigured()) {
+        if (isGoogleMisconfigured()) {
             mUseGoogleProvider.setChecked(false);
             mUseGoogleProvider.setEnabled(false);
             mUseGoogleProvider.setText(R.string.google_label_missing_config);
@@ -165,7 +171,7 @@ public class AuthUiActivity extends AppCompatActivity {
             });
         }
 
-        if (!isFacebookConfigured()) {
+        if (isFacebookMisconfigured()) {
             mUseFacebookProvider.setChecked(false);
             mUseFacebookProvider.setEnabled(false);
             mUseFacebookProvider.setText(R.string.facebook_label_missing_config);
@@ -180,13 +186,13 @@ public class AuthUiActivity extends AppCompatActivity {
             });
         }
 
-        if (!isTwitterConfigured()) {
+        if (isTwitterMisconfigured()) {
             mUseTwitterProvider.setChecked(false);
             mUseTwitterProvider.setEnabled(false);
             mUseTwitterProvider.setText(R.string.twitter_label_missing_config);
         }
 
-        if (!isGoogleConfigured() || !isFacebookConfigured() || !isTwitterConfigured()) {
+        if (isGoogleMisconfigured() || isFacebookMisconfigured() || isTwitterMisconfigured()) {
             showSnackbar(R.string.configuration_required);
         }
     }
@@ -359,25 +365,23 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @MainThread
-    private boolean isGoogleConfigured() {
-        return !UNCHANGED_CONFIG_VALUE.equals(
-                getString(R.string.default_web_client_id));
+    private boolean isGoogleMisconfigured() {
+        return UNCHANGED_CONFIG_VALUE.equals(getString(R.string.default_web_client_id));
     }
 
     @MainThread
-    private boolean isFacebookConfigured() {
-        return !UNCHANGED_CONFIG_VALUE.equals(
-                getString(R.string.facebook_application_id));
+    private boolean isFacebookMisconfigured() {
+        return UNCHANGED_CONFIG_VALUE.equals(getString(R.string.facebook_application_id));
     }
 
     @MainThread
-    private boolean isTwitterConfigured() {
+    private boolean isTwitterMisconfigured() {
         List<String> twitterConfigs = Arrays.asList(
                 getString(R.string.twitter_consumer_key),
                 getString(R.string.twitter_consumer_secret)
         );
 
-        return !twitterConfigs.contains(UNCHANGED_CONFIG_VALUE);
+        return twitterConfigs.contains(UNCHANGED_CONFIG_VALUE);
     }
 
     @MainThread
@@ -407,11 +411,5 @@ public class AuthUiActivity extends AppCompatActivity {
             result.add(Scopes.DRIVE_FILE);
         }
         return result;
-    }
-
-    public static Intent createIntent(Context context) {
-        Intent in = new Intent();
-        in.setClass(context, AuthUiActivity.class);
-        return in;
     }
 }

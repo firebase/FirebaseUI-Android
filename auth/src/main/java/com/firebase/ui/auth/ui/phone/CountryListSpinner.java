@@ -21,7 +21,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -54,9 +53,11 @@ public final class CountryListSpinner extends AppCompatEditText implements
         init();
     }
 
-    @VisibleForTesting
-    void setDialogPopup(DialogPopup dialog) {
-        this.dialogPopup = dialog;
+    private static void hideKeyboard(Context context, View view) {
+        final InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     private void init() {
@@ -171,14 +172,6 @@ public final class CountryListSpinner extends AppCompatEditText implements
             selectedCountryName = countryInfo.locale.getDisplayCountry();
             setSpinnerText(countryInfo.countryCode, countryInfo.locale);
             dismiss();
-        }
-    }
-
-    public static void hideKeyboard(Context context, View view) {
-        final InputMethodManager imm = (InputMethodManager) context.getSystemService(Context
-                .INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

@@ -34,29 +34,6 @@ final class CountryInfo implements Comparable<CountryInfo> {
         this.countryCode = countryCode;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        final CountryInfo that = (CountryInfo) o;
-
-        if (countryCode != that.countryCode) return false;
-        return locale != null ? locale.equals(that.locale) : that.locale == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = locale != null ? locale.hashCode() : 0;
-        result = 31 * result + countryCode;
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return localeToEmoji(locale) + " " + this.locale.getDisplayCountry() + " +" + countryCode;
-    }
-
     public static String localeToEmoji(Locale locale) {
         String countryCode = locale.getCountry();
         // 0x41 is Letter A
@@ -69,6 +46,29 @@ final class CountryInfo implements Comparable<CountryInfo> {
         int secondLetter = Character.codePointAt(countryCode, 1) - 0x41 + 0x1F1E6;
         return new String(Character.toChars(firstLetter)) + new String(Character.toChars
                 (secondLetter));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final CountryInfo that = (CountryInfo) o;
+
+        return countryCode == that.countryCode
+                && (locale != null ? locale.equals(that.locale) : that.locale == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = locale != null ? locale.hashCode() : 0;
+        result = 31 * result + countryCode;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return localeToEmoji(locale) + " " + this.locale.getDisplayCountry() + " +" + countryCode;
     }
 
     @Override

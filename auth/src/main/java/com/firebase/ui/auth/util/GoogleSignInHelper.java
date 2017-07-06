@@ -13,7 +13,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 
 public class GoogleSignInHelper extends GoogleApiHelper {
-    protected GoogleSignInHelper(FragmentActivity activity, GoogleApiClient.Builder builder) {
+    private GoogleSignInHelper(FragmentActivity activity, GoogleApiClient.Builder builder) {
         super(activity, builder);
     }
 

@@ -53,8 +53,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
- * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming
- * the password before initiating a link.
+ * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
+ * password before initiating a link.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackPasswordPrompt extends AppCompatBase
@@ -89,7 +89,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
-        TextView welcomeBackHeader = (TextView) findViewById(R.id.welcome_back_email_header);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 
@@ -101,9 +100,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
-                                       emailStart,
-                                       emailStart + mEmail.length(),
-                                       Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                emailStart,
+                emailStart + mEmail.length(),
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         TextView bodyTextView = ((TextView) findViewById(R.id.welcome_back_password_body));
         bodyTextView.setText(spannableStringBuilder);

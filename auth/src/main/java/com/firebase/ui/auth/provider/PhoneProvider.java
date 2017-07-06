@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
-import com.google.firebase.auth.PhoneAuthProvider;
 
 public class PhoneProvider implements Provider {
 
@@ -27,12 +25,6 @@ public class PhoneProvider implements Provider {
     @Override
     public String getName(Context context) {
         return context.getString(R.string.provider_name_phone);
-    }
-
-    @Override
-    @AuthUI.SupportedProvider
-    public String getProviderId() {
-        return PhoneAuthProvider.PROVIDER_ID;
     }
 
     @Override

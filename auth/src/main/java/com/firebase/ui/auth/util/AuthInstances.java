@@ -13,8 +13,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 /**
- * Factory for instances of authentication classes. Should eventually be replaced by
- * dependency injection.
+ * Factory for instances of authentication classes. Should eventually be replaced by dependency
+ * injection.
  */
 public class AuthInstances {
 

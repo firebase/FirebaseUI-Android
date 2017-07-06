@@ -7,8 +7,8 @@ import android.content.DialogInterface;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 /**
- * Helper class wrapping {@link GoogleApiAvailability}. Used internally but can also be used
- * by client application
+ * Helper class wrapping {@link GoogleApiAvailability}. Used internally but can also be used by
+ * client application
  */
 public class PlayServicesHelper {
     private static GoogleApiAvailability mApiAvailability;

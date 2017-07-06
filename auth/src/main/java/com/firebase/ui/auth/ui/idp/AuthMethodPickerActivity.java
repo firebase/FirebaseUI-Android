@@ -52,11 +52,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Presents the list of authentication options for this app to the user. If an
- * identity provider option is selected, a {@link CredentialSignInHandler}
- * is launched to manage the IDP-specific sign-in flow. If email authentication is chosen,
- * the {@link RegisterEmailActivity} is started. if phone authentication is chosen, the
- * {@link com.firebase.ui.auth.ui.phone.PhoneVerificationActivity} is started.
+ * Presents the list of authentication options for this app to the user. If an identity provider
+ * option is selected, a {@link CredentialSignInHandler} is launched to manage the IDP-specific
+ * sign-in flow. If email authentication is chosen, the {@link RegisterEmailActivity} is started. if
+ * phone authentication is chosen, the {@link com.firebase.ui.auth.ui.phone.PhoneVerificationActivity}
+ * is started.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallback {
@@ -172,7 +172,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     }
 
     @Override
-    public void onFailure(Bundle extra) {
+    public void onFailure() {
         // stay on this screen
         getDialogHolder().dismissDialog();
     }

@@ -38,6 +38,20 @@ import java.util.Collections;
  * 764176
  */
 final class BucketedTextChangeListener implements TextWatcher {
+    interface ContentChangeCallback {
+        /**
+         * Idempotent function invoked by the listener when the edit text changes and is of expected
+         * length
+         */
+        void whileComplete();
+
+        /**
+         * Idempotent function invoked by the listener when the edit text changes and is not of
+         * expected length
+         */
+        void whileIncomplete();
+    }
+
     private final EditText editText;
     private final ContentChangeCallback callback;
     private final String[] postFixes;
@@ -72,7 +86,7 @@ final class BucketedTextChangeListener implements TextWatcher {
         final String enteredContent = numericContents.substring(0, enteredContentLength);
 
         // 3) Reset the text to be the content + required hyphens. The SET automatically inserts
-        // spaces requires for aesthetics. This requires removing and reseting the listener to
+        // spaces requires for aesthetics. This requires removing and resetting the listener to
         // avoid recursion.
         editText.removeTextChangedListener(this);
         editText.setText(enteredContent + postFixes[expectedContentLength - enteredContentLength]);
@@ -92,12 +106,12 @@ final class BucketedTextChangeListener implements TextWatcher {
     }
 
     /**
-     * {@link #generatePostfixArray(CharSequence, int)} with params ("-", 6) returns
+     * For example, passing in ("-", 6) would return the following result:
      * {"", "-", "--", "---", "----", "-----", "------"}
      *
-     * @param repeatableChar
-     * @param length
-     * @return
+     * @param repeatableChar the char to repeat to the specified length
+     * @param length the maximum length of repeated chars
+     * @return an increasing sequence array of chars up the specified length
      */
     private String[] generatePostfixArray(CharSequence repeatableChar, int length) {
         final String[] ret = new String[length + 1];
@@ -107,19 +121,5 @@ final class BucketedTextChangeListener implements TextWatcher {
         }
 
         return ret;
-    }
-
-    interface ContentChangeCallback {
-        /**
-         * Idempotent function invoked by the listener when the edit text changes and is of
-         * expected length
-         */
-        void whileComplete();
-
-        /**
-         * Idempotent function invoked by the listener when the edit text changes and is not of
-         * expected length
-         */
-        void whileIncomplete();
     }
 }
