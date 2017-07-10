@@ -23,6 +23,7 @@
 
     <Button
         android:id="@+id/welcome_back_idp_button"
+        style="@style/FirebaseUI.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
