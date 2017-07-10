@@ -56,7 +56,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register_email);
+        setContentView(R.layout.fui_activity_register_email);
 
         if (savedInstanceState != null) {
             return;

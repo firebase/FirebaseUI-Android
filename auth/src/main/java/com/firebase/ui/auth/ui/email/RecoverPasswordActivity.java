@@ -52,7 +52,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.forgot_password_layout);
+        setContentView(R.layout.fui_forgot_password_layout);
 
         mEmailFieldValidator =
                 new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));

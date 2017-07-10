@@ -42,7 +42,6 @@ import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
-import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
 
@@ -73,7 +72,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.auth_method_picker_layout);
+        setContentView(R.layout.fui_auth_method_picker_layout);
         mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
 
         populateIdpList(mActivityHelper.getFlowParams().providerInfo);

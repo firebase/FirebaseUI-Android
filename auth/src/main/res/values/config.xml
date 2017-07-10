@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--
     The Facebook Application ID associated with this Android application. This
     must be overridden by users of FirebaseUI auth in order to support Facebook
@@ -7,7 +7,7 @@
     See:
     https://developers.facebook.com/docs/facebook-login/android
     -->
-    <string name="facebook_application_id" translatable="false">CHANGE-ME</string>
+    <string name="facebook_application_id" translatable="false" tools:ignore="ResourceName">CHANGE-ME</string>
 
     <!--
      To enable Chrome Custom Tabs for Facebook Login on devices without the Facebook app
@@ -17,7 +17,7 @@
      See:
      https://developers.facebook.com/docs/facebook-login/android#chrome_custom_tabs
     -->
-    <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
+    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="ResourceName">fbYOUR_APP_ID</string>
 
     <!--
     The Google web client ID associated with this Android application. The
@@ -27,17 +27,17 @@
     https://developers.google.com/identity/sign-in/web/devconsole-project
     https://developers.google.com/android/guides/google-services-plugin
     -->
-    <string name="default_web_client_id" translatable="false">CHANGE-ME</string>
+    <string name="default_web_client_id" translatable="false" tools:ignore="ResourceName">CHANGE-ME</string>
 
 
     <!--
     Your Twitter Consumer Key. To use Twitter accounts with the demo application, register an
     application with Twitter and provide the following two values.
     -->
-    <string name="twitter_consumer_key" translatable="false">CHANGE-ME</string>
+    <string name="twitter_consumer_key" translatable="false" tools:ignore="ResourceName">CHANGE-ME</string>
 
     <!--
     Your Twitter Consumer Secret
     -->
-    <string name="twitter_consumer_secret" translatable="false">CHANGE-ME</string>
+    <string name="twitter_consumer_secret" translatable="false" tools:ignore="ResourceName">CHANGE-ME</string>
 </resources>

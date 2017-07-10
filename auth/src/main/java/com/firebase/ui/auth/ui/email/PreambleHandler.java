@@ -34,7 +34,7 @@ public class PreambleHandler {
         mContext = context;
         mFlowParameters = parameters;
         mButtonText = buttonText;
-        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.linkColor));
+        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.fui_linkColor));
 
         setupCreateAccountPreamble();
     }

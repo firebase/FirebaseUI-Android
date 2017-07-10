@@ -106,7 +106,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     @Override
     @LayoutRes
     public int getButtonLayout() {
-        return R.layout.idp_button_google;
+        return R.layout.fui_idp_button_google;
     }
 
     @Override

@@ -10,7 +10,7 @@
     android:orientation="horizontal">
 
     <include
-        layout="@layout/include_auth_method_picker_logo"
+        layout="@layout/fui_include_auth_method_picker_logo"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1.0" />
