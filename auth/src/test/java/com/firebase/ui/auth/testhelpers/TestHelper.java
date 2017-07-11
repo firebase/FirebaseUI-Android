@@ -80,7 +80,7 @@ public class TestHelper {
         ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
 
-        verify(AuthInstancesShadow.sSaveSmartLock).saveCredentialsOrFinish(
+        verify(AuthHelperShadow.sSaveSmartLock).saveCredentialsOrFinish(
                 userCaptor.capture(),
                 passwordCaptor.capture(),
                 idpResponseCaptor.capture());

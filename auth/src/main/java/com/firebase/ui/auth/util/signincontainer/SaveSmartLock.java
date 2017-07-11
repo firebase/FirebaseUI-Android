@@ -24,7 +24,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -33,8 +32,7 @@ import android.widget.Toast;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.util.AuthInstances;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -59,14 +57,14 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     private IdpResponse mResponse;
 
     @Nullable
-    public static SaveSmartLock getInstance(FragmentActivity activity, FlowParameters parameters) {
+    public static SaveSmartLock getInstance(HelperActivityBase activity) {
         SaveSmartLock result;
 
         FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(TAG);
         if (!(fragment instanceof SaveSmartLock)) {
             result = new SaveSmartLock();
-            result.setArguments(parameters.toBundle());
+            result.setArguments(activity.getFlowParams().toBundle());
             try {
                 fm.beginTransaction().add(result, TAG).disallowAddToBackStack().commit();
             } catch (IllegalStateException e) {
@@ -115,7 +113,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
             builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
         }
 
-        AuthInstances.getCredentialsApi()
+        getAuthHelper().getCredentialsApi()
                 .save(mGoogleApiClient, builder.build())
                 .setResultCallback(this);
     }
@@ -173,7 +171,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
                         .build();
 
-                AuthInstances.getCredentialsApi()
+                getAuthHelper().getCredentialsApi()
                         .save(mGoogleApiClient, credential)
                         .setResultCallback(this);
             } else {

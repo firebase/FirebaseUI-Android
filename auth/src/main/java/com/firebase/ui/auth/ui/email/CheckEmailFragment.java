@@ -24,7 +24,6 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -193,7 +192,7 @@ public class CheckEmailFragment extends FragmentBase implements
         final String finalName = name;
         final Uri finalPhotoUri = photoUri;
 
-        FirebaseAuth auth = AuthInstances.getFirebaseAuth(getFlowParams());
+        FirebaseAuth auth = getAuthHelper().getFirebaseAuth();
         ProviderUtils.fetchTopProvider(auth, email)
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<String>() {
                     @Override

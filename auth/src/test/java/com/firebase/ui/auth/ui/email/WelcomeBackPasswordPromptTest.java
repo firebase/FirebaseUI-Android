@@ -22,7 +22,7 @@ import android.widget.EditText;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.testhelpers.AuthInstancesShadow;
+import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
@@ -90,16 +90,16 @@ public class WelcomeBackPasswordPromptTest {
     }
 
     @Test
-    @Config(shadows = {AuthInstancesShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testSignInButton_signsInAndSavesCredentials() {
         // initialize mocks
-        reset(AuthInstancesShadow.sSaveSmartLock);
+        reset(AuthHelperShadow.sSaveSmartLock);
 
         WelcomeBackPasswordPrompt welcomeBackActivity = createActivity();
         EditText passwordField = (EditText) welcomeBackActivity.findViewById(R.id.password);
         passwordField.setText(TestConstants.PASSWORD);
 
-        when(AuthInstancesShadow.sFirebaseAuth.signInWithEmailAndPassword(
+        when(AuthHelperShadow.sFirebaseAuth.signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
                 new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
@@ -107,7 +107,7 @@ public class WelcomeBackPasswordPromptTest {
         Button signIn = (Button) welcomeBackActivity.findViewById(R.id.button_done);
         signIn.performClick();
 
-        verify(AuthInstancesShadow.sFirebaseAuth).signInWithEmailAndPassword(
+        verify(AuthHelperShadow.sFirebaseAuth).signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 

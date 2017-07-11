@@ -34,7 +34,6 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
@@ -122,7 +121,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
             sendCode(mPhoneNumber, false);
         } else if (mVerificationState == VerificationState.VERIFIED) {
             // activity was recreated when verified dialog was displayed
-            finish(AuthInstances.getCurrentUser(getFlowParams()));
+            finish(getAuthHelper().getCurrentUser());
         }
     }
 
@@ -233,7 +232,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         mPhoneNumber = phoneNumber;
         mVerificationState = VerificationState.VERIFICATION_STARTED;
 
-        AuthInstances.getPhoneAuthProviderInstance().verifyPhoneNumber(
+        getAuthHelper().getPhoneAuthProviderInstance().verifyPhoneNumber(
                 phoneNumber,
                 AUTO_RETRIEVAL_TIMEOUT_MILLIS,
                 TimeUnit.MILLISECONDS,
@@ -306,7 +305,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void signingWithCreds(@NonNull PhoneAuthCredential phoneAuthCredential) {
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(phoneAuthCredential)
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
