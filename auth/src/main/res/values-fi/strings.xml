@@ -1,5 +1,4 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">ui_flow</string>
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">Ladataan…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Kirjaudu sisään</string>
     <string name="general_error" translation_description="Toast text flashing general error">Tapahtui virhe.</string>
