@@ -6,9 +6,7 @@ import android.support.annotation.NonNull;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
-import java.util.AbstractList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Exposes a collection of items in Firebase as a {@link List} of {@link DataSnapshot}. To observe
@@ -16,9 +14,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @param <E> a POJO class to which the DataSnapshots can be converted.
  */
-public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapshot> {
-    protected final List<ChangeEventListener> mListeners = new CopyOnWriteArrayList<>();
-    protected final SnapshotParser<E> mParser;
+public abstract class ObservableSnapshotArray<E>
+        extends BaseObservableSnapshotArray<DataSnapshot, ChangeEventListener, E> {
 
     private boolean mHasDataChanged = false;
 
@@ -30,7 +27,7 @@ public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapsh
      * @see ClassSnapshotParser
      */
     public ObservableSnapshotArray(@NonNull Class<E> clazz) {
-        this(new ClassSnapshotParser<>(clazz));
+        super(new ClassSnapshotParser<>(clazz));
     }
 
     /**
@@ -39,7 +36,7 @@ public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapsh
      * @param parser the {@link SnapshotParser} to use
      */
     public ObservableSnapshotArray(@NonNull SnapshotParser<E> parser) {
-        mParser = Preconditions.checkNotNull(parser);
+        super(parser);
     }
 
     /**
@@ -49,12 +46,12 @@ public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapsh
      */
     @CallSuper
     public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
-        Preconditions.checkNotNull(listener);
+        super.addChangeEventListener(listener);
 
-        mListeners.add(listener);
         for (int i = 0; i < size(); i++) {
             listener.onChildChanged(ChangeEventListener.EventType.ADDED, get(i), i, -1);
         }
+
         if (mHasDataChanged) {
             listener.onDataChanged();
         }
@@ -67,27 +64,13 @@ public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapsh
      */
     @CallSuper
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        mListeners.remove(listener);
+        super.removeChangeEventListener(listener);
 
         // Reset mHasDataChanged if there are no more listeners
         if (!isListening()) {
             mHasDataChanged = false;
         }
     }
-
-    /**
-     * Removes all {@link ChangeEventListener}s. The list will be empty after this call returns.
-     *
-     * @see #removeChangeEventListener(ChangeEventListener)
-     */
-    @CallSuper
-    public void removeAllListeners() {
-        for (ChangeEventListener listener : mListeners) {
-            removeChangeEventListener(listener);
-        }
-    }
-
-    protected abstract List<DataSnapshot> getSnapshots();
 
     protected final void notifyChangeEventListeners(ChangeEventListener.EventType type,
                                                     DataSnapshot snapshot,
@@ -115,39 +98,5 @@ public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapsh
         for (ChangeEventListener listener : mListeners) {
             listener.onCancelled(error);
         }
-    }
-
-    /**
-     * @return true if {@link FirebaseArray} is listening for change events from the Firebase
-     * database, false otherwise
-     */
-    public final boolean isListening() {
-        return !mListeners.isEmpty();
-    }
-
-    /**
-     * @return true if the provided {@link ChangeEventListener} is listening for changes
-     */
-    public final boolean isListening(ChangeEventListener listener) {
-        return mListeners.contains(listener);
-    }
-
-    /**
-     * Get the {@link DataSnapshot} at a given position converted to an object of the parametrized
-     * type. This uses the {@link SnapshotParser} passed to the constructor. If the parser was not
-     * initialized this will throw an unchecked exception.
-     */
-    public E getObject(int index) {
-        return mParser.parseSnapshot(get(index));
-    }
-
-    @Override
-    public DataSnapshot get(int index) {
-        return getSnapshots().get(index);
-    }
-
-    @Override
-    public int size() {
-        return getSnapshots().size();
     }
 }

@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.firebase.uidemo.auth.AuthUiActivity;
 import com.firebase.uidemo.database.ChatActivity;
+import com.firebase.uidemo.firestore.FirestoreChatActivity;
 import com.firebase.uidemo.storage.ImageActivity;
 
 import butterknife.BindView;
@@ -50,18 +51,21 @@ public class ChooserActivity extends AppCompatActivity {
     private static class ActivityChooserAdapter extends RecyclerView.Adapter<ActivityStarterHolder> {
         private static final Class[] CLASSES = new Class[]{
                 ChatActivity.class,
+                FirestoreChatActivity.class,
                 AuthUiActivity.class,
                 ImageActivity.class,
         };
 
         private static final int[] DESCRIPTION_NAMES = new int[]{
                 R.string.name_chat,
+                R.string.name_firestore_chat,
                 R.string.name_auth_ui,
                 R.string.name_image
         };
 
         private static final int[] DESCRIPTION_IDS = new int[]{
                 R.string.desc_chat,
+                R.string.desc_firestore_chat,
                 R.string.desc_auth_ui,
                 R.string.desc_image
         };

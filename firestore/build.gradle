@@ -29,7 +29,7 @@ dependencies {
     // Needed to override play services
     compile "com.android.support:support-v4:$supportLibraryVersion"
 
-    compile "com.google.firebase:firebase-database:$firebaseVersion"
+    compile "com.google.firebase:firebase-firestore:$firebaseVersion"
 
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'com.android.support.test:runner:0.5'
