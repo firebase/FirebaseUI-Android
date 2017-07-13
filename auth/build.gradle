@@ -5,10 +5,6 @@ android {
     compileSdkVersion compileSdk
     buildToolsVersion buildTools
 
-    lintOptions{
-        disable 'UnusedQuantity', 'TypographyEllipsis', 'TypographyQuotes'
-    }
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion targetSdk
