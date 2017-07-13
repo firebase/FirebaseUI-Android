@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -21,14 +22,12 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.TermsTextView;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -57,7 +56,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     private EditText mEmailEditText;
     private EditText mNameEditText;
     private EditText mPasswordEditText;
-    private TermsTextView mAgreementText;
+    private TextView mAgreementText;
     private TextInputLayout mEmailInput;
     private TextInputLayout mPasswordInput;
 
@@ -100,7 +99,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         mEmailEditText = (EditText) v.findViewById(R.id.email);
         mNameEditText = (EditText) v.findViewById(R.id.name);
         mPasswordEditText = (EditText) v.findViewById(R.id.password);
-        mAgreementText = (TermsTextView) v.findViewById(R.id.create_account_text);
+        mAgreementText = (TextView) v.findViewById(R.id.create_account_text);
         mEmailInput = (TextInputLayout) v.findViewById(R.id.email_layout);
         mPasswordInput = (TextInputLayout) v.findViewById(R.id.password_layout);
 
@@ -166,17 +165,18 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
 
         mActivity = (HelperActivityBase) getActivity();
-        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(getActivity(), getFlowParams());
-        mAgreementText.showTerms(getFlowParams(), R.string.button_text_save);
+        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(mActivity);
+        new PreambleHandler(getContext(), getFlowParams(), R.string.button_text_save)
+                .setPreamble(mAgreementText);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(ExtraConstants.EXTRA_USER,
-                               new User.Builder(mEmailEditText.getText().toString())
-                                       .setName(mNameEditText.getText().toString())
-                                       .setPhotoUri(mUser.getPhotoUri())
-                                       .build());
+                new User.Builder(mEmailEditText.getText().toString())
+                        .setName(mNameEditText.getText().toString())
+                        .setPhotoUri(mUser.getPhotoUri())
+                        .build());
         super.onSaveInstanceState(outState);
     }
 
@@ -221,7 +221,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     }
 
     private void registerUser(final String email, final String name, final String password) {
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        getAuthHelper().getFirebaseAuth()
                 .createUserWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -247,7 +247,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                                         mActivity.saveCredentialsOrFinish(
                                                 mSaveSmartLock, user, password,
                                                 new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID,
-                                                                        email).build());
+                                                        email).build());
                                     }
                                 });
                     }
@@ -266,23 +266,22 @@ public class RegisterEmailFragment extends FragmentBase implements
                             // Collision with existing user email, it should be very hard for
                             // the user to even get to this error due to CheckEmailFragment.
 
-                            FirebaseAuth auth = AuthInstances.getFirebaseAuth(getFlowParams());
+                            FirebaseAuth auth = getAuthHelper().getFirebaseAuth();
                             ProviderUtils.fetchTopProvider(auth, email).addOnSuccessListener(
                                     getActivity(),
                                     new OnSuccessListener<String>() {
                                         @Override
                                         public void onSuccess(String provider) {
                                             Toast.makeText(getContext(),
-                                                           R.string.error_user_collision,
-                                                           Toast.LENGTH_LONG)
+                                                    R.string.error_user_collision,
+                                                    Toast.LENGTH_LONG)
                                                     .show();
 
                                             if (provider == null) {
-                                                String msg =
+                                                throw new IllegalStateException(
                                                         "User has no providers even though " +
-                                                        "we got a " +
-                                                        "FirebaseAuthUserCollisionException";
-                                                throw new IllegalStateException(msg);
+                                                                "we got a " +
+                                                                "FirebaseAuthUserCollisionException");
                                             } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(
                                                     provider)) {
                                                 getActivity().startActivityForResult(
