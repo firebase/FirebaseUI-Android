@@ -35,7 +35,7 @@
     <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Al tocar %1$s, indicas que aceptas las %2$s.</string>
     <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Al tocar %1$s, indicas que aceptas la %2$s.</string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Condiciones de Servicio</string>
-    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Política de privacidad</string>
+    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Política de Privacidad</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Ya tienes una cuenta</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">¡Hola de nuevo!</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Ya has usado %1$s.

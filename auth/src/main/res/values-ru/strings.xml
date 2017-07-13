@@ -37,7 +37,7 @@
     <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Нажимая кнопку \"%1$s\", вы принимаете %2$s.</string>
     <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Нажимая кнопку \"%1$s\", вы принимаете %2$s.</string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Условия использования</string>
-    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">политику конфиденциальности</string>
+    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Политику конфиденциальности</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">У вас уже есть аккаунт</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Рады видеть вас снова!</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Вы уже использовали адрес %1$s. Войдите через аккаунт %2$s.</string>
@@ -68,7 +68,7 @@
     <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">Войти по номеру телефона</string>
     <string name="done" translation_description="Progress dialog success transition once sms is sent">Готово</string>
     <string name="verified" translation_description="Progress dialog success transition when phone number was verified">Проверка выполнена.</string>
-    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">Код отправлен.</string>
+    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">Код отправлен</string>
     <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">Повторная отправка…</string>
     <string name="resend_code" translation_description="Link text to resend verification sms">Отправить код ещё раз</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Подтвердить номер телефона</string>

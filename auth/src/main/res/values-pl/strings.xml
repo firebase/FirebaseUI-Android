@@ -26,9 +26,9 @@
     <string name="button_text_save" translation_description="Button text to save input form">Zapisz</string>
     <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Rejestruję...</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znak i być kombinacją liter i cyfr</item>
-        <item quantity="few">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaki i być kombinacją liter i cyfr</item>
-        <item quantity="many">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaków i być kombinacją liter i cyfr</item>
+        <item quantity="one">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znak i być kombinacją liter i cyfr.</item>
+        <item quantity="few">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaki i być kombinacją liter i cyfr.</item>
+        <item quantity="many">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaków i być kombinacją liter i cyfr.</item>
         <item quantity="other">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaku i być kombinacją liter i cyfr</item>
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Rejestracja konta e-mail nie powiodła się</string>
@@ -42,7 +42,7 @@
     <string name="welcome_back_email_header" translation_description="Message for returning users">Witamy z powrotem</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Adres %1$s został już przez Ciebie użyty. Aby kontynuować, zaloguj się przez: %2$s.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Adres %1$s został już przez Ciebie użyty do logowania. Wpisz hasło tego konta.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Logowanie...</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Loguję…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Masz problem z zalogowaniem się?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Odzyskiwanie hasła</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Sprawdź pocztę</string>

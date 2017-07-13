@@ -26,18 +26,18 @@
     <string name="button_text_save" translation_description="Button text to save input form">Salvar</string>
     <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Concluindo sua inscrição...</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">A senha não é forte o suficiente. Use pelo menos %1$d caractere e combine letras e números</item>
-        <item quantity="other">A senha não é forte o suficiente. Use pelo menos %1$d caracteres e combine letras e números</item>
+        <item quantity="one">A senha não é forte o suficiente. Use pelo menos %1$d caractere e combine letras e números.</item>
+        <item quantity="other">A senha não é forte o suficiente. Use pelo menos %1$d caracteres e combine letras e números.</item>
     </plurals>
     <string name="email_account_creation_error" translation_description="Inline error for signup failure">Falha no registro da conta do e-mail</string>
     <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Já existe uma conta com esse endereço de e-mail.</string>
-    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Ao tocar em %1$s, você indica que está de acordo com os %2$s e a %3$s.</string>
-    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Ao tocar em %1$s, você indica que está de acordo com os %2$s.</string>
-    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Ao tocar em %1$s, você indica que está de acordo com a %2$s.</string>
+    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Ao tocar em \"%1$s\", você indica que está de acordo com os %2$s e a %3$s.</string>
+    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Ao tocar em \"%1$s\", você indica que está de acordo com os %2$s.</string>
+    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Ao tocar em \"%1$s\", você indica que está de acordo com a %2$s.</string>
     <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Termos de Serviço</string>
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Política de privacidade</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Você já tem uma conta</string>
-    <string name="welcome_back_email_header" translation_description="Message for returning users">Bem-vindo novamente!</string>
+    <string name="welcome_back_email_header" translation_description="Message for returning users">É bom ver você novamente!</string>
     <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Você já usou o e-mail %1$s. Faça login com o %2$s para continuar.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Você já usou o e-mail %1$s para fazer login. Insira a senha dessa conta.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Fazendo login...</string>
@@ -71,5 +71,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Reenviar código</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Confirmar número de telefone</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Continuar</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Um SMS pode ser enviado quando você tocar em \"%1$s\". Tarifas de mensagens e dados podem ser cobradas.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Você poderá receber um SMS ao tocar em \"%1$s\". Tarifas de mensagens e dados podem ser cobradas.</string>
 </resources>

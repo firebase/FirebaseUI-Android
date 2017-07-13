@@ -9,7 +9,7 @@
     <string name="provider_name_email">E-mail</string>
     <string name="provider_name_phone">Téléphone</string>
     <string name="sign_in_with_google" translation_description="Sign in button text">Se connecter avec Google</string>
-    <string name="sign_in_with_facebook" translation_description="Sign in button text">Connexion avec Facebook</string>
+    <string name="sign_in_with_facebook" translation_description="Sign in button text">Se connecter avec Facebook</string>
     <string name="sign_in_with_twitter" translation_description="Sign in button text">Se connecter avec Twitter</string>
     <string name="sign_in_with_email" translation_description="Sign in button text">Se connecter avec une adresse e-mail</string>
     <string name="sign_in_with_phone" translation_description="Sign in button text">Se connecter avec un téléphone</string>
