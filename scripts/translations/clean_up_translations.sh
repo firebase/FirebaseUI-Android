@@ -13,6 +13,12 @@ function find_files {
 chmod -R +wx auth/src/main/res/values-*
 rm -rf auth/src/main/res/values-{he,id}
 
+# Remove all RTL locales (until we fully QA them)
+# [Arabic and Hebrew]
+rm -rf auth/src/main/res/values-ar
+rm -rf auth/src/main/res/values-he
+rm -rf auth/src/main/res/values-iw
+
 # Process each file
 find_files | while read file;
 do
