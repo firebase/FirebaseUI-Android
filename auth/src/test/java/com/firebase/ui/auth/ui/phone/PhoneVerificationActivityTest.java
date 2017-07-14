@@ -200,7 +200,7 @@ public class PhoneVerificationActivityTest {
         onVerificationStateChangedCallbacks.onVerificationFailed(
                 new FirebaseAuthException("some_code", "custom_message"));
         assertTrue(mActivity.getAlertDialog().isShowing());
-        assertEquals("custom_message", getAlertDialogMessage());
+        assertEquals(FirebaseAuthError.ERROR_UNKNOWN.getDescription(), getAlertDialogMessage());
     }
 
     @Test
