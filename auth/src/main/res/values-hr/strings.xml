@@ -1,0 +1,78 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Učitavanje…</string>
+    <string name="sign_in_default" translation_description="Button text to sign in">Prijava</string>
+    <string name="general_error" translation_description="Toast text flashing general error">Došlo je do pogreške.</string>
+    <string name="idp_name_google">Google</string>
+    <string name="idp_name_facebook">Facebook</string>
+    <string name="idp_name_twitter">Twitter</string>
+    <string name="provider_name_email">E-adresa</string>
+    <string name="provider_name_phone">Telefon</string>
+    <string name="sign_in_with_google" translation_description="Sign in button text">Prijava putem Googlea</string>
+    <string name="sign_in_with_facebook" translation_description="Sign in button text">Prijava putem Facebooka</string>
+    <string name="sign_in_with_twitter" translation_description="Sign in button text">Prijava putem Twittera</string>
+    <string name="sign_in_with_email" translation_description="Sign in button text">Prijava putem e-adrese</string>
+    <string name="sign_in_with_phone" translation_description="Sign in button text">Prijava putem telefona</string>
+    <string name="next_default" translation_description="Button text to continue">Dalje</string>
+    <string name="email_hint" translation_description="Hint in email input field">E-adresa</string>
+    <string name="phone_hint" translation_description="Hint for phone input field">Telefonski broj</string>
+    <string name="password_hint" translation_description="Hint for password input field">Zaporka</string>
+    <string name="required_field" translation_description="Inline error for required field">Ne možete to ostaviti prazno.</string>
+    <string name="invalid_email_address" translation_description="Inline error for invalid email address">Ta e-adresa nije točna</string>
+    <string name="missing_email_address" translation_description="Inline error for empty email address in input field">Unesite svoju e-adresu za nastavak</string>
+    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Traženje postojećih računa...</string>
+    <string name="title_register_email" translation_description="Title for signup form">Registracija</string>
+    <string name="name_hint" translation_description="Hint for last name input field">Ime i prezime</string>
+    <string name="button_text_save" translation_description="Button text to save input form">Spremi</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registriranje....</string>
+    <plurals name="error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item>
+        <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item>
+        <item quantity="other">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znakova i koristite kombinaciju slova i znamenki.</item>
+    </plurals>
+    <string name="email_account_creation_error" translation_description="Inline error for signup failure">Registracija računa putem e-adrese nije uspjela</string>
+    <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Račun s tom e-adresom već postoji.</string>
+    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Dodirivanjem gumba %1$s potvrđujete da prihvaćate odredbe koje sadrže %2$s i %3$s.</string>
+    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Dodirivanjem gumba %1$s potvrđujete da prihvaćate odredbe koje sadrže %2$s.</string>
+    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Dodirivanjem gumba %1$s potvrđujete da prihvaćate odredbe koje sadrže %2$s.</string>
+    <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Uvjeti pružanja usluge</string>
+    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Pravila o privatnosti</string>
+    <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Već imate račun</string>
+    <string name="welcome_back_email_header" translation_description="Message for returning users">Dobro došli natrag!</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Već ste upotrijebili e-adresu %1$s.
+        Za nastavak se prijavite putem usluge %2$s.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Za prijavu ste već upotrijebili e-adresu %1$s.
+        Unesite zaporku za taj račun.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prijava...</string>
+    <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Problem s prijavom?</string>
+    <string name="title_recover_password_activity" translation_description="Recover password screen title">Ponovno postavljanje zaporke</string>
+    <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Provjerite e-poštu</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Provjerite upute za ponovno postavljanje zaporke koje smo
+        poslali na vašu e-adresu.</string>
+    <string name="button_text_send" translation_description="Button text to send recovery email">Pošalji</string>
+    <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Slijedite upute za ponovno postavljanje zaporke koje smo poslali na e-adresu %1$s.</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Slanje…</string>
+    <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Ta e-adresa ne pripada postojećem računu</string>
+    <string name="accessibility_logo" translation_description="Content description for app logo">Logotip aplikacije</string>
+    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Prijavljeni ste kao %1$s</string>
+    <string name="verify_phone_number_title" translation_description="Phone number entry form title">Unesite telefonski broj</string>
+    <string name="invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Unesite važeći telefonski broj</string>
+    <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Unesite 6-znamenkasti kôd koji smo poslali na broj</string>
+    <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Ponovno slanje koda za 0:%02d</string>
+    <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Potvrda telefonskog broja</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Potvrđivanje…</string>
+    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Dohvaćanje SMS-a…</string>
+    <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Pogrešan kôd. Pokušajte ponovo.</string>
+    <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">U redu</string>
+    <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Taj telefonski broj upotrijebljen je previše puta</string>
+    <string name="error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Došlo je do problema s potvrdom vašeg telefonskog broja</string>
+    <string name="error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Kôd više nije važeći</string>
+    <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">Prijava putem telefonskog broja</string>
+    <string name="done" translation_description="Progress dialog success transition once sms is sent">Gotovo</string>
+    <string name="verified" translation_description="Progress dialog success transition when phone number was verified">Potvrda je uspjela!</string>
+    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">Kôd je poslan!</string>
+    <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">Ponovno slanje…</string>
+    <string name="resend_code" translation_description="Link text to resend verification sms">Ponovo pošalji kôd</string>
+    <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Potvrda telefonskog broja</string>
+    <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Nastavi</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Dodirivanje gumba \"%1$s\" može dovesti do slanja SMS poruke. Mogu se primijeniti naknade za slanje poruka i podatkovni promet.</string>
+</resources>

@@ -1,0 +1,74 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">ಲೋಡ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
+    <string name="sign_in_default" translation_description="Button text to sign in">ಸೈನ್ ಇನ್‌</string>
+    <string name="general_error" translation_description="Toast text flashing general error">ದೋಷ ಸಂಭವಿಸಿದೆ.</string>
+    <string name="idp_name_google">Google</string>
+    <string name="idp_name_facebook">Facebook</string>
+    <string name="idp_name_twitter">Twitter</string>
+    <string name="provider_name_email">ಇಮೇಲ್</string>
+    <string name="provider_name_phone">ಫೋನ್</string>
+    <string name="sign_in_with_google" translation_description="Sign in button text">Google ಮೂಲಕ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
+    <string name="sign_in_with_facebook" translation_description="Sign in button text">Facebook ಮೂಲಕ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
+    <string name="sign_in_with_twitter" translation_description="Sign in button text">Twitter ಮೂಲಕ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
+    <string name="sign_in_with_email" translation_description="Sign in button text">ಇಮೇಲ್ ಜೊತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
+    <string name="sign_in_with_phone" translation_description="Sign in button text">ಫೋನ್‌ ಮೂಲಕ ಸೈನ್‌ ಇನ್‌ ಮಾಡಿ</string>
+    <string name="next_default" translation_description="Button text to continue">ಮುಂದೆ</string>
+    <string name="email_hint" translation_description="Hint in email input field">ಇಮೇಲ್</string>
+    <string name="phone_hint" translation_description="Hint for phone input field">ಫೋನ್ ಸಂಖ್ಯೆ</string>
+    <string name="password_hint" translation_description="Hint for password input field">ಪಾಸ್‌ವರ್ಡ್</string>
+    <string name="required_field" translation_description="Inline error for required field">ನೀವು ಇದನ್ನು ಖಾಲಿ ಬಿಡುವಂತಿಲ್ಲ.</string>
+    <string name="invalid_email_address" translation_description="Inline error for invalid email address">ಆ ಇಮೇಲ್ ವಿಳಾಸ ಸರಿಯಾಗಿಲ್ಲ</string>
+    <string name="missing_email_address" translation_description="Inline error for empty email address in input field">ಮುಂದುವರಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಖಾತೆಗಳಿಗಾಗಿ ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...</string>
+    <string name="title_register_email" translation_description="Title for signup form">ಸೈನ್ ಅಪ್</string>
+    <string name="name_hint" translation_description="Hint for last name input field">ಮೊದಲ ಮತ್ತು ಕೊನೆಯ ಹೆಸರು</string>
+    <string name="button_text_save" translation_description="Button text to save input form">ಉಳಿಸಿ</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">ಸೈನ್ ಅಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ...</string>
+    <plurals name="error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item>
+        <item quantity="other">ಪಾಸ್‍‌ವರ್ಡ್‌ ಸಾಕಷ್ಟು ಪ್ರಬಲವಾಗಿಲ್ಲ. ಕನಿಷ್ಠ %1$d ಅಕ್ಷರಗಳಿರಲಿ ಹಾಗೂ ಅದರಲ್ಲಿ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಕ್ಸ್‌ ಬಳಸಿ</item>
+    </plurals>
+    <string name="email_account_creation_error" translation_description="Inline error for signup failure">ಇಮೇಲ್ ಖಾತೆ ನೋಂದಣಿ ಮಾಡುವಿಕೆಯು ವಿಫಲವಾಗಿದೆ</string>
+    <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">ಆ ಇಮೇಲ್ ವಿಳಾಸದ ಜೊತೆಗೆ ಈಗಾಗಲೇ ಖಾತೆಯೊಂದು ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ.</string>
+    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">%1$s ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು %2$s ಮತ್ತು %3$s ಅನ್ನು ಒಪ್ಪುತ್ತೀರಿ ಎಂದು ಸೂಚಿಸುತ್ತಿದ್ದೀರಿ.</string>
+    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">%1$s ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು %2$sಅನ್ನು ಒಪ್ಪುತ್ತೀರಿ ಎಂದು ಸೂಚಿಸುತ್ತಿದ್ದೀರಿ.</string>
+    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">%1$s ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು %2$sಅನ್ನು ಒಪ್ಪುತ್ತೀರಿ ಎಂದು ಸೂಚಿಸುತ್ತಿದ್ದೀರಿ.</string>
+    <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">ಸೇವಾ ನಿಯಮಗಳು</string>
+    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">ಗೌಪ್ಯತಾ ನೀತಿ</string>
+    <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">ನೀವು ಈಗಾಗಲೇ ಖಾತೆಯನ್ನು ಹೊಂದಿರುವಿರಿ</string>
+    <string name="welcome_back_email_header" translation_description="Message for returning users">ಮರಳಿ ಸುಸ್ವಾಗತ!</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">ನೀವು ಈಗಾಗಲೇ %1$s ಅನ್ನು ಬಳಸುತ್ತಿರುವಿರಿ. ಮುಂದುವರಿಸಲು %2$s ಜೊತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">ನೀವು ಈಗಾಗಲೇ ಸೈನ್ ಇನ್ ಮಾಡಲು %1$sನ್ನು ಬಳಸಿದ್ದೀರಿ. ಆ ಖಾತೆಗೆ ಸೈನ್ ಇನ್ ಆಗಲು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನಮೂದಿಸಿ.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">ಸೈನ್ ಇನ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
+    <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">ಸೈನ್ ಇನ್ ಮಾಡುವಲ್ಲಿ ಸಮಸ್ಯೆ ಕಂಡುಬಂದಿದೆಯೇ?</string>
+    <string name="title_recover_password_activity" translation_description="Recover password screen title">ಪಾಸ್‌ವರ್ಡ್ ಹಿಂಪಡೆಯಿರಿ</string>
+    <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">ನಿಮ್ಮ ಇಮೇಲ್‌ ಅನ್ನು ಪರಿಶೀಲಿಸಿ</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸುವುದು ಹೇಗೆ ಎಂದು ತಿಳಿಸುವ ಸೂಚನೆಗಳನ್ನು ಈ ಇಮೇಲ್‌ ಮೂಲಕ ಪಡೆಯಿರಿ.</string>
+    <string name="button_text_send" translation_description="Button text to send recovery email">ಕಳುಹಿಸಿ</string>
+    <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಪಡೆಯಲು %1$s ಗೆ ಕಳುಹಿಸಲಾದ ಸೂಚನೆಗಳನ್ನು ಅನುಸರಿಸಿ.</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ...</string>
+    <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">ಆ ಇಮೇಲ್‌ ವಿಳಾಸವು ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಖಾತೆಗೆ ಹೊಂದಾಣಿಕೆಯಾಗುವುದಿಲ್ಲ</string>
+    <string name="accessibility_logo" translation_description="Content description for app logo">ಅಪ್ಲಿಕೇಶನ್‌ ಲೋಗೊ</string>
+    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">ನೀವು %1$s ನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿರುವಿರಿ</string>
+    <string name="verify_phone_number_title" translation_description="Phone number entry form title">ನಿಮ್ಮ ಫೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="invalid_phone_number" translation_description="Inline error when phone number entered is invalid">ಮಾನ್ಯವಾದ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">ನಾವು ಕಳುಹಿಸಿರುವ 6 ಅಂಕಿಯ ಕೋಡ್‌ ನಮೂದಿಸಿ</string>
+    <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">ಇಷ್ಟರ ಒಳಗೆ ಕೋಡ್ ಮತ್ತೆ ಕಳುಹಿಸಿ 0:%02d</string>
+    <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">ನಿಮ್ಮ ಪೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...</string>
+    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">ಎಸ್‌ಎಂಎಸ್‌ ಹಿಂಪಡೆಯಲಾಗುತ್ತಿದೆ…</string>
+    <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">ಕೋಡ್ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ಸರಿ</string>
+    <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">ಈ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಈಗಾಗಲೇ ಹಲವಾರು ಬಾರಿ ಬಳಸಲಾಗಿದೆ</string>
+    <string name="error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">ನಿಮ್ಮ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸುವಲ್ಲಿ ತೊಂದರೆ ಇದೆ</string>
+    <string name="error_session_expired" translation_description="Error message when SMS confirmation code has expired.">ಈ ಕೋಡ್ ಇನ್ನು ಮುಂದೆ ಮಾನ್ಯವಾಗಿರುವುದಿಲ್ಲ</string>
+    <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">ಫೋನ್‌ ಸಂಖ್ಯೆಯ ಮೂಲಕ ಸೈನ್‌ ಇನ್‌ ಮಾಡಿ</string>
+    <string name="done" translation_description="Progress dialog success transition once sms is sent">ಮುಗಿದಿದೆ</string>
+    <string name="verified" translation_description="Progress dialog success transition when phone number was verified">ಪರಿಶೀಲಿಸಲಾಗಿದೆ</string>
+    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">ಕೋಡ್‌ ಕಳುಹಿಸಲಾಗಿದೆ!</string>
+    <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">ಪುನಃ ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ…</string>
+    <string name="resend_code" translation_description="Link text to resend verification sms">ಕೋಡ್ ಪುನಃ ಕಳುಹಿಸಿ</string>
+    <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
+    <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">ಮುಂದುವರಿಸಿ</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">\"%1$s\" ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವ ಮೂಲಕ, ಎಸ್‌ಎಂಎಸ್‌ ಅನ್ನು ಕಳುಹಿಸಬಹುದಾಗಿದೆ. ಸಂದೇಶ ಮತ್ತು ಡೇಟಾ ದರಗಳು ಅನ್ವಯಿಸಬಹುದು.</string>
+</resources>

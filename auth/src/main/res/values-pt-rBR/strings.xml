@@ -1,0 +1,74 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Carregando…</string>
+    <string name="sign_in_default" translation_description="Button text to sign in">Fazer login</string>
+    <string name="general_error" translation_description="Toast text flashing general error">Ocorreu um erro.</string>
+    <string name="idp_name_google">Google</string>
+    <string name="idp_name_facebook">Facebook</string>
+    <string name="idp_name_twitter">Twitter</string>
+    <string name="provider_name_email">E-mail</string>
+    <string name="provider_name_phone">Smartphone</string>
+    <string name="sign_in_with_google" translation_description="Sign in button text">Fazer login com o Google</string>
+    <string name="sign_in_with_facebook" translation_description="Sign in button text">Fazer login com o Facebook</string>
+    <string name="sign_in_with_twitter" translation_description="Sign in button text">Fazer login com o Twitter</string>
+    <string name="sign_in_with_email" translation_description="Sign in button text">Fazer login com o e-mail</string>
+    <string name="sign_in_with_phone" translation_description="Sign in button text">Fazer login com o telefone</string>
+    <string name="next_default" translation_description="Button text to continue">Próxima</string>
+    <string name="email_hint" translation_description="Hint in email input field">E-mail</string>
+    <string name="phone_hint" translation_description="Hint for phone input field">Número de telefone</string>
+    <string name="password_hint" translation_description="Hint for password input field">Senha</string>
+    <string name="required_field" translation_description="Inline error for required field">Esse campo não pode ficar em branco.</string>
+    <string name="invalid_email_address" translation_description="Inline error for invalid email address">Endereço de e-mail inválido</string>
+    <string name="missing_email_address" translation_description="Inline error for empty email address in input field">Digite seu endereço de e-mail para continuar</string>
+    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Verificando contas existentes…</string>
+    <string name="title_register_email" translation_description="Title for signup form">Inscrever-se</string>
+    <string name="name_hint" translation_description="Hint for last name input field">Nome e sobrenome</string>
+    <string name="button_text_save" translation_description="Button text to save input form">Salvar</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Concluindo sua inscrição...</string>
+    <plurals name="error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">A senha não é forte o suficiente. Use pelo menos %1$d caractere e combine letras e números.</item>
+        <item quantity="other">A senha não é forte o suficiente. Use pelo menos %1$d caracteres e combine letras e números.</item>
+    </plurals>
+    <string name="email_account_creation_error" translation_description="Inline error for signup failure">Falha no registro da conta do e-mail</string>
+    <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Já existe uma conta com esse endereço de e-mail.</string>
+    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Ao tocar em \"%1$s\", você indica que está de acordo com os %2$s e a %3$s.</string>
+    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Ao tocar em \"%1$s\", você indica que está de acordo com os %2$s.</string>
+    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Ao tocar em \"%1$s\", você indica que está de acordo com a %2$s.</string>
+    <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Termos de Serviço</string>
+    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Política de privacidade</string>
+    <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Você já tem uma conta</string>
+    <string name="welcome_back_email_header" translation_description="Message for returning users">É bom ver você novamente!</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Você já usou o e-mail %1$s. Faça login com o %2$s para continuar.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Você já usou o e-mail %1$s para fazer login. Insira a senha dessa conta.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Fazendo login...</string>
+    <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Problemas com login?</string>
+    <string name="title_recover_password_activity" translation_description="Recover password screen title">Recuperar a senha</string>
+    <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Verifique seu e-mail</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Veja como redefinir sua senha nas instruções enviadas para este e-mail.</string>
+    <string name="button_text_send" translation_description="Button text to send recovery email">Enviar</string>
+    <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Siga as instruções enviadas para %1$s para recuperar sua senha.</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Enviando…</string>
+    <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">O endereço de e-mail não corresponde a uma conta existente</string>
+    <string name="accessibility_logo" translation_description="Content description for app logo">Logotipo do app</string>
+    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Conectado como %1$s</string>
+    <string name="verify_phone_number_title" translation_description="Phone number entry form title">Insira o número do seu telefone</string>
+    <string name="invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Insira um número de telefone válido</string>
+    <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Insira o código de 6 dígitos enviado para</string>
+    <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Reenviar código em 0:%02d</string>
+    <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Confirmar seu número de telefone</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Verificando...</string>
+    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Recuperando SMS…</string>
+    <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Código incorreto. Tente novamente.</string>
+    <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">Ok</string>
+    <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Este número de telefone já foi usado muitas vezes</string>
+    <string name="error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Ocorreu um problema na verificação do seu número de telefone</string>
+    <string name="error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Este código não é mais válido</string>
+    <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">Fazer login com o número de telefone</string>
+    <string name="done" translation_description="Progress dialog success transition once sms is sent">Concluído</string>
+    <string name="verified" translation_description="Progress dialog success transition when phone number was verified">Verificado.</string>
+    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">Código enviado.</string>
+    <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">Reenviando…</string>
+    <string name="resend_code" translation_description="Link text to resend verification sms">Reenviar código</string>
+    <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Confirmar número de telefone</string>
+    <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Continuar</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Você poderá receber um SMS ao tocar em \"%1$s\". Tarifas de mensagens e dados podem ser cobradas.</string>
+</resources>
