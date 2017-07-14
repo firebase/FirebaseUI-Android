@@ -12,7 +12,22 @@ from a [`StorageReference`][storage-reference] and display it using the popular
 [Glide][glide] library. This technique allows you to get all of Glide's performance
 benefits while leveraging Cloud Storage's authenticated storage capabilities.
 
-To load an image from a `StorageReference`, simply use the `FirebaseImageLoader` class:
+To load an image from a `StorageReference`, first register in your `AppGlideModule`:
+
+```java
+@GlideModule
+public class MyAppGlideModule extends AppGlideModule {
+
+    @Override
+    public void registerComponents(Context context, Registry registry) {
+        // Register FirebaseImageLoader to handle StorageReference
+        registry.append(StorageReference.class, InputStream.class,
+                new FirebaseImageLoader.Factory());
+    }
+}
+```
+
+Then you can load a `StorageReference` into an `ImageView`:
 
 ```java
 // Reference to an image file in Cloud Storage

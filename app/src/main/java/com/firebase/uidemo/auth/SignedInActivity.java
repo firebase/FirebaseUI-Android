@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
@@ -165,7 +166,7 @@ public class SignedInActivity extends AppCompatActivity {
         if (user.getPhotoUrl() != null) {
             Glide.with(this)
                     .load(user.getPhotoUrl())
-                    .fitCenter()
+                    .apply(RequestOptions.fitCenterTransform())
                     .into(mUserProfilePicture);
         }
 

@@ -45,6 +45,9 @@ dependencies {
     compile('com.facebook.android:facebook-android-sdk:4.23.0')
     compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
 
+    compile 'com.github.bumptech.glide:glide:4.0.0-RC1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC1'
+
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
