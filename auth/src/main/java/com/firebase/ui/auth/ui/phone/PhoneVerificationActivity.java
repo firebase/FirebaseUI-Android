@@ -27,6 +27,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.firebase.ui.auth.FirebaseAuthError;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
@@ -60,11 +61,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
 
     private static final long SHORT_DELAY_MILLIS = 750;
     @VisibleForTesting static final long AUTO_RETRIEVAL_TIMEOUT_MILLIS = 120000;
-    @VisibleForTesting static final String ERROR_INVALID_PHONE = "ERROR_INVALID_PHONE_NUMBER";
-    @VisibleForTesting static final String ERROR_INVALID_VERIFICATION = "ERROR_INVALID_VERIFICATION_CODE";
-    private static final String ERROR_TOO_MANY_REQUESTS = "ERROR_TOO_MANY_REQUESTS";
-    private static final String ERROR_QUOTA_EXCEEDED = "ERROR_QUOTA_EXCEEDED";
-    private static final String ERROR_SESSION_EXPIRED = "ERROR_SESSION_EXPIRED";
+
     private static final String KEY_VERIFICATION_PHONE = "KEY_VERIFICATION_PHONE";
     private static final String KEY_STATE = "KEY_STATE";
 
@@ -202,9 +199,10 @@ public class PhoneVerificationActivity extends AppCompatBase {
             return;
         }
         if (ex instanceof FirebaseAuthException) {
-            FirebaseAuthException firebaseAuthException = (FirebaseAuthException) ex;
-            switch (firebaseAuthException.getErrorCode()) {
-                case ERROR_INVALID_PHONE:
+            FirebaseAuthError error = FirebaseAuthError.fromException((FirebaseAuthException) ex);
+
+            switch (error) {
+                case ERROR_INVALID_PHONE_NUMBER:
                     verifyPhoneNumberFragment.showError(getString(R.string.invalid_phone_number));
                     dismissLoadingDialog();
                     break;
@@ -217,9 +215,9 @@ public class PhoneVerificationActivity extends AppCompatBase {
                     dismissLoadingDialog();
                     break;
                 default:
-                    Log.w(PHONE_VERIFICATION_LOG_TAG, ex.getLocalizedMessage());
+                    Log.w(PHONE_VERIFICATION_LOG_TAG, error.getDescription(), ex);
                     dismissLoadingDialog();
-                    showAlertDialog(ex.getLocalizedMessage(), null);
+                    showAlertDialog(error.getDescription(), null);
             }
         } else {
             Log.w(PHONE_VERIFICATION_LOG_TAG, ex.getLocalizedMessage());
@@ -331,10 +329,11 @@ public class PhoneVerificationActivity extends AppCompatBase {
                         dismissLoadingDialog();
                         //incorrect confirmation code
                         if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                            FirebaseAuthInvalidCredentialsException firebaseAuthInvalidCredentialsException
-                                    = (FirebaseAuthInvalidCredentialsException) e;
-                            switch (firebaseAuthInvalidCredentialsException.getErrorCode()) {
-                                case ERROR_INVALID_VERIFICATION:
+                            FirebaseAuthError error = FirebaseAuthError.fromException(
+                                    (FirebaseAuthInvalidCredentialsException) e);
+
+                            switch (error) {
+                                case ERROR_INVALID_VERIFICATION_CODE:
                                     showAlertDialog(
                                             getString(R.string.incorrect_code_dialog_body),
                                             new DialogInterface.OnClickListener() {
@@ -357,7 +356,8 @@ public class PhoneVerificationActivity extends AppCompatBase {
                                             });
                                     break;
                                 default:
-                                    showAlertDialog(e.getLocalizedMessage(), null);
+                                    Log.w(PHONE_VERIFICATION_LOG_TAG, error.getDescription(), e);
+                                    showAlertDialog(error.getDescription(), null);
                             }
                         } else {
                             showAlertDialog(e.getLocalizedMessage(), null);

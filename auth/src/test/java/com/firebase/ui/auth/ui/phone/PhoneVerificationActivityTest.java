@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.FirebaseAuthError;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
@@ -58,8 +59,6 @@ import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE_NO_COUNTRY_
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_RAW_PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.AUTO_RETRIEVAL_TIMEOUT_MILLIS;
-import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.ERROR_INVALID_PHONE;
-import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.ERROR_INVALID_VERIFICATION;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -173,7 +172,9 @@ public class PhoneVerificationActivityTest {
         PhoneAuthProvider.OnVerificationStateChangedCallbacks onVerificationStateChangedCallbacks
                 = callbacksArgumentCaptor.getValue();
         onVerificationStateChangedCallbacks.onVerificationFailed(
-                new FirebaseAuthException(ERROR_INVALID_PHONE, "any_message"));
+                new FirebaseAuthException(
+                        FirebaseAuthError.ERROR_INVALID_PHONE_NUMBER.toString(),
+                        "any_message"));
 
         //was error displayed
         assertEquals(mErrorEditText.getText(), mActivity.getString(R.string.invalid_phone_number));
@@ -217,7 +218,7 @@ public class PhoneVerificationActivityTest {
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         null, true,
                         new FirebaseAuthInvalidCredentialsException(
-                                ERROR_INVALID_VERIFICATION,
+                                FirebaseAuthError.ERROR_INVALID_VERIFICATION_CODE.toString(),
                                 "any_msg")));
         testSendConfirmationCode();
         SpacedEditText mConfirmationCodeEditText = (SpacedEditText) mActivity.findViewById(R.id.confirmation_code);
