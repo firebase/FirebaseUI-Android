@@ -38,7 +38,7 @@
             style="@style/Widget.Design.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/field_padding_vert"
+            android:paddingTop="@dimen/fui_field_padding_vert"
             android:hint="@string/name_hint"
             app:errorEnabled="true">
 
@@ -55,7 +55,7 @@
             style="@style/FirebaseUI.TextInputLayout.PasswordField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/field_padding_vert"
+            android:paddingTop="@dimen/fui_field_padding_vert"
             app:errorEnabled="true"
             app:passwordToggleEnabled="true">
 
@@ -70,7 +70,7 @@
             style="@style/FirebaseUI.Text.BodyText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/field_padding_vert"
+            android:layout_marginTop="@dimen/fui_field_padding_vert"
             android:textIsSelectable="false"
             tools:text="@string/create_account_preamble" />
 

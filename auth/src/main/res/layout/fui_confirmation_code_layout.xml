@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/dgts__titleText"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/linkColor"
+            android:textColor="@color/fui_linkColor"
             tools:ignore="SelectableText" />
 
         <com.firebase.ui.auth.ui.phone.SpacedEditText
@@ -36,7 +36,7 @@
             android:layout_below="@+id/edit_phone_number"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:background="@color/transparent"
+            android:background="@color/fui_transparent"
             android:cursorVisible="false"
             android:ems="10"
             android:fontFamily="monospace"
@@ -83,7 +83,7 @@
                 android:gravity="center"
                 android:text="@string/resend_code"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/linkColor"
+                android:textColor="@color/fui_linkColor"
                 android:visibility="gone"
                 tools:text="Resend code" />
 
@@ -94,7 +94,7 @@
             style="@style/FirebaseUI.Text.BodyText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/field_padding_vert"
+            android:layout_marginTop="@dimen/fui_field_padding_vert"
             android:layout_below="@id/resend_code_layout"
             android:textIsSelectable="false"
             tools:text="@string/create_account_preamble" />
