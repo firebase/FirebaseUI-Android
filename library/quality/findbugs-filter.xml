@@ -4,4 +4,16 @@
         <Class name="com.firebase.ui.database.TestUtils"/>
         <Bug pattern="RV_RETURN_VALUE_IGNORED"/>
     </Match>
+
+    <!-- Generated class from Glide annotation processing -->
+    <Match>
+        <Class name="com.firebase.uidemo.storage.GlideOptions" />
+        <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE" />
+    </Match>
+
+    <!-- Generated class from Glide annotation processing -->
+    <Match>
+        <Class name="com.firebase.uidemo.storage.GlideRequest" />
+        <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE" />
+    </Match>
 </FindBugsFilter>

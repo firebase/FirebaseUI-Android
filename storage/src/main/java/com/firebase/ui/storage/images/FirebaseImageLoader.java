@@ -19,6 +19,7 @@ import com.google.firebase.storage.StreamDownloadTask;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 
 /**
@@ -93,7 +94,7 @@ public class FirebaseImageLoader implements ModelLoader<StorageReference, InputS
 
         @Override
         public void updateDiskCacheKey(MessageDigest digest) {
-            digest.update(mRef.getPath().getBytes());
+            digest.update(mRef.getPath().getBytes(Charset.defaultCharset()));
         }
     }
 
