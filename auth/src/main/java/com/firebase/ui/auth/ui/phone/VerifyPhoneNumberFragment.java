@@ -78,7 +78,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.phone_layout, container, false);
+        View v = inflater.inflate(R.layout.fui_phone_layout, container, false);
 
         countryListSpinner = (CountryListSpinner) v.findViewById(R.id.country_list);
         mPhoneEditText = (EditText) v.findViewById(R.id.phone_number);

@@ -77,7 +77,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     @Override
     @LayoutRes
     public int getButtonLayout() {
-        return R.layout.idp_button_twitter;
+        return R.layout.fui_idp_button_twitter;
     }
 
     @Override

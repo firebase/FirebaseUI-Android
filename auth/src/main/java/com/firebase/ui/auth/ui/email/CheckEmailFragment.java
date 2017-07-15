@@ -99,7 +99,7 @@ public class CheckEmailFragment extends FragmentBase implements
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.check_email_layout, container, false);
+        View v = inflater.inflate(R.layout.fui_check_email_layout, container, false);
 
         // Email field and validator
         mEmailLayout = (TextInputLayout) v.findViewById(R.id.email_layout);

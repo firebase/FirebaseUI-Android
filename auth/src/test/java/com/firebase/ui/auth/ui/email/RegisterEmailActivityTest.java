@@ -92,9 +92,9 @@ public class RegisterEmailActivityTest {
                 String.format(
                         registerEmailActivity.getResources().getQuantityString(
                                 R.plurals.error_weak_password,
-                                R.integer.min_password_length),
+                                R.integer.fui_min_password_length),
                         registerEmailActivity.getResources()
-                                .getInteger(R.integer.min_password_length)
+                                .getInteger(R.integer.fui_min_password_length)
                 ),
                 passwordLayout.getError().toString());
     }

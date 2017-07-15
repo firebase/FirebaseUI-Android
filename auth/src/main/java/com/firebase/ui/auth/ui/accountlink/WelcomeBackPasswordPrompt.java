@@ -78,7 +78,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.welcome_back_password_prompt_layout);
+        setContentView(R.layout.fui_welcome_back_password_prompt_layout);
 
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);

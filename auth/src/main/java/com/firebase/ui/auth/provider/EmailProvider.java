@@ -37,7 +37,7 @@ public class EmailProvider implements Provider {
     @Override
     @LayoutRes
     public int getButtonLayout() {
-        return R.layout.provider_button_email;
+        return R.layout.fui_provider_button_email;
     }
 
     @Override

@@ -90,7 +90,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.register_email_layout, container, false);
+        View v = inflater.inflate(R.layout.fui_register_email_layout, container, false);
 
         mEmailEditText = (EditText) v.findViewById(R.id.email);
         mNameEditText = (EditText) v.findViewById(R.id.name);
@@ -101,7 +101,7 @@ public class RegisterEmailFragment extends FragmentBase implements
 
         mPasswordFieldValidator = new PasswordFieldValidator(
                 mPasswordInput,
-                getResources().getInteger(R.integer.min_password_length));
+                getResources().getInteger(R.integer.fui_min_password_length));
         mNameValidator = new RequiredFieldValidator(
                 (TextInputLayout) v.findViewById(R.id.name_layout));
         mEmailFieldValidator = new EmailFieldValidator(mEmailInput);
@@ -252,7 +252,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                         if (e instanceof FirebaseAuthWeakPasswordException) {
                             // Password too weak
                             mPasswordInput.setError(getResources().getQuantityString(
-                                    R.plurals.error_weak_password, R.integer.min_password_length));
+                                    R.plurals.error_weak_password, R.integer.fui_min_password_length));
                         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             // Email address is malformed
                             mEmailInput.setError(getString(R.string.invalid_email_address));

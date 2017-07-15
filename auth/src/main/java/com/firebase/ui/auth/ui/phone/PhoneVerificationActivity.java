@@ -86,7 +86,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     @Override
     protected void onCreate(final Bundle savedInstance) {
         super.onCreate(savedInstance);
-        setContentView(R.layout.activity_register_phone);
+        setContentView(R.layout.fui_activity_register_phone);
 
         mSaveSmartLock = mActivityHelper.getSaveSmartLockInstance();
         mHandler = new Handler();

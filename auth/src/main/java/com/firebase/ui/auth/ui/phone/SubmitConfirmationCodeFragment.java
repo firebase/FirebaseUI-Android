@@ -72,7 +72,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.confirmation_code_layout, container, false);
+        View v = inflater.inflate(R.layout.fui_confirmation_code_layout, container, false);
         FragmentActivity parentActivity = getActivity();
 
         mEditPhoneTextView = (TextView) v.findViewById(R.id.edit_phone_number);

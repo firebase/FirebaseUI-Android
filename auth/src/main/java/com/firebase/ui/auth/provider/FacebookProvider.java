@@ -88,7 +88,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     @Override
     @LayoutRes
     public int getButtonLayout() {
-        return R.layout.idp_button_facebook;
+        return R.layout.fui_idp_button_facebook;
     }
 
     @Override
