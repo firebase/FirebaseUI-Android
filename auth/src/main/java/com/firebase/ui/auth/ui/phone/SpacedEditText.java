@@ -49,9 +49,9 @@ public final class SpacedEditText extends AppCompatEditText {
 
     void initAttrs(Context context, AttributeSet attrs) {
         originalText = new SpannableStringBuilder("");
-        final TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.fui_SpacedEditText);
+        final TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.SpacedEditText);
         //Controls the ScaleXSpan applied on the injected spaces
-        proportion = array.getFloat(R.styleable.fui_SpacedEditText_fui_spacingProportion, 1);
+        proportion = array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1);
         array.recycle();
     }
 

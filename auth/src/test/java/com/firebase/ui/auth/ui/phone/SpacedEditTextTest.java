@@ -52,9 +52,9 @@ public class SpacedEditTextTest {
         context = mock(Context.class);
         array = mock(TypedArray.class);
 
-        when(array.getFloat(R.styleable.fui_SpacedEditText_fui_spacingProportion, 1)).thenReturn
+        when(array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1)).thenReturn
                 (spacingPropotion);
-        when(context.obtainStyledAttributes(attrs, R.styleable.fui_SpacedEditText)).thenReturn(array);
+        when(context.obtainStyledAttributes(attrs, R.styleable.SpacedEditText)).thenReturn(array);
         spacedEditText = new SpacedEditText(RuntimeEnvironment.application, attrs);
         spacedEditText.initAttrs(context, attrs);
     }
