@@ -84,7 +84,7 @@ public class FirebaseImageLoader implements ModelLoader<StorageReference, InputS
         return true;
     }
 
-    private class FirebaseStorageKey implements Key {
+    private static class FirebaseStorageKey implements Key {
 
         private StorageReference mRef;
 
@@ -98,7 +98,7 @@ public class FirebaseImageLoader implements ModelLoader<StorageReference, InputS
         }
     }
 
-    private class FirebaseStorageFetcher implements DataFetcher<InputStream> {
+    private static class FirebaseStorageFetcher implements DataFetcher<InputStream> {
 
         private StorageReference mRef;
         private StreamDownloadTask mStreamTask;
