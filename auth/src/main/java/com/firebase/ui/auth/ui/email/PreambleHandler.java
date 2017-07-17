@@ -51,12 +51,12 @@ public class PreambleHandler {
         }
 
         String[] preambles =
-                mContext.getResources().getStringArray(R.array.create_account_preamble);
+                mContext.getResources().getStringArray(R.array.fui_create_account_preamble);
         mBuilder = new SpannableStringBuilder(preambles[preambleType]);
 
         replaceTarget(BTN_TARGET, mButtonText);
-        replaceUrlTarget(TOS_TARGET, R.string.terms_of_service, mFlowParameters.termsOfServiceUrl);
-        replaceUrlTarget(PP_TARGET, R.string.privacy_policy, mFlowParameters.privacyPolicyUrl);
+        replaceUrlTarget(TOS_TARGET, R.string.fui_terms_of_service, mFlowParameters.termsOfServiceUrl);
+        replaceUrlTarget(PP_TARGET, R.string.fui_privacy_policy, mFlowParameters.privacyPolicyUrl);
     }
 
     private void replaceTarget(String target, @StringRes int replacementRes) {

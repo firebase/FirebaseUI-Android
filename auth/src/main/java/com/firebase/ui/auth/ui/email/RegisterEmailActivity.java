@@ -135,7 +135,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
 
             ft.disallowAddToBackStack().commit();
         } else {
-            emailLayout.setError(getString(R.string.error_email_does_not_exist));
+            emailLayout.setError(getString(R.string.fui_error_email_does_not_exist));
         }
     }
 

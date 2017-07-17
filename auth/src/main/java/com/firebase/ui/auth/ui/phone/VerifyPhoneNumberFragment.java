@@ -87,7 +87,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         mSmsTermsText = (TextView) v.findViewById(R.id.send_sms_tos);
 
         FragmentActivity parentActivity = getActivity();
-        parentActivity.setTitle(getString(R.string.verify_phone_number_title));
+        parentActivity.setTitle(getString(R.string.fui_verify_phone_number_title));
         setUpCountrySpinner();
         setupSendCodeButton();
         setupTerms();
@@ -96,8 +96,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     }
 
     private void setupTerms() {
-        final String verifyPhoneButtonText = getString(R.string.verify_phone_number);
-        final String terms = getString(R.string.sms_terms_of_service, verifyPhoneButtonText);
+        final String verifyPhoneButtonText = getString(R.string.fui_verify_phone_number);
+        final String terms = getString(R.string.fui_sms_terms_of_service, verifyPhoneButtonText);
         mSmsTermsText.setText(terms);
     }
 
@@ -161,7 +161,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     public void onClick(View v) {
         String phoneNumber = getPseudoValidPhoneNumber();
         if (phoneNumber == null) {
-            errorEditText.setText(R.string.invalid_phone_number);
+            errorEditText.setText(R.string.fui_invalid_phone_number);
         } else {
             mVerifier.verifyPhoneNumber(phoneNumber, false);
         }

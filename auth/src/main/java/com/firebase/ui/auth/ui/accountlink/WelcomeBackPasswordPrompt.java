@@ -94,7 +94,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         ImeHelper.setImeOnDoneListener(mPasswordField, this);
 
         // Create welcome back text with email bolded.
-        String bodyText = getString(R.string.welcome_back_password_prompt_body, mEmail);
+        String bodyText = getString(R.string.fui_welcome_back_password_prompt_body, mEmail);
         FlowParameters flowParameters = mActivityHelper.getFlowParams();
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
@@ -138,12 +138,12 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     private void validateAndSignIn(final String email, final String password) {
         // Check for null or empty password
         if (TextUtils.isEmpty(password)) {
-            mPasswordLayout.setError(getString(R.string.required_field));
+            mPasswordLayout.setError(getString(R.string.fui_required_field));
             return;
         } else {
             mPasswordLayout.setError(null);
         }
-        mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
+        mActivityHelper.showLoadingDialog(R.string.fui_progress_dialog_signing_in);
 
         final FirebaseAuth firebaseAuth = mActivityHelper.getFirebaseAuth();
         // Sign in with known email and the password provided

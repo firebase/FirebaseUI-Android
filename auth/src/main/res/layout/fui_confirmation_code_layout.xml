@@ -15,7 +15,7 @@
             style="@style/FirebaseUI.Text.T08"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/enter_confirmation_code" />
+            android:text="@string/fui_enter_confirmation_code" />
 
         <TextView
             android:id="@+id/edit_phone_number"
@@ -52,7 +52,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/confirmation_code"
-            android:text="@string/continue_phone_login" />
+            android:text="@string/fui_continue_phone_login" />
 
         <LinearLayout
             android:id="@+id/resend_code_layout"
@@ -81,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
                 android:gravity="center"
-                android:text="@string/resend_code"
+                android:text="@string/fui_resend_code"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/fui_linkColor"
                 android:visibility="gone"

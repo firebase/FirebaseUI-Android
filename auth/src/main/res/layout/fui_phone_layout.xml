@@ -38,7 +38,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/phone_number_error"
-            android:text="@string/verify_phone_number" />
+            android:text="@string/fui_verify_phone_number" />
 
         <TextView
             android:id="@+id/send_sms_tos"

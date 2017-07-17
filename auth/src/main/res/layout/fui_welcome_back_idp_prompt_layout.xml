@@ -11,7 +11,7 @@
         style="@style/FirebaseUI.Text.Heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/welcome_back_idp_header" />
+        android:text="@string/fui_welcome_back_idp_header" />
 
     <TextView
         android:id="@+id/welcome_back_idp_prompt"
@@ -26,6 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:text="@string/sign_in_default" />
+        android:text="@string/fui_sign_in_default" />
 
 </LinearLayout>

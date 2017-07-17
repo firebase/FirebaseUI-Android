@@ -154,10 +154,10 @@ public class RegisterEmailFragment extends FragmentBase implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().setTitle(R.string.title_register_email);
+        getActivity().setTitle(R.string.fui_title_register_email);
 
         mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
-        mAgreementText.showTerms(mHelper.getFlowParams(), R.string.button_text_save);
+        mAgreementText.showTerms(mHelper.getFlowParams(), R.string.fui_button_text_save);
     }
 
     @Override
@@ -205,7 +205,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         boolean passwordValid = mPasswordFieldValidator.validate(password);
         boolean nameValid = mNameValidator.validate(name);
         if (emailValid && passwordValid && nameValid) {
-            mHelper.showLoadingDialog(R.string.progress_dialog_signing_up);
+            mHelper.showLoadingDialog(R.string.fui_progress_dialog_signing_up);
             registerUser(email, name, password);
         }
     }
@@ -252,10 +252,10 @@ public class RegisterEmailFragment extends FragmentBase implements
                         if (e instanceof FirebaseAuthWeakPasswordException) {
                             // Password too weak
                             mPasswordInput.setError(getResources().getQuantityString(
-                                    R.plurals.error_weak_password, R.integer.fui_min_password_length));
+                                    R.plurals.fui_error_weak_password, R.integer.fui_min_password_length));
                         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             // Email address is malformed
-                            mEmailInput.setError(getString(R.string.invalid_email_address));
+                            mEmailInput.setError(getString(R.string.fui_invalid_email_address));
                         } else if (e instanceof FirebaseAuthUserCollisionException) {
                             // Collision with existing user email, it should be very hard for
                             // the user to even get to this error due to CheckEmailFragment.
@@ -266,7 +266,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                                         @Override
                                         public void onSuccess(String provider) {
                                             Toast.makeText(getContext(),
-                                                           R.string.error_user_collision,
+                                                           R.string.fui_error_user_collision,
                                                            Toast.LENGTH_LONG)
                                                     .show();
 
@@ -311,7 +311,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                         } else {
                             // General error message, this branch should not be invoked but
                             // covers future API changes
-                            mEmailInput.setError(getString(R.string.email_account_creation_error));
+                            mEmailInput.setError(getString(R.string.fui_email_account_creation_error));
                         }
 
                         mHelper.dismissDialog();

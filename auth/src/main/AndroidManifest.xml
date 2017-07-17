@@ -32,38 +32,38 @@
 
         <activity
             android:name=".ui.email.RecoverPasswordActivity"
-            android:label="@string/title_recover_password_activity"
+            android:label="@string/fui_title_recover_password_activity"
             android:exported="false"/>
 
         <activity
             android:name=".ui.email.RegisterEmailActivity"
-            android:label="@string/sign_in_default"
+            android:label="@string/fui_sign_in_default"
             android:exported="false"/>
 
         <activity
             android:name=".ui.phone.PhoneVerificationActivity"
-            android:label="@string/sign_in_with_phone_number"
+            android:label="@string/fui_sign_in_with_phone_number"
             android:windowSoftInputMode="stateAlwaysVisible"
             android:exported="false"/>
 
         <activity
             android:name=".ui.accountlink.WelcomeBackIdpPrompt"
-            android:label="@string/title_welcome_back_idp_prompt"
+            android:label="@string/fui_title_welcome_back_idp_prompt"
             android:exported="false"/>
 
         <activity
             android:name=".ui.accountlink.WelcomeBackPasswordPrompt"
-            android:label="@string/title_welcome_back_password_prompt"
+            android:label="@string/fui_title_welcome_back_password_prompt"
             android:exported="false"/>
 
         <activity
             android:name=".ui.idp.AuthMethodPickerActivity"
-            android:label="@string/default_toolbar_title"
+            android:label="@string/fui_default_toolbar_title"
             android:exported="false"/>
 
         <activity
             android:name="com.facebook.FacebookActivity"
-            android:label="@string/app_name"
+            android:label="@string/fui_app_name"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             tools:ignore="MissingRegistered" />
 

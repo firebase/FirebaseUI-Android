@@ -65,7 +65,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
 
     @Override
     public String getName(Context context) {
-        return context.getString(R.string.idp_name_twitter);
+        return context.getString(R.string.fui_idp_name_twitter);
     }
 
     @Override

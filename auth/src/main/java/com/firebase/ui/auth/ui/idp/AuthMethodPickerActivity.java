@@ -121,7 +121,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                 @Override
                 public void onClick(View view) {
                     if (provider instanceof IdpProvider) {
-                        mActivityHelper.showLoadingDialog(R.string.progress_dialog_loading);
+                        mActivityHelper.showLoadingDialog(R.string.fui_progress_dialog_loading);
                     }
                     provider.startLogin(AuthMethodPickerActivity.this);
                 }

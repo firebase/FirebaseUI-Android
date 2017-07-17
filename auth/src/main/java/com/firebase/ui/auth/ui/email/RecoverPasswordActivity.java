@@ -85,7 +85,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
                         if (e instanceof FirebaseAuthInvalidUserException) {
                             // No FirebaseUser exists with this email address, show error.
-                            mEmailEditText.setError(getString(R.string.error_email_does_not_exist));
+                            mEmailEditText.setError(getString(R.string.fui_error_email_does_not_exist));
                         }
                     }
                 });
@@ -95,7 +95,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     public void onClick(View view) {
         if (view.getId() == R.id.button_done) {
             if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
-                mActivityHelper.showLoadingDialog(R.string.progress_dialog_sending);
+                mActivityHelper.showLoadingDialog(R.string.fui_progress_dialog_sending);
                 next(mEmailEditText.getText().toString());
             }
         }

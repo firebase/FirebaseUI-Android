@@ -86,12 +86,12 @@ public class RegisterEmailActivityTest {
                 registerEmailActivity.findViewById(R.id.password_layout);
 
         assertEquals(
-                registerEmailActivity.getString(R.string.required_field),
+                registerEmailActivity.getString(R.string.fui_required_field),
                 nameLayout.getError().toString());
         assertEquals(
                 String.format(
                         registerEmailActivity.getResources().getQuantityString(
-                                R.plurals.error_weak_password,
+                                R.plurals.fui_error_weak_password,
                                 R.integer.fui_min_password_length),
                         registerEmailActivity.getResources()
                                 .getInteger(R.integer.fui_min_password_length)

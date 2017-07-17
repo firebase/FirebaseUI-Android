@@ -118,14 +118,14 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mActivityHelper.showLoadingDialog(R.string.progress_dialog_signing_in);
+                mActivityHelper.showLoadingDialog(R.string.fui_progress_dialog_signing_in);
                 mIdpProvider.startLogin(WelcomeBackIdpPrompt.this);
             }
         });
     }
 
     private String getIdpPromptString(String email) {
-        return getString(R.string.welcome_back_idp_prompt, email, mIdpProvider.getName(this));
+        return getString(R.string.fui_welcome_back_idp_prompt, email, mIdpProvider.getName(this));
     }
 
     @Override
@@ -191,7 +191,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     private void finishWithError() {
-        Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.fui_general_error, Toast.LENGTH_LONG).show();
         finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
     }
 

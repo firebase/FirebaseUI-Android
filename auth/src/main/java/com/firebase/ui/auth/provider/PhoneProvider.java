@@ -26,7 +26,7 @@ public class PhoneProvider implements Provider {
 
     @Override
     public String getName(Context context) {
-        return context.getString(R.string.provider_name_phone);
+        return context.getString(R.string.fui_provider_name_phone);
     }
 
     @Override

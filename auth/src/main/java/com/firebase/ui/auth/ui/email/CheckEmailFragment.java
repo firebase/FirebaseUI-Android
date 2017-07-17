@@ -179,7 +179,7 @@ public class CheckEmailFragment extends FragmentBase implements
     }
 
     private void checkAccountExists(@NonNull final String email) {
-        mHelper.showLoadingDialog(R.string.progress_dialog_checking_accounts);
+        mHelper.showLoadingDialog(R.string.fui_progress_dialog_checking_accounts);
 
         // Get name from SmartLock, if possible
         String name = null;

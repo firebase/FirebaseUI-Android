@@ -12,7 +12,7 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/fui_app_name"
         android:theme="@style/AppTheme"
         android:supportsRtl="false"
         tools:ignore="GoogleAppIndexingWarning">

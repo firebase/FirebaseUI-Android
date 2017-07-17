@@ -28,6 +28,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/email_layout"
-        android:text="@string/next_default" />
+        android:text="@string/fui_next_default" />
 
 </RelativeLayout>

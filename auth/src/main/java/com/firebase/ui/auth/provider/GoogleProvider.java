@@ -94,7 +94,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
 
     @Override
     public String getName(Context context) {
-        return context.getString(R.string.idp_name_google);
+        return context.getString(R.string.fui_idp_name_google);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
                         Toast.makeText(
                                 mActivity,
                                 mActivity.getString(
-                                        R.string.signed_in_with_specific_account,
+                                        R.string.fui_signed_in_with_specific_account,
                                         result.getSignInAccount().getEmail()),
                                 Toast.LENGTH_SHORT).show();
                     }
