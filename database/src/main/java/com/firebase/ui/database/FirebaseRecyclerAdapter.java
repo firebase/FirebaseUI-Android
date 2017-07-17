@@ -166,10 +166,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     /**
-     * Each time the data at the given Firebase location changes,
-     * this method will be called for each item that needs to be displayed.
-     * The first two arguments correspond to the mLayout and mModelClass given to the constructor of
-     * this class. The third argument is the item's position in the list.
+     * Each time the data at the given Firebase location changes, this method will be called for
+     * each item that needs to be displayed. The first two arguments correspond to the mLayout and
+     * mModelClass given to the constructor of this class. The third argument is the item's position
+     * in the list.
      * <p>
      * Your implementation should populate the view using the data contained in the model.
      *

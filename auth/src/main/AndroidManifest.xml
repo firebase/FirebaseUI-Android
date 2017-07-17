@@ -3,32 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.firebase.ui.auth">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
+            android:value="@integer/google_play_services_version" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="@string/twitter_consumer_secret"/>
+            android:value="@string/twitter_consumer_secret" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_application_id"/>
+            android:value="@string/facebook_application_id" />
 
         <meta-data
             android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
-            android:value="${enableFbLogging}"/>
+            android:value="${enableFbLogging}" />
 
         <activity
             android:name=".KickoffActivity"
             android:label=""
             android:exported="false"
-            android:theme="@style/FirebaseUI.Transparent"/>
+            android:theme="@style/FirebaseUI.Transparent" />
 
         <activity
             android:name=".ui.email.RecoverPasswordActivity"
@@ -72,12 +72,12 @@
             android:exported="true"
             tools:ignore="MissingRegistered">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="@string/facebook_login_protocol_scheme"/>
+                <data android:scheme="@string/facebook_login_protocol_scheme" />
             </intent-filter>
         </activity>
 

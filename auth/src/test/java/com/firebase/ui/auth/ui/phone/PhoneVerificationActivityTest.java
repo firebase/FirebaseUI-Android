@@ -24,10 +24,10 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.FirebaseAuthError;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.testhelpers.ActivityHelperShadow;
+import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
-import com.firebase.ui.auth.testhelpers.BaseHelperShadow;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestHelper;
@@ -54,13 +54,11 @@ import org.robolectric.shadows.ShadowLooper;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
+import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE_NO_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_RAW_PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.AUTO_RETRIEVAL_TIMEOUT_MILLIS;
-import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.ERROR_INVALID_PHONE;
-import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.ERROR_INVALID_VERIFICATION;
-import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -82,6 +80,7 @@ public class PhoneVerificationActivityTest {
     private Button mSendCodeButton;
     private EditText mPhoneEditText;
     private CountryListSpinner mCountryListSpinner;
+
     @Captor
     ArgumentCaptor<PhoneAuthProvider.OnVerificationStateChangedCallbacks> callbacksArgumentCaptor;
     @Mock
@@ -94,9 +93,10 @@ public class PhoneVerificationActivityTest {
     private String verificationId = "hjksdf737hc";
 
     private PhoneVerificationActivity createActivity() {
-        Intent startIntent = PhoneVerificationActivity.createIntent(RuntimeEnvironment
-                .application, TestHelper.getFlowParameters(Collections.singletonList(AuthUI
-                .PHONE_VERIFICATION_PROVIDER)), null);
+        Intent startIntent = PhoneVerificationActivity.createIntent(
+                RuntimeEnvironment.application,
+                TestHelper.getFlowParameters(
+                        Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)), null);
         return Robolectric.buildActivity(PhoneVerificationActivity.class).withIntent(startIntent)
                 .create(new Bundle()).start().visible().get();
     }
@@ -114,30 +114,32 @@ public class PhoneVerificationActivityTest {
 
     @Test
     public void testPhoneNumberFromSmartlock_prePopulatesPhoneNumberInBundle() {
-        Intent startIntent = PhoneVerificationActivity.createIntent(RuntimeEnvironment
-                .application, TestHelper.getFlowParameters(Collections.singletonList(AuthUI
-                .PHONE_VERIFICATION_PROVIDER)), YE_RAW_PHONE);
+        Intent startIntent = PhoneVerificationActivity.createIntent(
+                RuntimeEnvironment.application,
+                TestHelper.getFlowParameters(
+                        Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)),
+                YE_RAW_PHONE);
 
         mActivity = Robolectric.buildActivity(PhoneVerificationActivity.class).withIntent
                 (startIntent).create(new Bundle()).start().visible().get();
 
         VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
-                mActivity.getSupportFragmentManager().findFragmentByTag(VerifyPhoneNumberFragment
-                        .TAG);
+                mActivity.getSupportFragmentManager()
+                        .findFragmentByTag(VerifyPhoneNumberFragment.TAG);
         assertNotNull(verifyPhoneNumberFragment);
         mPhoneEditText = (EditText) mActivity.findViewById(R.id.phone_number);
         mCountryListSpinner = (CountryListSpinner) mActivity.findViewById(R.id.country_list);
 
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
-        assertEquals(YE_COUNTRY_CODE, String.valueOf(((CountryInfo) mCountryListSpinner.getTag())
-                .countryCode));
+        assertEquals(YE_COUNTRY_CODE,
+                     String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).countryCode));
     }
 
     @Test
     public void testBadPhoneNumber_showsInlineError() {
         VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
-                mActivity.getSupportFragmentManager().findFragmentByTag(VerifyPhoneNumberFragment
-                        .TAG);
+                mActivity.getSupportFragmentManager()
+                        .findFragmentByTag(VerifyPhoneNumberFragment.TAG);
         assertNotNull(verifyPhoneNumberFragment);
 
         mSendCodeButton.performClick();
@@ -148,9 +150,9 @@ public class PhoneVerificationActivityTest {
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testVerifyPhoneNumberInvalidPhoneException_showsInlineError() {
-        reset(BaseHelperShadow.sPhoneAuthProvider);
+        reset(AuthHelperShadow.sPhoneAuthProvider);
 
         mActivity.verifyPhoneNumber(PHONE, false);
         AlertDialog alert = ShadowAlertDialog.getLatestAlertDialog();
@@ -159,60 +161,68 @@ public class PhoneVerificationActivityTest {
         assertEquals(mActivity.getString(R.string.fui_verifying), sAlert.getMessage());
 
         //was upstream method invoked
-        verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
-                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS), eq(mActivity),
-                callbacksArgumentCaptor.capture(), isNull(PhoneAuthProvider.ForceResendingToken
-                        .class));
+        verify(AuthHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(
+                eq(PHONE),
+                eq(AUTO_RETRIEVAL_TIMEOUT_MILLIS),
+                eq(TimeUnit.MILLISECONDS),
+                eq(mActivity),
+                callbacksArgumentCaptor.capture(),
+                (PhoneAuthProvider.ForceResendingToken) isNull());
 
         PhoneAuthProvider.OnVerificationStateChangedCallbacks onVerificationStateChangedCallbacks
                 = callbacksArgumentCaptor.getValue();
-        onVerificationStateChangedCallbacks.onVerificationFailed(new FirebaseAuthException
-                (ERROR_INVALID_PHONE, "any_message"));
+        onVerificationStateChangedCallbacks.onVerificationFailed(
+                new FirebaseAuthException(
+                        FirebaseAuthError.ERROR_INVALID_PHONE_NUMBER.toString(),
+                        "any_message"));
 
         //was error displayed
         assertEquals(mErrorEditText.getText(), mActivity.getString(R.string.fui_invalid_phone_number));
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testVerifyPhoneNumberNoMsgException_showsAlertDialog() {
-        reset(BaseHelperShadow.sPhoneAuthProvider);
+        reset(AuthHelperShadow.sPhoneAuthProvider);
 
         mActivity.verifyPhoneNumber(PHONE, false);
-        verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
-                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS), eq(mActivity),
-                callbacksArgumentCaptor.capture(), isNull(PhoneAuthProvider.ForceResendingToken
-                        .class));
+        verify(AuthHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(
+                eq(PHONE),
+                eq(AUTO_RETRIEVAL_TIMEOUT_MILLIS),
+                eq(TimeUnit.MILLISECONDS),
+                eq(mActivity),
+                callbacksArgumentCaptor.capture(),
+                (PhoneAuthProvider.ForceResendingToken) isNull());
 
         PhoneAuthProvider.OnVerificationStateChangedCallbacks onVerificationStateChangedCallbacks
                 = callbacksArgumentCaptor.getValue();
 
-        onVerificationStateChangedCallbacks.onVerificationFailed(new FirebaseAuthException
-                ("some_code", "custom_message"));
+        onVerificationStateChangedCallbacks.onVerificationFailed(
+                new FirebaseAuthException("some_code", "custom_message"));
         assertTrue(mActivity.getAlertDialog().isShowing());
-        assertEquals("custom_message", getAlertDialogMessage());
+        assertEquals(FirebaseAuthError.ERROR_UNKNOWN.getDescription(), getAlertDialogMessage());
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testVerifyPhoneNumber_success() {
-        reset(BaseHelperShadow.sPhoneAuthProvider);
+        reset(AuthHelperShadow.sPhoneAuthProvider);
         testSendConfirmationCode();
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testSubmitCode_badCodeShowsAlertDialog() {
-        reset(BaseHelperShadow.sPhoneAuthProvider);
-        when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
-                .thenReturn(new AutoCompleteTask<AuthResult>(null, true, new
-                        FirebaseAuthInvalidCredentialsException(ERROR_INVALID_VERIFICATION,
-                        "any_msg")));
+        reset(AuthHelperShadow.sPhoneAuthProvider);
+        when(AuthHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
+                .thenReturn(new AutoCompleteTask<AuthResult>(
+                        null, true,
+                        new FirebaseAuthInvalidCredentialsException(
+                                FirebaseAuthError.ERROR_INVALID_VERIFICATION_CODE.toString(),
+                                "any_msg")));
         testSendConfirmationCode();
-        SpacedEditText mConfirmationCodeEditText = (SpacedEditText) mActivity.findViewById(R.id
-                .confirmation_code);
-        Button mSubmitConfirmationButton = (Button) mActivity.findViewById(R.id
-                .submit_confirmation_code);
+        SpacedEditText mConfirmationCodeEditText = (SpacedEditText) mActivity.findViewById(R.id.confirmation_code);
+        Button mSubmitConfirmationButton = (Button) mActivity.findViewById(R.id.submit_confirmation_code);
 
         mConfirmationCodeEditText.setText("123456");
         mSubmitConfirmationButton.performClick();
@@ -227,9 +237,9 @@ public class PhoneVerificationActivityTest {
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testresendCode_invokesUpstream() {
-        reset(BaseHelperShadow.sPhoneAuthProvider);
+        reset(AuthHelperShadow.sPhoneAuthProvider);
         testSendConfirmationCode();
 
         //test resend code invisible
@@ -239,7 +249,7 @@ public class PhoneVerificationActivityTest {
         //assert resend visible after timeout
         SubmitConfirmationCodeFragment fragment = (SubmitConfirmationCodeFragment) mActivity
                 .getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
-        fragment.getmCountdownTimer().onFinish();
+        fragment.getCountdownTimer().onFinish();
         assertEquals(View.VISIBLE, r.getVisibility());
         r.performClick();
 
@@ -247,71 +257,75 @@ public class PhoneVerificationActivityTest {
         assertEquals(View.GONE, r.getVisibility());
 
         //verify resend code was called
-        verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
-                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS), eq(mActivity),
-                callbacksArgumentCaptor.capture(), eq(forceResendingToken));
+        verify(AuthHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(
+                eq(PHONE),
+                eq(AUTO_RETRIEVAL_TIMEOUT_MILLIS),
+                eq(TimeUnit.MILLISECONDS),
+                eq(mActivity),
+                callbacksArgumentCaptor.capture(),
+                eq(forceResendingToken));
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testAutoVerify() {
-        reset(BaseHelperShadow.sPhoneAuthProvider);
-        reset(BaseHelperShadow.sSaveSmartLock);
-        reset(BaseHelperShadow.sFirebaseAuth);
+        reset(AuthHelperShadow.sPhoneAuthProvider);
+        reset(AuthHelperShadow.sSaveSmartLock);
+        reset(AuthHelperShadow.sFirebaseAuth);
 
-        when(BaseHelperShadow.sFirebaseUser.getPhoneNumber()).thenReturn(PHONE);
-        when(BaseHelperShadow.sFirebaseUser.getEmail()).thenReturn(null);
-        when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
-                .thenReturn(new AutoCompleteTask(FakeAuthResult.INSTANCE
-                        , true, null));
+        when(AuthHelperShadow.sFirebaseUser.getPhoneNumber()).thenReturn(PHONE);
+        when(AuthHelperShadow.sFirebaseUser.getEmail()).thenReturn(null);
+        when(AuthHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
+                .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
         mActivity.verifyPhoneNumber(PHONE, false);
-        verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
-                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS), eq(mActivity),
-                callbacksArgumentCaptor.capture(), isNull(PhoneAuthProvider.ForceResendingToken
-                        .class));
+        verify(AuthHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(
+                eq(PHONE),
+                eq(AUTO_RETRIEVAL_TIMEOUT_MILLIS),
+                eq(TimeUnit.MILLISECONDS),
+                eq(mActivity),
+                callbacksArgumentCaptor.capture(),
+                (PhoneAuthProvider.ForceResendingToken) isNull());
 
         PhoneAuthProvider.OnVerificationStateChangedCallbacks onVerificationStateChangedCallbacks
                 = callbacksArgumentCaptor.getValue();
 
         onVerificationStateChangedCallbacks.onVerificationCompleted(credential);
-        verify(ActivityHelperShadow.sFirebaseAuth).signInWithCredential(any(AuthCredential.class));
+        verify(AuthHelperShadow.sFirebaseAuth).signInWithCredential(any(AuthCredential.class));
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testSMSAutoRetrieval() {
-        reset(BaseHelperShadow.sPhoneAuthProvider);
-        reset(BaseHelperShadow.sSaveSmartLock);
+        reset(AuthHelperShadow.sPhoneAuthProvider);
+        reset(AuthHelperShadow.sSaveSmartLock);
         when(credential.getSmsCode()).thenReturn("123456");
 
-        when(BaseHelperShadow.sFirebaseUser.getPhoneNumber()).thenReturn(PHONE);
-        when(BaseHelperShadow.sFirebaseUser.getEmail()).thenReturn(null);
+        when(AuthHelperShadow.sFirebaseUser.getPhoneNumber()).thenReturn(PHONE);
+        when(AuthHelperShadow.sFirebaseUser.getEmail()).thenReturn(null);
 
-        when(ActivityHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
-                .thenReturn(new AutoCompleteTask(FakeAuthResult.INSTANCE
-                        , true, null));
+        when(AuthHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
+                .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
         PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks =
                 testSendConfirmationCode();
         callbacks.onVerificationCompleted(credential);
-        SpacedEditText mConfirmationCodeEditText = (SpacedEditText) mActivity.findViewById(R.id
-                .confirmation_code);
+        SpacedEditText mConfirmationCodeEditText = (SpacedEditText) mActivity.findViewById(R.id.confirmation_code);
 
         //verify confirmation code set
         assertEquals("1 2 3 4 5 6", mConfirmationCodeEditText.getText().toString());
         //verify credential saves
-        verify(ActivityHelperShadow.sFirebaseAuth).signInWithCredential(credential);
+        verify(AuthHelperShadow.sFirebaseAuth).signInWithCredential(credential);
     }
 
     @Test
-    @Config(shadows = {BaseHelperShadow.class, ActivityHelperShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testEditPhoneNumber_togglesFragments() {
-        reset(BaseHelperShadow.sPhoneAuthProvider);
+        reset(AuthHelperShadow.sPhoneAuthProvider);
         testSendConfirmationCode();
         TextView mEditPhoneTextView = (TextView) mActivity.findViewById(R.id.edit_phone_number);
         mEditPhoneTextView.performClick();
         VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
-                mActivity.getSupportFragmentManager().findFragmentByTag(VerifyPhoneNumberFragment
-                        .TAG);
+                mActivity.getSupportFragmentManager()
+                        .findFragmentByTag(VerifyPhoneNumberFragment.TAG);
         SubmitConfirmationCodeFragment submitConfirmationCodeFragment =
                 (SubmitConfirmationCodeFragment) mActivity.getSupportFragmentManager()
                         .findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
@@ -324,10 +338,13 @@ public class PhoneVerificationActivityTest {
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks testSendConfirmationCode() {
         mActivity.verifyPhoneNumber(PHONE, false);
-        verify(ActivityHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(eq(PHONE), eq
-                (AUTO_RETRIEVAL_TIMEOUT_MILLIS), eq(TimeUnit.MILLISECONDS), eq(mActivity),
-                callbacksArgumentCaptor.capture(), isNull(PhoneAuthProvider.ForceResendingToken
-                        .class));
+        verify(AuthHelperShadow.sPhoneAuthProvider).verifyPhoneNumber(
+                eq(PHONE),
+                eq(AUTO_RETRIEVAL_TIMEOUT_MILLIS),
+                eq(TimeUnit.MILLISECONDS),
+                eq(mActivity),
+                callbacksArgumentCaptor.capture(),
+                (PhoneAuthProvider.ForceResendingToken) isNull());
 
         PhoneAuthProvider.OnVerificationStateChangedCallbacks onVerificationStateChangedCallbacks
                 = callbacksArgumentCaptor.getValue();

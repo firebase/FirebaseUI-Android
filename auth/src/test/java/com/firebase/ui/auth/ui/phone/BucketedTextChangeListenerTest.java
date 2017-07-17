@@ -48,7 +48,7 @@ public class BucketedTextChangeListenerTest {
         editText = mock(EditText.class);
         contentChangeCallback = mock(BucketedTextChangeListener.ContentChangeCallback.class);
         textChangeListener = new BucketedTextChangeListener(editText, expectedLength,
-                placeHolder, contentChangeCallback);
+                                                            placeHolder, contentChangeCallback);
     }
 
     @Test

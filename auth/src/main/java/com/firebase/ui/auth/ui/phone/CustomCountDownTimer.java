@@ -37,8 +37,8 @@ abstract class CustomCountDownTimer {
         update(mMillisInFuture);
     }
 
-    CountDownTimer create(long millisInFuture, long counDownInterval) {
-        return new CountDownTimer(millisInFuture, counDownInterval) {
+    private CountDownTimer create(long millisInFuture, long countDownInterval) {
+        return new CountDownTimer(millisInFuture, countDownInterval) {
             @Override
             public void onTick(long millisUntilFinished) {
                 CustomCountDownTimer.this.onTick(millisUntilFinished);
