@@ -230,7 +230,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         mPhoneNumber = phoneNumber;
         mVerificationState = VerificationState.VERIFICATION_STARTED;
 
-        getAuthHelper().getPhoneAuthProviderInstance().verifyPhoneNumber(
+        getAuthHelper().getPhoneAuthProvider().verifyPhoneNumber(
                 phoneNumber,
                 AUTO_RETRIEVAL_TIMEOUT_MILLIS,
                 TimeUnit.MILLISECONDS,
