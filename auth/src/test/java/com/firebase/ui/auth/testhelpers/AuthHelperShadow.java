@@ -67,7 +67,7 @@ public class AuthHelperShadow {
     }
 
     @Implementation
-    public static PhoneAuthProvider getPhoneAuthProviderInstance() {
+    public static PhoneAuthProvider getPhoneAuthProvider() {
         return sPhoneAuthProvider;
     }
 
