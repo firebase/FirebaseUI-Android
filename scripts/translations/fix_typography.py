@@ -24,7 +24,7 @@ class FixTypographyScript(BaseStringScript):
                 minimizedWhitespaceLine.append(char)
                 continue
 
-            # print char
+            # Skip the char if we're adding whitespace in the middle of a string tag
             if minimizedWhitespaceLine[-1] == " " and char == " " and "<" in minimizedWhitespaceLine:
                 pass
             else:
