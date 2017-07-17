@@ -39,16 +39,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:2.0.1'
+    compile 'com.firebaseui:firebase-ui-database:2.1.0'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:2.0.1'
+    compile 'com.firebaseui:firebase-ui-auth:2.1.0'
 
     // FirebaseUI Storage only
-    compile 'com.firebaseui:firebase-ui-storage:2.0.1'
+    compile 'com.firebaseui:firebase-ui-storage:2.1.0'
 
     // Single target that includes all FirebaseUI libraries above
-    compile 'com.firebaseui:firebase-ui:2.0.1'
+    compile 'com.firebaseui:firebase-ui:2.1.0'
 }
 ```
 
@@ -63,7 +63,7 @@ After the project is synchronized, we're ready to start using Firebase functiona
 If you are using an old version of FirebaseUI and upgrading, please see the appropriate
 migration guide:
 
-  * [Upgrade from 1.2.0 to 2.0.x](./docs/upgrade-to-2.0.md)
+  * [Upgrade from 1.2.0 to 2.x.x](./docs/upgrade-to-2.0.md)
 
 ## Dependencies
 
@@ -91,6 +91,7 @@ For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 2.1.0              | 11.0.2                         |
 | 2.0.1              | 11.0.1                         |
 | 1.2.0              | 10.2.0                         |
 | 1.1.1              | 10.0.0 or 10.0.1               |

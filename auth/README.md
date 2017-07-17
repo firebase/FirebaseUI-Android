@@ -46,7 +46,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    compile 'com.firebaseui:firebase-ui-auth:2.0.1'
+    compile 'com.firebaseui:firebase-ui-auth:2.1.0'
     
     // Required only if Facebook login support is required
     compile('com.facebook.android:facebook-android-sdk:4.22.1')
@@ -55,6 +55,26 @@ dependencies {
     compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
 }
 ```
+
+As of version `2.1.0` FirebaseUI includes translations for all string resources. In order to
+ensure that you only get the translations relevant to your application, we recommend changing the
+`resConfigs` of your application module:
+
+```groovy
+android {
+  
+  // ...
+  
+  defaultConfig {
+     // ...
+     resConfigs "auto"
+  }
+  
+}
+```
+
+See the [Android documentation](https://developer.android.com/studio/build/shrink-code.html#unused-alt-resources)
+for more information.
 
 ### Identity provider configuration
 
