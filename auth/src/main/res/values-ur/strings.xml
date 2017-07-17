@@ -37,16 +37,13 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">رازداری کی پالیسی</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">آپ کے پاس پہلے سے ہی ایک اکاؤنٹ موجود ہے</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">واپسی پر خوش آمدید!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">آپ نے پہلے ہی %1$s استعمال کر لیا ہے۔
-        جاری رکھنے کے لیے %2$s کے ساتھ سائن ان کریں۔</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">آپ نے پہلے ہی %1$s استعمال کر لیا ہے
-        سائن کرنے کے لیے۔ اس کاؤنٹ کے لیے اپنا پاس ورڈ درج کریں۔</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">آپ نے پہلے ہی %1$s استعمال کر لیا ہے۔ جاری رکھنے کے لیے %2$s کے ساتھ سائن ان کریں۔</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">آپ نے پہلے ہی %1$s استعمال کر لیا ہے سائن کرنے کے لیے۔ اس کاؤنٹ کے لیے اپنا پاس ورڈ درج کریں۔</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">سائن ان ہو رہا ہے…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">سائن ان کرنے میں دشواری؟</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">پاس ورڈ بازیافت کریں</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">اپنا ای میل چیک کریں</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">اس ای میل پر بھیجی گئی وہ ہدایات حاصل کریں جن میں اس بات کی وضاحت ہے کہ کیسے
-        اپنا پاس ورڈ دوبارہ ترتیب دیں۔</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">اس ای میل پر بھیجی گئی وہ ہدایات حاصل کریں جن میں اس بات کی وضاحت ہے کہ کیسے اپنا پاس ورڈ دوبارہ ترتیب دیں۔</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">بھیجیں</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">اپنے پاس ورڈ کو بازیافت کرنے کے لیے %1$s پر بھیجی گئی ہدایات کی پیروی کریں۔</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">بھیجا جا رہا ہے…</string>
@@ -73,5 +70,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">کوڈ دوبارہ بھیجیں</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">فون نمبر کی توثیق کریں</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">جاری رکھیں</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">\"%1$s\" کو تھپتھپانے پر ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">“%1$s” کو تھپتھپانے پر ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
 </resources>

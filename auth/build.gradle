@@ -38,10 +38,6 @@ android {
             }
         }
     }
-
-    lintOptions {
-        disable 'UnusedQuantity', 'TypographyEllipsis', 'TypographyQuotes'
-    }
 }
 
 dependencies {

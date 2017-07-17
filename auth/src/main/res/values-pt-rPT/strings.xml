@@ -23,7 +23,7 @@
     <string name="title_register_email" translation_description="Title for signup form">Inscrever-se</string>
     <string name="name_hint" translation_description="Hint for last name input field">Nome próprio e apelido</string>
     <string name="button_text_save" translation_description="Button text to save input form">Guardar</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">A realizar a inscrição...</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">A realizar a inscrição…</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caracteres e uma combinação de letras e números</item>
         <item quantity="other">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caracteres e uma combinação de letras e números</item>
@@ -55,7 +55,7 @@
     <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Introduza o código de 6 dígitos que enviámos para</string>
     <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Reenviar código em 0:%02d</string>
     <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Validar o número de telefone</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">A verificar...</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">A verificar…</string>
     <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">A obter SMS…</string>
     <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Código errado. Tente novamente.</string>
     <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
@@ -70,5 +70,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Reenviar código</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Validar número de telefone</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Continuar</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Ao tocar em \"%1$s\", pode gerar o envio de uma SMS. Podem aplicar-se tarifas de mensagens e dados.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Ao tocar em “%1$s”, pode gerar o envio de uma SMS. Podem aplicar-se tarifas de mensagens e dados.</string>
 </resources>

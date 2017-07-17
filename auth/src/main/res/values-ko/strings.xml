@@ -37,19 +37,16 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">개인정보처리방침</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">계정이 이미 있음</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">환영합니다.</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">%1$s을(를) 이미 사용하고 있습니다.
-        계속하려면 %2$s(으)로 로그인하세요.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">이미 %1$s을(를) 사용하여
-        로그인했습니다. 해당 계정의 비밀번호를 입력하세요.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">로그인 중...</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">%1$s을(를) 이미 사용하고 있습니다. 계속하려면 %2$s(으)로 로그인하세요.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">이미 %1$s을(를) 사용하여 로그인했습니다. 해당 계정의 비밀번호를 입력하세요.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">로그인 중…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">로그인하는 데 문제가 있나요?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">비밀번호 복구</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">이메일 확인</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">비밀번호 재설정 방법을 안내하는 이메일을
-        보내 드립니다.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">비밀번호 재설정 방법을 안내하는 이메일을 보내 드립니다.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">보내기</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">%1$s(으)로 발송된 이메일의 안내에 따라 비밀번호를 복구하세요.</string>
-    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">전송 중...</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">전송 중…</string>
     <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">이메일 주소가 기존 계정과 일치하지 않습니다.</string>
     <string name="accessibility_logo" translation_description="Content description for app logo">앱 로고</string>
     <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">%1$s(으)로 로그인됨</string>
