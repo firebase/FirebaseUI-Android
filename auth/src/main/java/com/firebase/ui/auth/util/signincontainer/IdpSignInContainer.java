@@ -40,7 +40,6 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -86,7 +85,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(getActivity(), getFlowParams());
+        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(mActivity);
 
         User user = User.getUser(getArguments());
         String provider = user.getProvider();
@@ -143,7 +142,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onSuccess(final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Failure authenticating with credential " +
@@ -156,7 +155,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     }
 
     @Override
-    public void onFailure(Bundle extra) {
+    public void onFailure() {
         finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
     }
 

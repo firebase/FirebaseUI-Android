@@ -1,5 +1,4 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">ui_flow</string>
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">Načítání…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Přihlásit se</string>
     <string name="general_error" translation_description="Toast text flashing general error">Došlo k chybě.</string>
@@ -40,13 +39,16 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Zásady ochrany soukromí</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Již máte účet</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Vítejte zpět!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Již jste použili adresu %1$s. Chcete-li pokračovat, přihlaste se prostřednictvím služby %2$s.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">K přihlášení jste již použili adresu %1$s. Zadejte příslušné heslo k účtu.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Již jste použili adresu %1$s.
+        Chcete-li pokračovat, přihlaste se prostřednictvím služby %2$s.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">K přihlášení jste již použili adresu %1$s.
+        Zadejte příslušné heslo k účtu.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Přihlašování…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Máte potíže s přihlášením?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Obnovit heslo</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Zkontrolujte svůj e-mail</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Na tento e-mail vám zašleme pokyny, jak heslo obnovit.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Na tento e-mail vám zašleme pokyny,
+        jak heslo obnovit.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Odeslat</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Postupujte podle pokynů odeslaných na adresu %1$s a obnovte heslo.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Odesílání…</string>

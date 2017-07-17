@@ -30,7 +30,6 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -68,7 +67,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     }
 
     private void next(final String email) {
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        getAuthHelper().getFirebaseAuth()
                 .sendPasswordResetEmail(email)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Error sending password reset email"))

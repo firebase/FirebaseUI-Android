@@ -18,7 +18,7 @@ import android.content.Intent;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.testhelpers.AuthInstancesShadow;
+import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
@@ -31,9 +31,11 @@ import com.firebase.ui.auth.ui.ProgressDialogHolder;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -72,7 +74,7 @@ public class CredentialSignInHandlerTest {
     }
 
     @Test
-    @Config(shadows = {AuthInstancesShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testSignInSucceeded() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         IdpResponse idpResponse =
@@ -100,7 +102,7 @@ public class CredentialSignInHandlerTest {
                 idpResponseCaptor.capture());
 
         assertEquals(smartLock, smartLockCaptor.getValue());
-        assertEquals(AuthInstancesShadow.sFirebaseUser, firebaseUserCaptor.getValue());
+        assertEquals(AuthHelperShadow.sFirebaseUser, firebaseUserCaptor.getValue());
 
         IdpResponse response = idpResponseCaptor.getValue();
         assertEquals(idpResponse.getProviderType(), response.getProviderType());
@@ -110,7 +112,7 @@ public class CredentialSignInHandlerTest {
     }
 
     @Test
-    @Config(shadows = {AuthInstancesShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testSignInFailed_withFacebookAlreadyLinked() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         IdpResponse idpResponse =
@@ -126,18 +128,23 @@ public class CredentialSignInHandlerTest {
         FlowParameters mockFlowParams = mock(FlowParameters.class);
         when(mockActivity.getFlowParams()).thenReturn(mockFlowParams);
 
+        AuthHelper mockAuthHelper = mock(AuthHelper.class);
+        when(mockActivity.getAuthHelper()).thenReturn(mockAuthHelper);
+        AuthHelperShadow.getFirebaseAuth(); // Force static initialization
+        when(mockAuthHelper.getFirebaseAuth()).thenReturn(AuthHelperShadow.getFirebaseAuth());
+
         ProgressDialogHolder mockHolder = mock(ProgressDialogHolder.class);
         when(mockActivity.getDialogHolder()).thenReturn(mockHolder);
 
         // pretend the account has Facebook linked already
-        FirebaseAuth mockFirebaseAuth = AuthInstancesShadow.sFirebaseAuth;
+        FirebaseAuth mockFirebaseAuth = AuthHelperShadow.sFirebaseAuth;
         when(mockFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL)).thenReturn(
                 new AutoCompleteTask<ProviderQueryResult>(
                         new FakeProviderQueryResult(
                                 Arrays.asList(FacebookAuthProvider.PROVIDER_ID)), true, null));
 
         // pretend there was already an account with this email
-        Task exceptionTask = Tasks.forException(
+        Task<AuthResult> exceptionTask = Tasks.forException(
                 new FirebaseAuthUserCollisionException(LINKING_ERROR, LINKING_EXPLANATION));
         credentialSignInHandler.onComplete(exceptionTask);
         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
@@ -159,7 +166,7 @@ public class CredentialSignInHandlerTest {
     }
 
     @Test
-    @Config(shadows = {AuthInstancesShadow.class})
+    @Config(shadows = {AuthHelperShadow.class})
     public void testSignInFailed_withPasswordAccountAlreadyLinked() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         IdpResponse idpResponse =
@@ -175,6 +182,11 @@ public class CredentialSignInHandlerTest {
         FlowParameters mockFlowParams = mock(FlowParameters.class);
         when(mockActivity.getFlowParams()).thenReturn(mockFlowParams);
 
+        AuthHelper mockAuthHelper = mock(AuthHelper.class);
+        when(mockActivity.getAuthHelper()).thenReturn(mockAuthHelper);
+        AuthHelperShadow.getFirebaseAuth(); // Force static initialization
+        when(mockAuthHelper.getFirebaseAuth()).thenReturn(AuthHelperShadow.getFirebaseAuth());
+
         ProgressDialogHolder mockHolder = mock(ProgressDialogHolder.class);
         when(mockActivity.getDialogHolder()).thenReturn(mockHolder);
 
@@ -184,7 +196,7 @@ public class CredentialSignInHandlerTest {
                 new FirebaseAuthUserCollisionException(LINKING_ERROR, LINKING_EXPLANATION));
 
         // pretend the account has a Password account linked already
-        FirebaseAuth mockFirebaseAuth = AuthInstancesShadow.sFirebaseAuth;
+        FirebaseAuth mockFirebaseAuth = AuthHelperShadow.sFirebaseAuth;
         when(mockFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL)).thenReturn(
                 new AutoCompleteTask<ProviderQueryResult>(
                         new FakeProviderQueryResult(

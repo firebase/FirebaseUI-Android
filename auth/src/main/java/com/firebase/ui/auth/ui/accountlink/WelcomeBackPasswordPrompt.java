@@ -43,7 +43,6 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,8 +52,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
- * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming
- * the password before initiating a link.
+ * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
+ * password before initiating a link.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackPasswordPrompt extends AppCompatBase
@@ -84,12 +83,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(
-                this, getFlowParams());
+        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(this);
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
-        TextView welcomeBackHeader = (TextView) findViewById(R.id.welcome_back_email_header);
         mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
         mPasswordField = (EditText) findViewById(R.id.password);
 
@@ -101,9 +98,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
-                                       emailStart,
-                                       emailStart + mEmail.length(),
-                                       Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                emailStart,
+                emailStart + mEmail.length(),
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         TextView bodyTextView = ((TextView) findViewById(R.id.welcome_back_password_body));
         bodyTextView.setText(spannableStringBuilder);
@@ -146,7 +143,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
         getDialogHolder().showLoadingDialog(R.string.progress_dialog_signing_in);
 
-        final FirebaseAuth firebaseAuth = AuthInstances.getFirebaseAuth(getFlowParams());
+        final FirebaseAuth firebaseAuth = getAuthHelper().getFirebaseAuth();
 
         // Sign in with known email and the password provided
         firebaseAuth.signInWithEmailAndPassword(email, password)

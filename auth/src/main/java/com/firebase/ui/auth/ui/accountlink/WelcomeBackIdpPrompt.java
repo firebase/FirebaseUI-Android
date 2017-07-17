@@ -30,11 +30,11 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ResultCodes;
-import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -42,7 +42,6 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.User;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -148,9 +147,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
             return;
         }
 
-        FirebaseUser currentUser = AuthInstances.getCurrentUser(getFlowParams());
+        FirebaseUser currentUser = getAuthHelper().getCurrentUser();
         if (currentUser == null) {
-            AuthInstances.getFirebaseAuth(getFlowParams())
+            getAuthHelper().getFirebaseAuth()
                     .signInWithCredential(newCredential)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
@@ -187,7 +186,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     @Override
-    public void onFailure(Bundle extra) {
+    public void onFailure() {
         finishWithError();
     }
 

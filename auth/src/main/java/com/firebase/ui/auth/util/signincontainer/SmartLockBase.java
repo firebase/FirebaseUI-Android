@@ -41,8 +41,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     private Pair<Integer, Intent> mActivityResultPair;
 
     /**
-     * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to
-     * a Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
+     * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to a
+     * Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
      */
     public static String providerIdToAccountType(@AuthUI.SupportedProvider @NonNull String providerId) {
         switch (providerId) {
@@ -78,8 +78,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     }
 
     /**
-     * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials,
-     * not for saving since we don't have access to the password.
+     * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
+     * for saving since we don't have access to the password.
      */
     public static List<Credential> credentialsFromFirebaseUser(@NonNull FirebaseUser user) {
         if (TextUtils.isEmpty(user.getEmail())) {
@@ -158,8 +158,8 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(getContext(),
-                       com.firebase.ui.auth.R.string.general_error,
-                       Toast.LENGTH_SHORT).show();
+                com.firebase.ui.auth.R.string.general_error,
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override

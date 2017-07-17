@@ -1,9 +1,7 @@
 package com.firebase.ui.auth.testhelpers;
 
-import android.support.v4.app.FragmentActivity;
-
-import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.util.AuthInstances;
+import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,8 +14,8 @@ import org.robolectric.annotation.Implements;
 
 import static org.mockito.Mockito.when;
 
-@Implements(AuthInstances.class)
-public class AuthInstancesShadow {
+@Implements(AuthHelper.class)
+public class AuthHelperShadow {
 
     public static final FirebaseAuth sFirebaseAuth;
     public static final FirebaseUser sFirebaseUser;
@@ -46,10 +44,10 @@ public class AuthInstancesShadow {
         sPhoneAuthProvider = Mockito.mock(PhoneAuthProvider.class);
     }
 
-    private AuthInstancesShadow() {}
+    public AuthHelperShadow() {}
 
     @Implementation
-    public static FirebaseAuth getFirebaseAuth(FlowParameters parameters) {
+    public static FirebaseAuth getFirebaseAuth() {
         return sFirebaseAuth;
     }
 
@@ -59,13 +57,12 @@ public class AuthInstancesShadow {
     }
 
     @Implementation
-    public static FirebaseUser getCurrentUser(FlowParameters parameters) {
+    public static FirebaseUser getCurrentUser() {
         return sFirebaseUser;
     }
 
     @Implementation
-    public static SaveSmartLock getSaveSmartLockInstance(FragmentActivity activity,
-                                                         FlowParameters parameters) {
+    public static SaveSmartLock getSaveSmartLockInstance(HelperActivityBase activity) {
         return sSaveSmartLock;
     }
 

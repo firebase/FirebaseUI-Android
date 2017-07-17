@@ -30,8 +30,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Encapsulates the core parameters and data captured during the authentication flow, in
- * a serializable manner, in order to pass data between activities.
+ * Encapsulates the core parameters and data captured during the authentication flow, in a
+ * serializable manner, in order to pass data between activities.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FlowParameters implements Parcelable {
@@ -95,8 +95,8 @@ public class FlowParameters implements Parcelable {
     }
 
     /**
-     * Create a bundle containing this FlowParameters object as
-     * {@link ExtraConstants#EXTRA_FLOW_PARAMS}.
+     * Create a bundle containing this FlowParameters object as {@link
+     * ExtraConstants#EXTRA_FLOW_PARAMS}.
      */
     public Bundle toBundle() {
         Bundle bundle = new Bundle();

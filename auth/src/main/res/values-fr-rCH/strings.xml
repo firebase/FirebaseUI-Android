@@ -1,5 +1,4 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">ui_flow</string>
     <string name="progress_dialog_loading" translation_description="Loading text in dialog">Chargement…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Se connecter</string>
     <string name="general_error" translation_description="Toast text flashing general error">Une erreur s\'est produite.</string>
@@ -9,7 +8,7 @@
     <string name="provider_name_email">E-mail</string>
     <string name="provider_name_phone">Téléphone</string>
     <string name="sign_in_with_google" translation_description="Sign in button text">Se connecter avec Google</string>
-    <string name="sign_in_with_facebook" translation_description="Sign in button text">Connexion avec Facebook</string>
+    <string name="sign_in_with_facebook" translation_description="Sign in button text">Se connecter avec Facebook</string>
     <string name="sign_in_with_twitter" translation_description="Sign in button text">Se connecter avec Twitter</string>
     <string name="sign_in_with_email" translation_description="Sign in button text">Se connecter avec une adresse e-mail</string>
     <string name="sign_in_with_phone" translation_description="Sign in button text">Se connecter avec un téléphone</string>
@@ -71,5 +70,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Renvoyer le code</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Valider le numéro de téléphone</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Continuer</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">En appuyant sur “%1$s”, vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">En appuyant sur \"%1$s\", vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
 </resources>
