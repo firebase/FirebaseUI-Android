@@ -13,8 +13,8 @@
  */
 
 /**
- * Contains utility classes for validating {@link android.widget.EditText} field contents.
- * The contents of this package should be considered an implementation detail and not part of
- * the main API.
+ * Contains utility classes for validating {@link android.widget.EditText} field contents. The
+ * contents of this package should be considered an implementation detail and not part of the main
+ * API.
  */
 package com.firebase.ui.auth.ui.email.fieldvalidators;

@@ -24,18 +24,18 @@ import android.support.v4.app.FragmentTransaction;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.BaseHelper;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.google.firebase.auth.EmailAuthProvider;
 
 /**
- * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment}
- * and {@link RegisterEmailFragment} and triggers {@link WelcomeBackPasswordPrompt}
- * and {@link WelcomeBackIdpPrompt}.
+ * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment} and
+ * {@link RegisterEmailFragment} and triggers {@link WelcomeBackPasswordPrompt} and {@link
+ * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RegisterEmailActivity extends AppCompatBase implements
@@ -49,7 +49,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
     }
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return BaseHelper.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
+        return HelperActivityBase.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 
@@ -66,8 +66,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
         String email = getIntent().getExtras().getString(ExtraConstants.EXTRA_EMAIL);
 
         // Start with check email
-        CheckEmailFragment fragment = CheckEmailFragment.newInstance(
-                mActivityHelper.getFlowParams(), email);
+        CheckEmailFragment fragment = CheckEmailFragment.newInstance(getFlowParams(), email);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
                 .disallowAddToBackStack()
@@ -96,9 +95,9 @@ public class RegisterEmailActivity extends AppCompatBase implements
         startActivityForResult(
                 WelcomeBackPasswordPrompt.createIntent(
                         this,
-                        mActivityHelper.getFlowParams(),
-                        new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID,
-                                                user.getEmail()).build()),
+                        getFlowParams(),
+                        new IdpResponse.Builder(
+                                EmailAuthProvider.PROVIDER_ID, user.getEmail()).build()),
                 RC_SIGN_IN);
 
         setSlideAnimation();
@@ -109,11 +108,11 @@ public class RegisterEmailActivity extends AppCompatBase implements
         // Existing social user, direct them to sign in using their chosen provider.
         Intent intent = WelcomeBackIdpPrompt.createIntent(
                 this,
-                mActivityHelper.getFlowParams(),
+                getFlowParams(),
                 user,
                 new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, user.getEmail()).build());
-        mActivityHelper.startActivityForResult(intent, RC_WELCOME_BACK_IDP);
 
+        startActivityForResult(intent, RC_WELCOME_BACK_IDP);
         setSlideAnimation();
     }
 
@@ -124,9 +123,9 @@ public class RegisterEmailActivity extends AppCompatBase implements
 
         TextInputLayout emailLayout = (TextInputLayout) findViewById(R.id.email_layout);
 
-        if (mActivityHelper.getFlowParams().allowNewEmailAccounts) {
+        if (getFlowParams().allowNewEmailAccounts) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(
-                    mActivityHelper.getFlowParams(),
+                    getFlowParams(),
                     user);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);

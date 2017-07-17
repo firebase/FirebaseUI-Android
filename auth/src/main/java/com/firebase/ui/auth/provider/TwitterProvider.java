@@ -3,11 +3,9 @@ package com.firebase.ui.auth.provider;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.util.Log;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.google.firebase.auth.AuthCredential;
@@ -43,7 +41,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         return TwitterAuthProvider.getCredential(response.getIdpToken(), response.getIdpSecret());
     }
 
-    public static void initialize(Context context) {
+    private static void initialize(Context context) {
         TwitterAuthConfig authConfig = new TwitterAuthConfig(
                 context.getString(R.string.twitter_consumer_key),
                 context.getString(R.string.twitter_consumer_secret));
@@ -63,15 +61,13 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         signOut();
     }
 
-    @Override
-    public String getName(Context context) {
-        return context.getString(R.string.idp_name_twitter);
+    private static void signOut() throws IllegalStateException {
+        TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 
     @Override
-    @AuthUI.SupportedProvider
-    public String getProviderId() {
-        return TwitterAuthProvider.PROVIDER_ID;
+    public String getName(Context context) {
+        return context.getString(R.string.idp_name_twitter);
     }
 
     @Override
@@ -98,13 +94,13 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     @Override
     public void success(Result<TwitterSession> result) {
         mTwitterAuthClient.requestEmail(result.data,
-                                        new EmailCallback(result.data, mCallbackObject));
+                new EmailCallback(result.data, mCallbackObject));
     }
 
     @Override
     public void failure(TwitterException exception) {
         Log.e(TAG, "Failure logging in to Twitter. " + exception.getMessage());
-        mCallbackObject.onFailure(new Bundle());
+        mCallbackObject.onFailure();
     }
 
     private static class EmailCallback extends Callback<String> {
@@ -141,9 +137,5 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
                     .setSecret(mTwitterSession.getAuthToken().secret)
                     .build();
         }
-    }
-
-    private static void signOut() throws IllegalStateException {
-        TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 }

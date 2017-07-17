@@ -173,7 +173,8 @@ public class IdpResponse implements Parcelable {
         private String mToken;
         private String mSecret;
 
-        public Builder(@AuthUI.SupportedProvider @NonNull String providerId, @Nullable String email) {
+        public Builder(@AuthUI.SupportedProvider @NonNull String providerId,
+                       @Nullable String email) {
             mProviderId = providerId;
             mEmail = email;
         }
@@ -208,7 +209,8 @@ public class IdpResponse implements Parcelable {
                         "Secret cannot be null when using the Twitter provider.");
             }
 
-            return new IdpResponse(mProviderId, mEmail, mPhoneNumber, mToken, mSecret, ResultCodes.OK);
+            return new IdpResponse(
+                    mProviderId, mEmail, mPhoneNumber, mToken, mSecret, ResultCodes.OK);
         }
     }
 }

@@ -3,8 +3,8 @@ package com.firebase.ui.auth;
 import android.app.Activity;
 
 /**
- * Result codes returned when using {@link AuthUI.SignInIntentBuilder#build()} with
- * {@code startActivityForResult}.
+ * Result codes returned when using {@link AuthUI.SignInIntentBuilder#build()} with {@code
+ * startActivityForResult}.
  */
 public final class ResultCodes {
     /**

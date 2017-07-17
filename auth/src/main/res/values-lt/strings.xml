@@ -1,0 +1,76 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Įkeliama…</string>
+    <string name="sign_in_default" translation_description="Button text to sign in">Prisijungti</string>
+    <string name="general_error" translation_description="Toast text flashing general error">Įvyko klaida.</string>
+    <string name="idp_name_google">Google</string>
+    <string name="idp_name_facebook">Facebook</string>
+    <string name="idp_name_twitter">Twitter</string>
+    <string name="provider_name_email">El. paštas</string>
+    <string name="provider_name_phone">Telefonas</string>
+    <string name="sign_in_with_google" translation_description="Sign in button text">Prisijungti per „Google“</string>
+    <string name="sign_in_with_facebook" translation_description="Sign in button text">Prisijungti per „Facebook“</string>
+    <string name="sign_in_with_twitter" translation_description="Sign in button text">Prisijungti per „Twitter“</string>
+    <string name="sign_in_with_email" translation_description="Sign in button text">Prisijungti nurodant el. pašto adresą</string>
+    <string name="sign_in_with_phone" translation_description="Sign in button text">Prisijungti nurodant telefono numerį</string>
+    <string name="next_default" translation_description="Button text to continue">Kitas</string>
+    <string name="email_hint" translation_description="Hint in email input field">El. pašto adresas</string>
+    <string name="phone_hint" translation_description="Hint for phone input field">Telefono numeris</string>
+    <string name="password_hint" translation_description="Hint for password input field">Slaptažodis</string>
+    <string name="required_field" translation_description="Inline error for required field">Šį lauką būtina užpildyti.</string>
+    <string name="invalid_email_address" translation_description="Inline error for invalid email address">Šis el. pašto adresas netinkamas</string>
+    <string name="missing_email_address" translation_description="Inline error for empty email address in input field">Norėdami tęsti įveskite el. pašto adresą</string>
+    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Tikrinama, ar yra esamų paskyrų…</string>
+    <string name="title_register_email" translation_description="Title for signup form">Prisiregistruoti</string>
+    <string name="name_hint" translation_description="Hint for last name input field">Vardas ir pavardė</string>
+    <string name="button_text_save" translation_description="Button text to save input form">Išsaugoti</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Prisiregistruojama…</string>
+    <plurals name="error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolį ir raidžių bei skaičių derinį.</item>
+        <item quantity="few">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolius ir raidžių bei skaičių derinį.</item>
+        <item quantity="many">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolio ir raidžių bei skaičių derinį.</item>
+        <item quantity="other">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolių ir raidžių bei skaičių derinį.</item>
+    </plurals>
+    <string name="email_account_creation_error" translation_description="Inline error for signup failure">El. pašto paskyros užregistruoti nepavyko</string>
+    <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Šiuo el. pašto adresu jau užregistruota paskyra.</string>
+    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s ir %3$s.</string>
+    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s.</string>
+    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Paliesdami %1$s nurodote, kad sutinkate su %2$s.</string>
+    <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Paslaugų teikimo sąlygomis</string>
+    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Privatumo politika</string>
+    <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Jūs jau turite paskyrą</string>
+    <string name="welcome_back_email_header" translation_description="Message for returning users">Sveiki sugrįžę!</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Jau panaudojote %1$s.Jei norite tęsti, prisijunkite per „%2$s“.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Jūs jau prisijungėte naudodami %1$s. Įveskite tos paskyros slaptažodį.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prisijungiama…</string>
+    <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Kyla problemų prisijungiant?</string>
+    <string name="title_recover_password_activity" translation_description="Recover password screen title">Atkurti slaptažodį</string>
+    <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Patikrinkite el. paštą</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Gaukite instrukcijas su nurodymais, kaip pakeisti slaptažodį, šiuo el. pašto adresu.</string>
+    <string name="button_text_send" translation_description="Button text to send recovery email">Siųsti</string>
+    <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Vadovaudamiesi el. pašto adresu %1$s išsiųstais nurodymais atkurkite slaptažodį.</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Siunčiama…</string>
+    <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Šis el. pašto adresas neatitinka esamos paskyros</string>
+    <string name="accessibility_logo" translation_description="Content description for app logo">Programos logotipas</string>
+    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Esate prisijungę kaip %1$s</string>
+    <string name="verify_phone_number_title" translation_description="Phone number entry form title">Įveskite telefono numerį</string>
+    <string name="invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Įveskite tinkamą telefono numerį</string>
+    <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Įveskite 6 skaitmenų kodą, kurį išsiuntėme</string>
+    <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Siųsti kodą iš naujo po 0:%02d</string>
+    <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Patvirtinti telefono numerį</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Patvirtinama…</string>
+    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Gaunama SMS…</string>
+    <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Klaidingas kodas. Bandykite dar kartą.</string>
+    <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">Gerai</string>
+    <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Šis telefono numeris panaudotas per daug kartų</string>
+    <string name="error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Patvirtinant telefono numerį kilo problema</string>
+    <string name="error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Šis kodas nebegalioja</string>
+    <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">Prisijungti nurodant telefono numerį</string>
+    <string name="done" translation_description="Progress dialog success transition once sms is sent">Atlikta</string>
+    <string name="verified" translation_description="Progress dialog success transition when phone number was verified">Patvirtinta.</string>
+    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">Kodas išsiųstas.</string>
+    <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">Siunčiama iš naujo…</string>
+    <string name="resend_code" translation_description="Link text to resend verification sms">Siųsti kodą iš naujo</string>
+    <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Patvirtinti telefono numerį</string>
+    <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Tęsti</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Palietus „%1$s“ gali būti išsiųstas SMS pranešimas. Gali būti taikomi pranešimų ir duomenų įkainiai.</string>
+</resources>
