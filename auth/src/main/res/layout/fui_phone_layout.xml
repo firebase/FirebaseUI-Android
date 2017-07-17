@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         style="@style/FirebaseUI.WrapperStyle"
@@ -48,6 +49,7 @@
             android:layout_marginTop="@dimen/fui_field_padding_vert"
             android:layout_below="@id/send_code"
             android:textColor="?android:textColorTertiary"
-            android:textIsSelectable="true" />
+            android:textIsSelectable="false" />
     </RelativeLayout>
+
 </ScrollView>

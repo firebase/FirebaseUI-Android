@@ -29,6 +29,10 @@ android {
         }
     }
 
+    lintOptions {
+        disable 'UnusedQuantity'
+    }
+
     testOptions {
         unitTests.all {
             testLogging {

@@ -1,0 +1,76 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Načítání…</string>
+    <string name="sign_in_default" translation_description="Button text to sign in">Přihlásit se</string>
+    <string name="general_error" translation_description="Toast text flashing general error">Došlo k chybě.</string>
+    <string name="idp_name_google">Google</string>
+    <string name="idp_name_facebook">Facebook</string>
+    <string name="idp_name_twitter">Twitter</string>
+    <string name="provider_name_email">E-mail</string>
+    <string name="provider_name_phone">Telefon</string>
+    <string name="sign_in_with_google" translation_description="Sign in button text">Přihlásit se přes Google</string>
+    <string name="sign_in_with_facebook" translation_description="Sign in button text">Přihlásit se přes Facebook</string>
+    <string name="sign_in_with_twitter" translation_description="Sign in button text">Přihlásit se přes Twitter</string>
+    <string name="sign_in_with_email" translation_description="Sign in button text">Přihlásit se pomocí e-mailu</string>
+    <string name="sign_in_with_phone" translation_description="Sign in button text">Přihlásit se pomocí telefonu</string>
+    <string name="next_default" translation_description="Button text to continue">Další</string>
+    <string name="email_hint" translation_description="Hint in email input field">E-mail</string>
+    <string name="phone_hint" translation_description="Hint for phone input field">Telefonní číslo</string>
+    <string name="password_hint" translation_description="Hint for password input field">Heslo</string>
+    <string name="required_field" translation_description="Inline error for required field">Toto pole nesmí zůstat prázdné.</string>
+    <string name="invalid_email_address" translation_description="Inline error for invalid email address">E-mailová adresa není správná</string>
+    <string name="missing_email_address" translation_description="Inline error for empty email address in input field">Nejprve zadejte svou e-mailovou adresu</string>
+    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Vyhledávání stávajících účtů…</string>
+    <string name="title_register_email" translation_description="Title for signup form">Registrace</string>
+    <string name="name_hint" translation_description="Hint for last name input field">Jméno a příjmení</string>
+    <string name="button_text_save" translation_description="Button text to save input form">Uložit</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registrace…</string>
+    <plurals name="error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">Heslo není dostatečně silné. Použijte alespoň %1$d znak a kombinaci písmen a číslic</item>
+        <item quantity="few">Heslo není dostatečně silné. Použijte alespoň %1$d znaky a kombinaci písmen a číslic</item>
+        <item quantity="many">Heslo není dostatečně silné. Použijte alespoň %1$d znaku a kombinaci písmen a číslic</item>
+        <item quantity="other">Heslo není dostatečně silné. Použijte alespoň %1$d znaků a kombinaci písmen a číslic</item>
+    </plurals>
+    <string name="email_account_creation_error" translation_description="Inline error for signup failure">Registrace e-mailového účtu se nezdařila</string>
+    <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Účet s touto adresou již existuje.</string>
+    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Klepnutím na možnost %1$s vyjadřujete svůj souhlas s dokumenty %2$s a %3$s.</string>
+    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Klepnutím na možnost %1$s vyjadřujete svůj souhlas s dokumentem %2$s.</string>
+    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Klepnutím na možnost %1$s vyjadřujete svůj souhlas s dokumentem %2$s.</string>
+    <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Smluvní podmínky</string>
+    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Zásady ochrany soukromí</string>
+    <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Již máte účet</string>
+    <string name="welcome_back_email_header" translation_description="Message for returning users">Vítejte zpět!</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Již jste použili adresu %1$s. Chcete-li pokračovat, přihlaste se prostřednictvím služby %2$s.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">K přihlášení jste již použili adresu %1$s. Zadejte příslušné heslo k účtu.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Přihlašování…</string>
+    <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Máte potíže s přihlášením?</string>
+    <string name="title_recover_password_activity" translation_description="Recover password screen title">Obnovit heslo</string>
+    <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Zkontrolujte svůj e-mail</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Na tento e-mail vám zašleme pokyny, jak heslo obnovit.</string>
+    <string name="button_text_send" translation_description="Button text to send recovery email">Odeslat</string>
+    <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Postupujte podle pokynů odeslaných na adresu %1$s a obnovte heslo.</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Odesílání…</string>
+    <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">E-mailová adresa neodpovídá žádnému stávajícímu účtu</string>
+    <string name="accessibility_logo" translation_description="Content description for app logo">Logo aplikace</string>
+    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Jste přihlášeni jako %1$s</string>
+    <string name="verify_phone_number_title" translation_description="Phone number entry form title">Zadejte své telefonní číslo</string>
+    <string name="invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Zadejte platné telefonní číslo</string>
+    <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Zadejte šestimístný kód, který jsme vám zaslali</string>
+    <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Znovu zaslat kód za 0:%02d</string>
+    <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Ověřit telefonní číslo</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Ověřování…</string>
+    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Načítání SMS…</string>
+    <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Špatný kód. Zkuste to znovu.</string>
+    <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">V pořádku</string>
+    <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Toto telefonní číslo již bylo použito příliš mnohokrát</string>
+    <string name="error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Při ověřování vašeho telefonního čísla došlo k potížím</string>
+    <string name="error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Platnost kódu vypršela</string>
+    <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">Přihlášení pomocí telefonního čísla</string>
+    <string name="done" translation_description="Progress dialog success transition once sms is sent">Hotovo</string>
+    <string name="verified" translation_description="Progress dialog success transition when phone number was verified">Ověřeno!</string>
+    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">Kód odeslán!</string>
+    <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">Opakované odesílání…</string>
+    <string name="resend_code" translation_description="Link text to resend verification sms">Znovu poslat kód</string>
+    <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Ověřit telefonní číslo</string>
+    <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Pokračovat</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Po klepnutí na možnost %1$s může být odeslána SMS. Mohou být účtovány poplatky za zprávy a data.</string>
+</resources>

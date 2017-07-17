@@ -14,18 +14,17 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.provider.ProviderUtils;
-import com.firebase.ui.auth.ui.BaseHelper;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
@@ -36,6 +35,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -43,21 +43,18 @@ import com.google.firebase.auth.FirebaseUser;
 public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private static final String TAG = "CredentialSignInHandler";
 
-    private Activity mActivity;
-    private BaseHelper mHelper;
+    private HelperActivityBase mActivity;
     @Nullable
     private SaveSmartLock mSmartLock;
     private IdpResponse mResponse;
     private int mAccountLinkRequestCode;
 
     public CredentialSignInHandler(
-            Activity activity,
-            BaseHelper helper,
+            HelperActivityBase activity,
             @Nullable SaveSmartLock smartLock,
             int accountLinkRequestCode,
             IdpResponse response) {
         mActivity = activity;
-        mHelper = helper;
         mSmartLock = smartLock;
         mResponse = response;
         mAccountLinkRequestCode = accountLinkRequestCode;
@@ -67,25 +64,19 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
             FirebaseUser firebaseUser = task.getResult().getUser();
-            mHelper.saveCredentialsOrFinish(
-                    mSmartLock,
-                    mActivity,
-                    firebaseUser,
-                    null,
-                    mResponse);
+            mActivity.saveCredentialsOrFinish(mSmartLock, firebaseUser, mResponse);
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 String email = mResponse.getEmail();
                 if (email != null) {
-                    ProviderUtils.fetchTopProvider(mHelper.getFirebaseAuth(), email)
+                    FirebaseAuth auth = mActivity.getAuthHelper().getFirebaseAuth();
+                    ProviderUtils.fetchTopProvider(auth, email)
                             .addOnSuccessListener(new StartWelcomeBackFlow())
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    mHelper.finishActivity(
-                                            mActivity,
-                                            ResultCodes.CANCELED,
-                                            IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+                                    Intent intent = IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR);
+                                    mActivity.finish(ResultCodes.CANCELED, intent);
                                 }
                             });
                     return;
@@ -98,14 +89,14 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                       task.getException());
             }
 
-            mHelper.dismissDialog();
+            mActivity.getDialogHolder().dismissDialog();
         }
     }
 
     private class StartWelcomeBackFlow implements OnSuccessListener<String> {
         @Override
         public void onSuccess(String provider) {
-            mHelper.dismissDialog();
+            mActivity.getDialogHolder().dismissDialog();
 
             if (provider == null) {
                 throw new IllegalStateException(
@@ -115,7 +106,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                 mActivity.startActivityForResult(
                         WelcomeBackPasswordPrompt.createIntent(
                                 mActivity,
-                                mHelper.getFlowParams(),
+                                mActivity.getFlowParams(),
                                 mResponse),
                         mAccountLinkRequestCode);
             } else {
@@ -123,7 +114,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                 mActivity.startActivityForResult(
                         WelcomeBackIdpPrompt.createIntent(
                                 mActivity,
-                                mHelper.getFlowParams(),
+                                mActivity.getFlowParams(),
                                 new User.Builder(mResponse.getEmail())
                                         .setProvider(provider)
                                         .build(),

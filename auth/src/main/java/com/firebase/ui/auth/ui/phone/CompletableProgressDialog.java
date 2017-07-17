@@ -52,11 +52,6 @@ public final class CompletableProgressDialog extends ProgressDialog {
         }
     }
 
-    @Override
-    public void show() {
-        super.show();
-    }
-
     public void complete(String msg) {
         setMessage(msg);
         mProgress.setVisibility(View.GONE);
