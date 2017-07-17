@@ -37,16 +37,13 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Privatlivspolitik</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Du har allerede en konto</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Velkommen tilbage!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har allerede brugt %1$s.
-        Log ind med %2$s for at fortsætte.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har allerede brugt %1$s
-        til at logge ind. Angiv din adgangskode for den pågældende konto.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har allerede brugt %1$s. Log ind med %2$s for at fortsætte.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har allerede brugt %1$s til at logge ind. Angiv din adgangskode for den pågældende konto.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Logger ind…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Har du problemer med at logge ind?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Gendan adgangskode</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Tjek din mail.</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Få en vejledning sendt til denne mail om, hvordan du
-        nulstiller din adgangskode.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Få en vejledning sendt til denne mail om, hvordan du nulstiller din adgangskode.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Send</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Følg vejledningen, der blev sendt til %1$s, for at gendanne din adgangskode.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Sender…</string>
@@ -73,5 +70,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Send koden igen</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Bekræft telefonnummer</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Fortsæt</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Når du trykker på \"%1$s\", sendes der en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Når du trykker på “%1$s”, sendes der en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
 </resources>

@@ -37,10 +37,8 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Norme sulla privacy</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Hai già un account</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Bentornato.</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Hai già utilizzato %1$s.
-        Accedi con %2$s per continuare.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Hai già utilizzato %1$s
-        per accedere. Inserisci la password di questo account.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Hai già utilizzato %1$s. Accedi con %2$s per continuare.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Hai già utilizzato %1$s per accedere. Inserisci la password di questo account.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Accesso in corso…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Problemi di accesso?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Recupera la password</string>
@@ -72,5 +70,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Invia di nuovo il codice</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Verifica numero di telefono</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Continua</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Se tocchi \"%1$s\", è possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Se tocchi “%1$s”, è possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
 </resources>

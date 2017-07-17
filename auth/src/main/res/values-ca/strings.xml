@@ -37,10 +37,8 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">política de privadesa</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Ja tens un compte</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Benvingut de nou!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Ja has utilitzat l\'adreça electrònica %1$s.
-        Inicia la sessió amb %2$s per continuar.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Ja has utilitzat l\'adreça electrònica %1$s
-        per iniciar la sessió. Introdueix la contrasenya d\'aquest compte.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Ja has utilitzat l\'adreça electrònica %1$s. Inicia la sessió amb %2$s per continuar.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Ja has utilitzat l\'adreça electrònica %1$s per iniciar la sessió. Introdueix la contrasenya d\'aquest compte.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">S\'està iniciant la sessió…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">No pots iniciar la sessió?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Recupera la contrasenya</string>

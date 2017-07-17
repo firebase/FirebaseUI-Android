@@ -10,11 +10,11 @@ NON_TRANSLATABLE = 'translatable="false"'
 
 class RemoveNonTranslatableScript(BaseStringScript):
 
-  def ProcessTag(self, lines):
-    if NON_TRANSLATABLE in '\n'.join(lines):
+  def ProcessTag(self, line):
+    if NON_TRANSLATABLE in '\n'.join(line):
       return []
     else:
-      return lines
+      return line
 
 # Process all files
 for file_name in sys.argv[1:]:

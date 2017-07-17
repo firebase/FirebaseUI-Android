@@ -19,11 +19,11 @@
     <string name="required_field" translation_description="Inline error for required field">Ne možete to ostaviti prazno.</string>
     <string name="invalid_email_address" translation_description="Inline error for invalid email address">Ta e-adresa nije točna</string>
     <string name="missing_email_address" translation_description="Inline error for empty email address in input field">Unesite svoju e-adresu za nastavak</string>
-    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Traženje postojećih računa...</string>
+    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Traženje postojećih računa…</string>
     <string name="title_register_email" translation_description="Title for signup form">Registracija</string>
     <string name="name_hint" translation_description="Hint for last name input field">Ime i prezime</string>
     <string name="button_text_save" translation_description="Button text to save input form">Spremi</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registriranje....</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registriranje….</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item>
         <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item>
@@ -38,16 +38,13 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Pravila o privatnosti</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Već imate račun</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Dobro došli natrag!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Već ste upotrijebili e-adresu %1$s.
-        Za nastavak se prijavite putem usluge %2$s.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Za prijavu ste već upotrijebili e-adresu %1$s.
-        Unesite zaporku za taj račun.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prijava...</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Već ste upotrijebili e-adresu %1$s. Za nastavak se prijavite putem usluge %2$s.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Za prijavu ste već upotrijebili e-adresu %1$s. Unesite zaporku za taj račun.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Prijava…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Problem s prijavom?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Ponovno postavljanje zaporke</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Provjerite e-poštu</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Provjerite upute za ponovno postavljanje zaporke koje smo
-        poslali na vašu e-adresu.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Provjerite upute za ponovno postavljanje zaporke koje smo poslali na vašu e-adresu.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Pošalji</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Slijedite upute za ponovno postavljanje zaporke koje smo poslali na e-adresu %1$s.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Slanje…</string>
@@ -74,5 +71,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Ponovo pošalji kôd</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Potvrda telefonskog broja</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Nastavi</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Dodirivanje gumba \"%1$s\" može dovesti do slanja SMS poruke. Mogu se primijeniti naknade za slanje poruka i podatkovni promet.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Dodirivanje gumba “%1$s” može dovesti do slanja SMS poruke. Mogu se primijeniti naknade za slanje poruka i podatkovni promet.</string>
 </resources>

@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Loading...</string>
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Sign in</string>
     <string name="general_error" translation_description="Toast text flashing general error">An error has occurred.</string>
     <string name="idp_name_google">Google</string>
@@ -37,16 +37,13 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Privacy Policy</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">You already have an account</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Welcome back!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">You\'ve already used %1$s.
-        Sign in with %2$s to continue.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">You\'ve already used %1$s
-        to sign in. Enter your password for that account.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">You\'ve already used %1$s. Sign in with %2$s to continue.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">You\'ve already used %1$s to sign in. Enter your password for that account.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Signing in…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Trouble signing in?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Recover password</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Check your email</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Receive instructions to this email that explain how to
-        reset your password.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Receive instructions to this email that explain how to reset your password.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Send</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Follow the instructions sent to %1$s to recover your password.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Sending…</string>

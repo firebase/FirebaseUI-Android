@@ -37,16 +37,13 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">隱私權政策</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">您已經有帳戶</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">歡迎回來！</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">目前您用於登入的帳戶是 %1$s。
-        如要繼續，請使用 %2$s 帳戶登入。</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">您已使用 %1$s
-        登入。請輸入這個帳戶的密碼。</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">登入中...</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">目前您用於登入的帳戶是 %1$s。 如要繼續，請使用 %2$s 帳戶登入。</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">您已使用 %1$s 登入。請輸入這個帳戶的密碼。</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">登入中…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">無法登入嗎？</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">重新取得密碼</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">請查看您的電子郵件信箱</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">這個電子郵件會收到重設密碼的
-        操作說明。</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">這個電子郵件會收到重設密碼的 操作說明。</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">傳送</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">請依照傳送至 %1$s 的操作說明，重新取得密碼。</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">傳送中…</string>

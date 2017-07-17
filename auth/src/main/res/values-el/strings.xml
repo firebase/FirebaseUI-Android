@@ -37,16 +37,13 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Πολιτική απορρήτου</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Έχετε ήδη λογαριασμό</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Καλώς ορίσατε και πάλι!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Έχετε ήδη χρησιμοποιήσει τη διεύθυνση %1$s.
-        Συνδεθείτε μέσω %2$s για να συνεχίσετε.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Έχετε ήδη χρησιμοποιήσει τη διεύθυνση %1$s
-        για να συνδεθείτε. Εισαγάγετε τον κωδικό πρόσβασής σας για αυτόν τον λογαριασμό.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Έχετε ήδη χρησιμοποιήσει τη διεύθυνση %1$s. Συνδεθείτε μέσω %2$s για να συνεχίσετε.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Έχετε ήδη χρησιμοποιήσει τη διεύθυνση %1$s για να συνδεθείτε. Εισαγάγετε τον κωδικό πρόσβασής σας για αυτόν τον λογαριασμό.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Γίνεται σύνδεση…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Πρόβλημα κατά τη σύνδεση;</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Ανάκτηση κωδικού πρόσβασης</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Ελέγξτε τα εισερχόμενα του ηλεκτρονικού ταχυδρομείου σας</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Δείτε τις οδηγίες που στάλθηκαν σε αυτήν τη διεύθυνση ηλεκτρονικού ταχυδρομείου, οι οποίες εξηγούν πώς να
-        επαναφέρετε τον κωδικό πρόσβασής σας.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Δείτε τις οδηγίες που στάλθηκαν σε αυτήν τη διεύθυνση ηλεκτρονικού ταχυδρομείου, οι οποίες εξηγούν πώς να επαναφέρετε τον κωδικό πρόσβασής σας.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Αποστολή</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Ακολουθήστε τις οδηγίες που στάλθηκαν στο %1$s για να ανακτήσετε τον κωδικό πρόσβασής σας.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Γίνεται αποστολή…</string>
@@ -73,5 +70,5 @@
     <string name="resend_code" translation_description="Link text to resend verification sms">Επανάληψη αποστολής κωδικού</string>
     <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Επαλήθευση αριθμού τηλεφώνου</string>
     <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Συνέχεια</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Αν πατήσετε \"%1$s\", μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
+    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Αν πατήσετε “%1$s”, μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
 </resources>

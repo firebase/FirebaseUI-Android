@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Đang tải...</string>
+    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Đang tải…</string>
     <string name="sign_in_default" translation_description="Button text to sign in">Đăng nhập</string>
     <string name="general_error" translation_description="Toast text flashing general error">Đã xảy ra lỗi.</string>
     <string name="idp_name_google">Google</string>
@@ -37,16 +37,13 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Chính sách bảo mật</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Bạn đã có tài khoản</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Chào mừng bạn quay trở lại!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Bạn đã sử dụng %1$s.
-        Đăng nhập bằng %2$s để tiếp tục.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Bạn đã sử dụng %1$s
-        để đăng nhập. Hãy nhập mật khẩu của bạn cho tài khoản đó.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Đang đăng nhập...</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Bạn đã sử dụng %1$s. Đăng nhập bằng %2$s để tiếp tục.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Bạn đã sử dụng %1$s để đăng nhập. Hãy nhập mật khẩu của bạn cho tài khoản đó.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Đang đăng nhập…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Bạn gặp sự cố khi đăng nhập?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Khôi phục mật khẩu</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Kiểm tra email của bạn</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Xem hướng dẫn gửi tới email này có giải thích cách
-        đặt lại mật khẩu của bạn.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Xem hướng dẫn gửi tới email này có giải thích cách đặt lại mật khẩu của bạn.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Gửi</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Làm theo hướng dẫn gửi tới %1$s để khôi phục mật khẩu của bạn.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Đang gửi…</string>

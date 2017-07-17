@@ -23,7 +23,7 @@
     <string name="title_register_email" translation_description="Title for signup form">Regisztráció</string>
     <string name="name_hint" translation_description="Hint for last name input field">Utónév és vezetéknév</string>
     <string name="button_text_save" translation_description="Button text to save input form">Mentés</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Regisztráció...</string>
+    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Regisztráció…</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item>
         <item quantity="other">A jelszó nem elég erős. Legalább %1$d karaktert használjon, amelyben betűk és számok is szerepeljenek.</item>
@@ -37,16 +37,13 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Adatvédelmi irányelvek</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Már rendelkezik fiókkal</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Örülünk, hogy visszatért!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Már használta a következő e-mail-címet: %1$s.
-        A folytatáshoz jelentkezzen be %2$s-fiókjával.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Ezt az e-mail-fiókot (%1$s) már használta
-        bejelentkezésre. Adja meg a fiókhoz tartozó jelszót.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Bejelentkezés...</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Már használta a következő e-mail-címet: %1$s. A folytatáshoz jelentkezzen be %2$s-fiókjával.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Ezt az e-mail-fiókot (%1$s) már használta bejelentkezésre. Adja meg a fiókhoz tartozó jelszót.</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Bejelentkezés…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Problémái vannak a bejelentkezéssel?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Jelszó visszaállítása</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Ellenőrizze az e-mailjeit.</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Olvassa el az e-mailben elküldött utasításokat, amelyekből megtudhatja, hogyan
-        állíthatja vissza a jelszavát.</string>
+    <string name="password_recovery_body" translation_description="Password recovery message body">Olvassa el az e-mailben elküldött utasításokat, amelyekből megtudhatja, hogyan állíthatja vissza a jelszavát.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Küldés</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">A jelszó visszaállításához kövesse az ide (%1$s) elküldött utasításokat.</string>
     <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Küldés…</string>
@@ -58,7 +55,7 @@
     <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Adja meg a telefonszámra elküldött 6 számjegyű kódot</string>
     <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Kód újraküldése ennyi idő elteltével: 0:%02d</string>
     <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Telefonszám igazolása</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Ellenőrzés...</string>
+    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Ellenőrzés…</string>
     <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">SMS lekérése…</string>
     <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Hibás kód. Próbálja újra.</string>
     <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">Rendben</string>

@@ -38,10 +38,8 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Политику приватности</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Већ имате налог</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Добро дошли поново!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Већ сте користили адресу %1$s.
-        Пријавите се преко %2$s-а да бисте наставили.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Већ сте користили адресу %1$s
-        за пријављивање. Унесите лозинку за тај налог.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Већ сте користили адресу %1$s. Пријавите се преко %2$s-а да бисте наставили.</string>
+    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Већ сте користили адресу %1$s за пријављивање. Унесите лозинку за тај налог.</string>
     <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Пријављивање…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Имате проблема при пријављивању?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Повратите лозинку</string>

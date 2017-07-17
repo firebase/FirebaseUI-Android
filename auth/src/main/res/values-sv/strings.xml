@@ -37,17 +37,16 @@
     <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Sekretesspolicy</string>
     <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Du har redan ett konto</string>
     <string name="welcome_back_email_header" translation_description="Message for returning users">Välkommen tillbaka!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har redan använt %1$s.
-        Logga in med %2$s om du vill fortsätta.</string>
+    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har redan använt %1$s. Logga in med %2$s om du vill fortsätta.</string>
     <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har redan loggat in med %1$s. Ange lösenordet för det kontot.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Loggar in...</string>
+    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Loggar in…</string>
     <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Har du problem med att logga in?</string>
     <string name="title_recover_password_activity" translation_description="Recover password screen title">Återställa lösenord</string>
     <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Kolla dina e-postmeddelanden</string>
     <string name="password_recovery_body" translation_description="Password recovery message body">Få ett e-postmeddelande med anvisningar för hur du återställer lösenordet.</string>
     <string name="button_text_send" translation_description="Button text to send recovery email">Skicka</string>
     <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Följ anvisningarna som har skickats till %1$s för att återställa ditt lösenord.</string>
-    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Skickar...</string>
+    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Skickar…</string>
     <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">E-postadressen matchar inget befintligt konto</string>
     <string name="accessibility_logo" translation_description="Content description for app logo">Appens logotyp</string>
     <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Inloggad som %1$s</string>

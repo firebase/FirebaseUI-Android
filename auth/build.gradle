@@ -27,16 +27,16 @@ android {
         }
     }
 
+    lintOptions {
+        disable 'UnusedQuantity'
+    }
+
     testOptions {
         unitTests.all {
             testLogging {
                 exceptionFormat = 'full'
             }
         }
-    }
-
-    lintOptions {
-        disable 'UnusedQuantity', 'TypographyEllipsis', 'TypographyQuotes'
     }
 }
 
