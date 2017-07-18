@@ -11,9 +11,21 @@ END_STR = '</string'
 class BaseStringScript:
 
   def ProcessTag(self, line):
+    """
+    Process a single string tag.
+    
+    :param line: an array of lines making a single string tag.
+    :return: an array of lines representing the processed tag.
+    """
     return line
 
   def ProcessFile(self, file_name):
+    """
+    Process and write a file of string resources.
+    
+    :param file_name: path to the file to process.
+    :return: None.
+    """
     lines = []
 
     in_tag = False
@@ -39,5 +51,16 @@ class BaseStringScript:
             lines += self.ProcessTag(curr_tag)
             curr_tag = []
 
+    # Write back to the file
+    self.WriteFile(file_name, '\n'.join(lines))
+
+  def WriteFile(self, file_name, file_contents):
+    """
+    Overwrite the contents of a file.
+    
+    :param file_name: path to the file to write.
+    :param file_contents: string containing new file contents. 
+    :return: None
+    """
     with open(file_name, 'w') as myfile:
-      myfile.write('\n'.join(lines))
+      myfile.write(file_contents)
