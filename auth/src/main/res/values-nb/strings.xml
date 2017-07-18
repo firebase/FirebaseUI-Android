@@ -1,74 +1,74 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Laster inn …</string>
-    <string name="sign_in_default" translation_description="Button text to sign in">Logg på</string>
-    <string name="general_error" translation_description="Toast text flashing general error">Det har oppstått en feil.</string>
-    <string name="idp_name_google">Google</string>
-    <string name="idp_name_facebook">Facebook</string>
-    <string name="idp_name_twitter">Twitter</string>
-    <string name="provider_name_email">E-post</string>
-    <string name="provider_name_phone">Telefon</string>
-    <string name="sign_in_with_google" translation_description="Sign in button text">Logg på med Google</string>
-    <string name="sign_in_with_facebook" translation_description="Sign in button text">Logg på med Facebook</string>
-    <string name="sign_in_with_twitter" translation_description="Sign in button text">Logg på med Twitter</string>
-    <string name="sign_in_with_email" translation_description="Sign in button text">Logg på med e-postadresse</string>
-    <string name="sign_in_with_phone" translation_description="Sign in button text">Logg på med telefonnummeret ditt</string>
-    <string name="next_default" translation_description="Button text to continue">Neste</string>
-    <string name="email_hint" translation_description="Hint in email input field">E-post</string>
-    <string name="phone_hint" translation_description="Hint for phone input field">Telefonnummer</string>
-    <string name="password_hint" translation_description="Hint for password input field">Passord</string>
-    <string name="required_field" translation_description="Inline error for required field">Du må fylle ut dette feltet.</string>
-    <string name="invalid_email_address" translation_description="Inline error for invalid email address">E-postadressen er ikke riktig</string>
-    <string name="missing_email_address" translation_description="Inline error for empty email address in input field">Oppgi e-postadressen din for å fortsette</string>
-    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Ser etter eksisterende kontoer …</string>
-    <string name="title_register_email" translation_description="Title for signup form">Registrering</string>
-    <string name="name_hint" translation_description="Hint for last name input field">Fornavn og etternavn</string>
-    <string name="button_text_save" translation_description="Button text to save input form">Lagre</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registrerer …</string>
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Laster inn …</string>
+    <string name="fui_sign_in_default" translation_description="Button text to sign in">Logg på</string>
+    <string name="fui_general_error" translation_description="Toast text flashing general error">Det har oppstått en feil.</string>
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_provider_name_email">E-post</string>
+    <string name="fui_provider_name_phone">Telefon</string>
+    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Logg på med Google</string>
+    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Logg på med Facebook</string>
+    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Logg på med Twitter</string>
+    <string name="fui_sign_in_with_email" translation_description="Sign in button text">Logg på med e-postadresse</string>
+    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Logg på med telefonnummeret ditt</string>
+    <string name="fui_next_default" translation_description="Button text to continue">Neste</string>
+    <string name="fui_email_hint" translation_description="Hint in email input field">E-post</string>
+    <string name="fui_phone_hint" translation_description="Hint for phone input field">Telefonnummer</string>
+    <string name="fui_password_hint" translation_description="Hint for password input field">Passord</string>
+    <string name="fui_required_field" translation_description="Inline error for required field">Du må fylle ut dette feltet.</string>
+    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">E-postadressen er ikke riktig</string>
+    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Oppgi e-postadressen din for å fortsette</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Ser etter eksisterende kontoer …</string>
+    <string name="fui_title_register_email" translation_description="Title for signup form">Registrering</string>
+    <string name="fui_name_hint" translation_description="Hint for last name input field">Fornavn og etternavn</string>
+    <string name="fui_button_text_save" translation_description="Button text to save input form">Lagre</string>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registrerer …</string>
     <plurals name="error_weak_password" translation_description="Inline error for weak password">
         <item quantity="one">Passordet er ikke sterkt nok. Bruk minst %1$d tegn og en blanding av bokstaver og tall</item>
         <item quantity="other">Passordet er ikke sterkt nok. Bruk minst %1$d tegn og en blanding av bokstaver og tall</item>
     </plurals>
-    <string name="email_account_creation_error" translation_description="Inline error for signup failure">Kunne ikke registrere e-postkontoen</string>
-    <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Det finnes allerede en konto med denne e-postadressen.</string>
-    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Når du trykker på %1$s, godtar du %2$s og %3$s.</string>
-    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Når du trykker på %1$s, godtar du %2$s.</string>
-    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Når du trykker på %1$s, godtar du %2$s.</string>
-    <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">vilkårene</string>
-    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Personvernregler</string>
-    <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Du har allerede en konto</string>
-    <string name="welcome_back_email_header" translation_description="Message for returning users">Velkommen tilbake!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har allerede brukt %1$s. Logg på med %2$s for å fortsette.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har allerede brukt %1$s for å logge på. Angi passordet ditt for denne kontoen.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Logger på …</string>
-    <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Har du problemer med å logge på?</string>
-    <string name="title_recover_password_activity" translation_description="Recover password screen title">Gjenopprett passordet</string>
-    <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Sjekk e-posten din</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Få instruksjoner sendt til denne e-postadressen for hvordan du tilbakestiller passordet ditt.</string>
-    <string name="button_text_send" translation_description="Button text to send recovery email">Send</string>
-    <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Følg veiledningen som er sendt til %1$s, for å gjenopprette passordet ditt.</string>
-    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Sender …</string>
-    <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Denne e-postadressen samsvarer ikke med en eksisterende konto</string>
-    <string name="accessibility_logo" translation_description="Content description for app logo">App-logo</string>
-    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Logget på som %1$s</string>
-    <string name="verify_phone_number_title" translation_description="Phone number entry form title">Oppgi telefonnummeret ditt</string>
-    <string name="invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Oppgi et gyldig telefonnummer</string>
-    <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Oppgi den 6-sifrede koden vi sendte til</string>
-    <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Send koden på nytt om 0:%02d</string>
-    <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Bekreft telefonnummeret ditt</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Bekrefter …</string>
-    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Henter SMS …</string>
-    <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Feil kode. Prøv på nytt.</string>
-    <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
-    <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Dette telefonnummeret er brukt for mange ganger</string>
-    <string name="error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Kunne ikke bekrefte telefonnummeret ditt</string>
-    <string name="error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Denne koden er ikke lenger gyldig</string>
-    <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">Logg på med telefonnummer</string>
-    <string name="done" translation_description="Progress dialog success transition once sms is sent">Ferdig</string>
-    <string name="verified" translation_description="Progress dialog success transition when phone number was verified">Bekreftet.</string>
-    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">Koden er sendt.</string>
-    <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">Sender på nytt …</string>
-    <string name="resend_code" translation_description="Link text to resend verification sms">Send koden på nytt</string>
-    <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Bekreft telefonnummeret</string>
-    <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Fortsett</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Når du trykker på «%1$s», kan det bli sendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
+    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Kunne ikke registrere e-postkontoen</string>
+    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Det finnes allerede en konto med denne e-postadressen.</string>
+    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Når du trykker på %1$s, godtar du %2$s og %3$s.</string>
+    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Når du trykker på %1$s, godtar du %2$s.</string>
+    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Når du trykker på %1$s, godtar du %2$s.</string>
+    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">vilkårene</string>
+    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Personvernregler</string>
+    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Du har allerede en konto</string>
+    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Velkommen tilbake!</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har allerede brukt %1$s. Logg på med %2$s for å fortsette.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har allerede brukt %1$s for å logge på. Angi passordet ditt for denne kontoen.</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Logger på …</string>
+    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Har du problemer med å logge på?</string>
+    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Gjenopprett passordet</string>
+    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Sjekk e-posten din</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Få instruksjoner sendt til denne e-postadressen for hvordan du tilbakestiller passordet ditt.</string>
+    <string name="fui_button_text_send" translation_description="Button text to send recovery email">Send</string>
+    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Følg veiledningen som er sendt til %1$s, for å gjenopprette passordet ditt.</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Sender …</string>
+    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Denne e-postadressen samsvarer ikke med en eksisterende konto</string>
+    <string name="fui_accessibility_logo" translation_description="Content description for app logo">App-logo</string>
+    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Logget på som %1$s</string>
+    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Oppgi telefonnummeret ditt</string>
+    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Oppgi et gyldig telefonnummer</string>
+    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Oppgi den 6-sifrede koden vi sendte til</string>
+    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Send koden på nytt om 0:%02d</string>
+    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Bekreft telefonnummeret ditt</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Bekrefter …</string>
+    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Henter SMS …</string>
+    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Feil kode. Prøv på nytt.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
+    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Dette telefonnummeret er brukt for mange ganger</string>
+    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Kunne ikke bekrefte telefonnummeret ditt</string>
+    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Denne koden er ikke lenger gyldig</string>
+    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Logg på med telefonnummer</string>
+    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Ferdig</string>
+    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Bekreftet.</string>
+    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Koden er sendt.</string>
+    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Sender på nytt …</string>
+    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Send koden på nytt</string>
+    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Bekreft telefonnummeret</string>
+    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Fortsett</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Når du trykker på «%1$s», kan det bli sendt en SMS. Kostnader for meldinger og datatrafikk kan påløpe.</string>
 </resources>
