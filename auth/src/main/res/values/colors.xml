@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="fui_colorPrimary">#3F51B5</color>
+    <color name="fui_colorPrimaryDark">#303F9F</color>
+    <color name="fui_colorAccent">#FF4081</color>
 
     <color name="fui_errorColor">#DD2C00</color>
     <color name="fui_linkColor">#4285F4</color>

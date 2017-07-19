@@ -21,7 +21,7 @@ class FixTypographyScript(BaseStringScript):
 
         minimizedWhitespaceLine = []
         for idx, char in enumerate(''.join(newLine)):
-            if len(minimizedWhitespaceLine) < 1:r
+            if len(minimizedWhitespaceLine) < 1:
                 minimizedWhitespaceLine.append(char)
                 continue
 
