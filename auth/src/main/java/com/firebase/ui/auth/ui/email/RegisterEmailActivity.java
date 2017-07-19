@@ -27,10 +27,9 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.User;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
-import com.google.firebase.auth.EmailAuthProvider;
 
 /**
  * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment} and
@@ -96,8 +95,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
                 WelcomeBackPasswordPrompt.createIntent(
                         this,
                         getFlowParams(),
-                        new IdpResponse.Builder(
-                                EmailAuthProvider.PROVIDER_ID, user.getEmail()).build()),
+                        new IdpResponse.Builder(user).build()),
                 RC_SIGN_IN);
 
         setSlideAnimation();
@@ -110,7 +108,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
                 this,
                 getFlowParams(),
                 user,
-                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, user.getEmail()).build());
+                new IdpResponse.Builder(user).build());
 
         startActivityForResult(intent, RC_WELCOME_BACK_IDP);
         setSlideAnimation();

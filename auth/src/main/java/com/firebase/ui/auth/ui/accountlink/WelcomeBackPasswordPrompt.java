@@ -42,6 +42,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -162,7 +163,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                                     mSaveSmartLock,
                                     authResult.getUser(),
                                     password,
-                                    new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                    new IdpResponse.Builder(
+                                            new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                                    .build())
                                             .build());
                         } else {
                             authResult.getUser()

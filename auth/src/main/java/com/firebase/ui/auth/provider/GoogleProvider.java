@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -113,7 +114,11 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     }
 
     private IdpResponse createIdpResponse(GoogleSignInAccount account) {
-        return new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
+        return new IdpResponse.Builder(
+                new User.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
+                        .setName(account.getDisplayName())
+                        .setPhotoUri(account.getPhotoUrl())
+                        .build())
                 .setToken(account.getIdToken())
                 .build();
     }
