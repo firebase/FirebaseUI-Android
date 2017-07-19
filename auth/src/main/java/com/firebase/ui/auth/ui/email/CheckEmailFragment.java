@@ -17,12 +17,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.ImeHelper;
-import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -198,15 +198,16 @@ public class CheckEmailFragment extends FragmentBase implements
                     @Override
                     public void onSuccess(String provider) {
                         if (provider == null) {
-                            mListener.onNewUser(new User.Builder(email)
+                            mListener.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
                                     .setName(finalName)
                                     .setPhotoUri(finalPhotoUri)
                                     .build());
                         } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
-                            mListener.onExistingEmailUser(new User.Builder(email).build());
+                            mListener.onExistingEmailUser(
+                                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build());
                         } else {
                             mListener.onExistingIdpUser(
-                                    new User.Builder(email).setProvider(provider).build());
+                                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build());
                         }
                     }
                 })

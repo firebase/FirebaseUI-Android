@@ -38,7 +38,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.User;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -88,7 +88,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
         mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(mActivity);
 
         User user = User.getUser(getArguments());
-        String provider = user.getProvider();
+        String provider = user.getProviderId();
 
         AuthUI.IdpConfig providerConfig = null;
         for (AuthUI.IdpConfig config : getFlowParams().providerInfo) {

@@ -32,26 +32,23 @@ import com.google.firebase.auth.TwitterAuthProvider;
  * A container that encapsulates the result of authenticating with an Identity Provider.
  */
 public class IdpResponse implements Parcelable {
-    private final String mProviderId;
-    private final String mEmail;
+    private final User mUser;
     private final String mPhoneNumber;
     private final String mToken;
     private final String mSecret;
     private final int mErrorCode;
 
     private IdpResponse(int errorCode) {
-        this(null, null, null, null, null, errorCode);
+        this(null, null, null, null, errorCode);
     }
 
     private IdpResponse(
-            String providerId,
-            String email,
+            User user,
             String phoneNumber,
             String token,
             String secret,
             int errorCode) {
-        mProviderId = providerId;
-        mEmail = email;
+        mUser = user;
         mPhoneNumber = phoneNumber;
         mToken = token;
         mSecret = secret;
@@ -89,7 +86,7 @@ public class IdpResponse implements Parcelable {
     @NonNull
     @AuthUI.SupportedProvider
     public String getProviderType() {
-        return mProviderId;
+        return mUser.getProviderId();
     }
 
     /**
@@ -97,7 +94,7 @@ public class IdpResponse implements Parcelable {
      */
     @Nullable
     public String getEmail() {
-        return mEmail;
+        return mUser.getEmail();
     }
 
     /**
@@ -138,8 +135,7 @@ public class IdpResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mProviderId);
-        dest.writeString(mEmail);
+        dest.writeParcelable(mUser, flags);
         dest.writeString(mPhoneNumber);
         dest.writeString(mToken);
         dest.writeString(mSecret);
@@ -150,8 +146,7 @@ public class IdpResponse implements Parcelable {
         @Override
         public IdpResponse createFromParcel(Parcel in) {
             return new IdpResponse(
-                    in.readString(),
-                    in.readString(),
+                    in.<User>readParcelable(User.class.getClassLoader()),
                     in.readString(),
                     in.readString(),
                     in.readString(),
@@ -167,16 +162,13 @@ public class IdpResponse implements Parcelable {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static class Builder {
-        private String mProviderId;
-        private String mEmail;
+        private User mUser;
         private String mPhoneNumber;
         private String mToken;
         private String mSecret;
 
-        public Builder(@AuthUI.SupportedProvider @NonNull String providerId,
-                       @Nullable String email) {
-            mProviderId = providerId;
-            mEmail = email;
+        public Builder(@NonNull User user) {
+            mUser = user;
         }
 
         public Builder setPhoneNumber(String phoneNumber) {
@@ -195,22 +187,22 @@ public class IdpResponse implements Parcelable {
         }
 
         public IdpResponse build() {
-            if ((mProviderId.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)
-                    || mProviderId.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)
-                    || mProviderId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
-                    || mProviderId.equalsIgnoreCase(GithubAuthProvider.PROVIDER_ID))
+            String providerId = mUser.getProviderId();
+            if ((providerId.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)
+                    || providerId.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)
+                    || providerId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
+                    || providerId.equalsIgnoreCase(GithubAuthProvider.PROVIDER_ID))
                     && TextUtils.isEmpty(mToken)) {
                 throw new IllegalStateException(
                         "Token cannot be null when using a non-email provider.");
             }
-            if (mProviderId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
+            if (providerId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
                     && TextUtils.isEmpty(mSecret)) {
                 throw new IllegalStateException(
                         "Secret cannot be null when using the Twitter provider.");
             }
 
-            return new IdpResponse(
-                    mProviderId, mEmail, mPhoneNumber, mToken, mSecret, ResultCodes.OK);
+            return new IdpResponse(mUser, mPhoneNumber, mToken, mSecret, ResultCodes.OK);
         }
     }
 }

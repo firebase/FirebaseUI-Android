@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
-import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ui.ExtraConstants;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class User implements Parcelable {
@@ -29,15 +29,15 @@ public class User implements Parcelable {
         }
     };
 
+    private String mProviderId;
     private String mEmail;
     private String mName;
-    private String mProvider;
     private Uri mPhotoUri;
 
-    private User(String email, String name, String provider, Uri photoUri) {
+    private User(String providerId, String email, String name, Uri photoUri) {
+        mProviderId = providerId;
         mEmail = email;
         mName = name;
-        mProvider = provider;
         mPhotoUri = photoUri;
     }
 
@@ -50,6 +50,12 @@ public class User implements Parcelable {
     }
 
     @NonNull
+    @AuthUI.SupportedProvider
+    public String getProviderId() {
+        return mProviderId;
+    }
+
+    @Nullable
     public String getEmail() {
         return mEmail;
     }
@@ -60,14 +66,40 @@ public class User implements Parcelable {
     }
 
     @Nullable
-    @AuthUI.SupportedProvider
-    public String getProvider() {
-        return mProvider;
-    }
-
-    @Nullable
     public Uri getPhotoUri() {
         return mPhotoUri;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return mProviderId.equals(user.mProviderId)
+                && (mEmail == null ? user.mEmail == null : mEmail.equals(user.mEmail))
+                && (mName == null ? user.mName == null : mName.equals(user.mName))
+                && (mPhotoUri == null ? user.mPhotoUri == null : mPhotoUri.equals(user.mPhotoUri));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mProviderId.hashCode();
+        result = 31 * result + (mEmail == null ? 0 : mEmail.hashCode());
+        result = 31 * result + (mName == null ? 0 : mName.hashCode());
+        result = 31 * result + (mPhotoUri == null ? 0 : mPhotoUri.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "mProviderId='" + mProviderId + '\'' +
+                ", mEmail='" + mEmail + '\'' +
+                ", mName='" + mName + '\'' +
+                ", mPhotoUri=" + mPhotoUri +
+                '}';
     }
 
     @Override
@@ -77,29 +109,25 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(mProviderId);
         dest.writeString(mEmail);
         dest.writeString(mName);
-        dest.writeString(mProvider);
         dest.writeParcelable(mPhotoUri, flags);
     }
 
     public static class Builder {
+        private String mProviderId;
         private String mEmail;
         private String mName;
-        private String mProvider;
         private Uri mPhotoUri;
 
-        public Builder(@NonNull String email) {
+        public Builder(@AuthUI.SupportedProvider @NonNull String providerId, @Nullable String email) {
+            mProviderId = providerId;
             mEmail = email;
         }
 
         public Builder setName(String name) {
             mName = name;
-            return this;
-        }
-
-        public Builder setProvider(@AuthUI.SupportedProvider String provider) {
-            mProvider = provider;
             return this;
         }
 
@@ -109,7 +137,7 @@ public class User implements Parcelable {
         }
 
         public User build() {
-            return new User(mEmail, mName, mProvider, mPhotoUri);
+            return new User(mProviderId, mEmail, mName, mPhotoUri);
         }
     }
 }

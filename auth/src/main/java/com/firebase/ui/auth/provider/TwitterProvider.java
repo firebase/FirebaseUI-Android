@@ -3,6 +3,7 @@ package com.firebase.ui.auth.provider;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.LayoutRes;
 import android.util.Log;
 
@@ -19,8 +20,7 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
-
-import java.lang.ref.WeakReference;
+import com.twitter.sdk.android.core.models.User;
 
 
 public class TwitterProvider extends Callback<TwitterSession> implements IdpProvider {
@@ -51,7 +51,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         Twitter.initialize(config);
     }
 
-    public static void signout(Context context) {
+    public static void signOut(Context context) {
         try {
             Twitter.getInstance();
         } catch (IllegalStateException e) {
@@ -92,9 +92,27 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     }
 
     @Override
-    public void success(Result<TwitterSession> result) {
-        mTwitterAuthClient.requestEmail(result.data,
-                new EmailCallback(result.data, mCallbackObject));
+    public void success(final Result<TwitterSession> sessionResult) {
+        TwitterCore.getInstance()
+                .getApiClient()
+                .getAccountService()
+                .verifyCredentials(false, false, true)
+                .enqueue(new Callback<User>() {
+                    @Override
+                    public void success(Result<User> result) {
+                        User user = result.data;
+                        mCallbackObject.onSuccess(createIdpResponse(
+                                sessionResult.data,
+                                user.email,
+                                user.name,
+                                Uri.parse(user.profileImageUrlHttps)));
+                    }
+
+                    @Override
+                    public void failure(TwitterException exception) {
+                        mCallbackObject.onFailure();
+                    }
+                });
     }
 
     @Override
@@ -103,39 +121,17 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
         mCallbackObject.onFailure();
     }
 
-    private static class EmailCallback extends Callback<String> {
-        private TwitterSession mTwitterSession;
-        private WeakReference<IdpCallback> mCallbackObject;
-
-        public EmailCallback(TwitterSession session, IdpCallback callbackObject) {
-            mTwitterSession = session;
-            mCallbackObject = new WeakReference<>(callbackObject);
-        }
-
-        @Override
-        public void success(Result<String> emailResult) {
-            onSuccess(createIdpResponse(emailResult.data));
-        }
-
-        @Override
-        public void failure(TwitterException exception) {
-            Log.e(TAG, "Failure retrieving Twitter email. " + exception.getMessage());
-            // If retrieving the email fails, we should still be able to sign in, but Smart Lock
-            // and account linking won't work.
-            onSuccess(createIdpResponse(null));
-        }
-
-        private void onSuccess(IdpResponse response) {
-            if (mCallbackObject != null) {
-                mCallbackObject.get().onSuccess(response);
-            }
-        }
-
-        private IdpResponse createIdpResponse(String email) {
-            return new IdpResponse.Builder(TwitterAuthProvider.PROVIDER_ID, email)
-                    .setToken(mTwitterSession.getAuthToken().token)
-                    .setSecret(mTwitterSession.getAuthToken().secret)
-                    .build();
-        }
+    private IdpResponse createIdpResponse(TwitterSession session,
+                                          String email,
+                                          String name,
+                                          Uri photoUri) {
+        return new IdpResponse.Builder(
+                new com.firebase.ui.auth.User.Builder(TwitterAuthProvider.PROVIDER_ID, email)
+                        .setName(name)
+                        .setPhotoUri(photoUri)
+                        .build())
+                .setToken(session.getAuthToken().token)
+                .setSecret(session.getAuthToken().secret)
+                .build();
     }
 }
