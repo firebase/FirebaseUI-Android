@@ -20,6 +20,7 @@ public class User implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readString(),
+                    in.readString(),
                     in.<Uri>readParcelable(Uri.class.getClassLoader()));
         }
 
@@ -29,14 +30,16 @@ public class User implements Parcelable {
         }
     };
 
-    private String mProviderId;
-    private String mEmail;
-    private String mName;
-    private Uri mPhotoUri;
+    private final String mProviderId;
+    private final String mEmail;
+    private final String mPhoneNumber;
+    private final String mName;
+    private final Uri mPhotoUri;
 
-    private User(String providerId, String email, String name, Uri photoUri) {
+    private User(String providerId, String email, String phoneNumber, String name, Uri photoUri) {
         mProviderId = providerId;
         mEmail = email;
+        mPhoneNumber = phoneNumber;
         mName = name;
         mPhotoUri = photoUri;
     }
@@ -58,6 +61,11 @@ public class User implements Parcelable {
     @Nullable
     public String getEmail() {
         return mEmail;
+    }
+
+    @Nullable
+    public String getPhoneNumber() {
+        return mPhoneNumber;
     }
 
     @Nullable
@@ -111,6 +119,7 @@ public class User implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(mProviderId);
         dest.writeString(mEmail);
+        dest.writeString(mPhoneNumber);
         dest.writeString(mName);
         dest.writeParcelable(mPhotoUri, flags);
     }
@@ -118,12 +127,19 @@ public class User implements Parcelable {
     public static class Builder {
         private String mProviderId;
         private String mEmail;
+        private String mPhoneNumber;
         private String mName;
         private Uri mPhotoUri;
 
-        public Builder(@AuthUI.SupportedProvider @NonNull String providerId, @Nullable String email) {
+        public Builder(@AuthUI.SupportedProvider @NonNull String providerId,
+                       @Nullable String email) {
             mProviderId = providerId;
             mEmail = email;
+        }
+
+        public Builder setPhoneNumber(String phoneNumber) {
+            mPhoneNumber = phoneNumber;
+            return this;
         }
 
         public Builder setName(String name) {
@@ -137,7 +153,7 @@ public class User implements Parcelable {
         }
 
         public User build() {
-            return new User(mProviderId, mEmail, mName, mPhotoUri);
+            return new User(mProviderId, mEmail, mPhoneNumber, mName, mPhotoUri);
         }
     }
 }

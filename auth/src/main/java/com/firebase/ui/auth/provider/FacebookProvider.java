@@ -141,15 +141,17 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
                             try {
                                 email = object.getString("email");
-                            } catch (JSONException ignored) { }
+                            } catch (JSONException e) {
+                                Log.e(TAG, "Failure retrieving Facebook email", e);
+                            }
                             try {
                                 name = object.getString("name");
-                            } catch (JSONException ignored) { }
+                            } catch (JSONException ignored) {}
                             try {
                                 photoUri = Uri.parse(object.getJSONObject("picture")
                                         .getJSONObject("data")
                                         .getString("url"));
-                            } catch (JSONException ignored) { }
+                            } catch (JSONException ignored) {}
 
                             onSuccess(loginResult, email, name, photoUri);
                         }
