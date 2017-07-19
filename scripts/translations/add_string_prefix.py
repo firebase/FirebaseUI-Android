@@ -11,7 +11,7 @@ UNPREFIXED_NAME_START = 'name="'
 
 class AddStringPrefixScript(BaseStringScript):
 
-    def ProcessTag(self, line):
+    def ProcessTag(self, line, type):
         joined = '\n'.join(line)
 
         if (UNPREFIXED_NAME_START in joined) and (PREFIXED_NAME_START not in joined):

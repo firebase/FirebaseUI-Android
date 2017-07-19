@@ -11,7 +11,7 @@ UNPREFIXED_NAME_START = 'name="'
 
 class ExportTranslationsScript(BaseStringScript):
 
-    def ProcessTag(self, line):
+    def ProcessTag(self, line, type):
         joined = '\n'.join(line)
 
         if PREFIXED_NAME_START in joined:

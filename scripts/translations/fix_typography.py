@@ -12,7 +12,8 @@ GOOD_DOUBLE_QUOTE = "“%1$s”"
 
 
 class FixTypographyScript(BaseStringScript):
-    def ProcessTag(self, oldLine):
+
+    def ProcessTag(self, oldLine, type):
         lineString = ''.join(oldLine) \
             .replace(BAD_ELLIPSIS, GOOD_ELLIPSIS) \
             .replace(BAD_DOUBLE_QUOTE, GOOD_DOUBLE_QUOTE)
@@ -20,7 +21,7 @@ class FixTypographyScript(BaseStringScript):
 
         minimizedWhitespaceLine = []
         for idx, char in enumerate(''.join(newLine)):
-            if len(minimizedWhitespaceLine) < 1:
+            if len(minimizedWhitespaceLine) < 1:r
                 minimizedWhitespaceLine.append(char)
                 continue
 

@@ -10,7 +10,11 @@ NON_TRANSLATABLE = 'translatable="false"'
 
 class RemoveNonTranslatableScript(BaseStringScript):
 
-  def ProcessTag(self, line):
+  def ProcessTag(self, line, type):
+    # Ignore non-strings
+    if type != BaseStringScript.TYPE_STR:
+      return line
+
     if NON_TRANSLATABLE in '\n'.join(line):
       return []
     else:
