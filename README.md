@@ -137,21 +137,9 @@ compile "com.android.support:palette-v7:$BAR"
 ```
 
 NOTE :
-The support libraries are now available through Google's Maven repository, so ensure that you have that added to your project's repositories.
+Starting version 25.4.0, support libraries are now available through [Google's Maven repository](https://developer.android.com/studio/build/dependencies.html#google-maven), so ensure that you have that added to your project's repositories.
 
-Open the `build.gradle` file for your project and modify it according to your gradle plugin version.
-
-If your gradle plugin is above 2.3.3 
-
-```
-allprojects {
-    repositories {
-        google()
-        jcenter()
-    }
-}
-```
-Else,
+Open the `build.gradle` file for your project and modify it as following,
 
 ```
 allprojects {
