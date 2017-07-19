@@ -136,6 +136,34 @@ compile "com.android.support:appcompat-v7:$BAR"
 compile "com.android.support:palette-v7:$BAR"
 ```
 
+NOTE :
+The support libraries are now available through Google's Maven repository, so ensure that you have that added to your project's repositories.
+
+Open the `build.gradle` file for your project and modify it according to your gradle plugin version.
+
+If your gradle plugin is above 2.3.3 
+
+```
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+```
+Else,
+
+```
+allprojects {
+    repositories {
+        maven {
+            url "https://maven.google.com"
+        }
+        jcenter()
+    }
+}
+```
+
 ## Sample App
 
 There is a sample app in the `app/` directory that demonstrates most
