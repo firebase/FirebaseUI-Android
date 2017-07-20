@@ -120,7 +120,7 @@ public class SaveSmartLock extends SmartLockBase<Status> {
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getContext(), R.string.general_error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.fui_general_error, Toast.LENGTH_SHORT).show();
 
         PendingIntent resolution =
                 PlayServicesHelper.getGoogleApiAvailability()

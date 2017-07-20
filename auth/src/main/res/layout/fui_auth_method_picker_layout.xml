@@ -8,7 +8,7 @@
     android:gravity="center|bottom"
     android:orientation="vertical">
 
-    <include layout="@layout/include_auth_method_picker_logo" />
+    <include layout="@layout/fui_include_auth_method_picker_logo" />
 
     <LinearLayout
         android:id="@+id/btn_holder"

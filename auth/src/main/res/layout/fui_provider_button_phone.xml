@@ -2,7 +2,7 @@
 <Button
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/email_button"
-    style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
-    android:text="@string/sign_in_with_email"
+    android:id="@+id/phone_button"
+    style="@style/FirebaseUI.Button.AccountChooser.PhoneButton"
+    android:text="@string/fui_sign_in_with_phone"
     tools:ignore="UnusedIds" /> <!-- Used in tests -->

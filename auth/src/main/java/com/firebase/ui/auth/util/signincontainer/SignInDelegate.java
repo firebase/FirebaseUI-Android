@@ -94,7 +94,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         FlowParameters flowParams = getFlowParams();
         if (flowParams.enableCredentials) {
-            getDialogHolder().showLoadingDialog(R.string.progress_dialog_loading);
+            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
 
             mGoogleApiClient = new GoogleApiClient.Builder(getContext().getApplicationContext())
                     .addConnectionCallbacks(this)

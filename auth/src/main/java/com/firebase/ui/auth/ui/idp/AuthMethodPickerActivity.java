@@ -72,7 +72,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.auth_method_picker_layout);
+        setContentView(R.layout.fui_auth_method_picker_layout);
         mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(this);
 
         populateIdpList(getFlowParams().providerInfo);
@@ -121,7 +121,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                 @Override
                 public void onClick(View view) {
                     if (provider instanceof IdpProvider) {
-                        getDialogHolder().showLoadingDialog(R.string.progress_dialog_loading);
+                        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
                     }
                     provider.startLogin(AuthMethodPickerActivity.this);
                 }

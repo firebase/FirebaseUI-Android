@@ -31,7 +31,7 @@
             android:paddingStart="2dp"
             android:paddingEnd="2dp"
             android:text=""
-            android:textColor="@color/errorColor" />
+            android:textColor="@color/fui_errorColor" />
 
         <Button
             android:id="@+id/send_code"
@@ -39,14 +39,14 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/phone_number_error"
-            android:text="@string/verify_phone_number" />
+            android:text="@string/fui_verify_phone_number" />
 
         <TextView
             android:id="@+id/send_sms_tos"
             style="@style/FirebaseUI.Text.BodyText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/field_padding_vert"
+            android:layout_marginTop="@dimen/fui_field_padding_vert"
             android:layout_below="@id/send_code"
             android:textColor="?android:textColorTertiary"
             android:textIsSelectable="false" />

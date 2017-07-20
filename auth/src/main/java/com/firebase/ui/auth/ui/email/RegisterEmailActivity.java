@@ -55,7 +55,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register_email);
+        setContentView(R.layout.fui_activity_register_email);
 
         if (savedInstanceState != null) {
             return;
@@ -132,12 +132,12 @@ public class RegisterEmailActivity extends AppCompatBase implements
 
             ft.disallowAddToBackStack().commit();
         } else {
-            emailLayout.setError(getString(R.string.error_email_does_not_exist));
+            emailLayout.setError(getString(R.string.fui_error_email_does_not_exist));
         }
     }
 
     private void setSlideAnimation() {
         // Make the next activity slide in
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        overridePendingTransition(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left);
     }
 }
