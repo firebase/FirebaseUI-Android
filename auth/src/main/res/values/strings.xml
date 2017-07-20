@@ -49,8 +49,8 @@
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Privacy Policy</string>
 
     <!-- Idp/Email welcome back -->
-    <string name="fui_title_welcome_back_idp_prompt" translatable="false">@string/sign_in_default</string>
-    <string name="fui_title_welcome_back_password_prompt" translatable="false">@string/sign_in_default</string>
+    <string name="fui_title_welcome_back_idp_prompt" translatable="false">@string/fui_sign_in_default</string>
+    <string name="fui_title_welcome_back_password_prompt" translatable="false">@string/fui_sign_in_default</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">You already have an account</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Welcome back!</string>
     <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">
