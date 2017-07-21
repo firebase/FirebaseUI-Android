@@ -1,5 +1,6 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -32,8 +33,8 @@
             android:layout_margin="12dip"
             android:contentDescription="@string/fui_done"
             android:max="10000"
-            android:src="@drawable/fui_done_check_mark"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:srcCompat="@drawable/fui_done_check_mark" />
 
         <TextView
             android:id="@+id/progress_msg"
