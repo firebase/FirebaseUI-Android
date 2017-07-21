@@ -67,7 +67,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     private static final String KEY_STATE = "KEY_STATE";
 
     private AlertDialog mAlertDialog;
-    private CompletableProgressDialog mProgressDialog;
+    @VisibleForTesting CompletableProgressDialog mProgressDialog;
     private Handler mHandler;
     private String mPhoneNumber;
     private String mVerificationId;

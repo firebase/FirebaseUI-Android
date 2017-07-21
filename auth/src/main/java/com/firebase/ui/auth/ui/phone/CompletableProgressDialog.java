@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.phone;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -31,7 +32,7 @@ public final class CompletableProgressDialog extends DialogFragment {
     private static final String TAG = "ComProgressDialog";
 
     private ProgressBar mProgress;
-    private TextView mMessageView;
+    @VisibleForTesting TextView mMessageView;
     private CharSequence mMessage;
     private ImageView mSuccessImage;
 
