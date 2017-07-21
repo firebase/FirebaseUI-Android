@@ -1,16 +1,9 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/dgts_body"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:baselineAligned="false"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
-    tools:ignore="UnusedIds">
+    android:padding="8dp">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -22,7 +15,6 @@
 
     <ImageView
         android:id="@+id/progress_success_imaage"
-        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
@@ -36,6 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        tools:ignore="SelectableText" />
+        android:textIsSelectable="false" />
 
 </LinearLayout>
