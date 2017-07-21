@@ -172,8 +172,9 @@
     </style>
 
     <style name="FirebaseUI.AuthMethodPicker.ButtonHolder">
-        <item name="android:layout_width">@dimen/fui_auth_method_button_width</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">@dimen/fui_auth_method_button_width</item>
         <item name="android:orientation">vertical</item>
         <item name="android:clipToPadding">false</item>
         <item name="android:paddingLeft">4dp</item>
