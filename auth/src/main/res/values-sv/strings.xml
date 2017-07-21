@@ -19,11 +19,11 @@
     <string name="fui_required_field" translation_description="Inline error for required field">Du måste fylla i det här fältet.</string>
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">E-postadressen är ogiltig</string>
     <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Ange din e-postadress om du vill fortsätta</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Söker efter befintliga konton …</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Söker efter befintliga konton…</string>
     <string name="fui_title_register_email" translation_description="Title for signup form">Registrera dig</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">För- och efternamn</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Spara</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registrerar …</string>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registrerar…</string>
     <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item> <item quantity="other">Lösenordet är inte tillräckligt starkt. Använd minst %1$d tecken och en blandning av bokstäver och siffror.</item> </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Det gick inte att registrera e-postkontot</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Det finns redan ett konto med den e-postadressen.</string>
@@ -52,8 +52,8 @@
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Ange den sexsiffriga koden vi skickade till</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Skicka kod igen om 0:%02d</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Verifiera ditt telefonnummer</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifierar …</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Hämtar sms …</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifierar…</string>
+    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Hämtar sms…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Fel kod. Försök igen.</string>
     <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
     <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Det här telefonnumret har använts för många gånger</string>
@@ -63,7 +63,7 @@
     <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Klart</string>
     <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Verifierat!</string>
     <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Koden har skickats!</string>
-    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Skickar igen …</string>
+    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Skickar igen…</string>
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">Skicka koden igen</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Verifiera telefonnummer</string>
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Fortsätt</string>
