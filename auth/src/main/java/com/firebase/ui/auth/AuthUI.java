@@ -192,7 +192,7 @@ public class AuthUI {
 
         // Twitter sign out
         try {
-            TwitterProvider.signout(activity);
+            TwitterProvider.signOut(activity);
         } catch (NoClassDefFoundError e) {
             // do nothing
         }

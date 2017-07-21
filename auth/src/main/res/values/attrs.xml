@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="SpacedEditText">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="SpacedEditText" tools:ignore="ResourceName">
         <attr name="spacingProportion" format="float" />
     </declare-styleable>
 </resources>

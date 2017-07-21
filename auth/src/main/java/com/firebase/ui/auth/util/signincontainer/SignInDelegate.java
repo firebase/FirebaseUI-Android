@@ -19,11 +19,10 @@ import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.User;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -95,7 +94,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         FlowParameters flowParams = getFlowParams();
         if (flowParams.enableCredentials) {
-            getDialogHolder().showLoadingDialog(R.string.progress_dialog_loading);
+            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
 
             mGoogleApiClient = new GoogleApiClient.Builder(getContext().getApplicationContext())
                     .addConnectionCallbacks(this)
@@ -104,7 +103,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     .build();
             mGoogleApiClient.connect();
 
-            AuthInstances.getCredentialsApi()
+            getAuthHelper().getCredentialsApi()
                     .request(mGoogleApiClient,
                             new CredentialRequest.Builder()
                                     .setPasswordLoginSupported(true)
@@ -274,9 +273,10 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
      */
     private void signInWithEmailAndPassword(String email, String password) {
         final IdpResponse response =
-                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email).build();
+                new IdpResponse.Builder(new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
+                        .build();
 
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        getAuthHelper().getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
                 .addOnFailureListener(new TaskFailureLogger(
                         TAG, "Error signing in with email and password"))
@@ -342,8 +342,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             IdpSignInContainer.signIn(
                     getActivity(),
                     getFlowParams(),
-                    new User.Builder(email)
-                            .setProvider(accountTypeToProviderId(accountType))
+                    new User.Builder(SmartLockBase.accountTypeToProviderId(accountType), email)
                             .build());
         } else {
             Log.w(TAG, "Unknown provider: " + accountType);

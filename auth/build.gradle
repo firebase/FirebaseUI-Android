@@ -10,6 +10,8 @@ android {
         targetSdkVersion targetSdk
         versionCode 1
         versionName "1.0"
+
+        resourcePrefix "fui_"
     }
 
     buildTypes {
@@ -25,6 +27,10 @@ android {
             // which causes a null pointer exception while running tests.
             manifestPlaceholders = [enableFbLogging: false]
         }
+    }
+
+    lintOptions {
+        disable 'UnusedQuantity'
     }
 
     testOptions {

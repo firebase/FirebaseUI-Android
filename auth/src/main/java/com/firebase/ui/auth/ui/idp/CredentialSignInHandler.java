@@ -25,10 +25,9 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.User;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -70,7 +69,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 String email = mResponse.getEmail();
                 if (email != null) {
-                    FirebaseAuth auth = AuthInstances.getFirebaseAuth(mActivity.getFlowParams());
+                    FirebaseAuth auth = mActivity.getAuthHelper().getFirebaseAuth();
                     ProviderUtils.fetchTopProvider(auth, email)
                             .addOnSuccessListener(new StartWelcomeBackFlow())
                             .addOnFailureListener(new OnFailureListener() {
@@ -116,9 +115,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                         WelcomeBackIdpPrompt.createIntent(
                                 mActivity,
                                 mActivity.getFlowParams(),
-                                new User.Builder(mResponse.getEmail())
-                                        .setProvider(provider)
-                                        .build(),
+                                new User.Builder(provider, mResponse.getEmail()).build(),
                                 mResponse),
                         mAccountLinkRequestCode);
             }

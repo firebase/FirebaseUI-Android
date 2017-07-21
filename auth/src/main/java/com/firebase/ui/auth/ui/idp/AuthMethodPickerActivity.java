@@ -44,7 +44,6 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
-import com.firebase.ui.auth.util.AuthInstances;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
 
@@ -75,8 +74,8 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.auth_method_picker_layout);
-        mSaveSmartLock = AuthInstances.getSaveSmartLockInstance(this, getFlowParams());
+        setContentView(R.layout.fui_auth_method_picker_layout);
+        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(this);
 
         populateIdpList(getFlowParams().providerInfo);
 
@@ -131,7 +130,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                 @Override
                 public void onClick(View view) {
                     if (provider instanceof IdpProvider) {
-                        getDialogHolder().showLoadingDialog(R.string.progress_dialog_loading);
+                        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
                     }
                     provider.startLogin(AuthMethodPickerActivity.this);
                 }
@@ -158,7 +157,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     @Override
     public void onSuccess(final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        AuthInstances.getFirebaseAuth(getFlowParams())
+        getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Firebase sign in with credential "

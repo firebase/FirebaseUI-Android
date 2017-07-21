@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="all">
+        <ignore path="src/main/res/values/com_crashlytics_export_strings.xml" />
+    </issue>
+</lint>

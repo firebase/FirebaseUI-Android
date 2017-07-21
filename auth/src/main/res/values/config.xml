@@ -1,4 +1,5 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+           tools:ignore="ResourceName">
     <!--
     The Facebook Application ID associated with this Android application. This
     must be overridden by users of FirebaseUI auth in order to support Facebook
