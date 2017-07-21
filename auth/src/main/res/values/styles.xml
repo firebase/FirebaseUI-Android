@@ -3,9 +3,9 @@
            tools:ignore="ResourceName">
 
     <style name="FirebaseUI" parent="Theme.AppCompat.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/fui_colorPrimary</item>
-        <item name="colorPrimaryDark">@color/fui_colorPrimaryDark</item>
-        <item name="colorAccent">@color/fui_colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:buttonStyle">@style/FirebaseUI.Button</item>
     </style>
 
