@@ -52,7 +52,7 @@
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">আমাদের পাঠানো ৬-সংখ্যার কোডটি লিখুন</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">0:%02d এ কোডটি আবার পাঠান</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">আপনার ফোন নম্বর যাচাই করুন</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">যাচাই করা হচ্ছে …</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">যাচাই করা হচ্ছে…</string>
     <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">এসএমএসটি পুনরুদ্ধার করা হচ্ছে…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">কোডটি ভুল। আবার চেষ্টা করুন।</string>
     <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ঠিক আছে</string>
