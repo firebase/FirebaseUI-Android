@@ -17,6 +17,7 @@ package com.firebase.ui.auth.provider;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -35,6 +36,7 @@ import com.facebook.login.LoginResult;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 
@@ -74,13 +76,13 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public String getName(Context context) {
-        return context.getString(R.string.idp_name_facebook);
+        return context.getString(R.string.fui_idp_name_facebook);
     }
 
     @Override
     @LayoutRes
     public int getButtonLayout() {
-        return R.layout.idp_button_facebook;
+        return R.layout.fui_idp_button_facebook;
     }
 
     @Override
@@ -133,19 +135,31 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                             Log.w(TAG, "Received null response from Facebook GraphRequest");
                             onFailure();
                         } else {
+                            String email = null;
+                            String name = null;
+                            Uri photoUri = null;
+
                             try {
-                                String email = object.getString("email");
-                                onSuccess(email, loginResult);
+                                email = object.getString("email");
                             } catch (JSONException e) {
                                 Log.e(TAG, "Failure retrieving Facebook email", e);
-                                onSuccess(null, loginResult);
                             }
+                            try {
+                                name = object.getString("name");
+                            } catch (JSONException ignored) {}
+                            try {
+                                photoUri = Uri.parse(object.getJSONObject("picture")
+                                        .getJSONObject("data")
+                                        .getString("url"));
+                            } catch (JSONException ignored) {}
+
+                            onSuccess(loginResult, email, name, photoUri);
                         }
                     }
                 });
 
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,email");
+        parameters.putString("fields", "id,name,email,picture");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -161,15 +175,18 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         onFailure();
     }
 
-    private void onSuccess(@Nullable String email, LoginResult loginResult) {
+    private void onSuccess(LoginResult loginResult,
+                           @Nullable String email,
+                           String name,
+                           Uri photoUri) {
         gcCallbackManager();
-        mCallbackObject.onSuccess(createIdpResponse(email, loginResult));
-    }
-
-    private IdpResponse createIdpResponse(@Nullable String email, LoginResult loginResult) {
-        return new IdpResponse.Builder(FacebookAuthProvider.PROVIDER_ID, email)
+        mCallbackObject.onSuccess(new IdpResponse.Builder(
+                new User.Builder(FacebookAuthProvider.PROVIDER_ID, email)
+                        .setName(name)
+                        .setPhotoUri(photoUri)
+                        .build())
                 .setToken(loginResult.getAccessToken().getToken())
-                .build();
+                .build());
     }
 
     private void onFailure() {

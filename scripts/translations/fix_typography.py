@@ -7,14 +7,19 @@ from base_string_script import BaseStringScript
 BAD_ELLIPSIS = "..."
 GOOD_ELLIPSIS = "…"
 
+BAD_ELLIPSIS_SPACING = " …"
+GOOD_ELLIPSIS_SPACING = "…"
+
 BAD_DOUBLE_QUOTE = "\\\"%1$s\\\""
 GOOD_DOUBLE_QUOTE = "“%1$s”"
 
 
 class FixTypographyScript(BaseStringScript):
-    def ProcessTag(self, oldLine):
+
+    def ProcessTag(self, oldLine, type):
         lineString = ''.join(oldLine) \
             .replace(BAD_ELLIPSIS, GOOD_ELLIPSIS) \
+            .replace(BAD_ELLIPSIS_SPACING, GOOD_ELLIPSIS_SPACING) \
             .replace(BAD_DOUBLE_QUOTE, GOOD_DOUBLE_QUOTE)
         newLine = lineString.split("(?!^)")
 

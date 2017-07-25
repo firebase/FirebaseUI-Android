@@ -18,6 +18,7 @@ import android.content.Intent;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
@@ -28,7 +29,6 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.ProgressDialogHolder;
-import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.AuthHelper;
@@ -78,7 +78,9 @@ public class CredentialSignInHandlerTest {
     public void testSignInSucceeded() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         IdpResponse idpResponse =
-                new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
+                new IdpResponse.Builder(
+                        new User.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
+                                .build())
                         .setToken(TestConstants.TOKEN)
                         .build();
         SaveSmartLock smartLock = mock(SaveSmartLock.class);
@@ -116,7 +118,9 @@ public class CredentialSignInHandlerTest {
     public void testSignInFailed_withFacebookAlreadyLinked() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         IdpResponse idpResponse =
-                new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
+                new IdpResponse.Builder(
+                        new User.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
+                                .build())
                         .setToken(TestConstants.TOKEN)
                         .build();
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
@@ -161,7 +165,7 @@ public class CredentialSignInHandlerTest {
                 capturedUser.getEmail());
         assertEquals(
                 FacebookAuthProvider.PROVIDER_ID,
-                capturedUser.getProvider());
+                capturedUser.getProviderId());
 
     }
 
@@ -170,7 +174,9 @@ public class CredentialSignInHandlerTest {
     public void testSignInFailed_withPasswordAccountAlreadyLinked() {
         AppCompatBase mockActivity = mock(AppCompatBase.class);
         IdpResponse idpResponse =
-                new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
+                new IdpResponse.Builder(
+                        new User.Builder(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
+                                .build())
                         .setToken(TestConstants.TOKEN)
                         .build();
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(

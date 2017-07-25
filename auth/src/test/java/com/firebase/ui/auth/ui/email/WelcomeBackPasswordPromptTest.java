@@ -22,6 +22,7 @@ import android.widget.EditText;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
@@ -61,8 +62,10 @@ public class WelcomeBackPasswordPromptTest {
         Intent startIntent = WelcomeBackPasswordPrompt.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.<String>emptyList()),
-                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID,
-                                        TestConstants.EMAIL).build());
+                new IdpResponse.Builder(
+                        new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
+                                .build())
+                        .build());
         return Robolectric
                 .buildActivity(WelcomeBackPasswordPrompt.class)
                 .withIntent(startIntent)
@@ -80,7 +83,7 @@ public class WelcomeBackPasswordPromptTest {
                 (TextInputLayout) welcomeBack.findViewById(R.id.password_layout);
 
         assertEquals(
-                welcomeBack.getString(R.string.required_field),
+                welcomeBack.getString(R.string.fui_required_field),
                 passwordLayout.getError().toString());
 
         // should block and not start a new activity

@@ -30,8 +30,8 @@ public class RecoveryEmailSentDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getContext())
-                .setTitle(R.string.title_confirm_recover_password)
-                .setMessage(getString(R.string.confirm_recovery_body,
+                .setTitle(R.string.fui_title_confirm_recover_password)
+                .setMessage(getString(R.string.fui_confirm_recovery_body,
                         getArguments().getString(ExtraConstants.EXTRA_EMAIL)))
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override

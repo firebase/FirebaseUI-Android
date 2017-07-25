@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -91,13 +92,13 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
 
     @Override
     public String getName(Context context) {
-        return context.getString(R.string.idp_name_google);
+        return context.getString(R.string.fui_idp_name_google);
     }
 
     @Override
     @LayoutRes
     public int getButtonLayout() {
-        return R.layout.idp_button_google;
+        return R.layout.fui_idp_button_google;
     }
 
     @Override
@@ -113,7 +114,11 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     }
 
     private IdpResponse createIdpResponse(GoogleSignInAccount account) {
-        return new IdpResponse.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
+        return new IdpResponse.Builder(
+                new User.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
+                        .setName(account.getDisplayName())
+                        .setPhotoUri(account.getPhotoUrl())
+                        .build())
                 .setToken(account.getIdToken())
                 .build();
     }
@@ -128,7 +133,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
                         Toast.makeText(
                                 mActivity,
                                 mActivity.getString(
-                                        R.string.signed_in_with_specific_account,
+                                        R.string.fui_signed_in_with_specific_account,
                                         result.getSignInAccount().getEmail()),
                                 Toast.LENGTH_SHORT).show();
                     }

@@ -41,7 +41,7 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.User;
+import com.firebase.ui.auth.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -73,14 +73,14 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.welcome_back_idp_prompt_layout);
+        setContentView(R.layout.fui_welcome_back_idp_prompt_layout);
 
         IdpResponse newUserIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mPrevCredential = ProviderUtils.getAuthCredential(newUserIdpResponse);
 
         User oldUser = User.getUser(getIntent());
 
-        String providerId = oldUser.getProvider();
+        String providerId = oldUser.getProviderId();
         for (IdpConfig idpConfig : getFlowParams().providerInfo) {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
@@ -118,14 +118,14 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                getDialogHolder().showLoadingDialog(R.string.progress_dialog_signing_in);
+                getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
                 mIdpProvider.startLogin(WelcomeBackIdpPrompt.this);
             }
         });
     }
 
     private String getIdpPromptString(String email) {
-        return getString(R.string.welcome_back_idp_prompt, email, mIdpProvider.getName(this));
+        return getString(R.string.fui_welcome_back_idp_prompt, email, mIdpProvider.getName(this));
     }
 
     @Override
@@ -191,7 +191,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     private void finishWithError() {
-        Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.fui_general_error, Toast.LENGTH_LONG).show();
         finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
     }
 

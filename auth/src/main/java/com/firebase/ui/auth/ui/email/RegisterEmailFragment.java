@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -22,7 +23,6 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
@@ -94,7 +94,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.register_email_layout, container, false);
+        View v = inflater.inflate(R.layout.fui_register_email_layout, container, false);
 
         mEmailEditText = (EditText) v.findViewById(R.id.email);
         mNameEditText = (EditText) v.findViewById(R.id.name);
@@ -105,7 +105,7 @@ public class RegisterEmailFragment extends FragmentBase implements
 
         mPasswordFieldValidator = new PasswordFieldValidator(
                 mPasswordInput,
-                getResources().getInteger(R.integer.min_password_length));
+                getResources().getInteger(R.integer.fui_min_password_length));
         mNameValidator = new RequiredFieldValidator(
                 (TextInputLayout) v.findViewById(R.id.name_layout));
         mEmailFieldValidator = new EmailFieldValidator(mEmailInput);
@@ -158,7 +158,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getActivity().setTitle(R.string.title_register_email);
+        getActivity().setTitle(R.string.fui_title_register_email);
 
         if (!(getActivity() instanceof HelperActivityBase)) {
             throw new RuntimeException("Must be attached to a HelperActivityBase.");
@@ -166,14 +166,14 @@ public class RegisterEmailFragment extends FragmentBase implements
 
         mActivity = (HelperActivityBase) getActivity();
         mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(mActivity);
-        new PreambleHandler(getContext(), getFlowParams(), R.string.button_text_save)
+        new PreambleHandler(getContext(), getFlowParams(), R.string.fui_button_text_save)
                 .setPreamble(mAgreementText);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(ExtraConstants.EXTRA_USER,
-                new User.Builder(mEmailEditText.getText().toString())
+                new User.Builder(EmailAuthProvider.PROVIDER_ID, mEmailEditText.getText().toString())
                         .setName(mNameEditText.getText().toString())
                         .setPhotoUri(mUser.getPhotoUri())
                         .build());
@@ -215,7 +215,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         boolean passwordValid = mPasswordFieldValidator.validate(password);
         boolean nameValid = mNameValidator.validate(name);
         if (emailValid && passwordValid && nameValid) {
-            getDialogHolder().showLoadingDialog(R.string.progress_dialog_signing_up);
+            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_up);
             registerUser(email, name, password);
         }
     }
@@ -246,8 +246,11 @@ public class RegisterEmailFragment extends FragmentBase implements
                                         // the credential to SmartLock (if enabled).
                                         mActivity.saveCredentialsOrFinish(
                                                 mSaveSmartLock, user, password,
-                                                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID,
-                                                        email).build());
+                                                new IdpResponse.Builder(new User.Builder(
+                                                        EmailAuthProvider.PROVIDER_ID, email)
+                                                        .setName(name)
+                                                        .setPhotoUri(mUser.getPhotoUri())
+                                                        .build()).build());
                                     }
                                 });
                     }
@@ -258,10 +261,10 @@ public class RegisterEmailFragment extends FragmentBase implements
                         if (e instanceof FirebaseAuthWeakPasswordException) {
                             // Password too weak
                             mPasswordInput.setError(getResources().getQuantityString(
-                                    R.plurals.error_weak_password, R.integer.min_password_length));
+                                    R.plurals.fui_error_weak_password, R.integer.fui_min_password_length));
                         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             // Email address is malformed
-                            mEmailInput.setError(getString(R.string.invalid_email_address));
+                            mEmailInput.setError(getString(R.string.fui_invalid_email_address));
                         } else if (e instanceof FirebaseAuthUserCollisionException) {
                             // Collision with existing user email, it should be very hard for
                             // the user to even get to this error due to CheckEmailFragment.
@@ -273,7 +276,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                                         @Override
                                         public void onSuccess(String provider) {
                                             Toast.makeText(getContext(),
-                                                    R.string.error_user_collision,
+                                                    R.string.fui_error_user_collision,
                                                     Toast.LENGTH_LONG)
                                                     .show();
 
@@ -288,21 +291,20 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                         WelcomeBackPasswordPrompt.createIntent(
                                                                 getContext(),
                                                                 getFlowParams(),
-                                                                new IdpResponse.Builder(
+                                                                new IdpResponse.Builder(new User.Builder(
                                                                         EmailAuthProvider.PROVIDER_ID,
-                                                                        email).build()),
+                                                                        email).build()).build()),
                                                         RegisterEmailActivity.RC_WELCOME_BACK_IDP);
                                             } else {
                                                 getActivity().startActivityForResult(
                                                         WelcomeBackIdpPrompt.createIntent(
                                                                 getContext(),
                                                                 getFlowParams(),
-                                                                new User.Builder(email)
-                                                                        .setProvider(provider)
+                                                                new User.Builder(provider, email)
                                                                         .build(),
-                                                                new IdpResponse.Builder(
+                                                                new IdpResponse.Builder(new User.Builder(
                                                                         EmailAuthProvider.PROVIDER_ID,
-                                                                        email).build()),
+                                                                        email).build()).build()),
                                                         RegisterEmailActivity.RC_WELCOME_BACK_IDP);
                                             }
                                         }
@@ -317,7 +319,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                         } else {
                             // General error message, this branch should not be invoked but
                             // covers future API changes
-                            mEmailInput.setError(getString(R.string.email_account_creation_error));
+                            mEmailInput.setError(getString(R.string.fui_email_account_creation_error));
                         }
 
                         getDialogHolder().dismissDialog();

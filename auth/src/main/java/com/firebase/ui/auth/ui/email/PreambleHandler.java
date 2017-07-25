@@ -35,7 +35,7 @@ public class PreambleHandler {
         mContext = context;
         mFlowParameters = parameters;
         mButtonText = buttonText;
-        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.linkColor));
+        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.fui_linkColor));
 
         setupCreateAccountPreamble();
     }
@@ -54,8 +54,8 @@ public class PreambleHandler {
         mBuilder = new SpannableStringBuilder(withTargets);
 
         replaceTarget(BTN_TARGET, mButtonText);
-        replaceUrlTarget(TOS_TARGET, R.string.terms_of_service, mFlowParameters.termsOfServiceUrl);
-        replaceUrlTarget(PP_TARGET, R.string.privacy_policy, mFlowParameters.privacyPolicyUrl);
+        replaceUrlTarget(TOS_TARGET, R.string.fui_terms_of_service, mFlowParameters.termsOfServiceUrl);
+        replaceUrlTarget(PP_TARGET, R.string.fui_privacy_policy, mFlowParameters.privacyPolicyUrl);
     }
 
     private void replaceTarget(String target, @StringRes int replacementRes) {
@@ -84,13 +84,13 @@ public class PreambleHandler {
         boolean hasPp = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
 
         if (hasTos && hasPp) {
-            return mContext.getString(R.string.create_account_preamble_tos_and_pp,
+            return mContext.getString(R.string.fui_create_account_preamble_tos_and_pp,
                                       BTN_TARGET, TOS_TARGET, PP_TARGET);
         } else if (hasTos) {
-            return mContext.getString(R.string.create_account_preamble_tos_only,
+            return mContext.getString(R.string.fui_create_account_preamble_tos_only,
                                       BTN_TARGET, TOS_TARGET);
         } else if (hasPp) {
-            return mContext.getString(R.string.create_account_preamble_pp_only,
+            return mContext.getString(R.string.fui_create_account_preamble_pp_only,
                                       BTN_TARGET, PP_TARGET);
         } else {
             return null;

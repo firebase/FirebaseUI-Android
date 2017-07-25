@@ -42,6 +42,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -78,7 +79,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.welcome_back_password_prompt_layout);
+        setContentView(R.layout.fui_welcome_back_password_prompt_layout);
 
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -93,7 +94,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         ImeHelper.setImeOnDoneListener(mPasswordField, this);
 
         // Create welcome back text with email bolded.
-        String bodyText = getString(R.string.welcome_back_password_prompt_body, mEmail);
+        String bodyText = getString(R.string.fui_welcome_back_password_prompt_body, mEmail);
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
         int emailStart = bodyText.indexOf(mEmail);
@@ -136,12 +137,12 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     private void validateAndSignIn(final String email, final String password) {
         // Check for null or empty password
         if (TextUtils.isEmpty(password)) {
-            mPasswordLayout.setError(getString(R.string.required_field));
+            mPasswordLayout.setError(getString(R.string.fui_required_field));
             return;
         } else {
             mPasswordLayout.setError(null);
         }
-        getDialogHolder().showLoadingDialog(R.string.progress_dialog_signing_in);
+        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
 
         final FirebaseAuth firebaseAuth = getAuthHelper().getFirebaseAuth();
 
@@ -162,7 +163,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                                     mSaveSmartLock,
                                     authResult.getUser(),
                                     password,
-                                    new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                    new IdpResponse.Builder(
+                                            new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                                    .build())
                                             .build());
                         } else {
                             authResult.getUser()

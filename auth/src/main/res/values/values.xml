@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="min_password_length">6</integer>
+    <integer name="fui_min_password_length">6</integer>
 </resources>
