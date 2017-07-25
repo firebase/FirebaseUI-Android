@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:baselineAligned="false"
     android:clipChildren="false"
-    android:clipToPadding="false"
-    android:gravity="center|bottom"
-    android:orientation="horizontal">
+    android:clipToPadding="false">
 
-    <include
-        layout="@layout/fui_include_auth_method_picker_logo"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1.0" />
+    <ImageView
+        android:id="@+id/logo"
+        style="@style/FirebaseUI.AuthMethodPicker.Logo"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/container"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="ContentDescription" />  <!-- TODO remove once the bug is fixed: https://issuetracker.google.com/issues/38281866-->
 
-    <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1.0">
-
+    <ScrollView
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.9">
 
         <LinearLayout
             android:id="@+id/btn_holder"
-            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingTop="@dimen/fui_auth_method_button_marginBottom" />
+            style="@style/FirebaseUI.AuthMethodPicker.ButtonHolder" />
 
-    </FrameLayout>
+    </ScrollView>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

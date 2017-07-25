@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fui_auth_method_button_width">208dp</dimen>
-    <dimen name="fui_auth_method_button_marginBottom">8dp</dimen>
+    <dimen name="fui_auth_method_button_margin">4dp</dimen>
     <dimen name="fui_auth_method_button_drawablePadding">12dp</dimen>
 
     <dimen name="fui_body_padding_bottom">12dp</dimen>
