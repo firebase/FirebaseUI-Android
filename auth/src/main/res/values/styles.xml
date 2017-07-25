@@ -101,7 +101,7 @@
     <style name="FirebaseUI.Button" parent="@style/Widget.AppCompat.Button.Colored">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">right</item>
+        <item name="android:layout_gravity">end</item>
     </style>
 
     <style name="FirebaseUI.VerifyPhoneButton" parent="FirebaseUI.Button">
