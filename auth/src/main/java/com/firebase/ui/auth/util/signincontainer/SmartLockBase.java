@@ -123,7 +123,7 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         if (mActivityResultPair != null) {
             finish(mActivityResultPair.first, mActivityResultPair.second);
         } else if (mWasProgressDialogShowing) {
-            getDialogHolder().showLoadingDialog(com.firebase.ui.auth.R.string.progress_dialog_loading);
+            getDialogHolder().showLoadingDialog(com.firebase.ui.auth.R.string.fui_progress_dialog_loading);
             mWasProgressDialogShowing = false;
         }
     }
@@ -158,7 +158,7 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(getContext(),
-                com.firebase.ui.auth.R.string.general_error,
+                com.firebase.ui.auth.R.string.fui_general_error,
                 Toast.LENGTH_SHORT).show();
     }
 

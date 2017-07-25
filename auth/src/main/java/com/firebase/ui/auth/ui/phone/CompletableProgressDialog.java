@@ -41,7 +41,7 @@ public final class CompletableProgressDialog extends ProgressDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.phone_progress_dialog);
+        setContentView(R.layout.fui_phone_progress_dialog);
 
         mProgress = (ProgressBar) findViewById(R.id.progress_bar);
         mMessageView = (TextView) findViewById(R.id.progress_msg);

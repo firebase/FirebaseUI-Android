@@ -10,6 +10,8 @@ android {
         targetSdkVersion targetSdk
         versionCode 1
         versionName "1.0"
+
+        resourcePrefix "fui_"
     }
 
     buildTypes {
@@ -27,6 +29,10 @@ android {
         }
     }
 
+    lintOptions {
+        disable 'UnusedQuantity'
+    }
+
     testOptions {
         unitTests.all {
             testLogging {
@@ -39,6 +45,7 @@ android {
 dependencies {
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:customtabs:$supportLibraryVersion"
+    compile 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
 
     compile "com.google.firebase:firebase-auth:$firebaseVersion"
     compile "com.google.android.gms:play-services-auth:$firebaseVersion"

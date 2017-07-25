@@ -23,13 +23,13 @@ import android.widget.EditText;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
-import com.firebase.ui.auth.ui.User;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -74,7 +74,8 @@ public class RegisterEmailActivityTest {
         RegisterEmailActivity registerEmailActivity = createActivity();
 
         // Trigger RegisterEmailFragment (bypass check email)
-        registerEmailActivity.onNewUser(new User.Builder(TestConstants.EMAIL).build());
+        registerEmailActivity.onNewUser(
+                new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
@@ -85,15 +86,15 @@ public class RegisterEmailActivityTest {
                 registerEmailActivity.findViewById(R.id.password_layout);
 
         assertEquals(
-                registerEmailActivity.getString(R.string.required_field),
+                registerEmailActivity.getString(R.string.fui_required_field),
                 nameLayout.getError().toString());
         assertEquals(
                 String.format(
                         registerEmailActivity.getResources().getQuantityString(
-                                R.plurals.error_weak_password,
-                                R.integer.min_password_length),
+                                R.plurals.fui_error_weak_password,
+                                R.integer.fui_min_password_length),
                         registerEmailActivity.getResources()
-                                .getInteger(R.integer.min_password_length)
+                                .getInteger(R.integer.fui_min_password_length)
                 ),
                 passwordLayout.getError().toString());
     }
@@ -108,10 +109,11 @@ public class RegisterEmailActivityTest {
         RegisterEmailActivity registerEmailActivity = createActivity();
 
         // Trigger new user UI (bypassing check email)
-        registerEmailActivity.onNewUser(new User.Builder(TestConstants.EMAIL)
-                                                .setName(TestConstants.NAME)
-                                                .setPhotoUri(TestConstants.PHOTO_URI)
-                                                .build());
+        registerEmailActivity.onNewUser(
+                new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
+                        .setName(TestConstants.NAME)
+                        .setPhotoUri(TestConstants.PHOTO_URI)
+                        .build());
 
         EditText name = (EditText) registerEmailActivity.findViewById(R.id.name);
         EditText password = (EditText) registerEmailActivity.findViewById(R.id.password);

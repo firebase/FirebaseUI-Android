@@ -40,7 +40,7 @@ public class AuthHelper {
         return SaveSmartLock.getInstance(activity);
     }
 
-    public PhoneAuthProvider getPhoneAuthProviderInstance() {
-        return PhoneAuthProvider.getInstance();
+    public PhoneAuthProvider getPhoneAuthProvider() {
+        return PhoneAuthProvider.getInstance(getFirebaseAuth());
     }
 }

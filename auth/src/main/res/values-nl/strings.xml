@@ -1,0 +1,71 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Laden…</string>
+    <string name="fui_sign_in_default" translation_description="Button text to sign in">Inloggen</string>
+    <string name="fui_general_error" translation_description="Toast text flashing general error">Er is een fout opgetreden.</string>
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_provider_name_email">E-mail</string>
+    <string name="fui_provider_name_phone">Telefoon</string>
+    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Inloggen met Google</string>
+    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Inloggen met Facebook</string>
+    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Inloggen met Twitter</string>
+    <string name="fui_sign_in_with_email" translation_description="Sign in button text">Inloggen met e-mailadres</string>
+    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Inloggen met telefoon</string>
+    <string name="fui_next_default" translation_description="Button text to continue">Volgende</string>
+    <string name="fui_email_hint" translation_description="Hint in email input field">E-mail</string>
+    <string name="fui_phone_hint" translation_description="Hint for phone input field">Telefoonnummer</string>
+    <string name="fui_password_hint" translation_description="Hint for password input field">Wachtwoord</string>
+    <string name="fui_required_field" translation_description="Inline error for required field">Dit veld mag niet leeg zijn.</string>
+    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">Dit e-mailadres is niet juist</string>
+    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Voer uw e-mailadres in om verder te gaan</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Controleren op bestaande accounts…</string>
+    <string name="fui_title_register_email" translation_description="Title for signup form">Aanmelden</string>
+    <string name="fui_name_hint" translation_description="Hint for last name input field">Voor- en achternaam</string>
+    <string name="fui_button_text_save" translation_description="Button text to save input form">Opslaan</string>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Aanmelden…</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Uw wachtwoord is niet sterk genoeg. Gebruik ten minste %1$d teken en een combinatie van letters en cijfers.</item> <item quantity="other">Uw wachtwoord is niet sterk genoeg. Gebruik ten minste %1$d tekens en een combinatie van letters en cijfers.</item> </plurals>
+    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Registratie van e-mailaccount is mislukt</string>
+    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Er bestaat al een account met dit e-mailadres.</string>
+    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Door op %1$s te tikken, geeft u aan dat u akkoord gaat met de %2$s en het %3$s.</string>
+    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Door op %1$s te tikken, geeft u aan dat u akkoord gaat met de %2$s.</string>
+    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Door op %1$s te tikken, geeft u aan dat u akkoord gaat met het %2$s.</string>
+    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">Servicevoorwaarden</string>
+    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Privacybeleid</string>
+    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">U heeft al een account</string>
+    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Welkom terug.</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">U heeft %1$s al gebruikt. Log in met %2$s om verder te gaan.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">U heeft al ingelogd met %1$s. Voer uw wachtwoord in voor dit account.</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Inloggen…</string>
+    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Problemen met inloggen?</string>
+    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Wachtwoord herstellen</string>
+    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Controleer uw inbox</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Er wordt een e-mail naar dit adres verzonden met instructies om uw wachtwoord te resetten.</string>
+    <string name="fui_button_text_send" translation_description="Button text to send recovery email">Verzenden</string>
+    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Volg de instructies die we naar %1$s hebben verzonden om uw wachtwoord te herstellen.</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Verzenden…</string>
+    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Dit e-mailadres komt niet overeen met een bestaand account</string>
+    <string name="fui_accessibility_logo" translation_description="Content description for app logo">App-logo</string>
+    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Ingelogd als %1$s</string>
+    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Voer uw telefoonnummer in</string>
+    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Voer een geldig telefoonnummer in</string>
+    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Voer de zescijferige code in die we hebben verzonden naar</string>
+    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Code opnieuw verzenden over 0:%02d</string>
+    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Uw telefoonnummer verifiëren</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifiëren…</string>
+    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Sms ophalen…</string>
+    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Onjuiste code. Probeer het opnieuw.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
+    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Dit telefoonnummer is te vaak gebruikt</string>
+    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Er is een probleem met de verificatie van uw telefoonnummer</string>
+    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Deze code is niet meer geldig</string>
+    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Inloggen met telefoonnummer</string>
+    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Gereed</string>
+    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Geverifieerd</string>
+    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Code verzonden</string>
+    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Opnieuw verzenden…</string>
+    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Code opnieuw verzenden</string>
+    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Telefoonnummer verifiëren</string>
+    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Doorgaan</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Als u op “%1$s”, ontvangt u mogelijk een sms. Er kunnen sms- en datakosten in rekening worden gebracht.</string>
+</resources>

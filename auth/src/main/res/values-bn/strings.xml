@@ -1,0 +1,71 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">লোড হচ্ছে…</string>
+    <string name="fui_sign_in_default" translation_description="Button text to sign in">সাইন-ইন করুন</string>
+    <string name="fui_general_error" translation_description="Toast text flashing general error">একটি ত্রুটি ঘটেছে৷</string>
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_provider_name_email">ইমেল</string>
+    <string name="fui_provider_name_phone">ফোন</string>
+    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Google দিয়ে সাইন-ইন করুন</string>
+    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Facebook দিয়ে সাইন-ইন করুন</string>
+    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Twitter দিয়ে সাইন-ইন করুন</string>
+    <string name="fui_sign_in_with_email" translation_description="Sign in button text">ইমেল দিয়ে সাইন-ইন করুন</string>
+    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">ফোন দিয়ে সাইন-ইন করুন</string>
+    <string name="fui_next_default" translation_description="Button text to continue">পরবর্তী</string>
+    <string name="fui_email_hint" translation_description="Hint in email input field">ইমেল</string>
+    <string name="fui_phone_hint" translation_description="Hint for phone input field">ফোন নম্বর</string>
+    <string name="fui_password_hint" translation_description="Hint for password input field">পাসওয়ার্ড</string>
+    <string name="fui_required_field" translation_description="Inline error for required field">আপনি এটি খালি ছাড়তে পারেন না।</string>
+    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">ইমেল অ্যাড্রেসটি সঠিক নয়</string>
+    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">চালিয়ে যাওয়ার জন্য আপনার ইমেল অ্যাড্রেস লিখুন</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">আগে থেকে কোনও অ্যাকাউন্ট আছে কিনা চেক করা হচ্ছে…</string>
+    <string name="fui_title_register_email" translation_description="Title for signup form">সাইন-আপ করুন</string>
+    <string name="fui_name_hint" translation_description="Hint for last name input field">নাম ও পদবি</string>
+    <string name="fui_button_text_save" translation_description="Button text to save input form">সেভ করুন</string>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">সাইন-আপ করা হচ্ছে…</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> <item quantity="other">পাসওয়ার্ডটি পর্যাপ্ত সুরক্ষিত নয়। কমপক্ষে %1$dটি বিশেষ বর্ণ এবং অক্ষর ও সংখ্যা মিশিয়ে ব্যবহার করুন</item> </plurals>
+    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">ইমেল অ্যাকাউন্টটি রেজিস্টার করা যায়নি</string>
+    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">এই ইমেল অ্যাড্রেসে আগে থেকেই একটি অ্যাকাউন্ট আছে।</string>
+    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">%1$s এ ট্যাপ করে আপনি জানাচ্ছেন যে আপনি %2$s এবং %3$s এর সাথে সম্মত হন।</string>
+    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">%1$s এ ট্যাপ করে আপনি জানাচ্ছেন যে আপনি %2$s এর সাথে সম্মত হন।</string>
+    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">%1$s এ ট্যাপ করে আপনি জানাচ্ছেন যে আপনি %2$s এর সাথে সম্মত হন।</string>
+    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">পরিষেবার শর্তাবলি</string>
+    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">গোপনীয়তা নীতি</string>
+    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">আপনার আগে থেকেই একটি অ্যাকাউন্ট আছে</string>
+    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">আবার স্বাগতম!</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">আপনি %1$s আগেই ব্যবহার করেছেন। চালিয়ে যেতে %2$s দিয়ে সাইন-ইন করুন।</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">আপনি আগেই %1$s দিয়ে সাইন-ইন করেছেন। সেই অ্যাকাউন্টের জন্য পাসওয়ার্ডটি লিখুন।</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">সাইন-ইন করা হচ্ছে…</string>
+    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">সাইন-ইন করতে সমস্যা হচ্ছে?</string>
+    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">পাসওয়ার্ড পুনরুদ্ধার করুন</string>
+    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">আপনার ইমেল দেখুন</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">কিভাবে পাসওয়ার্ড পুনরুদ্ধার করতে হবে তা ইমেলে পাঠানো নির্দেশাবলী থেকে জানুন।</string>
+    <string name="fui_button_text_send" translation_description="Button text to send recovery email">পাঠান</string>
+    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">আপনার পাসওয়ার্ড পুনরুদ্ধার করতে %1$s তে পাঠানো নির্দেশ অনুসরণ করুন।</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">পাঠানো হচ্ছে…</string>
+    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">এই ইমেল অ্যাড্রেসটি আগে থেকে থাকা অ্যাকাউন্টের সাথে মিলছে না</string>
+    <string name="fui_accessibility_logo" translation_description="Content description for app logo">অ্যাপের লোগো</string>
+    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">%1$s হিসাবে সাইন-ইন করেছেন</string>
+    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">আপনার ফোন নম্বর লিখুন</string>
+    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">একটি সঠিক ফোন নম্বর লিখুন</string>
+    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">আমাদের পাঠানো ৬-সংখ্যার কোডটি লিখুন</string>
+    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">0:%02d এ কোডটি আবার পাঠান</string>
+    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">আপনার ফোন নম্বর যাচাই করুন</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">যাচাই করা হচ্ছে…</string>
+    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">এসএমএসটি পুনরুদ্ধার করা হচ্ছে…</string>
+    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">কোডটি ভুল। আবার চেষ্টা করুন।</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ঠিক আছে</string>
+    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">এই ফোন নম্বরটি অনেকবার ব্যবহার করা হয়েছে</string>
+    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">আপনার ফোন নম্বরটি যাচাই করতে সমস্যা হয়েছে</string>
+    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">এই কোডটি আর ব্যবহার করা যাবে না</string>
+    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">ফোন নম্বর দিয়ে সাইন-ইন করুন</string>
+    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">সম্পন্ন হয়েছে</string>
+    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">যাচাই করা হয়েছে!</string>
+    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">কোডটি পাঠানো হয়েছে!</string>
+    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">আবার পাঠানো হচ্ছে…</string>
+    <string name="fui_resend_code" translation_description="Link text to resend verification sms">কোডটি আবার পাঠান</string>
+    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">ফোন নম্বর যাচাই করুন</string>
+    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">চালিয়ে যান</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">%1$s এ ট্যাপ করলে আপনার ফোন থেকে একটি এসএমএস পাঠানো হতে পারে। মেসেজ ও ডেটার চার্জ লাগতে পারে।</string>
+</resources>

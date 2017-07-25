@@ -23,13 +23,13 @@ public class EmailProvider implements Provider {
 
     @Override
     public String getName(Context context) {
-        return context.getString(R.string.provider_name_email);
+        return context.getString(R.string.fui_provider_name_email);
     }
 
     @Override
     @LayoutRes
     public int getButtonLayout() {
-        return R.layout.provider_button_email;
+        return R.layout.fui_provider_button_email;
     }
 
     @Override

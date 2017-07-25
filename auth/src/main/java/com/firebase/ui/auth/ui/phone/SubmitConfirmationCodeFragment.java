@@ -71,7 +71,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.confirmation_code_layout, container, false);
+        View v = inflater.inflate(R.layout.fui_confirmation_code_layout, container, false);
         FragmentActivity parentActivity = getActivity();
 
         mEditPhoneTextView = (TextView) v.findViewById(R.id.edit_phone_number);
@@ -83,7 +83,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
         final String phoneNumber = getArguments().getString(ExtraConstants.EXTRA_PHONE);
 
-        parentActivity.setTitle(getString(R.string.verify_your_phone_title));
+        parentActivity.setTitle(getString(R.string.fui_verify_your_phone_title));
         setupConfirmationCodeEditText();
         setupEditPhoneNumberTextView(phoneNumber);
         setupCountDown(RESEND_WAIT_MILLIS);
@@ -129,7 +129,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void setTimer(long millisUntilFinished) {
-        mCountDownTextView.setText(String.format(getString(R.string.resend_code_in),
+        mCountDownTextView.setText(String.format(getString(R.string.fui_resend_code_in),
                 timeRoundedToSeconds(millisUntilFinished)));
     }
 
@@ -140,7 +140,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
                 mVerifier.verifyPhoneNumber(phoneNumber, true);
                 mResendCodeTextView.setVisibility(View.GONE);
                 mCountDownTextView.setVisibility(View.VISIBLE);
-                mCountDownTextView.setText(String.format(getString(R.string.resend_code_in),
+                mCountDownTextView.setText(String.format(getString(R.string.fui_resend_code_in),
                         RESEND_WAIT_MILLIS / 1000));
                 mCountdownTimer.renew();
             }
@@ -208,7 +208,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void setUpTermsOfService() {
-        new PreambleHandler(getContext(), getFlowParams(), R.string.continue_phone_login)
+        new PreambleHandler(getContext(), getFlowParams(), R.string.fui_continue_phone_login)
                 .setPreamble(mAgreementText);
     }
 

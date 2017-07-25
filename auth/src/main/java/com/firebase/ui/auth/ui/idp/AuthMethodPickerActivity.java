@@ -19,6 +19,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,14 +74,21 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.auth_method_picker_layout);
+        setContentView(R.layout.fui_auth_method_picker_layout);
         mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(this);
 
         populateIdpList(getFlowParams().providerInfo);
 
         int logoId = getFlowParams().logoId;
         if (logoId == AuthUI.NO_LOGO) {
-            findViewById(R.id.logo_layout).setVisibility(View.GONE);
+            findViewById(R.id.logo).setVisibility(View.GONE);
+
+            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.root);
+            ConstraintSet constraints = new ConstraintSet();
+            constraints.clone(layout);
+            constraints.setHorizontalBias(R.id.container, 0.5f);
+            constraints.setVerticalBias(R.id.container, 0.5f);
+            constraints.applyTo(layout);
         } else {
             ImageView logo = (ImageView) findViewById(R.id.logo);
             logo.setImageResource(logoId);
@@ -121,7 +130,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                 @Override
                 public void onClick(View view) {
                     if (provider instanceof IdpProvider) {
-                        getDialogHolder().showLoadingDialog(R.string.progress_dialog_loading);
+                        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
                     }
                     provider.startLogin(AuthMethodPickerActivity.this);
                 }

@@ -23,6 +23,10 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    lintOptions {
+        disable 'MissingTranslation'
+    }
 }
 
 dependencies {
