@@ -85,8 +85,32 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                 return snapshot.getKey();
             }
         });
+    }
 
-        mKeySnapshots.addChangeEventListener(this);
+    @Override
+    public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
+        boolean wasListening = isListening();
+        super.addChangeEventListener(listener);
+
+        // Only start listening when the first listener is added
+        if (!wasListening) {
+            mKeySnapshots.addChangeEventListener(this);
+        }
+
+        return listener;
+    }
+
+    @Override
+    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
+        super.removeChangeEventListener(listener);
+        if (!isListening()) {
+            mKeySnapshots.removeChangeEventListener(this);
+            for (DatabaseReference ref : mRefs.keySet()) {
+                ref.removeEventListener(mRefs.get(ref));
+            }
+
+            clearData();
+        }
     }
 
     @Override
@@ -119,18 +143,6 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     @Override
     public void onCancelled(DatabaseError error) {
         Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
-    }
-
-    @Override
-    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        super.removeChangeEventListener(listener);
-        if (!isListening()) {
-            for (DatabaseReference ref : mRefs.keySet()) {
-                ref.removeEventListener(mRefs.get(ref));
-            }
-
-            clearData();
-        }
     }
 
     @Override
