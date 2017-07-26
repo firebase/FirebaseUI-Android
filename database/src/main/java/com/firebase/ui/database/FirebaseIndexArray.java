@@ -86,7 +86,6 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         });
     }
 
-
     @Override
     protected void onCreate() {
         super.onCreate();
@@ -97,10 +96,10 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     protected void onDestroy() {
         super.onDestroy();
         mKeySnapshots.removeChangeEventListener(this);
+
         for (DatabaseReference ref : mRefs.keySet()) {
             ref.removeEventListener(mRefs.get(ref));
         }
-
         mRefs.clear();
     }
 
@@ -133,8 +132,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
     @Override
     public void onCancelled(DatabaseError error) {
-        Log.e(TAG,
-                "A fatal error occurred retrieving the necessary keys to populate your adapter.");
+        Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
     }
 
     @Override
