@@ -101,6 +101,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         if (!mSnapshots.isListening(this)) {
+            notifyDataSetChanged();
             mSnapshots.addChangeEventListener(this);
         }
     }
