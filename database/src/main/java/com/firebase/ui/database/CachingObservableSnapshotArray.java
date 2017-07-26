@@ -43,10 +43,18 @@ public abstract class CachingObservableSnapshotArray<T> extends ObservableSnapsh
         }
     }
 
-    protected void clearData() {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         getSnapshots().clear();
         mObjectCache.clear();
+
+        clearData();
     }
+
+    /** @deprecated please use {@link ObservableSnapshotArray#onDestroy()} instead */
+    @Deprecated
+    protected void clearData() {}
 
     protected DataSnapshot removeData(int index) {
         DataSnapshot snapshot = getSnapshots().remove(index);

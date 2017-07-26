@@ -51,6 +51,8 @@ public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapsh
     public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
         Preconditions.checkNotNull(listener);
 
+        boolean wasListening = isListening();
+
         mListeners.add(listener);
         for (int i = 0; i < size(); i++) {
             listener.onChildChanged(ChangeEventListener.EventType.ADDED, get(i), i, -1);
@@ -59,8 +61,13 @@ public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapsh
             listener.onDataChanged();
         }
 
+        if (!wasListening) { onCreate(); }
+
         return listener;
     }
+
+    @CallSuper
+    protected void onCreate() {}
 
     /**
      * Detach a {@link com.google.firebase.database.ChildEventListener} from this array.
@@ -69,10 +76,12 @@ public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapsh
     public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
         mListeners.remove(listener);
 
-        // Reset mHasDataChanged if there are no more listeners
-        if (!isListening()) {
-            mHasDataChanged = false;
-        }
+        if (!isListening()) { onDestroy(); }
+    }
+
+    @CallSuper
+    protected void onDestroy() {
+        mHasDataChanged = false;
     }
 
     /**

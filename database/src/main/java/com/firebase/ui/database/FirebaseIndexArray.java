@@ -14,7 +14,6 @@
 
 package com.firebase.ui.database;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -87,30 +86,22 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         });
     }
 
+
     @Override
-    public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
-        boolean wasListening = isListening();
-        super.addChangeEventListener(listener);
-
-        // Only start listening when the first listener is added
-        if (!wasListening) {
-            mKeySnapshots.addChangeEventListener(this);
-        }
-
-        return listener;
+    protected void onCreate() {
+        super.onCreate();
+        mKeySnapshots.addChangeEventListener(this);
     }
 
     @Override
-    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        super.removeChangeEventListener(listener);
-        if (!isListening()) {
-            mKeySnapshots.removeChangeEventListener(this);
-            for (DatabaseReference ref : mRefs.keySet()) {
-                ref.removeEventListener(mRefs.get(ref));
-            }
-
-            clearData();
+    protected void onDestroy() {
+        super.onDestroy();
+        mKeySnapshots.removeChangeEventListener(this);
+        for (DatabaseReference ref : mRefs.keySet()) {
+            ref.removeEventListener(mRefs.get(ref));
         }
+
+        mRefs.clear();
     }
 
     @Override
@@ -142,18 +133,13 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
     @Override
     public void onCancelled(DatabaseError error) {
-        Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
+        Log.e(TAG,
+                "A fatal error occurred retrieving the necessary keys to populate your adapter.");
     }
 
     @Override
     protected List<DataSnapshot> getSnapshots() {
         return mDataSnapshots;
-    }
-
-    @Override
-    protected void clearData() {
-        super.clearData();
-        mRefs.clear();
     }
 
     private int getIndexForKey(String key) {
