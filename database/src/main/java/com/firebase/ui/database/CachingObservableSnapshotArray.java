@@ -52,7 +52,7 @@ public abstract class CachingObservableSnapshotArray<T> extends ObservableSnapsh
         clearData();
     }
 
-    /** @deprecated please use {@link ObservableSnapshotArray#onDestroy()} instead */
+    /** @deprecated use {@link ObservableSnapshotArray#onDestroy()} instead */
     @Deprecated
     protected void clearData() {}
 
