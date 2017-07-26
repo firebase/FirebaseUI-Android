@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="fui_colorPrimary">#3F51B5</color>
-    <color name="fui_colorPrimaryDark">#303F9F</color>
-    <color name="fui_colorAccent">#FF4081</color>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Eventually, we should remove these so the developer knows they have to style FirebaseUI -->
+    <color name="colorPrimary" tools:ignore="ResourceName">#3F51B5</color>
+    <color name="colorPrimaryDark" tools:ignore="ResourceName">#303F9F</color>
+    <color name="colorAccent" tools:ignore="ResourceName">#FF4081</color>
 
     <color name="fui_errorColor">#DD2C00</color>
     <color name="fui_linkColor">#4285F4</color>
