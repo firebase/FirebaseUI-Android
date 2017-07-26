@@ -66,6 +66,10 @@ public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapsh
         return listener;
     }
 
+    /**
+     * Called when the {@link ObservableSnapshotArray} is active and should start listening to the
+     * Firebase database.
+     */
     @CallSuper
     protected void onCreate() {}
 
@@ -79,6 +83,12 @@ public abstract class ObservableSnapshotArray<E> extends AbstractList<DataSnapsh
         if (!isListening()) { onDestroy(); }
     }
 
+    /**
+     * Called when the {@link ObservableSnapshotArray} is inactive and should stop listening to the
+     * Firebase database.
+     * <p>
+     * All data should also be cleared here.
+     */
     @CallSuper
     protected void onDestroy() {
         mHasDataChanged = false;
