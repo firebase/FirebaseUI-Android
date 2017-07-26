@@ -101,7 +101,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         if (!mSnapshots.isListening(this)) {
-            notifyDataSetChanged();
             mSnapshots.addChangeEventListener(this);
         }
     }
@@ -116,6 +115,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     void cleanup(LifecycleOwner source, Lifecycle.Event event) {
         if (event == Lifecycle.Event.ON_STOP) {
             cleanup();
+            notifyDataSetChanged();
         } else if (event == Lifecycle.Event.ON_DESTROY) {
             source.getLifecycle().removeObserver(this);
         }
@@ -165,7 +165,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return mSnapshots.size();
+        return mSnapshots.isListening(this) ? mSnapshots.size() : 0;
     }
 
     @Override
