@@ -108,6 +108,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @Override
     public void cleanup() {
         mSnapshots.removeChangeEventListener(this);
+        notifyDataSetChanged();
     }
 
     @SuppressWarnings("unused")
@@ -115,7 +116,6 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     void cleanup(LifecycleOwner source, Lifecycle.Event event) {
         if (event == Lifecycle.Event.ON_STOP) {
             cleanup();
-            notifyDataSetChanged();
         } else if (event == Lifecycle.Event.ON_DESTROY) {
             source.getLifecycle().removeObserver(this);
         }
