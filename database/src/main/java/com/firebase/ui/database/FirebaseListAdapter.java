@@ -1,8 +1,12 @@
 package com.firebase.ui.database;
 
 import android.app.Activity;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,14 +43,29 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
      * @param modelLayout This is the layout used to represent a single list item. You will be
      *                    responsible for populating an instance of the corresponding view with the
      *                    data from an instance of modelClass.
+     * @param owner       the lifecycle owner used to automatically listen and cleanup after {@link
+     *                    FragmentActivity#onStart()} and {@link FragmentActivity#onStop()} events
+     *                    reflectively.
      */
     public FirebaseListAdapter(Context context,
                                ObservableSnapshotArray<T> snapshots,
-                               @LayoutRes int modelLayout) {
+                               @LayoutRes int modelLayout,
+                               LifecycleOwner owner) {
         mContext = context;
         mSnapshots = snapshots;
         mLayout = modelLayout;
 
+        if (owner != null) { owner.getLifecycle().addObserver(this); }
+    }
+
+    /**
+     * @see FirebaseListAdapter#FirebaseListAdapter(Context, ObservableSnapshotArray, int,
+     * LifecycleOwner)
+     */
+    public FirebaseListAdapter(Context context,
+                               ObservableSnapshotArray<T> snapshots,
+                               @LayoutRes int modelLayout) {
+        this(context, snapshots, modelLayout, null);
         startListening();
     }
 
@@ -76,6 +95,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         if (!mSnapshots.isListening(this)) {
             mSnapshots.addChangeEventListener(this);
@@ -85,6 +105,15 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     @Override
     public void cleanup() {
         mSnapshots.removeChangeEventListener(this);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
+    void cleanup(LifecycleOwner source, Lifecycle.Event event) {
+        if (event == Lifecycle.Event.ON_STOP) {
+            cleanup();
+        } else if (event == Lifecycle.Event.ON_DESTROY) {
+            source.getLifecycle().removeObserver(this);
+        }
     }
 
     @Override

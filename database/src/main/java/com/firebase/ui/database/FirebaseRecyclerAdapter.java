@@ -1,6 +1,10 @@
 package com.firebase.ui.database;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,14 +46,29 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      *                        view with the data from an instance of modelClass.
      * @param viewHolderClass The class that hold references to all sub-views in an instance
      *                        modelLayout.
+     * @param owner           the lifecycle owner used to automatically listen and cleanup after
+     *                        {@link FragmentActivity#onStart()} and {@link FragmentActivity#onStop()}
+     *                        events reflectively.
      */
     public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
                                    @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass) {
+                                   Class<VH> viewHolderClass,
+                                   LifecycleOwner owner) {
         mSnapshots = snapshots;
         mViewHolderClass = viewHolderClass;
         mModelLayout = modelLayout;
 
+        if (owner != null) { owner.getLifecycle().addObserver(this); }
+    }
+
+    /**
+     * @see FirebaseRecyclerAdapter#FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class,
+     * LifecycleOwner)
+     */
+    public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
+                                   @LayoutRes int modelLayout,
+                                   Class<VH> viewHolderClass) {
+        this(snapshots, modelLayout, viewHolderClass, null);
         startListening();
     }
 
@@ -79,6 +98,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         if (!mSnapshots.isListening(this)) {
             mSnapshots.addChangeEventListener(this);
@@ -88,6 +108,15 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @Override
     public void cleanup() {
         mSnapshots.removeChangeEventListener(this);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
+    void cleanup(LifecycleOwner source, Lifecycle.Event event) {
+        if (event == Lifecycle.Event.ON_STOP) {
+            cleanup();
+        } else if (event == Lifecycle.Event.ON_DESTROY) {
+            source.getLifecycle().removeObserver(this);
+        }
     }
 
     @Override
