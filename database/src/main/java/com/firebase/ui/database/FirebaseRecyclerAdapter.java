@@ -111,6 +111,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         mSnapshots.removeChangeEventListener(this);
     }
 
+    @SuppressWarnings("unused")
     @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
     void cleanup(LifecycleOwner source, Lifecycle.Event event) {
         if (event == Lifecycle.Event.ON_STOP) {
