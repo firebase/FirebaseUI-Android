@@ -59,8 +59,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     /**
-     * @see FirebaseListAdapter#FirebaseListAdapter(Context, ObservableSnapshotArray, int,
-     * LifecycleOwner)
+     * @see #FirebaseListAdapter(Context, ObservableSnapshotArray, int, LifecycleOwner)
      */
     public FirebaseListAdapter(Context context,
                                ObservableSnapshotArray<T> snapshots,
@@ -86,12 +85,35 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
 
     /**
      * @see #FirebaseListAdapter(Context, SnapshotParser, int, Query)
+     * @see #FirebaseListAdapter(Context, ObservableSnapshotArray, int, LifecycleOwner)
+     */
+    public FirebaseListAdapter(Context context,
+                               SnapshotParser<T> parser,
+                               @LayoutRes int modelLayout,
+                               Query query,
+                               LifecycleOwner owner) {
+        this(context, new FirebaseArray<>(query, parser), modelLayout, owner);
+    }
+
+    /**
+     * @see #FirebaseListAdapter(Context, SnapshotParser, int, Query)
      */
     public FirebaseListAdapter(Context context,
                                Class<T> modelClass,
                                @LayoutRes int modelLayout,
                                Query query) {
         this(context, new ClassSnapshotParser<>(modelClass), modelLayout, query);
+    }
+
+    /**
+     * @see #FirebaseListAdapter(Context, SnapshotParser, int, Query, LifecycleOwner)
+     */
+    public FirebaseListAdapter(Context context,
+                               Class<T> modelClass,
+                               @LayoutRes int modelLayout,
+                               Query query,
+                               LifecycleOwner owner) {
+        this(context, new ClassSnapshotParser<>(modelClass), modelLayout, query, owner);
     }
 
     @Override

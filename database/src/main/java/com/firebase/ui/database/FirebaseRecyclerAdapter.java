@@ -62,8 +62,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     /**
-     * @see FirebaseRecyclerAdapter#FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class,
-     * LifecycleOwner)
+     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class, LifecycleOwner)
      */
     public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
                                    @LayoutRes int modelLayout,
@@ -89,12 +88,35 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     /**
      * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query)
+     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class, LifecycleOwner)
+     */
+    public FirebaseRecyclerAdapter(SnapshotParser<T> parser,
+                                   @LayoutRes int modelLayout,
+                                   Class<VH> viewHolderClass,
+                                   Query query,
+                                   LifecycleOwner owner) {
+        this(new FirebaseArray<>(query, parser), modelLayout, viewHolderClass, owner);
+    }
+
+    /**
+     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query)
      */
     public FirebaseRecyclerAdapter(Class<T> modelClass,
                                    @LayoutRes int modelLayout,
                                    Class<VH> viewHolderClass,
                                    Query query) {
         this(new ClassSnapshotParser<>(modelClass), modelLayout, viewHolderClass, query);
+    }
+
+    /**
+     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query, LifecycleOwner)
+     */
+    public FirebaseRecyclerAdapter(Class<T> modelClass,
+                                   @LayoutRes int modelLayout,
+                                   Class<VH> viewHolderClass,
+                                   Query query,
+                                   LifecycleOwner owner) {
+        this(new ClassSnapshotParser<>(modelClass), modelLayout, viewHolderClass, query, owner);
     }
 
     @Override

@@ -3,8 +3,7 @@ package com.firebase.uidemo.database;
 import android.os.Bundle;
 import android.view.View;
 
-import com.firebase.ui.database.ClassSnapshotParser;
-import com.firebase.ui.database.FirebaseIndexArray;
+import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,12 +34,12 @@ public class ChatIndexActivity extends ChatActivity {
 
     @Override
     protected FirebaseRecyclerAdapter<Chat, ChatHolder> getAdapter() {
-        return new FirebaseRecyclerAdapter<Chat, ChatHolder>(
-                new FirebaseIndexArray<>(
-                        mChatIndicesRef.limitToLast(50),
-                        mChatRef, new ClassSnapshotParser<>(Chat.class)),
+        return new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
+                Chat.class,
                 R.layout.message,
                 ChatHolder.class,
+                mChatIndicesRef.limitToLast(50),
+                mChatRef,
                 this) {
             @Override
             public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
