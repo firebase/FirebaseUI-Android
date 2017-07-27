@@ -43,6 +43,9 @@ public class ChatActivity extends AppCompatActivity
         implements FirebaseAuth.AuthStateListener, View.OnClickListener, LifecycleRegistryOwner {
     private static final String TAG = "RecyclerViewDemo";
 
+    // TODO remove once arch components are merged into support lib
+    private final LifecycleRegistry mRegistry = new LifecycleRegistry(this);
+
     private FirebaseAuth mAuth;
     protected DatabaseReference mChatRef;
     private Button mSendButton;
@@ -176,9 +179,6 @@ public class ChatActivity extends AppCompatActivity
         mSendButton.setEnabled(isSignedIn());
         mMessageEdit.setEnabled(isSignedIn());
     }
-
-    // TODO remove once arch components are merged into support lib
-    private final LifecycleRegistry mRegistry = new LifecycleRegistry(this);
 
     @Override
     public LifecycleRegistry getLifecycle() {
