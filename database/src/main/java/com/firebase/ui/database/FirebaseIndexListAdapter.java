@@ -53,7 +53,7 @@ public abstract class FirebaseIndexListAdapter<T> extends FirebaseListAdapter<T>
                                     Query keyQuery,
                                     DatabaseReference dataRef,
                                     LifecycleOwner owner) {
-        this(context, new ClassSnapshotParser<>(modelClass), modelLayout, keyQuery, dataRef);
+        this(context, new ClassSnapshotParser<>(modelClass), modelLayout, keyQuery, dataRef, owner);
     }
 
     /**
