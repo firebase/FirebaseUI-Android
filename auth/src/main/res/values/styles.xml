@@ -146,7 +146,7 @@
     <style name="FirebaseUI.TextInputLayout.EmailField">
         <item name="android:hint">@string/fui_email_hint</item>
     </style>
-           
+
     <style name="FirebaseUI.TextInputLayout.NameField">
         <item name="android:hint">@string/fui_name_hint</item>
     </style>
