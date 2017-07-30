@@ -39,7 +39,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/fui_field_padding_vert"
-            android:hint="@string/fui_name_hint"
             app:errorEnabled="true">
 
             <android.support.design.widget.TextInputEditText
