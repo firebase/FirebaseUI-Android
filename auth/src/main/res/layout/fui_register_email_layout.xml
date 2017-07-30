@@ -35,7 +35,7 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/name_layout"
-            style="@style/Widget.Design.TextInputLayout"
+            style="@style/FirebaseUI.TextInputLayout.NameField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/fui_field_padding_vert"
@@ -46,7 +46,7 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapWords" />
+                style="@style/FirebaseUI.TextInputEditText.NameField" />
 
         </android.support.design.widget.TextInputLayout>
 
