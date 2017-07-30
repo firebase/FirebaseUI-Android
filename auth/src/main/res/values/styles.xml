@@ -124,7 +124,7 @@
     <style name="FirebaseUI.TextInputEditText.EmailField">
         <item name="android:inputType">textEmailAddress</item>
     </style>
-           
+
     <style name="FirebaseUI.TextInputEditText.NameField">
         <item name="android:inputType">textCapWords</item>
     </style>
