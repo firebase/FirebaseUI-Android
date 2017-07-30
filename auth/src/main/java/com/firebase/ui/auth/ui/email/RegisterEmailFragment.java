@@ -302,9 +302,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                                 getFlowParams(),
                                                                 new User.Builder(provider, email)
                                                                         .build(),
-                                                                new IdpResponse.Builder(new User.Builder(
-                                                                        EmailAuthProvider.PROVIDER_ID,
-                                                                        email).build()).build()),
+                                                                null),
                                                         RegisterEmailActivity.RC_WELCOME_BACK_IDP);
                                             }
                                         }
