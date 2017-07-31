@@ -125,6 +125,10 @@
         <item name="android:inputType">textEmailAddress</item>
     </style>
 
+    <style name="FirebaseUI.TextInputEditText.NameField">
+        <item name="android:inputType">textCapWords</item>
+    </style>
+
     <style name="FirebaseUI.TextInputEditText.PhoneField">
         <item name="android:hint">@string/fui_phone_hint</item>
         <item name="android:inputType">phone</item>
@@ -141,6 +145,10 @@
 
     <style name="FirebaseUI.TextInputLayout.EmailField">
         <item name="android:hint">@string/fui_email_hint</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputLayout.NameField">
+        <item name="android:hint">@string/fui_name_hint</item>
     </style>
 
     <style name="FirebaseUI.TextInputLayout.PasswordField">
