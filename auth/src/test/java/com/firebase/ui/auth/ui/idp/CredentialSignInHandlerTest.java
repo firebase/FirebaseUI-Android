@@ -21,7 +21,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
-import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.FakeProviderQueryResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
@@ -49,6 +48,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -60,7 +60,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(CustomRobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
 public class CredentialSignInHandlerTest {
     private static final int RC_ACCOUNT_LINK = 3;
@@ -104,7 +104,8 @@ public class CredentialSignInHandlerTest {
                 idpResponseCaptor.capture());
 
         assertEquals(smartLock, smartLockCaptor.getValue());
-        assertEquals(AuthHelperShadow.sFirebaseUser, firebaseUserCaptor.getValue());
+        assertEquals(TestConstants.EMAIL,
+                firebaseUserCaptor.getValue().getEmail());
 
         IdpResponse response = idpResponseCaptor.getValue();
         assertEquals(idpResponse.getProviderType(), response.getProviderType());
