@@ -15,7 +15,6 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +25,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
-import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
@@ -37,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -47,8 +46,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
-
-@RunWith(CustomRobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
 public class RegisterEmailActivityTest {
 
@@ -56,9 +54,9 @@ public class RegisterEmailActivityTest {
         Intent startIntent = RegisterEmailActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)));
-        return Robolectric.buildActivity(RegisterEmailActivity.class)
-                .withIntent(startIntent)
-                .create(new Bundle())
+
+        return Robolectric.buildActivity(RegisterEmailActivity.class, startIntent)
+                .create()
                 .start()
                 .visible()
                 .get();
@@ -117,6 +115,7 @@ public class RegisterEmailActivityTest {
 
         EditText name = (EditText) registerEmailActivity.findViewById(R.id.name);
         EditText password = (EditText) registerEmailActivity.findViewById(R.id.password);
+
         name.setText(TestConstants.NAME);
         password.setText(TestConstants.PASSWORD);
 

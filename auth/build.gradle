@@ -12,6 +12,7 @@ android {
         versionName "1.0"
 
         resourcePrefix "fui_"
+        testInstrumentationRunner "org.robolectric.RobolectricTestRunner"
     }
 
     buildTypes {
@@ -34,6 +35,7 @@ android {
     }
 
     testOptions {
+        unitTests.returnDefaultValues = true
         unitTests.all {
             testLogging {
                 exceptionFormat = 'full'
@@ -60,7 +62,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //noinspection GradleDynamicVersion
     testCompile 'org.mockito:mockito-core:2.8.+'
-    testCompile 'org.robolectric:robolectric:3.2.2'
+    testCompile 'org.robolectric:robolectric:3.4'
     // See https://github.com/robolectric/robolectric/issues/1932#issuecomment-219796474
     testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
     testCompile 'com.facebook.android:facebook-android-sdk:4.23.0'

@@ -24,7 +24,6 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
-import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FacebookProviderShadow;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.GoogleProviderShadow;
@@ -41,6 +40,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
@@ -57,7 +57,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
-@RunWith(CustomRobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class,
         shadows = {
                 GoogleProviderShadow.class,
@@ -190,8 +190,7 @@ public class AuthMethodPickerActivityTest {
                 TestHelper.getFlowParameters(providers));
 
         return Robolectric
-                .buildActivity(AuthMethodPickerActivity.class)
-                .withIntent(startIntent)
+                .buildActivity(AuthMethodPickerActivity.class, startIntent)
                 .create()
                 .visible()
                 .get();
