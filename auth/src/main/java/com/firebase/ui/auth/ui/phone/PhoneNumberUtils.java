@@ -70,11 +70,6 @@ final class PhoneNumberUtils {
      */
     @Nullable
     static String formatPhoneNumber(@NonNull String phoneNumber, @NonNull CountryInfo countryInfo) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return android.telephony.PhoneNumberUtils
-                    .formatNumberToE164(phoneNumber, countryInfo.locale.getCountry());
-        }
         return phoneNumber.startsWith("+")
                 ? phoneNumber
                 : ("+" + String.valueOf(countryInfo.countryCode)
@@ -93,6 +88,14 @@ final class PhoneNumberUtils {
     static String formatPhoneNumberUsingCurrentCountry(
             @NonNull String phoneNumber, Context context) {
         final CountryInfo currentCountry = PhoneNumberUtils.getCurrentCountryInfo(context);
+
+        // TODO(samstern): Remove this call once the next version of Play servics is released
+        //                 estimated timelime August 10th
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return android.telephony.PhoneNumberUtils
+                    .formatNumberToE164(phoneNumber, currentCountry.locale.getCountry());
+        }
+
         return formatPhoneNumber(phoneNumber, currentCountry);
     }
 
