@@ -90,7 +90,9 @@ final class PhoneNumberUtils {
         final CountryInfo currentCountry = PhoneNumberUtils.getCurrentCountryInfo(context);
 
         // TODO(samstern): Remove this call once the next version of Play servics is released
-        //                 estimated timelime August 10th
+        //                 estimated timelime August 10th. It is a known issue that phone numbers
+        //                 from the hint selector are susceptible to the false negatives of this
+        //                 method.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return android.telephony.PhoneNumberUtils
                     .formatNumberToE164(phoneNumber, currentCountry.locale.getCountry());
