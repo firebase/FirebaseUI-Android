@@ -54,6 +54,7 @@ import butterknife.OnClick;
 
 public class SignedInActivity extends AppCompatActivity {
 
+    private static final String EXTRA_IDP_RESPONSE = "extra_idp_response";
     private static final String EXTRA_SIGNED_IN_CONFIG = "extra_signed_in_config";
 
     @BindView(android.R.id.content)
@@ -83,7 +84,11 @@ public class SignedInActivity extends AppCompatActivity {
             Context context,
             IdpResponse idpResponse,
             SignedInConfig signedInConfig) {
-        Intent startIntent = idpResponse == null ? new Intent() : idpResponse.toIntent();
+
+        Intent startIntent = new Intent();
+        if (idpResponse != null) {
+            startIntent.putExtra(EXTRA_IDP_RESPONSE, idpResponse);
+        }
 
         return startIntent.setClass(context, SignedInActivity.class)
                 .putExtra(EXTRA_SIGNED_IN_CONFIG, signedInConfig);
@@ -100,7 +105,7 @@ public class SignedInActivity extends AppCompatActivity {
             return;
         }
 
-        mIdpResponse = IdpResponse.fromResultIntent(getIntent());
+        mIdpResponse = getIntent().getParcelableExtra(EXTRA_IDP_RESPONSE);
         mSignedInConfig = getIntent().getParcelableExtra(EXTRA_SIGNED_IN_CONFIG);
 
         setContentView(R.layout.signed_in_layout);

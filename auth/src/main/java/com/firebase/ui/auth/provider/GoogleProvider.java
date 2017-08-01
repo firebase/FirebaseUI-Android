@@ -165,6 +165,11 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
                     .build();
             startLogin(mActivity);
         } else {
+            if (status.getStatusCode() == CommonStatusCodes.DEVELOPER_ERROR) {
+                Log.w(TAG, "Developer error: this application is misconfigured. Check your SHA1 " +
+                        " and package name in the Firebase console.");
+                Toast.makeText(mActivity, "Developer error.", Toast.LENGTH_SHORT).show();
+            }
             onError(status.getStatusCode() + " " + status.getStatusMessage());
         }
     }
