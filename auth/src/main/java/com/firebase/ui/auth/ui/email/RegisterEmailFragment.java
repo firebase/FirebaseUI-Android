@@ -244,13 +244,15 @@ public class RegisterEmailFragment extends FragmentBase implements
                                         // This executes even if the name change fails, since
                                         // the account creation succeeded and we want to save
                                         // the credential to SmartLock (if enabled).
+                                        IdpResponse response = new IdpResponse.Builder(
+                                                new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                                    .setName(name)
+                                                    .setPhotoUri(mUser.getPhotoUri())
+                                                    .build())
+                                                .build();
+
                                         mActivity.saveCredentialsOrFinish(
-                                                mSaveSmartLock, user, password,
-                                                new IdpResponse.Builder(new User.Builder(
-                                                        EmailAuthProvider.PROVIDER_ID, email)
-                                                        .setName(name)
-                                                        .setPhotoUri(mUser.getPhotoUri())
-                                                        .build()).build());
+                                                mSaveSmartLock, user, password, response);
                                     }
                                 });
                     }
