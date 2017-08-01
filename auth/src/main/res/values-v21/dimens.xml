@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fui_button_inset_top">0dp</dimen>
+    <dimen name="fui_button_inset_bottom">0dp</dimen>
+    <dimen name="fui_button_inset_left">0dp</dimen>
+    <dimen name="fui_button_inset_right">0dp</dimen>
+</resources>
