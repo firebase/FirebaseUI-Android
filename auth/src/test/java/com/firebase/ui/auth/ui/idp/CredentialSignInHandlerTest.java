@@ -104,7 +104,8 @@ public class CredentialSignInHandlerTest {
                 idpResponseCaptor.capture());
 
         assertEquals(smartLock, smartLockCaptor.getValue());
-        assertEquals(AuthHelperShadow.sFirebaseUser, firebaseUserCaptor.getValue());
+        assertEquals(TestConstants.EMAIL,
+                firebaseUserCaptor.getValue().getEmail());
 
         IdpResponse response = idpResponseCaptor.getValue();
         assertEquals(idpResponse.getProviderType(), response.getProviderType());

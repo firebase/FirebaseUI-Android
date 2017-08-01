@@ -273,8 +273,8 @@ public class PhoneVerificationActivityTest {
         reset(AuthHelperShadow.sSaveSmartLock);
         reset(AuthHelperShadow.sFirebaseAuth);
 
-        when(AuthHelperShadow.sFirebaseUser.getPhoneNumber()).thenReturn(PHONE);
-        when(AuthHelperShadow.sFirebaseUser.getEmail()).thenReturn(null);
+        when(AuthHelperShadow.getCurrentUser().getPhoneNumber()).thenReturn(PHONE);
+        when(AuthHelperShadow.getCurrentUser().getEmail()).thenReturn(null);
         when(AuthHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
         mActivity.verifyPhoneNumber(PHONE, false);
@@ -300,8 +300,8 @@ public class PhoneVerificationActivityTest {
         reset(AuthHelperShadow.sSaveSmartLock);
         when(credential.getSmsCode()).thenReturn("123456");
 
-        when(AuthHelperShadow.sFirebaseUser.getPhoneNumber()).thenReturn(PHONE);
-        when(AuthHelperShadow.sFirebaseUser.getEmail()).thenReturn(null);
+        when(AuthHelperShadow.getCurrentUser().getPhoneNumber()).thenReturn(PHONE);
+        when(AuthHelperShadow.getCurrentUser().getEmail()).thenReturn(null);
 
         when(AuthHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));

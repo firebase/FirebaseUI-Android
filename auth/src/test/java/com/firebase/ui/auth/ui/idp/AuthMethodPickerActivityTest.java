@@ -121,7 +121,7 @@ public class AuthMethodPickerActivityTest {
         // initialize mocks
         reset(AuthHelperShadow.sSaveSmartLock);
 
-        when(AuthHelperShadow.sFirebaseUser.getProviders())
+        when(AuthHelperShadow.getCurrentUser().getProviders())
                 .thenReturn(Arrays.asList(FacebookAuthProvider.PROVIDER_ID));
         when(AuthHelperShadow.sFirebaseAuth.signInWithCredential((AuthCredential) any()))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
@@ -147,7 +147,7 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
-        when(AuthHelperShadow.sFirebaseUser.getProviders())
+        when(AuthHelperShadow.getCurrentUser().getProviders())
                 .thenReturn(Arrays.asList(GoogleAuthProvider.PROVIDER_ID));
 
         when(AuthHelperShadow.sFirebaseAuth.signInWithCredential((AuthCredential) any()))
@@ -168,7 +168,7 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
-        when(AuthHelperShadow.sFirebaseUser.getProviders())
+        when(AuthHelperShadow.getCurrentUser().getProviders())
                 .thenReturn(Arrays.asList(TwitterAuthProvider.PROVIDER_ID));
 
         when(AuthHelperShadow.sFirebaseAuth.signInWithCredential(any(AuthCredential.class)))
