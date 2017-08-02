@@ -20,7 +20,7 @@ android {
             manifestPlaceholders = [enableFbLogging: true]
 
             minifyEnabled false
-            consumerProguardFiles getDefaultProguardFile('proguard-android.txt'), 'auth-proguard.pro'
+            consumerProguardFiles 'auth-proguard.pro'
         }
 
         debug {
@@ -46,6 +46,7 @@ android {
 dependencies {
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:customtabs:$supportLibraryVersion"
+    compile 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
 
     compile "com.google.firebase:firebase-auth:$firebaseVersion"
     compile "com.google.android.gms:play-services-auth:$firebaseVersion"
@@ -60,9 +61,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //noinspection GradleDynamicVersion
     testCompile 'org.mockito:mockito-core:2.8.+'
-    testCompile 'org.robolectric:robolectric:3.2.2'
-    // See https://github.com/robolectric/robolectric/issues/1932#issuecomment-219796474
-    testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+    testCompile 'org.robolectric:robolectric:3.4'
     testCompile 'com.facebook.android:facebook-android-sdk:4.23.0'
 }
 

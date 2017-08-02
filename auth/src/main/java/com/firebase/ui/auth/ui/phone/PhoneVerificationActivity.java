@@ -67,7 +67,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     private static final String KEY_STATE = "KEY_STATE";
 
     private AlertDialog mAlertDialog;
-    private CompletableProgressDialog mProgressDialog;
+    @VisibleForTesting CompletableProgressDialog mProgressDialog;
     private Handler mHandler;
     private String mPhoneNumber;
     private String mVerificationId;
@@ -371,7 +371,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
 
     private void completeLoadingDialog(String content) {
         if (mProgressDialog != null) {
-            mProgressDialog.complete(content);
+            mProgressDialog.onComplete(content);
         }
     }
 
@@ -379,13 +379,10 @@ public class PhoneVerificationActivity extends AppCompatBase {
         dismissLoadingDialog();
 
         if (mProgressDialog == null) {
-            mProgressDialog = new CompletableProgressDialog(this);
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setTitle("");
+            mProgressDialog = CompletableProgressDialog.show(getSupportFragmentManager());
         }
 
         mProgressDialog.setMessage(message);
-        mProgressDialog.show();
     }
 
     private void dismissLoadingDialog() {

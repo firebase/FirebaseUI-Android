@@ -1,8 +1,8 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="fui_app_name" translatable="false">ui_flow</string>
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name" translatable="false" tools:ignore="ResourceName">ui_flow</string>
 
     <!-- Common -->
-    <string name="fui_default_toolbar_title" translatable="false">@string/fui_app_name</string>
+    <string name="fui_default_toolbar_title" translatable="false">@string/app_name</string>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">An error has occurred.</string>
@@ -84,7 +84,7 @@
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Enter the 6-digit code we sent to</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Resend code in 0:%02d</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Verify your phone number</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifying …</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifying…</string>
     <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Retrieving sms…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Wrong code. Try again.</string>
     <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>

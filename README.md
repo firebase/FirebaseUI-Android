@@ -39,16 +39,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:2.1.0'
+    compile 'com.firebaseui:firebase-ui-database:2.2.0'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:2.1.0'
+    compile 'com.firebaseui:firebase-ui-auth:2.2.0'
 
     // FirebaseUI Storage only
-    compile 'com.firebaseui:firebase-ui-storage:2.1.0'
+    compile 'com.firebaseui:firebase-ui-storage:2.2.0'
 
     // Single target that includes all FirebaseUI libraries above
-    compile 'com.firebaseui:firebase-ui:2.1.0'
+    compile 'com.firebaseui:firebase-ui:2.2.0'
 }
 ```
 
@@ -90,8 +90,9 @@ you need to make sure that you use the same version that your chosen version of 
 For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
-|--------------------|--------------------------------|
-| 2.1.0              | 11.0.2                         |
+|--------------------|--------------------------------|\
+| 2.2.0              | 11.0.4                         |
+| 2.1.1              | 11.0.2                         |
 | 2.0.1              | 11.0.1                         |
 | 1.2.0              | 10.2.0                         |
 | 1.1.1              | 10.0.0 or 10.0.1               |
@@ -136,11 +137,27 @@ compile "com.android.support:appcompat-v7:$BAR"
 compile "com.android.support:palette-v7:$BAR"
 ```
 
+NOTE :
+Starting version 25.4.0, support libraries are now available through [Google's Maven repository](https://developer.android.com/studio/build/dependencies.html#google-maven), so ensure that you have that added to your project's repositories.
+
+Open the `build.gradle` file for your project and modify it as following,
+
+```
+allprojects {
+    repositories {
+        maven {
+            url "https://maven.google.com"
+        }
+        jcenter()
+    }
+}
+```
+
 ## Sample App
 
 There is a sample app in the `app/` directory that demonstrates most
 of the features of FirebaseUI. Load the project in Android Studio and
-run it on your Android device to see a demonstration. 
+run it on your Android device to see a demonstration.
 
 Before you can run the sample app, you must create a project in
 the Firebase console. Add an Android app to the project, and copy

@@ -21,13 +21,21 @@ import com.google.firebase.auth.FirebaseUser;
 public final class FakeAuthResult implements AuthResult {
     public static final AuthResult INSTANCE = new FakeAuthResult();
 
-    private FakeAuthResult() {
-        // Singleton
-    }
+    private FirebaseUser mUser;
+
+    // Singleton
+    private FakeAuthResult() {}
 
     @Override
     public FirebaseUser getUser() {
-        return AuthHelperShadow.getCurrentUser();
+        // TODO(samstern): This method should just call AuthHelperShadow.getCurrentUser(),
+        //                 but it fails
+
+        if (mUser == null) {
+            mUser = TestHelper.getMockFirebaseUser();
+        }
+
+        return mUser;
     }
 
     @Override

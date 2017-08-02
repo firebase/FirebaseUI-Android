@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 import android.view.View;
@@ -64,7 +65,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
             Context context,
             FlowParameters flowParams,
             User existingUser,
-            IdpResponse newUserResponse) {
+            @Nullable IdpResponse newUserResponse) {
         return HelperActivityBase.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_USER, existingUser)
                 .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, newUserResponse);
@@ -75,8 +76,10 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_idp_prompt_layout);
 
-        IdpResponse newUserIdpResponse = IdpResponse.fromResultIntent(getIntent());
-        mPrevCredential = ProviderUtils.getAuthCredential(newUserIdpResponse);
+        IdpResponse newUserResponse = IdpResponse.fromResultIntent(getIntent());
+        if (newUserResponse != null) {
+            mPrevCredential = ProviderUtils.getAuthCredential(newUserResponse);
+        }
 
         User oldUser = User.getUser(getIntent());
 

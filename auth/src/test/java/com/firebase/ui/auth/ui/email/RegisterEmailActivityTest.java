@@ -15,7 +15,6 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +25,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
-import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
@@ -36,7 +34,9 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -45,10 +45,10 @@ import java.util.Collections;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
-@RunWith(CustomRobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
 public class RegisterEmailActivityTest {
 
@@ -56,9 +56,9 @@ public class RegisterEmailActivityTest {
         Intent startIntent = RegisterEmailActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)));
-        return Robolectric.buildActivity(RegisterEmailActivity.class)
-                .withIntent(startIntent)
-                .create(new Bundle())
+
+        return Robolectric.buildActivity(RegisterEmailActivity.class, startIntent)
+                .create()
                 .start()
                 .visible()
                 .get();
@@ -115,23 +115,39 @@ public class RegisterEmailActivityTest {
                         .setPhotoUri(TestConstants.PHOTO_URI)
                         .build());
 
+        EditText email = (EditText) registerEmailActivity.findViewById(R.id.email);
         EditText name = (EditText) registerEmailActivity.findViewById(R.id.name);
         EditText password = (EditText) registerEmailActivity.findViewById(R.id.password);
+
+        email.setText(TestConstants.EMAIL);
         name.setText(TestConstants.NAME);
         password.setText(TestConstants.PASSWORD);
 
-        when(AuthHelperShadow.sFirebaseUser.updateProfile(any(UserProfileChangeRequest.class)))
-                .thenReturn(new AutoCompleteTask<Void>(null, true, null));
-
+        // Mock user creation requests
         when(AuthHelperShadow.sFirebaseAuth
-                     .createUserWithEmailAndPassword(
-                             TestConstants.EMAIL,
-                             TestConstants.PASSWORD))
+                .createUserWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
+
+        // Mock change profle requests
+        when(FakeAuthResult.INSTANCE.getUser()
+                .updateProfile(any(UserProfileChangeRequest.class)))
+                .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
         Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
+        // Verify create user request
+        verify(AuthHelperShadow.sFirebaseAuth).createUserWithEmailAndPassword(
+                TestConstants.EMAIL,
+                TestConstants.PASSWORD);
+
+        // After create user request, should try to update profile with name
+        ArgumentCaptor<UserProfileChangeRequest> changeRequestCaptor =
+                ArgumentCaptor.forClass(UserProfileChangeRequest.class);
+        verify(FakeAuthResult.INSTANCE.getUser()).updateProfile(changeRequestCaptor.capture());
+        assertEquals(changeRequestCaptor.getValue().getDisplayName(), TestConstants.NAME);
+
+        // Finally, the new credential should be saved to SmartLock
         TestHelper.verifySmartLockSave(
                 EmailAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,

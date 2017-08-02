@@ -30,13 +30,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class TestHelper {
     private static final String APPLICATION_ID = "testAppId";
     private static final String API_KEY = "fakeKey";
     private static final String FIREBASE_APP_NAME = "firebaseAppName";
+
+    private static FirebaseUser sFirebaseUser;
 
     public static FirebaseApp initializeApp(Context context) {
         try {
@@ -50,6 +55,15 @@ public class TestHelper {
         } catch (IllegalStateException e) {
             return FirebaseApp.getInstance(FIREBASE_APP_NAME);
         }
+    }
+
+    public static FirebaseUser getMockFirebaseUser() {
+        FirebaseUser user = mock(FirebaseUser.class);
+        when(user.getEmail()).thenReturn(TestConstants.EMAIL);
+        when(user.getDisplayName()).thenReturn(TestConstants.NAME);
+        when(user.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
+
+        return user;
     }
 
     public static FlowParameters getFlowParameters(List<String> providerIds) {
@@ -86,6 +100,7 @@ public class TestHelper {
                 idpResponseCaptor.capture());
 
         // Check email and password
+        assertNotNull(userCaptor.getValue());
         assertEquals(email, userCaptor.getValue().getEmail());
         assertEquals(password, passwordCaptor.getValue());
 

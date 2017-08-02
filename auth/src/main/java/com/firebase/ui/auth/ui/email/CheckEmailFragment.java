@@ -206,8 +206,7 @@ public class CheckEmailFragment extends FragmentBase implements
                             mListener.onExistingEmailUser(
                                     new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build());
                         } else {
-                            mListener.onExistingIdpUser(
-                                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build());
+                            mListener.onExistingIdpUser(new User.Builder(provider, email).build());
                         }
                     }
                 })

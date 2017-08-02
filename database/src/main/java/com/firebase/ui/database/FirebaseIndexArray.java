@@ -14,7 +14,6 @@
 
 package com.firebase.ui.database;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -85,8 +84,23 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                 return snapshot.getKey();
             }
         });
+    }
 
+    @Override
+    protected void onCreate() {
+        super.onCreate();
         mKeySnapshots.addChangeEventListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mKeySnapshots.removeChangeEventListener(this);
+
+        for (DatabaseReference ref : mRefs.keySet()) {
+            ref.removeEventListener(mRefs.get(ref));
+        }
+        mRefs.clear();
     }
 
     @Override
@@ -122,26 +136,8 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     }
 
     @Override
-    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        super.removeChangeEventListener(listener);
-        if (!isListening()) {
-            for (DatabaseReference ref : mRefs.keySet()) {
-                ref.removeEventListener(mRefs.get(ref));
-            }
-
-            clearData();
-        }
-    }
-
-    @Override
     protected List<DataSnapshot> getSnapshots() {
         return mDataSnapshots;
-    }
-
-    @Override
-    protected void clearData() {
-        super.clearData();
-        mRefs.clear();
     }
 
     private int getIndexForKey(String key) {
