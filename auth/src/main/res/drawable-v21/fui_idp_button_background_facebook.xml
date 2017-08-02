@@ -3,7 +3,7 @@
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="3dp" />
-            <solid android:color="#3B5998" />
+            <solid android:color="@color/fui_bgFacebook" />
         </shape>
     </item>
 </layer-list>

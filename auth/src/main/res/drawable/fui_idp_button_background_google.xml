@@ -13,7 +13,7 @@
         android:top="@dimen/fui_button_inset_top">
         <shape android:shape="rectangle">
             <corners android:radius="3dp" />
-            <solid android:color="#ffffff" />
+            <solid android:color="@color/fui_bgGoogle" />
         </shape>
     </item>
 </layer-list>
