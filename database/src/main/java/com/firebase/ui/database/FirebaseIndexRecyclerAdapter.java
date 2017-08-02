@@ -1,5 +1,6 @@
 package com.firebase.ui.database;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 
@@ -18,7 +19,24 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
      *                 {@link DatabaseReference}.</b>
      * @param dataRef  The Firebase location to watch for data changes. Each key key found at {@code
      *                 keyQuery}'s location represents a list item in the {@link RecyclerView}.
-     * @see FirebaseRecyclerAdapter#FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class)
+     * @see FirebaseRecyclerAdapter#FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class,
+     * LifecycleOwner)
+     */
+    public FirebaseIndexRecyclerAdapter(SnapshotParser<T> parser,
+                                        @LayoutRes int modelLayout,
+                                        Class<VH> viewHolderClass,
+                                        Query keyQuery,
+                                        DatabaseReference dataRef,
+                                        LifecycleOwner owner) {
+        super(new FirebaseIndexArray<>(keyQuery, dataRef, parser),
+                modelLayout,
+                viewHolderClass,
+                owner);
+    }
+
+    /**
+     * @see #FirebaseIndexRecyclerAdapter(SnapshotParser, int, Class, Query, DatabaseReference,
+     * LifecycleOwner)
      */
     public FirebaseIndexRecyclerAdapter(SnapshotParser<T> parser,
                                         @LayoutRes int modelLayout,
@@ -26,6 +44,24 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
                                         Query keyQuery,
                                         DatabaseReference dataRef) {
         super(new FirebaseIndexArray<>(keyQuery, dataRef, parser), modelLayout, viewHolderClass);
+    }
+
+    /**
+     * @see #FirebaseIndexRecyclerAdapter(SnapshotParser, int, Class, Query, DatabaseReference,
+     * LifecycleOwner)
+     */
+    public FirebaseIndexRecyclerAdapter(Class<T> modelClass,
+                                        @LayoutRes int modelLayout,
+                                        Class<VH> viewHolderClass,
+                                        Query keyQuery,
+                                        DatabaseReference dataRef,
+                                        LifecycleOwner owner) {
+        this(new ClassSnapshotParser<>(modelClass),
+                modelLayout,
+                viewHolderClass,
+                keyQuery,
+                dataRef,
+                owner);
     }
 
     /**
@@ -37,9 +73,9 @@ public abstract class FirebaseIndexRecyclerAdapter<T, VH extends RecyclerView.Vi
                                         Query keyQuery,
                                         DatabaseReference dataRef) {
         this(new ClassSnapshotParser<>(modelClass),
-             modelLayout,
-             viewHolderClass,
-             keyQuery,
-             dataRef);
+                modelLayout,
+                viewHolderClass,
+                keyQuery,
+                dataRef);
     }
 }
