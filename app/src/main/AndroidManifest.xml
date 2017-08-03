@@ -15,7 +15,7 @@
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning,IconLauncherFormat">
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity android:name=".ChooserActivity">
             <intent-filter>
