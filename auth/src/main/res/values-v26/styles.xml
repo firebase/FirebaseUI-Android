@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="ResourceName">
+
+    <style name="FirebaseUI.TextInputEditText.EmailField">
+        <item name="android:autofillHints">emailAddress</item>
+        <item name="android:inputType">textEmailAddress</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputEditText.NameField">
+        <item name="android:autofillHints">name</item>
+        <item name="android:inputType">textCapWords</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputEditText.PhoneField">
+        <item name="android:autofillHints">phone</item>
+        <item name="android:hint">@string/fui_phone_hint</item>
+        <item name="android:inputType">phone</item>
+        <item name="android:imeOptions">actionNext</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputEditText.PasswordField">
+        <item name="android:autofillHints">password</item>
+        <item name="android:inputType">textPassword</item>
+    </style>
+
+</resources>

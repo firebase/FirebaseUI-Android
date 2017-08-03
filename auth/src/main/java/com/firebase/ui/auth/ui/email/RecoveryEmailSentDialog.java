@@ -43,7 +43,7 @@ public class RecoveryEmailSentDialog extends DialogFragment {
                 .show();
     }
 
-    public void finish(int resultCode, Intent resultIntent) {
+    private void finish(int resultCode, Intent resultIntent) {
         getActivity().setResult(resultCode, resultIntent);
         getActivity().finish();
     }

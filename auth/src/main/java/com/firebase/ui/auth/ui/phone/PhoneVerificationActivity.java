@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhoneVerificationActivity extends AppCompatBase {
     private enum VerificationState {
-        VERIFICATION_NOT_STARTED, VERIFICATION_STARTED, VERIFIED;
+        VERIFICATION_NOT_STARTED, VERIFICATION_STARTED, VERIFIED
     }
 
     private static final String PHONE_VERIFICATION_LOG_TAG = "PhoneVerification";

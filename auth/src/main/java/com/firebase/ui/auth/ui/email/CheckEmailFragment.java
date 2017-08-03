@@ -102,8 +102,8 @@ public class CheckEmailFragment extends FragmentBase implements
         View v = inflater.inflate(R.layout.fui_check_email_layout, container, false);
 
         // Email field and validator
-        mEmailLayout = (TextInputLayout) v.findViewById(R.id.email_layout);
-        mEmailEditText = (EditText) v.findViewById(R.id.email);
+        mEmailLayout = v.findViewById(R.id.email_layout);
+        mEmailEditText = v.findViewById(R.id.email);
         mEmailFieldValidator = new EmailFieldValidator(mEmailLayout);
         mEmailLayout.setOnClickListener(this);
         mEmailEditText.setOnClickListener(this);

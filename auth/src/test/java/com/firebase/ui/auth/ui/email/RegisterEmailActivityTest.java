@@ -77,13 +77,11 @@ public class RegisterEmailActivityTest {
         registerEmailActivity.onNewUser(
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
 
-        Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
+        Button button = registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
-        TextInputLayout nameLayout = (TextInputLayout)
-                registerEmailActivity.findViewById(R.id.name_layout);
-        TextInputLayout passwordLayout = (TextInputLayout)
-                registerEmailActivity.findViewById(R.id.password_layout);
+        TextInputLayout nameLayout = registerEmailActivity.findViewById(R.id.name_layout);
+        TextInputLayout passwordLayout = registerEmailActivity.findViewById(R.id.password_layout);
 
         assertEquals(
                 registerEmailActivity.getString(R.string.fui_required_field),
@@ -115,9 +113,9 @@ public class RegisterEmailActivityTest {
                         .setPhotoUri(TestConstants.PHOTO_URI)
                         .build());
 
-        EditText email = (EditText) registerEmailActivity.findViewById(R.id.email);
-        EditText name = (EditText) registerEmailActivity.findViewById(R.id.name);
-        EditText password = (EditText) registerEmailActivity.findViewById(R.id.password);
+        EditText email = registerEmailActivity.findViewById(R.id.email);
+        EditText name = registerEmailActivity.findViewById(R.id.name);
+        EditText password = registerEmailActivity.findViewById(R.id.password);
 
         email.setText(TestConstants.EMAIL);
         name.setText(TestConstants.NAME);
@@ -133,7 +131,7 @@ public class RegisterEmailActivityTest {
                 .updateProfile(any(UserProfileChangeRequest.class)))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
-        Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
+        Button button = registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
         // Verify create user request

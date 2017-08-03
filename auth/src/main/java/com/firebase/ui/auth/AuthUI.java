@@ -47,6 +47,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,6 +75,7 @@ public class AuthUI {
                        FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
                        TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER
                })
+    @Retention(RetentionPolicy.SOURCE)
     public @interface SupportedProvider {}
 
     /**
