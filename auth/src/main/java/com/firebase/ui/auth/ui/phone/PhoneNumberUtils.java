@@ -68,7 +68,6 @@ final class PhoneNumberUtils {
      * @param phoneNumber that may or may not itself have country code
      * @param countryInfo must have locale with ISO 3166 2-letter code for country
      */
-    @Nullable
     static String formatPhoneNumber(@NonNull String phoneNumber, @NonNull CountryInfo countryInfo) {
         return phoneNumber.startsWith("+")
                 ? phoneNumber

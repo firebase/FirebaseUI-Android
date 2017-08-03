@@ -115,7 +115,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
         // New user, direct them to create an account with email/password
         // if account creation is enabled in SignInIntentBuilder
 
-        TextInputLayout emailLayout = (TextInputLayout) findViewById(R.id.email_layout);
+        TextInputLayout emailLayout = findViewById(R.id.email_layout);
 
         if (getFlowParams().allowNewEmailAccounts) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(

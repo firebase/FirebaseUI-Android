@@ -83,14 +83,14 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
         if (logoId == AuthUI.NO_LOGO) {
             findViewById(R.id.logo).setVisibility(View.GONE);
 
-            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.root);
+            ConstraintLayout layout = findViewById(R.id.root);
             ConstraintSet constraints = new ConstraintSet();
             constraints.clone(layout);
             constraints.setHorizontalBias(R.id.container, 0.5f);
             constraints.setVerticalBias(R.id.container, 0.5f);
             constraints.applyTo(layout);
         } else {
-            ImageView logo = (ImageView) findViewById(R.id.logo);
+            ImageView logo = findViewById(R.id.logo);
             logo.setImageResource(logoId);
         }
     }
@@ -121,7 +121,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
             }
         }
 
-        ViewGroup btnHolder = (ViewGroup) findViewById(R.id.btn_holder);
+        ViewGroup btnHolder = findViewById(R.id.btn_holder);
         for (final Provider provider : mProviders) {
             View loginButton = getLayoutInflater()
                     .inflate(provider.getButtonLayout(), btnHolder, false);

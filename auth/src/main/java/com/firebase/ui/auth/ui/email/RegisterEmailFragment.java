@@ -1,5 +1,7 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -88,6 +90,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
     }
 
+    @SuppressLint("NewApi") // TODO remove once lint understands Build.VERSION_CODES.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -96,12 +99,12 @@ public class RegisterEmailFragment extends FragmentBase implements
 
         View v = inflater.inflate(R.layout.fui_register_email_layout, container, false);
 
-        mEmailEditText = (EditText) v.findViewById(R.id.email);
-        mNameEditText = (EditText) v.findViewById(R.id.name);
-        mPasswordEditText = (EditText) v.findViewById(R.id.password);
-        mAgreementText = (TextView) v.findViewById(R.id.create_account_text);
-        mEmailInput = (TextInputLayout) v.findViewById(R.id.email_layout);
-        mPasswordInput = (TextInputLayout) v.findViewById(R.id.password_layout);
+        mEmailEditText = v.findViewById(R.id.email);
+        mNameEditText = v.findViewById(R.id.name);
+        mPasswordEditText = v.findViewById(R.id.password);
+        mAgreementText = v.findViewById(R.id.create_account_text);
+        mEmailInput = v.findViewById(R.id.email_layout);
+        mPasswordInput = v.findViewById(R.id.password_layout);
 
         mPasswordFieldValidator = new PasswordFieldValidator(
                 mPasswordInput,
@@ -116,6 +119,10 @@ public class RegisterEmailFragment extends FragmentBase implements
         mNameEditText.setOnFocusChangeListener(this);
         mPasswordEditText.setOnFocusChangeListener(this);
         v.findViewById(R.id.button_create).setOnClickListener(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableCredentials) {
+            mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+        }
 
         if (savedInstanceState != null) {
             return v;
