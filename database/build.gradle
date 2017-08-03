@@ -27,6 +27,10 @@ dependencies {
     // Needed to override play services
     compile "com.android.support:support-v4:$supportLibraryVersion"
 
+    compile 'android.arch.lifecycle:runtime:1.0.0-alpha5'
+    compile 'android.arch.lifecycle:extensions:1.0.0-alpha5'
+    annotationProcessor 'android.arch.lifecycle:compiler:1.0.0-alpha5'
+
     compile "com.google.firebase:firebase-database:$firebaseVersion"
 
     androidTestCompile 'junit:junit:4.12'

@@ -3,6 +3,7 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.ColorInt;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
@@ -34,7 +35,7 @@ public class PreambleHandler {
         mContext = context;
         mFlowParameters = parameters;
         mButtonText = buttonText;
-        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.linkColor));
+        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.fui_linkColor));
 
         setupCreateAccountPreamble();
     }
@@ -45,18 +46,16 @@ public class PreambleHandler {
     }
 
     private void setupCreateAccountPreamble() {
-        int preambleType = getPreambleType();
-        if (preambleType == -1) {
+        String withTargets = getPreambleStringWithTargets();
+        if (withTargets == null) {
             return;
         }
 
-        String[] preambles =
-                mContext.getResources().getStringArray(R.array.create_account_preamble);
-        mBuilder = new SpannableStringBuilder(preambles[preambleType]);
+        mBuilder = new SpannableStringBuilder(withTargets);
 
         replaceTarget(BTN_TARGET, mButtonText);
-        replaceUrlTarget(TOS_TARGET, R.string.terms_of_service, mFlowParameters.termsOfServiceUrl);
-        replaceUrlTarget(PP_TARGET, R.string.privacy_policy, mFlowParameters.privacyPolicyUrl);
+        replaceUrlTarget(TOS_TARGET, R.string.fui_terms_of_service, mFlowParameters.termsOfServiceUrl);
+        replaceUrlTarget(PP_TARGET, R.string.fui_privacy_policy, mFlowParameters.privacyPolicyUrl);
     }
 
     private void replaceTarget(String target, @StringRes int replacementRes) {
@@ -79,29 +78,23 @@ public class PreambleHandler {
         }
     }
 
-    /**
-     * 0 means we have both a TOS and a PP
-     * <p>1 means we only have a TOS
-     * <p>2 means we only have a PP
-     * <p>-1 means we have neither
-     */
-    private int getPreambleType() {
-        int preambleType;
-
+    @Nullable
+    private String getPreambleStringWithTargets() {
         boolean hasTos = !TextUtils.isEmpty(mFlowParameters.termsOfServiceUrl);
         boolean hasPp = !TextUtils.isEmpty(mFlowParameters.privacyPolicyUrl);
 
         if (hasTos && hasPp) {
-            preambleType = 0;
+            return mContext.getString(R.string.fui_create_account_preamble_tos_and_pp,
+                                      BTN_TARGET, TOS_TARGET, PP_TARGET);
         } else if (hasTos) {
-            preambleType = 1;
+            return mContext.getString(R.string.fui_create_account_preamble_tos_only,
+                                      BTN_TARGET, TOS_TARGET);
         } else if (hasPp) {
-            preambleType = 2;
+            return mContext.getString(R.string.fui_create_account_preamble_pp_only,
+                                      BTN_TARGET, PP_TARGET);
         } else {
-            preambleType = -1;
+            return null;
         }
-
-        return preambleType;
     }
 
     private class CustomTabsSpan extends ClickableSpan {

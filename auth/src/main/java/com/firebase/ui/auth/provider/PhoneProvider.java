@@ -5,52 +5,45 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.BaseHelper;
+import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
-import com.google.firebase.auth.PhoneAuthProvider;
 
 public class PhoneProvider implements Provider {
 
     private static final int RC_PHONE_FLOW = 4;
 
     private Activity mActivity;
-    private BaseHelper mHelper;
+    private FlowParameters mFlowParameters;
 
-    public PhoneProvider(Activity activity, BaseHelper helper) {
+    public PhoneProvider(Activity activity, FlowParameters parameters) {
         mActivity = activity;
-        mHelper = helper;
+        mFlowParameters = parameters;
     }
 
     @Override
     public String getName(Context context) {
-        return context.getString(R.string.provider_name_phone);
-    }
-
-    @Override
-    @AuthUI.SupportedProvider
-    public String getProviderId() {
-        return PhoneAuthProvider.PROVIDER_ID;
+        return context.getString(R.string.fui_provider_name_phone);
     }
 
     @Override
     @LayoutRes
     public int getButtonLayout() {
-        return R.layout.provider_button_phone;
+        return R.layout.fui_provider_button_phone;
     }
 
     @Override
     public void startLogin(Activity activity) {
         activity.startActivityForResult(
-                PhoneVerificationActivity.createIntent(activity, mHelper.getFlowParams(), null),
+                PhoneVerificationActivity.createIntent(activity, mFlowParameters, null),
                 RC_PHONE_FLOW);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_PHONE_FLOW && resultCode == Activity.RESULT_OK) {
-            mHelper.finishActivity(mActivity, Activity.RESULT_OK, data);
+            mActivity.setResult(Activity.RESULT_OK, data);
+            mActivity.finish();
         }
     }
 }

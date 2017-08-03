@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools"
+           tools:ignore="ResourceName">
 
-    <style name="FirebaseUI" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="FirebaseUI" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -21,8 +22,8 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingLeft">@dimen/wrapper_padding_horiz</item>
-        <item name="android:paddingRight">@dimen/wrapper_padding_horiz</item>
+        <item name="android:paddingLeft">@dimen/fui_wrapper_padding_horiz</item>
+        <item name="android:paddingRight">@dimen/fui_wrapper_padding_horiz</item>
     </style>
 
     <style name="FirebaseUI.Text">
@@ -100,7 +101,7 @@
     <style name="FirebaseUI.Button" parent="@style/Widget.AppCompat.Button.Colored">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">right</item>
+        <item name="android:layout_gravity">end</item>
     </style>
 
     <style name="FirebaseUI.VerifyPhoneButton" parent="FirebaseUI.Button">
@@ -124,8 +125,12 @@
         <item name="android:inputType">textEmailAddress</item>
     </style>
 
+    <style name="FirebaseUI.TextInputEditText.NameField">
+        <item name="android:inputType">textCapWords</item>
+    </style>
+
     <style name="FirebaseUI.TextInputEditText.PhoneField">
-        <item name="android:hint">@string/phone_hint</item>
+        <item name="android:hint">@string/fui_phone_hint</item>
         <item name="android:inputType">phone</item>
         <item name="android:imeOptions">actionNext</item>
         <item name="android:paddingBottom">16dp</item>
@@ -136,104 +141,105 @@
         <item name="android:inputType">textPassword</item>
     </style>
 
-    <style name="FirebaseUI.TextInputLayout" parent="Widget.Design.TextInputLayout"/>
+    <style name="FirebaseUI.TextInputLayout" parent="Widget.Design.TextInputLayout" />
 
     <style name="FirebaseUI.TextInputLayout.EmailField">
-        <item name="android:hint">@string/email_hint</item>
+        <item name="android:hint">@string/fui_email_hint</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputLayout.NameField">
+        <item name="android:hint">@string/fui_name_hint</item>
     </style>
 
     <style name="FirebaseUI.TextInputLayout.PasswordField">
-        <item name="android:hint">@string/password_hint</item>
+        <item name="android:hint">@string/fui_password_hint</item>
     </style>
 
     <style name="FirebaseUI.Text.Link">
-        <item name="android:textColor">@color/linkColor</item>
+        <item name="android:textColor">@color/fui_linkColor</item>
     </style>
 
     <style name="FirebaseUI.Text.Heading" parent="FirebaseUI.Text.T07">
         <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">@dimen/heading_padding_bottom</item>
+        <item name="android:paddingBottom">@dimen/fui_heading_padding_bottom</item>
     </style>
 
     <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingBottom">@dimen/body_padding_bottom</item>
+        <item name="android:paddingBottom">@dimen/fui_body_padding_bottom</item>
+    </style>
+
+    <style name="FirebaseUI.CountrySpinner" parent="@style/Widget.AppCompat.Spinner.Underlined">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
     <!-- Authentication method picker styles -->
-    <style name="FirebaseUI.AuthMethodPicker"/>
+    <style name="FirebaseUI.AuthMethodPicker" />
 
     <style name="FirebaseUI.AuthMethodPicker.Logo">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:contentDescription">@string/fui_accessibility_logo</item>
     </style>
 
     <style name="FirebaseUI.AuthMethodPicker.ButtonHolder">
-        <item name="android:layout_width">@dimen/auth_method_button_width</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">@dimen/fui_auth_method_button_width</item>
         <item name="android:orientation">vertical</item>
         <item name="android:clipToPadding">false</item>
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
     </style>
 
-    <style name="FirebaseUI.AuthMethodPicker.ButtonHolder.Portrait" parent="FirebaseUI.AuthMethodPicker.ButtonHolder">
-        <item name="android:paddingBottom">56dp</item>
-    </style>
-
     <style name="FirebaseUI.Button.AccountChooser">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:drawablePadding">@dimen/auth_method_button_drawablePadding</item>
+        <item name="android:drawablePadding">@dimen/fui_auth_method_button_drawablePadding</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingLeft">12dp</item>
         <item name="android:paddingRight">12dp</item>
-        <item name="android:layout_marginBottom">@dimen/auth_method_button_marginBottom</item>
-        <item name="android:layout_gravity">left</item>
+        <item name="android:layout_marginTop">@dimen/fui_auth_method_button_margin</item>
+        <item name="android:layout_marginBottom">@dimen/fui_auth_method_button_margin</item>
         <item name="android:gravity">left|center_vertical</item>
         <item name="android:typeface">normal</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.EmailButton">
-        <item name="android:drawableLeft">@drawable/ic_mail_white_24dp</item>
-        <item name="android:background">@drawable/idp_button_background_email</item>
+        <item name="android:drawableLeft">@drawable/fui_ic_mail_white_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_email</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.PhoneButton">
-        <item name="android:drawableLeft">@drawable/ic_settings_phone_white_24dp</item>
-        <item name="android:background">@drawable/idp_button_background_phone</item>
+        <item name="android:drawableLeft">@drawable/fui_ic_settings_phone_white_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_phone</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 
-    <style name="FirebaseUI.CountrySpinner" parent="@style/Widget.AppCompat.Spinner.Underlined">
-        <item name = "android:layout_width">wrap_content</item>
-        <item name = "android:layout_height">wrap_content</item>
-        <item name = "android:layout_gravity">left</item>
-        <item name = "android:paddingBottom">16dp</item>
-        <item name = "android:paddingTop">16dp</item>
-        <item name = "android:textAppearance">?android:attr/textAppearanceMedium</item>
-
-    </style>
-
     <style name="FirebaseUI.Button.AccountChooser.GoogleButton">
-        <item name="android:drawableLeft">@drawable/ic_googleg_color_24dp</item>
-        <item name="android:background">@drawable/idp_button_background_google</item>
+        <item name="android:drawableLeft">@drawable/fui_ic_googleg_color_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_google</item>
         <item name="android:textColor">#757575</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.FacebookButton">
-        <item name="android:drawableLeft">@drawable/ic_facebook_white_22dp</item>
-        <item name="android:background">@drawable/idp_button_background_facebook</item>
+        <item name="android:drawableLeft">@drawable/fui_ic_facebook_white_22dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_facebook</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.TwitterButton">
-        <item name="android:drawableLeft">@drawable/ic_twitter_bird_white_24dp</item>
-        <item name="android:background">@drawable/idp_button_background_twitter</item>
+        <item name="android:drawableLeft">@drawable/fui_ic_twitter_bird_white_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_twitter</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 

@@ -71,13 +71,13 @@ public class AuthUI {
                        PhoneAuthProvider.PROVIDER_ID, PHONE_VERIFICATION_PROVIDER,
                        GoogleAuthProvider.PROVIDER_ID, GOOGLE_PROVIDER,
                        FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
-                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER,
+                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER
                })
     public @interface SupportedProvider {}
 
     /**
-     * Provider identifier for email and password credentials, for use with
-     * {@link SignInIntentBuilder#setAvailableProviders(List)}.
+     * Provider identifier for email and password credentials, for use with {@link
+     * SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String EMAIL_PROVIDER = EmailAuthProvider.PROVIDER_ID;
 
@@ -97,7 +97,7 @@ public class AuthUI {
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
     /**
-     * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setProviders}.
+     * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
 
@@ -129,8 +129,8 @@ public class AuthUI {
     }
 
     /**
-     * Retrieves the {@link AuthUI} instance associated with the default app, as returned by
-     * {@code FirebaseApp.getInstance()}.
+     * Retrieves the {@link AuthUI} instance associated with the default app, as returned by {@code
+     * FirebaseApp.getInstance()}.
      *
      * @throws IllegalStateException if the default app is not initialized.
      */
@@ -192,7 +192,7 @@ public class AuthUI {
 
         // Twitter sign out
         try {
-            TwitterProvider.signout(activity);
+            TwitterProvider.signOut(activity);
         } catch (NoClassDefFoundError e) {
             // do nothing
         }
@@ -250,8 +250,8 @@ public class AuthUI {
     }
 
     /**
-     * Starts the process of creating a sign in intent, with the mandatory application
-     * context parameter.
+     * Starts the process of creating a sign in intent, with the mandatory application context
+     * parameter.
      */
     public SignInIntentBuilder createSignInIntentBuilder() {
         return new SignInIntentBuilder();
@@ -260,8 +260,8 @@ public class AuthUI {
     /**
      * Configuration for an identity provider.
      * <p>
-     * In the simplest case, you can supply the provider ID and build the config like this:
-     * {@code new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()}
+     * In the simplest case, you can supply the provider ID and build the config like this: {@code
+     * new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()}
      */
     public static class IdpConfig implements Parcelable {
         private final String mProviderId;
@@ -391,8 +391,8 @@ public class AuthUI {
         private AuthIntentBuilder() {}
 
         /**
-         * Specifies the theme to use for the application flow. If no theme is specified,
-         * a default theme will be used.
+         * Specifies the theme to use for the application flow. If no theme is specified, a default
+         * theme will be used.
          */
         public T setTheme(@StyleRes int theme) {
             Preconditions.checkValidStyle(
@@ -404,8 +404,8 @@ public class AuthUI {
         }
 
         /**
-         * Specifies the logo to use for the {@link AuthMethodPickerActivity}. If no logo
-         * is specified, none will be used.
+         * Specifies the logo to use for the {@link AuthMethodPickerActivity}. If no logo is
+         * specified, none will be used.
          */
         public T setLogo(@DrawableRes int logo) {
             mLogo = logo;
@@ -429,8 +429,8 @@ public class AuthUI {
         }
 
         /**
-         * Specified the set of supported authentication providers. At least one provider must
-         * be specified. There may only be one instance of each provider.
+         * Specified the set of supported authentication providers. At least one provider must be
+         * specified. There may only be one instance of each provider.
          * <p>
          * <p>If no providers are explicitly specified by calling this method, then the email
          * provider is the default supported provider.
@@ -455,9 +455,10 @@ public class AuthUI {
                     try {
                         Class c = com.facebook.FacebookSdk.class;
                     } catch (NoClassDefFoundError e) {
-                        throw new RuntimeException("Facebook provider cannot be configured " +
-                               "without dependency. Did you forget to add " +
-                               "'com.facebook.android:facebook-android-sdk:VERSION' dependency?");
+                        throw new RuntimeException(
+                                "Facebook provider cannot be configured " +
+                                        "without dependency. Did you forget to add " +
+                                        "'com.facebook.android:facebook-android-sdk:VERSION' dependency?");
                     }
                 }
 
@@ -465,9 +466,10 @@ public class AuthUI {
                     try {
                         Class c = com.twitter.sdk.android.core.TwitterCore.class;
                     } catch (NoClassDefFoundError e) {
-                        throw new RuntimeException("Twitter provider cannot be configured " +
-                               "without dependency. Did you forget to add " +
-                               "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
+                        throw new RuntimeException(
+                                "Twitter provider cannot be configured " +
+                                        "without dependency. Did you forget to add " +
+                                        "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
                     }
                 }
             }
@@ -476,8 +478,8 @@ public class AuthUI {
         }
 
         /**
-         * Specified the set of supported authentication providers. At least one provider must
-         * be specified. There may only be one instance of each provider.
+         * Specified the set of supported authentication providers. At least one provider must be
+         * specified. There may only be one instance of each provider.
          * <p>
          * <p>If no providers are explicitly specified by calling this method, then the email
          * provider is the default supported provider.
@@ -504,9 +506,9 @@ public class AuthUI {
         }
 
         /**
-         * Enables or disables the use of Smart Lock for Passwords in the sign in flow.
-         * To (en)disable hint selector and credential selector independently
-         * use {@link #setIsSmartLockEnabled(boolean, boolean)}
+         * Enables or disables the use of Smart Lock for Passwords in the sign in flow. To
+         * (en)disable hint selector and credential selector independently use {@link
+         * #setIsSmartLockEnabled(boolean, boolean)}
          * <p>
          * <p>SmartLock is enabled by default.
          *
@@ -522,10 +524,9 @@ public class AuthUI {
          * selector.
          * <p>
          * <p>Both selectors are enabled by default.
-
+         *
          * @param enableCredentials enables credential selector before signup
-         * @param enableHints enable hint selector in respective signup screens
-         * @return
+         * @param enableHints       enable hint selector in respective signup screens
          */
         public T setIsSmartLockEnabled(boolean enableCredentials, boolean enableHints) {
             mEnableCredentials = enableCredentials;

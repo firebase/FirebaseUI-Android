@@ -25,11 +25,11 @@ import android.util.AttributeSet;
 
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -37,14 +37,14 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(CustomRobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class SpacedEditTextTest {
     SpacedEditText spacedEditText;
     AttributeSet attrs;
     Context context;
     TypedArray array;
-    final float spacingPropotion = 1.1f;
+    final float spacingProportion = 1.1f;
 
     @Before
     public void setUp() throws Exception {
@@ -52,8 +52,8 @@ public class SpacedEditTextTest {
         context = mock(Context.class);
         array = mock(TypedArray.class);
 
-        when(array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1)).thenReturn
-                (spacingPropotion);
+        when(array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1))
+                .thenReturn(spacingProportion);
         when(context.obtainStyledAttributes(attrs, R.styleable.SpacedEditText)).thenReturn(array);
         spacedEditText = new SpacedEditText(RuntimeEnvironment.application, attrs);
         spacedEditText.initAttrs(context, attrs);
@@ -105,12 +105,8 @@ public class SpacedEditTextTest {
     /**
      * 1. Tests whether the content is set to the expected value.
      * 2. Tests whether the original content is set to the original value.
-     * 3. Tests that the styles applied have the expected propotion
+     * 3. Tests that the styles applied have the expected proportion
      * 4. Tests that the styles have been applied only on the spaces to preserve fonts appearance.
-     *
-     * @param expectedSpacedText
-     * @param expectedOriginalText
-     * @param editText
      */
     private void testSpacing(String expectedSpacedText, String expectedOriginalText,
                              SpacedEditText editText) {
@@ -121,7 +117,7 @@ public class SpacedEditTextTest {
         assertEquals(expectedOriginalText, editText.getUnspacedText().toString());
 
         for (ScaleXSpan span : spans) {
-            assertEquals(spacingPropotion, span.getScaleX());
+            assertEquals(spacingProportion, span.getScaleX());
 
             final int spanStart = editable.getSpanStart(span);
             final int spanEnd = editable.getSpanEnd(span);

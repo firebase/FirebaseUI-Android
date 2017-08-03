@@ -15,6 +15,7 @@
 package com.firebase.ui.auth.util.signincontainer;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import android.util.Log;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
@@ -36,9 +38,8 @@ import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.FragmentHelper;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -50,6 +51,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     private static final String TAG = "IDPSignInContainer";
     private static final int RC_WELCOME_BACK_IDP = 4;
 
+    private HelperActivityBase mActivity;
     private IdpProvider mIdpProvider;
     @Nullable
     private SaveSmartLock mSaveSmartLock;
@@ -60,7 +62,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
         if (!(fragment instanceof IdpSignInContainer)) {
             IdpSignInContainer result = new IdpSignInContainer();
 
-            Bundle bundle = FragmentHelper.getFlowParamsBundle(parameters);
+            Bundle bundle = parameters.toBundle();
             bundle.putParcelable(ExtraConstants.EXTRA_USER, user);
             result.setArguments(bundle);
 
@@ -82,15 +84,25 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (!(getActivity() instanceof HelperActivityBase)) {
+            throw new RuntimeException("Can only attach IdpSignInContainer to HelperActivityBase.");
+        }
+
+        mActivity = (HelperActivityBase) getActivity();
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSaveSmartLock = mHelper.getSaveSmartLockInstance(getActivity());
+        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(mActivity);
 
         User user = User.getUser(getArguments());
-        String provider = user.getProvider();
+        String provider = user.getProviderId();
 
         AuthUI.IdpConfig providerConfig = null;
-        for (AuthUI.IdpConfig config : mHelper.getFlowParams().providerInfo) {
+        for (AuthUI.IdpConfig config : getFlowParams().providerInfo) {
             if (config.getProviderId().equalsIgnoreCase(provider)) {
                 providerConfig = config;
                 break;
@@ -109,7 +121,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                     providerConfig,
                     user.getEmail());
         } else if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            mIdpProvider = new FacebookProvider(providerConfig, mHelper.getFlowParams().themeId);
+            mIdpProvider = new FacebookProvider(providerConfig, getFlowParams().themeId);
         } else if (provider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new TwitterProvider(getContext());
         }
@@ -130,21 +142,20 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onSuccess(final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        mHelper.getFirebaseAuth()
+        getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Failure authenticating with credential " +
                                 credential.getProvider()))
                 .addOnCompleteListener(new CredentialSignInHandler(
-                        getActivity(),
-                        mHelper,
+                        mActivity,
                         mSaveSmartLock,
                         RC_WELCOME_BACK_IDP,
                         response));
     }
 
     @Override
-    public void onFailure(Bundle extra) {
+    public void onFailure() {
         finish(Activity.RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
     }
 

@@ -1,6 +1,10 @@
 package com.firebase.ui.database;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,14 +46,28 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      *                        view with the data from an instance of modelClass.
      * @param viewHolderClass The class that hold references to all sub-views in an instance
      *                        modelLayout.
+     * @param owner           the lifecycle owner used to automatically listen and cleanup after
+     *                        {@link FragmentActivity#onStart()} and {@link FragmentActivity#onStop()}
+     *                        events reflectively.
      */
     public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
                                    @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass) {
+                                   Class<VH> viewHolderClass,
+                                   LifecycleOwner owner) {
         mSnapshots = snapshots;
         mViewHolderClass = viewHolderClass;
         mModelLayout = modelLayout;
 
+        if (owner != null) { owner.getLifecycle().addObserver(this); }
+    }
+
+    /**
+     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class, LifecycleOwner)
+     */
+    public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
+                                   @LayoutRes int modelLayout,
+                                   Class<VH> viewHolderClass) {
+        this(snapshots, modelLayout, viewHolderClass, null);
         startListening();
     }
 
@@ -70,6 +88,18 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     /**
      * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query)
+     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class, LifecycleOwner)
+     */
+    public FirebaseRecyclerAdapter(SnapshotParser<T> parser,
+                                   @LayoutRes int modelLayout,
+                                   Class<VH> viewHolderClass,
+                                   Query query,
+                                   LifecycleOwner owner) {
+        this(new FirebaseArray<>(query, parser), modelLayout, viewHolderClass, owner);
+    }
+
+    /**
+     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query)
      */
     public FirebaseRecyclerAdapter(Class<T> modelClass,
                                    @LayoutRes int modelLayout,
@@ -78,7 +108,19 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         this(new ClassSnapshotParser<>(modelClass), modelLayout, viewHolderClass, query);
     }
 
+    /**
+     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query, LifecycleOwner)
+     */
+    public FirebaseRecyclerAdapter(Class<T> modelClass,
+                                   @LayoutRes int modelLayout,
+                                   Class<VH> viewHolderClass,
+                                   Query query,
+                                   LifecycleOwner owner) {
+        this(new ClassSnapshotParser<>(modelClass), modelLayout, viewHolderClass, query, owner);
+    }
+
     @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         if (!mSnapshots.isListening(this)) {
             mSnapshots.addChangeEventListener(this);
@@ -88,6 +130,17 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @Override
     public void cleanup() {
         mSnapshots.removeChangeEventListener(this);
+        notifyDataSetChanged();
+    }
+
+    @SuppressWarnings("unused")
+    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
+    void cleanup(LifecycleOwner source, Lifecycle.Event event) {
+        if (event == Lifecycle.Event.ON_STOP) {
+            cleanup();
+        } else if (event == Lifecycle.Event.ON_DESTROY) {
+            source.getLifecycle().removeObserver(this);
+        }
     }
 
     @Override
@@ -134,7 +187,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return mSnapshots.size();
+        return mSnapshots.isListening(this) ? mSnapshots.size() : 0;
     }
 
     @Override
@@ -166,10 +219,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     /**
-     * Each time the data at the given Firebase location changes,
-     * this method will be called for each item that needs to be displayed.
-     * The first two arguments correspond to the mLayout and mModelClass given to the constructor of
-     * this class. The third argument is the item's position in the list.
+     * Each time the data at the given Firebase location changes, this method will be called for
+     * each item that needs to be displayed. The first two arguments correspond to the mLayout and
+     * mModelClass given to the constructor of this class. The third argument is the item's position
+     * in the list.
      * <p>
      * Your implementation should populate the view using the data contained in the model.
      *

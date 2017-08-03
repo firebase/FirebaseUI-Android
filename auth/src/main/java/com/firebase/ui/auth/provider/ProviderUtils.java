@@ -68,7 +68,7 @@ public final class ProviderUtils {
 
                         List<String> providers = task.getResult().getProviders();
                         return providers == null || providers.isEmpty()
-                                ? null : providers.get(0);
+                                ? null : providers.get(providers.size() - 1);
                     }
                 });
     }

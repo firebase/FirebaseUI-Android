@@ -1,0 +1,71 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Caricamento in corso…</string>
+    <string name="fui_sign_in_default" translation_description="Button text to sign in">Accedi</string>
+    <string name="fui_general_error" translation_description="Toast text flashing general error">Si è verificato un errore.</string>
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_provider_name_email">Indirizzo email</string>
+    <string name="fui_provider_name_phone">Telefono</string>
+    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Accedi con Google</string>
+    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Accedi con Facebook</string>
+    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Accedi con Twitter</string>
+    <string name="fui_sign_in_with_email" translation_description="Sign in button text">Accedi con l\'indirizzo email</string>
+    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Accedi con il telefono</string>
+    <string name="fui_next_default" translation_description="Button text to continue">Avanti</string>
+    <string name="fui_email_hint" translation_description="Hint in email input field">Indirizzo email</string>
+    <string name="fui_phone_hint" translation_description="Hint for phone input field">Numero di telefono</string>
+    <string name="fui_password_hint" translation_description="Hint for password input field">Password</string>
+    <string name="fui_required_field" translation_description="Inline error for required field">Questo campo non può restare vuoto.</string>
+    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">L\'indirizzo email non è corretto</string>
+    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Inserisci il tuo indirizzo email per continuare</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Verifica degli account esistenti in corso…</string>
+    <string name="fui_title_register_email" translation_description="Title for signup form">Registrati</string>
+    <string name="fui_name_hint" translation_description="Hint for last name input field">Nome e cognome</string>
+    <string name="fui_button_text_save" translation_description="Button text to save input form">Salva</string>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registrazione in corso…</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">La password non è abbastanza efficace. Utilizza almeno %1$d carattere e una combinazione di lettere e numeri.</item> <item quantity="other">La password non è abbastanza efficace. Utilizza almeno %1$d caratteri e una combinazione di lettere e numeri.</item> </plurals>
+    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Registrazione account di posta elettronica non riuscita</string>
+    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Esiste già un account con questo indirizzo email.</string>
+    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Se tocchi %1$s, accetti i %2$s e le %3$s.</string>
+    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Se tocchi %1$s, accetti i %2$s.</string>
+    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Se tocchi %1$s, accetti le %2$s.</string>
+    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">Termini di servizio</string>
+    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Norme sulla privacy</string>
+    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Hai già un account</string>
+    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Bentornato.</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Hai già utilizzato %1$s. Accedi con %2$s per continuare.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Hai già utilizzato %1$s per accedere. Inserisci la password di questo account.</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Accesso in corso…</string>
+    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Problemi di accesso?</string>
+    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Recupera la password</string>
+    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Controlla la tua casella di posta</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">A questo indirizzo email verranno inviate le istruzioni che spiegano come reimpostare la password.</string>
+    <string name="fui_button_text_send" translation_description="Button text to send recovery email">Invia</string>
+    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Seguire le istruzioni inviate all\'indirizzo email %1$s per recuperare la password.</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Invio in corso…</string>
+    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">L\'indirizzo email non corrisponde a un account esistente</string>
+    <string name="fui_accessibility_logo" translation_description="Content description for app logo">Logo dell\'applicazione</string>
+    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Eccesso eseguito come %1$s</string>
+    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Inserisci il numero di telefono</string>
+    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Inserisci un numero di telefono valido</string>
+    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Inserisci il codice a 6 cifre che abbiamo inviato al numero</string>
+    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Invia di nuovo il codice tra 0:%02d</string>
+    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Verifica il numero di telefono</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifica in corso…</string>
+    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Recupero SMS in corso…</string>
+    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Codice errato. Riprova.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
+    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Questo numero di telefono è stato usato troppe volte</string>
+    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Si è verificato un problema durante la verifica del tuo numero di telefono</string>
+    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Questo codice non è più valido</string>
+    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Accedi con il numero di telefono</string>
+    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Fine</string>
+    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Verifica eseguita.</string>
+    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Codice inviato.</string>
+    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Nuovo invio in corso…</string>
+    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Invia di nuovo il codice</string>
+    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Verifica numero di telefono</string>
+    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Continua</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Se tocchi “%1$s”, è possibile che venga inviato un SMS. Potrebbero essere applicate le tariffe per l\'invio dei messaggi e per il traffico dati.</string>
+</resources>

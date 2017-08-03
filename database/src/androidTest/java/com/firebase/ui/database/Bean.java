@@ -23,20 +23,20 @@ public class Bean {
         return mNumber;
     }
 
-    public String getText() {
-        return mText;
-    }
-
-    public boolean isBool() {
-        return mBool;
-    }
-
     public void setNumber(int number) {
         mNumber = number;
     }
 
+    public String getText() {
+        return mText;
+    }
+
     public void setText(String text) {
         mText = text;
+    }
+
+    public boolean isBool() {
+        return mBool;
     }
 
     public void setBool(boolean bool) {

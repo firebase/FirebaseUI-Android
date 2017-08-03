@@ -17,12 +17,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.ImeHelper;
-import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -35,10 +35,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
- * Fragment that shows a form with an email field and checks for existing accounts with that
- * email.
+ * Fragment that shows a form with an email field and checks for existing accounts with that email.
  * <p>
  * Host Activities should implement {@link CheckEmailListener}.
  */
@@ -99,7 +99,7 @@ public class CheckEmailFragment extends FragmentBase implements
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.check_email_layout, container, false);
+        View v = inflater.inflate(R.layout.fui_check_email_layout, container, false);
 
         // Email field and validator
         mEmailLayout = (TextInputLayout) v.findViewById(R.id.email_layout);
@@ -136,7 +136,7 @@ public class CheckEmailFragment extends FragmentBase implements
             // Use email passed in
             mEmailEditText.setText(email);
             validateAndProceed();
-        } else if (mHelper.getFlowParams().enableHints) {
+        } else if (getFlowParams().enableHints) {
             // Try SmartLock email autocomplete hint
             showEmailAutoCompleteHint();
         }
@@ -179,7 +179,7 @@ public class CheckEmailFragment extends FragmentBase implements
     }
 
     private void checkAccountExists(@NonNull final String email) {
-        mHelper.showLoadingDialog(R.string.progress_dialog_checking_accounts);
+        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_checking_accounts);
 
         // Get name from SmartLock, if possible
         String name = null;
@@ -191,20 +191,22 @@ public class CheckEmailFragment extends FragmentBase implements
 
         final String finalName = name;
         final Uri finalPhotoUri = photoUri;
-        ProviderUtils.fetchTopProvider(mHelper.getFirebaseAuth(), email)
+
+        FirebaseAuth auth = getAuthHelper().getFirebaseAuth();
+        ProviderUtils.fetchTopProvider(auth, email)
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<String>() {
                     @Override
                     public void onSuccess(String provider) {
                         if (provider == null) {
-                            mListener.onNewUser(new User.Builder(email)
-                                                        .setName(finalName)
-                                                        .setPhotoUri(finalPhotoUri)
-                                                        .build());
+                            mListener.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                                    .setName(finalName)
+                                    .setPhotoUri(finalPhotoUri)
+                                    .build());
                         } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
-                            mListener.onExistingEmailUser(new User.Builder(email).build());
+                            mListener.onExistingEmailUser(
+                                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build());
                         } else {
-                            mListener.onExistingIdpUser(
-                                    new User.Builder(email).setProvider(provider).build());
+                            mListener.onExistingIdpUser(new User.Builder(provider, email).build());
                         }
                     }
                 })
@@ -213,14 +215,14 @@ public class CheckEmailFragment extends FragmentBase implements
                         new OnCompleteListener<String>() {
                             @Override
                             public void onComplete(@NonNull Task<String> task) {
-                                mHelper.dismissDialog();
+                                getDialogHolder().dismissDialog();
                             }
                         });
     }
 
     private void showEmailAutoCompleteHint() {
         try {
-            mHelper.startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT);
+            startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Unable to start hint intent", e);
         }
@@ -230,19 +232,18 @@ public class CheckEmailFragment extends FragmentBase implements
         GoogleApiClient client = new GoogleApiClient.Builder(getContext())
                 .addApi(Auth.CREDENTIALS_API)
                 .enableAutoManage(getActivity(), GoogleApiHelper.getSafeAutoManageId(),
-                                  new GoogleApiClient.OnConnectionFailedListener() {
-                                      @Override
-                                      public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                                          Log.e(TAG,
-                                                "Client connection failed: " + connectionResult.getErrorMessage());
-                                      }
-                                  })
+                        new GoogleApiClient.OnConnectionFailedListener() {
+                            @Override
+                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                                Log.e(TAG, "Client connection failed: " + connectionResult.getErrorMessage());
+                            }
+                        })
                 .build();
 
         HintRequest hintRequest = new HintRequest.Builder()
                 .setHintPickerConfig(new CredentialPickerConfig.Builder()
-                                             .setShowCancelButton(true)
-                                             .build())
+                        .setShowCancelButton(true)
+                        .build())
                 .setEmailAddressIdentifierSupported(true)
                 .build();
 

@@ -1,8 +1,14 @@
 package com.firebase.ui.database;
 
 import android.app.Activity;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
+import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -27,24 +33,38 @@ import com.google.firebase.database.Query;
 public abstract class FirebaseListAdapter<T> extends BaseAdapter implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseListAdapter";
 
-    protected final Activity mActivity;
+    protected final Context mContext;
     protected final ObservableSnapshotArray<T> mSnapshots;
     protected final int mLayout;
 
     /**
-     * @param activity    The {@link Activity} containing the {@link ListView}
+     * @param context     The {@link Activity} containing the {@link ListView}
+     * @param snapshots   The data used to populate the adapter
      * @param modelLayout This is the layout used to represent a single list item. You will be
      *                    responsible for populating an instance of the corresponding view with the
      *                    data from an instance of modelClass.
-     * @param snapshots   The data used to populate the adapter
+     * @param owner       the lifecycle owner used to automatically listen and cleanup after {@link
+     *                    FragmentActivity#onStart()} and {@link FragmentActivity#onStop()} events
+     *                    reflectively.
      */
-    public FirebaseListAdapter(Activity activity,
+    public FirebaseListAdapter(Context context,
                                ObservableSnapshotArray<T> snapshots,
-                               @LayoutRes int modelLayout) {
-        mActivity = activity;
+                               @LayoutRes int modelLayout,
+                               LifecycleOwner owner) {
+        mContext = context;
         mSnapshots = snapshots;
         mLayout = modelLayout;
 
+        if (owner != null) { owner.getLifecycle().addObserver(this); }
+    }
+
+    /**
+     * @see #FirebaseListAdapter(Context, ObservableSnapshotArray, int, LifecycleOwner)
+     */
+    public FirebaseListAdapter(Context context,
+                               ObservableSnapshotArray<T> snapshots,
+                               @LayoutRes int modelLayout) {
+        this(context, snapshots, modelLayout, null);
         startListening();
     }
 
@@ -54,26 +74,50 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
      * @param query  The Firebase location to watch for data changes. Can also be a slice of a
      *               location, using some combination of {@code limit()}, {@code startAt()}, and
      *               {@code endAt()}. <b>Note, this can also be a {@link DatabaseReference}.</b>
-     * @see #FirebaseListAdapter(Activity, ObservableSnapshotArray, int)
+     * @see #FirebaseListAdapter(Context, ObservableSnapshotArray, int)
      */
-    public FirebaseListAdapter(Activity activity,
+    public FirebaseListAdapter(Context context,
                                SnapshotParser<T> parser,
                                @LayoutRes int modelLayout,
                                Query query) {
-        this(activity, new FirebaseArray<>(query, parser), modelLayout);
+        this(context, new FirebaseArray<>(query, parser), modelLayout);
     }
 
     /**
-     * @see #FirebaseListAdapter(Activity, SnapshotParser, int, Query)
+     * @see #FirebaseListAdapter(Context, SnapshotParser, int, Query)
+     * @see #FirebaseListAdapter(Context, ObservableSnapshotArray, int, LifecycleOwner)
      */
-    public FirebaseListAdapter(Activity activity,
+    public FirebaseListAdapter(Context context,
+                               SnapshotParser<T> parser,
+                               @LayoutRes int modelLayout,
+                               Query query,
+                               LifecycleOwner owner) {
+        this(context, new FirebaseArray<>(query, parser), modelLayout, owner);
+    }
+
+    /**
+     * @see #FirebaseListAdapter(Context, SnapshotParser, int, Query)
+     */
+    public FirebaseListAdapter(Context context,
                                Class<T> modelClass,
                                @LayoutRes int modelLayout,
                                Query query) {
-        this(activity, new ClassSnapshotParser<>(modelClass), modelLayout, query);
+        this(context, new ClassSnapshotParser<>(modelClass), modelLayout, query);
+    }
+
+    /**
+     * @see #FirebaseListAdapter(Context, SnapshotParser, int, Query, LifecycleOwner)
+     */
+    public FirebaseListAdapter(Context context,
+                               Class<T> modelClass,
+                               @LayoutRes int modelLayout,
+                               Query query,
+                               LifecycleOwner owner) {
+        this(context, new ClassSnapshotParser<>(modelClass), modelLayout, query, owner);
     }
 
     @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         if (!mSnapshots.isListening(this)) {
             mSnapshots.addChangeEventListener(this);
@@ -83,6 +127,16 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     @Override
     public void cleanup() {
         mSnapshots.removeChangeEventListener(this);
+    }
+
+    @SuppressWarnings("unused")
+    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
+    void cleanup(LifecycleOwner source, Lifecycle.Event event) {
+        if (event == Lifecycle.Event.ON_STOP) {
+            cleanup();
+        } else if (event == Lifecycle.Event.ON_DESTROY) {
+            source.getLifecycle().removeObserver(this);
+        }
     }
 
     @Override
@@ -126,7 +180,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
         if (view == null) {
-            view = mActivity.getLayoutInflater().inflate(mLayout, viewGroup, false);
+            view = LayoutInflater.from(mContext).inflate(mLayout, viewGroup, false);
         }
 
         T model = getItem(position);
@@ -137,10 +191,10 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     /**
-     * Each time the data at the given Firebase location changes,
-     * this method will be called for each item that needs to be displayed.
-     * The first two arguments correspond to the mLayout and mModelClass given to the constructor of
-     * this class. The third argument is the item's position in the list.
+     * Each time the data at the given Firebase location changes, this method will be called for
+     * each item that needs to be displayed. The first two arguments correspond to the mLayout and
+     * mModelClass given to the constructor of this class. The third argument is the item's position
+     * in the list.
      * <p>
      * Your implementation should populate the view using the data contained in the model.
      *

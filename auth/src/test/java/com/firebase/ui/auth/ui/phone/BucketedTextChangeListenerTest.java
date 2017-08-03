@@ -20,19 +20,19 @@ package com.firebase.ui.auth.ui.phone;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@RunWith(CustomRobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class BucketedTextChangeListenerTest {
     EditText editText;
@@ -48,7 +48,7 @@ public class BucketedTextChangeListenerTest {
         editText = mock(EditText.class);
         contentChangeCallback = mock(BucketedTextChangeListener.ContentChangeCallback.class);
         textChangeListener = new BucketedTextChangeListener(editText, expectedLength,
-                placeHolder, contentChangeCallback);
+                                                            placeHolder, contentChangeCallback);
     }
 
     @Test

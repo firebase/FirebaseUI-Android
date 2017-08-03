@@ -7,7 +7,7 @@ code and promote best practices (both user experience and security) for
 authentication.
 
 A simple API is provided for drop-in user authentication which handles the flow
-of signing in users with email addresses and passwords, and federated identity
+of signing in users with email addresses and passwords, phone numbers, and federated identity
 providers such as Google Sign-In, and Facebook Login. It is built on top of
 [Firebase Auth](https://firebase.google.com/docs/auth).
 
@@ -46,26 +46,35 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    compile 'com.firebaseui:firebase-ui-auth:1.2.0'
-    
+    compile 'com.firebaseui:firebase-ui-auth:2.2.0'
+
     // Required only if Facebook login support is required
     compile('com.facebook.android:facebook-android-sdk:4.22.1')
-    
+
     // Required only if Twitter login support is required
     compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
 }
 ```
 
-and add the Fabric repository
+As of version `2.1.0` FirebaseUI includes translations for all string resources. In order to
+ensure that you only get the translations relevant to your application, we recommend changing the
+`resConfigs` of your application module:
 
 ```groovy
-allprojects {
-    repositories {
-        // ...
-        maven { url 'https://maven.fabric.io/public' }
-    }
+android {
+
+  // ...
+
+  defaultConfig {
+     // ...
+     resConfigs "auto"
+  }
+
 }
 ```
+
+See the [Android documentation](https://developer.android.com/studio/build/shrink-code.html#unused-alt-resources)
+for more information.
 
 ### Identity provider configuration
 
@@ -75,6 +84,7 @@ these authentication methods are first configured in the Firebase console.
 FirebaseUI client-side configuration for Google sign-in is then provided
 automatically by the
 [google-services gradle plugin](https://developers.google.com/android/guides/google-services-plugin).
+
 If support for Facebook Login is also required, define the
 resource string `facebook_application_id` to match the application ID in
 the [Facebook developer dashboard](https://developers.facebook.com):
@@ -101,6 +111,17 @@ Twitter app as reported by the [Twitter application manager](https://apps.twitte
 
 In addition, you must enable the "Request email addresses from users" permission
 in the "Permissions" tab of your Twitter app.
+
+In order to resolve the Twitter SDK, add the following repository to your `build.gradle`:
+
+```groovy
+allprojects {
+    repositories {
+        // ...
+        maven { url 'https://maven.fabric.io/public' }
+    }
+}
+```
 
 ## Using FirebaseUI for Authentication
 
@@ -175,6 +196,7 @@ startActivityForResult(
         .createSignInIntentBuilder()
         .setAvailableProviders(
                 Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                              new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
                               new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
                               new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
                               new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
@@ -182,7 +204,7 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
-If a terms of service URL and a custom theme are required:
+If a terms of service URL, privacy policy URL, and a custom theme are required:
 
 ```java
 startActivityForResult(
@@ -190,6 +212,7 @@ startActivityForResult(
         .createSignInIntentBuilder()
         .setAvailableProviders(...)
         .setTosUrl("https://superapp.example.com/terms-of-service.html")
+        .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
         .setTheme(R.style.SuperAppTheme)
         .build(),
     RC_SIGN_IN);
@@ -218,6 +241,18 @@ startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+        .build(),
+    RC_SIGN_IN);
+```
+
+If you'd like to keep SmartLock's "hints" but disable the saving/retrieving of credentials, then
+you can use the two-argument version of `setIsSmartLockEnabled`:
+
+```java
+startActivityForResult(
+    AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setIsSmartLockEnabled(false, true)
         .build(),
     RC_SIGN_IN);
 ```
