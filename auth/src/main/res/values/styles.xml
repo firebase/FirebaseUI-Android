@@ -215,31 +215,31 @@
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.EmailButton">
-        <item name="android:drawableLeft">@drawable/fui_ic_mail_white_24dp</item>
+        <item name="drawableStartCompat">@drawable/fui_ic_mail_white_24dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_email</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.PhoneButton">
-        <item name="android:drawableLeft">@drawable/fui_ic_settings_phone_white_24dp</item>
+        <item name="drawableStartCompat">@drawable/fui_ic_phone_white_24dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_phone</item>
         <item name="android:textColor">#ffffff</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.GoogleButton">
-        <item name="android:drawableLeft">@drawable/fui_ic_googleg_color_24dp</item>
+        <item name="drawableStartCompat">@drawable/fui_ic_googleg_color_24dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_google</item>
         <item name="android:textColor">#757575</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.FacebookButton">
-        <item name="android:drawableLeft">@drawable/fui_ic_facebook_white_22dp</item>
+        <item name="drawableStartCompat">@drawable/fui_ic_facebook_white_22dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_facebook</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser.TwitterButton">
-        <item name="android:drawableLeft">@drawable/fui_ic_twitter_bird_white_24dp</item>
+        <item name="drawableStartCompat">@drawable/fui_ic_twitter_bird_white_24dp</item>
         <item name="android:background">@drawable/fui_idp_button_background_twitter</item>
         <item name="android:textColor">#FFFFFFFF</item>
     </style>

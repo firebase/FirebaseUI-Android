@@ -307,7 +307,7 @@ public class AuthUiActivity extends AppCompatActivity {
         if (mFirebaseLogo.isChecked()) {
             return R.drawable.firebase_auth_120dp;
         } else if (mGoogleLogo.isChecked()) {
-            return R.drawable.logo_googleg_color_144dp;
+            return R.drawable.ic_googleg_color_144dp;
         }
         return AuthUI.NO_LOGO;
     }
