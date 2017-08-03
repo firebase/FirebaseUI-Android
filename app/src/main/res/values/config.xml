@@ -4,19 +4,19 @@
     use Facebook accounts with the demo application, register an application
     and provide your value here.
     -->
-    <string name="facebook_application_id" translatable="false">CHANGE-ME</string>
+    <string name="facebook_application_id" translatable="false">654633568031642</string>
 
     <!--
     Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs.
     -->
-    <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb654633568031642</string>
 
 
     <!--
     Your Twitter Consumer Key. To use Twitter accounts with the demo application, register an
     application with Twitter and provide the following two values.
     -->
-    <string name="twitter_consumer_key" translatable="false">CHANGE-ME</string>
+    <string name="twitter_consumer_key" translatable="false">ojwOB05fmN2TiNoaZnVQRAp4N</string>
 
     <!--
     Your Twitter Consumer Secret
@@ -25,5 +25,5 @@
     operations as your app. Embedding the Consumer Key and Consumer Secret in your app, no matter
     how obfuscated, makes it vulnerable to being stolen.
     -->
-    <string name="twitter_consumer_secret" translatable="false">CHANGE-ME</string>
+    <string name="twitter_consumer_secret" translatable="false">di6UQRwDaxsRQ7RT5M5QcUgq19Dn4NY04QLMjaDhyxqmUy92Pe</string>
 </resources>
