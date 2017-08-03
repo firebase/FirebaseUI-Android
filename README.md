@@ -90,7 +90,7 @@ you need to make sure that you use the same version that your chosen version of 
 For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
-|--------------------|--------------------------------|\
+|--------------------|--------------------------------|
 | 2.2.0              | 11.0.4                         |
 | 2.1.1              | 11.0.2                         |
 | 2.0.1              | 11.0.1                         |
