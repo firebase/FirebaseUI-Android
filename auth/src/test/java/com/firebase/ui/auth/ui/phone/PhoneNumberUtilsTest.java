@@ -22,10 +22,10 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.Locale;
@@ -36,11 +36,10 @@ import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.getCurrentCountryIn
 import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.getPhoneNumber;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.RAW_PHONE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(CustomRobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class PhoneNumberUtilsTest {
     @Test
@@ -81,40 +80,6 @@ public class PhoneNumberUtilsTest {
         assertEquals(Integer.valueOf(86), getCountryCode(Locale.CHINA.getCountry()));
         assertEquals(null, getCountryCode(null));
         assertEquals(null, getCountryCode(new Locale("", "DJJZ").getCountry()));
-    }
-
-    @Test
-    @Config(constants = BuildConfig.class, sdk = 21)
-    public void testFormatNumberToE164_aboveApi21() {
-        String validPhoneNumber = "+919994947354";
-        CountryInfo indiaCountryInfo = new CountryInfo(new Locale("", "IN"), 91);
-        //no leading plus
-        assertEquals(validPhoneNumber, formatPhoneNumber("9994947354", indiaCountryInfo));
-        //no country code
-        assertEquals(validPhoneNumber, formatPhoneNumber("919994947354", indiaCountryInfo));
-        //fully formatted
-        assertEquals(validPhoneNumber, formatPhoneNumber("+919994947354", indiaCountryInfo));
-        //with hyphens
-        assertEquals(validPhoneNumber, formatPhoneNumber("+91-(999)-(49)-(47354)", indiaCountryInfo));
-        //with spaces leading plus
-        assertEquals(validPhoneNumber, formatPhoneNumber("+91 99949 47354", indiaCountryInfo));
-        // space formatting
-        assertEquals(validPhoneNumber, formatPhoneNumber("91 99949 47354", indiaCountryInfo));
-        // parantheses and hyphens
-        assertEquals(validPhoneNumber, formatPhoneNumber("(99949) 47-354", indiaCountryInfo));
-        // mismatched country
-        assertEquals(validPhoneNumber, formatPhoneNumber("+919994947354",
-                                                         new CountryInfo(
-                                                                 new Locale("", "US"), 1)));
-        // incorrect country with well formatted number
-        assertNull(formatPhoneNumber("999474735", indiaCountryInfo));
-
-        // incorrect country with unformattednumber
-        assertNull(validPhoneNumber, formatPhoneNumber(
-                "919994947354", new CountryInfo(new Locale("", "US"), 1)));
-        //incorrect country, incorrect phone number
-        assertNull(formatPhoneNumber("+914349873457", new CountryInfo(
-                new Locale("", "US"), 1)));
     }
 
     @Test

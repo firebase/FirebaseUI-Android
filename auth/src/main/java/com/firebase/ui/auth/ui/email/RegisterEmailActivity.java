@@ -23,11 +23,11 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 
@@ -104,13 +104,9 @@ public class RegisterEmailActivity extends AppCompatBase implements
     @Override
     public void onExistingIdpUser(User user) {
         // Existing social user, direct them to sign in using their chosen provider.
-        Intent intent = WelcomeBackIdpPrompt.createIntent(
-                this,
-                getFlowParams(),
-                user,
-                new IdpResponse.Builder(user).build());
-
-        startActivityForResult(intent, RC_WELCOME_BACK_IDP);
+        startActivityForResult(
+                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user, null),
+                RC_WELCOME_BACK_IDP);
         setSlideAnimation();
     }
 

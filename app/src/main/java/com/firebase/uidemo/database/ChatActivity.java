@@ -14,6 +14,8 @@
 
 package com.firebase.uidemo.database;
 
+import android.arch.lifecycle.LifecycleRegistry;
+import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -37,8 +39,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-public class ChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener, View.OnClickListener {
+public class ChatActivity extends AppCompatActivity
+        implements FirebaseAuth.AuthStateListener, View.OnClickListener, LifecycleRegistryOwner {
     private static final String TAG = "RecyclerViewDemo";
+
+    // TODO remove once arch components are merged into support lib
+    private final LifecycleRegistry mRegistry = new LifecycleRegistry(this);
 
     private FirebaseAuth mAuth;
     protected DatabaseReference mChatRef;
@@ -47,7 +53,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
 
     private RecyclerView mMessages;
     private LinearLayoutManager mManager;
-    protected FirebaseRecyclerAdapter<Chat, ChatHolder> mAdapter;
+    private FirebaseRecyclerAdapter<Chat, ChatHolder> mAdapter;
     protected TextView mEmptyListMessage;
 
     @Override
@@ -70,8 +76,10 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         mManager.setReverseLayout(false);
 
         mMessages = (RecyclerView) findViewById(R.id.messagesList);
-        mMessages.setHasFixedSize(false);
+        mMessages.setHasFixedSize(true);
         mMessages.setLayoutManager(mManager);
+
+        if (isSignedIn()) { attachRecyclerViewAdapter(); }
     }
 
     @Override
@@ -81,19 +89,7 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         // Default Database rules do not allow unauthenticated reads, so we need to
         // sign in before attaching the RecyclerView adapter otherwise the Adapter will
         // not be able to read any data from the Database.
-        if (isSignedIn()) {
-            attachRecyclerViewAdapter();
-        } else {
-            signInAnonymously();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAdapter != null) {
-            mAdapter.cleanup();
-        }
+        if (!isSignedIn()) { signInAnonymously(); }
     }
 
     @Override
@@ -147,7 +143,8 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
                 Chat.class,
                 R.layout.message,
                 ChatHolder.class,
-                lastFifty) {
+                lastFifty,
+                this) {
             @Override
             public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
                 holder.bind(chat);
@@ -181,5 +178,10 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAuth.Auth
         // Sending only allowed when signed in
         mSendButton.setEnabled(isSignedIn());
         mMessageEdit.setEnabled(isSignedIn());
+    }
+
+    @Override
+    public LifecycleRegistry getLifecycle() {
+        return mRegistry;
     }
 }

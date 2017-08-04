@@ -14,8 +14,6 @@
 
 package com.firebase.ui.database;
 
-import android.support.annotation.NonNull;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -68,30 +66,17 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T>
     }
 
     @Override
-    public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
-        boolean wasListening = isListening();
-        super.addChangeEventListener(listener);
-
-        // Only start listening when the first listener is added
-        if (!wasListening) {
-            mQuery.addChildEventListener(this);
-            mQuery.addValueEventListener(this);
-        }
-
-        return listener;
+    protected void onCreate() {
+        super.onCreate();
+        mQuery.addChildEventListener(this);
+        mQuery.addValueEventListener(this);
     }
 
     @Override
-    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        super.removeChangeEventListener(listener);
-
-        // Clear data when all listeners are removed
-        if (!isListening()) {
-            mQuery.removeEventListener((ValueEventListener) this);
-            mQuery.removeEventListener((ChildEventListener) this);
-
-            clearData();
-        }
+    protected void onDestroy() {
+        super.onDestroy();
+        mQuery.removeEventListener((ValueEventListener) this);
+        mQuery.removeEventListener((ChildEventListener) this);
     }
 
     @Override

@@ -35,18 +35,17 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/name_layout"
-            style="@style/Widget.Design.TextInputLayout"
+            style="@style/FirebaseUI.TextInputLayout.NameField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/fui_field_padding_vert"
-            android:hint="@string/fui_name_hint"
             app:errorEnabled="true">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/name"
+                style="@style/FirebaseUI.TextInputEditText.NameField"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapWords" />
+                android:layout_height="wrap_content" />
 
         </android.support.design.widget.TextInputLayout>
 

@@ -39,7 +39,8 @@ public class ChatIndexActivity extends ChatActivity {
                 R.layout.message,
                 ChatHolder.class,
                 mChatIndicesRef.limitToLast(50),
-                mChatRef) {
+                mChatRef,
+                this) {
             @Override
             public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
                 holder.bind(chat);
