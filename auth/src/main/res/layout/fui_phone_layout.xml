@@ -19,7 +19,8 @@
             android:layout_toEndOf="@id/country_list"
             android:layout_toRightOf="@id/country_list"
             android:layout_alignBaseline="@id/country_list"
-            android:layout_gravity="end" />
+            android:layout_gravity="end"
+            android:imeOptions="actionDone" />
 
         <TextView
             android:id="@+id/phone_number_error"
@@ -50,6 +51,7 @@
             android:layout_below="@id/send_code"
             android:textColor="?android:textColorTertiary"
             android:textIsSelectable="false" />
+
     </RelativeLayout>
 
 </ScrollView>

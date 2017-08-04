@@ -41,7 +41,7 @@
             android:ems="10"
             android:fontFamily="monospace"
             android:gravity="center"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             android:inputType="number"
             android:textSize="32sp"
             android:typeface="monospace"

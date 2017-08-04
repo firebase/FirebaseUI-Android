@@ -32,6 +32,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
+import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.email.PreambleHandler;
 
 /**
@@ -165,11 +166,13 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mSubmitConfirmationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String confirmationCode = mConfirmationCodeEditText.getUnspacedText()
-                        .toString();
-                mVerifier.submitConfirmationCode(confirmationCode);
+                submitConfirmationCode();
             }
         });
+    }
+
+    private void submitConfirmationCode() {
+        mVerifier.submitConfirmationCode(mConfirmationCodeEditText.getUnspacedText().toString());
     }
 
     private void setupEditPhoneNumberTextView(@Nullable String phoneNumber) {
@@ -188,6 +191,15 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mConfirmationCodeEditText.setText("------");
         BucketedTextChangeListener listener = createBucketedTextChangeListener();
         mConfirmationCodeEditText.addTextChangedListener(listener);
+        ImeHelper.setImeOnDoneListener(mConfirmationCodeEditText,
+                new ImeHelper.DonePressedListener() {
+                    @Override
+                    public void onDonePressed() {
+                        if (mSubmitConfirmationButton.isEnabled()) {
+                            submitConfirmationCode();
+                        }
+                    }
+                });
     }
 
     private BucketedTextChangeListener createBucketedTextChangeListener() {
