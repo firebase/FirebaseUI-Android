@@ -235,7 +235,6 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                     // We already know about this data, just update it
                     updateData(index, snapshot);
                     notifyChangeEventListeners(EventType.CHANGED, snapshot, index);
-                    notifyListenersOnDataChanged();
                 } else {
                     // We don't already know about this data, add it
                     mDataSnapshots.add(index, snapshot);
@@ -246,7 +245,6 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                     // This data has disappeared, remove it
                     removeData(index);
                     notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
-                    notifyListenersOnDataChanged();
                 } else {
                     // Data does not exist
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
