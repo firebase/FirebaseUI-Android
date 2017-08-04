@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 
@@ -41,8 +40,8 @@ public class EmailProvider implements Provider {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_EMAIL_FLOW && resultCode == ResultCodes.OK) {
-            mActivity.setResult(ResultCodes.OK, data);
+        if (requestCode == RC_EMAIL_FLOW && resultCode == Activity.RESULT_OK) {
+            mActivity.setResult(Activity.RESULT_OK, data);
             mActivity.finish();
         }
     }

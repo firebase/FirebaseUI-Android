@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -189,7 +190,7 @@ public class IdpResponse implements Parcelable {
                         "Secret cannot be null when using the Twitter provider.");
             }
 
-            return new IdpResponse(mUser, mToken, mSecret, ResultCodes.OK);
+            return new IdpResponse(mUser, mToken, mSecret, Activity.RESULT_OK);
         }
     }
 }

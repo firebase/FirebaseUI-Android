@@ -35,7 +35,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.uidemo.R;
 import com.google.android.gms.common.Scopes;
 import com.google.firebase.auth.FirebaseAuth;
@@ -229,7 +228,7 @@ public class AuthUiActivity extends AppCompatActivity {
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
         // Successfully signed in
-        if (resultCode == ResultCodes.OK) {
+        if (resultCode == RESULT_OK) {
             startSignedInActivity(response);
             finish();
             return;
