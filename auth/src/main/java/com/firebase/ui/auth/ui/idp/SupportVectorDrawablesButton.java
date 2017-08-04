@@ -10,6 +10,14 @@ import android.util.AttributeSet;
 
 import com.firebase.ui.auth.R;
 
+/**
+ * A custom button that supports using vector drawables with the {@code
+ * android:drawable[Start/End/Top/Bottom]} attribute pre-L.
+ * <p>
+ * AppCompat can only load vector drawables with srcCompat pre-L and doesn't provide a similar
+ * compatibility attribute for compound drawables. Thus, we must load compound drawables at runtime
+ * using AppCompat and inject them into the button to support pre-L devices.
+ */
 public class SupportVectorDrawablesButton extends AppCompatButton {
     public SupportVectorDrawablesButton(Context context) {
         super(context);
@@ -25,6 +33,12 @@ public class SupportVectorDrawablesButton extends AppCompatButton {
         initSupportVectorDrawablesAttrs(attrs);
     }
 
+    /**
+     * Loads the compound drawables natively on L+ devices and using AppCompat pre-L.
+     * <p>
+     * <i>Note:</i> If we ever need a TextView with compound drawables, this same technique is
+     * applicable.
+     */
     private void initSupportVectorDrawablesAttrs(AttributeSet attrs) {
         if (attrs == null) { return; }
 
@@ -34,27 +48,27 @@ public class SupportVectorDrawablesButton extends AppCompatButton {
 
         Drawable drawableStart = null;
         Drawable drawableEnd = null;
-        Drawable drawableBottom = null;
         Drawable drawableTop = null;
+        Drawable drawableBottom = null;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             drawableStart = attributeArray.getDrawable(
                     R.styleable.SupportVectorDrawablesButton_drawableStartCompat);
             drawableEnd = attributeArray.getDrawable(
                     R.styleable.SupportVectorDrawablesButton_drawableEndCompat);
-            drawableBottom = attributeArray.getDrawable(
-                    R.styleable.SupportVectorDrawablesButton_drawableBottomCompat);
             drawableTop = attributeArray.getDrawable(
                     R.styleable.SupportVectorDrawablesButton_drawableTopCompat);
+            drawableBottom = attributeArray.getDrawable(
+                    R.styleable.SupportVectorDrawablesButton_drawableBottomCompat);
         } else {
             int drawableStartId = attributeArray.getResourceId(
                     R.styleable.SupportVectorDrawablesButton_drawableStartCompat, -1);
             int drawableEndId = attributeArray.getResourceId(
                     R.styleable.SupportVectorDrawablesButton_drawableEndCompat, -1);
-            int drawableBottomId = attributeArray.getResourceId(
-                    R.styleable.SupportVectorDrawablesButton_drawableBottomCompat, -1);
             int drawableTopId = attributeArray.getResourceId(
                     R.styleable.SupportVectorDrawablesButton_drawableTopCompat, -1);
+            int drawableBottomId = attributeArray.getResourceId(
+                    R.styleable.SupportVectorDrawablesButton_drawableBottomCompat, -1);
 
             if (drawableStartId != -1) {
                 drawableStart = AppCompatResources.getDrawable(getContext(), drawableStartId);
@@ -62,11 +76,11 @@ public class SupportVectorDrawablesButton extends AppCompatButton {
             if (drawableEndId != -1) {
                 drawableEnd = AppCompatResources.getDrawable(getContext(), drawableEndId);
             }
-            if (drawableBottomId != -1) {
-                drawableBottom = AppCompatResources.getDrawable(getContext(), drawableBottomId);
-            }
             if (drawableTopId != -1) {
                 drawableTop = AppCompatResources.getDrawable(getContext(), drawableTopId);
+            }
+            if (drawableBottomId != -1) {
+                drawableBottom = AppCompatResources.getDrawable(getContext(), drawableBottomId);
             }
         }
 
