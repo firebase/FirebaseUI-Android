@@ -1,9 +1,11 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -94,6 +96,7 @@ public class CheckEmailFragment extends FragmentBase implements
         return fragment;
     }
 
+    @SuppressLint("NewApi") // TODO remove once lint understands Build.VERSION_CODES.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -109,6 +112,10 @@ public class CheckEmailFragment extends FragmentBase implements
         mEmailEditText.setOnClickListener(this);
 
         ImeHelper.setImeOnDoneListener(mEmailEditText, this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
+            mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+        }
 
         // "Next" button
         v.findViewById(R.id.button_next).setOnClickListener(this);

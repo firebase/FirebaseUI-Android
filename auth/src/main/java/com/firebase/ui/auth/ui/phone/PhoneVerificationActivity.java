@@ -30,7 +30,6 @@ import android.util.Log;
 import com.firebase.ui.auth.FirebaseAuthError;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -293,7 +292,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
                         .setPhoneNumber(user.getPhoneNumber())
                         .build())
                 .build();
-        setResult(ResultCodes.OK, response.toIntent());
+        setResult(RESULT_OK, response.toIntent());
         finish();
     }
 
