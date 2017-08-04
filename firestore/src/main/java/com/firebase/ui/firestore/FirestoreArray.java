@@ -1,6 +1,5 @@
 package com.firebase.ui.firestore;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.firebase.ui.database.BaseObservableSnapshotArray;
@@ -28,6 +27,7 @@ public class FirestoreArray<T>
     private ListenerRegistration mRegistration;
 
     private List<DocumentSnapshot> mSnapshots;
+    private CachingSnapshotParser<T> mCache;
 
     public FirestoreArray(Query query, final Class<T> modelClass) {
         this(query, new SnapshotParser<T>() {
@@ -38,36 +38,29 @@ public class FirestoreArray<T>
         });
     }
 
-    // TODO: What about caching?
-    // TODO: What about intermediate OSA class?
     public FirestoreArray(Query query, SnapshotParser<T> parser) {
-        super(parser);
+        super(new CachingSnapshotParser<>(parser));
 
         mQuery = query;
         mSnapshots = new ArrayList<>();
+
+        // TODO(samstern): This smells...
+        mCache = (CachingSnapshotParser<T>) getSnapshotParser();
     }
 
-    public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
-        boolean wasListening = isListening();
-        super.addChangeEventListener(listener);
+    @Override
+    protected void onCreate() {
+        super.onCreate();
 
-        // Only start listening once we've added our first listener
-        if (!wasListening) {
-            startListening();
-        }
-
-        // TODO: Look at what observable snapshot array does here.
-
-        return listener;
+        startListening();
     }
 
-    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        super.removeChangeEventListener(listener);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
-        // Stop listening when we have no listeners
-        if (!isListening()) {
-            stopListening();
-        }
+        stopListening();
+        mCache.clearData();
     }
 
     @Override
@@ -81,45 +74,63 @@ public class FirestoreArray<T>
         // Break down each document event
         List<DocumentChange> changes = snapshots.getDocumentChanges();
         for (DocumentChange change : changes) {
-            DocumentSnapshot doc = change.getDocument();
-            
-            DocumentChange.Type changeType = change.getType();
-            int oldIndex = change.getOldIndex();
-            int newIndex = change.getNewIndex();
-            
-            if (changeType == DocumentChange.Type.MODIFIED) {
-                if (oldIndex == newIndex) {
-                    Log.d(TAG, "Modified (inplace): " + oldIndex);
-
-                    mSnapshots.set(oldIndex, doc);
-                    notifyOnChildChanged(ChangeEventListener.Type.MODIFIED, doc,
-                            oldIndex, newIndex);
-                } else {
-                    Log.d(TAG, "Modified (moved): " + oldIndex + " --> " + newIndex);
-
-                    mSnapshots.remove(oldIndex);
-                    mSnapshots.add(newIndex, doc);
-                    notifyOnChildChanged(ChangeEventListener.Type.MOVED, doc,
-                            oldIndex, newIndex);
-                }
-            } else if (changeType == DocumentChange.Type.REMOVED) {
-                Log.d(TAG, "Removed: " + oldIndex);
-
-                mSnapshots.remove(oldIndex);
-                notifyOnChildChanged(ChangeEventListener.Type.REMOVED, doc,
-                        oldIndex, -1);
-            } else if (changeType == DocumentChange.Type.ADDED) {
-                Log.d(TAG, "Added: " + newIndex);
-
-                mSnapshots.add(newIndex, doc);
-                notifyOnChildChanged(ChangeEventListener.Type.ADDED, doc,
-                        -1, newIndex);
+            switch (change.getType()) {
+                case ADDED:
+                    onDocumentAdded(change);
+                    break;
+                case REMOVED:
+                    onDocumentRemoved(change);
+                    break;
+                case MODIFIED:
+                    onDocumentModified(change);
+                    break;
             }
         }
 
         notifyOnDataChanged();
     }
 
+    private void onDocumentAdded(DocumentChange change) {
+        Log.d(TAG, "Added: " + change.getNewIndex());
+
+        // Add the document to the set
+        mSnapshots.add(change.getNewIndex(), change.getDocument());
+        notifyOnChildChanged(ChangeEventListener.Type.ADDED, change.getDocument(),
+                -1, change.getNewIndex());
+    }
+
+    private void onDocumentRemoved(DocumentChange change) {
+        Log.d(TAG, "Removed: " + change.getOldIndex());
+
+        // Invalidate snapshot cache (doc removed)
+        mCache.invalidate(change.getDocument().getId());
+
+        // Remove the document from the set
+        mSnapshots.remove(change.getOldIndex());
+        notifyOnChildChanged(ChangeEventListener.Type.REMOVED, change.getDocument(),
+                change.getOldIndex(), -1);
+    }
+
+    private void onDocumentModified(DocumentChange change) {
+        // Invalidate snapshot cache (doc changed)
+        mCache.invalidate(change.getDocument().getId());
+
+        // Decide if the object was modified in place or if it moved
+        if (change.getOldIndex() == change.getNewIndex()) {
+            Log.d(TAG, "Modified (inplace): " + change.getOldIndex());
+
+            mSnapshots.set(change.getOldIndex(), change.getDocument());
+            notifyOnChildChanged(ChangeEventListener.Type.MODIFIED, change.getDocument(),
+                    change.getOldIndex(), change.getNewIndex());
+        } else {
+            Log.d(TAG, "Modified (moved): " + change.getOldIndex() + " --> " + change.getNewIndex());
+
+            mSnapshots.remove(change.getOldIndex());
+            mSnapshots.add(change.getNewIndex(), change.getDocument());
+            notifyOnChildChanged(ChangeEventListener.Type.MOVED, change.getDocument(),
+                    change.getOldIndex(), change.getNewIndex());
+        }
+    }
 
     @Override
     protected List<DocumentSnapshot> getSnapshots() {
@@ -127,6 +138,11 @@ public class FirestoreArray<T>
     }
 
     private void startListening() {
+        if (mRegistration != null) {
+            Log.d(TAG, "startListening: already listening.");
+            return;
+        }
+
         mRegistration = mQuery.addSnapshotListener(this);
     }
 

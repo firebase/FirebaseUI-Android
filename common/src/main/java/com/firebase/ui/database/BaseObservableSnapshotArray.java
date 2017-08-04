@@ -30,6 +30,24 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
     }
 
     /**
+     * Called when the {@link BaseObservableSnapshotArray} is active and should start listening to the
+     * Firebase database.
+     */
+    @CallSuper
+    protected void onCreate() {}
+
+    /**
+     * Called when the {@link BaseObservableSnapshotArray} is inactive and should stop listening to the
+     * Firebase database.
+     * <p>
+     * All data should also be cleared here.
+     */
+    @CallSuper
+    protected void onDestroy() {
+        mHasDataChanged = false;
+    }
+
+    /**
      * TODO
      */
     @CallSuper
@@ -47,6 +65,10 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
     public void removeChangeEventListener(@NonNull L listener) {
         Preconditions.checkNotNull(listener);
         mListeners.remove(listener);
+
+        if (!isListening()) {
+            onDestroy();
+        }
     }
 
     /**
@@ -60,6 +82,18 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
     }
 
     protected abstract List<S> getSnapshots();
+
+    protected boolean hasDataChanged() {
+        return mHasDataChanged;
+    }
+
+    protected void setHasDataChanged(boolean hasDataChanged) {
+        mHasDataChanged = hasDataChanged;
+    }
+
+    protected BaseSnapshotParser<S, E> getSnapshotParser() {
+        return mParser;
+    }
 
     /**
      * @return true if the array is listening for change events from the Firebase

@@ -17,8 +17,6 @@ import java.util.List;
 public abstract class ObservableSnapshotArray<E>
         extends BaseObservableSnapshotArray<DataSnapshot, ChangeEventListener, E> {
 
-    private boolean mHasDataChanged = false;
-
     /**
      * Create an ObservableSnapshotArray where snapshots are parsed as objects of a particular
      * class.
@@ -49,12 +47,13 @@ public abstract class ObservableSnapshotArray<E>
         super.addChangeEventListener(listener);
         boolean wasListening = isListening();
 
+        // TODO(samstern): Can some of this be moved into common?
         mListeners.add(listener);
         for (int i = 0; i < size(); i++) {
             listener.onChildChanged(ChangeEventListener.EventType.ADDED, get(i), i, -1);
         }
 
-        if (mHasDataChanged) {
+        if (hasDataChanged()) {
             listener.onDataChanged();
         }
 
@@ -63,33 +62,6 @@ public abstract class ObservableSnapshotArray<E>
         return listener;
     }
 
-    /**
-     * Called when the {@link ObservableSnapshotArray} is active and should start listening to the
-     * Firebase database.
-     */
-    @CallSuper
-    protected void onCreate() {}
-
-    /**
-     * Detach a {@link com.google.firebase.database.ChildEventListener} from this array.
-     */
-    @CallSuper
-    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        super.removeChangeEventListener(listener);
-
-        if (!isListening()) { onDestroy(); }
-    }
-
-    /**
-     * Called when the {@link ObservableSnapshotArray} is inactive and should stop listening to the
-     * Firebase database.
-     * <p>
-     * All data should also be cleared here.
-     */
-    @CallSuper
-    protected void onDestroy() {
-        mHasDataChanged = false;
-    }
 
     protected final void notifyChangeEventListeners(ChangeEventListener.EventType type,
                                                     DataSnapshot snapshot,
@@ -107,7 +79,7 @@ public abstract class ObservableSnapshotArray<E>
     }
 
     protected final void notifyListenersOnDataChanged() {
-        mHasDataChanged = true;
+        setHasDataChanged(true);
         for (ChangeEventListener listener : mListeners) {
             listener.onDataChanged();
         }
