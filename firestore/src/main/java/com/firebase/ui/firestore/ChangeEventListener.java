@@ -1,6 +1,5 @@
 package com.firebase.ui.firestore;
 
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
@@ -9,8 +8,15 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
  */
 public interface ChangeEventListener {
 
-    // TODO: add oldIndex if necessary
-    void onChildChanged(DocumentChange.Type eventType, DocumentSnapshot snapshot, int index);
+    enum Type {
+        ADDED,
+        REMOVED,
+        MODIFIED,
+        MOVED
+    }
+
+    void onChildChanged(Type type, DocumentSnapshot snapshot,
+                        int oldIndex, int newIndex);
 
     void onDataChanged();
 

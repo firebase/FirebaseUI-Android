@@ -17,7 +17,6 @@ import java.util.List;
 
 /**
  * TODO(samstern): Document
- * TODO(samstern): What to do about sorting?
  */
 public class FirestoreArray<T>
         extends BaseObservableSnapshotArray<DocumentSnapshot, ChangeEventListener, T>
@@ -83,16 +82,38 @@ public class FirestoreArray<T>
         List<DocumentChange> changes = snapshots.getDocumentChanges();
         for (DocumentChange change : changes) {
             DocumentSnapshot doc = change.getDocument();
-            switch (change.getType()) {
-                case ADDED:
-                    onDocumentAdded(doc);
-                    break;
-                case REMOVED:
-                    onDocumentRemoved(doc);
-                    break;
-                case MODIFIED:
-                    onDocumentModified(doc);
-                    break;
+            
+            DocumentChange.Type changeType = change.getType();
+            int oldIndex = change.getOldIndex();
+            int newIndex = change.getNewIndex();
+            
+            if (changeType == DocumentChange.Type.MODIFIED) {
+                if (oldIndex == newIndex) {
+                    Log.d(TAG, "Modified (inplace): " + oldIndex);
+
+                    mSnapshots.set(oldIndex, doc);
+                    notifyOnChildChanged(ChangeEventListener.Type.MODIFIED, doc,
+                            oldIndex, newIndex);
+                } else {
+                    Log.d(TAG, "Modified (moved): " + oldIndex + " --> " + newIndex);
+
+                    mSnapshots.remove(oldIndex);
+                    mSnapshots.add(newIndex, doc);
+                    notifyOnChildChanged(ChangeEventListener.Type.MOVED, doc,
+                            oldIndex, newIndex);
+                }
+            } else if (changeType == DocumentChange.Type.REMOVED) {
+                Log.d(TAG, "Removed: " + oldIndex);
+
+                mSnapshots.remove(oldIndex);
+                notifyOnChildChanged(ChangeEventListener.Type.REMOVED, doc,
+                        oldIndex, -1);
+            } else if (changeType == DocumentChange.Type.ADDED) {
+                Log.d(TAG, "Added: " + newIndex);
+
+                mSnapshots.add(newIndex, doc);
+                notifyOnChildChanged(ChangeEventListener.Type.ADDED, doc,
+                        -1, newIndex);
             }
         }
 
@@ -118,33 +139,13 @@ public class FirestoreArray<T>
         mSnapshots.clear();
     }
 
-    private void onDocumentAdded(DocumentSnapshot doc) {
-        mSnapshots.add(doc);
-        notifyOnChildChanged(DocumentChange.Type.ADDED, doc, mSnapshots.size() - 1);
-    }
-
-    private void onDocumentRemoved(DocumentSnapshot doc) {
-        int ind = getDocumentIndex(doc);
-        if (ind >= 0) {
-            mSnapshots.remove(ind);
-            notifyOnChildChanged(DocumentChange.Type.REMOVED, doc, ind);
-        }
-    }
-
-    private void onDocumentModified(DocumentSnapshot doc) {
-        int ind = getDocumentIndex(doc);
-        if (ind >= 0) {
-            mSnapshots.set(ind, doc);
-            notifyOnChildChanged(DocumentChange.Type.MODIFIED, doc, ind);
-        }
-    }
-
-    private void notifyOnChildChanged(DocumentChange.Type type,
+    private void notifyOnChildChanged(ChangeEventListener.Type type,
                                       DocumentSnapshot snapshot,
-                                      int index) {
+                                      int oldIndex,
+                                      int newIndex) {
 
         for (ChangeEventListener listener : mListeners) {
-            listener.onChildChanged(type, snapshot, index);
+            listener.onChildChanged(type, snapshot, oldIndex, newIndex);
         }
     }
 
@@ -158,16 +159,5 @@ public class FirestoreArray<T>
         for (ChangeEventListener listener : mListeners) {
             listener.onDataChanged();
         }
-    }
-
-    private int getDocumentIndex(DocumentSnapshot doc) {
-        String id = doc.getReference().getId();
-        for (int i = 0; i < mSnapshots.size(); i++) {
-            if (mSnapshots.get(i).getReference().getId().equals(id)) {
-                return i;
-            }
-        }
-
-        return -1;
     }
 }

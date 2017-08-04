@@ -12,13 +12,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.uidemo.R;
-import com.firebase.uidemo.database.Chat;
 import com.firebase.uidemo.database.ChatHolder;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -30,7 +32,7 @@ import butterknife.OnClick;
 /**
  * TODO
  */
-public class FirestoreChatActivity extends AppCompatActivity {
+public class FirestoreChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 
     private static final String TAG = "FirestoreChat";
 
@@ -46,6 +48,7 @@ public class FirestoreChatActivity extends AppCompatActivity {
     @BindView(R.id.emptyTextView)
     TextView mEmptyListMessage;
 
+    private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
     private FirestoreRecyclerAdapter<Chat, ChatHolder> mAdapter;
 
@@ -55,8 +58,14 @@ public class FirestoreChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
+        // Enable verbose Firestore logging
+        FirebaseFirestore.setLoggingEnabled(true);
+
+        mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
-        Query query = mFirestore.collection("chats").limit(50);
+
+        // Get the last 50 chat messages, ordered by timestamp
+        Query query = mFirestore.collection("chats").orderBy("timestamp").limit(50);
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         mAdapter = new FirestoreRecyclerAdapter<Chat, ChatHolder>(query, Chat.class) {
@@ -85,21 +94,51 @@ public class FirestoreChatActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth auth) {
+        if (auth.getCurrentUser() != null) {
+            mAdapter.startListening();
+            mSendButton.setEnabled(true);
+        } else {
+            mAdapter.stopListening();
+            mSendButton.setEnabled(false);
+        }
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
-        mAdapter.startListening();
+
+        signInAnonymously();
+        mAuth.addAuthStateListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+
+        mAuth.removeAuthStateListener(this);
         mAdapter.stopListening();
+    }
+
+    private void signInAnonymously() {
+        if (mAuth.getCurrentUser() != null) {
+            return;
+        }
+
+        mAuth.signInAnonymously()
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "signIn:failure", e);
+                        Toast.makeText(FirestoreChatActivity.this,
+                                "Authentication failed.", Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     @OnClick(R.id.sendButton)
     public void onSendClick() {
-        // TODO: Real UID
-        String uid = "123456";
+        String uid = mAuth.getCurrentUser().getUid();
         String name = "User " + uid.substring(0, 6);
 
         Chat chat = new Chat(name, mMessageEdit.getText().toString(), uid);

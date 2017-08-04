@@ -2,7 +2,6 @@ package com.firebase.ui.firestore;
 
 import android.support.v7.widget.RecyclerView;
 
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -41,21 +40,21 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     }
 
     @Override
-    public void onChildChanged(DocumentChange.Type eventType,
-                               DocumentSnapshot snapshot,
-                               int index) {
-        switch (eventType) {
+    public void onChildChanged(Type type, DocumentSnapshot snapshot,
+                               int oldIndex, int newIndex) {
+
+        switch (type) {
             case ADDED:
-                // TODO: Why doesn't this work
-//                notifyItemInserted(index);
-                notifyDataSetChanged();
+                notifyItemInserted(newIndex);
                 break;
             case REMOVED:
-                notifyItemRemoved(index);
+                notifyItemRemoved(oldIndex);
                 break;
             case MODIFIED:
-                notifyItemChanged(index);
+                notifyItemChanged(newIndex);
                 break;
+            case MOVED:
+                notifyItemMoved(oldIndex, newIndex);
         }
     }
 
