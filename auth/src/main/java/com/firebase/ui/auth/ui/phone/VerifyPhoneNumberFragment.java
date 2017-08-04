@@ -89,11 +89,11 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
 
         View v = inflater.inflate(R.layout.fui_phone_layout, container, false);
 
-        mCountryListSpinner = (CountryListSpinner) v.findViewById(R.id.country_list);
-        mPhoneEditText = (EditText) v.findViewById(R.id.phone_number);
-        mErrorEditText = (TextView) v.findViewById(R.id.phone_number_error);
-        mSendCodeButton = (Button) v.findViewById(R.id.send_code);
-        mSmsTermsText = (TextView) v.findViewById(R.id.send_sms_tos);
+        mCountryListSpinner = v.findViewById(R.id.country_list);
+        mPhoneEditText = v.findViewById(R.id.phone_number);
+        mErrorEditText = v.findViewById(R.id.phone_number_error);
+        mSendCodeButton = v.findViewById(R.id.send_code);
+        mSmsTermsText = v.findViewById(R.id.send_sms_tos);
 
         ImeHelper.setImeOnDoneListener(mPhoneEditText, new ImeHelper.DonePressedListener() {
             @Override

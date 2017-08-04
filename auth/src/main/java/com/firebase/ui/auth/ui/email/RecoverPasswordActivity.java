@@ -56,7 +56,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
         mEmailFieldValidator =
                 new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
-        mEmailEditText = (EditText) findViewById(R.id.email);
+        mEmailEditText = findViewById(R.id.email);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         if (email != null) {

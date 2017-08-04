@@ -88,8 +88,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
-        mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
-        mPasswordField = (EditText) findViewById(R.id.password);
+        mPasswordLayout = findViewById(R.id.password_layout);
+        mPasswordField = findViewById(R.id.password);
 
         ImeHelper.setImeOnDoneListener(mPasswordField, this);
 
@@ -103,7 +103,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 emailStart + mEmail.length(),
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-        TextView bodyTextView = ((TextView) findViewById(R.id.welcome_back_password_body));
+        TextView bodyTextView = findViewById(R.id.welcome_back_password_body);
         bodyTextView.setText(spannableStringBuilder);
 
         // Click listeners

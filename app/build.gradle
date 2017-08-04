@@ -42,15 +42,15 @@ dependencies {
     compile "com.google.firebase:firebase-database:$firebaseVersion"
     compile "com.google.firebase:firebase-storage:$firebaseVersion"
 
-    compile('com.facebook.android:facebook-android-sdk:4.23.0')
+    compile('com.facebook.android:facebook-android-sdk:4.25.0')
     compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
 
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
-    compile 'pub.devrel:easypermissions:0.4.2'
-    compile 'com.jakewharton:butterknife:8.5.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'pub.devrel:easypermissions:0.4.3'
+    compile 'com.jakewharton:butterknife:8.7.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'

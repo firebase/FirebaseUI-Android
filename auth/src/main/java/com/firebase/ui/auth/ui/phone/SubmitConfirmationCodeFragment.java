@@ -75,12 +75,12 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         View v = inflater.inflate(R.layout.fui_confirmation_code_layout, container, false);
         FragmentActivity parentActivity = getActivity();
 
-        mEditPhoneTextView = (TextView) v.findViewById(R.id.edit_phone_number);
-        mCountDownTextView = (TextView) v.findViewById(R.id.ticker);
-        mResendCodeTextView = (TextView) v.findViewById(R.id.resend_code);
-        mConfirmationCodeEditText = (SpacedEditText) v.findViewById(R.id.confirmation_code);
-        mSubmitConfirmationButton = (Button) v.findViewById(R.id.submit_confirmation_code);
-        mAgreementText = (TextView) v.findViewById(R.id.create_account_tos);
+        mEditPhoneTextView = v.findViewById(R.id.edit_phone_number);
+        mCountDownTextView = v.findViewById(R.id.ticker);
+        mResendCodeTextView = v.findViewById(R.id.resend_code);
+        mConfirmationCodeEditText = v.findViewById(R.id.confirmation_code);
+        mSubmitConfirmationButton = v.findViewById(R.id.submit_confirmation_code);
+        mAgreementText = v.findViewById(R.id.create_account_tos);
 
         final String phoneNumber = getArguments().getString(ExtraConstants.EXTRA_PHONE);
 

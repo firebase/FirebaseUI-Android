@@ -60,7 +60,7 @@ public class RecoverPasswordActivityTest {
     public void testNextButton_sendsEmail() {
         RecoverPasswordActivity recoverPasswordActivity = createActivity();
 
-        Button nextButton = (Button) recoverPasswordActivity.findViewById(R.id.button_done);
+        Button nextButton = recoverPasswordActivity.findViewById(R.id.button_done);
         when(AuthHelperShadow.sFirebaseAuth.sendPasswordResetEmail(TestConstants.EMAIL))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
         nextButton.performClick();

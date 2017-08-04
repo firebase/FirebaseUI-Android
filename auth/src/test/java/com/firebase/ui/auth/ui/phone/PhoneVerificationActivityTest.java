@@ -33,7 +33,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
@@ -84,8 +83,6 @@ public class PhoneVerificationActivityTest {
     PhoneAuthProvider.ForceResendingToken forceResendingToken;
     @Mock
     PhoneAuthCredential credential;
-    @Mock
-    FirebaseUser mockFirebaseUser;
 
     private String verificationId = "hjksdf737hc";
 
@@ -103,10 +100,10 @@ public class PhoneVerificationActivityTest {
         TestHelper.initializeApp(RuntimeEnvironment.application);
         initMocks(this);
         mActivity = createActivity();
-        mPhoneEditText = (EditText) mActivity.findViewById(R.id.phone_number);
-        mErrorEditText = (TextView) mActivity.findViewById(R.id.phone_number_error);
-        mSendCodeButton = (Button) mActivity.findViewById(R.id.send_code);
-        mCountryListSpinner = (CountryListSpinner) mActivity.findViewById(R.id.country_list);
+        mPhoneEditText = mActivity.findViewById(R.id.phone_number);
+        mErrorEditText = mActivity.findViewById(R.id.phone_number_error);
+        mSendCodeButton = mActivity.findViewById(R.id.send_code);
+        mCountryListSpinner = mActivity.findViewById(R.id.country_list);
     }
 
     @Test
@@ -124,8 +121,8 @@ public class PhoneVerificationActivityTest {
                 mActivity.getSupportFragmentManager()
                         .findFragmentByTag(VerifyPhoneNumberFragment.TAG);
         assertNotNull(verifyPhoneNumberFragment);
-        mPhoneEditText = (EditText) mActivity.findViewById(R.id.phone_number);
-        mCountryListSpinner = (CountryListSpinner) mActivity.findViewById(R.id.country_list);
+        mPhoneEditText = mActivity.findViewById(R.id.phone_number);
+        mCountryListSpinner = mActivity.findViewById(R.id.country_list);
 
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
         assertEquals(YE_COUNTRY_CODE,
@@ -218,8 +215,8 @@ public class PhoneVerificationActivityTest {
                                 FirebaseAuthError.ERROR_INVALID_VERIFICATION_CODE.toString(),
                                 "any_msg")));
         testSendConfirmationCode();
-        SpacedEditText mConfirmationCodeEditText = (SpacedEditText) mActivity.findViewById(R.id.confirmation_code);
-        Button mSubmitConfirmationButton = (Button) mActivity.findViewById(R.id.submit_confirmation_code);
+        SpacedEditText mConfirmationCodeEditText = mActivity.findViewById(R.id.confirmation_code);
+        Button mSubmitConfirmationButton = mActivity.findViewById(R.id.submit_confirmation_code);
 
         mConfirmationCodeEditText.setText("123456");
         mSubmitConfirmationButton.performClick();
@@ -228,7 +225,7 @@ public class PhoneVerificationActivityTest {
 
         //test bad code cleared on clicking OK in alert
         android.support.v7.app.AlertDialog a = mActivity.getAlertDialog();
-        Button ok = (Button) a.findViewById(android.R.id.button1);
+        Button ok = a.findViewById(android.R.id.button1);
         ok.performClick();
         assertEquals("- - - - - -", mConfirmationCodeEditText.getText().toString());
     }
@@ -240,7 +237,7 @@ public class PhoneVerificationActivityTest {
         testSendConfirmationCode();
 
         //test resend code invisible
-        TextView r = (TextView) mActivity.findViewById(R.id.resend_code);
+        TextView r = mActivity.findViewById(R.id.resend_code);
         assertEquals(View.GONE, r.getVisibility());
 
         //assert resend visible after timeout
@@ -305,7 +302,7 @@ public class PhoneVerificationActivityTest {
         PhoneAuthProvider.OnVerificationStateChangedCallbacks callbacks =
                 testSendConfirmationCode();
         callbacks.onVerificationCompleted(credential);
-        SpacedEditText mConfirmationCodeEditText = (SpacedEditText) mActivity.findViewById(R.id.confirmation_code);
+        SpacedEditText mConfirmationCodeEditText = mActivity.findViewById(R.id.confirmation_code);
 
         //verify confirmation code set
         assertEquals("1 2 3 4 5 6", mConfirmationCodeEditText.getText().toString());
@@ -318,7 +315,7 @@ public class PhoneVerificationActivityTest {
     public void testEditPhoneNumber_togglesFragments() {
         reset(AuthHelperShadow.sPhoneAuthProvider);
         testSendConfirmationCode();
-        TextView mEditPhoneTextView = (TextView) mActivity.findViewById(R.id.edit_phone_number);
+        TextView mEditPhoneTextView = mActivity.findViewById(R.id.edit_phone_number);
         mEditPhoneTextView.performClick();
         VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
                 mActivity.getSupportFragmentManager()
@@ -355,7 +352,7 @@ public class PhoneVerificationActivityTest {
                 .getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
         assertNotNull(fragment);
 
-        SpacedEditText mConfirmationCodeEditText = (SpacedEditText) mActivity
+        SpacedEditText mConfirmationCodeEditText = mActivity
                 .findViewById(R.id.confirmation_code);
         assertTrue(mConfirmationCodeEditText.isFocused());
 
