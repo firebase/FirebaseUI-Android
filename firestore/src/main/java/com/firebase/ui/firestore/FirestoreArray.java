@@ -2,7 +2,7 @@ package com.firebase.ui.firestore;
 
 import android.util.Log;
 
-import com.firebase.ui.database.BaseObservableSnapshotArray;
+import com.firebase.ui.common.BaseObservableSnapshotArray;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -39,13 +39,13 @@ public class FirestoreArray<T>
     }
 
     public FirestoreArray(Query query, SnapshotParser<T> parser) {
-        super(new CachingSnapshotParser<>(parser));
+        super();
 
         mQuery = query;
         mSnapshots = new ArrayList<>();
+        mCache = new CachingSnapshotParser<>(parser);
 
-        // TODO(samstern): This smells...
-        mCache = (CachingSnapshotParser<T>) getSnapshotParser();
+        setSnapshotParser(mCache);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.firebase.ui.database;
+package com.firebase.ui.common;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * TODO
+ * Exposes a collection of {@link S} items in a database as a {@link List} of {@link E} objects.
+ * To observe the list attach a {@link L} listener.
+ *
  * @param <S> the snapshot class.
  * @param <L> the listener class.
  * @param <E> the model object class.
@@ -16,9 +18,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<S> {
 
     protected final List<L> mListeners = new CopyOnWriteArrayList<>();
-    protected final BaseSnapshotParser<S, E> mParser;
+    protected BaseSnapshotParser<S, E> mParser;
 
     private boolean mHasDataChanged = false;
+
+    /**
+     * Default constructor. Must set the {@link BaseSnapshotParser} before the first operation
+     * or an exception will be thrown.
+     */
+    public BaseObservableSnapshotArray() {}
 
     /**
      * Create an BaseObservableSnapshotArray with a custom {@link BaseSnapshotParser}.
@@ -48,7 +56,7 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
     }
 
     /**
-     * TODO
+     * Attach a listener to this array.
      */
     @CallSuper
     public L addChangeEventListener(@NonNull L listener) {
@@ -59,7 +67,8 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
     }
 
     /**
-     * TODO
+     * Remove a listener from the array. If no listeners remain, {@link #onDestroy()}
+     * will be called.
      */
     @CallSuper
     public void removeChangeEventListener(@NonNull L listener) {
@@ -72,27 +81,13 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
     }
 
     /**
-     * TODO
+     * Remove all listeners from the array.
      */
     @CallSuper
     public void removeAllListeners() {
         for (L listener : mListeners) {
             removeChangeEventListener(listener);
         }
-    }
-
-    protected abstract List<S> getSnapshots();
-
-    protected boolean hasDataChanged() {
-        return mHasDataChanged;
-    }
-
-    protected void setHasDataChanged(boolean hasDataChanged) {
-        mHasDataChanged = hasDataChanged;
-    }
-
-    protected BaseSnapshotParser<S, E> getSnapshotParser() {
-        return mParser;
     }
 
     /**
@@ -116,6 +111,10 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
      * initialized this will throw an unchecked exception.
      */
     public E getObject(int index) {
+        if (mParser == null) {
+            throw new IllegalStateException("getObject() called before snapshot parser set.");
+        }
+
         return mParser.parseSnapshot(get(index));
     }
 
@@ -127,5 +126,24 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
     @Override
     public int size() {
         return getSnapshots().size();
+    }
+
+    // TODO(samstern): Do we need this?
+    protected abstract List<S> getSnapshots();
+
+    protected boolean hasDataChanged() {
+        return mHasDataChanged;
+    }
+
+    protected void setHasDataChanged(boolean hasDataChanged) {
+        mHasDataChanged = hasDataChanged;
+    }
+
+    protected BaseSnapshotParser<S, E> getSnapshotParser() {
+        return mParser;
+    }
+
+    protected void setSnapshotParser(BaseSnapshotParser<S, E> parser) {
+        mParser = parser;
     }
 }

@@ -1,50 +1,20 @@
 package com.firebase.ui.firestore;
 
-import android.support.annotation.RestrictTo;
-
+import com.firebase.ui.common.BaseCachingSnapshotParser;
+import com.firebase.ui.common.BaseSnapshotParser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Implementation of {@link SnapshotParser} that caches results,
- * so parsing a snapshot repeatedly is not expensive.
+ * Implementation of {@link BaseCachingSnapshotParser} for {@link DocumentSnapshot}.
  */
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class CachingSnapshotParser<T> implements SnapshotParser<T> {
+public class CachingSnapshotParser<T> extends BaseCachingSnapshotParser<DocumentSnapshot, T> {
 
-    private Map<String, T> mObjectCache = new HashMap<>();
-    private SnapshotParser<T> mInnerParser;
-
-    public CachingSnapshotParser(SnapshotParser<T> innerParser) {
-        mInnerParser = innerParser;
+    public CachingSnapshotParser(BaseSnapshotParser<DocumentSnapshot, T> innerParser) {
+        super(innerParser);
     }
 
     @Override
-    public T parseSnapshot(DocumentSnapshot snapshot) {
-        String id = snapshot.getId();
-        if (mObjectCache.containsKey(id)) {
-            return mObjectCache.get(id);
-        } else {
-            T object = mInnerParser.parseSnapshot(snapshot);
-            mObjectCache.put(id, object);
-            return object;
-        }
+    public String getId(DocumentSnapshot snapshot) {
+        return snapshot.getId();
     }
-
-    /**
-     * Clear all data in the cache.
-     */
-    public void clearData() {
-        mObjectCache.clear();
-    }
-
-    /**
-     * Invalidate the cache for a certain document ID.
-     */
-    public void invalidate(String id) {
-        mObjectCache.remove(id);
-    }
-
 }

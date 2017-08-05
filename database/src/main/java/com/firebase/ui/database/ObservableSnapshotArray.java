@@ -3,6 +3,7 @@ package com.firebase.ui.database;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
+import com.firebase.ui.common.BaseObservableSnapshotArray;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -16,6 +17,13 @@ import java.util.List;
  */
 public abstract class ObservableSnapshotArray<E>
         extends BaseObservableSnapshotArray<DataSnapshot, ChangeEventListener, E> {
+
+    /**
+     * Default constructor. Must set the snapshot parser before user.
+     */
+    public ObservableSnapshotArray() {
+        super();
+    }
 
     /**
      * Create an ObservableSnapshotArray where snapshots are parsed as objects of a particular

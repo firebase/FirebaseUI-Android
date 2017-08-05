@@ -1,6 +1,8 @@
-package com.firebase.ui.database;
+package com.firebase.ui.common;
+
 
 public interface BaseSnapshotParser<S, T> {
+
     /**
      * This method parses the Snapshot into the requested type.
      *
@@ -8,4 +10,5 @@ public interface BaseSnapshotParser<S, T> {
      * @return the model extracted from the DataSnapshot
      */
     T parseSnapshot(S snapshot);
+
 }

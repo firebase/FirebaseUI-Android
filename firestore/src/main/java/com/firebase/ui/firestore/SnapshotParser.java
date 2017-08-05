@@ -1,6 +1,6 @@
 package com.firebase.ui.firestore;
 
-import com.firebase.ui.database.BaseSnapshotParser;
+import com.firebase.ui.common.BaseSnapshotParser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 /**

@@ -4,7 +4,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 /**
- * TODO
+ * TODO: This could be a common interface, it just needs to know about the snapshot and error types.
  */
 public interface ChangeEventListener {
 
