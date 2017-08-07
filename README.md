@@ -103,7 +103,7 @@ For convenience, here are some recent examples:
 ## Upgrading dependencies
 
 If you would like to use a newer version of one of FirebaseUI's transitive dependencies, such
-as Firebase, Play services, or the Android support libraries you need add explicit
+as Firebase, Play services, or the Android support libraries, you need to add explicit
 `compile` declarations in your `build.gradle` for all of FirebaseUI's dependencies at the version
 you want to use. For example if you want to use Play services/Firebase version `FOO` and support
 libraries version `BAR` add the following extra lines for each FirebaseUI module you're using:
