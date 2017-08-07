@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO(samstern): Document
+ * Exposes a Firestore query as an observable list of objects.
  */
 public class FirestoreArray<T>
         extends BaseObservableSnapshotArray<DocumentSnapshot, ChangeEventListener, T>
@@ -96,7 +96,7 @@ public class FirestoreArray<T>
         // Add the document to the set
         mSnapshots.add(change.getNewIndex(), change.getDocument());
         notifyOnChildChanged(ChangeEventListener.Type.ADDED, change.getDocument(),
-                -1, change.getNewIndex());
+                change.getNewIndex(), -1);
     }
 
     private void onDocumentRemoved(DocumentChange change) {
@@ -108,7 +108,7 @@ public class FirestoreArray<T>
         // Remove the document from the set
         mSnapshots.remove(change.getOldIndex());
         notifyOnChildChanged(ChangeEventListener.Type.REMOVED, change.getDocument(),
-                change.getOldIndex(), -1);
+                -1, change.getOldIndex());
     }
 
     private void onDocumentModified(DocumentChange change) {
@@ -121,14 +121,14 @@ public class FirestoreArray<T>
 
             mSnapshots.set(change.getOldIndex(), change.getDocument());
             notifyOnChildChanged(ChangeEventListener.Type.MODIFIED, change.getDocument(),
-                    change.getOldIndex(), change.getNewIndex());
+                    change.getNewIndex(), change.getOldIndex());
         } else {
             Log.d(TAG, "Modified (moved): " + change.getOldIndex() + " --> " + change.getNewIndex());
 
             mSnapshots.remove(change.getOldIndex());
             mSnapshots.add(change.getNewIndex(), change.getDocument());
             notifyOnChildChanged(ChangeEventListener.Type.MOVED, change.getDocument(),
-                    change.getOldIndex(), change.getNewIndex());
+                    change.getNewIndex(), change.getOldIndex());
         }
     }
 
@@ -157,11 +157,10 @@ public class FirestoreArray<T>
 
     private void notifyOnChildChanged(ChangeEventListener.Type type,
                                       DocumentSnapshot snapshot,
-                                      int oldIndex,
-                                      int newIndex) {
+                                      int newIndex, int oldIndex) {
 
         for (ChangeEventListener listener : mListeners) {
-            listener.onChildChanged(type, snapshot, oldIndex, newIndex);
+            listener.onChildChanged(type, snapshot, newIndex, oldIndex);
         }
     }
 

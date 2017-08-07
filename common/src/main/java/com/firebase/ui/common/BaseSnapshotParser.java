@@ -1,6 +1,11 @@
 package com.firebase.ui.common;
 
-
+/**
+ * Common interface for snapshot parsers.
+ *
+ * @param <S> snapshot type.
+ * @param <T> parsed object type.
+ */
 public interface BaseSnapshotParser<S, T> {
 
     /**

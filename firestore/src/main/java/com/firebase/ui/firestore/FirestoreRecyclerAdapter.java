@@ -41,7 +41,7 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
 
     @Override
     public void onChildChanged(Type type, DocumentSnapshot snapshot,
-                               int oldIndex, int newIndex) {
+                               int newIndex, int oldIndex) {
 
         switch (type) {
             case ADDED:
