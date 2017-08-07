@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * TODO
+ * Class demonstrating a simple real-time chat app that relies on {@link FirestoreRecyclerAdapter}.
  */
 public class FirestoreChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
 

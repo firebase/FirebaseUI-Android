@@ -2,6 +2,7 @@ package com.firebase.ui.database;
 
 import android.content.Context;
 
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -40,7 +41,7 @@ public class TestUtils {
         final Semaphore semaphore = new Semaphore(0);
         ChangeEventListener listener = array.addChangeEventListener(new ChangeEventListener() {
             @Override
-            public void onChildChanged(ChangeEventListener.EventType type,
+            public void onChildChanged(ChangeEventType type,
                                        DataSnapshot snapshot,
                                        int index,
                                        int oldIndex) {
@@ -52,7 +53,7 @@ public class TestUtils {
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onError(DatabaseError error) {
                 throw new IllegalStateException(error.toException());
             }
         });

@@ -14,6 +14,7 @@
 
 package com.firebase.ui.database;
 
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -87,7 +88,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
 
         mSnapshots.add(index, snapshot);
 
-        notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, snapshot, index);
+        notifyChangeEventListeners(ChangeEventType.ADDED, snapshot, index);
     }
 
     @Override
@@ -95,7 +96,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int index = getIndexForKey(snapshot.getKey());
 
         updateData(index, snapshot);
-        notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, snapshot, index);
+        notifyChangeEventListeners(ChangeEventType.CHANGED, snapshot, index);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int index = getIndexForKey(snapshot.getKey());
 
         removeData(index);
-        notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
+        notifyChangeEventListeners(ChangeEventType.REMOVED, snapshot, index);
     }
 
     @Override
@@ -114,7 +115,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
 
-        notifyChangeEventListeners(ChangeEventListener.EventType.MOVED,
+        notifyChangeEventListeners(ChangeEventType.MOVED,
                                    snapshot,
                                    newIndex,
                                    oldIndex);

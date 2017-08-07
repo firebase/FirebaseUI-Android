@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -140,7 +141,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     @Override
-    public void onChildChanged(ChangeEventListener.EventType type,
+    public void onChildChanged(ChangeEventType type,
                                DataSnapshot snapshot,
                                int index,
                                int oldIndex) {
@@ -152,7 +153,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     @Override
-    public void onCancelled(DatabaseError error) {
+    public void onError(DatabaseError error) {
         Log.w(TAG, error.toException());
     }
 

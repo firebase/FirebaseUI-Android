@@ -17,8 +17,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<S> {
 
-    protected final List<L> mListeners = new CopyOnWriteArrayList<>();
-    protected BaseSnapshotParser<S, E> mParser;
+    private final List<L> mListeners = new CopyOnWriteArrayList<>();
+    private BaseSnapshotParser<S, E> mParser;
 
     private boolean mHasDataChanged = false;
 
@@ -45,6 +45,13 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
     protected void onCreate() {}
 
     /**
+     * Called when a new listener has been added to the array. This is a good time to pass initial
+     * state and fire backlogged events
+     * @param listener the added listener.
+     */
+    protected void onListenerAdded(L listener) {};
+
+    /**
      * Called when the {@link BaseObservableSnapshotArray} is inactive and should stop listening to the
      * Firebase database.
      * <p>
@@ -61,7 +68,14 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
     @CallSuper
     public L addChangeEventListener(@NonNull L listener) {
         Preconditions.checkNotNull(listener);
+        boolean wasListening = isListening();
+
         mListeners.add(listener);
+        onListenerAdded(listener);
+
+        if (!wasListening) {
+            onCreate();
+        }
 
         return listener;
     }
@@ -88,6 +102,13 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
         for (L listener : mListeners) {
             removeChangeEventListener(listener);
         }
+    }
+
+    /**
+     * Get all active listeners.
+     */
+    public List<L> getListeners() {
+        return mListeners;
     }
 
     /**

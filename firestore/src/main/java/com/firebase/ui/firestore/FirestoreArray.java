@@ -3,6 +3,7 @@ package com.firebase.ui.firestore;
 import android.util.Log;
 
 import com.firebase.ui.common.BaseObservableSnapshotArray;
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -13,6 +14,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Exposes a Firestore query as an observable list of objects.
@@ -64,6 +66,20 @@ public class FirestoreArray<T>
     }
 
     @Override
+    protected void onListenerAdded(ChangeEventListener listener) {
+        super.onListenerAdded(listener);
+
+        for (int i = 0; i < size(); i++) {
+            listener.onChildChanged(ChangeEventType.ADDED, get(i), i, -1);
+        }
+
+        // TODO(samstern): track hasDataChanged()
+        if (hasDataChanged()) {
+            listener.onDataChanged();
+        }
+    }
+
+    @Override
     public void onEvent(QuerySnapshot snapshots, FirebaseFirestoreException e) {
         if (e != null) {
             Log.w(TAG, "Error in snapshot listener", e);
@@ -95,7 +111,7 @@ public class FirestoreArray<T>
 
         // Add the document to the set
         mSnapshots.add(change.getNewIndex(), change.getDocument());
-        notifyOnChildChanged(ChangeEventListener.Type.ADDED, change.getDocument(),
+        notifyOnChildChanged(ChangeEventType.ADDED, change.getDocument(),
                 change.getNewIndex(), -1);
     }
 
@@ -107,7 +123,7 @@ public class FirestoreArray<T>
 
         // Remove the document from the set
         mSnapshots.remove(change.getOldIndex());
-        notifyOnChildChanged(ChangeEventListener.Type.REMOVED, change.getDocument(),
+        notifyOnChildChanged(ChangeEventType.REMOVED, change.getDocument(),
                 -1, change.getOldIndex());
     }
 
@@ -120,14 +136,14 @@ public class FirestoreArray<T>
             Log.d(TAG, "Modified (inplace): " + change.getOldIndex());
 
             mSnapshots.set(change.getOldIndex(), change.getDocument());
-            notifyOnChildChanged(ChangeEventListener.Type.MODIFIED, change.getDocument(),
+            notifyOnChildChanged(ChangeEventType.CHANGED, change.getDocument(),
                     change.getNewIndex(), change.getOldIndex());
         } else {
             Log.d(TAG, "Modified (moved): " + change.getOldIndex() + " --> " + change.getNewIndex());
 
             mSnapshots.remove(change.getOldIndex());
             mSnapshots.add(change.getNewIndex(), change.getDocument());
-            notifyOnChildChanged(ChangeEventListener.Type.MOVED, change.getDocument(),
+            notifyOnChildChanged(ChangeEventType.MOVED, change.getDocument(),
                     change.getNewIndex(), change.getOldIndex());
         }
     }
@@ -155,23 +171,23 @@ public class FirestoreArray<T>
         mSnapshots.clear();
     }
 
-    private void notifyOnChildChanged(ChangeEventListener.Type type,
+    private void notifyOnChildChanged(ChangeEventType type,
                                       DocumentSnapshot snapshot,
                                       int newIndex, int oldIndex) {
 
-        for (ChangeEventListener listener : mListeners) {
+        for (ChangeEventListener listener : getListeners()) {
             listener.onChildChanged(type, snapshot, newIndex, oldIndex);
         }
     }
 
     private void notifyOnError(FirebaseFirestoreException e) {
-        for (ChangeEventListener listener : mListeners) {
+        for (ChangeEventListener listener : getListeners()) {
             listener.onError(e);
         }
     }
 
     private void notifyOnDataChanged() {
-        for (ChangeEventListener listener : mListeners) {
+        for (ChangeEventListener listener : getListeners()) {
             listener.onDataChanged();
         }
     }

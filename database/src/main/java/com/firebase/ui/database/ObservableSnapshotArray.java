@@ -4,6 +4,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.common.BaseObservableSnapshotArray;
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -47,55 +48,52 @@ public abstract class ObservableSnapshotArray<E>
 
     /**
      * Attach a {@link ChangeEventListener} to this array. The listener will receive one {@link
-     * ChangeEventListener.EventType#ADDED} event for each item that already exists in the array at
+     * ChangeEventType#ADDED} event for each item that already exists in the array at
      * the time of attachment, and then receive all future child events.
      */
     @CallSuper
     public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
-        super.addChangeEventListener(listener);
-        boolean wasListening = isListening();
+        return super.addChangeEventListener(listener);
+    }
 
-        // TODO(samstern): Can some of this be moved into common?
-        mListeners.add(listener);
+    @Override
+    protected void onListenerAdded(ChangeEventListener listener) {
+        super.onListenerAdded(listener);
+
         for (int i = 0; i < size(); i++) {
-            listener.onChildChanged(ChangeEventListener.EventType.ADDED, get(i), i, -1);
+            listener.onChildChanged(ChangeEventType.ADDED, get(i), i, -1);
         }
 
         if (hasDataChanged()) {
             listener.onDataChanged();
         }
-
-        if (!wasListening) { onCreate(); }
-
-        return listener;
     }
 
-
-    protected final void notifyChangeEventListeners(ChangeEventListener.EventType type,
+    protected final void notifyChangeEventListeners(ChangeEventType type,
                                                     DataSnapshot snapshot,
                                                     int index) {
         notifyChangeEventListeners(type, snapshot, index, -1);
     }
 
-    protected final void notifyChangeEventListeners(ChangeEventListener.EventType type,
+    protected final void notifyChangeEventListeners(ChangeEventType type,
                                                     DataSnapshot snapshot,
                                                     int index,
                                                     int oldIndex) {
-        for (ChangeEventListener listener : mListeners) {
+        for (ChangeEventListener listener : getListeners()) {
             listener.onChildChanged(type, snapshot, index, oldIndex);
         }
     }
 
     protected final void notifyListenersOnDataChanged() {
         setHasDataChanged(true);
-        for (ChangeEventListener listener : mListeners) {
+        for (ChangeEventListener listener : getListeners()) {
             listener.onDataChanged();
         }
     }
 
     protected final void notifyListenersOnCancelled(DatabaseError error) {
-        for (ChangeEventListener listener : mListeners) {
-            listener.onCancelled(error);
+        for (ChangeEventListener listener : getListeners()) {
+            listener.onError(error);
         }
     }
 }
