@@ -140,18 +140,18 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     }
 
     @Override
-    public void onSuccess(final IdpResponse response) {
+    public void onSuccess(IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
         getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(credential)
-                .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Failure authenticating with credential " +
-                                credential.getProvider()))
                 .addOnCompleteListener(new CredentialSignInHandler(
                         mActivity,
                         mSaveSmartLock,
                         RC_WELCOME_BACK_IDP,
-                        response));
+                        response))
+                .addOnFailureListener(
+                        new TaskFailureLogger(TAG, "Failure authenticating with credential " +
+                                credential.getProvider()));
     }
 
     @Override

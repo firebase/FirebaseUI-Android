@@ -158,12 +158,12 @@ public class PhoneVerificationActivity extends AppCompatBase {
 
     public void submitConfirmationCode(String confirmationCode) {
         showLoadingDialog(getString(R.string.fui_verifying));
-        signingWithCreds(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
+        signIn(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
     }
 
     private void onVerificationSuccess(@NonNull final PhoneAuthCredential phoneAuthCredential) {
         if (TextUtils.isEmpty(phoneAuthCredential.getSmsCode())) {
-            signingWithCreds(phoneAuthCredential);
+            signIn(phoneAuthCredential);
         } else {
             //Show Fragment if it is not already visible
             showSubmitCodeFragment();
@@ -176,7 +176,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
                 submitConfirmationCodeFragment.setConfirmationCode(String.valueOf
                         (phoneAuthCredential.getSmsCode()));
             }
-            signingWithCreds(phoneAuthCredential);
+            signIn(phoneAuthCredential);
         }
     }
 
@@ -292,8 +292,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
                         .setPhoneNumber(user.getPhoneNumber())
                         .build())
                 .build();
-        setResult(RESULT_OK, response.toIntent());
-        finish();
+        finish(RESULT_OK, response.toIntent());
     }
 
     private void showAlertDialog(@NonNull String s, DialogInterface.OnClickListener
@@ -304,9 +303,9 @@ public class PhoneVerificationActivity extends AppCompatBase {
                 .show();
     }
 
-    private void signingWithCreds(@NonNull PhoneAuthCredential phoneAuthCredential) {
+    private void signIn(@NonNull PhoneAuthCredential credential) {
         getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(phoneAuthCredential)
+                .signInWithCredential(credential)
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(final AuthResult authResult) {

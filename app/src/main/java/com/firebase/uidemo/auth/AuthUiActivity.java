@@ -53,6 +53,7 @@ public class AuthUiActivity extends AppCompatActivity {
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
     private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google.com/policies/privacy/";
     private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google.com/terms/analytics/#7_privacy";
+
     private static final int RC_SIGN_IN = 100;
 
     @BindView(R.id.default_theme)
@@ -137,9 +138,7 @@ public class AuthUiActivity extends AppCompatActivity {
     CheckBox mGoogleScopeYoutubeData;
 
     public static Intent createIntent(Context context) {
-        Intent in = new Intent();
-        in.setClass(context, AuthUiActivity.class);
-        return in;
+        return new Intent(context, AuthUiActivity.class);
     }
 
     @Override

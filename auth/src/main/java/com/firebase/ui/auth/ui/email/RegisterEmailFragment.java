@@ -25,6 +25,7 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.util.accountlink.ProfileMerger;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
@@ -41,8 +42,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 /**
  * Fragment to display an email/name/password sign up form for new users.
@@ -228,40 +227,25 @@ public class RegisterEmailFragment extends FragmentBase implements
     }
 
     private void registerUser(final String email, final String name, final String password) {
+        final IdpResponse response = new IdpResponse.Builder(
+                new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                        .setName(name)
+                        .setPhotoUri(mUser.getPhotoUri())
+                        .build())
+                .build();
+
         getAuthHelper().getFirebaseAuth()
                 .createUserWithEmailAndPassword(email, password)
+                .continueWithTask(new ProfileMerger(response))
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                .addOnSuccessListener(getActivity(), new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        // Set display name
-                        UserProfileChangeRequest changeNameRequest =
-                                new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(name)
-                                        .setPhotoUri(mUser.getPhotoUri())
-                                        .build();
-
-                        final FirebaseUser user = authResult.getUser();
-                        user.updateProfile(changeNameRequest)
-                                .addOnFailureListener(new TaskFailureLogger(
-                                        TAG, "Error setting display name"))
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        // This executes even if the name change fails, since
-                                        // the account creation succeeded and we want to save
-                                        // the credential to SmartLock (if enabled).
-                                        IdpResponse response = new IdpResponse.Builder(
-                                                new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
-                                                    .setName(name)
-                                                    .setPhotoUri(mUser.getPhotoUri())
-                                                    .build())
-                                                .build();
-
-                                        mActivity.saveCredentialsOrFinish(
-                                                mSaveSmartLock, user, password, response);
-                                    }
-                                });
+                        mActivity.saveCredentialsOrFinish(
+                                mSaveSmartLock,
+                                authResult.getUser(),
+                                password,
+                                response);
                     }
                 })
                 .addOnFailureListener(getActivity(), new OnFailureListener() {

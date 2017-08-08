@@ -35,17 +35,14 @@ public class IdpResponse implements Parcelable {
     private final User mUser;
     private final String mToken;
     private final String mSecret;
+
     private final int mErrorCode;
 
     private IdpResponse(int errorCode) {
         this(null, null, null, errorCode);
     }
 
-    private IdpResponse(
-            User user,
-            String token,
-            String secret,
-            int errorCode) {
+    private IdpResponse(User user, String token, String secret, int errorCode) {
         mUser = user;
         mToken = token;
         mSecret = secret;
@@ -75,6 +72,11 @@ public class IdpResponse implements Parcelable {
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public Intent toIntent() {
         return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public User getUser() {
+        return mUser;
     }
 
     /**

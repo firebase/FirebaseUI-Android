@@ -30,6 +30,7 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
 import com.firebase.ui.auth.provider.IdpProvider;
@@ -41,7 +42,6 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -138,10 +138,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
 
     @Override
     public void onSuccess(final IdpResponse idpResponse) {
-        if (idpResponse == null) {
-            return; // do nothing
-        }
-
         AuthCredential newCredential = ProviderUtils.getAuthCredential(idpResponse);
         if (newCredential == null) {
             Log.e(TAG, "No credential returned");
