@@ -76,7 +76,9 @@ public abstract class BaseObservableSnapshotArray<S, L extends BaseChangeEventLi
     }
 
     /**
-     * Attach a listener to this array.
+     * Attach a {@link BaseChangeEventListener} to this array. The listener will receive one {@link
+     * ChangeEventType#ADDED} event for each item that already exists in the array at
+     * the time of attachment, and then receive all future child events.
      */
     @CallSuper
     public L addChangeEventListener(@NonNull L listener) {

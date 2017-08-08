@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
 
+import java.util.List;
+
 /**
  * An extension of {@link ObservableSnapshotArray} that caches the result of {@link #getObject(int)}
  * so that repeated calls for the same key are not expensive (unless the underlying snapshot has
@@ -34,6 +36,8 @@ public abstract class CachingObservableSnapshotArray<T> extends ObservableSnapsh
     public T getObject(int index) {
         return mCache.parseSnapshot(get(index));
     }
+
+    protected abstract List<DataSnapshot> getSnapshots();
 
     @Override
     protected void onDestroy() {

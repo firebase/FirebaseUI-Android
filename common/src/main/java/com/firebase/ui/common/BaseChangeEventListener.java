@@ -1,7 +1,7 @@
 package com.firebase.ui.common;
 
 /**
- * TODO(samstern): Document
+ * Event listener for changes in an {@link BaseObservableSnapshotArray}.
  */
 public interface BaseChangeEventListener<S, E> {
 

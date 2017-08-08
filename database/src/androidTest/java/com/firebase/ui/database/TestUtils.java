@@ -35,9 +35,11 @@ public class TestUtils {
                 .build(), APP_NAME);
     }
 
-    public static ChangeEventListener runAndWaitUntil(ObservableSnapshotArray array,
-                                                      Runnable task,
-                                                      Callable<Boolean> done) throws InterruptedException {
+    public static ChangeEventListener runAndWaitUntil(
+            ObservableSnapshotArray<?> array,
+            Runnable task,
+            Callable<Boolean> done) throws InterruptedException {
+
         final Semaphore semaphore = new Semaphore(0);
         ChangeEventListener listener = array.addChangeEventListener(new ChangeEventListener() {
             @Override

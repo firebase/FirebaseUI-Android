@@ -1,10 +1,8 @@
 package com.firebase.ui.database;
 
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.common.BaseObservableSnapshotArray;
-import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -45,19 +43,6 @@ public abstract class ObservableSnapshotArray<E>
     public ObservableSnapshotArray(@NonNull SnapshotParser<E> parser) {
         super(parser);
     }
-
-    /**
-     * Attach a {@link ChangeEventListener} to this array. The listener will receive one {@link
-     * ChangeEventType#ADDED} event for each item that already exists in the array at
-     * the time of attachment, and then receive all future child events.
-     */
-    @CallSuper
-    public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
-        return super.addChangeEventListener(listener);
-    }
-
-    // TODO(samstern): Can I remove this?
-    protected abstract List<DataSnapshot> getSnapshots();
 
     protected void notifyListenersOnCancelled(DatabaseError error) {
         for (ChangeEventListener listener : getListeners()) {

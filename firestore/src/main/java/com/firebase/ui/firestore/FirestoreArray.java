@@ -2,7 +2,6 @@ package com.firebase.ui.firestore;
 
 import android.util.Log;
 
-import com.firebase.ui.common.BaseObservableSnapshotArray;
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -19,8 +18,7 @@ import java.util.List;
 /**
  * Exposes a Firestore query as an observable list of objects.
  */
-public class FirestoreArray<T>
-        extends BaseObservableSnapshotArray<DocumentSnapshot, ChangeEventListener, T>
+public class FirestoreArray<T> extends ObservableSnapshotArray<T>
         implements EventListener<QuerySnapshot>  {
 
     private static final String TAG = "FirestoreArray";
@@ -160,12 +158,5 @@ public class FirestoreArray<T>
         }
 
         mSnapshots.clear();
-    }
-
-    // TODO: There should be a way to move this into the base class
-    private void notifyOnError(FirebaseFirestoreException e) {
-        for (ChangeEventListener listener : getListeners()) {
-            listener.onError(e);
-        }
     }
 }
