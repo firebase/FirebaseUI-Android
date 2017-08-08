@@ -42,7 +42,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
      * contains keys that exist in the backing {@link FirebaseArray}, but their data hasn't been
      * downloaded yet in this array.
      */
-    private List<String> mKeysWithPendingData = new ArrayList<>();
+    private List<String> mKeysWithPendingUpdate = new ArrayList<>();
     /**
      * Moves or deletions don't need to fetch new data so they can be performed instantly once the
      * backing {@link FirebaseArray} is done updating. This will be true if the backing {@link
@@ -165,7 +165,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         String key = data.getKey();
         DatabaseReference ref = mDataRef.child(key);
 
-        mKeysWithPendingData.add(key);
+        mKeysWithPendingUpdate.add(key);
         // Start listening
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
     }
@@ -235,26 +235,29 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                     // We already know about this data, just update it
                     updateData(index, snapshot);
                     notifyChangeEventListeners(EventType.CHANGED, snapshot, index);
-                    notifyListenersOnDataChanged();
                 } else {
                     // We don't already know about this data, add it
                     mDataSnapshots.add(index, snapshot);
                     notifyChangeEventListeners(EventType.ADDED, snapshot, index);
-
-                    mKeysWithPendingData.remove(key);
-                    if (mKeysWithPendingData.isEmpty()) notifyListenersOnDataChanged();
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
                     // This data has disappeared, remove it
                     removeData(index);
                     notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
-                    notifyListenersOnDataChanged();
                 } else {
                     // Data does not exist
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
                 }
             }
+
+            // In theory, we would only want to pop the queue if this listener was just added
+            // i.e. `snapshot.value != null && isKeyAtIndex(...)`. However, if the developer makes a
+            // mistake and `snapshot.value == null`, we will never pop the queue and
+            // `notifyListenersOnDataChanged()` will never be called. Thus, we pop the queue anytime
+            // an update is received.
+            mKeysWithPendingUpdate.remove(key);
+            if (mKeysWithPendingUpdate.isEmpty()) notifyListenersOnDataChanged();
         }
 
         @Override
