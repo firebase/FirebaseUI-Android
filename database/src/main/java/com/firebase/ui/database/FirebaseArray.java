@@ -121,7 +121,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
 
     @Override
     public void onCancelled(DatabaseError error) {
-        notifyListenersOnCancelled(error);
+        notifyListenersOnError(error);
     }
 
     private int getIndexForKey(String key) {

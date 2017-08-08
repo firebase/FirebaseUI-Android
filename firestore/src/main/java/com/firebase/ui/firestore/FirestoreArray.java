@@ -67,7 +67,7 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
     public void onEvent(QuerySnapshot snapshots, FirebaseFirestoreException e) {
         if (e != null) {
             Log.w(TAG, "Error in snapshot listener", e);
-            notifyOnError(e);
+            notifyListenersOnError(e);
             return;
         }
 

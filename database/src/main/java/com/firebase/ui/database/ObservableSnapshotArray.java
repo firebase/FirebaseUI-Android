@@ -12,10 +12,10 @@ import java.util.List;
  * Exposes a collection of items in Firebase as a {@link List} of {@link DataSnapshot}. To observe
  * the list attach a {@link com.google.firebase.database.ChildEventListener}.
  *
- * @param <E> a POJO class to which the DataSnapshots can be converted.
+ * @param <T> a POJO class to which the DataSnapshots can be converted.
  */
-public abstract class ObservableSnapshotArray<E>
-        extends BaseObservableSnapshotArray<DataSnapshot, ChangeEventListener, E> {
+public abstract class ObservableSnapshotArray<T>
+        extends BaseObservableSnapshotArray<DataSnapshot, DatabaseError, ChangeEventListener, T> {
 
     /**
      * Default constructor. Must set the snapshot parser before user.
@@ -31,7 +31,7 @@ public abstract class ObservableSnapshotArray<E>
      * @param clazz the class as which DataSnapshots should be parsed.
      * @see ClassSnapshotParser
      */
-    public ObservableSnapshotArray(@NonNull Class<E> clazz) {
+    public ObservableSnapshotArray(@NonNull Class<T> clazz) {
         super(new ClassSnapshotParser<>(clazz));
     }
 
@@ -40,13 +40,15 @@ public abstract class ObservableSnapshotArray<E>
      *
      * @param parser the {@link SnapshotParser} to use
      */
-    public ObservableSnapshotArray(@NonNull SnapshotParser<E> parser) {
+    public ObservableSnapshotArray(@NonNull SnapshotParser<T> parser) {
         super(parser);
     }
 
+    /**
+     * Use {@link BaseObservableSnapshotArray#notifyListenersOnError(Object)}.
+     */
+    @Deprecated
     protected void notifyListenersOnCancelled(DatabaseError error) {
-        for (ChangeEventListener listener : getListeners()) {
-            listener.onError(error);
-        }
+        notifyListenersOnError(error);
     }
 }

@@ -195,6 +195,16 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     }
 
     @Override
+    public DataSnapshot get(int i) {
+        return mDataSnapshots.get(i);
+    }
+
+    @Override
+    public int size() {
+        return mKeySnapshots.size();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
@@ -260,7 +270,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
         @Override
         public void onCancelled(DatabaseError error) {
-            notifyListenersOnCancelled(error);
+            notifyListenersOnError(error);
         }
     }
 }

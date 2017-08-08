@@ -10,8 +10,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 /**
  * Subclass of {@link BaseObservableSnapshotArray} for Firestore data.
  */
-public abstract class ObservableSnapshotArray<E>
-        extends BaseObservableSnapshotArray<DocumentSnapshot, ChangeEventListener, E> {
+public abstract class ObservableSnapshotArray<T>
+        extends BaseObservableSnapshotArray<DocumentSnapshot, FirebaseFirestoreException, ChangeEventListener, T> {
 
     public ObservableSnapshotArray() {
         super();
@@ -20,14 +20,7 @@ public abstract class ObservableSnapshotArray<E>
     /**
      * See {@link BaseObservableSnapshotArray#BaseObservableSnapshotArray(BaseSnapshotParser)}
      */
-    public ObservableSnapshotArray(@NonNull SnapshotParser<E> parser) {
+    public ObservableSnapshotArray(@NonNull SnapshotParser<T> parser) {
         super(parser);
-    }
-
-    // TODO: There should be a way to move this into the base class
-    protected void notifyOnError(FirebaseFirestoreException e) {
-        for (ChangeEventListener listener : getListeners()) {
-            listener.onError(e);
-        }
     }
 }

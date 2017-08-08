@@ -8,18 +8,19 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Exposes a collection of {@link S} items in a database as a {@link List} of {@link E} objects.
+ * Exposes a collection of {@link S} items in a database as a {@link List} of {@link T} objects.
  * To observe the list attach a {@link L} listener.
  *
  * @param <S> the snapshot class.
+ * @param <E> the error type raised for the listener.
  * @param <L> the listener class.
- * @param <E> the model object class.
+ * @param <T> the model object class.
  */
-public abstract class BaseObservableSnapshotArray<S, L extends BaseChangeEventListener<S,?>, E>
+public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEventListener<S, E>, T>
         extends AbstractList<S> {
 
     private final List<L> mListeners = new CopyOnWriteArrayList<>();
-    private BaseSnapshotParser<S, E> mParser;
+    private BaseSnapshotParser<S, T> mParser;
 
     /**
      * True if there has been a "data changed" event since the array was created, false otherwise.
@@ -37,7 +38,7 @@ public abstract class BaseObservableSnapshotArray<S, L extends BaseChangeEventLi
      *
      * @param parser the {@link BaseSnapshotParser} to use
      */
-    public BaseObservableSnapshotArray(@NonNull BaseSnapshotParser<S, E> parser) {
+    public BaseObservableSnapshotArray(@NonNull BaseSnapshotParser<S, T> parser) {
         mParser = Preconditions.checkNotNull(parser);
     }
 
@@ -146,7 +147,7 @@ public abstract class BaseObservableSnapshotArray<S, L extends BaseChangeEventLi
      * type. This uses the {@link BaseSnapshotParser} passed to the constructor. If the parser was not
      * initialized this will throw an unchecked exception.
      */
-    public E getObject(int index) {
+    public T getObject(int index) {
         if (mParser == null) {
             throw new IllegalStateException("getObject() called before snapshot parser set.");
         }
@@ -171,11 +172,17 @@ public abstract class BaseObservableSnapshotArray<S, L extends BaseChangeEventLi
         }
     }
 
-    protected BaseSnapshotParser<S, E> getSnapshotParser() {
+    protected void notifyListenersOnError(E e) {
+        for (L listener : getListeners()) {
+            listener.onError(e);
+        }
+    }
+
+    protected BaseSnapshotParser<S, T> getSnapshotParser() {
         return mParser;
     }
 
-    protected void setSnapshotParser(BaseSnapshotParser<S, E> parser) {
+    protected void setSnapshotParser(BaseSnapshotParser<S, T> parser) {
         mParser = parser;
     }
 }
