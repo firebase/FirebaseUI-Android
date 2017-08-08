@@ -50,17 +50,4 @@
             column="13"/>
     </issue>
 
-    <!-- TODO remove in https://github.com/firebase/FirebaseUI-Android/pull/851 -->
-    <issue
-        id="IconLauncherFormat"
-        severity="Error"
-        message="Launcher icons must be in PNG format"
-        category="Usability:Icons"
-        priority="6"
-        summary="Wrong launcher icon format"
-        explanation="Launcher icons should be in the PNG format. This requirement is enforced by the The Google Play Developer Console."
-        quickfix="studio">
-        <location file="src/main/res/drawable/ic_launcher.xml"/>
-    </issue>
-
 </issues>
