@@ -192,36 +192,33 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void onVerificationFailed(@NonNull FirebaseException ex) {
-        VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
-                getSupportFragmentManager().findFragmentByTag(VerifyPhoneNumberFragment.TAG);
+        dismissLoadingDialog();
 
-        if (verifyPhoneNumberFragment == null) {
-            return;
-        }
         if (ex instanceof FirebaseAuthException) {
             FirebaseAuthError error = FirebaseAuthError.fromException((FirebaseAuthException) ex);
 
             switch (error) {
                 case ERROR_INVALID_PHONE_NUMBER:
-                    verifyPhoneNumberFragment.showError(getString(R.string.fui_invalid_phone_number));
-                    dismissLoadingDialog();
+                    VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
+                            getSupportFragmentManager().findFragmentByTag(VerifyPhoneNumberFragment.TAG);
+
+                    if (verifyPhoneNumberFragment != null) {
+                        verifyPhoneNumberFragment.showError(
+                                getString(R.string.fui_invalid_phone_number));
+                    }
                     break;
                 case ERROR_TOO_MANY_REQUESTS:
                     showAlertDialog(getString(R.string.fui_error_too_many_attempts), null);
-                    dismissLoadingDialog();
                     break;
                 case ERROR_QUOTA_EXCEEDED:
                     showAlertDialog(getString(R.string.fui_error_quota_exceeded), null);
-                    dismissLoadingDialog();
                     break;
                 default:
                     Log.w(PHONE_VERIFICATION_LOG_TAG, error.getDescription(), ex);
-                    dismissLoadingDialog();
                     showAlertDialog(error.getDescription(), null);
             }
         } else {
             Log.w(PHONE_VERIFICATION_LOG_TAG, ex.getLocalizedMessage());
-            dismissLoadingDialog();
             showAlertDialog(ex.getLocalizedMessage(), null);
         }
     }
@@ -386,7 +383,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
 
     private void dismissLoadingDialog() {
         if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
+            mProgressDialog.dismissAllowingStateLoss();
             mProgressDialog = null;
         }
     }
