@@ -88,7 +88,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
 
         mSnapshots.add(index, snapshot);
 
-        notifyChangeEventListeners(ChangeEventType.ADDED, snapshot, index);
+        notifyListenersOnChildChanged(ChangeEventType.ADDED, snapshot, index, -1);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int index = getIndexForKey(snapshot.getKey());
 
         updateData(index, snapshot);
-        notifyChangeEventListeners(ChangeEventType.CHANGED, snapshot, index);
+        notifyListenersOnChildChanged(ChangeEventType.CHANGED, snapshot, index, -1);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int index = getIndexForKey(snapshot.getKey());
 
         removeData(index);
-        notifyChangeEventListeners(ChangeEventType.REMOVED, snapshot, index);
+        notifyListenersOnChildChanged(ChangeEventType.REMOVED, snapshot, index, -1);
     }
 
     @Override
@@ -115,10 +115,8 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
         mSnapshots.add(newIndex, snapshot);
 
-        notifyChangeEventListeners(ChangeEventType.MOVED,
-                                   snapshot,
-                                   newIndex,
-                                   oldIndex);
+        notifyListenersOnChildChanged(ChangeEventType.MOVED, snapshot,
+                newIndex, oldIndex);
     }
 
     @Override

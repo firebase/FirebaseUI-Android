@@ -15,7 +15,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @param <L> the listener class.
  * @param <E> the model object class.
  */
-public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<S> {
+public abstract class BaseObservableSnapshotArray<S, L extends BaseChangeEventListener<S,?>, E>
+        extends AbstractList<S> {
 
     private final List<L> mListeners = new CopyOnWriteArrayList<>();
     private BaseSnapshotParser<S, E> mParser;
@@ -148,6 +149,24 @@ public abstract class BaseObservableSnapshotArray<S, L, E> extends AbstractList<
     public int size() {
         return getSnapshots().size();
     }
+
+    protected void notifyListenersOnChildChanged(ChangeEventType type,
+                                                 S snapshot,
+                                                 int newIndex,
+                                                 int oldIndex) {
+        for (L listener : getListeners()) {
+            listener.onChildChanged(type, snapshot, newIndex, oldIndex);
+        }
+    }
+
+    protected void notifyListenersOnDataChanged() {
+        mHasDataChanged = true;
+
+        for (L listener : getListeners()) {
+            listener.onDataChanged();
+        }
+    }
+
 
     // TODO(samstern): Do we need this?
     protected abstract List<S> getSnapshots();

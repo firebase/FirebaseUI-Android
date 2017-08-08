@@ -69,29 +69,7 @@ public abstract class ObservableSnapshotArray<E>
         }
     }
 
-    protected final void notifyChangeEventListeners(ChangeEventType type,
-                                                    DataSnapshot snapshot,
-                                                    int index) {
-        notifyChangeEventListeners(type, snapshot, index, -1);
-    }
-
-    protected final void notifyChangeEventListeners(ChangeEventType type,
-                                                    DataSnapshot snapshot,
-                                                    int index,
-                                                    int oldIndex) {
-        for (ChangeEventListener listener : getListeners()) {
-            listener.onChildChanged(type, snapshot, index, oldIndex);
-        }
-    }
-
-    protected final void notifyListenersOnDataChanged() {
-        setHasDataChanged(true);
-        for (ChangeEventListener listener : getListeners()) {
-            listener.onDataChanged();
-        }
-    }
-
-    protected final void notifyListenersOnCancelled(DatabaseError error) {
+    protected void notifyListenersOnCancelled(DatabaseError error) {
         for (ChangeEventListener listener : getListeners()) {
             listener.onError(error);
         }

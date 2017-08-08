@@ -103,7 +103,7 @@ public class FirestoreArray<T>
             }
         }
 
-        notifyOnDataChanged();
+        notifyListenersOnDataChanged();
     }
 
     private void onDocumentAdded(DocumentChange change) {
@@ -111,7 +111,7 @@ public class FirestoreArray<T>
 
         // Add the document to the set
         mSnapshots.add(change.getNewIndex(), change.getDocument());
-        notifyOnChildChanged(ChangeEventType.ADDED, change.getDocument(),
+        notifyListenersOnChildChanged(ChangeEventType.ADDED, change.getDocument(),
                 change.getNewIndex(), -1);
     }
 
@@ -123,7 +123,7 @@ public class FirestoreArray<T>
 
         // Remove the document from the set
         mSnapshots.remove(change.getOldIndex());
-        notifyOnChildChanged(ChangeEventType.REMOVED, change.getDocument(),
+        notifyListenersOnChildChanged(ChangeEventType.REMOVED, change.getDocument(),
                 -1, change.getOldIndex());
     }
 
@@ -136,14 +136,14 @@ public class FirestoreArray<T>
             Log.d(TAG, "Modified (inplace): " + change.getOldIndex());
 
             mSnapshots.set(change.getOldIndex(), change.getDocument());
-            notifyOnChildChanged(ChangeEventType.CHANGED, change.getDocument(),
+            notifyListenersOnChildChanged(ChangeEventType.CHANGED, change.getDocument(),
                     change.getNewIndex(), change.getOldIndex());
         } else {
             Log.d(TAG, "Modified (moved): " + change.getOldIndex() + " --> " + change.getNewIndex());
 
             mSnapshots.remove(change.getOldIndex());
             mSnapshots.add(change.getNewIndex(), change.getDocument());
-            notifyOnChildChanged(ChangeEventType.MOVED, change.getDocument(),
+            notifyListenersOnChildChanged(ChangeEventType.MOVED, change.getDocument(),
                     change.getNewIndex(), change.getOldIndex());
         }
     }
@@ -171,24 +171,10 @@ public class FirestoreArray<T>
         mSnapshots.clear();
     }
 
-    private void notifyOnChildChanged(ChangeEventType type,
-                                      DocumentSnapshot snapshot,
-                                      int newIndex, int oldIndex) {
-
-        for (ChangeEventListener listener : getListeners()) {
-            listener.onChildChanged(type, snapshot, newIndex, oldIndex);
-        }
-    }
-
+    // TODO: There should be a way to move this into the base class
     private void notifyOnError(FirebaseFirestoreException e) {
         for (ChangeEventListener listener : getListeners()) {
             listener.onError(e);
-        }
-    }
-
-    private void notifyOnDataChanged() {
-        for (ChangeEventListener listener : getListeners()) {
-            listener.onDataChanged();
         }
     }
 }
