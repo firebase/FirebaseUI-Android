@@ -61,11 +61,6 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
     }
 
     @Override
-    protected List<DataSnapshot> getSnapshots() {
-        return mSnapshots;
-    }
-
-    @Override
     protected void onCreate() {
         super.onCreate();
         mQuery.addChildEventListener(this);
@@ -139,6 +134,21 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
             }
         }
         throw new IllegalArgumentException("Key not found");
+    }
+
+    @Override
+    public DataSnapshot get(int i) {
+        return mSnapshots.get(i);
+    }
+
+    @Override
+    protected List<DataSnapshot> getSnapshots() {
+        return mSnapshots;
+    }
+
+    @Override
+    public int size() {
+        return mSnapshots.size();
     }
 
     @Override

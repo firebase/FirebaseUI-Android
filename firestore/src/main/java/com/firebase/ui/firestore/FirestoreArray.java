@@ -66,20 +66,6 @@ public class FirestoreArray<T>
     }
 
     @Override
-    protected void onListenerAdded(ChangeEventListener listener) {
-        super.onListenerAdded(listener);
-
-        for (int i = 0; i < size(); i++) {
-            listener.onChildChanged(ChangeEventType.ADDED, get(i), i, -1);
-        }
-
-        // TODO(samstern): track hasDataChanged()
-        if (hasDataChanged()) {
-            listener.onDataChanged();
-        }
-    }
-
-    @Override
     public void onEvent(QuerySnapshot snapshots, FirebaseFirestoreException e) {
         if (e != null) {
             Log.w(TAG, "Error in snapshot listener", e);
@@ -104,6 +90,16 @@ public class FirestoreArray<T>
         }
 
         notifyListenersOnDataChanged();
+    }
+
+    @Override
+    public DocumentSnapshot get(int i) {
+        return mSnapshots.get(i);
+    }
+
+    @Override
+    public int size() {
+        return mSnapshots.size();
     }
 
     private void onDocumentAdded(DocumentChange change) {
@@ -146,11 +142,6 @@ public class FirestoreArray<T>
             notifyListenersOnChildChanged(ChangeEventType.MOVED, change.getDocument(),
                     change.getNewIndex(), change.getOldIndex());
         }
-    }
-
-    @Override
-    protected List<DocumentSnapshot> getSnapshots() {
-        return mSnapshots;
     }
 
     private void startListening() {

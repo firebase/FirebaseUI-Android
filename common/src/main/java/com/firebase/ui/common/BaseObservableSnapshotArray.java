@@ -21,6 +21,9 @@ public abstract class BaseObservableSnapshotArray<S, L extends BaseChangeEventLi
     private final List<L> mListeners = new CopyOnWriteArrayList<>();
     private BaseSnapshotParser<S, E> mParser;
 
+    /**
+     * True if there has been a "data changed" event since the array was created, false otherwise.
+     */
     private boolean mHasDataChanged = false;
 
     /**
@@ -50,7 +53,16 @@ public abstract class BaseObservableSnapshotArray<S, L extends BaseChangeEventLi
      * state and fire backlogged events
      * @param listener the added listener.
      */
-    protected void onListenerAdded(L listener) {};
+    @CallSuper
+    protected void onListenerAdded(L listener) {
+        for (int i = 0; i < size(); i++) {
+            listener.onChildChanged(ChangeEventType.ADDED, get(i), i, -1);
+        }
+
+        if (mHasDataChanged) {
+            listener.onDataChanged();
+        }
+    };
 
     /**
      * Called when the {@link BaseObservableSnapshotArray} is inactive and should stop listening to the
@@ -140,16 +152,6 @@ public abstract class BaseObservableSnapshotArray<S, L extends BaseChangeEventLi
         return mParser.parseSnapshot(get(index));
     }
 
-    @Override
-    public S get(int index) {
-        return getSnapshots().get(index);
-    }
-
-    @Override
-    public int size() {
-        return getSnapshots().size();
-    }
-
     protected void notifyListenersOnChildChanged(ChangeEventType type,
                                                  S snapshot,
                                                  int newIndex,
@@ -165,18 +167,6 @@ public abstract class BaseObservableSnapshotArray<S, L extends BaseChangeEventLi
         for (L listener : getListeners()) {
             listener.onDataChanged();
         }
-    }
-
-
-    // TODO(samstern): Do we need this?
-    protected abstract List<S> getSnapshots();
-
-    protected boolean hasDataChanged() {
-        return mHasDataChanged;
-    }
-
-    protected void setHasDataChanged(boolean hasDataChanged) {
-        mHasDataChanged = hasDataChanged;
     }
 
     protected BaseSnapshotParser<S, E> getSnapshotParser() {

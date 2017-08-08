@@ -56,18 +56,8 @@ public abstract class ObservableSnapshotArray<E>
         return super.addChangeEventListener(listener);
     }
 
-    @Override
-    protected void onListenerAdded(ChangeEventListener listener) {
-        super.onListenerAdded(listener);
-
-        for (int i = 0; i < size(); i++) {
-            listener.onChildChanged(ChangeEventType.ADDED, get(i), i, -1);
-        }
-
-        if (hasDataChanged()) {
-            listener.onDataChanged();
-        }
-    }
+    // TODO(samstern): Can I remove this?
+    protected abstract List<DataSnapshot> getSnapshots();
 
     protected void notifyListenersOnCancelled(DatabaseError error) {
         for (ChangeEventListener listener : getListeners()) {
