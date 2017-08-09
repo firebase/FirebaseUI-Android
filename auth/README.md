@@ -418,16 +418,6 @@ Second, ensure the three standard AppCompat color resources are defined with you
     <item name="colorAccent">@color/colorAccent</item>
 </style>
 
-```
-You don't have to call `setTheme()` on the sign in intent builder as FirebaseUI
-will automatically style the activities. This is sufficient:
-
-```java
-startActivityForResult(
-    AuthUI.getInstance(this).createSignInIntentBuilder()
-        .build());
-```
-
 If you would like more control over FirebaseUI's styling, you can define your own custom style
 to override certain or all styling attributes. For example, a green sign-in theme:
 
@@ -478,6 +468,7 @@ and simply redefine a string to change it:
     <string name="fui_progress_dialog_signing_up">Creating your shiny new account...</string>
 </resources>
 ```
+
 **Note:** String resource names aren't considered part of the public API and might
 therefore change and break your app between library updates. We recommend looking
 at a diff of the `strings.xml` file before updating FirebaseUI.
