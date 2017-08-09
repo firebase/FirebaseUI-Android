@@ -397,16 +397,47 @@ represented in the following diagram:
 
 ## UI customization
 
-To provide customization of the visual style of the activities that implement
-the flow, a new theme can be declared. Standard material design color
-and typography properties will take effect as expected. For example, to define
-a green theme:
+To use FirebaseUI Auth's sign-in flows, you must provide an `app_name` string and use the
+AppCompat color attributes in your app.
 
+For example, something like this goes in your `strings.xml`:
 ```xml
-<style name="GreenTheme" parent="FirebaseUI">
+<resources>
+    <!-- ... -->
+    <string name="app_name">My App</string>
+</resources>
+```
+
+This goes in your `styles.xml`:
+```xml
+<style name="AppTheme" parent="FirebaseUI">
+    <!-- Required for sign-in flow styling -->
     <item name="colorPrimary">@color/material_green_500</item>
     <item name="colorPrimaryDark">@color/material_green_700</item>
     <item name="colorAccent">@color/material_purple_a700</item>
+</style>
+```
+You don't have to call `setStyle()` on the sign in intent builder as FirebaseUI
+will automatically style the activities. For example:
+
+```java
+startActivityForResult(
+    AuthUI.getInstance(this).createSignInIntentBuilder()
+        .build());
+```
+
+Note: If your app is already using an AppCompat theme, you don't have to create 
+a new theme, but you can still optionally style other parts of the sign-in flow. 
+Standard material design colorand typography properties will take effect as expected. 
+For example, to define a green theme:
+
+```xml
+<style name="GreenTheme" parent="FirebaseUI">
+    <!-- Required for sign-in flow styling -->
+    <item name="colorPrimary">@color/material_green_500</item>
+    <item name="colorPrimaryDark">@color/material_green_700</item>
+    <item name="colorAccent">@color/material_purple_a700</item>
+    
     <item name="colorControlNormal">@color/material_green_500</item>
     <item name="colorControlActivated">@color/material_lime_a700</item>
     <item name="colorControlHighlight">@color/material_green_a200</item>
@@ -415,7 +446,6 @@ a green theme:
 ```
 
 With associated colors:
-
 ```xml
 <color name="material_green_50">#E8F5E9</color>
 <color name="material_green_500">#4CAF50</color>
@@ -426,7 +456,6 @@ With associated colors:
 ```
 
 This would then be used in the construction of the sign-in intent:
-
 ```java
 startActivityForResult(
     AuthUI.getInstance(this).createSignInIntentBuilder()
@@ -435,20 +464,20 @@ startActivityForResult(
         .build());
 ```
 
-Your application theme could also simply be used, rather than defining a new
-one.
+Your application theme could also simply be used, rather than defining a new one.
 
-If you wish to change the string messages, the existing strings can be
-easily overridden by name in your application. See
-[the built-in strings.xml](src/main/res/values/strings.xml) and simply
-redefine a string to change it, for example:
+If you wish to change the string messages, the existing strings can be overridden
+by name in your application. See the module's [strings.xml](src/main/res/values/strings.xml) file
+and simply redefine a string to change it, for example:
 
 ```xml
 <resources>
     <!-- was "Signing up..." -->
-    <string name="progress_dialog_signing_up">Creating your shiny new account...</string>
+    <string name="fui_progress_dialog_signing_up">Creating your shiny new account...</string>
 </resources>
 ```
+Note: String resource names are internal to the library and there are currently no
+guarantees that they won't change between updates.
 
 ### OAuth Scope Customization
 
