@@ -204,7 +204,7 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
-If a terms of service URLb and privacy policy URL are required:
+If a terms of service URL and privacy policy URL are required:
 
 ```java
 startActivityForResult(
