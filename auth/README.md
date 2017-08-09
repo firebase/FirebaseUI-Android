@@ -204,7 +204,7 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
-If a terms of service URL, privacy policy URL, and a custom theme are required:
+If a terms of service URLb and privacy policy URL are required:
 
 ```java
 startActivityForResult(
@@ -213,7 +213,6 @@ startActivityForResult(
         .setAvailableProviders(...)
         .setTosUrl("https://superapp.example.com/terms-of-service.html")
         .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
-        .setTheme(R.style.SuperAppTheme)
         .build(),
     RC_SIGN_IN);
 ```
@@ -400,25 +399,28 @@ represented in the following diagram:
 To use FirebaseUI Auth's sign-in flows, you must provide an `app_name` string and use the
 AppCompat color attributes in your app.
 
-For example, something like this goes in your `strings.xml`:
+First, ensure an `app_name` resource is defined your `strings.xml` file like so:
+
 ```xml
 <resources>
-    <!-- ... -->
     <string name="app_name">My App</string>
+    <!-- ... -->
 </resources>
 ```
 
-This goes in your `styles.xml`:
+Second, ensure the three standard AppCompat color resources are defined with your own values:
+
 ```xml
-<style name="AppTheme" parent="FirebaseUI">
+<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
     <!-- Required for sign-in flow styling -->
-    <item name="colorPrimary">@color/material_green_500</item>
-    <item name="colorPrimaryDark">@color/material_green_700</item>
-    <item name="colorAccent">@color/material_purple_a700</item>
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
 </style>
+
 ```
-You don't have to call `setStyle()` on the sign in intent builder as FirebaseUI
-will automatically style the activities. For example:
+You don't have to call `setTheme()` on the sign in intent builder as FirebaseUI
+will automatically style the activities. This is sufficient:
 
 ```java
 startActivityForResult(
@@ -426,10 +428,8 @@ startActivityForResult(
         .build());
 ```
 
-Note: If your app is already using an AppCompat theme, you don't have to create 
-a new theme, but you can still optionally style other parts of the sign-in flow. 
-Standard material design colorand typography properties will take effect as expected. 
-For example, to define a green theme:
+If you would like more control over FirebaseUI's styling, you can define your own custom style
+to override certain or all styling attributes. For example, a green sign-in theme:
 
 ```xml
 <style name="GreenTheme" parent="FirebaseUI">
@@ -446,6 +446,7 @@ For example, to define a green theme:
 ```
 
 With associated colors:
+
 ```xml
 <color name="material_green_50">#E8F5E9</color>
 <color name="material_green_500">#4CAF50</color>
@@ -456,6 +457,7 @@ With associated colors:
 ```
 
 This would then be used in the construction of the sign-in intent:
+
 ```java
 startActivityForResult(
     AuthUI.getInstance(this).createSignInIntentBuilder()
@@ -468,7 +470,7 @@ Your application theme could also simply be used, rather than defining a new one
 
 If you wish to change the string messages, the existing strings can be overridden
 by name in your application. See the module's [strings.xml](src/main/res/values/strings.xml) file
-and simply redefine a string to change it, for example:
+and simply redefine a string to change it:
 
 ```xml
 <resources>
@@ -476,8 +478,9 @@ and simply redefine a string to change it, for example:
     <string name="fui_progress_dialog_signing_up">Creating your shiny new account...</string>
 </resources>
 ```
-Note: String resource names are internal to the library and there are currently no
-guarantees that they won't change between updates.
+**Note:** String resource names aren't considered part of the public API and might
+therefore change and break your app between library updates. We recommend looking
+at a diff of the `strings.xml` file before updating FirebaseUI.
 
 ### OAuth Scope Customization
 
