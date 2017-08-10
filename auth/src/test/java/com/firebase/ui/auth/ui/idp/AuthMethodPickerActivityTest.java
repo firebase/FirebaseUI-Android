@@ -33,7 +33,9 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FacebookAuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -123,7 +125,8 @@ public class AuthMethodPickerActivityTest {
 
         when(AuthHelperShadow.getCurrentUser().getProviders())
                 .thenReturn(Arrays.asList(FacebookAuthProvider.PROVIDER_ID));
-        when(AuthHelperShadow.getFirebaseAuth().signInWithCredential((AuthCredential) any()))
+        when(AuthHelperShadow.getCurrentUser()
+                     .linkWithCredential(any(FacebookAuthCredential.class)))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
 
         List<String> providers = Arrays.asList(AuthUI.FACEBOOK_PROVIDER);
@@ -134,7 +137,7 @@ public class AuthMethodPickerActivityTest {
         assertNotNull(facebookButton);
         facebookButton.performClick();
 
-        verifySmartLockSave(AuthUI.FACEBOOK_PROVIDER, TestConstants.EMAIL, null);
+        verifySmartLockSave(AuthUI.FACEBOOK_PROVIDER, TestConstants.EMAIL, null, null);
     }
 
     @Test
@@ -150,7 +153,8 @@ public class AuthMethodPickerActivityTest {
         when(AuthHelperShadow.getCurrentUser().getProviders())
                 .thenReturn(Arrays.asList(GoogleAuthProvider.PROVIDER_ID));
 
-        when(AuthHelperShadow.getFirebaseAuth().signInWithCredential((AuthCredential) any()))
+        when(AuthHelperShadow.getCurrentUser()
+                     .linkWithCredential(any(GoogleAuthCredential.class)))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
 
         Button googleButton = authMethodPickerActivity.findViewById(R.id.google_button);
@@ -158,7 +162,7 @@ public class AuthMethodPickerActivityTest {
         assertNotNull(googleButton);
         googleButton.performClick();
 
-        verifySmartLockSave(AuthUI.GOOGLE_PROVIDER, TestConstants.EMAIL, null);
+        verifySmartLockSave(AuthUI.GOOGLE_PROVIDER, TestConstants.EMAIL, null, null);
     }
 
     @Test

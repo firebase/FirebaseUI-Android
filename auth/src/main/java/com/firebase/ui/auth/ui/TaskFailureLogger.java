@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class TaskFailureLogger implements OnFailureListener {
     private String mTag;
@@ -30,6 +31,8 @@ public class TaskFailureLogger implements OnFailureListener {
 
     @Override
     public void onFailure(@NonNull Exception e) {
-        Log.w(mTag, mMessage, e);
+        if (!(e instanceof FirebaseAuthUserCollisionException)) {
+            Log.w(mTag, mMessage, e);
+        }
     }
 }

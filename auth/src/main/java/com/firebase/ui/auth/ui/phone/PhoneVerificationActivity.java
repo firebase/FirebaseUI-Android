@@ -37,6 +37,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -301,67 +302,71 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void signIn(@NonNull PhoneAuthCredential credential) {
-        getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(credential)
-                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(final AuthResult authResult) {
-                        mVerificationState = VerificationState.VERIFIED;
-                        completeLoadingDialog(getString(R.string.fui_verified));
+        Task<AuthResult> signInTask;
+        if (getAuthHelper().canLinkAccounts()) {
+            signInTask = getAuthHelper().getCurrentUser().linkWithCredential(credential);
+        } else {
+            signInTask = getAuthHelper().getFirebaseAuth().signInWithCredential(credential);
+        }
 
-                        // Activity can be recreated before this message is handled
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!mIsDestroyed) {
-                                    dismissLoadingDialog();
-                                    finish(authResult.getUser());
-                                }
-                            }
-                        }, SHORT_DELAY_MILLIS);
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        dismissLoadingDialog();
-                        //incorrect confirmation code
-                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                            FirebaseAuthError error = FirebaseAuthError.fromException(
-                                    (FirebaseAuthInvalidCredentialsException) e);
+        signInTask.addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
+            @Override
+            public void onSuccess(final AuthResult authResult) {
+                mVerificationState = VerificationState.VERIFIED;
+                completeLoadingDialog(getString(R.string.fui_verified));
 
-                            switch (error) {
-                                case ERROR_INVALID_VERIFICATION_CODE:
-                                    showAlertDialog(
-                                            getString(R.string.fui_incorrect_code_dialog_body),
-                                            new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    getSubmitConfirmationCodeFragment()
-                                                            .setConfirmationCode("");
-                                                }
-                                            });
-                                    break;
-                                case ERROR_SESSION_EXPIRED:
-                                    showAlertDialog(
-                                            getString(R.string.fui_error_session_expired),
-                                            new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    getSubmitConfirmationCodeFragment()
-                                                            .setConfirmationCode("");
-                                                }
-                                            });
-                                    break;
-                                default:
-                                    Log.w(PHONE_VERIFICATION_LOG_TAG, error.getDescription(), e);
-                                    showAlertDialog(error.getDescription(), null);
-                            }
-                        } else {
-                            showAlertDialog(e.getLocalizedMessage(), null);
+                // Activity can be recreated before this message is handled
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!mIsDestroyed) {
+                            dismissLoadingDialog();
+                            finish(authResult.getUser());
                         }
                     }
-                });
+                }, SHORT_DELAY_MILLIS);
+            }
+        }).addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                dismissLoadingDialog();
+                //incorrect confirmation code
+                if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                    FirebaseAuthError error = FirebaseAuthError.fromException(
+                            (FirebaseAuthInvalidCredentialsException) e);
+
+                    switch (error) {
+                        case ERROR_INVALID_VERIFICATION_CODE:
+                            showAlertDialog(
+                                    getString(R.string.fui_incorrect_code_dialog_body),
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            getSubmitConfirmationCodeFragment()
+                                                    .setConfirmationCode("");
+                                        }
+                                    });
+                            break;
+                        case ERROR_SESSION_EXPIRED:
+                            showAlertDialog(
+                                    getString(R.string.fui_error_session_expired),
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            getSubmitConfirmationCodeFragment()
+                                                    .setConfirmationCode("");
+                                        }
+                                    });
+                            break;
+                        default:
+                            Log.w(PHONE_VERIFICATION_LOG_TAG, error.getDescription(), e);
+                            showAlertDialog(error.getDescription(), null);
+                    }
+                } else {
+                    showAlertDialog(e.getLocalizedMessage(), null);
+                }
+            }
+        });
     }
 
     private void completeLoadingDialog(String content) {

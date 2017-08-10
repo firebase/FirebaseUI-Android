@@ -36,6 +36,15 @@ public class AuthHelper {
         return getFirebaseAuth().getCurrentUser();
     }
 
+    public boolean canLinkAccounts() {
+        return mFlowParams.accountLinkingEnabled && getCurrentUser() != null;
+    }
+
+    @Nullable
+    public String getUidForAccountLinking() {
+        return canLinkAccounts() ? getCurrentUser().getUid() : null;
+    }
+
     public SaveSmartLock getSaveSmartLockInstance(HelperActivityBase activity) {
         return SaveSmartLock.getInstance(activity);
     }

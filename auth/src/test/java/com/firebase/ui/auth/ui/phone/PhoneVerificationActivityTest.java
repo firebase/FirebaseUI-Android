@@ -208,6 +208,7 @@ public class PhoneVerificationActivityTest {
     @Config(shadows = {AuthHelperShadow.class})
     public void testSubmitCode_badCodeShowsAlertDialog() {
         reset(AuthHelperShadow.getPhoneAuthProvider());
+        AuthHelperShadow.sCanLinkAccounts = false;
         when(AuthHelperShadow.getFirebaseAuth().signInWithCredential(any(AuthCredential.class)))
                 .thenReturn(new AutoCompleteTask<AuthResult>(
                         null, true,
@@ -269,6 +270,7 @@ public class PhoneVerificationActivityTest {
 
         when(AuthHelperShadow.getCurrentUser().getPhoneNumber()).thenReturn(PHONE);
         when(AuthHelperShadow.getCurrentUser().getEmail()).thenReturn(null);
+        AuthHelperShadow.sCanLinkAccounts = false;
         when(AuthHelperShadow.getFirebaseAuth().signInWithCredential(any(AuthCredential.class)))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
         mActivity.verifyPhoneNumber(PHONE, false);
@@ -296,6 +298,7 @@ public class PhoneVerificationActivityTest {
 
         when(AuthHelperShadow.getCurrentUser().getPhoneNumber()).thenReturn(PHONE);
         when(AuthHelperShadow.getCurrentUser().getEmail()).thenReturn(null);
+        AuthHelperShadow.sCanLinkAccounts = false;
 
         when(AuthHelperShadow.getFirebaseAuth().signInWithCredential(any(AuthCredential.class)))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));

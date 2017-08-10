@@ -32,6 +32,7 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.firebase.ui.auth.util.Preconditions;
+import com.firebase.ui.auth.util.accountlink.ManualMergeService;
 import com.firebase.ui.auth.util.signincontainer.SmartLockBase;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.Status;
@@ -553,10 +554,24 @@ public class AuthUI {
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
+        private boolean mIsAccountLinkingEnabled = false;
+        private Class<? extends ManualMergeService> mAccountLinkingListener;
         private boolean mAllowNewEmailAccounts = true;
 
         private SignInIntentBuilder() {
             super();
+        }
+
+        /**
+         * Links the current user to an account created in the sign-in flow.
+         * <p>
+         * Linking is disabled by default because of a <a href="https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#handling-account-link-failures">caveat</a>.
+         */
+        public SignInIntentBuilder setIsAccountLinkingEnabled(boolean enabled,
+                                                              @Nullable Class<? extends ManualMergeService> listener) {
+            mIsAccountLinkingEnabled = enabled;
+            mAccountLinkingListener = listener;
+            return this;
         }
 
         /**
@@ -580,6 +595,8 @@ public class AuthUI {
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
                     mEnableHints,
+                    mIsAccountLinkingEnabled,
+                    mAccountLinkingListener,
                     mAllowNewEmailAccounts);
         }
     }

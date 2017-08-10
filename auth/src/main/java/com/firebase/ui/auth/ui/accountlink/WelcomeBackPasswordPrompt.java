@@ -43,13 +43,17 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
+import com.firebase.ui.auth.util.accountlink.ManualMergeUtils;
 import com.firebase.ui.auth.util.accountlink.ProfileMerger;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
+
+import java.util.concurrent.Callable;
 
 /**
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
@@ -145,21 +149,32 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
         final AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
 
+        String prevUid = getAuthHelper().getUidForAccountLinking();
         final IdpResponse response;
         if (authCredential == null) {
             response = new IdpResponse.Builder(
-                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
+                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                            .setPrevUid(prevUid)
+                            .build())
                     .build();
         } else {
             response = new IdpResponse.Builder(mIdpResponse.getUser())
                     .setToken(mIdpResponse.getIdpToken())
                     .setSecret(mIdpResponse.getIdpSecret())
                     .build();
+            response.getUser().setPrevUid(prevUid);
         }
 
-        // Sign in with known email and the password provided
-        getAuthHelper().getFirebaseAuth()
-                .signInWithEmailAndPassword(email, password)
+        ManualMergeUtils.injectSignInTaskBetweenDataTransfer(this,
+                response,
+                new Callable<Task<AuthResult>>() {
+                    @Override
+                    public Task<AuthResult> call() throws Exception {
+                        // Sign in with known email and the password provided
+                        return getAuthHelper().getFirebaseAuth()
+                                .signInWithEmailAndPassword(email, password);
+                    }
+                })
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {

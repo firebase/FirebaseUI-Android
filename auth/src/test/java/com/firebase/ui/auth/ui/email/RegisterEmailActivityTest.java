@@ -28,6 +28,7 @@ import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -120,8 +121,8 @@ public class RegisterEmailActivityTest {
         name.setText(TestConstants.NAME);
         password.setText(TestConstants.PASSWORD);
 
-        when(AuthHelperShadow.getFirebaseAuth()
-                .createUserWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD))
+        AuthHelperShadow.sCanLinkAccounts = true;
+        when(AuthHelperShadow.getCurrentUser().linkWithCredential(any(EmailAuthCredential.class)))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
         when(AuthHelperShadow.getCurrentUser().updateProfile(any(UserProfileChangeRequest.class)))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
@@ -130,13 +131,14 @@ public class RegisterEmailActivityTest {
         button.performClick();
 
         // Verify create user request
-        verify(AuthHelperShadow.getFirebaseAuth())
-                .createUserWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD);
+        verify(AuthHelperShadow.getCurrentUser())
+                .linkWithCredential(any(EmailAuthCredential.class));
 
         // Finally, the new credential should be saved to SmartLock
         TestHelper.verifySmartLockSave(
                 EmailAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
-                TestConstants.PASSWORD);
+                TestConstants.PASSWORD,
+                null);
     }
 }

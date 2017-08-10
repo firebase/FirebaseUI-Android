@@ -1,6 +1,5 @@
 package com.firebase.uidemo.database;
 
-import android.os.Bundle;
 import android.view.View;
 
 import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
@@ -12,12 +11,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class ChatIndexActivity extends ChatActivity {
     private DatabaseReference mChatIndicesRef;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mChatIndicesRef = FirebaseDatabase.getInstance().getReference().child("chatIndices");
-    }
 
     @Override
     public void onClick(View v) {
@@ -34,6 +27,11 @@ public class ChatIndexActivity extends ChatActivity {
 
     @Override
     protected FirebaseRecyclerAdapter<Chat, ChatHolder> getAdapter() {
+        mChatIndicesRef = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("chatIndices")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         return new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
                 Chat.class,
                 R.layout.message,

@@ -38,20 +38,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 android:text="@string/sign_out" />
 
             <Button
-                android:id="@+id/delete_account"
+                android:id="@+id/link_account"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="16dp"
-                android:text="@string/delete_account_label"
-                android:theme="@style/WarnButton"
-                tools:ignore="ButtonStyle" />
+                android:layout_margin="8dp"
+                android:text="@string/link_account" />
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/delete_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="8dp"
+            android:text="@string/delete_account_label"
+            android:theme="@style/WarnButton"
+            tools:ignore="ButtonStyle" />
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Subhead"
@@ -104,6 +113,26 @@
                     android:textIsSelectable="true" />
 
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/prev_uid_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/prev_uid" />
+
+            <TextView
+                android:id="@+id/prev_uid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true" />
 
         </LinearLayout>
 

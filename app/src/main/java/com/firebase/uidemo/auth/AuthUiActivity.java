@@ -55,6 +55,7 @@ public class AuthUiActivity extends AppCompatActivity {
     private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google.com/terms/analytics/#7_privacy";
 
     private static final int RC_SIGN_IN = 100;
+    private static final String OVERRIDE_LOGIN_CHECKS_EXTRA = "overide_login_checks";
 
     @BindView(R.id.default_theme)
     RadioButton mUseDefaultTheme;
@@ -137,8 +138,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.google_scope_youtube_data)
     CheckBox mGoogleScopeYoutubeData;
 
-    public static Intent createIntent(Context context) {
-        return new Intent(context, AuthUiActivity.class);
+    public static Intent createIntent(Context context, boolean overrideLoginChecks) {
+        return new Intent(context, AuthUiActivity.class)
+                .putExtra(OVERRIDE_LOGIN_CHECKS_EXTRA, overrideLoginChecks);
     }
 
     @Override
@@ -147,8 +149,8 @@ public class AuthUiActivity extends AppCompatActivity {
         setContentView(R.layout.auth_ui_layout);
         ButterKnife.bind(this);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null
+                && !getIntent().getBooleanExtra(OVERRIDE_LOGIN_CHECKS_EXTRA, false)) {
             startSignedInActivity(null);
             finish();
             return;
@@ -206,6 +208,7 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
                                                mEnableHintSelector.isChecked())
+                        .setIsAccountLinkingEnabled(true, null)
                         .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
                 RC_SIGN_IN);
@@ -229,6 +232,7 @@ public class AuthUiActivity extends AppCompatActivity {
         // Successfully signed in
         if (resultCode == RESULT_OK) {
             startSignedInActivity(response);
+            setResult(RESULT_OK);
             finish();
             return;
         } else {

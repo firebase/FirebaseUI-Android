@@ -227,6 +227,15 @@ public class RegisterEmailFragment extends FragmentBase implements
     }
 
     private void registerUser(final String email, final String name, final String password) {
+        Task<AuthResult> registerTask;
+        if (getAuthHelper().canLinkAccounts()) {
+            registerTask = getAuthHelper().getCurrentUser()
+                    .linkWithCredential(EmailAuthProvider.getCredential(email, password));
+        } else {
+            registerTask = getAuthHelper().getFirebaseAuth()
+                    .createUserWithEmailAndPassword(email, password);
+        }
+
         final IdpResponse response = new IdpResponse.Builder(
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
                         .setName(name)
@@ -234,10 +243,8 @@ public class RegisterEmailFragment extends FragmentBase implements
                         .build())
                 .build();
 
-        getAuthHelper().getFirebaseAuth()
-                .createUserWithEmailAndPassword(email, password)
+        registerTask
                 .continueWithTask(new ProfileMerger(response))
-                .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
@@ -248,6 +255,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                                 response);
                     }
                 })
+                .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnFailureListener(getActivity(), new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {

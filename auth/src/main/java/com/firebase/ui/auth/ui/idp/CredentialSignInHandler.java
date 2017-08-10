@@ -26,6 +26,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.util.accountlink.AccountLinker;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
@@ -33,6 +34,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -96,6 +98,16 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private class StartWelcomeBackFlow implements OnSuccessListener<String> {
         @Override
         public void onSuccess(String provider) {
+            AuthCredential credential = ProviderUtils.getAuthCredential(mResponse);
+            if (mActivity.getAuthHelper().canLinkAccounts()
+                    && credential != null
+                    && provider.equals(credential.getProvider())) {
+                // We don't want to show the welcome back dialog since the user selected
+                // an existing account and we can just link the two accounts without knowing
+                // prevCredential.
+                AccountLinker.linkWithCurrentUser(mActivity, mResponse, credential);
+                return;
+            }
             mActivity.getDialogHolder().dismissDialog();
 
             if (provider == null) {

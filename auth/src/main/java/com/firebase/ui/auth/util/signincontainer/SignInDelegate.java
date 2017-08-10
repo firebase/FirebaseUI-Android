@@ -19,12 +19,14 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
+import com.firebase.ui.auth.util.accountlink.ManualMergeUtils;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -48,6 +50,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Attempts to acquire a credential from Smart Lock for Passwords to sign in an existing account. If
@@ -272,13 +275,24 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
      * with {@link Activity#RESULT_OK}. On failure, delete the credential from SmartLock (if
      * applicable) and then launch the auth method picker flow.
      */
-    private void signInWithEmailAndPassword(String email, String password) {
+    private void signInWithEmailAndPassword(final String email, final String password) {
+        // Because we are being called from Smart Lock,
+        // we can assume that the account already exists and a user collision exception will be thrown
+        // so we don't bother with linking credentials
         final IdpResponse response =
-                new IdpResponse.Builder(new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
-                        .build();
+                new IdpResponse.Builder(new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                        .setPrevUid(getAuthHelper().getUidForAccountLinking())
+                        .build()).build();
 
-        getAuthHelper().getFirebaseAuth()
-                .signInWithEmailAndPassword(email, password)
+        ManualMergeUtils.injectSignInTaskBetweenDataTransfer((HelperActivityBase) getActivity(),
+                response,
+                new Callable<Task<AuthResult>>() {
+                    @Override
+                    public Task<AuthResult> call() throws Exception {
+                        return getAuthHelper().getFirebaseAuth()
+                                .signInWithEmailAndPassword(email, password);
+                    }
+                })
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {

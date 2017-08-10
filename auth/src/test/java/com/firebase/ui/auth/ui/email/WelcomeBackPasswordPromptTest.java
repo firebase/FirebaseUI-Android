@@ -117,6 +117,7 @@ public class WelcomeBackPasswordPromptTest {
         verifySmartLockSave(
                 EmailAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
-                TestConstants.PASSWORD);
+                TestConstants.PASSWORD,
+                TestConstants.UID);
     }
 }

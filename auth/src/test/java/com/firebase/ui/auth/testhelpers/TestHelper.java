@@ -79,16 +79,23 @@ public class TestHelper {
                 null  /* privacyPolicyUrl */,
                 true  /* credentialPickerEnabled */,
                 true  /* hintSelectorEnabled */,
+                true, /* accountLinkingEnabled */
+                null, /* accountLinkingListener */
                 true  /* allowNewEmailAccounts */);
     }
 
-    public static void verifySmartLockSave(String providerId, String email, String password) {
-        verifySmartLockSave(providerId, email, password, null);
+    public static void verifySmartLockSave(String providerId,
+                                           String email,
+                                           String password,
+                                           String accountLinkingUid) {
+        verifySmartLockSave(providerId, email, password, accountLinkingUid, null);
     }
 
-    public static void verifySmartLockSave(String providerId, String email,
-                                           String password, String phoneNumber) {
-
+    public static void verifySmartLockSave(String providerId,
+                                           String email,
+                                           String password,
+                                           String accountLinkingUid,
+                                           String phoneNumber) {
         ArgumentCaptor<FirebaseUser> userCaptor = ArgumentCaptor.forClass(FirebaseUser.class);
         ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
@@ -103,6 +110,7 @@ public class TestHelper {
         assertEquals(email, userCaptor.getValue().getEmail());
         assertEquals(password, passwordCaptor.getValue());
         assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
+        assertEquals(accountLinkingUid, idpResponseCaptor.getValue().getPrevUid());
 
         // Check phone number (if necessary)
         if (phoneNumber != null) {

@@ -40,8 +40,11 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.util.accountlink.ProfileMerger;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -142,8 +145,17 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onSuccess(IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(credential)
+
+        Task<AuthResult> signInTask;
+        if (getAuthHelper().canLinkAccounts()) {
+            signInTask = getAuthHelper().getCurrentUser()
+                    .linkWithCredential(credential)
+                    .continueWithTask(new ProfileMerger(response));
+        } else {
+            signInTask = getAuthHelper().getFirebaseAuth().signInWithCredential(credential);
+        }
+
+        signInTask
                 .addOnCompleteListener(new CredentialSignInHandler(
                         mActivity,
                         mSaveSmartLock,
