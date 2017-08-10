@@ -96,13 +96,13 @@ public class WelcomeBackPasswordPromptTest {
     @Config(shadows = {AuthHelperShadow.class})
     public void testSignInButton_signsInAndSavesCredentials() {
         // initialize mocks
-        reset(AuthHelperShadow.sSaveSmartLock);
+        reset(AuthHelperShadow.getSaveSmartLockInstance(null));
 
         WelcomeBackPasswordPrompt welcomeBackActivity = createActivity();
         EditText passwordField = welcomeBackActivity.findViewById(R.id.password);
         passwordField.setText(TestConstants.PASSWORD);
 
-        when(AuthHelperShadow.sFirebaseAuth.signInWithEmailAndPassword(
+        when(AuthHelperShadow.getFirebaseAuth().signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
                 new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
@@ -110,12 +110,13 @@ public class WelcomeBackPasswordPromptTest {
         Button signIn = welcomeBackActivity.findViewById(R.id.button_done);
         signIn.performClick();
 
-        verify(AuthHelperShadow.sFirebaseAuth).signInWithEmailAndPassword(
+        verify(AuthHelperShadow.getFirebaseAuth()).signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 
-        verifySmartLockSave(EmailAuthProvider.PROVIDER_ID,
-                            TestConstants.EMAIL,
-                            TestConstants.PASSWORD);
+        verifySmartLockSave(
+                EmailAuthProvider.PROVIDER_ID,
+                TestConstants.EMAIL,
+                TestConstants.PASSWORD);
     }
 }

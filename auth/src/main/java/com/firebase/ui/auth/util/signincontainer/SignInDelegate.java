@@ -279,14 +279,14 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         getAuthHelper().getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
-                .addOnFailureListener(new TaskFailureLogger(
-                        TAG, "Error signing in with email and password"))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         finish(Activity.RESULT_OK, response.toIntent());
                     }
                 })
+                .addOnFailureListener(new TaskFailureLogger(
+                        TAG, "Error signing in with email and password"))
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {

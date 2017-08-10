@@ -41,8 +41,6 @@ public class TestHelper {
     private static final String API_KEY = "fakeKey";
     private static final String FIREBASE_APP_NAME = "firebaseAppName";
 
-    private static FirebaseUser sFirebaseUser;
-
     public static FirebaseApp initializeApp(Context context) {
         try {
             return FirebaseApp.initializeApp(
@@ -59,6 +57,7 @@ public class TestHelper {
 
     public static FirebaseUser getMockFirebaseUser() {
         FirebaseUser user = mock(FirebaseUser.class);
+        when(user.getUid()).thenReturn(TestConstants.UID);
         when(user.getEmail()).thenReturn(TestConstants.EMAIL);
         when(user.getDisplayName()).thenReturn(TestConstants.NAME);
         when(user.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
@@ -94,7 +93,7 @@ public class TestHelper {
         ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
 
-        verify(AuthHelperShadow.sSaveSmartLock).saveCredentialsOrFinish(
+        verify(AuthHelperShadow.getSaveSmartLockInstance(null)).saveCredentialsOrFinish(
                 userCaptor.capture(),
                 passwordCaptor.capture(),
                 idpResponseCaptor.capture());
@@ -103,6 +102,7 @@ public class TestHelper {
         assertNotNull(userCaptor.getValue());
         assertEquals(email, userCaptor.getValue().getEmail());
         assertEquals(password, passwordCaptor.getValue());
+        assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
 
         // Check phone number (if necessary)
         if (phoneNumber != null) {

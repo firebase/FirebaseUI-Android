@@ -37,7 +37,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -142,8 +141,7 @@ public class CredentialSignInHandlerTest {
         when(mockActivity.getDialogHolder()).thenReturn(mockHolder);
 
         // pretend the account has Facebook linked already
-        FirebaseAuth mockFirebaseAuth = AuthHelperShadow.sFirebaseAuth;
-        when(mockFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL)).thenReturn(
+        when(AuthHelperShadow.getFirebaseAuth().fetchProvidersForEmail(TestConstants.EMAIL)).thenReturn(
                 new AutoCompleteTask<ProviderQueryResult>(
                         new FakeProviderQueryResult(
                                 Arrays.asList(FacebookAuthProvider.PROVIDER_ID)), true, null));
@@ -203,8 +201,7 @@ public class CredentialSignInHandlerTest {
                 new FirebaseAuthUserCollisionException(LINKING_ERROR, LINKING_EXPLANATION));
 
         // pretend the account has a Password account linked already
-        FirebaseAuth mockFirebaseAuth = AuthHelperShadow.sFirebaseAuth;
-        when(mockFirebaseAuth.fetchProvidersForEmail(TestConstants.EMAIL)).thenReturn(
+        when(AuthHelperShadow.getFirebaseAuth().fetchProvidersForEmail(TestConstants.EMAIL)).thenReturn(
                 new AutoCompleteTask<ProviderQueryResult>(
                         new FakeProviderQueryResult(
                                 Arrays.asList(EmailAuthProvider.PROVIDER_ID)), true, null));

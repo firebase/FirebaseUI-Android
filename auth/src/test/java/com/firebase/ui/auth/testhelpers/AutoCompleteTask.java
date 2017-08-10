@@ -89,7 +89,7 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
     @NonNull
     @Override
     public Task<TResult> addOnSuccessListener(@NonNull Activity activity,
-                                              @NonNull OnSuccessListener onSuccessListener) {
+                                              @NonNull OnSuccessListener<? super TResult> onSuccessListener) {
         if (mSuccess) {
             onSuccessListener.onSuccess(mResult);
         }
@@ -125,6 +125,17 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
             @NonNull Continuation<TResult, TContinuationResult> continuation) {
         try {
             return Tasks.forResult(continuation.then(Tasks.forResult(mResult)));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @NonNull
+    @Override
+    public <TContinuationResult> Task<TContinuationResult> continueWithTask(
+            @NonNull Continuation<TResult, Task<TContinuationResult>> continuation) {
+        try {
+            return continuation.then(Tasks.forResult(mResult));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

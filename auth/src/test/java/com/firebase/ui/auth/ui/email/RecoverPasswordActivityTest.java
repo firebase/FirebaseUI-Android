@@ -61,9 +61,9 @@ public class RecoverPasswordActivityTest {
         RecoverPasswordActivity recoverPasswordActivity = createActivity();
 
         Button nextButton = recoverPasswordActivity.findViewById(R.id.button_done);
-        when(AuthHelperShadow.sFirebaseAuth.sendPasswordResetEmail(TestConstants.EMAIL))
+        when(AuthHelperShadow.getFirebaseAuth().sendPasswordResetEmail(TestConstants.EMAIL))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
         nextButton.performClick();
-        verify(AuthHelperShadow.sFirebaseAuth).sendPasswordResetEmail(TestConstants.EMAIL);
+        verify(AuthHelperShadow.getFirebaseAuth()).sendPasswordResetEmail(TestConstants.EMAIL);
     }
 }
