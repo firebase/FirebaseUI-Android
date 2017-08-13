@@ -65,11 +65,15 @@ public final class ProviderUtils {
                     @Override
                     public String then(@NonNull Task<ProviderQueryResult> task) throws Exception {
                         if (!task.isSuccessful()) return null;
-
-                        List<String> providers = task.getResult().getProviders();
-                        return providers == null || providers.isEmpty()
-                                ? null : providers.get(providers.size() - 1);
+                        return getLastUsedProvider(task.getResult());
                     }
                 });
+    }
+
+    @Nullable
+    public static String getLastUsedProvider(ProviderQueryResult result) {
+        List<String> providers = result.getProviders();
+        return providers == null || providers.isEmpty()
+                ? null : providers.get(providers.size() - 1);
     }
 }

@@ -19,27 +19,33 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.accountlink.AccountLinker;
+import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.util.accountlink.AccountLinker;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.ProviderQueryResult;
+
+import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
@@ -69,20 +75,28 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             mActivity.saveCredentialsOrFinish(mSmartLock, firebaseUser, mResponse);
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                Task<ProviderQueryResult> fetchTask;
                 String email = mResponse.getEmail();
-                if (email != null) {
-                    FirebaseAuth auth = mActivity.getAuthHelper().getFirebaseAuth();
-                    ProviderUtils.fetchTopProvider(auth, email)
-                            .addOnSuccessListener(new StartWelcomeBackFlow())
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Intent intent = IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR);
-                                    mActivity.finish(Activity.RESULT_CANCELED, intent);
-                                }
-                            });
-                    return;
+
+                if (TextUtils.isEmpty(email)) {
+                    fetchTask = Tasks.forException(new NullPointerException("Email cannot be empty"));
+                } else {
+                    fetchTask = mActivity.getAuthHelper()
+                            .getFirebaseAuth()
+                            .fetchProvidersForEmail(email);
                 }
+
+                fetchTask
+                        .addOnSuccessListener(new StartWelcomeBackFlow())
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Intent intent = IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR);
+                                mActivity.finish(Activity.RESULT_CANCELED, intent);
+                            }
+                        })
+                        .addOnFailureListener(new TaskFailureLogger(TAG,
+                                "Error fetching providers for email"));
             } else {
                 Log.e(TAG,
                       "Unexpected exception when signing in with credential "
@@ -95,13 +109,14 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
         }
     }
 
-    private class StartWelcomeBackFlow implements OnSuccessListener<String> {
+    private class StartWelcomeBackFlow implements OnSuccessListener<ProviderQueryResult> {
         @Override
-        public void onSuccess(String provider) {
+        public void onSuccess(ProviderQueryResult result) {
+            List<String> providers = result.getProviders();
             AuthCredential credential = ProviderUtils.getAuthCredential(mResponse);
             if (mActivity.getAuthHelper().canLinkAccounts()
                     && credential != null
-                    && provider.equals(credential.getProvider())) {
+                    && providers != null && providers.contains(credential.getProvider())) {
                 // We don't want to show the welcome back dialog since the user selected
                 // an existing account and we can just link the two accounts without knowing
                 // prevCredential.
@@ -110,6 +125,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
             }
             mActivity.getDialogHolder().dismissDialog();
 
+            @AuthUI.SupportedProvider String provider = ProviderUtils.getLastUsedProvider(result);
             if (provider == null) {
                 throw new IllegalStateException(
                         "No provider even though we received a FirebaseAuthUserCollisionException");
