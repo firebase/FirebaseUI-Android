@@ -97,6 +97,8 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                         })
                         .addOnFailureListener(new TaskFailureLogger(TAG,
                                 "Error fetching providers for email"));
+
+                return;
             } else {
                 Log.e(TAG,
                       "Unexpected exception when signing in with credential "
