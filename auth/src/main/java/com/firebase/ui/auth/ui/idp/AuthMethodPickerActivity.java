@@ -68,7 +68,8 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     private SaveSmartLock mSaveSmartLock;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return HelperActivityBase.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
+        return HelperActivityBase.createBaseIntent(
+                context, AuthMethodPickerActivity.class, flowParams);
     }
 
     @Override
@@ -83,14 +84,14 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
         if (logoId == AuthUI.NO_LOGO) {
             findViewById(R.id.logo).setVisibility(View.GONE);
 
-            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.root);
+            ConstraintLayout layout = findViewById(R.id.root);
             ConstraintSet constraints = new ConstraintSet();
             constraints.clone(layout);
             constraints.setHorizontalBias(R.id.container, 0.5f);
             constraints.setVerticalBias(R.id.container, 0.5f);
             constraints.applyTo(layout);
         } else {
-            ImageView logo = (ImageView) findViewById(R.id.logo);
+            ImageView logo = findViewById(R.id.logo);
             logo.setImageResource(logoId);
         }
     }
@@ -121,7 +122,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
             }
         }
 
-        ViewGroup btnHolder = (ViewGroup) findViewById(R.id.btn_holder);
+        ViewGroup btnHolder = findViewById(R.id.btn_holder);
         for (final Provider provider : mProviders) {
             View loginButton = getLayoutInflater()
                     .inflate(provider.getButtonLayout(), btnHolder, false);
@@ -155,19 +156,19 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     }
 
     @Override
-    public void onSuccess(final IdpResponse response) {
+    public void onSuccess(IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
         getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(credential)
-                .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Firebase sign in with credential "
-                                + credential.getProvider() + " unsuccessful. " +
-                                "Visit https://console.firebase.google.com to enable it."))
                 .addOnCompleteListener(new CredentialSignInHandler(
                         this,
                         mSaveSmartLock,
                         RC_ACCOUNT_LINK,
-                        response));
+                        response))
+                .addOnFailureListener(
+                        new TaskFailureLogger(TAG, "Firebase sign in with credential " +
+                                credential.getProvider() + " unsuccessful. " +
+                                "Visit https://console.firebase.google.com to enable it."));
     }
 
     @Override

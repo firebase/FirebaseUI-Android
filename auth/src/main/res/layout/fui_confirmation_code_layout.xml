@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/dgts__titleText"
+            android:id="@+id/dgts_titleText"
             style="@style/FirebaseUI.Text.T08"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             style="@style/FirebaseUI.Text.T08"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/dgts__titleText"
+            android:layout_below="@+id/dgts_titleText"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/fui_linkColor"
             tools:ignore="SelectableText" />
@@ -41,7 +41,7 @@
             android:ems="10"
             android:fontFamily="monospace"
             android:gravity="center"
-            android:imeOptions="actionNext"
+            android:imeOptions="actionDone"
             android:inputType="number"
             android:textSize="32sp"
             android:typeface="monospace"
@@ -98,7 +98,7 @@
             android:layout_marginTop="@dimen/fui_field_padding_vert"
             android:layout_below="@id/resend_code_layout"
             android:textIsSelectable="false"
-            tools:text="@string/create_account_preamble" />
+            tools:text="@string/fui_create_account_preamble_tos_and_pp" />
 
     </RelativeLayout>
 

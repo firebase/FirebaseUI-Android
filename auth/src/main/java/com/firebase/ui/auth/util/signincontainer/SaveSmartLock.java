@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.util.signincontainer;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +32,6 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
@@ -162,12 +162,12 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SAVE) {
-            if (resultCode != ResultCodes.OK) {
+            if (resultCode != Activity.RESULT_OK) {
                 Log.e(TAG, "SAVE: Canceled by user");
             }
             finish();
         } else if (requestCode == RC_UPDATE_SERVICE) {
-            if (resultCode == ResultCodes.OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
                         .build();
 
@@ -182,12 +182,12 @@ public class SaveSmartLock extends SmartLockBase<Status> {
     }
 
     private void finish() {
-        finish(ResultCodes.OK, mResponse.toIntent());
+        finish(Activity.RESULT_OK, mResponse.toIntent());
     }
 
     /**
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
-     * Otherwise, finish the calling Activity with {@link ResultCodes#OK RESULT_OK}.
+     * Otherwise, finish the calling Activity with {@link Activity#RESULT_OK}.
      * <p>
      * Note: saveCredentialsOrFinish cannot be called immediately after getInstance because onCreate
      * has not yet been called.
