@@ -30,7 +30,6 @@ import android.util.Log;
 import com.firebase.ui.auth.FirebaseAuthError;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -55,7 +54,7 @@ import java.util.concurrent.TimeUnit;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhoneVerificationActivity extends AppCompatBase {
     private enum VerificationState {
-        VERIFICATION_NOT_STARTED, VERIFICATION_STARTED, VERIFIED;
+        VERIFICATION_NOT_STARTED, VERIFICATION_STARTED, VERIFIED
     }
 
     private static final String PHONE_VERIFICATION_LOG_TAG = "PhoneVerification";
@@ -159,12 +158,12 @@ public class PhoneVerificationActivity extends AppCompatBase {
 
     public void submitConfirmationCode(String confirmationCode) {
         showLoadingDialog(getString(R.string.fui_verifying));
-        signingWithCreds(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
+        signIn(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
     }
 
     private void onVerificationSuccess(@NonNull final PhoneAuthCredential phoneAuthCredential) {
         if (TextUtils.isEmpty(phoneAuthCredential.getSmsCode())) {
-            signingWithCreds(phoneAuthCredential);
+            signIn(phoneAuthCredential);
         } else {
             //Show Fragment if it is not already visible
             showSubmitCodeFragment();
@@ -177,7 +176,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
                 submitConfirmationCodeFragment.setConfirmationCode(String.valueOf
                         (phoneAuthCredential.getSmsCode()));
             }
-            signingWithCreds(phoneAuthCredential);
+            signIn(phoneAuthCredential);
         }
     }
 
@@ -193,36 +192,33 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void onVerificationFailed(@NonNull FirebaseException ex) {
-        VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
-                getSupportFragmentManager().findFragmentByTag(VerifyPhoneNumberFragment.TAG);
+        dismissLoadingDialog();
 
-        if (verifyPhoneNumberFragment == null) {
-            return;
-        }
         if (ex instanceof FirebaseAuthException) {
             FirebaseAuthError error = FirebaseAuthError.fromException((FirebaseAuthException) ex);
 
             switch (error) {
                 case ERROR_INVALID_PHONE_NUMBER:
-                    verifyPhoneNumberFragment.showError(getString(R.string.fui_invalid_phone_number));
-                    dismissLoadingDialog();
+                    VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
+                            getSupportFragmentManager().findFragmentByTag(VerifyPhoneNumberFragment.TAG);
+
+                    if (verifyPhoneNumberFragment != null) {
+                        verifyPhoneNumberFragment.showError(
+                                getString(R.string.fui_invalid_phone_number));
+                    }
                     break;
                 case ERROR_TOO_MANY_REQUESTS:
                     showAlertDialog(getString(R.string.fui_error_too_many_attempts), null);
-                    dismissLoadingDialog();
                     break;
                 case ERROR_QUOTA_EXCEEDED:
                     showAlertDialog(getString(R.string.fui_error_quota_exceeded), null);
-                    dismissLoadingDialog();
                     break;
                 default:
                     Log.w(PHONE_VERIFICATION_LOG_TAG, error.getDescription(), ex);
-                    dismissLoadingDialog();
                     showAlertDialog(error.getDescription(), null);
             }
         } else {
             Log.w(PHONE_VERIFICATION_LOG_TAG, ex.getLocalizedMessage());
-            dismissLoadingDialog();
             showAlertDialog(ex.getLocalizedMessage(), null);
         }
     }
@@ -293,8 +289,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
                         .setPhoneNumber(user.getPhoneNumber())
                         .build())
                 .build();
-        setResult(ResultCodes.OK, response.toIntent());
-        finish();
+        finish(RESULT_OK, response.toIntent());
     }
 
     private void showAlertDialog(@NonNull String s, DialogInterface.OnClickListener
@@ -305,9 +300,9 @@ public class PhoneVerificationActivity extends AppCompatBase {
                 .show();
     }
 
-    private void signingWithCreds(@NonNull PhoneAuthCredential phoneAuthCredential) {
+    private void signIn(@NonNull PhoneAuthCredential credential) {
         getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(phoneAuthCredential)
+                .signInWithCredential(credential)
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(final AuthResult authResult) {
@@ -387,7 +382,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
 
     private void dismissLoadingDialog() {
         if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
+            mProgressDialog.dismissAllowingStateLoss();
             mProgressDialog = null;
         }
     }

@@ -34,7 +34,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -77,13 +76,11 @@ public class RegisterEmailActivityTest {
         registerEmailActivity.onNewUser(
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
 
-        Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
+        Button button = registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
-        TextInputLayout nameLayout = (TextInputLayout)
-                registerEmailActivity.findViewById(R.id.name_layout);
-        TextInputLayout passwordLayout = (TextInputLayout)
-                registerEmailActivity.findViewById(R.id.password_layout);
+        TextInputLayout nameLayout = registerEmailActivity.findViewById(R.id.name_layout);
+        TextInputLayout passwordLayout = registerEmailActivity.findViewById(R.id.password_layout);
 
         assertEquals(
                 registerEmailActivity.getString(R.string.fui_required_field),
@@ -103,7 +100,7 @@ public class RegisterEmailActivityTest {
     @Config(shadows = {AuthHelperShadow.class})
     public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
         // init mocks
-        reset(AuthHelperShadow.sSaveSmartLock);
+        reset(AuthHelperShadow.getSaveSmartLockInstance(null));
 
         TestHelper.initializeApp(RuntimeEnvironment.application);
         RegisterEmailActivity registerEmailActivity = createActivity();
@@ -115,37 +112,26 @@ public class RegisterEmailActivityTest {
                         .setPhotoUri(TestConstants.PHOTO_URI)
                         .build());
 
-        EditText email = (EditText) registerEmailActivity.findViewById(R.id.email);
-        EditText name = (EditText) registerEmailActivity.findViewById(R.id.name);
-        EditText password = (EditText) registerEmailActivity.findViewById(R.id.password);
+        EditText email = registerEmailActivity.findViewById(R.id.email);
+        EditText name = registerEmailActivity.findViewById(R.id.name);
+        EditText password = registerEmailActivity.findViewById(R.id.password);
 
         email.setText(TestConstants.EMAIL);
         name.setText(TestConstants.NAME);
         password.setText(TestConstants.PASSWORD);
 
-        // Mock user creation requests
-        when(AuthHelperShadow.sFirebaseAuth
+        when(AuthHelperShadow.getFirebaseAuth()
                 .createUserWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
-
-        // Mock change profle requests
-        when(FakeAuthResult.INSTANCE.getUser()
-                .updateProfile(any(UserProfileChangeRequest.class)))
+        when(AuthHelperShadow.getCurrentUser().updateProfile(any(UserProfileChangeRequest.class)))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
-        Button button = (Button) registerEmailActivity.findViewById(R.id.button_create);
+        Button button = registerEmailActivity.findViewById(R.id.button_create);
         button.performClick();
 
         // Verify create user request
-        verify(AuthHelperShadow.sFirebaseAuth).createUserWithEmailAndPassword(
-                TestConstants.EMAIL,
-                TestConstants.PASSWORD);
-
-        // After create user request, should try to update profile with name
-        ArgumentCaptor<UserProfileChangeRequest> changeRequestCaptor =
-                ArgumentCaptor.forClass(UserProfileChangeRequest.class);
-        verify(FakeAuthResult.INSTANCE.getUser()).updateProfile(changeRequestCaptor.capture());
-        assertEquals(changeRequestCaptor.getValue().getDisplayName(), TestConstants.NAME);
+        verify(AuthHelperShadow.getFirebaseAuth())
+                .createUserWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD);
 
         // Finally, the new credential should be saved to SmartLock
         TestHelper.verifySmartLockSave(

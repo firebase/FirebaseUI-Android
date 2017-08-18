@@ -34,7 +34,7 @@ import android.widget.TextView;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
@@ -42,15 +42,14 @@ import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
+import com.firebase.ui.auth.util.accountlink.ProfileMerger;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
@@ -88,8 +87,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
-        mPasswordLayout = (TextInputLayout) findViewById(R.id.password_layout);
-        mPasswordField = (EditText) findViewById(R.id.password);
+        mPasswordLayout = findViewById(R.id.password_layout);
+        mPasswordField = findViewById(R.id.password);
 
         ImeHelper.setImeOnDoneListener(mPasswordField, this);
 
@@ -103,7 +102,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 emailStart + mEmail.length(),
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-        TextView bodyTextView = ((TextView) findViewById(R.id.welcome_back_password_body));
+        TextView bodyTextView = findViewById(R.id.welcome_back_password_body);
         bodyTextView.setText(spannableStringBuilder);
 
         // Click listeners
@@ -121,7 +120,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                     this,
                     getFlowParams(),
                     mEmail));
-            finish(ResultCodes.CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+            finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
         }
     }
 
@@ -144,18 +143,26 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
         getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
 
-        final FirebaseAuth firebaseAuth = getAuthHelper().getFirebaseAuth();
+        final AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
+
+        final IdpResponse response;
+        if (authCredential == null) {
+            response = new IdpResponse.Builder(
+                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
+                    .build();
+        } else {
+            response = new IdpResponse.Builder(mIdpResponse.getUser())
+                    .setToken(mIdpResponse.getIdpToken())
+                    .setSecret(mIdpResponse.getIdpSecret())
+                    .build();
+        }
 
         // Sign in with known email and the password provided
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Error signing in with email and password"))
+        getAuthHelper().getFirebaseAuth()
+                .signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        AuthCredential authCredential =
-                                ProviderUtils.getAuthCredential(mIdpResponse);
-
                         // If authCredential is null, the user only has an email account.
                         // Otherwise, the user has an email account that we need to link to an idp.
                         if (authCredential == null) {
@@ -163,13 +170,11 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                                     mSaveSmartLock,
                                     authResult.getUser(),
                                     password,
-                                    new IdpResponse.Builder(
-                                            new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
-                                                    .build())
-                                            .build());
+                                    response);
                         } else {
                             authResult.getUser()
                                     .linkWithCredential(authCredential)
+                                    .continueWithTask(new ProfileMerger(response))
                                     .addOnFailureListener(new TaskFailureLogger(
                                             TAG, "Error signing in with credential " +
                                             authCredential.getProvider()))
@@ -179,12 +184,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                                             saveCredentialsOrFinish(
                                                     mSaveSmartLock,
                                                     authResult.getUser(),
-                                                    mIdpResponse);
+                                                    response);
                                         }
                                     });
                         }
                     }
                 })
+                .addOnFailureListener(
+                        new TaskFailureLogger(TAG, "Error signing in with email and password"))
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {

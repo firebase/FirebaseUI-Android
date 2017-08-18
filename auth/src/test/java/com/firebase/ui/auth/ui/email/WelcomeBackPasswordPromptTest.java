@@ -77,10 +77,10 @@ public class WelcomeBackPasswordPromptTest {
     @Test
     public void testSignInButton_validatesFields() {
         WelcomeBackPasswordPrompt welcomeBack = createActivity();
-        Button signIn = (Button) welcomeBack.findViewById(R.id.button_done);
+        Button signIn = welcomeBack.findViewById(R.id.button_done);
         signIn.performClick();
         TextInputLayout passwordLayout =
-                (TextInputLayout) welcomeBack.findViewById(R.id.password_layout);
+                welcomeBack.findViewById(R.id.password_layout);
 
         assertEquals(
                 welcomeBack.getString(R.string.fui_required_field),
@@ -96,26 +96,27 @@ public class WelcomeBackPasswordPromptTest {
     @Config(shadows = {AuthHelperShadow.class})
     public void testSignInButton_signsInAndSavesCredentials() {
         // initialize mocks
-        reset(AuthHelperShadow.sSaveSmartLock);
+        reset(AuthHelperShadow.getSaveSmartLockInstance(null));
 
         WelcomeBackPasswordPrompt welcomeBackActivity = createActivity();
-        EditText passwordField = (EditText) welcomeBackActivity.findViewById(R.id.password);
+        EditText passwordField = welcomeBackActivity.findViewById(R.id.password);
         passwordField.setText(TestConstants.PASSWORD);
 
-        when(AuthHelperShadow.sFirebaseAuth.signInWithEmailAndPassword(
+        when(AuthHelperShadow.getFirebaseAuth().signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD)).thenReturn(
                 new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
 
-        Button signIn = (Button) welcomeBackActivity.findViewById(R.id.button_done);
+        Button signIn = welcomeBackActivity.findViewById(R.id.button_done);
         signIn.performClick();
 
-        verify(AuthHelperShadow.sFirebaseAuth).signInWithEmailAndPassword(
+        verify(AuthHelperShadow.getFirebaseAuth()).signInWithEmailAndPassword(
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);
 
-        verifySmartLockSave(EmailAuthProvider.PROVIDER_ID,
-                            TestConstants.EMAIL,
-                            TestConstants.PASSWORD);
+        verifySmartLockSave(
+                EmailAuthProvider.PROVIDER_ID,
+                TestConstants.EMAIL,
+                TestConstants.PASSWORD);
     }
 }

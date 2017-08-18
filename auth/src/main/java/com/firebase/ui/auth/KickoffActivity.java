@@ -33,7 +33,7 @@ public class KickoffActivity extends HelperActivityBase {
         if (savedInstance == null || savedInstance.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
             if (isOffline()) {
                 Log.d(TAG, "No network connection");
-                finish(ResultCodes.CANCELED,
+                finish(RESULT_CANCELED,
                        IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
                 return;
             }
@@ -44,7 +44,7 @@ public class KickoffActivity extends HelperActivityBase {
                     new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
-                            finish(ResultCodes.CANCELED,
+                            finish(RESULT_CANCELED,
                                    IdpResponse.getErrorCodeIntent(
                                            ErrorCodes.UNKNOWN_ERROR));
                         }
@@ -70,10 +70,10 @@ public class KickoffActivity extends HelperActivityBase {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_PLAY_SERVICES) {
-            if (resultCode == ResultCodes.OK) {
+            if (resultCode == RESULT_OK) {
                 start();
             } else {
-                finish(ResultCodes.CANCELED,
+                finish(RESULT_CANCELED,
                        IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
             }
         } else {

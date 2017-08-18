@@ -47,9 +47,9 @@ public final class CompletableProgressDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View rootView = View.inflate(getContext(), R.layout.fui_phone_progress_dialog, null);
 
-        mProgress = (ProgressBar) rootView.findViewById(R.id.progress_bar);
-        mMessageView = (TextView) rootView.findViewById(R.id.progress_msg);
-        mSuccessImage = (ImageView) rootView.findViewById(R.id.progress_success_imaage);
+        mProgress = rootView.findViewById(R.id.progress_bar);
+        mMessageView = rootView.findViewById(R.id.progress_msg);
+        mSuccessImage = rootView.findViewById(R.id.progress_success_imaage);
 
         if (mMessage != null) {
             setMessage(mMessage);

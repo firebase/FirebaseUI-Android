@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/fui_field_padding_vert"
             android:textIsSelectable="false"
-            tools:text="@string/create_account_preamble" />
+            tools:text="@string/fui_create_account_preamble_tos_and_pp" />
 
         <Button
             android:id="@+id/button_create"
