@@ -35,7 +35,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
      * @see FirebaseIndexArray#mPendingMoveIndex
      */
     interface PreChangeEventListener {
-        void onPreMove(DataSnapshot data);
+        void onPreMove(DataSnapshot data, int oldIndex);
     }
 
     private Query mQuery;
@@ -124,11 +124,10 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
 
     @Override
     public void onChildMoved(DataSnapshot snapshot, String previousChildKey) {
-        if (mPreChangeEventListener != null) {
-            mPreChangeEventListener.onPreMove(snapshot);
-        }
-
         int oldIndex = getIndexForKey(snapshot.getKey());
+        if (mPreChangeEventListener != null) {
+            mPreChangeEventListener.onPreMove(snapshot, oldIndex);
+        }
         mSnapshots.remove(oldIndex);
 
         int newIndex = previousChildKey == null ? 0 : getIndexForKey(previousChildKey) + 1;
