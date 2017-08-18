@@ -39,16 +39,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:2.2.0'
+    compile 'com.firebaseui:firebase-ui-database:2.3.0'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:2.2.0'
+    compile 'com.firebaseui:firebase-ui-auth:2.3.0'
 
     // FirebaseUI Storage only
-    compile 'com.firebaseui:firebase-ui-storage:2.2.0'
+    compile 'com.firebaseui:firebase-ui-storage:2.3.0'
 
     // Single target that includes all FirebaseUI libraries above
-    compile 'com.firebaseui:firebase-ui:2.2.0'
+    compile 'com.firebaseui:firebase-ui:2.3.0'
 }
 ```
 
@@ -91,6 +91,7 @@ For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 2.3.0              | 11.2.0                         |
 | 2.2.0              | 11.0.4                         |
 | 2.1.1              | 11.0.2                         |
 | 2.0.1              | 11.0.1                         |
@@ -103,7 +104,7 @@ For convenience, here are some recent examples:
 ## Upgrading dependencies
 
 If you would like to use a newer version of one of FirebaseUI's transitive dependencies, such
-as Firebase, Play services, or the Android support libraries you need add explicit
+as Firebase, Play services, or the Android support libraries, you need to add explicit
 `compile` declarations in your `build.gradle` for all of FirebaseUI's dependencies at the version
 you want to use. For example if you want to use Play services/Firebase version `FOO` and support
 libraries version `BAR` add the following extra lines for each FirebaseUI module you're using:

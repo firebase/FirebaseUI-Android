@@ -46,7 +46,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    compile 'com.firebaseui:firebase-ui-auth:2.2.0'
+    compile 'com.firebaseui:firebase-ui-auth:2.3.0'
 
     // Required only if Facebook login support is required
     compile('com.facebook.android:facebook-android-sdk:4.22.1')
@@ -204,7 +204,7 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
-If a terms of service URL, privacy policy URL, and a custom theme are required:
+If a terms of service URL and privacy policy URL are required:
 
 ```java
 startActivityForResult(
@@ -213,7 +213,6 @@ startActivityForResult(
         .setAvailableProviders(...)
         .setTosUrl("https://superapp.example.com/terms-of-service.html")
         .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
-        .setTheme(R.style.SuperAppTheme)
         .build(),
     RC_SIGN_IN);
 ```
@@ -487,16 +486,38 @@ represented in the following diagram:
 
 ## UI customization
 
-To provide customization of the visual style of the activities that implement
-the flow, a new theme can be declared. Standard material design color
-and typography properties will take effect as expected. For example, to define
-a green theme:
+To use FirebaseUI Auth's sign-in flows, you must provide an `app_name` string and use the
+AppCompat color attributes in your app.
+
+First, ensure an `app_name` resource is defined your `strings.xml` file like so:
+
+```xml
+<resources>
+    <string name="app_name">My App</string>
+    <!-- ... -->
+</resources>
+```
+
+Second, ensure the three standard AppCompat color resources are defined with your own values:
+
+```xml
+<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- Required for sign-in flow styling -->
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+</style>
+
+If you would like more control over FirebaseUI's styling, you can define your own custom style
+to override certain or all styling attributes. For example, a green sign-in theme:
 
 ```xml
 <style name="GreenTheme" parent="FirebaseUI">
+    <!-- Required for sign-in flow styling -->
     <item name="colorPrimary">@color/material_green_500</item>
     <item name="colorPrimaryDark">@color/material_green_700</item>
     <item name="colorAccent">@color/material_purple_a700</item>
+    
     <item name="colorControlNormal">@color/material_green_500</item>
     <item name="colorControlActivated">@color/material_lime_a700</item>
     <item name="colorControlHighlight">@color/material_green_a200</item>
@@ -525,20 +546,22 @@ startActivityForResult(
         .build());
 ```
 
-Your application theme could also simply be used, rather than defining a new
-one.
+Your application theme could also simply be used, rather than defining a new one.
 
-If you wish to change the string messages, the existing strings can be
-easily overridden by name in your application. See
-[the built-in strings.xml](src/main/res/values/strings.xml) and simply
-redefine a string to change it, for example:
+If you wish to change the string messages, the existing strings can be overridden
+by name in your application. See the module's [strings.xml](src/main/res/values/strings.xml) file
+and simply redefine a string to change it:
 
 ```xml
 <resources>
     <!-- was "Signing up..." -->
-    <string name="progress_dialog_signing_up">Creating your shiny new account...</string>
+    <string name="fui_progress_dialog_signing_up">Creating your shiny new account...</string>
 </resources>
 ```
+
+**Note:** String resource names aren't considered part of the public API and might
+therefore change and break your app between library updates. We recommend looking
+at a diff of the `strings.xml` file before updating FirebaseUI.
 
 ### OAuth Scope Customization
 
