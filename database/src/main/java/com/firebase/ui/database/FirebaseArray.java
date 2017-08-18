@@ -14,6 +14,8 @@
 
 package com.firebase.ui.database;
 
+import android.support.annotation.Nullable;
+
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,8 +29,19 @@ import java.util.List;
  * This class implements a collection on top of a Firebase location.
  */
 public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implements ChildEventListener, ValueEventListener {
+    /**
+     * Hack for {@link FirebaseIndexArray}
+     *
+     * @see FirebaseIndexArray#mPendingMoveIndex
+     */
+    interface PreChangeEventListener {
+        void onPreMove(DataSnapshot data);
+    }
+
     private Query mQuery;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
+
+    @Nullable private PreChangeEventListener mPreChangeEventListener;
 
     /**
      * Create a new FirebaseArray that parses snapshots as members of a given class.
@@ -56,6 +69,10 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
 
     private void init(Query query) {
         mQuery = query;
+    }
+
+    void setPreChangeEventListener(PreChangeEventListener listener) {
+        mPreChangeEventListener = listener;
     }
 
     @Override
@@ -107,16 +124,18 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
 
     @Override
     public void onChildMoved(DataSnapshot snapshot, String previousChildKey) {
+        if (mPreChangeEventListener != null) {
+            mPreChangeEventListener.onPreMove(snapshot);
+        }
+
         int oldIndex = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(oldIndex);
 
-        int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
+        int newIndex = previousChildKey == null ? 0 : getIndexForKey(previousChildKey) + 1;
         mSnapshots.add(newIndex, snapshot);
 
-        notifyChangeEventListeners(ChangeEventListener.EventType.MOVED,
-                                   snapshot,
-                                   newIndex,
-                                   oldIndex);
+        notifyChangeEventListeners(
+                ChangeEventListener.EventType.MOVED, snapshot, newIndex, oldIndex);
     }
 
     @Override

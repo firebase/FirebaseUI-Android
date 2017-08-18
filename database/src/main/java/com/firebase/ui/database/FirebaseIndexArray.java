@@ -49,6 +49,15 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
      * FirebaseArray} is in the middle of an update, false otherwise.
      */
     private boolean mHasPendingMoveOrDelete;
+    /**
+     * Sigh, more null value bugs. We need to get {@code onChildMoved}'s {@code oldIndex} from our
+     * list of indices instead of the key snapshots or we might get tripped up by null values.
+     * <p>
+     * This field stores our version of {@code oldIndex} and the expected contract is for its value
+     * to be used immediately after the key snapshots update themselves and send the {@code
+     * onChildMoved} event.
+     */
+    private int mPendingMoveIndex;
 
     /**
      * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
@@ -82,6 +91,13 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
             @Override
             public String parseSnapshot(DataSnapshot snapshot) {
                 return snapshot.getKey();
+            }
+        });
+
+        mKeySnapshots.setPreChangeEventListener(new FirebaseArray.PreChangeEventListener() {
+            @Override
+            public void onPreMove(DataSnapshot data) {
+                mPendingMoveIndex = getIndexForKey(data.getKey());
             }
         });
     }
@@ -144,6 +160,8 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         int dataCount = size();
         int index = 0;
         for (int keyIndex = 0; index < dataCount; keyIndex++) {
+            if (keyIndex == mKeySnapshots.size()) { return index; }
+
             String superKey = mKeySnapshots.getObject(keyIndex);
             if (key.equals(superKey)) {
                 break;
@@ -170,22 +188,44 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
     }
 
+    /**
+     * @deprecated Use {@link #onKeyMoved(DataSnapshot)} instead and find the index by querying the
+     * key snapshots. Otherwise, you might get OOB exceptions if one of your data snapshots contains
+     * a null value.
+     */
+    @Deprecated
     protected void onKeyMoved(DataSnapshot data, int index, int oldIndex) {
+        onKeyMoved(data);
+    }
+
+    protected void onKeyMoved(DataSnapshot data) {
         String key = data.getKey();
 
+        int oldIndex = mPendingMoveIndex;
         if (isKeyAtIndex(key, oldIndex)) {
             DataSnapshot snapshot = removeData(oldIndex);
+            int index = getIndexForKey(key);
             mHasPendingMoveOrDelete = true;
             mDataSnapshots.add(index, snapshot);
             notifyChangeEventListeners(EventType.MOVED, snapshot, index, oldIndex);
         }
     }
 
+    /**
+     * @deprecated Use {@link #onKeyRemoved(DataSnapshot)} instead and find the index by querying
+     * the key snapshots. Otherwise, your data might not be removed as expected.
+     */
+    @Deprecated
     protected void onKeyRemoved(DataSnapshot data, int index) {
+        onKeyRemoved(data);
+    }
+
+    protected void onKeyRemoved(DataSnapshot data) {
         String key = data.getKey();
         ValueEventListener listener = mRefs.remove(mDataRef.getRef().child(key));
         if (listener != null) mDataRef.child(key).removeEventListener(listener);
 
+        int index = getIndexForKey(key);
         if (isKeyAtIndex(key, index)) {
             DataSnapshot snapshot = removeData(index);
             mHasPendingMoveOrDelete = true;
