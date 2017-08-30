@@ -181,13 +181,15 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     protected void onKeyMoved(DataSnapshot data, int index, int oldIndex) {
         String key = data.getKey();
 
-        int realOldIndex = returnOrFindIndexForKey(oldIndex, key);
-        if (isKeyAtIndex(key, realOldIndex)) {
-            DataSnapshot snapshot = removeData(realOldIndex);
+        // We can't use `returnOrFindIndexForKey(...)` for `oldIndex` or it might find the updated
+        // index instead of the old one. Unfortunately, this does mean move events will be
+        // incorrectly ignored if our list is a subset of the key list e.g. a key has null data.
+        if (isKeyAtIndex(key, oldIndex)) {
+            DataSnapshot snapshot = removeData(oldIndex);
             int realIndex = returnOrFindIndexForKey(index, key);
             mHasPendingMoveOrDelete = true;
             mDataSnapshots.add(realIndex, snapshot);
-            notifyChangeEventListeners(EventType.MOVED, snapshot, realIndex, realOldIndex);
+            notifyChangeEventListeners(EventType.MOVED, snapshot, realIndex, oldIndex);
         }
     }
 
