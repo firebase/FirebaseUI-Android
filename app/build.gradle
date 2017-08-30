@@ -31,31 +31,40 @@ android {
     }
 }
 
+// TODO(samstern): Why do I need this
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            details.useVersion("$supportLibraryVersion")
+        }
+    }
+}
+
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:design:$supportLibraryVersion"
+    implementation "com.android.support:design:$supportLibraryVersion"
 
-    compile project(path: ':auth')
-    compile project(path: ':database')
-    compile project(path: ':storage')
+    implementation project(path: ':auth')
+    implementation project(path: ':database')
+    implementation project(path: ':storage')
 
-    compile "com.google.android.gms:play-services-auth:$firebaseVersion"
-    compile "com.google.firebase:firebase-auth:$firebaseVersion"
-    compile "com.google.firebase:firebase-database:$firebaseVersion"
-    compile "com.google.firebase:firebase-storage:$firebaseVersion"
+    implementation "com.google.android.gms:play-services-auth:$firebaseVersion"
+    implementation "com.google.firebase:firebase-auth:$firebaseVersion"
+    implementation "com.google.firebase:firebase-database:$firebaseVersion"
+    implementation "com.google.firebase:firebase-storage:$firebaseVersion"
 
-    compile('com.facebook.android:facebook-android-sdk:4.25.0')
-    compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
+    implementation('com.facebook.android:facebook-android-sdk:4.25.0')
+    implementation("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
 
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
-    compile 'pub.devrel:easypermissions:0.4.3'
-    compile 'com.jakewharton:butterknife:8.7.0'
+    implementation 'pub.devrel:easypermissions:0.4.3'
+    implementation 'com.jakewharton:butterknife:8.7.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

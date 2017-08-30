@@ -21,10 +21,9 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compile "com.android.support:palette-v7:$supportLibraryVersion"
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation "com.android.support:palette-v7:$supportLibraryVersion"
 
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-
-    compile "com.google.firebase:firebase-storage:$firebaseVersion"
+    api 'com.github.bumptech.glide:glide:3.7.0'
+    api "com.google.firebase:firebase-storage:$firebaseVersion"
 }
