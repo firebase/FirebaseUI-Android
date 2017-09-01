@@ -143,6 +143,9 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     private int returnOrFindIndexForKey(int index, String key) {
         int realIndex;
         if (isKeyAtIndex(key, index)) {
+            // To optimize this query, if the expected item position is accurate, we simply return
+            // it instead of searching for it in our keys all over again. This ensures developers
+            // correctly indexing their data (i.e. no null values) don't take a performance hit.
             realIndex = index;
         } else {
             int dataCount = size();
@@ -154,6 +157,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                 if (key.equals(superKey)) {
                     break;
                 } else if (mDataSnapshots.get(dataIndex).getKey().equals(superKey)) {
+                    // Only increment the data index if we aren't passing over a null value snapshot.
                     dataIndex++;
                 }
                 keyIndex++;
@@ -240,6 +244,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
      * A ValueEventListener attached to the joined child data.
      */
     protected class DataRefListener implements ValueEventListener {
+        /** Cached index to skip searching for the current index on each update */
         private int currentIndex;
 
         @Override
