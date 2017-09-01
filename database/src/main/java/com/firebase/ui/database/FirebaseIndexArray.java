@@ -147,16 +147,18 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         } else {
             int dataCount = size();
             int dataIndex = 0;
-            for (int keyIndex = 0; dataIndex < dataCount; keyIndex++) {
-                if (keyIndex == mKeySnapshots.size()) { break; }
+            int keyIndex = 0;
 
+            while (dataIndex < dataCount && keyIndex < mKeySnapshots.size()) {
                 String superKey = mKeySnapshots.getObject(keyIndex);
                 if (key.equals(superKey)) {
                     break;
                 } else if (mDataSnapshots.get(dataIndex).getKey().equals(superKey)) {
                     dataIndex++;
                 }
+                keyIndex++;
             }
+
             realIndex = dataIndex;
         }
         return realIndex;
