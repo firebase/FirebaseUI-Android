@@ -15,7 +15,6 @@ public abstract class BaseCachingSnapshotParser<S, T> implements BaseSnapshotPar
     private Map<String, T> mObjectCache = new HashMap<>();
     private BaseSnapshotParser<S, T> mInnerParser;
 
-    // TODO(samstern): Can probably use this in RTDB module as well, CachingOSA is not necessary.
     public BaseCachingSnapshotParser(BaseSnapshotParser<S, T> innerParser) {
         mInnerParser = innerParser;
     }
