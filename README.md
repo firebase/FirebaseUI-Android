@@ -91,7 +91,7 @@ For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
-| 2.3.0              | 11.2.0                         |
+| 2.3.0              | 11.0.4                         |
 | 2.2.0              | 11.0.4                         |
 | 2.1.1              | 11.0.2                         |
 | 2.0.1              | 11.0.1                         |
