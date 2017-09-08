@@ -107,11 +107,10 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int oldIndex = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(oldIndex);
 
-        int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
+        int newIndex = previousChildKey == null ? 0 : getIndexForKey(previousChildKey) + 1;
         mSnapshots.add(newIndex, snapshot);
 
-        notifyListenersOnChildChanged(ChangeEventType.MOVED, snapshot,
-                newIndex, oldIndex);
+        notifyListenersOnChildChanged(ChangeEventType.MOVED, snapshot, newIndex, oldIndex);
     }
 
     @Override

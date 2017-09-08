@@ -146,7 +146,7 @@ public class ChatActivity extends AppCompatActivity
                 lastFifty,
                 this) {
             @Override
-            public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
+            public void populateViewHolder(ChatHolder holder, Cgit hat chat, int position) {
                 holder.bind(chat);
             }
 
