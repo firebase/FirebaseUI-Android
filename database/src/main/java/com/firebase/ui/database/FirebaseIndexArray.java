@@ -17,6 +17,7 @@ package com.firebase.ui.database;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -104,7 +105,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     }
 
     @Override
-    public void onChildChanged(EventType type, DataSnapshot snapshot, int index, int oldIndex) {
+    public void onChildChanged(ChangeEventType type, DataSnapshot snapshot, int index, int oldIndex) {
         switch (type) {
             case ADDED:
                 onKeyAdded(snapshot);
@@ -131,7 +132,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     }
 
     @Override
-    public void onCancelled(DatabaseError error) {
+    public void onError(DatabaseError error) {
         Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
     }
 
@@ -194,8 +195,9 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
             DataSnapshot snapshot = removeData(oldIndex);
             int realIndex = returnOrFindIndexForKey(index, key);
             mHasPendingMoveOrDelete = true;
+
             mDataSnapshots.add(realIndex, snapshot);
-            notifyChangeEventListeners(EventType.MOVED, snapshot, realIndex, oldIndex);
+            notifyListenersOnChildChanged(ChangeEventType.MOVED, snapshot, index, oldIndex);
         }
     }
 
@@ -208,8 +210,18 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         if (isKeyAtIndex(key, realIndex)) {
             DataSnapshot snapshot = removeData(realIndex);
             mHasPendingMoveOrDelete = true;
-            notifyChangeEventListeners(EventType.REMOVED, snapshot, realIndex);
+            notifyListenersOnChildChanged(ChangeEventType.REMOVED, snapshot, realIndex, -1);
         }
+    }
+
+    @Override
+    public DataSnapshot get(int i) {
+        return mDataSnapshots.get(i);
+    }
+
+    @Override
+    public int size() {
+        return mKeySnapshots.size();
     }
 
     @Override
@@ -256,17 +268,17 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
                 if (isKeyAtIndex(key, index)) {
                     // We already know about this data, just update it
                     updateData(index, snapshot);
-                    notifyChangeEventListeners(EventType.CHANGED, snapshot, index);
+                    notifyListenersOnChildChanged(ChangeEventType.CHANGED, snapshot, index, -1);
                 } else {
                     // We don't already know about this data, add it
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangeEventListeners(EventType.ADDED, snapshot, index);
+                    notifyListenersOnChildChanged(ChangeEventType.ADDED, snapshot, index, -1);
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
                     // This data has disappeared, remove it
                     removeData(index);
-                    notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
+                    notifyListenersOnChildChanged(ChangeEventType.REMOVED, snapshot, index, -1);
                 } else {
                     // Data does not exist
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
@@ -284,7 +296,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
 
         @Override
         public void onCancelled(DatabaseError error) {
-            notifyListenersOnCancelled(error);
+            notifyListenersOnError(error);
         }
     }
 }

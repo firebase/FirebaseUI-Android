@@ -38,7 +38,7 @@ public class ChatHolder extends RecyclerView.ViewHolder {
         mGray300 = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
     }
 
-    public void bind(Chat chat) {
+    public void bind(AbstractChat chat) {
         setName(chat.getName());
         setText(chat.getMessage());
 

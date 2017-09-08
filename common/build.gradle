@@ -23,19 +23,7 @@ android {
 }
 
 dependencies {
-    compile project(path: ':common')
-
     compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
     // Needed to override play services
     compile "com.android.support:support-v4:$supportLibraryVersion"
-
-    compile "android.arch.lifecycle:runtime:$architectureVersion"
-    compile "android.arch.lifecycle:extensions:$architectureVersion"
-    annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
-
-    compile "com.google.firebase:firebase-database:$firebaseVersion"
-
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'com.android.support.test:runner:1.0.0'
-    androidTestCompile 'com.android.support.test:rules:1.0.0'
 }

@@ -14,6 +14,7 @@
 
 package com.firebase.ui.database;
 
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +28,7 @@ import java.util.List;
  * This class implements a collection on top of a Firebase location.
  */
 public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implements ChildEventListener, ValueEventListener {
+
     private Query mQuery;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
@@ -59,11 +61,6 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
     }
 
     @Override
-    protected List<DataSnapshot> getSnapshots() {
-        return mSnapshots;
-    }
-
-    @Override
     protected void onCreate() {
         super.onCreate();
         mQuery.addChildEventListener(this);
@@ -86,7 +83,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
 
         mSnapshots.add(index, snapshot);
 
-        notifyChangeEventListeners(ChangeEventListener.EventType.ADDED, snapshot, index);
+        notifyListenersOnChildChanged(ChangeEventType.ADDED, snapshot, index, -1);
     }
 
     @Override
@@ -94,7 +91,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int index = getIndexForKey(snapshot.getKey());
 
         updateData(index, snapshot);
-        notifyChangeEventListeners(ChangeEventListener.EventType.CHANGED, snapshot, index);
+        notifyListenersOnChildChanged(ChangeEventType.CHANGED, snapshot, index, -1);
     }
 
     @Override
@@ -102,7 +99,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int index = getIndexForKey(snapshot.getKey());
 
         removeData(index);
-        notifyChangeEventListeners(ChangeEventListener.EventType.REMOVED, snapshot, index);
+        notifyListenersOnChildChanged(ChangeEventType.REMOVED, snapshot, index, -1);
     }
 
     @Override
@@ -113,8 +110,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int newIndex = previousChildKey == null ? 0 : getIndexForKey(previousChildKey) + 1;
         mSnapshots.add(newIndex, snapshot);
 
-        notifyChangeEventListeners(
-                ChangeEventListener.EventType.MOVED, snapshot, newIndex, oldIndex);
+        notifyListenersOnChildChanged(ChangeEventType.MOVED, snapshot, newIndex, oldIndex);
     }
 
     @Override
@@ -124,7 +120,7 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
 
     @Override
     public void onCancelled(DatabaseError error) {
-        notifyListenersOnCancelled(error);
+        notifyListenersOnError(error);
     }
 
     private int getIndexForKey(String key) {
@@ -137,6 +133,21 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
             }
         }
         throw new IllegalArgumentException("Key not found");
+    }
+
+    @Override
+    public DataSnapshot get(int i) {
+        return mSnapshots.get(i);
+    }
+
+    @Override
+    protected List<DataSnapshot> getSnapshots() {
+        return mSnapshots;
+    }
+
+    @Override
+    public int size() {
+        return mSnapshots.size();
     }
 
     @Override
