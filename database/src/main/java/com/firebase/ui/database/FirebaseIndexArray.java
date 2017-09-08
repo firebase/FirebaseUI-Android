@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
+public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
         implements ChangeEventListener {
     private static final String TAG = "FirebaseIndexArray";
 
