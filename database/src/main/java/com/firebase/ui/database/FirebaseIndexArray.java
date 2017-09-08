@@ -108,7 +108,7 @@ public final class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<
     public void onChildChanged(EventType type, DataSnapshot snapshot, int index, int oldIndex) {
         switch (type) {
             case ADDED:
-                onKeyAdded(snapshot, newIndex);
+                onKeyAdded(snapshot, index);
                 break;
             case MOVED:
                 onKeyMoved(snapshot, index, oldIndex);
