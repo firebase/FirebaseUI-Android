@@ -28,7 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> implements ChangeEventListener {
+public final class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
+        implements ChangeEventListener {
     private static final String TAG = "FirebaseIndexArray";
 
     private DatabaseReference mDataRef;
@@ -107,7 +108,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     public void onChildChanged(EventType type, DataSnapshot snapshot, int index, int oldIndex) {
         switch (type) {
             case ADDED:
-                onKeyAdded(snapshot);
+                onKeyAdded(snapshot, newIndex);
                 break;
             case MOVED:
                 onKeyMoved(snapshot, index, oldIndex);
@@ -175,16 +176,16 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         return index >= 0 && index < size() && mDataSnapshots.get(index).getKey().equals(key);
     }
 
-    protected void onKeyAdded(DataSnapshot data) {
+    private void onKeyAdded(DataSnapshot data, int newIndex) {
         String key = data.getKey();
         DatabaseReference ref = mDataRef.child(key);
 
         mKeysWithPendingUpdate.add(key);
         // Start listening
-        mRefs.put(ref, ref.addValueEventListener(new DataRefListener()));
+        mRefs.put(ref, ref.addValueEventListener(new DataRefListener(newIndex)));
     }
 
-    protected void onKeyMoved(DataSnapshot data, int index, int oldIndex) {
+    private void onKeyMoved(DataSnapshot data, int index, int oldIndex) {
         String key = data.getKey();
 
         // We can't use `returnOrFindIndexForKey(...)` for `oldIndex` or it might find the updated
@@ -199,7 +200,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
         }
     }
 
-    protected void onKeyRemoved(DataSnapshot data, int index) {
+    private void onKeyRemoved(DataSnapshot data, int index) {
         String key = data.getKey();
         ValueEventListener listener = mRefs.remove(mDataRef.getRef().child(key));
         if (listener != null) mDataRef.child(key).removeEventListener(listener);
@@ -243,9 +244,13 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T> imp
     /**
      * A ValueEventListener attached to the joined child data.
      */
-    protected class DataRefListener implements ValueEventListener {
+    private final class DataRefListener implements ValueEventListener {
         /** Cached index to skip searching for the current index on each update */
         private int currentIndex;
+
+        public DataRefListener(int index) {
+            currentIndex = index;
+        }
 
         @Override
         public void onDataChange(DataSnapshot snapshot) {
