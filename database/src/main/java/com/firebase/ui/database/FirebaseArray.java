@@ -26,7 +26,8 @@ import java.util.List;
 /**
  * This class implements a collection on top of a Firebase location.
  */
-public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implements ChildEventListener, ValueEventListener {
+public class FirebaseArray<T> extends CachingObservableSnapshotArray<T>
+        implements ChildEventListener, ValueEventListener {
     private Query mQuery;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
