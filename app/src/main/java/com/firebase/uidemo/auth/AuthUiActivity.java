@@ -339,7 +339,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUsePhoneProvider.isChecked()) {
             selectedProviders.add(
-                    new PhoneIdpConfig.Builder().setPhone("").build()); // User default phone number
+                    new PhoneIdpConfig.Builder().setPhone("").build()); // Add default phone number.
         }
 
         return selectedProviders;
