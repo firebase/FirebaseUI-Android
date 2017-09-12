@@ -25,6 +25,9 @@ android {
 dependencies {
     compile project(path: ':common')
     compile "com.google.firebase:firebase-database:$firebaseVersion"
+
+    compile "android.arch.lifecycle:runtime:$architectureVersion"
+    compile "android.arch.lifecycle:extensions:$architectureVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
 
     androidTestCompile 'junit:junit:4.12'

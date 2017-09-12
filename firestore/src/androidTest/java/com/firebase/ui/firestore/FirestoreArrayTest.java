@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryListenOptions;
 
 import org.junit.After;
 import org.junit.Before;
@@ -122,7 +123,8 @@ public class FirestoreArrayTest {
 
         // Query is the whole collection ordered by field
         mQuery = mCollectionRef.orderBy("field", Query.Direction.ASCENDING);
-        mArray = new FirestoreArray<>(mQuery, IntegerDocument.class);
+        mArray = new FirestoreArray<>(mQuery, new QueryListenOptions(),
+                new ClassSnapshotParser<>(IntegerDocument.class));
 
         // Add a listener to the array so that it's active
         mListener = mArray.addChangeEventListener(new LoggingListener());

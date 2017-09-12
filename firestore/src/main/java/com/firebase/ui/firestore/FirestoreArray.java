@@ -27,43 +27,17 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
     private final List<DocumentSnapshot> mSnapshots = new ArrayList<>();
 
     /**
-     * Create a new FirestoreArray that parses snapshots as members of a given class.
+     * Create a new FirestoreArray.
      *
-     * @param query the Firebase location to watch for data changes
-     * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
-     */
-    public FirestoreArray(Query query, Class<T> modelClass) {
-        this(query, new QueryListenOptions(), modelClass);
-    }
-
-    /**
-     * Create a new FirestoreArray with a custom {@link SnapshotParser}.
+     * @param query query to listen to.
+     * @param options options for the query listen.
+     * @param parser parser for DocumentSnapshots.
      *
      * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
-     * @see FirestoreArray#FirestoreArray(Query, Class)
      */
-    public FirestoreArray(Query query, SnapshotParser<T> parser) {
-        this(query, new QueryListenOptions(), parser);
-    }
-
-    /**
-     * @param query the options to use when listening for the query
-     * @see FirestoreArray#FirestoreArray(Query, Class)
-     */
-    public FirestoreArray(Query query, QueryListenOptions options, final Class<T> modelClass) {
-        this(query, options, new SnapshotParser<T>() {
-            @Override
-            public T parseSnapshot(DocumentSnapshot snapshot) {
-                return snapshot.toObject(modelClass);
-            }
-        });
-    }
-
-    /**
-     * @param query the options to use when listening for the query
-     * @see FirestoreArray#FirestoreArray(Query, SnapshotParser)
-     */
-    public FirestoreArray(Query query, QueryListenOptions options, SnapshotParser<T> parser) {
+    public FirestoreArray(Query query,
+                          QueryListenOptions options,
+                          SnapshotParser<T> parser) {
         super(parser);
         mQuery = query;
         mOptions = options;

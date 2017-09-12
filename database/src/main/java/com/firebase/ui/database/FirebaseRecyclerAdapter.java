@@ -3,8 +3,6 @@ package com.firebase.ui.database;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
-import android.support.annotation.LayoutRes;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +13,6 @@ import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -41,83 +38,17 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     protected final int mModelLayout;
 
     /**
-     * @param snapshots       The data used to populate the adapter
-     * @param modelLayout     This is the layout used to represent a single item in the list. You
-     *                        will be responsible for populating an instance of the corresponding
-     *                        view with the data from an instance of modelClass.
-     * @param viewHolderClass The class that hold references to all sub-views in an instance
-     *                        modelLayout.
-     * @param owner           the lifecycle owner used to automatically listen and cleanup after
-     *                        {@link FragmentActivity#onStart()} and {@link FragmentActivity#onStop()}
-     *                        events reflectively.
+     * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
+     * {@link FirebaseRecyclerOptions} for configuration options.
      */
-    public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass,
-                                   LifecycleOwner owner) {
-        mSnapshots = snapshots;
-        mViewHolderClass = viewHolderClass;
-        mModelLayout = modelLayout;
+    public FirebaseRecyclerAdapter(FirebaseRecyclerOptions<T, VH> options) {
+        mSnapshots = options.getSnapshots();
+        mViewHolderClass = options.getViewHolderClass();
+        mModelLayout = options.getModelLayout();
 
-        if (owner != null) { owner.getLifecycle().addObserver(this); }
-    }
-
-    /**
-     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class, LifecycleOwner)
-     */
-    public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass) {
-        this(snapshots, modelLayout, viewHolderClass, null);
-        startListening();
-    }
-
-    /**
-     * @param parser a custom {@link SnapshotParser} to convert a {@link DataSnapshot} to the model
-     *               class
-     * @param query  The Firebase location to watch for data changes. Can also be a slice of a
-     *               location, using some combination of {@code limit()}, {@code startAt()}, and
-     *               {@code endAt()}. <b>Note, this can also be a {@link DatabaseReference}.</b>
-     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class)
-     */
-    public FirebaseRecyclerAdapter(SnapshotParser<T> parser,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass,
-                                   Query query) {
-        this(new FirebaseArray<>(query, parser), modelLayout, viewHolderClass);
-    }
-
-    /**
-     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query)
-     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class, LifecycleOwner)
-     */
-    public FirebaseRecyclerAdapter(SnapshotParser<T> parser,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass,
-                                   Query query,
-                                   LifecycleOwner owner) {
-        this(new FirebaseArray<>(query, parser), modelLayout, viewHolderClass, owner);
-    }
-
-    /**
-     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query)
-     */
-    public FirebaseRecyclerAdapter(Class<T> modelClass,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass,
-                                   Query query) {
-        this(new ClassSnapshotParser<>(modelClass), modelLayout, viewHolderClass, query);
-    }
-
-    /**
-     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query, LifecycleOwner)
-     */
-    public FirebaseRecyclerAdapter(Class<T> modelClass,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass,
-                                   Query query,
-                                   LifecycleOwner owner) {
-        this(new ClassSnapshotParser<>(modelClass), modelLayout, viewHolderClass, query, owner);
+        if (options.getOwner() != null) {
+            options.getOwner().getLifecycle().addObserver(this);
+        }
     }
 
     @Override

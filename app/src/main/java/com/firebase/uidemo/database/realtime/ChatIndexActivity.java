@@ -2,8 +2,8 @@ package com.firebase.uidemo.database.realtime;
 
 import android.view.View;
 
-import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.database.ChatHolder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,13 +33,14 @@ public class ChatIndexActivity extends ChatActivity {
                 .child("chatIndices")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        return new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
-                Chat.class,
-                R.layout.message,
-                ChatHolder.class,
-                mChatIndicesRef.limitToLast(50),
-                mChatRef,
-                this) {
+        FirebaseRecyclerOptions<Chat, ChatHolder> options =
+                new FirebaseRecyclerOptions.Builder<Chat, ChatHolder>()
+                        .setIndexedQuery(mChatIndicesRef.limitToFirst(50), mChatRef, Chat.class)
+                        .setViewHolder(R.layout.message, ChatHolder.class)
+                        .setLifecycleOwner(this)
+                        .build();
+
+        return new FirebaseRecyclerAdapter<Chat, ChatHolder>(options) {
             @Override
             public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
                 holder.bind(chat);

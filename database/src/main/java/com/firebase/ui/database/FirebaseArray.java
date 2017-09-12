@@ -35,23 +35,12 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T>
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     /**
-     * Create a new FirebaseArray that parses snapshots as members of a given class.
+     * Create a new FirebaseArray with a custom {@link SnapshotParser}.
      *
      * @param query The Firebase location to watch for data changes. Can also be a slice of a
      *              location, using some combination of {@code limit()}, {@code startAt()}, and
      *              {@code endAt()}.
-     * @see ObservableSnapshotArray#ObservableSnapshotArray(Class)
-     */
-    public FirebaseArray(Query query, Class<T> tClass) {
-        super(tClass);
-        init(query);
-    }
-
-    /**
-     * Create a new FirebaseArray with a custom {@link SnapshotParser}.
-     *
      * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
-     * @see FirebaseArray#FirebaseArray(Query, Class)
      */
     public FirebaseArray(Query query, SnapshotParser<T> parser) {
         super(parser);

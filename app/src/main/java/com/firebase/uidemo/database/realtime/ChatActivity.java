@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.database.ChatHolder;
 import com.firebase.uidemo.util.SignInResultNotifier;
@@ -140,12 +141,16 @@ public class ChatActivity extends AppCompatActivity
 
     protected FirebaseRecyclerAdapter<Chat, ChatHolder> getAdapter() {
         Query lastFifty = mChatRef.limitToLast(50);
-        return new FirebaseRecyclerAdapter<Chat, ChatHolder>(
-                Chat.class,
-                R.layout.message,
-                ChatHolder.class,
-                lastFifty,
-                this) {
+
+        FirebaseRecyclerOptions<Chat, ChatHolder> options =
+                new FirebaseRecyclerOptions.Builder<Chat, ChatHolder>()
+                        .setViewHolder(R.layout.message, ChatHolder.class)
+                        .setQuery(lastFifty, Chat.class)
+                        .setLifecycleOwner(this)
+                        .build();
+
+        return new FirebaseRecyclerAdapter<Chat, ChatHolder>(options) {
+
             @Override
             public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
                 holder.bind(chat);

@@ -10,7 +10,6 @@ import android.util.Log;
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 
 /**
  * RecyclerView adapter that listens to a {@link FirestoreArray} and displays its data in real
@@ -28,61 +27,15 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     private ObservableSnapshotArray<T> mSnapshots;
 
     /**
-     * Create a new RecyclerView adapter to bind data from an {@link ObservableSnapshotArray}.
-     *
-     * @param snapshots the observable array of data from Firestore.
-     * @param owner     (optional) a LifecycleOwner to observe.
+     * Create a new RecyclerView adapter that listens to a Firestore Query.  See
+     * {@link FirestoreRecyclerOptions} for configuration options.
      */
-    public FirestoreRecyclerAdapter(ObservableSnapshotArray<T> snapshots, LifecycleOwner owner) {
-        mSnapshots = snapshots;
-        if (owner != null) {
-            owner.getLifecycle().addObserver(this);
+    public FirestoreRecyclerAdapter(FirestoreRecyclerOptions<T> options) {
+        mSnapshots = options.getSnapshots();
+
+        if (options.getOwner() != null) {
+            options.getOwner().getLifecycle().addObserver(this);
         }
-    }
-
-    /**
-     * @see #FirestoreRecyclerAdapter(ObservableSnapshotArray, LifecycleOwner)
-     */
-    public FirestoreRecyclerAdapter(ObservableSnapshotArray<T> snapshots) {
-        this(snapshots, null);
-    }
-
-    /**
-     * Create a new RecyclerView adapter to bind data from a Firestore query where each {@link
-     * DocumentSnapshot} is converted to the specified model class.
-     *
-     * @param query      the Firestore query.
-     * @param modelClass the model class.
-     * @see #FirestoreRecyclerAdapter(ObservableSnapshotArray, LifecycleOwner)
-     */
-    public FirestoreRecyclerAdapter(Query query, Class<T> modelClass, LifecycleOwner owner) {
-        this(new FirestoreArray<>(query, modelClass), owner);
-    }
-
-    /**
-     * @see #FirestoreRecyclerAdapter(Query, Class, LifecycleOwner)
-     */
-    public FirestoreRecyclerAdapter(Query query, Class<T> modelClass) {
-        this(query, modelClass, null);
-    }
-
-    /**
-     * Create a new RecyclerView adapter to bind data from a Firestore query where each {@link
-     * DocumentSnapshot} is parsed by the specified parser.
-     *
-     * @param query  the Firestore query.
-     * @param parser the snapshot parser.
-     * @see #FirestoreRecyclerAdapter(ObservableSnapshotArray, LifecycleOwner)
-     */
-    public FirestoreRecyclerAdapter(Query query, SnapshotParser<T> parser, LifecycleOwner owner) {
-        this(new FirestoreArray<>(query, parser), owner);
-    }
-
-    /**
-     * @see #FirestoreRecyclerAdapter(Query, SnapshotParser, LifecycleOwner)
-     */
-    public FirestoreRecyclerAdapter(Query query, SnapshotParser<T> parser) {
-        this(query, parser, null);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

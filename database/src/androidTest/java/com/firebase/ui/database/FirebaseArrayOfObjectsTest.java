@@ -46,7 +46,7 @@ public class FirebaseArrayOfObjectsTest {
                 .getReference()
                 .child("firebasearray")
                 .child("objects");
-        mArray = new FirebaseArray<>(mRef, Bean.class);
+        mArray = new FirebaseArray<>(mRef, new ClassSnapshotParser<>(Bean.class));
         mRef.removeValue();
         mListener = runAndWaitUntil(mArray, new Runnable() {
             @Override

@@ -16,16 +16,6 @@ import java.util.List;
  */
 public abstract class ObservableSnapshotArray<T>
         extends BaseObservableSnapshotArray<DataSnapshot, DatabaseError, ChangeEventListener, T> {
-    /**
-     * Create an ObservableSnapshotArray where snapshots are parsed as objects of a particular
-     * class.
-     *
-     * @param clazz the class as which DataSnapshots should be parsed.
-     * @see ClassSnapshotParser
-     */
-    public ObservableSnapshotArray(@NonNull Class<T> clazz) {
-        this(new ClassSnapshotParser<>(clazz));
-    }
 
     /**
      * Create an ObservableSnapshotArray with a custom {@link SnapshotParser}.

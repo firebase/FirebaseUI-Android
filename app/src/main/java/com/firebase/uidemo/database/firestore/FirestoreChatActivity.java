@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.database.ChatHolder;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -68,7 +69,12 @@ public class FirestoreChatActivity extends AppCompatActivity implements Firebase
         Query query = mFirestore.collection("chats").orderBy("timestamp").limit(50);
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
-        mAdapter = new FirestoreRecyclerAdapter<Chat, ChatHolder>(query, Chat.class) {
+
+        FirestoreRecyclerOptions<Chat> options = new FirestoreRecyclerOptions.Builder<Chat>()
+                .setQuery(query, Chat.class)
+                .build();
+
+        mAdapter = new FirestoreRecyclerAdapter<Chat, ChatHolder>(options) {
             @Override
             public void onBindViewHolder(ChatHolder holder, int position, Chat model) {
                 holder.bind(model);
