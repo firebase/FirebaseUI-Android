@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 
+import com.firebase.ui.auth.AuthUI.PhoneIdpConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
@@ -15,10 +16,12 @@ public class PhoneProvider implements Provider {
 
     private Activity mActivity;
     private FlowParameters mFlowParameters;
+    private String mPhone;
 
-    public PhoneProvider(Activity activity, FlowParameters parameters) {
+    public PhoneProvider(Activity activity, FlowParameters parameters, PhoneIdpConfig idpConfig) {
         mActivity = activity;
         mFlowParameters = parameters;
+        mPhone = idpConfig.getPhone();
     }
 
     @Override
@@ -35,7 +38,7 @@ public class PhoneProvider implements Provider {
     @Override
     public void startLogin(Activity activity) {
         activity.startActivityForResult(
-                PhoneVerificationActivity.createIntent(activity, mFlowParameters, null),
+                PhoneVerificationActivity.createIntent(activity, mFlowParameters, mPhone),
                 RC_PHONE_FLOW);
     }
 

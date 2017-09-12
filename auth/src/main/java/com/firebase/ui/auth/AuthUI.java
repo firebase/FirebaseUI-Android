@@ -275,8 +275,8 @@ public class AuthUI {
             mScopes = Collections.unmodifiableList(scopes);
         }
 
-        private IdpConfig(Parcel in) {
-            mProviderId = in.readString();
+        private IdpConfig(Parcel in, @SupportedProvider @NonNull String providerId) {
+            mProviderId = providerId;
             mScopes = Collections.unmodifiableList(in.createStringArrayList());
         }
 
@@ -289,17 +289,7 @@ public class AuthUI {
             return mScopes;
         }
 
-        public static final Creator<IdpConfig> CREATOR = new Creator<IdpConfig>() {
-            @Override
-            public IdpConfig createFromParcel(Parcel in) {
-                return new IdpConfig(in);
-            }
-
-            @Override
-            public IdpConfig[] newArray(int size) {
-                return new IdpConfig[size];
-            }
-        };
+        public static final Creator CREATOR = new IdpConfigCreator();
 
         @Override
         public int describeContents() {
@@ -375,6 +365,79 @@ public class AuthUI {
             public IdpConfig build() {
                 return new IdpConfig(mProviderId, mScopes);
             }
+        }
+    }
+
+    public static class PhoneIdpConfig extends IdpConfig {
+        private final String mPhone;
+
+        private PhoneIdpConfig(String phone) {
+            super(AuthUI.PHONE_VERIFICATION_PROVIDER, new ArrayList<String>());
+            mPhone = phone;
+        }
+
+        private PhoneIdpConfig(Parcel in, @SupportedProvider @NonNull String providerId) {
+            super(in, providerId);
+            mPhone = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel parcel, int i) {
+            super.writeToParcel(parcel, i);
+            parcel.writeString(mPhone);
+        }
+
+        public String getPhone() {
+            return mPhone;
+        }
+
+        @Override
+        public String toString() {
+            return "PhoneIdpConfig{" +
+                    "mProviderId='" + super.mProviderId + '\'' +
+                    ", mPhone=" + mPhone +
+                    '}';
+        }
+
+        public static class Builder {
+            private String mPhone;
+
+            /**
+             * Builds the configuration parameters for phone identity provider.
+             */
+            public Builder() {
+            }
+
+            /**
+             * Specifies default pre-filled into input field phone number.
+             */
+            public Builder setPhone(String phone) {
+                mPhone = phone;
+                return this;
+            }
+
+            public PhoneIdpConfig build() {
+                return new PhoneIdpConfig(mPhone);
+            }
+
+        }
+    }
+
+    private static class IdpConfigCreator implements Parcelable.Creator {
+
+        @Override
+        public IdpConfig createFromParcel(Parcel in) {
+            final @SupportedProvider String providerId = in.readString();
+            if (providerId.equals(AuthUI.PHONE_VERIFICATION_PROVIDER)) {
+                return new PhoneIdpConfig(in, providerId);
+            } else {
+                return new IdpConfig(in, providerId);
+            }
+        }
+
+        @Override
+        public IdpConfig[] newArray(int size) {
+            return new IdpConfig[size];
         }
     }
 
