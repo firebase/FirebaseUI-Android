@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.uidemo.database;
+package com.firebase.uidemo.database.realtime;
 
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
+import com.firebase.uidemo.database.ChatHolder;
 import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -64,9 +65,9 @@ public class ChatActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
         mAuth.addAuthStateListener(this);
 
-        mSendButton = (Button) findViewById(R.id.sendButton);
-        mMessageEdit = (EditText) findViewById(R.id.messageEdit);
-        mEmptyListMessage = (TextView) findViewById(R.id.emptyTextView);
+        mSendButton = findViewById(R.id.sendButton);
+        mMessageEdit = findViewById(R.id.messageEdit);
+        mEmptyListMessage = findViewById(R.id.emptyTextView);
 
         mChatRef = FirebaseDatabase.getInstance().getReference().child("chats");
 
@@ -75,7 +76,7 @@ public class ChatActivity extends AppCompatActivity
         mManager = new LinearLayoutManager(this);
         mManager.setReverseLayout(false);
 
-        mMessages = (RecyclerView) findViewById(R.id.messagesList);
+        mMessages = findViewById(R.id.messagesList);
         mMessages.setHasFixedSize(true);
         mMessages.setLayoutManager(mManager);
 

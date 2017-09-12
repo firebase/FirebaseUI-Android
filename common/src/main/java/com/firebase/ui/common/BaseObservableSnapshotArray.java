@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Exposes a collection of {@link S} items in a database as a {@link List} of {@link T} objects.
- * To observe the list attach a {@link L} listener.
+ * Exposes a collection of {@link S} items in a database as a {@link List} of {@link T} objects. To
+ * observe the list, attach an {@link L} listener.
  *
  * @param <S> the snapshot class.
  * @param <E> the error type raised for the listener.
@@ -20,66 +20,51 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
         extends AbstractList<S> {
 
     private final List<L> mListeners = new CopyOnWriteArrayList<>();
-    private BaseSnapshotParser<S, T> mParser;
+    private final BaseCachingSnapshotParser<S, T> mCachingParser;
 
     /**
-     * True if there has been a "data changed" event since the array was created, false otherwise.
+     * True if there has been a "data changed" event since the array was created or last reset,
+     * false otherwise.
      */
     private boolean mHasDataChanged = false;
-
-    /**
-     * Default constructor. Must set the {@link BaseSnapshotParser} before the first operation
-     * or an exception will be thrown.
-     */
-    public BaseObservableSnapshotArray() {}
 
     /**
      * Create an BaseObservableSnapshotArray with a custom {@link BaseSnapshotParser}.
      *
      * @param parser the {@link BaseSnapshotParser} to use
      */
-    public BaseObservableSnapshotArray(@NonNull BaseSnapshotParser<S, T> parser) {
-        mParser = Preconditions.checkNotNull(parser);
+    public BaseObservableSnapshotArray(@NonNull BaseCachingSnapshotParser<S, T> parser) {
+        mCachingParser = Preconditions.checkNotNull(parser);
+    }
+
+    @NonNull
+    protected abstract List<S> getSnapshots();
+
+    @Override
+    public S get(int index) {
+        return getSnapshots().get(index);
+    }
+
+    @Override
+    public int size() {
+        return getSnapshots().size();
     }
 
     /**
-     * Called when the {@link BaseObservableSnapshotArray} is active and should start listening to the
-     * Firebase database.
+     * Get the Snapshot at a given position converted to an object of the parametrized type. This
+     * uses the {@link BaseSnapshotParser} passed to the constructor.
      */
-    @CallSuper
-    protected void onCreate() {}
-
-    /**
-     * Called when a new listener has been added to the array. This is a good time to pass initial
-     * state and fire backlogged events
-     * @param listener the added listener.
-     */
-    @CallSuper
-    protected void onListenerAdded(L listener) {
-        for (int i = 0; i < size(); i++) {
-            listener.onChildChanged(ChangeEventType.ADDED, get(i), i, -1);
-        }
-
-        if (mHasDataChanged) {
-            listener.onDataChanged();
-        }
-    };
-
-    /**
-     * Called when the {@link BaseObservableSnapshotArray} is inactive and should stop listening to the
-     * Firebase database.
-     * <p>
-     * All data should also be cleared here.
-     */
-    @CallSuper
-    protected void onDestroy() {
-        mHasDataChanged = false;
+    public T getObject(int index) {
+        return mCachingParser.parseSnapshot(get(index));
     }
 
     /**
      * Attach a {@link BaseChangeEventListener} to this array. The listener will receive one {@link
-     * ChangeEventType#ADDED} event for each item that already exists in the array at
-     * the time of attachment, and then receive all future child events.
+     * ChangeEventType#ADDED} event for each item that already exists in the array at the time of
+     * attachment, a {@link BaseChangeEventListener#onDataChanged()} event if one has occurred, and
+     * then receive all future child events.
+     * <p>
+     * If this is the first listener, {@link #onCreate()} will be called.
      */
     @CallSuper
     public L addChangeEventListener(@NonNull L listener) {
@@ -87,31 +72,38 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
         boolean wasListening = isListening();
 
         mListeners.add(listener);
-        onListenerAdded(listener);
 
-        if (!wasListening) {
-            onCreate();
+        // Catch up new listener to existing state
+        for (int i = 0; i < size(); i++) {
+            listener.onChildChanged(ChangeEventType.ADDED, get(i), i, -1);
         }
+        if (mHasDataChanged) {
+            listener.onDataChanged();
+        }
+
+        if (!wasListening) { onCreate(); }
 
         return listener;
     }
 
     /**
-     * Remove a listener from the array. If no listeners remain, {@link #onDestroy()}
-     * will be called.
+     * Remove a listener from the array.
+     * <p>
+     * If no listeners remain, {@link #onDestroy()} will be called.
      */
     @CallSuper
     public void removeChangeEventListener(@NonNull L listener) {
         Preconditions.checkNotNull(listener);
+
+        boolean wasListening = isListening();
+
         mListeners.remove(listener);
 
-        if (!isListening()) {
-            onDestroy();
-        }
+        if (!isListening() && wasListening) { onDestroy(); }
     }
 
     /**
-     * Remove all listeners from the array.
+     * Remove all listeners from the array and reset its state.
      */
     @CallSuper
     public void removeAllListeners() {
@@ -121,68 +113,64 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
     }
 
     /**
-     * Get all active listeners.
+     * Called when the {@link BaseObservableSnapshotArray} is active and should start listening to
+     * the Firebase database.
      */
-    public List<L> getListeners() {
-        return mListeners;
+    @CallSuper
+    protected void onCreate() {}
+
+    /**
+     * Called when the {@link BaseObservableSnapshotArray} is inactive and should stop listening to
+     * the Firebase database.
+     * <p>
+     * All data and saved state should also be cleared here.
+     */
+    @CallSuper
+    protected void onDestroy() {
+        mHasDataChanged = false;
+        getSnapshots().clear();
+        mCachingParser.clear();
     }
 
     /**
-     * @return true if the array is listening for change events from the Firebase
-     * database, false otherwise
+     * @return true if the array is listening for change events from the Firebase database, false
+     * otherwise
      */
-    public final boolean isListening() {
+    public boolean isListening() {
         return !mListeners.isEmpty();
     }
 
     /**
      * @return true if the provided listener is listening for changes
      */
-    public final boolean isListening(L listener) {
+    public boolean isListening(L listener) {
         return mListeners.contains(listener);
     }
 
-    /**
-     * Get the Snapshot at a given position converted to an object of the parametrized
-     * type. This uses the {@link BaseSnapshotParser} passed to the constructor. If the parser was not
-     * initialized this will throw an unchecked exception.
-     */
-    public T getObject(int index) {
-        if (mParser == null) {
-            throw new IllegalStateException("getObject() called before snapshot parser set.");
+    protected final void notifyOnChildChanged(ChangeEventType type,
+                                              S snapshot,
+                                              int newIndex,
+                                              int oldIndex) {
+        if (type == ChangeEventType.CHANGED || type == ChangeEventType.REMOVED) {
+            mCachingParser.invalidate(snapshot);
         }
 
-        return mParser.parseSnapshot(get(index));
-    }
-
-    protected void notifyListenersOnChildChanged(ChangeEventType type,
-                                                 S snapshot,
-                                                 int newIndex,
-                                                 int oldIndex) {
-        for (L listener : getListeners()) {
+        for (L listener : mListeners) {
             listener.onChildChanged(type, snapshot, newIndex, oldIndex);
         }
     }
 
-    protected void notifyListenersOnDataChanged() {
+    protected final void notifyOnDataChanged() {
         mHasDataChanged = true;
 
-        for (L listener : getListeners()) {
+        for (L listener : mListeners) {
             listener.onDataChanged();
         }
     }
 
-    protected void notifyListenersOnError(E e) {
-        for (L listener : getListeners()) {
+    protected final void notifyOnError(E e) {
+        for (L listener : mListeners) {
             listener.onError(e);
         }
-    }
-
-    protected BaseSnapshotParser<S, T> getSnapshotParser() {
-        return mParser;
-    }
-
-    protected void setSnapshotParser(BaseSnapshotParser<S, T> parser) {
-        mParser = parser;
     }
 }

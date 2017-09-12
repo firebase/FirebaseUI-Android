@@ -1,5 +1,6 @@
-package com.firebase.uidemo.database;
+package com.firebase.uidemo.database.realtime;
 
+import com.firebase.uidemo.database.AbstractChat;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties

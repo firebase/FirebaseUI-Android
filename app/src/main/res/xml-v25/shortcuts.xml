@@ -30,6 +30,6 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.firebase.uidemo"
-            android:targetClass="com.firebase.uidemo.database.ChatActivity"/>
+            android:targetClass="com.firebase.uidemo.database.realtime.ChatActivity"/>
     </shortcut>
 </shortcuts>

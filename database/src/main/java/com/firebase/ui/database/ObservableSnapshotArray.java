@@ -16,14 +16,6 @@ import java.util.List;
  */
 public abstract class ObservableSnapshotArray<T>
         extends BaseObservableSnapshotArray<DataSnapshot, DatabaseError, ChangeEventListener, T> {
-
-    /**
-     * Default constructor. Must set the snapshot parser before user.
-     */
-    public ObservableSnapshotArray() {
-        super();
-    }
-
     /**
      * Create an ObservableSnapshotArray where snapshots are parsed as objects of a particular
      * class.
@@ -32,7 +24,7 @@ public abstract class ObservableSnapshotArray<T>
      * @see ClassSnapshotParser
      */
     public ObservableSnapshotArray(@NonNull Class<T> clazz) {
-        super(new ClassSnapshotParser<>(clazz));
+        this(new ClassSnapshotParser<>(clazz));
     }
 
     /**
@@ -41,14 +33,14 @@ public abstract class ObservableSnapshotArray<T>
      * @param parser the {@link SnapshotParser} to use
      */
     public ObservableSnapshotArray(@NonNull SnapshotParser<T> parser) {
-        super(parser);
+        super(new CachingSnapshotParser<>(parser));
     }
 
     /**
-     * Use {@link BaseObservableSnapshotArray#notifyListenersOnError(Object)}.
+     * Use {@link BaseObservableSnapshotArray#notifyOnError(Object)}.
      */
     @Deprecated
     protected void notifyListenersOnCancelled(DatabaseError error) {
-        notifyListenersOnError(error);
+        notifyOnError(error);
     }
 }

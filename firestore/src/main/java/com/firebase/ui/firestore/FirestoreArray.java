@@ -1,6 +1,6 @@
 package com.firebase.ui.firestore;
 
-import android.util.Log;
+import android.support.annotation.NonNull;
 
 import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.firestore.DocumentChange;
@@ -9,28 +9,49 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryListenOptions;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Exposes a Firestore query as an observable list of objects.
  */
 public class FirestoreArray<T> extends ObservableSnapshotArray<T>
-        implements EventListener<QuerySnapshot>  {
-
-    private static final String TAG = "FirestoreArray";
-
-    private Query mQuery;
+        implements EventListener<QuerySnapshot> {
+    private final Query mQuery;
+    private final QueryListenOptions mOptions;
     private ListenerRegistration mRegistration;
 
-    private List<DocumentSnapshot> mSnapshots;
-    private CachingSnapshotParser<T> mCache;
+    private final List<DocumentSnapshot> mSnapshots = new ArrayList<>();
 
-    public FirestoreArray(Query query, final Class<T> modelClass) {
-        this(query, new SnapshotParser<T>() {
+    /**
+     * Create a new FirestoreArray that parses snapshots as members of a given class.
+     *
+     * @param query the Firebase location to watch for data changes
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
+     */
+    public FirestoreArray(Query query, Class<T> modelClass) {
+        this(query, new QueryListenOptions(), modelClass);
+    }
+
+    /**
+     * Create a new FirestoreArray with a custom {@link SnapshotParser}.
+     *
+     * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
+     * @see FirestoreArray#FirestoreArray(Query, Class)
+     */
+    public FirestoreArray(Query query, SnapshotParser<T> parser) {
+        this(query, new QueryListenOptions(), parser);
+    }
+
+    /**
+     * @param query the options to use when listening for the query
+     * @see FirestoreArray#FirestoreArray(Query, Class)
+     */
+    public FirestoreArray(Query query, QueryListenOptions options, final Class<T> modelClass) {
+        this(query, options, new SnapshotParser<T>() {
             @Override
             public T parseSnapshot(DocumentSnapshot snapshot) {
                 return snapshot.toObject(modelClass);
@@ -38,36 +59,39 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
         });
     }
 
-    public FirestoreArray(Query query, SnapshotParser<T> parser) {
-        super();
-
+    /**
+     * @param query the options to use when listening for the query
+     * @see FirestoreArray#FirestoreArray(Query, SnapshotParser)
+     */
+    public FirestoreArray(Query query, QueryListenOptions options, SnapshotParser<T> parser) {
+        super(parser);
         mQuery = query;
-        mSnapshots = new ArrayList<>();
-        mCache = new CachingSnapshotParser<>(parser);
+        mOptions = options;
+    }
 
-        setSnapshotParser(mCache);
+    @NonNull
+    @Override
+    protected List<DocumentSnapshot> getSnapshots() {
+        return mSnapshots;
     }
 
     @Override
     protected void onCreate() {
         super.onCreate();
-
-        startListening();
+        mRegistration = mQuery.addSnapshotListener(mOptions, this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        stopListening();
-        mCache.clearData();
+        mRegistration.remove();
+        mRegistration = null;
     }
 
     @Override
     public void onEvent(QuerySnapshot snapshots, FirebaseFirestoreException e) {
         if (e != null) {
-            Log.w(TAG, "Error in snapshot listener", e);
-            notifyListenersOnError(e);
+            notifyOnError(e);
             return;
         }
 
@@ -87,76 +111,32 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
             }
         }
 
-        notifyListenersOnDataChanged();
-    }
-
-    @Override
-    public DocumentSnapshot get(int i) {
-        return mSnapshots.get(i);
-    }
-
-    @Override
-    public int size() {
-        return mSnapshots.size();
+        notifyOnDataChanged();
     }
 
     private void onDocumentAdded(DocumentChange change) {
-        Log.d(TAG, "Added: " + change.getNewIndex());
-
-        // Add the document to the set
         mSnapshots.add(change.getNewIndex(), change.getDocument());
-        notifyListenersOnChildChanged(ChangeEventType.ADDED, change.getDocument(),
-                change.getNewIndex(), -1);
+        notifyOnChildChanged(ChangeEventType.ADDED, change.getDocument(), change.getNewIndex(), -1);
     }
 
     private void onDocumentRemoved(DocumentChange change) {
-        Log.d(TAG, "Removed: " + change.getOldIndex());
-
-        // Invalidate snapshot cache (doc removed)
-        mCache.invalidate(change.getDocument().getId());
-
-        // Remove the document from the set
         mSnapshots.remove(change.getOldIndex());
-        notifyListenersOnChildChanged(ChangeEventType.REMOVED, change.getDocument(),
-                -1, change.getOldIndex());
+        notifyOnChildChanged(
+                ChangeEventType.REMOVED, change.getDocument(), -1, change.getOldIndex());
     }
 
     private void onDocumentModified(DocumentChange change) {
-        // Invalidate snapshot cache (doc changed)
-        mCache.invalidate(change.getDocument().getId());
-
-        // Decide if the object was modified in place or if it moved
         if (change.getOldIndex() == change.getNewIndex()) {
-            Log.d(TAG, "Modified (inplace): " + change.getOldIndex());
-
-            mSnapshots.set(change.getOldIndex(), change.getDocument());
-            notifyListenersOnChildChanged(ChangeEventType.CHANGED, change.getDocument(),
+            // Document modified only
+            mSnapshots.set(change.getNewIndex(), change.getDocument());
+            notifyOnChildChanged(ChangeEventType.CHANGED, change.getDocument(),
                     change.getNewIndex(), change.getOldIndex());
         } else {
-            Log.d(TAG, "Modified (moved): " + change.getOldIndex() + " --> " + change.getNewIndex());
-
+            // Document moved and possibly also modified
             mSnapshots.remove(change.getOldIndex());
             mSnapshots.add(change.getNewIndex(), change.getDocument());
-            notifyListenersOnChildChanged(ChangeEventType.MOVED, change.getDocument(),
+            notifyOnChildChanged(ChangeEventType.MOVED, change.getDocument(),
                     change.getNewIndex(), change.getOldIndex());
         }
-    }
-
-    private void startListening() {
-        if (mRegistration != null) {
-            Log.d(TAG, "startListening: already listening.");
-            return;
-        }
-
-        mRegistration = mQuery.addSnapshotListener(this);
-    }
-
-    private void stopListening() {
-        if (mRegistration != null) {
-            mRegistration.remove();
-            mRegistration = null;
-        }
-
-        mSnapshots.clear();
     }
 }

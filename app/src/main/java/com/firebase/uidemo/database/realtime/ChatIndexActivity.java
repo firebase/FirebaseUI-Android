@@ -1,10 +1,11 @@
-package com.firebase.uidemo.database;
+package com.firebase.uidemo.database.realtime;
 
 import android.view.View;
 
 import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.uidemo.R;
+import com.firebase.uidemo.database.ChatHolder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

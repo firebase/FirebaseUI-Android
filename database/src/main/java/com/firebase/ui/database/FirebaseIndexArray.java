@@ -14,6 +14,7 @@
 
 package com.firebase.ui.database;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -29,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
+public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
         implements ChangeEventListener {
     private static final String TAG = "FirebaseIndexArray";
 
@@ -106,20 +107,20 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
     }
 
     @Override
-    public void onChildChanged(ChangeEventType type, DataSnapshot snapshot, int index, int oldIndex) {
+    public void onChildChanged(ChangeEventType type, DataSnapshot snapshot, int newIndex, int oldIndex) {
         switch (type) {
             case ADDED:
-                onKeyAdded(snapshot, index);
+                onKeyAdded(snapshot, newIndex);
                 break;
             case MOVED:
-                onKeyMoved(snapshot, index, oldIndex);
+                onKeyMoved(snapshot, newIndex, oldIndex);
                 break;
             case CHANGED:
                 // This is a no-op, we don't care when a key 'changes' since that should not
                 // be a supported operation
                 break;
             case REMOVED:
-                onKeyRemoved(snapshot, index);
+                onKeyRemoved(snapshot, newIndex);
                 break;
         }
     }
@@ -127,7 +128,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
     @Override
     public void onDataChanged() {
         if (mHasPendingMoveOrDelete || mKeySnapshots.isEmpty()) {
-            notifyListenersOnDataChanged();
+            notifyOnDataChanged();
             mHasPendingMoveOrDelete = false;
         }
     }
@@ -137,6 +138,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
         Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
     }
 
+    @NonNull
     @Override
     protected List<DataSnapshot> getSnapshots() {
         return mDataSnapshots;
@@ -193,12 +195,12 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
         // index instead of the old one. Unfortunately, this does mean move events will be
         // incorrectly ignored if our list is a subset of the key list e.g. a key has null data.
         if (isKeyAtIndex(key, oldIndex)) {
-            DataSnapshot snapshot = removeData(oldIndex);
+            DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int realIndex = returnOrFindIndexForKey(index, key);
             mHasPendingMoveOrDelete = true;
 
             mDataSnapshots.add(realIndex, snapshot);
-            notifyListenersOnChildChanged(ChangeEventType.MOVED, snapshot, index, oldIndex);
+            notifyOnChildChanged(ChangeEventType.MOVED, snapshot, realIndex, oldIndex);
         }
     }
 
@@ -209,20 +211,10 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
 
         int realIndex = returnOrFindIndexForKey(index, key);
         if (isKeyAtIndex(key, realIndex)) {
-            DataSnapshot snapshot = removeData(realIndex);
+            DataSnapshot snapshot = mDataSnapshots.remove(realIndex);
             mHasPendingMoveOrDelete = true;
-            notifyListenersOnChildChanged(ChangeEventType.REMOVED, snapshot, realIndex, -1);
+            notifyOnChildChanged(ChangeEventType.REMOVED, snapshot, realIndex, -1);
         }
-    }
-
-    @Override
-    public DataSnapshot get(int i) {
-        return mDataSnapshots.get(i);
-    }
-
-    @Override
-    public int size() {
-        return mKeySnapshots.size();
     }
 
     @Override
@@ -272,18 +264,18 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
             if (snapshot.getValue() != null) {
                 if (isKeyAtIndex(key, index)) {
                     // We already know about this data, just update it
-                    updateData(index, snapshot);
-                    notifyListenersOnChildChanged(ChangeEventType.CHANGED, snapshot, index, -1);
+                    mDataSnapshots.set(index, snapshot);
+                    notifyOnChildChanged(ChangeEventType.CHANGED, snapshot, index, -1);
                 } else {
                     // We don't already know about this data, add it
                     mDataSnapshots.add(index, snapshot);
-                    notifyListenersOnChildChanged(ChangeEventType.ADDED, snapshot, index, -1);
+                    notifyOnChildChanged(ChangeEventType.ADDED, snapshot, index, -1);
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
                     // This data has disappeared, remove it
-                    removeData(index);
-                    notifyListenersOnChildChanged(ChangeEventType.REMOVED, snapshot, index, -1);
+                    mDataSnapshots.remove(index);
+                    notifyOnChildChanged(ChangeEventType.REMOVED, snapshot, index, -1);
                 } else {
                     // Data does not exist
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
@@ -293,15 +285,15 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
             // In theory, we would only want to pop the queue if this listener was just added
             // i.e. `snapshot.value != null && isKeyAtIndex(...)`. However, if the developer makes a
             // mistake and `snapshot.value == null`, we will never pop the queue and
-            // `notifyListenersOnDataChanged()` will never be called. Thus, we pop the queue anytime
+            // `notifyOnDataChanged()` will never be called. Thus, we pop the queue anytime
             // an update is received.
             mKeysWithPendingUpdate.remove(key);
-            if (mKeysWithPendingUpdate.isEmpty()) notifyListenersOnDataChanged();
+            if (mKeysWithPendingUpdate.isEmpty()) notifyOnDataChanged();
         }
 
         @Override
         public void onCancelled(DatabaseError error) {
-            notifyListenersOnError(error);
+            notifyOnError(error);
         }
     }
 }

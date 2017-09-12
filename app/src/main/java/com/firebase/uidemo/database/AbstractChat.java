@@ -11,5 +11,4 @@ public abstract class AbstractChat {
 
     public abstract String getUid();
 
-
 }

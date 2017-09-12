@@ -143,7 +143,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     @Override
     public void onChildChanged(ChangeEventType type,
                                DataSnapshot snapshot,
-                               int index,
+                               int newIndex,
                                int oldIndex) {
         notifyDataSetChanged();
     }

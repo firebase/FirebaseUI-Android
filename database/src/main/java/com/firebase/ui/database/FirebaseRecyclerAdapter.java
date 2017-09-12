@@ -147,20 +147,20 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @Override
     public void onChildChanged(ChangeEventType type,
                                DataSnapshot snapshot,
-                               int index,
+                               int newIndex,
                                int oldIndex) {
         switch (type) {
             case ADDED:
-                notifyItemInserted(index);
+                notifyItemInserted(newIndex);
                 break;
             case CHANGED:
-                notifyItemChanged(index);
+                notifyItemChanged(newIndex);
                 break;
             case REMOVED:
-                notifyItemRemoved(index);
+                notifyItemRemoved(newIndex);
                 break;
             case MOVED:
-                notifyItemMoved(oldIndex, index);
+                notifyItemMoved(oldIndex, newIndex);
                 break;
             default:
                 throw new IllegalStateException("Incomplete case statement");

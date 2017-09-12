@@ -9,8 +9,8 @@ import com.google.firebase.database.DataSnapshot;
  */
 public class CachingSnapshotParser<T> extends BaseCachingSnapshotParser<DataSnapshot, T> {
 
-    public CachingSnapshotParser(BaseSnapshotParser<DataSnapshot, T> innerParser) {
-        super(innerParser);
+    public CachingSnapshotParser(BaseSnapshotParser<DataSnapshot, T> parser) {
+        super(parser);
     }
 
     @Override

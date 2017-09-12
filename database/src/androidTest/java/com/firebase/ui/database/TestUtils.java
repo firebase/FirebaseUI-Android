@@ -19,7 +19,6 @@ public class TestUtils {
     private static final String APP_NAME = "firebaseui-tests";
     private static final int TIMEOUT = 10000;
 
-
     public static FirebaseApp getAppInstance(Context context) {
         try {
             return FirebaseApp.getInstance(APP_NAME);
@@ -45,7 +44,7 @@ public class TestUtils {
             @Override
             public void onChildChanged(ChangeEventType type,
                                        DataSnapshot snapshot,
-                                       int index,
+                                       int newIndex,
                                        int oldIndex) {
                 semaphore.release();
             }

@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from: '../library/quality/quality.gradle'
-check.dependsOn 'compileDebugAndroidTestJavaWithJavac'
 
 android {
     compileSdkVersion compileSdk
@@ -11,7 +10,6 @@ android {
         targetSdkVersion targetSdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -23,7 +21,13 @@ android {
 }
 
 dependencies {
+    // Common dependencies across database modules. Each module still has to provide an
+    // Architecture Components annotation processor and optionally, test dependencies.
+
     compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
     // Needed to override play services
     compile "com.android.support:support-v4:$supportLibraryVersion"
+
+    compile "android.arch.lifecycle:runtime:$architectureVersion"
+    compile "android.arch.lifecycle:extensions:$architectureVersion"
 }

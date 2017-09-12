@@ -26,8 +26,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.firebase.uidemo.auth.AuthUiActivity;
-import com.firebase.uidemo.database.ChatActivity;
-import com.firebase.uidemo.firestore.FirestoreChatActivity;
+import com.firebase.uidemo.database.firestore.FirestoreChatActivity;
+import com.firebase.uidemo.database.realtime.ChatActivity;
 import com.firebase.uidemo.storage.ImageActivity;
 
 import butterknife.BindView;
@@ -96,8 +96,8 @@ public class ChooserActivity extends AppCompatActivity {
 
         public ActivityStarterHolder(View itemView) {
             super(itemView);
-            mTitle = (TextView) itemView.findViewById(R.id.text1);
-            mDescription = (TextView) itemView.findViewById(R.id.text2);
+            mTitle = itemView.findViewById(R.id.text1);
+            mDescription = itemView.findViewById(R.id.text2);
         }
 
         private void bind(Class aClass, @StringRes int name, @StringRes int description) {

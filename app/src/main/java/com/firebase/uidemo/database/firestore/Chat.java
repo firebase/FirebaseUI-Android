@@ -1,4 +1,4 @@
-package com.firebase.uidemo.firestore;
+package com.firebase.uidemo.database.firestore;
 
 import com.firebase.uidemo.database.AbstractChat;
 import com.google.firebase.firestore.IgnoreExtraProperties;
@@ -12,7 +12,7 @@ public class Chat extends AbstractChat {
     private String mName;
     private String mMessage;
     private String mUid;
-    private @ServerTimestamp Date mTimestamp;
+    private Date mTimestamp;
 
     public Chat() {
         // Needed for Firebase

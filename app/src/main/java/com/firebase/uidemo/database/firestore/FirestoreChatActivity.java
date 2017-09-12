@@ -1,4 +1,4 @@
-package com.firebase.uidemo.firestore;
+package com.firebase.uidemo.database.firestore;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -70,7 +70,7 @@ public class FirestoreChatActivity extends AppCompatActivity implements Firebase
         LinearLayoutManager manager = new LinearLayoutManager(this);
         mAdapter = new FirestoreRecyclerAdapter<Chat, ChatHolder>(query, Chat.class) {
             @Override
-            public void onBindViewHolder(ChatHolder holder, int i, Chat model) {
+            public void onBindViewHolder(ChatHolder holder, int position, Chat model) {
                 holder.bind(model);
             }
 
