@@ -27,7 +27,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
-    protected final ObservableSnapshotArray<T> mSnapshots;
+    private final ObservableSnapshotArray<T> mSnapshots;
 
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
@@ -50,19 +50,15 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    public void cleanup() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void stopListening() {
         mSnapshots.removeChangeEventListener(this);
         notifyDataSetChanged();
     }
 
-    @SuppressWarnings("unused")
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    void cleanup(LifecycleOwner source, Lifecycle.Event event) {
-        if (event == Lifecycle.Event.ON_STOP) {
-            cleanup();
-        } else if (event == Lifecycle.Event.ON_DESTROY) {
-            source.getLifecycle().removeObserver(this);
-        }
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    void cleanup(LifecycleOwner source) {
+        source.getLifecycle().removeObserver(this);
     }
 
     @Override
@@ -95,6 +91,11 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @Override
     public void onError(DatabaseError error) {
         Log.w(TAG, error.toException());
+    }
+
+    @Override
+    public ObservableSnapshotArray<T> getSnapshots() {
+        return mSnapshots;
     }
 
     @Override

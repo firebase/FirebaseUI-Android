@@ -28,7 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 public abstract class FirebaseListAdapter<T> extends BaseAdapter implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseListAdapter";
 
-    protected final ObservableSnapshotArray<T> mSnapshots;
+    private final ObservableSnapshotArray<T> mSnapshots;
     protected final int mLayout;
 
     public FirebaseListAdapter(FirebaseListOptions<T> options) {
@@ -49,18 +49,15 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     @Override
-    public void cleanup() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void stopListening() {
         mSnapshots.removeChangeEventListener(this);
+        notifyDataSetChanged();
     }
 
-    @SuppressWarnings("unused")
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    void cleanup(LifecycleOwner source, Lifecycle.Event event) {
-        if (event == Lifecycle.Event.ON_STOP) {
-            cleanup();
-        } else if (event == Lifecycle.Event.ON_DESTROY) {
-            source.getLifecycle().removeObserver(this);
-        }
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    void cleanup(LifecycleOwner source) {
+        source.getLifecycle().removeObserver(this);
     }
 
     @Override
@@ -78,6 +75,11 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     @Override
     public void onError(DatabaseError error) {
         Log.w(TAG, error.toException());
+    }
+
+    @Override
+    public ObservableSnapshotArray<T> getSnapshots() {
+        return mSnapshots;
     }
 
     @Override
