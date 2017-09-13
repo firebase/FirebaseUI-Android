@@ -16,6 +16,7 @@ package com.firebase.ui.auth;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.CallSuper;
@@ -103,6 +104,12 @@ public class AuthUI {
      * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
+
+    /**
+     * Bundle key for the default phone number parameter
+     */
+    public static final String PHONE_VERIFICATION_DEFAULT_PHONE_EXTRA =
+            "phone_verification_default_phone";
 
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
@@ -269,15 +276,21 @@ public class AuthUI {
     public static class IdpConfig implements Parcelable {
         private final String mProviderId;
         private final List<String> mScopes;
+        private final Bundle mParams;
 
-        private IdpConfig(@SupportedProvider @NonNull String providerId, List<String> scopes) {
+        private IdpConfig(
+                @SupportedProvider @NonNull String providerId,
+                List<String> scopes,
+                Bundle params) {
             mProviderId = providerId;
             mScopes = Collections.unmodifiableList(scopes);
+            mParams = params;
         }
 
-        private IdpConfig(Parcel in, @SupportedProvider @NonNull String providerId) {
-            mProviderId = providerId;
+        private IdpConfig(Parcel in) {
+            mProviderId = in.readString();
             mScopes = Collections.unmodifiableList(in.createStringArrayList());
+            mParams = in.readBundle();
         }
 
         @SupportedProvider
@@ -289,7 +302,21 @@ public class AuthUI {
             return mScopes;
         }
 
-        public static final Creator CREATOR = new IdpConfigCreator();
+        public Bundle getParams() {
+            return mParams;
+        }
+
+        public static final Creator<IdpConfig> CREATOR = new Creator<IdpConfig>() {
+            @Override
+            public IdpConfig createFromParcel(Parcel in) {
+                return new IdpConfig(in);
+            }
+
+            @Override
+            public IdpConfig[] newArray(int size) {
+                return new IdpConfig[size];
+            }
+        };
 
         @Override
         public int describeContents() {
@@ -300,6 +327,7 @@ public class AuthUI {
         public void writeToParcel(Parcel parcel, int i) {
             parcel.writeString(mProviderId);
             parcel.writeStringList(mScopes);
+            parcel.writeBundle(mParams);
         }
 
         @Override
@@ -319,15 +347,27 @@ public class AuthUI {
 
         @Override
         public String toString() {
+            StringBuilder paramsValueBuilder = new StringBuilder();
+            paramsValueBuilder.append("{");
+            for (String key : mParams.keySet()) {
+                paramsValueBuilder.append(key);
+                paramsValueBuilder.append("=");
+                paramsValueBuilder.append(mParams.get(key).toString());
+                paramsValueBuilder.append(",");
+            }
+            paramsValueBuilder.append("}");
+
             return "IdpConfig{" +
                     "mProviderId='" + mProviderId + '\'' +
                     ", mScopes=" + mScopes +
+                    ", mParams=" + paramsValueBuilder.toString() +
                     '}';
         }
 
         public static class Builder {
             @SupportedProvider private String mProviderId;
             private List<String> mScopes = new ArrayList<>();
+            private Bundle mParams = new Bundle();
 
             /**
              * Builds the configuration parameters for an identity provider.
@@ -362,82 +402,14 @@ public class AuthUI {
                 return this;
             }
 
-            public IdpConfig build() {
-                return new IdpConfig(mProviderId, mScopes);
-            }
-        }
-    }
-
-    public static class PhoneIdpConfig extends IdpConfig {
-        private final String mPhone;
-
-        private PhoneIdpConfig(String phone) {
-            super(AuthUI.PHONE_VERIFICATION_PROVIDER, new ArrayList<String>());
-            mPhone = phone;
-        }
-
-        private PhoneIdpConfig(Parcel in, @SupportedProvider @NonNull String providerId) {
-            super(in, providerId);
-            mPhone = in.readString();
-        }
-
-        @Override
-        public void writeToParcel(Parcel parcel, int i) {
-            super.writeToParcel(parcel, i);
-            parcel.writeString(mPhone);
-        }
-
-        public String getPhone() {
-            return mPhone;
-        }
-
-        @Override
-        public String toString() {
-            return "PhoneIdpConfig{" +
-                    "mProviderId='" + super.mProviderId + '\'' +
-                    ", mPhone=" + mPhone +
-                    '}';
-        }
-
-        public static class Builder {
-            private String mPhone;
-
-            /**
-             * Builds the configuration parameters for phone identity provider.
-             */
-            public Builder() {
-            }
-
-            /**
-             * Specifies default pre-filled into input field phone number.
-             */
-            public Builder setPhone(String phone) {
-                mPhone = phone;
+            public Builder setParams(Bundle params) {
+                mParams = params;
                 return this;
             }
 
-            public PhoneIdpConfig build() {
-                return new PhoneIdpConfig(mPhone);
+            public IdpConfig build() {
+                return new IdpConfig(mProviderId, mScopes, mParams);
             }
-
-        }
-    }
-
-    private static class IdpConfigCreator implements Parcelable.Creator {
-
-        @Override
-        public IdpConfig createFromParcel(Parcel in) {
-            final @SupportedProvider String providerId = in.readString();
-            if (providerId.equals(AuthUI.PHONE_VERIFICATION_PROVIDER)) {
-                return new PhoneIdpConfig(in, providerId);
-            } else {
-                return new IdpConfig(in, providerId);
-            }
-        }
-
-        @Override
-        public IdpConfig[] newArray(int size) {
-            return new IdpConfig[size];
         }
     }
 
@@ -511,8 +483,8 @@ public class AuthUI {
             for (IdpConfig config : idpConfigs) {
                 if (mProviders.contains(config)) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                                                               + config.getProviderId()
-                                                               + " was set twice.");
+                            + config.getProviderId()
+                            + " was set twice.");
                 } else {
                     mProviders.add(config);
                 }

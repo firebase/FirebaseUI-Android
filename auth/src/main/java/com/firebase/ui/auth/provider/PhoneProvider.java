@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 
-import com.firebase.ui.auth.AuthUI.PhoneIdpConfig;
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
+
+import static com.firebase.ui.auth.AuthUI.PHONE_VERIFICATION_DEFAULT_PHONE_EXTRA;
 
 public class PhoneProvider implements Provider {
 
@@ -16,12 +18,10 @@ public class PhoneProvider implements Provider {
 
     private Activity mActivity;
     private FlowParameters mFlowParameters;
-    private String mPhone;
 
-    public PhoneProvider(Activity activity, FlowParameters parameters, PhoneIdpConfig idpConfig) {
+    public PhoneProvider(Activity activity, FlowParameters parameters) {
         mActivity = activity;
         mFlowParameters = parameters;
-        mPhone = idpConfig.getPhone();
     }
 
     @Override
@@ -37,8 +37,16 @@ public class PhoneProvider implements Provider {
 
     @Override
     public void startLogin(Activity activity) {
+
+        String phone = null;
+        for (AuthUI.IdpConfig idpConfig : mFlowParameters.providerInfo) {
+            if (idpConfig.getProviderId().equals(AuthUI.PHONE_VERIFICATION_PROVIDER)) {
+                phone = idpConfig.getParams().getString(PHONE_VERIFICATION_DEFAULT_PHONE_EXTRA);
+            }
+        }
+
         activity.startActivityForResult(
-                PhoneVerificationActivity.createIntent(activity, mFlowParameters, mPhone),
+                PhoneVerificationActivity.createIntent(activity, mFlowParameters, phone),
                 RC_PHONE_FLOW);
     }
 

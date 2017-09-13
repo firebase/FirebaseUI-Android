@@ -33,7 +33,6 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
-import com.firebase.ui.auth.AuthUI.PhoneIdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.uidemo.R;
@@ -206,7 +205,7 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setTosUrl(getSelectedTosUrl())
                         .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
-                                               mEnableHintSelector.isChecked())
+                                mEnableHintSelector.isChecked())
                         .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
                 RC_SIGN_IN);
@@ -338,8 +337,14 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         if (mUsePhoneProvider.isChecked()) {
+            // Use the params Bundle to provide a default phone number that will populate the
+            // phone number field in PhoneVerificationActivity if the number is known in advance.
+            Bundle params = new Bundle();
+            params.putString(AuthUI.PHONE_VERIFICATION_DEFAULT_PHONE_EXTRA, "+13099126574");
             selectedProviders.add(
-                    new PhoneIdpConfig.Builder().setPhone("").build()); // Add default phone number.
+                    new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
+                            .setParams(params)
+                            .build());
         }
 
         return selectedProviders;
