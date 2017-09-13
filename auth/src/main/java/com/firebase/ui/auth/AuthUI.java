@@ -350,7 +350,7 @@ public class AuthUI {
             return "IdpConfig{" +
                     "mProviderId='" + mProviderId + '\'' +
                     ", mScopes=" + mScopes +
-                    ", mParams=" + mParams.toString() +
+                    ", mParams=" + mParams +
                     '}';
         }
 
