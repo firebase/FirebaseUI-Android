@@ -28,12 +28,12 @@ public class ChatHolder extends RecyclerView.ViewHolder {
 
     public ChatHolder(View itemView) {
         super(itemView);
-        mNameField = (TextView) itemView.findViewById(R.id.name_text);
-        mTextField = (TextView) itemView.findViewById(R.id.message_text);
-        mLeftArrow = (FrameLayout) itemView.findViewById(R.id.left_arrow);
-        mRightArrow = (FrameLayout) itemView.findViewById(R.id.right_arrow);
-        mMessageContainer = (RelativeLayout) itemView.findViewById(R.id.message_container);
-        mMessage = (LinearLayout) itemView.findViewById(R.id.message);
+        mNameField = itemView.findViewById(R.id.name_text);
+        mTextField = itemView.findViewById(R.id.message_text);
+        mLeftArrow = itemView.findViewById(R.id.left_arrow);
+        mRightArrow = itemView.findViewById(R.id.right_arrow);
+        mMessageContainer = itemView.findViewById(R.id.message_container);
+        mMessage = itemView.findViewById(R.id.message);
         mGreen300 = ContextCompat.getColor(itemView.getContext(), R.color.material_green_300);
         mGray300 = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
     }

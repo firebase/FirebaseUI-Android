@@ -30,31 +30,31 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <!-- Chat demo -->
+        <!-- Auth UI demo -->
         <activity
-            android:name=".database.realtime.ChatActivity"
-            android:label="@string/name_chat" />
+            android:name=".auth.AuthUiActivity"
+            android:label="@string/title_auth_activity" />
         <activity
-            android:name=".database.realtime.ChatIndexActivity"
-            android:label="@string/name_chat" />
+            android:name=".auth.SignedInActivity"
+            android:label="@string/title_auth_activity" />
 
         <!-- Firestore demo -->
         <activity
             android:name=".database.firestore.FirestoreChatActivity"
             android:label="@string/name_chat" />
 
-        <!-- Auth UI demo -->
+        <!-- Realtime database demo -->
         <activity
-            android:name=".auth.AuthUiActivity"
-            android:label="@string/name_auth_ui" />
+            android:name=".database.realtime.RealtimeDbChatActivity"
+            android:label="@string/title_realtime_database_activity" />
         <activity
-            android:name=".auth.SignedInActivity"
-            android:label="@string/name_auth_ui" />
+            android:name=".database.realtime.RealtimeDbChatIndexActivity"
+            android:label="@string/title_realtime_database_activity" />
 
         <!-- Storage UI demo -->
         <activity
             android:name=".storage.ImageActivity"
-            android:label="@string/name_image" />
+            android:label="@string/title_storage_activity" />
 
     </application>
 
