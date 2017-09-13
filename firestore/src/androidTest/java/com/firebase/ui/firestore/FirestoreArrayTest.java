@@ -32,7 +32,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryListenOptions;
 
 import org.junit.After;
 import org.junit.Before;
@@ -123,8 +122,7 @@ public class FirestoreArrayTest {
 
         // Query is the whole collection ordered by field
         mQuery = mCollectionRef.orderBy("field", Query.Direction.ASCENDING);
-        mArray = new FirestoreArray<>(mQuery, new QueryListenOptions(),
-                new ClassSnapshotParser<>(IntegerDocument.class));
+        mArray = new FirestoreArray<>(mQuery, new ClassSnapshotParser<>(IntegerDocument.class));
 
         // Add a listener to the array so that it's active
         mListener = mArray.addChangeEventListener(new LoggingListener());
@@ -132,7 +130,7 @@ public class FirestoreArrayTest {
         // Add some initial data
         runAndVerify(new Callable<Task<?>>() {
             @Override
-            public Task<?> call() throws Exception {
+            public Task<?> call() {
                 List<Task> tasks = new ArrayList<>();
                 for (int i = 0; i < INITIAL_SIZE; i++) {
                     tasks.add(mCollectionRef.document().set(new IntegerDocument(i)));
@@ -142,14 +140,14 @@ public class FirestoreArrayTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return mArray.size() == INITIAL_SIZE;
             }
         });
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (mArray != null && mListener != null) {
             mArray.removeChangeEventListener(mListener);
         } else {
@@ -164,12 +162,12 @@ public class FirestoreArrayTest {
     public void testPushIncreasesSize() throws Exception {
         runAndVerify(new Callable<Task<?>>() {
             @Override
-            public Task<?> call() throws Exception {
+            public Task<?> call() {
                 return mCollectionRef.document().set(new IntegerDocument(4));
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return mArray.size() == (INITIAL_SIZE + 1);
             }
         });
@@ -185,12 +183,12 @@ public class FirestoreArrayTest {
 
         runAndVerify(new Callable<Task<?>>() {
             @Override
-            public Task<?> call() throws Exception {
+            public Task<?> call() {
                 return mCollectionRef.document().set(new IntegerDocument(value));
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 if (mArray.size() == (INITIAL_SIZE + 1)) {
                     if (mArray.getObject(mArray.size() - 1).field == value) {
                         return true;
@@ -212,12 +210,12 @@ public class FirestoreArrayTest {
 
         runAndVerify(new Callable<Task<?>>() {
             @Override
-            public Task<?> call() throws Exception {
+            public Task<?> call() {
                 return mCollectionRef.document().set(new IntegerDocument(value));
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 if (mArray.size() == (INITIAL_SIZE + 1)) {
                     if (mArray.getObject(0).field == value) {
                         return true;
