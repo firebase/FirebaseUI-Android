@@ -1,6 +1,8 @@
 package com.firebase.uidemo.database.realtime;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -33,17 +35,22 @@ public class ChatIndexActivity extends ChatActivity {
                 .child("chatIndices")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        FirebaseRecyclerOptions<Chat, ChatHolder> options =
-                new FirebaseRecyclerOptions.Builder<Chat, ChatHolder>()
+        FirebaseRecyclerOptions<Chat> options =
+                new FirebaseRecyclerOptions.Builder<Chat>()
                         .setIndexedQuery(mChatIndicesRef.limitToFirst(50), mChatRef, Chat.class)
-                        .setViewHolder(R.layout.message, ChatHolder.class)
                         .setLifecycleOwner(this)
                         .build();
 
         return new FirebaseRecyclerAdapter<Chat, ChatHolder>(options) {
             @Override
-            public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
-                holder.bind(chat);
+            public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new ChatHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.message, parent, false));
+            }
+
+            @Override
+            protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
+                holder.bind(model);
             }
 
             @Override

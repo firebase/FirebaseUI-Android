@@ -18,7 +18,6 @@ public class FirestoreRecyclerOptions<T> {
 
     private static final String ERR_SNAPSHOTS_SET = "Snapshot array already set. " +
             "Call only one of setSnapshotArray or setQuery";
-
     private static final String ERR_SNAPSHOTS_NULL = "Snapshot array cannot be null. " +
             "Call one of setSnapshotArray or setQuery";
 
@@ -48,6 +47,7 @@ public class FirestoreRecyclerOptions<T> {
 
     /**
      * Builder for {@link FirestoreRecyclerOptions}.
+     *
      * @param <T> the model class for the {@link FirestoreRecyclerAdapter}.
      */
     public static class Builder<T> {
@@ -57,7 +57,7 @@ public class FirestoreRecyclerOptions<T> {
 
         /**
          * Directly set the {@link ObservableSnapshotArray}.
-         *
+         * <p>
          * Do not call this method after calling {@code setQuery}.
          */
         public Builder<T> setSnapshotArray(ObservableSnapshotArray<T> snapshots) {
@@ -69,7 +69,7 @@ public class FirestoreRecyclerOptions<T> {
 
         /**
          * Set the query to use (with options) and provide a custom {@link SnapshotParser}.
-         *
+         * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
         public Builder<T> setQuery(Query query,
@@ -77,38 +77,34 @@ public class FirestoreRecyclerOptions<T> {
                                    SnapshotParser<T> parser) {
             assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
 
-            mSnapshots = new FirestoreArray<T>(query, options, parser);
+            mSnapshots = new FirestoreArray<>(query, options, parser);
             return this;
         }
 
 
         /**
-         * Calls {@link #setQuery(Query, QueryListenOptions, Class)} with the default
-         * {@link QueryListenOptions}.
+         * Calls {@link #setQuery(Query, QueryListenOptions, Class)} with the default {@link
+         * QueryListenOptions}.
          */
-        public Builder<T> setQuery(Query query,
-                                   SnapshotParser<T> parser) {
+        public Builder<T> setQuery(Query query, SnapshotParser<T> parser) {
             return setQuery(query, new QueryListenOptions(), parser);
         }
 
         /**
-         * Set the query to use (with options) and provide a model class to which each snapshot
-         * will be converted.
-         *
+         * Set the query to use (with options) and provide a model class to which each snapshot will
+         * be converted.
+         * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setQuery(Query query,
-                                   QueryListenOptions options,
-                                   Class<T> modelClass) {
-            return setQuery(query, options, new ClassSnapshotParser<T>(modelClass));
+        public Builder<T> setQuery(Query query, QueryListenOptions options, Class<T> modelClass) {
+            return setQuery(query, options, new ClassSnapshotParser<>(modelClass));
         }
 
         /**
-         * Calls {@link #setQuery(Query, QueryListenOptions, Class)} with the default
-         * {@link QueryListenOptions}.
+         * Calls {@link #setQuery(Query, QueryListenOptions, Class)} with the default {@link
+         * QueryListenOptions}.
          */
-        public Builder<T> setQuery(Query query,
-                                   Class<T> modelClass) {
+        public Builder<T> setQuery(Query query, Class<T> modelClass) {
             return setQuery(query, new QueryListenOptions(), modelClass);
         }
 

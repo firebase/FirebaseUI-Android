@@ -105,12 +105,8 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     }
 
     /**
-     * Called when data has been added/changed and an item needs to be displayed.
-     *
-     * @param holder   the view to populate.
-     * @param position the position in the list of the view being populated.
-     * @param model    the model object containing the data that should be used to populate the
-     *                 view.
+     * @param model the model object containing the data that should be used to populate the view.
+     * @see #onBindViewHolder(RecyclerView.ViewHolder, int)
      */
     protected abstract void onBindViewHolder(VH holder, int position, T model);
 }

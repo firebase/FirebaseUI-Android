@@ -22,7 +22,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -142,18 +144,22 @@ public class ChatActivity extends AppCompatActivity
     protected FirebaseRecyclerAdapter<Chat, ChatHolder> getAdapter() {
         Query lastFifty = mChatRef.limitToLast(50);
 
-        FirebaseRecyclerOptions<Chat, ChatHolder> options =
-                new FirebaseRecyclerOptions.Builder<Chat, ChatHolder>()
-                        .setViewHolder(R.layout.message, ChatHolder.class)
+        FirebaseRecyclerOptions<Chat> options =
+                new FirebaseRecyclerOptions.Builder<Chat>()
                         .setQuery(lastFifty, Chat.class)
                         .setLifecycleOwner(this)
                         .build();
 
         return new FirebaseRecyclerAdapter<Chat, ChatHolder>(options) {
+            @Override
+            public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new ChatHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.message, parent, false));
+            }
 
             @Override
-            public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
-                holder.bind(chat);
+            protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
+                holder.bind(model);
             }
 
             @Override
