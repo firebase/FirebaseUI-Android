@@ -1,4 +1,4 @@
-package com.firebase.uidemo.database;
+package com.firebase.uidemo.util;
 
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
