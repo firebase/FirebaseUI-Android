@@ -1,4 +1,4 @@
-# FirebaseUI Database
+# FirebaseUI for Realtime Database
 
 ## Using FirebaseUI to populate a [`RecyclerView`](https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html)
 

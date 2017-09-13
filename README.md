@@ -3,8 +3,7 @@
 [![Build Status](https://travis-ci.org/firebase/FirebaseUI-Android.svg?branch=master)](https://travis-ci.org/firebase/FirebaseUI-Android)
 
 FirebaseUI is an open-source library for Android that allows you to
-quickly connect common UI elements to [Firebase](https://firebase.google.com)
-APIs like the Realtime Database or Firebase Authentication.
+quickly connect common UI elements to [Firebase](https://firebase.google.com) APIs.
 
 A compatible FirebaseUI client is also available for [iOS](https://github.com/firebase/firebaseui-ios).
 
@@ -19,10 +18,11 @@ A compatible FirebaseUI client is also available for [iOS](https://github.com/fi
 
 ## Usage
 
-FirebaseUI has separate modules for using Firebase Database, Auth, and Storage. To
-get started, see the individual instructions for each module:
+FirebaseUI has separate modules for using Firebase Realtime Database, Cloud Firestore, 
+Firebase Auth, and Cloud Storage. To get started, see the individual instructions for each module:
 
   * [firebase-ui-database](database/README.md)
+  * [firebase-ui-firestore](firestore/README.md)
   * [firebase-ui-auth](auth/README.md)
   * [firebase-ui-storage](storage/README.md)
 
@@ -38,17 +38,17 @@ libraries.
 
 ```groovy
 dependencies {
-    // FirebaseUI Database only
+    // FirebaseUI for Firebase Realtime Database
     compile 'com.firebaseui:firebase-ui-database:2.3.0'
+    
+    // FirebaseUI for Cloud Firestore
+    compile 'com.firebaseui:firebase-ui-firestore:2.3.0'
 
-    // FirebaseUI Auth only
+    // FirebaseUI for Firebase Auth
     compile 'com.firebaseui:firebase-ui-auth:2.3.0'
 
-    // FirebaseUI Storage only
+    // FirebaseUI for Cloud Storage
     compile 'com.firebaseui:firebase-ui-storage:2.3.0'
-
-    // Single target that includes all FirebaseUI libraries above
-    compile 'com.firebaseui:firebase-ui:2.3.0'
 }
 ```
 
@@ -77,6 +77,9 @@ firebase-ui-auth
 
 firebase-ui-database
 |--- com.google.firebase:firebase-database
+
+firebase-ui-firestore
+|--- com.google.firebase:firebase-firestore
 
 firebase-ui-storage
 |--- com.google.firebase:firebase-storage
@@ -120,10 +123,19 @@ compile "com.android.support:customtabs:$BAR"
 compile "com.android.support:cardview-v7:$BAR"
 ```
 
-Database:
+Realtime Database:
 
 ```groovy
 compile "com.google.firebase:firebase-database:$FOO"
+
+compile "com.android.support:recyclerview-v7:$BAR"
+compile "com.android.support:support-v4:$BAR"
+```
+
+Firestore:
+
+```groovy
+compile "com.google.firebase:firebase-firestore:$FOO"
 
 compile "com.android.support:recyclerview-v7:$BAR"
 compile "com.android.support:support-v4:$BAR"
