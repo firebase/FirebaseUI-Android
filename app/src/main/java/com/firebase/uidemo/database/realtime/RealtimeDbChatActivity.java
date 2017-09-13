@@ -38,7 +38,7 @@ import butterknife.OnClick;
  * For a general intro to the RecyclerView, see <a href="https://developer.android.com/training/material/lists-cards.html">Creating
  * Lists</a>.
  */
-public abstract class RealtimeDbChatActivity extends LifecycleActivity
+public class RealtimeDbChatActivity extends LifecycleActivity
         implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "RealtimeDatabaseDemo";
 

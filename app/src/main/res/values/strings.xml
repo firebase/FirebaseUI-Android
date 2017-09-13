@@ -3,13 +3,13 @@
 
     <!-- Chooser -->
     <string name="title_auth_activity">Auth UI demo</string>
-    <string name="name_firestore_chat">FirestoreChatActivity</string>
+    <string name="title_firestore_activity">FirestoreChatActivity</string>
     <string name="title_realtime_database_activity">Real-time database demo</string>
     <string name="title_storage_activity">Storage Image Demo</string>
 
     <string name="desc_auth">Demonstrates the Firebase Auth UI flow, with customization options.</string>
+    <string name="desc_firestore">Demonstrates using a FirestoreRecyclerAdapter to load data from Cloud Firestore into a RecyclerView for a basic chat app.</string>
     <string name="desc_realtime_database">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
-    <string name="desc_firestore_chat">Demonstrates using a FirestoreRecyclerAdapter to load data from Cloud Firestore into a RecyclerView for a basic chat app.</string>
     <string name="desc_storage">Demonstrates displaying an image from Cloud Storage using Glide.</string>
 
     <!-- Auth UI -->

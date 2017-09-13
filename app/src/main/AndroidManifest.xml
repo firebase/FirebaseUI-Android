@@ -41,7 +41,7 @@
         <!-- Firestore demo -->
         <activity
             android:name=".database.firestore.FirestoreChatActivity"
-            android:label="@string/name_chat" />
+            android:label="@string/title_firestore_activity" />
 
         <!-- Realtime database demo -->
         <activity

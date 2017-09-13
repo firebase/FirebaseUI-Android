@@ -58,14 +58,14 @@ public class ChooserActivity extends AppCompatActivity {
 
         private static final int[] DESCRIPTION_NAMES = new int[]{
                 R.string.title_auth_activity,
-                R.string.name_firestore_chat,
+                R.string.title_firestore_activity,
                 R.string.title_realtime_database_activity,
                 R.string.title_storage_activity
         };
 
         private static final int[] DESCRIPTION_IDS = new int[]{
                 R.string.desc_auth,
-                R.string.desc_firestore_chat,
+                R.string.desc_firestore,
                 R.string.desc_realtime_database,
                 R.string.desc_storage
         };

@@ -2,7 +2,6 @@ package com.firebase.uidemo.database.firestore;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,15 +13,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.database.ChatHolder;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.firebase.uidemo.database.realtime.Chat;
+import com.firebase.uidemo.util.LifecycleActivity;
+import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -31,14 +32,28 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Class demonstrating a simple real-time chat app that relies on {@link FirestoreRecyclerAdapter}.
+ * Class demonstrating how to setup a {@link RecyclerView} with an adapter while taking sign-in
+ * states into consideration. Also demonstrates adding data to a ref and then reading it back using
+ * the {@link FirestoreRecyclerAdapter} to build a simple chat app.
+ * <p>
+ * For a general intro to the RecyclerView, see <a href="https://developer.android.com/training/material/lists-cards.html">Creating
+ * Lists</a>.
  */
-public class FirestoreChatActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener {
+public class FirestoreChatActivity extends LifecycleActivity
+        implements FirebaseAuth.AuthStateListener {
+    private static final String TAG = "FirestoreChatActivity";
 
-    private static final String TAG = "FirestoreChat";
+    private static final CollectionReference sChatCollection =
+            FirebaseFirestore.getInstance().collection("chats");
+    /** Get the last 50 chat messages ordered by timestamp . */
+    private static final Query sChatQuery = sChatCollection.orderBy("timestamp").limit(50);
+
+    static {
+        FirebaseFirestore.setLoggingEnabled(true);
+    }
 
     @BindView(R.id.messagesList)
-    RecyclerView mRecycler;
+    RecyclerView mRecyclerView;
 
     @BindView(R.id.sendButton)
     Button mSendButton;
@@ -49,43 +64,94 @@ public class FirestoreChatActivity extends AppCompatActivity implements Firebase
     @BindView(R.id.emptyTextView)
     TextView mEmptyListMessage;
 
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore mFirestore;
-    private FirestoreRecyclerAdapter<Chat, ChatHolder> mAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        // Enable verbose Firestore logging
-        FirebaseFirestore.setLoggingEnabled(true);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mAuth = FirebaseAuth.getInstance();
-        mFirestore = FirebaseFirestore.getInstance();
-
-        // Get the last 50 chat messages, ordered by timestamp
-        Query query = mFirestore.collection("chats").orderBy("timestamp").limit(50);
-
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-
-        FirestoreRecyclerOptions<Chat> options = new FirestoreRecyclerOptions.Builder<Chat>()
-                .setQuery(query, Chat.class)
-                .build();
-
-        mAdapter = new FirestoreRecyclerAdapter<Chat, ChatHolder>(options) {
+        ImeHelper.setImeOnDoneListener(mMessageEdit, new ImeHelper.DonePressedListener() {
             @Override
-            public void onBindViewHolder(ChatHolder holder, int position, Chat model) {
-                holder.bind(model);
+            public void onDonePressed() {
+                onSendClick();
+            }
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (isSignedIn()) { attachRecyclerViewAdapter(); }
+        FirebaseAuth.getInstance().addAuthStateListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FirebaseAuth.getInstance().removeAuthStateListener(this);
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth auth) {
+        mSendButton.setEnabled(isSignedIn());
+        mMessageEdit.setEnabled(isSignedIn());
+
+        if (isSignedIn()) {
+            attachRecyclerViewAdapter();
+        } else {
+            Toast.makeText(this, R.string.signing_in, Toast.LENGTH_SHORT).show();
+            auth.signInAnonymously().addOnCompleteListener(new SignInResultNotifier(this));
+        }
+    }
+
+    private boolean isSignedIn() {
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
+    }
+
+    private void attachRecyclerViewAdapter() {
+        final RecyclerView.Adapter adapter = newAdapter();
+
+        // Scroll to bottom on new messages
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                mRecyclerView.smoothScrollToPosition(adapter.getItemCount());
+            }
+        });
+
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    @OnClick(R.id.sendButton)
+    public void onSendClick() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String name = "User " + uid.substring(0, 6);
+
+        onAddMessage(new Chat(name, mMessageEdit.getText().toString(), uid));
+
+        mMessageEdit.setText("");
+    }
+
+    protected RecyclerView.Adapter newAdapter() {
+        FirestoreRecyclerOptions<Chat> options =
+                new FirestoreRecyclerOptions.Builder<Chat>()
+                        .setQuery(sChatQuery, Chat.class)
+                        .setLifecycleOwner(this)
+                        .build();
+
+        return new FirestoreRecyclerAdapter<Chat, ChatHolder>(options) {
+            @Override
+            public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new ChatHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.message, parent, false));
             }
 
             @Override
-            public ChatHolder onCreateViewHolder(ViewGroup group, int i) {
-                View view = LayoutInflater.from(group.getContext())
-                        .inflate(R.layout.message, group, false);
-
-                return new ChatHolder(view);
+            protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
+                holder.bind(model);
             }
 
             @Override
@@ -94,72 +160,14 @@ public class FirestoreChatActivity extends AppCompatActivity implements Firebase
                 mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         };
-
-        mRecycler.setLayoutManager(manager);
-        mRecycler.setAdapter(mAdapter);
     }
 
-    @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth auth) {
-        if (auth.getCurrentUser() != null) {
-            mAdapter.startListening();
-            mSendButton.setEnabled(true);
-        } else {
-            mAdapter.stopListening();
-            mSendButton.setEnabled(false);
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        signInAnonymously();
-        mAuth.addAuthStateListener(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        mAuth.removeAuthStateListener(this);
-        mAdapter.stopListening();
-    }
-
-    private void signInAnonymously() {
-        if (mAuth.getCurrentUser() != null) {
-            return;
-        }
-
-        mAuth.signInAnonymously()
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "signIn:failure", e);
-                        Toast.makeText(FirestoreChatActivity.this,
-                                "Authentication failed.", Toast.LENGTH_LONG).show();
-                    }
-                });
-    }
-
-    @OnClick(R.id.sendButton)
-    public void onSendClick() {
-        String uid = mAuth.getCurrentUser().getUid();
-        String name = "User " + uid.substring(0, 6);
-
-        Chat chat = new Chat(name, mMessageEdit.getText().toString(), uid);
-
-        mFirestore.collection("chats").add(chat)
-                .addOnCompleteListener(this,
-                        new OnCompleteListener<DocumentReference>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.e(TAG, "Failed to write message", task.getException());
-                                }
-                            }
-                        });
-
-        mMessageEdit.setText("");
+    protected void onAddMessage(Chat chat) {
+        sChatCollection.add(chat).addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "Failed to write message", e);
+            }
+        });
     }
 }
