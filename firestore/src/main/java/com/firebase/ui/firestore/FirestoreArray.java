@@ -29,15 +29,19 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
     /**
      * Create a new FirestoreArray.
      *
-     * @param query query to listen to.
-     * @param options options for the query listen.
+     * @param query  query to listen to.
      * @param parser parser for DocumentSnapshots.
-     *
      * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
      */
-    public FirestoreArray(Query query,
-                          QueryListenOptions options,
-                          SnapshotParser<T> parser) {
+    public FirestoreArray(Query query, SnapshotParser<T> parser) {
+        this(query, new QueryListenOptions(), parser);
+    }
+
+    /**
+     * @param options options for the query listen.
+     * @see #FirestoreArray(Query, SnapshotParser)
+     */
+    public FirestoreArray(Query query, QueryListenOptions options, SnapshotParser<T> parser) {
         super(parser);
         mQuery = query;
         mOptions = options;
