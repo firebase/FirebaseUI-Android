@@ -338,8 +338,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUsePhoneProvider.isChecked()) {
             selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
-                            .build());
+                    new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
         }
 
         return selectedProviders;

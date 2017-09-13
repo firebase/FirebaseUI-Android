@@ -290,7 +290,7 @@ public class AuthUI {
         private IdpConfig(Parcel in) {
             mProviderId = in.readString();
             mScopes = Collections.unmodifiableList(in.createStringArrayList());
-            mParams = in.readBundle();
+            mParams = in.readBundle(getClass().getClassLoader());
         }
 
         @SupportedProvider
@@ -347,20 +347,10 @@ public class AuthUI {
 
         @Override
         public String toString() {
-            StringBuilder paramsValueBuilder = new StringBuilder();
-            paramsValueBuilder.append("{");
-            for (String key : mParams.keySet()) {
-                paramsValueBuilder.append(key);
-                paramsValueBuilder.append("=");
-                paramsValueBuilder.append(mParams.get(key).toString());
-                paramsValueBuilder.append(",");
-            }
-            paramsValueBuilder.append("}");
-
             return "IdpConfig{" +
                     "mProviderId='" + mProviderId + '\'' +
                     ", mScopes=" + mScopes +
-                    ", mParams=" + paramsValueBuilder.toString() +
+                    ", mParams=" + mParams.toString() +
                     '}';
         }
 

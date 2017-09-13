@@ -10,8 +10,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 
-import static com.firebase.ui.auth.AuthUI.EXTRA_DEFAULT_PHONE;
-
 public class PhoneProvider implements Provider {
 
     private static final int RC_PHONE_FLOW = 4;
@@ -41,7 +39,7 @@ public class PhoneProvider implements Provider {
         String phone = null;
         for (AuthUI.IdpConfig idpConfig : mFlowParameters.providerInfo) {
             if (idpConfig.getProviderId().equals(AuthUI.PHONE_VERIFICATION_PROVIDER)) {
-                phone = idpConfig.getParams().getString(EXTRA_DEFAULT_PHONE);
+                phone = idpConfig.getParams().getString(AuthUI.EXTRA_DEFAULT_PHONE);
             }
         }
 
