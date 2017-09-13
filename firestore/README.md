@@ -77,21 +77,21 @@ live query updates:
 
 ```java
 query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-        @Override
-        public void onEvent(@Nullable QuerySnapshot snapshot,
-                            @Nullable FirebaseFirestoreException e) {
-            if (e != null) {
-                // Handle error
-                //...
-                return;
-            }
-        
-            // Convert query snapshot to a list of chats
-            List<Chat> chats = snapshot.toObjects(Chat.class);
-            
-            // Update UI
-            // ...
+    @Override
+    public void onEvent(@Nullable QuerySnapshot snapshot,
+                        @Nullable FirebaseFirestoreException e) {
+        if (e != null) {
+            // Handle error
+            //...
+            return;
         }
+
+        // Convert query snapshot to a list of chats
+        List<Chat> chats = snapshot.toObjects(Chat.class);
+
+        // Update UI
+        // ...
+    }
 });
 ```
 
@@ -186,24 +186,22 @@ methods of the adapter:
 
 ```java
 FirestoreRecyclerAdapter adapter = new FirestoreRecyclerAdapter<Chat, ChatHolder>(options) {
-    
+    // ...
+
+    @Override
+    public void onDataChanged() {
+        // Called each time there is a new query snapshot. You may want to use this method
+        // to hide a loading spinner or check for the "no documents" state and update your UI.
         // ...
+    }
 
-        @Override
-        public void onDataChanged() {
-            // Called each time there is a new query snapshot. You may want to use this method
-            // to hide a loading spinner or check for the "no documents" state and update your UI.
-            // ...
-        }
-    
-        @Override
-        public void onError(FirebaseFirestoreException e) {
-            // Called when there is an error getting a query snapshot. You may want to update
-            // your UI to display an error message to the user.
-            // ...
-        }
-
-}
+    @Override
+    public void onError(FirebaseFirestoreException e) {
+        // Called when there is an error getting a query snapshot. You may want to update
+        // your UI to display an error message to the user.
+        // ...
+    }
+};
 ```
 
 
