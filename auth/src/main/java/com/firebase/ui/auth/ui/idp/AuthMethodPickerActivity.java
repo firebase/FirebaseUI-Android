@@ -28,7 +28,6 @@ import android.widget.ImageView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
-import com.firebase.ui.auth.AuthUI.PhoneIdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.EmailProvider;
@@ -115,8 +114,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                     mProviders.add(new EmailProvider(this, getFlowParams()));
                     break;
                 case AuthUI.PHONE_VERIFICATION_PROVIDER:
-                    PhoneIdpConfig phoneIdpConfig = (PhoneIdpConfig) idpConfig;
-                    mProviders.add(new PhoneProvider(this, getFlowParams(), phoneIdpConfig));
+                    mProviders.add(new PhoneProvider(this, getFlowParams()));
                     break;
                 default:
                     Log.e(TAG, "Encountered unknown provider parcel with type: "

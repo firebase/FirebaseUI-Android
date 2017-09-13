@@ -337,13 +337,8 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         if (mUsePhoneProvider.isChecked()) {
-            // Use the params Bundle to provide a default phone number that will populate the
-            // phone number field in PhoneVerificationActivity if the number is known in advance.
-            Bundle params = new Bundle();
-            params.putString(AuthUI.PHONE_VERIFICATION_DEFAULT_PHONE_EXTRA, "+13099126574");
             selectedProviders.add(
                     new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
-                            .setParams(params)
                             .build());
         }
 

@@ -29,6 +29,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.provider.TwitterProvider;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
@@ -108,8 +109,7 @@ public class AuthUI {
     /**
      * Bundle key for the default phone number parameter
      */
-    public static final String PHONE_VERIFICATION_DEFAULT_PHONE_EXTRA =
-            "phone_verification_default_phone";
+    public static final String EXTRA_DEFAULT_PHONE = ExtraConstants.EXTRA_PHONE;
 
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.

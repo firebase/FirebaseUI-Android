@@ -251,7 +251,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     String phone = idpConfigs
                             .get(0)
                             .getParams()
-                            .getString(AuthUI.PHONE_VERIFICATION_DEFAULT_PHONE_EXTRA);
+                            .getString(AuthUI.EXTRA_DEFAULT_PHONE);
                     startActivityForResult(
                             PhoneVerificationActivity.createIntent(getContext(), flowParams, phone),
                             RC_PHONE_FLOW);
