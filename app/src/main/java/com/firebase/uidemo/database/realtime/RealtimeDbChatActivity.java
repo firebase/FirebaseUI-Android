@@ -18,8 +18,6 @@ import com.firebase.uidemo.database.Chat;
 import com.firebase.uidemo.database.ChatHolder;
 import com.firebase.uidemo.util.LifecycleActivity;
 import com.firebase.uidemo.util.SignInResultNotifier;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -99,14 +97,7 @@ public abstract class RealtimeDbChatActivity extends LifecycleActivity
             attachRecyclerViewAdapter();
         } else {
             Toast.makeText(this, R.string.signing_in, Toast.LENGTH_SHORT).show();
-            auth.signInAnonymously()
-                    .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult result) {
-                            attachRecyclerViewAdapter();
-                        }
-                    })
-                    .addOnCompleteListener(new SignInResultNotifier(this));
+            auth.signInAnonymously().addOnCompleteListener(new SignInResultNotifier(this));
         }
     }
 
@@ -121,19 +112,7 @@ public abstract class RealtimeDbChatActivity extends LifecycleActivity
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                updateEmptyStateUi();
                 mRecyclerView.smoothScrollToPosition(adapter.getItemCount());
-            }
-
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                updateEmptyStateUi();
-            }
-
-            private void updateEmptyStateUi() {
-                // If there are no chat messages, show a view that invites the user to add a message.
-                mEmptyListMessage.setVisibility(
-                        adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         });
 
@@ -160,6 +139,12 @@ public abstract class RealtimeDbChatActivity extends LifecycleActivity
             @Override
             public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
                 holder.bind(chat);
+            }
+
+            @Override
+            public void onDataChanged() {
+                // If there are no chat messages, show a view that invites the user to add a message.
+                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         };
     }
