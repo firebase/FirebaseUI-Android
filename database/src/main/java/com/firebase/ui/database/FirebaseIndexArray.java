@@ -146,7 +146,7 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
             int keyIndex = 0;
 
             while (dataIndex < dataCount && keyIndex < mKeySnapshots.size()) {
-                String superKey = mKeySnapshots.getObject(keyIndex);
+                String superKey = mKeySnapshots.get(keyIndex);
                 if (key.equals(superKey)) {
                     break;
                 } else if (mDataSnapshots.get(dataIndex).getKey().equals(superKey)) {

@@ -60,14 +60,14 @@ public class FirebaseIndexArrayTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return mArray.size() == INITIAL_SIZE;
             }
         });
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         mArray.removeChangeEventListener(mListener);
         mRef.getRoot().removeValue();
     }
@@ -81,7 +81,7 @@ public class FirebaseIndexArrayTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return mArray.size() == 4;
             }
         });
@@ -96,8 +96,8 @@ public class FirebaseIndexArrayTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
-                return mArray.getObject(3).equals(4);
+            public Boolean call() {
+                return mArray.get(3).equals(4);
             }
         });
     }
@@ -111,9 +111,8 @@ public class FirebaseIndexArrayTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
-                return mArray.getObject(3).equals(3)
-                        && mArray.getObject(0).equals(4);
+            public Boolean call() {
+                return mArray.get(3).equals(3) && mArray.get(0).equals(4);
             }
         });
     }
@@ -123,11 +122,11 @@ public class FirebaseIndexArrayTest {
         runAndWaitUntil(mArray, new Runnable() {
             @Override
             public void run() {
-                mKeyRef.child(mArray.get(2).getKey()).setPriority(0.5);
+                mKeyRef.child(mArray.getSnapshot(2).getKey()).setPriority(0.5);
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return isValuesEqual(mArray, new int[]{3, 1, 2});
             }
         });

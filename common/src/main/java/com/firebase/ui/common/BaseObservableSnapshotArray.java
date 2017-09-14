@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @param <T> the model object class.
  */
 public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEventListener<S, E>, T>
-        extends AbstractList<S> {
+        extends AbstractList<T> {
 
     private final List<L> mListeners = new CopyOnWriteArrayList<>();
     private final BaseCachingSnapshotParser<S, T> mCachingParser;
@@ -41,8 +41,8 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
     protected abstract List<S> getSnapshots();
 
     @Override
-    public S get(int index) {
-        return getSnapshots().get(index);
+    public T get(int index) {
+        return mCachingParser.parseSnapshot(getSnapshot(index));
     }
 
     @Override
@@ -50,12 +50,8 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
         return getSnapshots().size();
     }
 
-    /**
-     * Get the Snapshot at a given position converted to an object of the parametrized type. This
-     * uses the {@link BaseSnapshotParser} passed to the constructor.
-     */
-    public T getObject(int index) {
-        return mCachingParser.parseSnapshot(get(index));
+    public S getSnapshot(int index) {
+        return getSnapshots().get(index);
     }
 
     /**
@@ -75,7 +71,7 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
 
         // Catch up new listener to existing state
         for (int i = 0; i < size(); i++) {
-            listener.onChildChanged(ChangeEventType.ADDED, get(i), i, -1);
+            listener.onChildChanged(ChangeEventType.ADDED, getSnapshot(i), i, -1);
         }
         if (mHasDataChanged) {
             listener.onDataChanged();

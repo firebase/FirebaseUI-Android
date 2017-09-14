@@ -61,7 +61,7 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     }
 
     public T getItem(int position) {
-        return mSnapshots.getObject(position);
+        return mSnapshots.get(position);
     }
 
     @Override

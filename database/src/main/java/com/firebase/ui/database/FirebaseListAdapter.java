@@ -84,12 +84,12 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
 
     @Override
     public T getItem(int position) {
-        return mSnapshots.getObject(position);
+        return mSnapshots.get(position);
     }
 
     @Override
     public DatabaseReference getRef(int position) {
-        return mSnapshots.get(position).getRef();
+        return mSnapshots.getSnapshot(position).getRef();
     }
 
     @Override
@@ -100,7 +100,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     @Override
     public long getItemId(int i) {
         // http://stackoverflow.com/questions/5100071/whats-the-purpose-of-item-ids-in-android-listview-adapter
-        return mSnapshots.get(i).getKey().hashCode();
+        return mSnapshots.getSnapshot(i).getKey().hashCode();
     }
 
     @Override

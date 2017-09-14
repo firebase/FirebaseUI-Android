@@ -100,12 +100,12 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
 
     @Override
     public T getItem(int position) {
-        return mSnapshots.getObject(position);
+        return mSnapshots.get(position);
     }
 
     @Override
     public DatabaseReference getRef(int position) {
-        return mSnapshots.get(position).getRef();
+        return mSnapshots.getSnapshot(position).getRef();
     }
 
     @Override

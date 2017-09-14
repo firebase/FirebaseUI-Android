@@ -59,14 +59,14 @@ public class FirebaseIndexArrayOfObjectsTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return mArray.size() == INITIAL_SIZE;
             }
         });
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         mArray.removeChangeEventListener(mListener);
         mRef.getRoot().removeValue();
     }
@@ -80,7 +80,7 @@ public class FirebaseIndexArrayOfObjectsTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return mArray.size() == 4;
             }
         });
@@ -95,8 +95,8 @@ public class FirebaseIndexArrayOfObjectsTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
-                return mArray.getObject(3).getNumber() == 4;
+            public Boolean call() {
+                return mArray.get(3).getNumber() == 4;
             }
         });
     }
@@ -110,9 +110,8 @@ public class FirebaseIndexArrayOfObjectsTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
-                return mArray.getObject(3).getNumber() == 3
-                        && mArray.getObject(0).getNumber() == 4;
+            public Boolean call() {
+                return mArray.get(3).getNumber() == 3 && mArray.get(0).getNumber() == 4;
             }
         });
     }
@@ -122,14 +121,14 @@ public class FirebaseIndexArrayOfObjectsTest {
         runAndWaitUntil(mArray, new Runnable() {
             @Override
             public void run() {
-                mKeyRef.child(mArray.get(2).getKey()).setPriority(0.5);
+                mKeyRef.child(mArray.getSnapshot(2).getKey()).setPriority(0.5);
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
-                return mArray.getObject(0).getNumber() == 3
-                        && mArray.getObject(1).getNumber() == 1
-                        && mArray.getObject(2).getNumber() == 2;
+            public Boolean call() {
+                return mArray.get(0).getNumber() == 3
+                        && mArray.get(1).getNumber() == 1
+                        && mArray.get(2).getNumber() == 2;
                 //return isValuesEqual(mArray, new int[]{3, 1, 2});
             }
         });

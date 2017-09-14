@@ -91,16 +91,11 @@ public class FirestoreArrayTest {
     }
 
     private static final String TAG = "FirestoreTest";
-
     private static final String FIREBASE_APP_NAME = "test-app";
-
     private static final int TIMEOUT = 30000;
-
     private static final int INITIAL_SIZE = 3;
 
-    private FirebaseFirestore mFirestore;
     private CollectionReference mCollectionRef;
-    private Query mQuery;
     private FirestoreArray<IntegerDocument> mArray;
     private ChangeEventListener mListener;
 
@@ -109,10 +104,10 @@ public class FirestoreArrayTest {
         FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
 
         // Configure Firestore and disable persistence
-        mFirestore = FirebaseFirestore.getInstance(app);
-        mFirestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder()
-                .setPersistenceEnabled(false)
-                .build());
+        FirebaseFirestore.getInstance(app)
+                .setFirestoreSettings(new FirebaseFirestoreSettings.Builder()
+                        .setPersistenceEnabled(false)
+                        .build());
 
         // Get a fresh 'test' subcollection for each test
         mCollectionRef = FirebaseFirestore.getInstance(app).collection("firestorearray")
@@ -121,8 +116,9 @@ public class FirestoreArrayTest {
         Log.d(TAG, "Test Collection: " + getConsoleLink(mCollectionRef));
 
         // Query is the whole collection ordered by field
-        mQuery = mCollectionRef.orderBy("field", Query.Direction.ASCENDING);
-        mArray = new FirestoreArray<>(mQuery, new ClassSnapshotParser<>(IntegerDocument.class));
+        mArray = new FirestoreArray<>(
+                mCollectionRef.orderBy("field", Query.Direction.ASCENDING),
+                new ClassSnapshotParser<>(IntegerDocument.class));
 
         // Add a listener to the array so that it's active
         mListener = mArray.addChangeEventListener(new LoggingListener());
@@ -190,7 +186,7 @@ public class FirestoreArrayTest {
             @Override
             public Boolean call() {
                 if (mArray.size() == (INITIAL_SIZE + 1)) {
-                    if (mArray.getObject(mArray.size() - 1).field == value) {
+                    if (mArray.get(mArray.size() - 1).field == value) {
                         return true;
                     }
                 }
@@ -217,7 +213,7 @@ public class FirestoreArrayTest {
             @Override
             public Boolean call() {
                 if (mArray.size() == (INITIAL_SIZE + 1)) {
-                    if (mArray.getObject(0).field == value) {
+                    if (mArray.get(0).field == value) {
                         return true;
                     }
                 }
@@ -232,9 +228,7 @@ public class FirestoreArrayTest {
      * condition to be met. Times out after {@link #TIMEOUT}.
      */
     @SuppressWarnings("unchecked")
-    private void runAndVerify(Callable<Task<?>> setup,
-                             Callable<Boolean> verify) throws Exception {
-
+    private void runAndVerify(Callable<Task<?>> setup, Callable<Boolean> verify) throws Exception {
         final Semaphore semaphore = new Semaphore(0);
         long startTime = System.currentTimeMillis();
 

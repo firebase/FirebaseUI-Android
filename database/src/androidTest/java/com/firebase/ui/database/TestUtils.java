@@ -78,8 +78,8 @@ public class TestUtils {
 
     public static boolean isValuesEqual(ObservableSnapshotArray<Integer> array, int[] expected) {
         if (array.size() != expected.length) return false;
-        for (int i = 0; i < array.size(); i++) {
-            if (!array.getObject(i).equals(expected[i])) {
+        for (Integer i : array) {
+            if (!i.equals(expected[i])) {
                 return false;
             }
         }
