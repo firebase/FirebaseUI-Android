@@ -238,7 +238,8 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         // If there is only one provider selected, launch the flow directly
         if (idpConfigs.size() == 1) {
-            String firstProvider = idpConfigs.get(0).getProviderId();
+            AuthUI.IdpConfig firstIdpConfig = idpConfigs.get(0);
+            String firstProvider = firstIdpConfig.getProviderId();
             switch (firstProvider) {
                 case EmailAuthProvider.PROVIDER_ID:
                     // Go directly to email flow
@@ -248,8 +249,9 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
                     // Go directly to phone flow
+                    String phone = firstIdpConfig.getParams().getString(AuthUI.EXTRA_DEFAULT_PHONE);
                     startActivityForResult(
-                            PhoneVerificationActivity.createIntent(getContext(), flowParams, null),
+                            PhoneVerificationActivity.createIntent(getContext(), flowParams, phone),
                             RC_PHONE_FLOW);
                     break;
                 default:

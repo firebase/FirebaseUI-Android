@@ -256,6 +256,20 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
+When using the phone verification provider and the number is known in advance, it is possible to
+provide a default phone number (in international format) that will be used to prepopulate the
+country code and phone number input fields. The user is still able to edit the number if desired.
+
+```java
+// Use a Bundle to hold the default number, and pass it to the Builder via setParams:
+Bundle params = new Bundle();
+params.putString(AuthUI.EXTRA_DEFAULT_PHONE, "+12345678901");
+IdpConfig phoneConfigWithDefaultNumber =
+        new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
+                .setParams(params)
+                .build();
+```
+
 #### Handling the sign-in response
 
 ##### Response codes
