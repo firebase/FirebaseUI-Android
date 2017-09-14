@@ -130,30 +130,4 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T>
     protected List<DataSnapshot> getSnapshots() {
         return mSnapshots;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-
-        FirebaseArray snapshots = (FirebaseArray) obj;
-
-        return mQuery.equals(snapshots.mQuery) && mSnapshots.equals(snapshots.mSnapshots);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = mQuery.hashCode();
-        result = 31 * result + mSnapshots.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        if (isListening()) {
-            return "FirebaseArray is listening at " + mQuery + ":\n" + mSnapshots;
-        } else {
-            return "FirebaseArray is inactive";
-        }
-    }
 }

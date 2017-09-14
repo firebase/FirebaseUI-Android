@@ -206,34 +206,6 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
         }
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        if (!super.equals(obj)) return false;
-
-        FirebaseIndexArray array = (FirebaseIndexArray) obj;
-
-        return mDataRef.equals(array.mDataRef) && mDataSnapshots.equals(array.mDataSnapshots);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + mDataRef.hashCode();
-        result = 31 * result + mDataSnapshots.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        if (isListening()) {
-            return "FirebaseIndexArray is listening at " + mDataRef + ":\n" + mDataSnapshots;
-        } else {
-            return "FirebaseIndexArray is inactive";
-        }
-    }
-
     /**
      * A ValueEventListener attached to the joined child data.
      */
