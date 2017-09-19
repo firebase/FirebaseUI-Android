@@ -1,270 +1,208 @@
 # FirebaseUI for Realtime Database
 
-## Using FirebaseUI to populate a [`RecyclerView`](https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html)
+FirebaseUI makes it simple to bind data from the Firebase Realtime Database to your app's UI.
 
-To use the FirebaseUI to display Firebase data, we need a few things:
+Before using this library, you should be familiar with the following topics:
 
-  1. A Java class that represents our database objects
-  1. A custom recycler view adapter to map from a collection from Firebase to Android
+  * [Working with lists of data in Firebase Realtime Database][firebase-lists].
+  * [Displaying lists of data using a RecyclerView][recyclerview].
 
-### Creating a model class
+## Using FirebaseUI to populate a `RecyclerView`
 
-In your app, create a class that represents the data from Firebase that you want to show in the RecyclerView.
-
-So say we have these chat messages in our Firebase database:
-
-![Chat messages in dashboard](../doc-images/chat-messages.png "Chat messages in console")
-
-We can represent a chat message with this Java class:
+Imagine you have a chat app where each chat message is an item in the `chats` node
+of your database.  In your app, you may represent a chat message like this:
 
 ```java
 public class Chat {
+
     private String mName;
     private String mMessage;
     private String mUid;
 
-    public Chat() {
-        // Needed for Firebase
-    }
+    public Chat() {}  // Needed for Firebase
 
-    public Chat(String name, String uid, String message) {
+    public Chat(String name, String message, String uid) {
         mName = name;
         mMessage = message;
         mUid = uid;
     }
 
-    public String getName() {
-        return mName;
-    }
+    public String getName() { return mName; }
 
-    public void setName(String name) {
-        mName = name;
-    }
+    public void setName(String name) { mName = name; }
 
-    public String getMessage() {
-        return mMessage;
-    }
+    public String getMessage() { return mMessage; }
 
-    public void setMessage(String message) {
-        mMessage = message;
-    }
+    public void setMessage(String message) { mMessage = message; }
 
-    public String getUid() {
-        return mUid;
-    }
+    public String getUid() { return mUid; }
 
-    public void setUid(String uid) {
-        mUid = uid;
-    }
+    public void setUid(String uid) { mUid = uid; }
 }
 ```
-A few things to note here:
 
- * The fields have the exact same name as the properties in Firebase. This allows Firebase to automatically map the properties to these fields.
- * There is a default (parameter-less constructor) that is necessary for Firebase to be able to create a new instance of this class.
- * There is a convenience constructor that takes the member fields, so that we easily create a fully initialized `Chat` in our app
- * the `getText`, `getUid`, and `getName` methods are so-called getters and follow a JavaBean pattern
+A few things to note abot this model class:
 
-A little-known feature of Firebase for Android is that you can pass an instance of this `Chat` class to `setValue()`:
+  * The getters and setters follow the JavaBean naming pattern which allows Firebase to map
+    the data to field names (ex: `getName()` provides the `name` field).
+  * The class has an empty constructor, which is required for Firebase's automatic data mapping.
+  
+For a properly constructed model class like the `Chat` class above, Firebase can perform automatic
+serialization in `DatabaseReference#setValue()` and automatic deserialization in 
+`DataSnapshot.getValue()`.
+
+### Querying
+
+On the main screenof your app, you may want to show the 50 most recent chat messages. With Firebase
+you would use the following query:
 
 ```java
-DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-Chat msg = new Chat("puf", "1234", "Hello FirebaseUI world!");
-ref.push().setValue(msg);
+Query query = FirebaseDatabase.getInstance()
+        .getReference()
+        .child("chats")
+        .limitToLast(50)
 ```
-The Firebase Android client will read the values from the `msg` and write them into the properties of the new child in the database.
 
-Conversely, we can read a `Chat` straight from a `DataSnapshot` in our event handlers:
+To retrieve this data without FirebaseUI, you might use `addChildEventListener` to listen for
+live updates:
 
 ```java
-ref.limitToLast(5).addValueEventListener(new ValueEventListener() {
+ChildEventListener childEventListener = new ChildEventListener() {
     @Override
-    public void onDataChange(DataSnapshot snapshot) {
-        for (DataSnapshot msgSnapshot: snapshot.getChildren()) {
-            Chat msg = msgSnapshot.getValue(Chat.class);
-            Log.i("Chat", chat.getName()+": "+chat.getText());
-        }
+    public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+        // ...
     }
+
     @Override
-    public void onCancelled(DatabaseError error) {
-        Log.e("Chat", "The read failed: " + error.getText());
-    }
-});
-```
-In the above snippet we have a query for the last 5 chat messages. Whenever those change (i.e. when an new message is added)
-we get the `Chat` objects from the `DataSnapshot` with `getValue(Chat.class)`. The Firebase Android client will
-then read the properties that it got from the database and map them to the fields of our `Chat` class.
-
-But when we build our app using FirebaseUI, we often won't need to register our own EventListener. The
-`FirebaseRecyclerAdapter` takes care of that for us.
-
-### Find the RecyclerView
-
-We'll assume you've already added a `RecyclerView` to your layout and have looked it up in the `onCreate` method of your activity:
-
-```java
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-
-    RecyclerView messages = (RecyclerView) findViewById(R.id.messages);
-    messages.setLayoutManager(new LinearLayoutManager(this));
-}
-```
-
-There's nothing magical going on here; we're just mapping numeric IDs and casts into a nice, type-safe contract.
-
-### Connect to Firebase
-
-First we'll set up a reference to the database of chat messages:
-
-```java
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-
-    RecyclerView messages = (RecyclerView) findViewById(R.id.messages);
-    messages.setLayoutManager(new LinearLayoutManager(this));
-
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-}
-```
-
-### Create a custom ViewHolder
-
-A ViewHolder is similar to container of a ViewGroup that allows simple lookup of the sub-views of the group.
-If we use the same layout as before (`android.R.layout.two_line_list_item`), there are two `TextView`s in there.
-We can wrap that in a ViewHolder with:
-
-```java
-public class ChatHolder extends RecyclerView.ViewHolder {
-    private final TextView mNameField;
-    private final TextView mMessageField;
-
-    public ChatHolder(View itemView) {
-        super(itemView);
-        mNameField = (TextView) itemView.findViewById(android.R.id.text1);
-        mMessageField = (TextView) itemView.findViewById(android.R.id.text2);
+    public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+        // ...
     }
 
-    public void setName(String name) {
-        mNameField.setText(name);
+    @Override
+    public void onChildRemoved(DataSnapshot dataSnapshot) {
+        // ...
     }
 
-    public void setMessage(String message) {
-        mMessageField.setText(message);
+    @Override
+    public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+        // ...
     }
-}
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+        // ...
+    }
+};
+query.addChildEventListener(childEventListener);
 ```
 
-### Create custom FirebaseRecyclerAdapter subclass
+If you're displaying a list of data, you likely want to bind the `Chat` objects to a `RecyclerView`.
+This means implementing a custom `RecyclerView.Adapter` and coordinating updates with the
+`ChildEventListener`.
 
-Next, we need to create a subclass of the `FirebaseRecyclerAdapter` with the correct parameters
-and implement its `populateViewHolder` method:
+Fear not, FirebaseUI does all of this for you automatically!
+
+### Using the FirebaseRecyclerAdapter
+
+The `FirebaseRecyclerAdapter` binds a `Query` to a `RecyclerView`.  When data is added, removed,
+or changed these updates are automatically applied to your UI in real time.
+
+First, configure the adapter by building `FirebaseRecyclerOptions`. In this case we will continue
+with our chat example:
+
+```java
+ FirebaseRecyclerOptions<Chat> options =
+                new FirebaseRecyclerOptions.Builder<Chat>()
+                        .setQuery(query, Chat.class)
+                        .build();
+```
+
+Next create the `FirebaseRecyclerAdapter` object. You should already have a `ViewHolder` subclass
+for displaying each item. In this case we will use a custom `ChatHolder` class:
+
+```java
+FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(options) {
+    @Override
+    public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Create a new instance of the ViewHolder, in this case we are using a custom
+        // layout called R.layout.message for each item
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.message, parent, false);
+        
+        return new ChatHolder(view);
+    }
+    
+    @Override
+    protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
+        // Bind the Chat object to the ChatHolder
+        // ...
+    }
+};
+```
+
+Finally attach the adapter to your `RecyclerView` with the `RecyclerView#setAdapter()`.
+Don't forget to also set a `LayoutManager`!
+
+
+### FirebaseRecyclerAdapter lifecycle
+
+#### Start/stop listening
+
+The `FirebaseRecyclerAdapter` uses an event listener to monitor changes to the Firebase query.
+To begin listening for data, call the `startListening()` method. You may want to call this in your
+`onStart()` method. Make sure you have finished any authentication necessary to read the data
+before calling `startListening()` or your query will fail.
 
 ```java
 @Override
-protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-
-    RecyclerView messages = (RecyclerView) findViewById(R.id.messages);
-    messages.setLayoutManager(new LinearLayoutManager(this));
-
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
-    mAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
-            Chat.class,
-            R.layout.message,
-            ChatHolder.class,
-            ref) {
-        @Override
-        public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
-            holder.setName(chat.getName());
-            holder.setMessage(chat.getMessage());
-        }
-    };
-
-    messages.setAdapter(mAdapter);
+protected void onStart() {
+    super.onStart();
+    adapter.startListening();
 }
 ```
 
-In this last snippet we create a subclass of `FirebaseRecyclerAdapter`.
-We tell is that it is of type `<Chat>`, so that it is a type-safe collection. We also tell it to use
-`Chat.class` when reading messages from the database. Next we say that each message will be displayed in
-a `android.R.layout.two_line_list_item`, which is a built-in layout in Android that has two `TextView` elements
-under each other. Then we say that the adapter belongs to `this` activity and that it needs to monitor the
-data location in `ref`.
-
-We also have to override the `populateViewHolder` method, from the `FirebaseRecyclerAdapter`. The
-`FirebaseRecyclerAdapter` will call our `populateViewHolder` method for each `Chat` it finds in the database.
-It passes us the `Chat` and a `View`, which is an instance of the `android.R.layout.two_line_list_item`
-we specified in the constructor. So what we do in our subclass is map the fields from `chatMessage` to the
-correct `TextView` controls from the `view`. The code is a bit verbose, but hey... that's Java and Android for you.
-
-### Clean up When the Activity is Destroyed
-
-Finally, we need to clean up after ourselves. When the activity is destroyed, we need to call `cleanup()`
-on the adapter so that it can stop listening for changes in the Firebase database.
+Similarly, the `stopListening()` call removes the event  listener and all data in the adapter.
+Call this method when the containing Activity or Fragment stops:
 
 ```java
 @Override
-protected void onDestroy() {
-    super.onDestroy();
-    mAdapter.cleanup();
+protected void onStop() {
+    super.onStop();
+    adapter.stopListening();
 }
 ```
 
-### Send Chat Messages
+If you don't want to manually start/stop listening you can use 
+[Android Architecture Components][arch-components] to automatically manage the lifecycle of the
+`FirebaseRecyclerAdapter`.  Pass a `LifecycleOwner` to 
+`FirebaseRecyclerAdapter.Builder#setLifecycleOwner(...)` and FirebaseUI will automatically
+start and stop listening in `onStart()` and `onStop()`.
 
-Remember when we showed how to use the `Chat` class in `setValue()`.
-We can now use that in our activity to allow sending a message:
+#### Data and error events
+
+When using the `FirebaseRecyclerAdapter` you may want to perform some action every time data
+changes or when there is an error. To do this, override the `onDataChanged()` and `onError()`
+methods of the adapter:
 
 ```java
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(options) {
+    // ...
 
-    RecyclerView messages = (RecyclerView) findViewById(R.id.messages);
-    messages.setLayoutManager(new LinearLayoutManager(this));
+    @Override
+    public void onDataChanged() {
+        // Called each time there is a new data snapshot. You may want to use this method
+        // to hide a loading spinner or check for the "no documents" state and update your UI.
+        // ...
+    }
 
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
-    mAdapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
-            Chat.class,
-            R.layout.message,
-            ChatHolder.class,
-            ref) {
-        @Override
-        public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
-            holder.setName(chat.getName());
-            holder.setMessage(chat.getMessage());
-        }
-    };
-
-    messages.setAdapter(mAdapter);
-
-    final EditText message = (EditText) findViewById(R.id.message_text);
-    findViewById(R.id.send_button).setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ref.push().setValue(new Chat("puf", "1234", message.getText().toString()));
-            message.setText("");
-        }
-    });
-}
-
-@Override
-protected void onDestroy() {
-    super.onDestroy();
-    mAdapter.cleanup();
-}
+    @Override
+    public void onError(DatabaseError e) {
+        // Called when there is an error getting data. You may want to update
+        // your UI to display an error message to the user.
+        // ...
+    }
+};
 ```
-
-You're done! You now have a minimal, yet fully functional, chat app in about 30 lines of code. Not bad, right?
 
 ## Using FirebaseUI to populate a `ListView`
 
@@ -272,38 +210,41 @@ ListView is the older, yet simpler way to handle lists of items. Using it is ana
 using a `FirebaseRecyclerAdapter`, but with `FirebaseListAdapter` instead and no `ViewHolder`:
 
 ```java
-ListView messagesView = (ListView) findViewById(R.id.messages_list);
-DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-mAdapter = new FirebaseListAdapter<Chat>(this, Chat.class, android.R.layout.two_line_list_item, ref) {
-    @Override
-    protected void populateView(View view, Chat chatMessage, int position) {
-        ((TextView) view.findViewById(android.R.id.text1)).setText(chatMessage.getName());
-        ((TextView) view.findViewById(android.R.id.text2)).setText(chatMessage.getText());
+FirebaseListOptions<Chat> options = new FirebaseListOptions.Builder<Chat>()
+        .setQuery(query, Chat.class)
+        .build();
 
+FirebaseListAdapter<Chat> adapter = new FirebaseListAdapter<Chat>(options) {
+    @Override
+    protected void populateView(View v, Chat model, int position) {
+        // Bind the Chat to the view
+        // ...
     }
 };
-messagesView.setAdapter(mAdapter);
 ```
 
 ## Using FirebaseUI with indexed data
 
-If your data is [properly indexed](https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure), change your adapter initialization like so:
+If your data is [properly indexed][indexed-data], change your adapter initialization
+to use `setIndexedQuery`:
 
 For a `RecyclerView`, use `FirebaseIndexRecyclerAdapter` instead of `FirebaseRecyclerAdapter`:
+
 ```java
-new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
-        Chat.class,
-        android.R.layout.two_line_list_item,
-        ChatHolder.class,
-        keyRef, // The Firebase location containing the list of keys to be found in dataRef.
-        dataRef) //The Firebase location to watch for data changes. Each key key found at keyRef's location represents a list item in the RecyclerView.
+// keyQuery - the Firebase location containing the list of keys to be found in dataRef
+// dataRef - the Firebase location to watch for data changes. Each key found at 
+//           keyRef's location represents a list item.
+FirebaseRecyclerOptions<Chat> options = new FirebaseRecyclerOptions.Builder<Chat>()
+        .setIndexedQuery(keyQuery, dataRef, Chat.class)
+        .build();
 ```
 
-`keyRef` is the location of your keys, and `dataRef` is the location of your data.
+`keyQuery` is the location of your keys, and `dataRef` is the location of your data.
 
 ### A note on ordering
 
 The order in which your receive your data depends on the order from `keyRef`, not `dataRef`:
+
 ```javascript
 {
   "data": {
@@ -327,3 +268,8 @@ The order in which your receive your data depends on the order from `keyRef`, no
   }
 }
 ```
+
+[firebase-lists]: https://firebase.google.com/docs/database/android/lists-of-data
+[indexed-data]: https://firebase.google.com/docs/database/android/structure-data#best_practices_for_data_structure
+[recyclerview]: https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html
+[arch-components]: https://developer.android.com/topic/libraries/architecture/index.html

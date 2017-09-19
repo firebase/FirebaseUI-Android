@@ -146,7 +146,7 @@ Don't forget to also set a `LayoutManager`!
 
 ### FirestoreRecyclerAdapter lifecycle
 
-### Start/stop listening
+#### Start/stop listening
 
 The `FirestoreRecyclerAdapter` uses a snapshot listener to monitor changes to the Firestore query.
 To begin listening for data, call the `startListening()` method.  You may want to call this
@@ -178,7 +178,7 @@ If you don't want to manually start/stop listening you can use
 `FirestoreRecyclerOptions.Builder#setLifecycleOwner(...)` and FirebaseUI will automatically
 start and stop listening in `onStart()` and `onStop()`.
 
-### Data and error events
+#### Data and error events
 
 When using the `FirestoreRecyclerAdapter` you may want to perform some action every time data
 changes or when there is an error. To do this, override the `onDataChanged()` and `onError()`
