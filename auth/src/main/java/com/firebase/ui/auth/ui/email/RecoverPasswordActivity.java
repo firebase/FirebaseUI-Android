@@ -52,11 +52,11 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.forgot_password_layout);
+        setContentView(R.layout.fui_forgot_password_layout);
 
         mEmailFieldValidator =
                 new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
-        mEmailEditText = (EditText) findViewById(R.id.email);
+        mEmailEditText = findViewById(R.id.email);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         if (email != null) {
@@ -86,7 +86,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
                         if (e instanceof FirebaseAuthInvalidUserException) {
                             // No FirebaseUser exists with this email address, show error.
-                            mEmailEditText.setError(getString(R.string.error_email_does_not_exist));
+                            mEmailEditText.setError(getString(R.string.fui_error_email_does_not_exist));
                         }
                     }
                 });
@@ -96,7 +96,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     public void onClick(View view) {
         if (view.getId() == R.id.button_done) {
             if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
-                getDialogHolder().showLoadingDialog(R.string.progress_dialog_sending);
+                getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_sending);
                 next(mEmailEditText.getText().toString());
             }
         }

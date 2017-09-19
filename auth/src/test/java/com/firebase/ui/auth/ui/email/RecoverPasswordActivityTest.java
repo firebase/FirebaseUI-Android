@@ -21,7 +21,6 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
-import com.firebase.ui.auth.testhelpers.CustomRobolectricGradleTestRunner;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 
@@ -29,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
@@ -37,7 +37,7 @@ import java.util.Collections;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(CustomRobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
 public class RecoverPasswordActivityTest {
 
@@ -51,7 +51,7 @@ public class RecoverPasswordActivityTest {
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.<String>emptyList()),
                 TestConstants.EMAIL);
-        return Robolectric.buildActivity(RecoverPasswordActivity.class).withIntent(startIntent)
+        return Robolectric.buildActivity(RecoverPasswordActivity.class, startIntent)
                 .create().visible().get();
     }
 
@@ -60,10 +60,10 @@ public class RecoverPasswordActivityTest {
     public void testNextButton_sendsEmail() {
         RecoverPasswordActivity recoverPasswordActivity = createActivity();
 
-        Button nextButton = (Button) recoverPasswordActivity.findViewById(R.id.button_done);
-        when(AuthHelperShadow.sFirebaseAuth.sendPasswordResetEmail(TestConstants.EMAIL))
+        Button nextButton = recoverPasswordActivity.findViewById(R.id.button_done);
+        when(AuthHelperShadow.getFirebaseAuth().sendPasswordResetEmail(TestConstants.EMAIL))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
         nextButton.performClick();
-        verify(AuthHelperShadow.sFirebaseAuth).sendPasswordResetEmail(TestConstants.EMAIL);
+        verify(AuthHelperShadow.getFirebaseAuth()).sendPasswordResetEmail(TestConstants.EMAIL);
     }
 }

@@ -1,0 +1,31 @@
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/material_gray_300" />
+            <size
+                android:width="48dp"
+                android:height="48dp" />
+        </shape>
+    </item>
+    <item
+        android:bottom="4dp"
+        android:left="4dp"
+        android:right="4dp"
+        android:top="4dp">
+        <aapt:attr name="android:drawable">
+            <vector
+                android:width="44dp"
+                android:height="44dp"
+                android:viewportHeight="24.0"
+                android:viewportWidth="24.0"
+                tools:targetApi="lollipop">
+                <path
+                    android:fillColor="@color/material_gray_500"
+                    android:pathData="M12,12c2.21,0 4,-1.79 4,-4s-1.79,-4 -4,-4 -4,1.79 -4,4 1.79,4 4,4zM12,14c-2.67,0 -8,1.34 -8,4v2h16v-2c0,-2.66 -5.33,-4 -8,-4z" />
+            </vector>
+        </aapt:attr>
+    </item>
+</layer-list>

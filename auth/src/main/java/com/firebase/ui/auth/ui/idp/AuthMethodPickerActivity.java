@@ -19,6 +19,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,22 +68,30 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     private SaveSmartLock mSaveSmartLock;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return HelperActivityBase.createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
+        return HelperActivityBase.createBaseIntent(
+                context, AuthMethodPickerActivity.class, flowParams);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.auth_method_picker_layout);
+        setContentView(R.layout.fui_auth_method_picker_layout);
         mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(this);
 
         populateIdpList(getFlowParams().providerInfo);
 
         int logoId = getFlowParams().logoId;
         if (logoId == AuthUI.NO_LOGO) {
-            findViewById(R.id.logo_layout).setVisibility(View.GONE);
+            findViewById(R.id.logo).setVisibility(View.GONE);
+
+            ConstraintLayout layout = findViewById(R.id.root);
+            ConstraintSet constraints = new ConstraintSet();
+            constraints.clone(layout);
+            constraints.setHorizontalBias(R.id.container, 0.5f);
+            constraints.setVerticalBias(R.id.container, 0.5f);
+            constraints.applyTo(layout);
         } else {
-            ImageView logo = (ImageView) findViewById(R.id.logo);
+            ImageView logo = findViewById(R.id.logo);
             logo.setImageResource(logoId);
         }
     }
@@ -112,7 +122,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
             }
         }
 
-        ViewGroup btnHolder = (ViewGroup) findViewById(R.id.btn_holder);
+        ViewGroup btnHolder = findViewById(R.id.btn_holder);
         for (final Provider provider : mProviders) {
             View loginButton = getLayoutInflater()
                     .inflate(provider.getButtonLayout(), btnHolder, false);
@@ -121,7 +131,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                 @Override
                 public void onClick(View view) {
                     if (provider instanceof IdpProvider) {
-                        getDialogHolder().showLoadingDialog(R.string.progress_dialog_loading);
+                        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
                     }
                     provider.startLogin(AuthMethodPickerActivity.this);
                 }
@@ -146,19 +156,19 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     }
 
     @Override
-    public void onSuccess(final IdpResponse response) {
+    public void onSuccess(IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
         getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(credential)
-                .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Firebase sign in with credential "
-                                + credential.getProvider() + " unsuccessful. " +
-                                "Visit https://console.firebase.google.com to enable it."))
                 .addOnCompleteListener(new CredentialSignInHandler(
                         this,
                         mSaveSmartLock,
                         RC_ACCOUNT_LINK,
-                        response));
+                        response))
+                .addOnFailureListener(
+                        new TaskFailureLogger(TAG, "Firebase sign in with credential " +
+                                credential.getProvider() + " unsuccessful. " +
+                                "Visit https://console.firebase.google.com to enable it."));
     }
 
     @Override

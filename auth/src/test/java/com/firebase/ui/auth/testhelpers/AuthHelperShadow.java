@@ -17,57 +17,57 @@ import static org.mockito.Mockito.when;
 @Implements(AuthHelper.class)
 public class AuthHelperShadow {
 
-    public static final FirebaseAuth sFirebaseAuth;
-    public static final FirebaseUser sFirebaseUser;
-    public static final CredentialsApi sCredentialsApi;
-    public static final SaveSmartLock sSaveSmartLock;
-    public static final PhoneAuthProvider sPhoneAuthProvider;
-
-    static {
-        // CredentialsApi
-        sCredentialsApi = Mockito.mock(CredentialsApi.class);
-
-        // FirebaseUser
-        sFirebaseUser = Mockito.mock(FirebaseUser.class);
-        when(sFirebaseUser.getEmail()).thenReturn(TestConstants.EMAIL);
-        when(sFirebaseUser.getDisplayName()).thenReturn(TestConstants.NAME);
-        when(sFirebaseUser.getPhotoUrl()).thenReturn(TestConstants.PHOTO_URI);
-
-        // FirebaseAuth
-        sFirebaseAuth = Mockito.mock(FirebaseAuth.class);
-        when(sFirebaseAuth.getCurrentUser()).thenReturn(sFirebaseUser);
-
-        // SaveSmartLock
-        sSaveSmartLock = Mockito.mock(SaveSmartLock.class);
-
-        // PhoneAuthProvider
-        sPhoneAuthProvider = Mockito.mock(PhoneAuthProvider.class);
-    }
+    private static FirebaseAuth sFirebaseAuth;
+    private static FirebaseUser sFirebaseUser;
+    private static CredentialsApi sCredentialsApi;
+    private static SaveSmartLock sSaveSmartLock;
+    private static PhoneAuthProvider sPhoneAuthProvider;
 
     public AuthHelperShadow() {}
 
     @Implementation
     public static FirebaseAuth getFirebaseAuth() {
+        if (sFirebaseAuth == null) {
+            sFirebaseAuth = Mockito.mock(FirebaseAuth.class);
+            when(sFirebaseAuth.getCurrentUser()).thenReturn(sFirebaseUser);
+        }
+
         return sFirebaseAuth;
     }
 
     @Implementation
     public static CredentialsApi getCredentialsApi() {
+        if (sCredentialsApi == null) {
+            sCredentialsApi = Mockito.mock(CredentialsApi.class);
+        }
+
         return sCredentialsApi;
     }
 
     @Implementation
     public static FirebaseUser getCurrentUser() {
+        if (sFirebaseUser == null) {
+            sFirebaseUser = TestHelper.getMockFirebaseUser();
+        }
+
         return sFirebaseUser;
     }
 
     @Implementation
     public static SaveSmartLock getSaveSmartLockInstance(HelperActivityBase activity) {
+        if (sSaveSmartLock == null) {
+            sSaveSmartLock = Mockito.mock(SaveSmartLock.class);
+        }
+
         return sSaveSmartLock;
     }
 
     @Implementation
-    public static PhoneAuthProvider getPhoneAuthProviderInstance() {
+    public static PhoneAuthProvider getPhoneAuthProvider() {
+        if (sPhoneAuthProvider == null) {
+            sPhoneAuthProvider = Mockito.mock(PhoneAuthProvider.class);
+        }
+
         return sPhoneAuthProvider;
     }
 

@@ -1,7 +1,0 @@
-<Button
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/google_button"
-    style="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
-    android:text="@string/sign_in_with_google"
-    tools:ignore="UnusedIds" /> <!-- Used in tests -->

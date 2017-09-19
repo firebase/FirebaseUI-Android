@@ -30,7 +30,7 @@ import android.util.Log;
 import com.firebase.ui.auth.FirebaseAuthError;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhoneVerificationActivity extends AppCompatBase {
     private enum VerificationState {
-        VERIFICATION_NOT_STARTED, VERIFICATION_STARTED, VERIFIED;
+        VERIFICATION_NOT_STARTED, VERIFICATION_STARTED, VERIFIED
     }
 
     private static final String PHONE_VERIFICATION_LOG_TAG = "PhoneVerification";
@@ -66,7 +66,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     private static final String KEY_STATE = "KEY_STATE";
 
     private AlertDialog mAlertDialog;
-    private CompletableProgressDialog mProgressDialog;
+    @VisibleForTesting CompletableProgressDialog mProgressDialog;
     private Handler mHandler;
     private String mPhoneNumber;
     private String mVerificationId;
@@ -82,7 +82,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     @Override
     protected void onCreate(final Bundle savedInstance) {
         super.onCreate(savedInstance);
-        setContentView(R.layout.activity_register_phone);
+        setContentView(R.layout.fui_activity_register_phone);
 
         mHandler = new Handler();
         mVerificationState = VerificationState.VERIFICATION_NOT_STARTED;
@@ -150,20 +150,20 @@ public class PhoneVerificationActivity extends AppCompatBase {
     void verifyPhoneNumber(String phoneNumber, boolean forceResend) {
         sendCode(phoneNumber, forceResend);
         if (forceResend) {
-            showLoadingDialog(getString(R.string.resending));
+            showLoadingDialog(getString(R.string.fui_resending));
         } else {
-            showLoadingDialog(getString(R.string.verifying));
+            showLoadingDialog(getString(R.string.fui_verifying));
         }
     }
 
     public void submitConfirmationCode(String confirmationCode) {
-        showLoadingDialog(getString(R.string.verifying));
-        signingWithCreds(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
+        showLoadingDialog(getString(R.string.fui_verifying));
+        signIn(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
     }
 
     private void onVerificationSuccess(@NonNull final PhoneAuthCredential phoneAuthCredential) {
         if (TextUtils.isEmpty(phoneAuthCredential.getSmsCode())) {
-            signingWithCreds(phoneAuthCredential);
+            signIn(phoneAuthCredential);
         } else {
             //Show Fragment if it is not already visible
             showSubmitCodeFragment();
@@ -171,17 +171,17 @@ public class PhoneVerificationActivity extends AppCompatBase {
                     getSubmitConfirmationCodeFragment();
 
 
-            showLoadingDialog(getString(R.string.retrieving_sms));
+            showLoadingDialog(getString(R.string.fui_retrieving_sms));
             if (submitConfirmationCodeFragment != null) {
                 submitConfirmationCodeFragment.setConfirmationCode(String.valueOf
                         (phoneAuthCredential.getSmsCode()));
             }
-            signingWithCreds(phoneAuthCredential);
+            signIn(phoneAuthCredential);
         }
     }
 
     private void onCodeSent() {
-        completeLoadingDialog(getString(R.string.code_sent));
+        completeLoadingDialog(getString(R.string.fui_code_sent));
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -192,36 +192,33 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void onVerificationFailed(@NonNull FirebaseException ex) {
-        VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
-                getSupportFragmentManager().findFragmentByTag(VerifyPhoneNumberFragment.TAG);
+        dismissLoadingDialog();
 
-        if (verifyPhoneNumberFragment == null) {
-            return;
-        }
         if (ex instanceof FirebaseAuthException) {
             FirebaseAuthError error = FirebaseAuthError.fromException((FirebaseAuthException) ex);
 
             switch (error) {
                 case ERROR_INVALID_PHONE_NUMBER:
-                    verifyPhoneNumberFragment.showError(getString(R.string.invalid_phone_number));
-                    dismissLoadingDialog();
+                    VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
+                            getSupportFragmentManager().findFragmentByTag(VerifyPhoneNumberFragment.TAG);
+
+                    if (verifyPhoneNumberFragment != null) {
+                        verifyPhoneNumberFragment.showError(
+                                getString(R.string.fui_invalid_phone_number));
+                    }
                     break;
                 case ERROR_TOO_MANY_REQUESTS:
-                    showAlertDialog(getString(R.string.error_too_many_attempts), null);
-                    dismissLoadingDialog();
+                    showAlertDialog(getString(R.string.fui_error_too_many_attempts), null);
                     break;
                 case ERROR_QUOTA_EXCEEDED:
-                    showAlertDialog(getString(R.string.error_quota_exceeded), null);
-                    dismissLoadingDialog();
+                    showAlertDialog(getString(R.string.fui_error_quota_exceeded), null);
                     break;
                 default:
                     Log.w(PHONE_VERIFICATION_LOG_TAG, error.getDescription(), ex);
-                    dismissLoadingDialog();
                     showAlertDialog(error.getDescription(), null);
             }
         } else {
             Log.w(PHONE_VERIFICATION_LOG_TAG, ex.getLocalizedMessage());
-            dismissLoadingDialog();
             showAlertDialog(ex.getLocalizedMessage(), null);
         }
     }
@@ -230,7 +227,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         mPhoneNumber = phoneNumber;
         mVerificationState = VerificationState.VERIFICATION_STARTED;
 
-        getAuthHelper().getPhoneAuthProviderInstance().verifyPhoneNumber(
+        getAuthHelper().getPhoneAuthProvider().verifyPhoneNumber(
                 phoneNumber,
                 AUTO_RETRIEVAL_TIMEOUT_MILLIS,
                 TimeUnit.MILLISECONDS,
@@ -287,29 +284,30 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void finish(FirebaseUser user) {
-        IdpResponse response = new IdpResponse.Builder(PhoneAuthProvider.PROVIDER_ID, null)
-                .setPhoneNumber(user.getPhoneNumber())
+        IdpResponse response = new IdpResponse.Builder(
+                new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
+                        .setPhoneNumber(user.getPhoneNumber())
+                        .build())
                 .build();
-        setResult(ResultCodes.OK, response.toIntent());
-        finish();
+        finish(RESULT_OK, response.toIntent());
     }
 
     private void showAlertDialog(@NonNull String s, DialogInterface.OnClickListener
             onClickListener) {
         mAlertDialog = new AlertDialog.Builder(this)
                 .setMessage(s)
-                .setPositiveButton(R.string.incorrect_code_dialog_positive_button_text, onClickListener)
+                .setPositiveButton(R.string.fui_incorrect_code_dialog_positive_button_text, onClickListener)
                 .show();
     }
 
-    private void signingWithCreds(@NonNull PhoneAuthCredential phoneAuthCredential) {
+    private void signIn(@NonNull PhoneAuthCredential credential) {
         getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(phoneAuthCredential)
+                .signInWithCredential(credential)
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(final AuthResult authResult) {
                         mVerificationState = VerificationState.VERIFIED;
-                        completeLoadingDialog(getString(R.string.verified));
+                        completeLoadingDialog(getString(R.string.fui_verified));
 
                         // Activity can be recreated before this message is handled
                         mHandler.postDelayed(new Runnable() {
@@ -335,7 +333,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
                             switch (error) {
                                 case ERROR_INVALID_VERIFICATION_CODE:
                                     showAlertDialog(
-                                            getString(R.string.incorrect_code_dialog_body),
+                                            getString(R.string.fui_incorrect_code_dialog_body),
                                             new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
@@ -346,7 +344,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
                                     break;
                                 case ERROR_SESSION_EXPIRED:
                                     showAlertDialog(
-                                            getString(R.string.error_session_expired),
+                                            getString(R.string.fui_error_session_expired),
                                             new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
@@ -368,7 +366,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
 
     private void completeLoadingDialog(String content) {
         if (mProgressDialog != null) {
-            mProgressDialog.complete(content);
+            mProgressDialog.onComplete(content);
         }
     }
 
@@ -376,18 +374,15 @@ public class PhoneVerificationActivity extends AppCompatBase {
         dismissLoadingDialog();
 
         if (mProgressDialog == null) {
-            mProgressDialog = new CompletableProgressDialog(this);
-            mProgressDialog.setIndeterminate(true);
-            mProgressDialog.setTitle("");
+            mProgressDialog = CompletableProgressDialog.show(getSupportFragmentManager());
         }
 
         mProgressDialog.setMessage(message);
-        mProgressDialog.show();
     }
 
     private void dismissLoadingDialog() {
         if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
+            mProgressDialog.dismissAllowingStateLoss();
             mProgressDialog = null;
         }
     }

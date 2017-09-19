@@ -1,0 +1,7 @@
+<com.firebase.ui.auth.ui.idp.SupportVectorDrawablesButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/facebook_button"
+    style="@style/FirebaseUI.Button.AccountChooser.FacebookButton"
+    android:text="@string/fui_sign_in_with_facebook"
+    tools:ignore="UnusedIds" /> <!-- Used in tests -->

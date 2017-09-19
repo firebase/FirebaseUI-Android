@@ -46,15 +46,35 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    compile 'com.firebaseui:firebase-ui-auth:2.0.1'
-    
+    compile 'com.firebaseui:firebase-ui-auth:2.3.0'
+
     // Required only if Facebook login support is required
     compile('com.facebook.android:facebook-android-sdk:4.22.1')
-    
+
     // Required only if Twitter login support is required
     compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
 }
 ```
+
+As of version `2.1.0` FirebaseUI includes translations for all string resources. In order to
+ensure that you only get the translations relevant to your application, we recommend changing the
+`resConfigs` of your application module:
+
+```groovy
+android {
+
+  // ...
+
+  defaultConfig {
+     // ...
+     resConfigs "auto"
+  }
+
+}
+```
+
+See the [Android documentation](https://developer.android.com/studio/build/shrink-code.html#unused-alt-resources)
+for more information.
 
 ### Identity provider configuration
 
@@ -82,7 +102,7 @@ If support for Twitter Sign-in is also required, define the resource strings
 `twitter_consumer_key` and `twitter_consumer_secret` to match the values of your
 Twitter app as reported by the [Twitter application manager](https://apps.twitter.com/).
 
-```
+```xml
 <resources>
   <string name="twitter_consumer_key" translatable="false">YOURCONSUMERKEY</string>
   <string name="twitter_consumer_secret" translatable="false">YOURCONSUMERSECRET</string>
@@ -184,7 +204,7 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
-If a terms of service URL, privacy policy URL, and a custom theme are required:
+If a terms of service URL and privacy policy URL are required:
 
 ```java
 startActivityForResult(
@@ -193,7 +213,6 @@ startActivityForResult(
         .setAvailableProviders(...)
         .setTosUrl("https://superapp.example.com/terms-of-service.html")
         .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
-        .setTheme(R.style.SuperAppTheme)
         .build(),
     RC_SIGN_IN);
 ```
@@ -242,9 +261,9 @@ startActivityForResult(
 ##### Response codes
 
 The authentication flow provides several response codes of which the most common are as follows:
-`ResultCodes.OK` if a user is signed in, `ResultCodes.CANCELLED` if the user manually canceled the sign in,
-`ResultCodes.NO_NETWORK` if sign in failed due to a lack of network connectivity,
-and `ResultCodes.UNKNOWN_ERROR` for all other errors.
+`Activity.RESULT_OK` if a user is signed in, `Activity.RESULT_CANCELED` if the user manually canceled the sign in,
+`ErrorCodes.NO_NETWORK` if sign in failed due to a lack of network connectivity,
+and `ErrorCodes.UNKNOWN_ERROR` for all other errors.
 Typically, the only recourse for most apps if sign in fails is to ask
 the user to sign in again later, or proceed with anonymous sign-in if supported.
 
@@ -256,7 +275,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
         // Successfully signed in
-        if (resultCode == ResultCodes.OK) {
+        if (resultCode == RESULT_OK) {
             startActivity(SignedInActivity.createIntent(this, response));
             finish();
             return;
@@ -296,7 +315,7 @@ Intent.
 ```java
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == ResultCodes.OK) {
+    if (resultCode == RESULT_OK) {
         IdpResponse idpResponse = IdpResponse.fromResultIntent(data);
         startActivity(new Intent(this, WelcomeBackActivity.class)
                 .putExtra("my_token", idpResponse.getIdpToken()));
@@ -377,16 +396,38 @@ represented in the following diagram:
 
 ## UI customization
 
-To provide customization of the visual style of the activities that implement
-the flow, a new theme can be declared. Standard material design color
-and typography properties will take effect as expected. For example, to define
-a green theme:
+To use FirebaseUI Auth's sign-in flows, you must provide an `app_name` string and use the
+AppCompat color attributes in your app.
+
+First, ensure an `app_name` resource is defined your `strings.xml` file like so:
+
+```xml
+<resources>
+    <string name="app_name">My App</string>
+    <!-- ... -->
+</resources>
+```
+
+Second, ensure the three standard AppCompat color resources are defined with your own values:
+
+```xml
+<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- Required for sign-in flow styling -->
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+</style>
+
+If you would like more control over FirebaseUI's styling, you can define your own custom style
+to override certain or all styling attributes. For example, a green sign-in theme:
 
 ```xml
 <style name="GreenTheme" parent="FirebaseUI">
+    <!-- Required for sign-in flow styling -->
     <item name="colorPrimary">@color/material_green_500</item>
     <item name="colorPrimaryDark">@color/material_green_700</item>
     <item name="colorAccent">@color/material_purple_a700</item>
+    
     <item name="colorControlNormal">@color/material_green_500</item>
     <item name="colorControlActivated">@color/material_lime_a700</item>
     <item name="colorControlHighlight">@color/material_green_a200</item>
@@ -415,20 +456,22 @@ startActivityForResult(
         .build());
 ```
 
-Your application theme could also simply be used, rather than defining a new
-one.
+Your application theme could also simply be used, rather than defining a new one.
 
-If you wish to change the string messages, the existing strings can be
-easily overridden by name in your application. See
-[the built-in strings.xml](src/main/res/values/strings.xml) and simply
-redefine a string to change it, for example:
+If you wish to change the string messages, the existing strings can be overridden
+by name in your application. See the module's [strings.xml](src/main/res/values/strings.xml) file
+and simply redefine a string to change it:
 
 ```xml
 <resources>
     <!-- was "Signing up..." -->
-    <string name="progress_dialog_signing_up">Creating your shiny new account...</string>
+    <string name="fui_progress_dialog_signing_up">Creating your shiny new account...</string>
 </resources>
 ```
+
+**Note:** String resource names aren't considered part of the public API and might
+therefore change and break your app between library updates. We recommend looking
+at a diff of the `strings.xml` file before updating FirebaseUI.
 
 ### OAuth Scope Customization
 

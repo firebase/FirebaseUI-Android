@@ -23,14 +23,13 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
-import com.google.firebase.auth.EmailAuthProvider;
 
 /**
  * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment} and
@@ -56,7 +55,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register_email);
+        setContentView(R.layout.fui_activity_register_email);
 
         if (savedInstanceState != null) {
             return;
@@ -96,8 +95,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
                 WelcomeBackPasswordPrompt.createIntent(
                         this,
                         getFlowParams(),
-                        new IdpResponse.Builder(
-                                EmailAuthProvider.PROVIDER_ID, user.getEmail()).build()),
+                        new IdpResponse.Builder(user).build()),
                 RC_SIGN_IN);
 
         setSlideAnimation();
@@ -106,13 +104,9 @@ public class RegisterEmailActivity extends AppCompatBase implements
     @Override
     public void onExistingIdpUser(User user) {
         // Existing social user, direct them to sign in using their chosen provider.
-        Intent intent = WelcomeBackIdpPrompt.createIntent(
-                this,
-                getFlowParams(),
-                user,
-                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, user.getEmail()).build());
-
-        startActivityForResult(intent, RC_WELCOME_BACK_IDP);
+        startActivityForResult(
+                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user, null),
+                RC_WELCOME_BACK_IDP);
         setSlideAnimation();
     }
 
@@ -121,7 +115,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
         // New user, direct them to create an account with email/password
         // if account creation is enabled in SignInIntentBuilder
 
-        TextInputLayout emailLayout = (TextInputLayout) findViewById(R.id.email_layout);
+        TextInputLayout emailLayout = findViewById(R.id.email_layout);
 
         if (getFlowParams().allowNewEmailAccounts) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(
@@ -134,12 +128,12 @@ public class RegisterEmailActivity extends AppCompatBase implements
 
             ft.disallowAddToBackStack().commit();
         } else {
-            emailLayout.setError(getString(R.string.error_email_does_not_exist));
+            emailLayout.setError(getString(R.string.fui_error_email_does_not_exist));
         }
     }
 
     private void setSlideAnimation() {
         // Make the next activity slide in
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        overridePendingTransition(R.anim.fui_slide_in_right, R.anim.fui_slide_out_left);
     }
 }

@@ -18,7 +18,7 @@ So say we have these chat messages in our Firebase database:
 We can represent a chat message with this Java class:
 
 ```java
-public static class Chat {
+public class Chat {
     private String mName;
     private String mMessage;
     private String mUid;
@@ -139,7 +139,7 @@ If we use the same layout as before (`android.R.layout.two_line_list_item`), the
 We can wrap that in a ViewHolder with:
 
 ```java
-public static class ChatHolder extends RecyclerView.ViewHolder {
+public class ChatHolder extends RecyclerView.ViewHolder {
     private final TextView mNameField;
     private final TextView mMessageField;
 

@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.ui.auth.ui.ExtraConstants;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -30,20 +30,20 @@ public class RecoveryEmailSentDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getContext())
-                .setTitle(R.string.title_confirm_recover_password)
-                .setMessage(getString(R.string.confirm_recovery_body,
+                .setTitle(R.string.fui_title_confirm_recover_password)
+                .setMessage(getString(R.string.fui_confirm_recovery_body,
                         getArguments().getString(ExtraConstants.EXTRA_EMAIL)))
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface anInterface) {
-                        finish(ResultCodes.OK, new Intent());
+                        finish(Activity.RESULT_OK, new Intent());
                     }
                 })
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
     }
 
-    public void finish(int resultCode, Intent resultIntent) {
+    private void finish(int resultCode, Intent resultIntent) {
         getActivity().setResult(resultCode, resultIntent);
         getActivity().finish();
     }

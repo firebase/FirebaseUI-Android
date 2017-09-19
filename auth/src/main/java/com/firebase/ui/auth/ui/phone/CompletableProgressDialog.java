@@ -14,9 +14,13 @@
 
 package com.firebase.ui.auth.ui.phone;
 
-import android.app.ProgressDialog;
-import android.content.Context;
+import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,41 +28,42 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
 
-public final class CompletableProgressDialog extends ProgressDialog {
+public final class CompletableProgressDialog extends DialogFragment {
+    private static final String TAG = "ComProgressDialog";
+
     private ProgressBar mProgress;
-    private TextView mMessageView;
+    @VisibleForTesting TextView mMessageView;
     private CharSequence mMessage;
     private ImageView mSuccessImage;
 
-    public CompletableProgressDialog(Context context) {
-        super(context);
+    public static CompletableProgressDialog show(FragmentManager manager) {
+        CompletableProgressDialog dialog = new CompletableProgressDialog();
+        dialog.show(manager, TAG);
+        return dialog;
     }
 
-    public CompletableProgressDialog(Context context, int theme) {
-        super(context, theme);
-    }
-
+    @NonNull
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.phone_progress_dialog);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View rootView = View.inflate(getContext(), R.layout.fui_phone_progress_dialog, null);
 
-        mProgress = (ProgressBar) findViewById(R.id.progress_bar);
-        mMessageView = (TextView) findViewById(R.id.progress_msg);
-        mSuccessImage = (ImageView) findViewById(R.id.progress_success_imaage);
+        mProgress = rootView.findViewById(R.id.progress_bar);
+        mMessageView = rootView.findViewById(R.id.progress_msg);
+        mSuccessImage = rootView.findViewById(R.id.progress_success_imaage);
 
         if (mMessage != null) {
             setMessage(mMessage);
         }
+
+        return new AlertDialog.Builder(getContext()).setView(rootView).create();
     }
 
-    public void complete(String msg) {
+    public void onComplete(String msg) {
         setMessage(msg);
         mProgress.setVisibility(View.GONE);
         mSuccessImage.setVisibility(View.VISIBLE);
     }
 
-    @Override
     public void setMessage(CharSequence message) {
         if (mProgress != null) {
             mMessageView.setText(message);

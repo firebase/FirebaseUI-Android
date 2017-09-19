@@ -39,16 +39,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:2.0.1'
+    compile 'com.firebaseui:firebase-ui-database:2.3.0'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:2.0.1'
+    compile 'com.firebaseui:firebase-ui-auth:2.3.0'
 
     // FirebaseUI Storage only
-    compile 'com.firebaseui:firebase-ui-storage:2.0.1'
+    compile 'com.firebaseui:firebase-ui-storage:2.3.0'
 
     // Single target that includes all FirebaseUI libraries above
-    compile 'com.firebaseui:firebase-ui:2.0.1'
+    compile 'com.firebaseui:firebase-ui:2.3.0'
 }
 ```
 
@@ -63,7 +63,7 @@ After the project is synchronized, we're ready to start using Firebase functiona
 If you are using an old version of FirebaseUI and upgrading, please see the appropriate
 migration guide:
 
-  * [Upgrade from 1.2.0 to 2.0.x](./docs/upgrade-to-2.0.md)
+  * [Upgrade from 1.2.0 to 2.x.x](./docs/upgrade-to-2.0.md)
 
 ## Dependencies
 
@@ -91,6 +91,9 @@ For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 2.3.0              | 11.0.4                         |
+| 2.2.0              | 11.0.4                         |
+| 2.1.1              | 11.0.2                         |
 | 2.0.1              | 11.0.1                         |
 | 1.2.0              | 10.2.0                         |
 | 1.1.1              | 10.0.0 or 10.0.1               |
@@ -101,7 +104,7 @@ For convenience, here are some recent examples:
 ## Upgrading dependencies
 
 If you would like to use a newer version of one of FirebaseUI's transitive dependencies, such
-as Firebase, Play services, or the Android support libraries you need add explicit
+as Firebase, Play services, or the Android support libraries, you need to add explicit
 `compile` declarations in your `build.gradle` for all of FirebaseUI's dependencies at the version
 you want to use. For example if you want to use Play services/Firebase version `FOO` and support
 libraries version `BAR` add the following extra lines for each FirebaseUI module you're using:
@@ -135,11 +138,27 @@ compile "com.android.support:appcompat-v7:$BAR"
 compile "com.android.support:palette-v7:$BAR"
 ```
 
+NOTE :
+Starting version 25.4.0, support libraries are now available through [Google's Maven repository](https://developer.android.com/studio/build/dependencies.html#google-maven), so ensure that you have that added to your project's repositories.
+
+Open the `build.gradle` file for your project and modify it as following,
+
+```
+allprojects {
+    repositories {
+        maven {
+            url "https://maven.google.com"
+        }
+        jcenter()
+    }
+}
+```
+
 ## Sample App
 
 There is a sample app in the `app/` directory that demonstrates most
 of the features of FirebaseUI. Load the project in Android Studio and
-run it on your Android device to see a demonstration. 
+run it on your Android device to see a demonstration.
 
 Before you can run the sample app, you must create a project in
 the Firebase console. Add an Android app to the project, and copy

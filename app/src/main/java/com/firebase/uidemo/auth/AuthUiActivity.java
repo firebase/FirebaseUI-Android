@@ -35,7 +35,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ResultCodes;
 import com.firebase.uidemo.R;
 import com.google.android.gms.common.Scopes;
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,6 +53,7 @@ public class AuthUiActivity extends AppCompatActivity {
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
     private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google.com/policies/privacy/";
     private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google.com/terms/analytics/#7_privacy";
+
     private static final int RC_SIGN_IN = 100;
 
     @BindView(R.id.default_theme)
@@ -138,9 +138,7 @@ public class AuthUiActivity extends AppCompatActivity {
     CheckBox mGoogleScopeYoutubeData;
 
     public static Intent createIntent(Context context) {
-        Intent in = new Intent();
-        in.setClass(context, AuthUiActivity.class);
-        return in;
+        return new Intent(context, AuthUiActivity.class);
     }
 
     @Override
@@ -229,7 +227,7 @@ public class AuthUiActivity extends AppCompatActivity {
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
         // Successfully signed in
-        if (resultCode == ResultCodes.OK) {
+        if (resultCode == RESULT_OK) {
             startSignedInActivity(response);
             finish();
             return;
@@ -307,7 +305,7 @@ public class AuthUiActivity extends AppCompatActivity {
         if (mFirebaseLogo.isChecked()) {
             return R.drawable.firebase_auth_120dp;
         } else if (mGoogleLogo.isChecked()) {
-            return R.drawable.logo_googleg_color_144dp;
+            return R.drawable.ic_googleg_color_144dp;
         }
         return AuthUI.NO_LOGO;
     }

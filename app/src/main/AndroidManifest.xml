@@ -13,39 +13,44 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
         <activity android:name=".ChooserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
 
-        <!-- Chat demo -->
-        <activity
-            android:name=".database.ChatActivity"
-            android:label="@string/name_chat" />
-        <activity
-            android:name=".database.ChatIndexActivity"
-            android:label="@string/name_chat" />
-
         <!-- Auth UI demo -->
         <activity
             android:name=".auth.AuthUiActivity"
-            android:label="@string/name_auth_ui" />
+            android:label="@string/title_auth_activity" />
         <activity
             android:name=".auth.SignedInActivity"
-            android:label="@string/name_auth_ui" />
+            android:label="@string/title_auth_activity" />
 
-        <!-- Storage UI demo-->
+        <!-- Realtime database demo -->
+        <activity
+            android:name=".database.realtime.RealtimeDbChatActivity"
+            android:label="@string/title_realtime_database_activity" />
+        <activity
+            android:name=".database.realtime.RealtimeDbChatIndexActivity"
+            android:label="@string/title_realtime_database_activity" />
+
+        <!-- Storage UI demo -->
         <activity
             android:name=".storage.ImageActivity"
-            android:label="@string/name_image" />
+            android:label="@string/title_storage_activity" />
+
     </application>
 
 </manifest>

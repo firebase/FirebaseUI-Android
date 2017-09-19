@@ -1,9 +1,11 @@
 package com.firebase.ui.auth.ui.email;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,12 +19,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.ImeHelper;
-import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
@@ -94,21 +96,26 @@ public class CheckEmailFragment extends FragmentBase implements
         return fragment;
     }
 
+    @SuppressLint("NewApi") // TODO remove once lint understands Build.VERSION_CODES.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.check_email_layout, container, false);
+        View v = inflater.inflate(R.layout.fui_check_email_layout, container, false);
 
         // Email field and validator
-        mEmailLayout = (TextInputLayout) v.findViewById(R.id.email_layout);
-        mEmailEditText = (EditText) v.findViewById(R.id.email);
+        mEmailLayout = v.findViewById(R.id.email_layout);
+        mEmailEditText = v.findViewById(R.id.email);
         mEmailFieldValidator = new EmailFieldValidator(mEmailLayout);
         mEmailLayout.setOnClickListener(this);
         mEmailEditText.setOnClickListener(this);
 
         ImeHelper.setImeOnDoneListener(mEmailEditText, this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
+            mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
+        }
 
         // "Next" button
         v.findViewById(R.id.button_next).setOnClickListener(this);
@@ -179,7 +186,7 @@ public class CheckEmailFragment extends FragmentBase implements
     }
 
     private void checkAccountExists(@NonNull final String email) {
-        getDialogHolder().showLoadingDialog(R.string.progress_dialog_checking_accounts);
+        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_checking_accounts);
 
         // Get name from SmartLock, if possible
         String name = null;
@@ -198,15 +205,15 @@ public class CheckEmailFragment extends FragmentBase implements
                     @Override
                     public void onSuccess(String provider) {
                         if (provider == null) {
-                            mListener.onNewUser(new User.Builder(email)
+                            mListener.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
                                     .setName(finalName)
                                     .setPhotoUri(finalPhotoUri)
                                     .build());
                         } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
-                            mListener.onExistingEmailUser(new User.Builder(email).build());
+                            mListener.onExistingEmailUser(
+                                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build());
                         } else {
-                            mListener.onExistingIdpUser(
-                                    new User.Builder(email).setProvider(provider).build());
+                            mListener.onExistingIdpUser(new User.Builder(provider, email).build());
                         }
                     }
                 })

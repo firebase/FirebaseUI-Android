@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.util.signincontainer;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -15,11 +16,10 @@ import android.util.Log;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ResultCodes;
+import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
@@ -40,6 +40,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -94,7 +95,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
         FlowParameters flowParams = getFlowParams();
         if (flowParams.enableCredentials) {
-            getDialogHolder().showLoadingDialog(R.string.progress_dialog_loading);
+            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
 
             mGoogleApiClient = new GoogleApiClient.Builder(getContext().getApplicationContext())
                     .addConnectionCallbacks(this)
@@ -159,7 +160,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_CREDENTIALS_READ:
-                if (resultCode == ResultCodes.OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     // credential selected from SmartLock, log in with that credential
                     Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
                     handleCredential(credential);
@@ -268,27 +269,29 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
 
     /**
      * Begin sign in process with email and password from a SmartLock credential. On success, finish
-     * with {@link ResultCodes#OK RESULT_OK}. On failure, delete the credential from SmartLock (if
+     * with {@link Activity#RESULT_OK}. On failure, delete the credential from SmartLock (if
      * applicable) and then launch the auth method picker flow.
      */
     private void signInWithEmailAndPassword(String email, String password) {
         final IdpResponse response =
-                new IdpResponse.Builder(EmailAuthProvider.PROVIDER_ID, email).build();
+                new IdpResponse.Builder(new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
+                        .build();
 
         getAuthHelper().getFirebaseAuth()
                 .signInWithEmailAndPassword(email, password)
-                .addOnFailureListener(new TaskFailureLogger(
-                        TAG, "Error signing in with email and password"))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        finish(ResultCodes.OK, response.toIntent());
+                        finish(Activity.RESULT_OK, response.toIntent());
                     }
                 })
+                .addOnFailureListener(new TaskFailureLogger(
+                        TAG, "Error signing in with email and password"))
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (e instanceof FirebaseAuthInvalidUserException) {
+                        if (e instanceof FirebaseAuthInvalidUserException
+                                || e instanceof FirebaseAuthInvalidCredentialsException) {
                             // In this case the credential saved in SmartLock was not
                             // a valid credential, we should delete it from SmartLock
                             // before continuing.
@@ -341,8 +344,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             IdpSignInContainer.signIn(
                     getActivity(),
                     getFlowParams(),
-                    new User.Builder(email)
-                            .setProvider(accountTypeToProviderId(accountType))
+                    new User.Builder(SmartLockBase.accountTypeToProviderId(accountType), email)
                             .build());
         } else {
             Log.w(TAG, "Unknown provider: " + accountType);

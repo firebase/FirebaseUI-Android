@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.firebase.ui.auth.ui.idp.SupportVectorDrawablesButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/email_button"
+    style="@style/FirebaseUI.Button.AccountChooser.EmailButton"
+    android:text="@string/fui_sign_in_with_email"
+    tools:ignore="UnusedIds" /> <!-- Used in tests -->

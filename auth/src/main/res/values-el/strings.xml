@@ -1,77 +1,71 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Γίνεται φόρτωση…</string>
-    <string name="sign_in_default" translation_description="Button text to sign in">Σύνδεση</string>
-    <string name="general_error" translation_description="Toast text flashing general error">Παρουσιάστηκε σφάλμα.</string>
-    <string name="idp_name_google">Google</string>
-    <string name="idp_name_facebook">Facebook</string>
-    <string name="idp_name_twitter">Twitter</string>
-    <string name="provider_name_email">Ηλεκτρονικό ταχυδρομείο</string>
-    <string name="provider_name_phone">Τηλέφωνο</string>
-    <string name="sign_in_with_google" translation_description="Sign in button text">Σύνδεση μέσω Google</string>
-    <string name="sign_in_with_facebook" translation_description="Sign in button text">Σύνδεση μέσω Facebook</string>
-    <string name="sign_in_with_twitter" translation_description="Sign in button text">Σύνδεση μέσω Twitter</string>
-    <string name="sign_in_with_email" translation_description="Sign in button text">Σύνδεση μέσω ηλεκτρονικού ταχυδρομείου</string>
-    <string name="sign_in_with_phone" translation_description="Sign in button text">Σύνδεση μέσω τηλεφώνου</string>
-    <string name="next_default" translation_description="Button text to continue">Επόμενο</string>
-    <string name="email_hint" translation_description="Hint in email input field">Ηλεκτρονικό ταχυδρομείο</string>
-    <string name="phone_hint" translation_description="Hint for phone input field">Αριθμός τηλεφώνου</string>
-    <string name="password_hint" translation_description="Hint for password input field">Κωδικός πρόσβασης</string>
-    <string name="required_field" translation_description="Inline error for required field">Αυτό το πεδίο είναι υποχρεωτικό.</string>
-    <string name="invalid_email_address" translation_description="Inline error for invalid email address">Αυτή η διεύθυνση ηλεκτρονικού ταχυδρομείου δεν είναι σωστή</string>
-    <string name="missing_email_address" translation_description="Inline error for empty email address in input field">Εισαγάγετε τη διεύθυνση ηλεκτρονικού ταχυδρομείου για να συνεχίσετε</string>
-    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Γίνεται έλεγχος για υπάρχοντες λογαριασμούς…</string>
-    <string name="title_register_email" translation_description="Title for signup form">Εγγραφή</string>
-    <string name="name_hint" translation_description="Hint for last name input field">Όνομα και επώνυμο</string>
-    <string name="button_text_save" translation_description="Button text to save input form">Αποθήκευση</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Γίνεται εγγραφή…</string>
-    <plurals name="error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">Ο κωδικός πρόσβασης δεν είναι αρκετά ισχυρός. Χρησιμοποιήστε τουλάχιστον %1$d χαρακτήρα και έναν συνδυασμό γραμμάτων και αριθμών</item>
-        <item quantity="other">Ο κωδικός πρόσβασης δεν είναι αρκετά ισχυρός. Χρησιμοποιήστε τουλάχιστον %1$d χαρακτήρες και έναν συνδυασμό γραμμάτων και αριθμών</item>
-    </plurals>
-    <string name="email_account_creation_error" translation_description="Inline error for signup failure">Η εγγραφή του λογαριασμού ηλεκτρονικού ταχυδρομείου δεν ήταν επιτυχής</string>
-    <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Υπάρχει ήδη λογαριασμός με αυτήν τη διεύθυνση ηλεκτρονικού ταχυδρομείου.</string>
-    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Αν πατήσετε %1$s, δηλώνετε ότι συμφωνείτε με τους %2$s και την %3$s.</string>
-    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Αν πατήσετε %1$s, δηλώνετε ότι συμφωνείτε με τους %2$s.</string>
-    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Αν πατήσετε %1$s, δηλώνετε ότι συμφωνείτε με την %2$s.</string>
-    <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Όρους Παροχής Υπηρεσιών</string>
-    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Πολιτική απορρήτου</string>
-    <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Έχετε ήδη λογαριασμό</string>
-    <string name="welcome_back_email_header" translation_description="Message for returning users">Καλώς ορίσατε και πάλι!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Έχετε ήδη χρησιμοποιήσει τη διεύθυνση %1$s.
-        Συνδεθείτε μέσω %2$s για να συνεχίσετε.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Έχετε ήδη χρησιμοποιήσει τη διεύθυνση %1$s
-        για να συνδεθείτε. Εισαγάγετε τον κωδικό πρόσβασής σας για αυτόν τον λογαριασμό.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Γίνεται σύνδεση…</string>
-    <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Πρόβλημα κατά τη σύνδεση;</string>
-    <string name="title_recover_password_activity" translation_description="Recover password screen title">Ανάκτηση κωδικού πρόσβασης</string>
-    <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Ελέγξτε τα εισερχόμενα του ηλεκτρονικού ταχυδρομείου σας</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">Δείτε τις οδηγίες που στάλθηκαν σε αυτήν τη διεύθυνση ηλεκτρονικού ταχυδρομείου, οι οποίες εξηγούν πώς να
-        επαναφέρετε τον κωδικό πρόσβασής σας.</string>
-    <string name="button_text_send" translation_description="Button text to send recovery email">Αποστολή</string>
-    <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Ακολουθήστε τις οδηγίες που στάλθηκαν στο %1$s για να ανακτήσετε τον κωδικό πρόσβασής σας.</string>
-    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Γίνεται αποστολή…</string>
-    <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Αυτή η διεύθυνση ηλεκτρονικού ταχυδρομείου δεν ταιριάζει με κάποιον υπάρχοντα λογαριασμό</string>
-    <string name="accessibility_logo" translation_description="Content description for app logo">Λογότυπο εφαρμογής</string>
-    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Είστε συνδεδεμένοι ως %1$s</string>
-    <string name="verify_phone_number_title" translation_description="Phone number entry form title">Εισαγάγετε τον αριθμό τηλεφώνου σας</string>
-    <string name="invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Καταχωρίστε έναν έγκυρο αριθμό τηλεφώνου</string>
-    <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Εισαγάγετε τον 6ψήφιο κωδικό που σας στείλαμε στο</string>
-    <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Επανάληψη αποστολής κωδικού σε 0:%02d</string>
-    <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Επαλήθευση του τηλεφώνου σας</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Γίνεται επαλήθευση…</string>
-    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Γίνεται ανάκτηση SMS…</string>
-    <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Εσφαλμένος κωδικός. Δοκιμάστε ξανά.</string>
-    <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ΟΚ</string>
-    <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Αυτός ο αριθμός τηλεφώνου χρησιμοποιήθηκε πάρα πολλές φορές</string>
-    <string name="error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Παρουσιάστηκε πρόβλημα με την επαλήθευση του αριθμού τηλεφώνου</string>
-    <string name="error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Αυτός ο κωδικός δεν είναι πλέον έγκυρος</string>
-    <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">Σύνδεση με αριθμό τηλεφώνου</string>
-    <string name="done" translation_description="Progress dialog success transition once sms is sent">Τέλος</string>
-    <string name="verified" translation_description="Progress dialog success transition when phone number was verified">Επαληθεύτηκε!</string>
-    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">Ο κωδικός στάλθηκε!</string>
-    <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">Επανάληψη αποστολής…</string>
-    <string name="resend_code" translation_description="Link text to resend verification sms">Επανάληψη αποστολής κωδικού</string>
-    <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Επαλήθευση αριθμού τηλεφώνου</string>
-    <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Συνέχεια</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Αν πατήσετε \"%1$s\", μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Γίνεται φόρτωση…</string>
+    <string name="fui_sign_in_default" translation_description="Button text to sign in">Σύνδεση</string>
+    <string name="fui_general_error" translation_description="Toast text flashing general error">Παρουσιάστηκε σφάλμα.</string>
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_provider_name_email">Ηλεκτρονικό ταχυδρομείο</string>
+    <string name="fui_provider_name_phone">Τηλέφωνο</string>
+    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Σύνδεση μέσω Google</string>
+    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Σύνδεση μέσω Facebook</string>
+    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Σύνδεση μέσω Twitter</string>
+    <string name="fui_sign_in_with_email" translation_description="Sign in button text">Σύνδεση μέσω ηλεκτρονικού ταχυδρομείου</string>
+    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Σύνδεση μέσω τηλεφώνου</string>
+    <string name="fui_next_default" translation_description="Button text to continue">Επόμενο</string>
+    <string name="fui_email_hint" translation_description="Hint in email input field">Ηλεκτρονικό ταχυδρομείο</string>
+    <string name="fui_phone_hint" translation_description="Hint for phone input field">Αριθμός τηλεφώνου</string>
+    <string name="fui_password_hint" translation_description="Hint for password input field">Κωδικός πρόσβασης</string>
+    <string name="fui_required_field" translation_description="Inline error for required field">Αυτό το πεδίο είναι υποχρεωτικό.</string>
+    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">Αυτή η διεύθυνση ηλεκτρονικού ταχυδρομείου δεν είναι σωστή</string>
+    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Εισαγάγετε τη διεύθυνση ηλεκτρονικού ταχυδρομείου για να συνεχίσετε</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Γίνεται έλεγχος για υπάρχοντες λογαριασμούς…</string>
+    <string name="fui_title_register_email" translation_description="Title for signup form">Εγγραφή</string>
+    <string name="fui_name_hint" translation_description="Hint for last name input field">Όνομα και επώνυμο</string>
+    <string name="fui_button_text_save" translation_description="Button text to save input form">Αποθήκευση</string>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Γίνεται εγγραφή…</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Ο κωδικός πρόσβασης δεν είναι αρκετά ισχυρός. Χρησιμοποιήστε τουλάχιστον %1$d χαρακτήρα και έναν συνδυασμό γραμμάτων και αριθμών</item> <item quantity="other">Ο κωδικός πρόσβασης δεν είναι αρκετά ισχυρός. Χρησιμοποιήστε τουλάχιστον %1$d χαρακτήρες και έναν συνδυασμό γραμμάτων και αριθμών</item> </plurals>
+    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Η εγγραφή του λογαριασμού ηλεκτρονικού ταχυδρομείου δεν ήταν επιτυχής</string>
+    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Υπάρχει ήδη λογαριασμός με αυτήν τη διεύθυνση ηλεκτρονικού ταχυδρομείου.</string>
+    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Αν πατήσετε %1$s, δηλώνετε ότι συμφωνείτε με τους %2$s και την %3$s.</string>
+    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Αν πατήσετε %1$s, δηλώνετε ότι συμφωνείτε με τους %2$s.</string>
+    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Αν πατήσετε %1$s, δηλώνετε ότι συμφωνείτε με την %2$s.</string>
+    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">Όρους Παροχής Υπηρεσιών</string>
+    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Πολιτική απορρήτου</string>
+    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Έχετε ήδη λογαριασμό</string>
+    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Καλώς ορίσατε και πάλι!</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Έχετε ήδη χρησιμοποιήσει τη διεύθυνση %1$s. Συνδεθείτε μέσω %2$s για να συνεχίσετε.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Έχετε ήδη χρησιμοποιήσει τη διεύθυνση %1$s για να συνδεθείτε. Εισαγάγετε τον κωδικό πρόσβασής σας για αυτόν τον λογαριασμό.</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Γίνεται σύνδεση…</string>
+    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Πρόβλημα κατά τη σύνδεση;</string>
+    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Ανάκτηση κωδικού πρόσβασης</string>
+    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Ελέγξτε τα εισερχόμενα του ηλεκτρονικού ταχυδρομείου σας</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Δείτε τις οδηγίες που στάλθηκαν σε αυτήν τη διεύθυνση ηλεκτρονικού ταχυδρομείου, οι οποίες εξηγούν πώς να επαναφέρετε τον κωδικό πρόσβασής σας.</string>
+    <string name="fui_button_text_send" translation_description="Button text to send recovery email">Αποστολή</string>
+    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Ακολουθήστε τις οδηγίες που στάλθηκαν στο %1$s για να ανακτήσετε τον κωδικό πρόσβασής σας.</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Γίνεται αποστολή…</string>
+    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Αυτή η διεύθυνση ηλεκτρονικού ταχυδρομείου δεν ταιριάζει με κάποιον υπάρχοντα λογαριασμό</string>
+    <string name="fui_accessibility_logo" translation_description="Content description for app logo">Λογότυπο εφαρμογής</string>
+    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Είστε συνδεδεμένοι ως %1$s</string>
+    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Εισαγάγετε τον αριθμό τηλεφώνου σας</string>
+    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Καταχωρίστε έναν έγκυρο αριθμό τηλεφώνου</string>
+    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Εισαγάγετε τον 6ψήφιο κωδικό που σας στείλαμε στο</string>
+    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Επανάληψη αποστολής κωδικού σε 0:%02d</string>
+    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Επαλήθευση του τηλεφώνου σας</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Γίνεται επαλήθευση…</string>
+    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Γίνεται ανάκτηση SMS…</string>
+    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Εσφαλμένος κωδικός. Δοκιμάστε ξανά.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ΟΚ</string>
+    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Αυτός ο αριθμός τηλεφώνου χρησιμοποιήθηκε πάρα πολλές φορές</string>
+    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Παρουσιάστηκε πρόβλημα με την επαλήθευση του αριθμού τηλεφώνου</string>
+    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Αυτός ο κωδικός δεν είναι πλέον έγκυρος</string>
+    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Σύνδεση με αριθμό τηλεφώνου</string>
+    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Τέλος</string>
+    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Επαληθεύτηκε!</string>
+    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Ο κωδικός στάλθηκε!</string>
+    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Επανάληψη αποστολής…</string>
+    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Επανάληψη αποστολής κωδικού</string>
+    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Επαλήθευση αριθμού τηλεφώνου</string>
+    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Συνέχεια</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Αν πατήσετε “%1$s”, μπορεί να σταλεί ένα SMS. Ενδέχεται να ισχύουν χρεώσεις μηνυμάτων και δεδομένων.</string>
 </resources>

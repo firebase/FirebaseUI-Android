@@ -1,21 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
-        android:shortcutId="storage"
-        android:enabled="true"
-        android:icon="@mipmap/ic_launcher"
-        android:shortcutShortLabel="@string/name_image">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetPackage="com.firebase.uidemo"
-            android:targetClass="com.firebase.uidemo.storage.ImageActivity"/>
-    </shortcut>
-
-    <shortcut
         android:shortcutId="auth"
         android:enabled="true"
         android:icon="@drawable/firebase_auth_120dp"
-        android:shortcutShortLabel="@string/name_auth_ui">
+        android:shortcutShortLabel="@string/title_auth_activity">
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.firebase.uidemo"
@@ -23,13 +12,24 @@
     </shortcut>
 
     <shortcut
-        android:shortcutId="database"
+        android:shortcutId="realtime-database"
         android:enabled="true"
         android:icon="@mipmap/ic_launcher"
-        android:shortcutShortLabel="@string/name_chat">
+        android:shortcutShortLabel="@string/title_realtime_database_activity">
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.firebase.uidemo"
-            android:targetClass="com.firebase.uidemo.database.ChatActivity"/>
+            android:targetClass="com.firebase.uidemo.database.realtime.RealtimeDbChatActivity"/>
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="storage"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/title_storage_activity">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.firebase.uidemo"
+            android:targetClass="com.firebase.uidemo.storage.ImageActivity"/>
     </shortcut>
 </shortcuts>

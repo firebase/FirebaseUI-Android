@@ -1,76 +1,71 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="progress_dialog_loading" translation_description="Loading text in dialog">लोड हो रहा है...</string>
-    <string name="sign_in_default" translation_description="Button text to sign in">प्रवेश करें</string>
-    <string name="general_error" translation_description="Toast text flashing general error">कोई गड़बड़ी हुई.</string>
-    <string name="idp_name_google">Google</string>
-    <string name="idp_name_facebook">Facebook</string>
-    <string name="idp_name_twitter">Twitter</string>
-    <string name="provider_name_email">ईमेल</string>
-    <string name="provider_name_phone">फ़ोन</string>
-    <string name="sign_in_with_google" translation_description="Sign in button text">Google से प्रवेश करें</string>
-    <string name="sign_in_with_facebook" translation_description="Sign in button text">Facebook से प्रवेश करें</string>
-    <string name="sign_in_with_twitter" translation_description="Sign in button text">Twitter से प्रवेश करें</string>
-    <string name="sign_in_with_email" translation_description="Sign in button text">ईमेल से प्रवेश करें</string>
-    <string name="sign_in_with_phone" translation_description="Sign in button text">फ़ोन से प्रवेश करें</string>
-    <string name="next_default" translation_description="Button text to continue">अगला</string>
-    <string name="email_hint" translation_description="Hint in email input field">ईमेल</string>
-    <string name="phone_hint" translation_description="Hint for phone input field">फ़ोन नंबर</string>
-    <string name="password_hint" translation_description="Hint for password input field">पासवर्ड</string>
-    <string name="required_field" translation_description="Inline error for required field">आप इसे खाली नहीं छोड़ सकते.</string>
-    <string name="invalid_email_address" translation_description="Inline error for invalid email address">वह ईमेल पता सही नहीं है</string>
-    <string name="missing_email_address" translation_description="Inline error for empty email address in input field">जारी रखने के लिए अपना ईमेल पता डालें</string>
-    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">मौजूदा खातों की जांच की जा रही है…</string>
-    <string name="title_register_email" translation_description="Title for signup form">साइन अप करें</string>
-    <string name="name_hint" translation_description="Hint for last name input field">नाम और उपनाम</string>
-    <string name="button_text_save" translation_description="Button text to save input form">सहेजें</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">साइन अप करना…</string>
-    <plurals name="error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">पासवर्ड पर्याप्त रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item>
-        <item quantity="other">पासवर्ड पर्याप्त रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item>
-    </plurals>
-    <string name="email_account_creation_error" translation_description="Inline error for signup failure">ईमेल खाता पंजीकरण असफल रहा</string>
-    <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">उस ईमेल पते के साथ एक खाता पहले से मौजूद है.</string>
-    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">%1$s पर टैप करके आप बताते हैं कि आप %2$s और %3$s से सहमत हैं.</string>
-    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">%1$s पर टैप करके आप बताते हैं कि आप %2$s से सहमत हैं.</string>
-    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">%1$s पर टैप करके आप बताते हैं कि आप %2$s से सहमत हैं.</string>
-    <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">सेवा की शर्तें</string>
-    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">निजता नीति</string>
-    <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">आपके पास पहले से ही एक खाता है</string>
-    <string name="welcome_back_email_header" translation_description="Message for returning users">आपका फिर से स्वागत है!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">आपने पहले ही %1$s का उपयोग कर लिया है.
- जारी रखने के लिए %2$s से प्रवेश करें.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">आपने पहले ही प्रवेश करने के लिए %1$s का उपयोग कर लिया है.
- उस खाते के लिए अपना पासवर्ड डालें.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">प्रवेश हो रहा है...</string>
-    <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">प्रवेश करने में समस्या?</string>
-    <string name="title_recover_password_activity" translation_description="Recover password screen title">पासवर्ड फिर से पाएं</string>
-    <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">अपना ईमेल जांचें</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">इस ईमेल पर भेजे गए निर्देश पाएं जो आपको अपना पासवर्ड रीसेट करना बताएंगे.</string>
-    <string name="button_text_send" translation_description="Button text to send recovery email">भेजें</string>
-    <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">अपना पासवर्ड फिर से पाने के लिए %1$s पर भेजे गए निर्देशों का पालन करें.</string>
-    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">भेज रहा है…</string>
-    <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">वह ईमेल पता किसी मौजूदा खाते से मेल नहीं खाता है</string>
-    <string name="accessibility_logo" translation_description="Content description for app logo">ऐप्लिकेशन लोगो</string>
-    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">%1$s के रूप में प्रवेश किया</string>
-    <string name="verify_phone_number_title" translation_description="Phone number entry form title">अपना फ़ोन नंबर डालें</string>
-    <string name="invalid_phone_number" translation_description="Inline error when phone number entered is invalid">कोई मान्य फ़ोन नंबर डालें</string>
-    <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">हमारी ओर से भेजा गया 6-अंकों वाला कोड डालें</string>
-    <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">0:%02d में कोड फिर से भेजें</string>
-    <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">अपने फ़ोन नंबर की पुष्टि करें</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">पुष्टि कर रहा है…</string>
-    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">sms फिर से लाया जा रहा है…</string>
-    <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">गलत कोड. फिर से कोशिश करें.</string>
-    <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ठीक</string>
-    <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">इस फ़ोन नंबर का उपयोग कई बार किया गया है</string>
-    <string name="error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">आपके फ़ोन नंबर की पुष्टि करने में कोई समस्या हुई</string>
-    <string name="error_session_expired" translation_description="Error message when SMS confirmation code has expired.">यह कोड अब मान्य नहीं है</string>
-    <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">फ़ोन नंबर के साथ प्रवेश करें</string>
-    <string name="done" translation_description="Progress dialog success transition once sms is sent">हो गया</string>
-    <string name="verified" translation_description="Progress dialog success transition when phone number was verified">पुष्टि हो चुकी है!</string>
-    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">कोड भेज दिया गया!</string>
-    <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">फिर से भेजा जा रहा है…</string>
-    <string name="resend_code" translation_description="Link text to resend verification sms">कोड फिर से भेजें</string>
-    <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">फ़ोन नंबर की पुष्टि करें</string>
-    <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">जारी रखें</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">“%1$s“ पर टैप करने पर, एक SMS भेजा जा सकता है. संदेश और डेटा दरें लागू हो सकती हैं.</string>
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">लोड हो रहा है…</string>
+    <string name="fui_sign_in_default" translation_description="Button text to sign in">प्रवेश करें</string>
+    <string name="fui_general_error" translation_description="Toast text flashing general error">कोई गड़बड़ी हुई.</string>
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_provider_name_email">ईमेल</string>
+    <string name="fui_provider_name_phone">फ़ोन</string>
+    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Google से प्रवेश करें</string>
+    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Facebook से प्रवेश करें</string>
+    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Twitter से प्रवेश करें</string>
+    <string name="fui_sign_in_with_email" translation_description="Sign in button text">ईमेल से प्रवेश करें</string>
+    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">फ़ोन से प्रवेश करें</string>
+    <string name="fui_next_default" translation_description="Button text to continue">अगला</string>
+    <string name="fui_email_hint" translation_description="Hint in email input field">ईमेल</string>
+    <string name="fui_phone_hint" translation_description="Hint for phone input field">फ़ोन नंबर</string>
+    <string name="fui_password_hint" translation_description="Hint for password input field">पासवर्ड</string>
+    <string name="fui_required_field" translation_description="Inline error for required field">आप इसे खाली नहीं छोड़ सकते.</string>
+    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">वह ईमेल पता सही नहीं है</string>
+    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">जारी रखने के लिए अपना ईमेल पता डालें</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">मौजूदा खातों की जांच की जा रही है…</string>
+    <string name="fui_title_register_email" translation_description="Title for signup form">साइन अप करें</string>
+    <string name="fui_name_hint" translation_description="Hint for last name input field">नाम और उपनाम</string>
+    <string name="fui_button_text_save" translation_description="Button text to save input form">सहेजें</string>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">साइन अप करना…</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">पासवर्ड पर्याप्त रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> <item quantity="other">पासवर्ड पर्याप्त रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> </plurals>
+    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">ईमेल खाता पंजीकरण असफल रहा</string>
+    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">उस ईमेल पते के साथ एक खाता पहले से मौजूद है.</string>
+    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">%1$s पर टैप करके आप बताते हैं कि आप %2$s और %3$s से सहमत हैं.</string>
+    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">%1$s पर टैप करके आप बताते हैं कि आप %2$s से सहमत हैं.</string>
+    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">%1$s पर टैप करके आप बताते हैं कि आप %2$s से सहमत हैं.</string>
+    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">सेवा की शर्तें</string>
+    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">निजता नीति</string>
+    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">आपके पास पहले से ही एक खाता है</string>
+    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">आपका फिर से स्वागत है!</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">आपने पहले ही %1$s का उपयोग कर लिया है. जारी रखने के लिए %2$s से प्रवेश करें.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">आपने पहले ही प्रवेश करने के लिए %1$s का उपयोग कर लिया है. उस खाते के लिए अपना पासवर्ड डालें.</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">प्रवेश हो रहा है…</string>
+    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">प्रवेश करने में समस्या?</string>
+    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">पासवर्ड फिर से पाएं</string>
+    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">अपना ईमेल जांचें</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">इस ईमेल पर भेजे गए निर्देश पाएं जो आपको अपना पासवर्ड रीसेट करना बताएंगे.</string>
+    <string name="fui_button_text_send" translation_description="Button text to send recovery email">भेजें</string>
+    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">अपना पासवर्ड फिर से पाने के लिए %1$s पर भेजे गए निर्देशों का पालन करें.</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">भेज रहा है…</string>
+    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">वह ईमेल पता किसी मौजूदा खाते से मेल नहीं खाता है</string>
+    <string name="fui_accessibility_logo" translation_description="Content description for app logo">ऐप्लिकेशन लोगो</string>
+    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">%1$s के रूप में प्रवेश किया</string>
+    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">अपना फ़ोन नंबर डालें</string>
+    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">कोई मान्य फ़ोन नंबर डालें</string>
+    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">हमारी ओर से भेजा गया 6-अंकों वाला कोड डालें</string>
+    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">0:%02d में कोड फिर से भेजें</string>
+    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">अपने फ़ोन नंबर की पुष्टि करें</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">पुष्टि कर रहा है…</string>
+    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">sms फिर से लाया जा रहा है…</string>
+    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">गलत कोड. फिर से कोशिश करें.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ठीक</string>
+    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">इस फ़ोन नंबर का उपयोग कई बार किया गया है</string>
+    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">आपके फ़ोन नंबर की पुष्टि करने में कोई समस्या हुई</string>
+    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">यह कोड अब मान्य नहीं है</string>
+    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">फ़ोन नंबर के साथ प्रवेश करें</string>
+    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">हो गया</string>
+    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">पुष्टि हो चुकी है!</string>
+    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">कोड भेज दिया गया!</string>
+    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">फिर से भेजा जा रहा है…</string>
+    <string name="fui_resend_code" translation_description="Link text to resend verification sms">कोड फिर से भेजें</string>
+    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">फ़ोन नंबर की पुष्टि करें</string>
+    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">जारी रखें</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">“%1$s“ पर टैप करने पर, एक SMS भेजा जा सकता है. संदेश और डेटा दरें लागू हो सकती हैं.</string>
 </resources>

@@ -26,4 +26,10 @@ do
 
     # Remove non-translatable strings
     python $DIR/remove_non_translatable.py $file
+
+    # Fix typography
+    python $DIR/fix_typography.py $file
+
+    # Add fui_ prefix
+    python $DIR/add_string_prefix.py $file
 done

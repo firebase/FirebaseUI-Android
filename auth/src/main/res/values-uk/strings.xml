@@ -1,79 +1,71 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="progress_dialog_loading" translation_description="Loading text in dialog">Завантаження…</string>
-    <string name="sign_in_default" translation_description="Button text to sign in">Увійти</string>
-    <string name="general_error" translation_description="Toast text flashing general error">Сталася помилка.</string>
-    <string name="idp_name_google">Google</string>
-    <string name="idp_name_facebook">Facebook</string>
-    <string name="idp_name_twitter">Twitter</string>
-    <string name="provider_name_email">Електронна адреса</string>
-    <string name="provider_name_phone">Телефон</string>
-    <string name="sign_in_with_google" translation_description="Sign in button text">Увійти через Google</string>
-    <string name="sign_in_with_facebook" translation_description="Sign in button text">Увійти через Facebook</string>
-    <string name="sign_in_with_twitter" translation_description="Sign in button text">Увійти через Twitter</string>
-    <string name="sign_in_with_email" translation_description="Sign in button text">Увійти, використовуючи електронну адресу</string>
-    <string name="sign_in_with_phone" translation_description="Sign in button text">Увійти, використовуючи телефон</string>
-    <string name="next_default" translation_description="Button text to continue">Далі</string>
-    <string name="email_hint" translation_description="Hint in email input field">Електронна адреса</string>
-    <string name="phone_hint" translation_description="Hint for phone input field">Номер телефону</string>
-    <string name="password_hint" translation_description="Hint for password input field">Пароль</string>
-    <string name="required_field" translation_description="Inline error for required field">Потрібно заповнити це поле.</string>
-    <string name="invalid_email_address" translation_description="Inline error for invalid email address">Електронна адреса неправильна</string>
-    <string name="missing_email_address" translation_description="Inline error for empty email address in input field">Щоб продовжити, введіть електронну адресу</string>
-    <string name="progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Перевірка наявних облікових записів…</string>
-    <string name="title_register_email" translation_description="Title for signup form">Зареєструватися</string>
-    <string name="name_hint" translation_description="Hint for last name input field">Ім’я та прізвище</string>
-    <string name="button_text_save" translation_description="Button text to save input form">Зберегти</string>
-    <string name="progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Реєстрація…</string>
-    <plurals name="error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">Пароль недостатньо надійний. Введіть принаймні %1$d символ та комбінацію літер і цифр</item>
-        <item quantity="few">Пароль недостатньо надійний. Введіть принаймні %1$d символи та комбінацію літер і цифр</item>
-        <item quantity="many">Пароль недостатньо надійний. Введіть принаймні %1$d символів та комбінацію літер і цифр</item>
-        <item quantity="other">Пароль недостатньо надійний. Введіть принаймні %1$d символу та комбінацію літер і цифр</item>
-    </plurals>
-    <string name="email_account_creation_error" translation_description="Inline error for signup failure">Не вдалося зареєструвати обліковий запис електронної пошти</string>
-    <string name="error_user_collision" translation_description="Inline error when user signs up using an existing email account">Обліковий запис із такою електронною адресою вже існує.</string>
-    <string name="create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Торкаючись кнопки \"%1$s\", ви приймаєте %2$s та %3$s.</string>
-    <string name="create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Торкаючись кнопки \"%1$s\", ви приймаєте %2$s.</string>
-    <string name="create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Торкаючись кнопки \"%1$s\", ви приймаєте %2$s.</string>
-    <string name="terms_of_service" translation_description="Link text to web url containing the app's terms of service">Умови використання</string>
-    <string name="privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Політику конфіденційності</string>
-    <string name="welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">У вас уже є обліковий запис</string>
-    <string name="welcome_back_email_header" translation_description="Message for returning users">З поверненням!</string>
-    <string name="welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Ви вже використовували електронну адресу %1$s.
-        Щоб продовжити, увійдіть в обліковий запис %2$s.</string>
-    <string name="welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Ви вже використовували електронну адресу %1$s
-        для входу. Введіть пароль для цього облікового запису.</string>
-    <string name="progress_dialog_signing_in" translation_description="Progress dialog text">Виконується вхід…</string>
-    <string name="trouble_signing_in" translation_description="Link leading to forgot password flow">Не вдається ввійти?</string>
-    <string name="title_recover_password_activity" translation_description="Recover password screen title">Відновити пароль</string>
-    <string name="title_confirm_recover_password" translation_description="Password recovery confirmation message">Перевірте свою електронну пошту</string>
-    <string name="password_recovery_body" translation_description="Password recovery message body">На цю електронну адресу надійдуть інструкції,
-        як скинути пароль.</string>
-    <string name="button_text_send" translation_description="Button text to send recovery email">Надіслати</string>
-    <string name="confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Виконайте інструкції з відновлення пароля, надіслані на адресу %1$s.</string>
-    <string name="progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Надсилання…</string>
-    <string name="error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Ця електронна адреса не відповідає адресі наявного облікового запису</string>
-    <string name="accessibility_logo" translation_description="Content description for app logo">Логотип додатка</string>
-    <string name="signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Ви ввійшли як %1$s</string>
-    <string name="verify_phone_number_title" translation_description="Phone number entry form title">Введіть свій номер телефону</string>
-    <string name="invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Введіть дійсний номер телефону</string>
-    <string name="enter_confirmation_code" translation_description="Phone number verification code entry form title">Введіть 6-значний код, який ми надіслали на номер</string>
-    <string name="resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Повторно надіслати код через 0:%02d</string>
-    <string name="verify_your_phone_title" translation_description="Button text to complete phone number verification">Підтвердити номер телефону</string>
-    <string name="verifying" translation_description="Progress dialog text while phone number is being verified">Підтвердження…</string>
-    <string name="retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Отримання SMS…</string>
-    <string name="incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Неправильний код. Повторіть спробу.</string>
-    <string name="incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ОК</string>
-    <string name="error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Цей номер телефону використовувався забагато разів</string>
-    <string name="error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Не вдалося підтвердити ваш номер телефону</string>
-    <string name="error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Цей код уже не дійсний</string>
-    <string name="sign_in_with_phone_number" translation_description="Label for phone number input form">Увійти, використовуючи номер телефону</string>
-    <string name="done" translation_description="Progress dialog success transition once sms is sent">Готово</string>
-    <string name="verified" translation_description="Progress dialog success transition when phone number was verified">Підтверджено</string>
-    <string name="code_sent" translation_description="Progress dialog success transition once sms is sent">Код надіслано</string>
-    <string name="resending" translation_description="Progress dialog text when user clicks on resend sms">Повторне надсилання…</string>
-    <string name="resend_code" translation_description="Link text to resend verification sms">Повторно надіслати код</string>
-    <string name="verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Підтвердити номер телефону</string>
-    <string name="continue_phone_login" translation_description="Button text to submit phone number and send sms">Продовжити</string>
-    <string name="sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Коли ви торкнетесь опції \"%1$s\", вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Завантаження…</string>
+    <string name="fui_sign_in_default" translation_description="Button text to sign in">Увійти</string>
+    <string name="fui_general_error" translation_description="Toast text flashing general error">Сталася помилка.</string>
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_provider_name_email">Електронна адреса</string>
+    <string name="fui_provider_name_phone">Телефон</string>
+    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Увійти через Google</string>
+    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Увійти через Facebook</string>
+    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Увійти через Twitter</string>
+    <string name="fui_sign_in_with_email" translation_description="Sign in button text">Увійти, використовуючи електронну адресу</string>
+    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Увійти, використовуючи телефон</string>
+    <string name="fui_next_default" translation_description="Button text to continue">Далі</string>
+    <string name="fui_email_hint" translation_description="Hint in email input field">Електронна адреса</string>
+    <string name="fui_phone_hint" translation_description="Hint for phone input field">Номер телефону</string>
+    <string name="fui_password_hint" translation_description="Hint for password input field">Пароль</string>
+    <string name="fui_required_field" translation_description="Inline error for required field">Потрібно заповнити це поле.</string>
+    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">Електронна адреса неправильна</string>
+    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Щоб продовжити, введіть електронну адресу</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Перевірка наявних облікових записів…</string>
+    <string name="fui_title_register_email" translation_description="Title for signup form">Зареєструватися</string>
+    <string name="fui_name_hint" translation_description="Hint for last name input field">Ім’я та прізвище</string>
+    <string name="fui_button_text_save" translation_description="Button text to save input form">Зберегти</string>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Реєстрація…</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Пароль недостатньо надійний. Введіть принаймні %1$d символ та комбінацію літер і цифр</item> <item quantity="few">Пароль недостатньо надійний. Введіть принаймні %1$d символи та комбінацію літер і цифр</item> <item quantity="many">Пароль недостатньо надійний. Введіть принаймні %1$d символів та комбінацію літер і цифр</item> <item quantity="other">Пароль недостатньо надійний. Введіть принаймні %1$d символу та комбінацію літер і цифр</item> </plurals>
+    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Не вдалося зареєструвати обліковий запис електронної пошти</string>
+    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Обліковий запис із такою електронною адресою вже існує.</string>
+    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Торкаючись кнопки “%1$s”, ви приймаєте %2$s та %3$s.</string>
+    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Торкаючись кнопки “%1$s”, ви приймаєте %2$s.</string>
+    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Торкаючись кнопки “%1$s”, ви приймаєте %2$s.</string>
+    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">Умови використання</string>
+    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Політику конфіденційності</string>
+    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">У вас уже є обліковий запис</string>
+    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">З поверненням!</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Ви вже використовували електронну адресу %1$s. Щоб продовжити, увійдіть в обліковий запис %2$s.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Ви вже використовували електронну адресу %1$s для входу. Введіть пароль для цього облікового запису.</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Виконується вхід…</string>
+    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Не вдається ввійти?</string>
+    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Відновити пароль</string>
+    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Перевірте свою електронну пошту</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">На цю електронну адресу надійдуть інструкції, як скинути пароль.</string>
+    <string name="fui_button_text_send" translation_description="Button text to send recovery email">Надіслати</string>
+    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Виконайте інструкції з відновлення пароля, надіслані на адресу %1$s.</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Надсилання…</string>
+    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Ця електронна адреса не відповідає адресі наявного облікового запису</string>
+    <string name="fui_accessibility_logo" translation_description="Content description for app logo">Логотип додатка</string>
+    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Ви ввійшли як %1$s</string>
+    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Введіть свій номер телефону</string>
+    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Введіть дійсний номер телефону</string>
+    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Введіть 6-значний код, який ми надіслали на номер</string>
+    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Повторно надіслати код через 0:%02d</string>
+    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Підтвердити номер телефону</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Підтвердження…</string>
+    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Отримання SMS…</string>
+    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Неправильний код. Повторіть спробу.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ОК</string>
+    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Цей номер телефону використовувався забагато разів</string>
+    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Не вдалося підтвердити ваш номер телефону</string>
+    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Цей код уже не дійсний</string>
+    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Увійти, використовуючи номер телефону</string>
+    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">Готово</string>
+    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Підтверджено</string>
+    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Код надіслано</string>
+    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Повторне надсилання…</string>
+    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Повторно надіслати код</string>
+    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Підтвердити номер телефону</string>
+    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Продовжити</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Коли ви торкнетесь опції “%1$s”, вам може надійти SMS-повідомлення. За SMS і використання трафіку може стягуватися плата.</string>
 </resources>

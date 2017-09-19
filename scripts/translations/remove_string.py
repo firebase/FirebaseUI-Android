@@ -22,14 +22,13 @@ FILES = sys.argv[2:]
 # Remove any tags with the wrong name
 class RemoveStringScript(BaseStringScript):
 
-  def ProcessTag(self, lines):
-    if QUERY in '\n'.join(lines):
+  def ProcessTag(self, line):
+    if QUERY in '\n'.join(line):
       return []
     else:
-      return lines
+      return line
 
 # Process all files
 for file_name in FILES:
   rss = RemoveStringScript()
   rss.ProcessFile(file_name)
-

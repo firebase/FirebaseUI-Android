@@ -14,8 +14,6 @@
 
 package com.firebase.ui.database;
 
-import android.support.annotation.NonNull;
-
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,7 +26,8 @@ import java.util.List;
 /**
  * This class implements a collection on top of a Firebase location.
  */
-public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implements ChildEventListener, ValueEventListener {
+public class FirebaseArray<T> extends CachingObservableSnapshotArray<T>
+        implements ChildEventListener, ValueEventListener {
     private Query mQuery;
     private List<DataSnapshot> mSnapshots = new ArrayList<>();
 
@@ -66,30 +65,17 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
     }
 
     @Override
-    public ChangeEventListener addChangeEventListener(@NonNull ChangeEventListener listener) {
-        boolean wasListening = isListening();
-        super.addChangeEventListener(listener);
-
-        // Only start listening when the first listener is added
-        if (!wasListening) {
-            mQuery.addChildEventListener(this);
-            mQuery.addValueEventListener(this);
-        }
-
-        return listener;
+    protected void onCreate() {
+        super.onCreate();
+        mQuery.addChildEventListener(this);
+        mQuery.addValueEventListener(this);
     }
 
     @Override
-    public void removeChangeEventListener(@NonNull ChangeEventListener listener) {
-        super.removeChangeEventListener(listener);
-
-        // Clear data when all listeners are removed
-        if (!isListening()) {
-            mQuery.removeEventListener((ValueEventListener) this);
-            mQuery.removeEventListener((ChildEventListener) this);
-
-            clearData();
-        }
+    protected void onDestroy() {
+        super.onDestroy();
+        mQuery.removeEventListener((ValueEventListener) this);
+        mQuery.removeEventListener((ChildEventListener) this);
     }
 
     @Override
@@ -125,13 +111,11 @@ public class FirebaseArray<T> extends CachingObservableSnapshotArray<T> implemen
         int oldIndex = getIndexForKey(snapshot.getKey());
         mSnapshots.remove(oldIndex);
 
-        int newIndex = previousChildKey == null ? 0 : (getIndexForKey(previousChildKey) + 1);
+        int newIndex = previousChildKey == null ? 0 : getIndexForKey(previousChildKey) + 1;
         mSnapshots.add(newIndex, snapshot);
 
-        notifyChangeEventListeners(ChangeEventListener.EventType.MOVED,
-                                   snapshot,
-                                   newIndex,
-                                   oldIndex);
+        notifyChangeEventListeners(
+                ChangeEventListener.EventType.MOVED, snapshot, newIndex, oldIndex);
     }
 
     @Override

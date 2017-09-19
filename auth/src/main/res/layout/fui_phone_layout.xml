@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        style="@style/FirebaseUI.WrapperStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.firebase.ui.auth.ui.phone.CountryListSpinner
+            android:id="@+id/country_list"
+            style="@style/FirebaseUI.CountrySpinner" />
+
+        <EditText
+            android:id="@+id/phone_number"
+            style="@style/FirebaseUI.TextInputEditText.PhoneField"
+            android:layout_toEndOf="@id/country_list"
+            android:layout_toRightOf="@id/country_list"
+            android:layout_alignBaseline="@id/country_list"
+            android:layout_gravity="end"
+            android:imeOptions="actionDone" />
+
+        <TextView
+            android:id="@+id/phone_number_error"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignStart="@id/phone_number"
+            android:layout_alignLeft="@id/phone_number"
+            android:layout_below="@id/phone_number"
+            android:paddingStart="2dp"
+            android:paddingEnd="2dp"
+            android:text=""
+            android:textColor="@color/fui_errorColor" />
+
+        <Button
+            android:id="@+id/send_code"
+            style="@style/FirebaseUI.VerifyPhoneButton"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/phone_number_error"
+            android:text="@string/fui_verify_phone_number" />
+
+        <TextView
+            android:id="@+id/send_sms_tos"
+            style="@style/FirebaseUI.Text.BodyText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fui_field_padding_vert"
+            android:layout_below="@id/send_code"
+            android:textColor="?android:textColorTertiary"
+            android:textIsSelectable="false" />
+
+    </RelativeLayout>
+
+</ScrollView>
