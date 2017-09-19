@@ -36,9 +36,9 @@ StorageReference storageReference = ...;
 // ImageView in your Activity
 ImageView imageView = ...;
 
-// Load the image using Glide
+// Download directly from StorageReference using Glide
+// (See MyAppGlideModule for Loader registration)
 Glide.with(this /* context */)
-        .using(new FirebaseImageLoader())
         .load(storageReference)
         .into(imageView);
 ```
