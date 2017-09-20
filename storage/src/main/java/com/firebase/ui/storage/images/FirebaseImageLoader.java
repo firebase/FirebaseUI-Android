@@ -42,7 +42,7 @@ import java.security.MessageDigest;
  *     StorageReference ref = FirebaseStorage.getInstance().getReference().child("myimage");
  *     ImageView iv = (ImageView) findViewById(R.id.my_image_view);
  *
- *     Glide.with(this)
+ *     GlideApp.with(this)
  *         .load(ref)
  *         .into(iv);
  * </pre>
