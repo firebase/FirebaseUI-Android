@@ -13,8 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -131,11 +130,11 @@ public class ImageActivity extends AppCompatActivity implements EasyPermissions.
     @OnClick(R.id.button_download_direct)
     protected void downloadDirect() {
         // Download directly from StorageReference using Glide
-        Glide.with(this)
-                .using(new FirebaseImageLoader())
+        // (See MyAppGlideModule for Loader registration)
+        GlideApp.with(this)
                 .load(mImageRef)
                 .centerCrop()
-                .crossFade()
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(mImageView);
     }
 

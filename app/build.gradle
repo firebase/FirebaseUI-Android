@@ -51,6 +51,9 @@ dependencies {
     compile "android.arch.lifecycle:runtime:$architectureVersion"
     compile "android.arch.lifecycle:extensions:$architectureVersion"
 
+    compile 'com.github.bumptech.glide:glide:4.1.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
+
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
