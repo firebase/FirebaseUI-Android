@@ -38,7 +38,7 @@ ImageView imageView = ...;
 
 // Download directly from StorageReference using Glide
 // (See MyAppGlideModule for Loader registration)
-Glide.with(this /* context */)
+GlidApp.with(this /* context */)
         .load(storageReference)
         .into(imageView);
 ```
