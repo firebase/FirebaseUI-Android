@@ -63,6 +63,7 @@ After the project is synchronized, we're ready to start using Firebase functiona
 If you are using an old version of FirebaseUI and upgrading, please see the appropriate
 migration guide:
 
+  * [Upgrade from 2.3.0 to 3.x.x](./docs/upgrade-to-3.0.md)
   * [Upgrade from 1.2.0 to 2.x.x](./docs/upgrade-to-2.0.md)
 
 ## Dependencies
