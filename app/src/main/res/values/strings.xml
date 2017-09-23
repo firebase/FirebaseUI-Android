@@ -1,78 +1,100 @@
 <resources>
     <string name="app_name">Firebase UI</string>
 
-    <string name="name_chat">ChatActivity</string>
-    <string name="name_auth_ui">Auth UI demo</string>
-    <string name="name_image">Storage Image Demo</string>
+    <!-- Chooser -->
+    <string name="title_auth_activity">Auth UI demo</string>
+    <string name="title_realtime_database_activity">Real-time database demo</string>
+    <string name="title_storage_activity">Storage Image Demo</string>
 
-    <string name="desc_chat">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
-    <string name="desc_auth_ui">Demonstrates the Firebase Auth UI flow, with customization options.</string>
-    <string name="desc_image">Demonstrates displaying an image from Cloud Storage using Glide.</string>
+    <string name="desc_auth">Demonstrates the Firebase Auth UI flow, with customization options.</string>
+    <string name="desc_realtime_database">Demonstrates using a FirebaseRecyclerAdapter to load data from Firebase Database into a RecyclerView for a basic chat app.</string>
+    <string name="desc_storage">Demonstrates displaying an image from Cloud Storage using Glide.</string>
 
-    <!-- strings for Auth UI demo activities -->
-    <eat-comment />
+    <!-- Auth UI -->
     <string name="launch_title">FirebaseUI Auth Demo</string>
     <string name="sign_in">Start</string>
-    <string name="green_theme">Green Theme</string>
-    <string name="purple_theme">Purple Theme</string>
-    <string name="dark_theme">Dark Theme</string>
+
     <string name="use_theme_header">Use theme:</string>
+    <string name="default_theme">Default theme</string>
+    <string name="purple_theme">Purple Theme</string>
+    <string name="green_theme">Green Theme</string>
+    <string name="dark_theme">Dark Theme</string>
+
     <string name="logo_header">Logo:</string>
     <string name="firebase_logo_label">Firebase Auth</string>
     <string name="google_logo_label">Google</string>
     <string name="no_logo_label">None</string>
+
     <string name="auth_providers_header">Use auth providers:</string>
+    <string name="google_label">Google</string>
+    <string name="facebook_label">Facebook</string>
+    <string name="twitter_label">Twitter</string>
     <string name="email_label">Email</string>
     <string name="phone_label">Phone</string>
-    <string name="facebook_label">Facebook</string>
-    <string name="facebook_label_missing_config">Facebook - configuration missing</string>
-    <string name="twitter_label">Twitter</string>
-    <string name="twitter_label_missing_config">Twitter - configuration missing</string>
-    <string name="google_label">Google</string>
+
+    <string name="configuration_required">Configuration is required - see README.md</string>
     <string name="google_label_missing_config">Google - configuration missing</string>
+    <string name="facebook_label_missing_config">Facebook - configuration missing</string>
+    <string name="twitter_label_missing_config">Twitter - configuration missing</string>
+
+    <string name="tos_header">Terms of Service URL:</string>
     <string name="google_tos_label">Google TOS</string>
     <string name="firebase_tos_label">Firebase TOS</string>
+
+    <string name="privacy_policy_header">Privacy Policy URL:</string>
     <string name="google_privacy_label">Google Privacy Policy</string>
     <string name="firebase_privacy_label">Firebase Privacy Policy</string>
-    <string name="tos_header">Terms of Service URL:</string>
-    <string name="privacy_policy_header">Privacy Policy URL:</string>
+
+    <string name="extra_google_scopes">Example extra Google scopes</string>
+    <string name="drive_file_scope">Drive File</string>
+    <string name="youtube_data_scope">Youtube data</string>
+
+    <string name="extra_facebook_scopes">Example extra Facebook scopes</string>
+    <string name="friends">Friends</string>
+    <string name="photos">Photos</string>
+
+    <string name="other_options_header">Other Options:</string>
+    <string name="enable_credential_selector">Enable Smart Lock\'s credential selector</string>
+    <string name="enable_hint_selector">Enable Smart Lock\'s hint selector</string>
+    <string name="link_account">Link with new account</string>
+    <string name="allow_new_email_acccount">Allow account creation if email does not exist.</string>
+
     <string name="unknown_response">Unexpected onActivityResult response code</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
+    <string name="unknown_error">An unknown error occurred</string>
+
+    <!-- Auth UI - Signed in -->
     <string name="signed_in_header">You are signed in!</string>
     <string name="sign_out">Sign out</string>
     <string name="delete_account_label">Delete account</string>
+
     <string name="sign_out_failed">Sign out failed</string>
     <string name="delete_account_failed">Delete account failed</string>
+
     <string name="user_profile_header">User profile:</string>
     <string name="profile_picture_content_desc">Profile picture</string>
-    <string name="default_theme">Default theme</string>
-    <string name="configuration_required">Configuration is required - see README.md</string>
-    <string name="other_options_header">Other Options:</string>
-    <string name="link_account">Link with new account</string>
-    <string name="prev_uid">Previous user id</string>
-    <string name="rational_image_perm">This sample will read an image from local storage to upload to Cloud Storage.</string>
-    <string name="anonymous_auth_failed_msg">Anonymous authentication failed, various components of the demo will not work. Make sure your device is online and that Anonymous Auth is configured in your Firebase project(https://console.firebase.google.com/project/_/authentication/providers)</string>
-    <string name="extra_google_scopes">Example extra Google scopes</string>
-    <string name="drive_file_scope">Drive File</string>
-    <string name="youtube_data_scope">Youtube data</string>
-    <string name="extra_facebook_scopes">Example extra Facebook scopes</string>
-    <string name="friends">Friends</string>
-    <string name="photos">Photos</string>
     <string name="idp_token">IDP Token</string>
     <string name="idp_secret">IDP Secret</string>
-    <string name="unknown_error">An unknown error occurred</string>
-    <string name="send">Send</string>
-    <string name="download">Download</string>
-    <string name="upload">Upload</string>
-    <string name="choose_image">Choose Image</string>
-    <string name="accessibility_downloaded_image">Downloaded image</string>
-    <string name="allow_new_email_acccount">Allow account creation if email does not exist.</string>
+    <string name="prev_uid">Previous user id</string>
 
-    <!-- strings for database demo activities -->
+    <!-- Storage -->
+    <string name="choose_image">Choose Image</string>
+    <string name="upload">Upload</string>
+    <string name="download">Download</string>
+    <string name="send">Send</string>
+    <string name="accessibility_downloaded_image">Downloaded image</string>
+
+    <string name="rational_image_perm">This sample will read an image from local storage to upload to Cloud Storage.</string>
+
+    <!-- Database -->
     <string name="start_chatting">No messages. Start chatting at the bottom!</string>
+    <string name="signing_in">Signing in…</string>
     <string name="signed_in">Signed In</string>
-    <string name="enable_credential_selector">Enable Smart Lock\'s credential selector</string>
-    <string name="enable_hint_selector">Enable Smart Lock\'s hint selector</string>
+    <string name="anonymous_auth_failed_msg">
+        Anonymous authentication failed, various components of the demo will not work.
+        Make sure your device is online and that Anonymous Auth is configured in your Firebase project
+        (https://console.firebase.google.com/project/_/authentication/providers)
+    </string>
 </resources>

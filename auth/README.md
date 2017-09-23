@@ -102,7 +102,7 @@ If support for Twitter Sign-in is also required, define the resource strings
 `twitter_consumer_key` and `twitter_consumer_secret` to match the values of your
 Twitter app as reported by the [Twitter application manager](https://apps.twitter.com/).
 
-```
+```xml
 <resources>
   <string name="twitter_consumer_key" translatable="false">YOURCONSUMERKEY</string>
   <string name="twitter_consumer_secret" translatable="false">YOURCONSUMERSECRET</string>
