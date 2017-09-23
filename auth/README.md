@@ -521,6 +521,7 @@ Second, ensure the three standard AppCompat color resources are defined with you
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
 </style>
+```
 
 If you would like more control over FirebaseUI's styling, you can define your own custom style
 to override certain or all styling attributes. For example, a green sign-in theme:
