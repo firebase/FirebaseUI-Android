@@ -55,7 +55,7 @@ public class AuthUiActivity extends AppCompatActivity {
     private static final String FIREBASE_PRIVACY_POLICY_URL = "https://firebase.google.com/terms/analytics/#7_privacy";
 
     private static final int RC_SIGN_IN = 100;
-    private static final String OVERRIDE_LOGIN_CHECKS_EXTRA = "overide_login_checks";
+    private static final String OVERRIDE_LOGIN_CHECKS_EXTRA = "override_login_checks";
 
     @BindView(R.id.default_theme)
     RadioButton mUseDefaultTheme;
@@ -207,7 +207,7 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setTosUrl(getSelectedTosUrl())
                         .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
-                                               mEnableHintSelector.isChecked())
+                                mEnableHintSelector.isChecked())
                         .setIsAccountLinkingEnabled(true, null)
                         .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),

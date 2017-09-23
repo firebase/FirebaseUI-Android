@@ -256,6 +256,20 @@ startActivityForResult(
     RC_SIGN_IN);
 ```
 
+When using the phone verification provider and the number is known in advance, it is possible to
+provide a default phone number (in international format) that will be used to prepopulate the
+country code and phone number input fields. The user is still able to edit the number if desired.
+
+```java
+// Use a Bundle to hold the default number, and pass it to the Builder via setParams:
+Bundle params = new Bundle();
+params.putString(AuthUI.EXTRA_DEFAULT_PHONE, "+12345678901");
+IdpConfig phoneConfigWithDefaultNumber =
+        new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
+                .setParams(params)
+                .build();
+```
+
 The default FirebaseUI sign-in flow shows UI to either create a new account or sign into an existing account.
 If you are using
 [anonymous authentication](https://firebase.google.com/docs/auth/android/anonymous-auth)
@@ -517,7 +531,7 @@ to override certain or all styling attributes. For example, a green sign-in them
     <item name="colorPrimary">@color/material_green_500</item>
     <item name="colorPrimaryDark">@color/material_green_700</item>
     <item name="colorAccent">@color/material_purple_a700</item>
-    
+
     <item name="colorControlNormal">@color/material_green_500</item>
     <item name="colorControlActivated">@color/material_lime_a700</item>
     <item name="colorControlHighlight">@color/material_green_a200</item>
