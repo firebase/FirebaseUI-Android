@@ -43,29 +43,31 @@ public final class ManualMergeUtils {
         };
         bindService(activity, keepServiceAliveConnection);
 
-        return getLoadDataTask(activity, response)
+        return getLoadDataTask(activity)
                 .continueWithTask(new Continuation<Void, Task<T>>() {
                     @Override
                     public Task<T> then(@NonNull Task<Void> task) throws Exception {
+                        task.getResult();
                         return insertTask.call();
                     }
                 })
                 .continueWithTask(new Continuation<T, Task<T>>() {
                     @Override
-                    public Task<T> then(@NonNull Task<T> task) throws Exception {
+                    public Task<T> then(@NonNull Task<T> task) {
+                        task.getResult();
                         return getTransferDataTask(activity, response, task);
                     }
                 })
                 .continueWith(new Continuation<T, T>() {
                     @Override
-                    public T then(@NonNull Task<T> task) throws Exception {
+                    public T then(@NonNull Task<T> task) {
                         unbindService(activity, keepServiceAliveConnection);
                         return task.getResult();
                     }
                 });
     }
 
-    private static Task<Void> getLoadDataTask(HelperActivityBase activity, IdpResponse response) {
+    private static Task<Void> getLoadDataTask(HelperActivityBase activity) {
         return getDataTask(activity, new MergeServiceConnection() {
             @Override
             protected Task<Void> getDataTask(ManualMergeService service) {
@@ -84,7 +86,7 @@ public final class ManualMergeUtils {
             }
         }).continueWith(new Continuation<Void, T>() {
             @Override
-            public T then(@NonNull Task<Void> task) throws Exception {
+            public T then(@NonNull Task<Void> task) {
                 return originalTask.getResult();
             }
         });
@@ -96,7 +98,7 @@ public final class ManualMergeUtils {
         bindService(activity, connection.setTask(task));
         return task.getTask().continueWith(new Continuation<Void, Void>() {
             @Override
-            public Void then(@NonNull Task<Void> task) throws Exception {
+            public Void then(@NonNull Task<Void> task) {
                 unbindService(activity, connection);
                 return task.getResult();
             }
@@ -144,7 +146,7 @@ public final class ManualMergeUtils {
 
             task.continueWith(new Continuation<Void, Void>() {
                 @Override
-                public Void then(@NonNull Task<Void> task) throws Exception {
+                public Void then(@NonNull Task<Void> task) {
                     mTask.setResult(null);
                     return null;
                 }
