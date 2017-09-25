@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
@@ -64,13 +65,13 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     private PhoneVerificationActivity mVerifier;
     private TextView mSmsTermsText;
 
-    public static VerifyPhoneNumberFragment newInstance(FlowParameters flowParameters,
-                                                        String phone) {
+    public static VerifyPhoneNumberFragment newInstance(
+            FlowParameters flowParameters, Bundle params) {
         VerifyPhoneNumberFragment fragment = new VerifyPhoneNumberFragment();
 
         Bundle args = new Bundle();
         args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
-        args.putString(ExtraConstants.EXTRA_PHONE, phone);
+        args.putBundle(ExtraConstants.EXTRA_PARAMS, params);
 
         fragment.setArguments(args);
         return fragment;
@@ -133,9 +134,22 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         // Check for phone
         // It is assumed that the phone number that are being wired in via Credential Selector
         // are e164 since we store it.
-        String phone = getArguments().getString(ExtraConstants.EXTRA_PHONE);
-        if (!TextUtils.isEmpty(phone)) {
-            // Use phone passed in
+        Bundle params = getArguments().getBundle(ExtraConstants.EXTRA_PARAMS);
+        String phone = null;
+        String countryCode = null;
+        String nationalNumber = null;
+        if (params != null) {
+            phone = params.getString(AuthUI.EXTRA_DEFAULT_PHONE);
+            countryCode = params.getString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE);
+            nationalNumber = params.getString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER);
+        }
+        if (!TextUtils.isEmpty(countryCode) && !TextUtils.isEmpty(nationalNumber)) {
+            // User supplied country code & national number
+            PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(countryCode, nationalNumber);
+            setPhoneNumber(phoneNumber);
+            setCountryCode(phoneNumber);
+        } else if (!TextUtils.isEmpty(phone)) {
+            // User supplied full phone number
             PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(phone);
             setPhoneNumber(phoneNumber);
             setCountryCode(phoneNumber);

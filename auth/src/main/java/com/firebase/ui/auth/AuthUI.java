@@ -107,9 +107,19 @@ public class AuthUI {
     public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
 
     /**
-     * Bundle key for the default phone number parameter
+     * Bundle key for the default full phone number parameter.
      */
     public static final String EXTRA_DEFAULT_PHONE = ExtraConstants.EXTRA_PHONE;
+
+    /**
+     * Bundle key for the default phone country code parameter.
+     */
+    public static final String EXTRA_DEFAULT_COUNTRY_CODE = ExtraConstants.EXTRA_COUNTRY_CODE;
+
+    /**
+     * Bundle key for the default national phone number parameter.
+     */
+    public static final String EXTRA_DEFAULT_NATIONAL_NUMBER = ExtraConstants.EXTRA_NATIONAL_NUMBER;
 
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.

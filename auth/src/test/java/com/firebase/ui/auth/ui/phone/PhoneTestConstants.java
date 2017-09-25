@@ -24,6 +24,8 @@ public class PhoneTestConstants {
     public static final String PHONE_NO_COUNTRY_CODE = "23456789";
     public static final String US_COUNTRY_CODE = "1";
     public static final String US_ISO2 = "US";
+    public static final String CA_ISO2 = "CA";
+    public static final String CA_COUNTRY_CODE = "1";
     public static final String YE_COUNTRY_CODE = "967";
     public static final String YE_ISO2 = "YE";
 }
