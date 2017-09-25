@@ -112,7 +112,7 @@ public class PhoneVerificationActivityTest {
     @Test
     public void testDefaultFullPhoneNumber_prePopulatesPhoneNumberInBundle() {
         Bundle fullPhoneParams = new Bundle();
-        fullPhoneParams.putString(AuthUI.EXTRA_DEFAULT_PHONE, YE_RAW_PHONE);
+        fullPhoneParams.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, YE_RAW_PHONE);
         Intent startIntent = PhoneVerificationActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(

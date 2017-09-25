@@ -139,7 +139,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         String countryCode = null;
         String nationalNumber = null;
         if (params != null) {
-            phone = params.getString(AuthUI.EXTRA_DEFAULT_PHONE);
+            phone = params.getString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER);
             countryCode = params.getString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE);
             nationalNumber = params.getString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER);
         }

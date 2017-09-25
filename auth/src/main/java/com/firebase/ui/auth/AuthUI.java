@@ -109,7 +109,7 @@ public class AuthUI {
     /**
      * Bundle key for the default full phone number parameter.
      */
-    public static final String EXTRA_DEFAULT_PHONE = ExtraConstants.EXTRA_PHONE;
+    public static final String EXTRA_DEFAULT_PHONE_NUMBER = ExtraConstants.EXTRA_PHONE;
 
     /**
      * Bundle key for the default phone country code parameter.

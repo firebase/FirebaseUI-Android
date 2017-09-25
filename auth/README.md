@@ -263,7 +263,7 @@ country code and phone number input fields. The user is still able to edit the n
 ```java
 // Use a Bundle to hold the default number, and pass it to the Builder via setParams:
 Bundle params = new Bundle();
-params.putString(EXTRA_DEFAULT_PHONE, "+123456789");
+params.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, "+123456789");
 IdpConfig phoneConfigWithDefaultNumber =
         new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
                 .setParams(params)
@@ -276,8 +276,8 @@ are provided.
 
 ```java
 Bundle params = new Bundle();
-params.putString(EXTRA_DEFAULT_COUNTRY_CODE, "ca");
-params.putString(EXTRA_DEFAULT_NATIONAL_NUMBER, "23456789");
+params.putString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE, "ca");
+params.putString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER, "23456789");
 IdpConfig phoneConfigWithDefaultCountryAndNationalNumber =
         new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
                 .setParams(params)
