@@ -14,6 +14,7 @@
 
 package com.firebase.ui.firestore;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
@@ -47,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
+@SuppressLint("LogConditional")
 public class FirestoreArrayTest {
 
     /**
