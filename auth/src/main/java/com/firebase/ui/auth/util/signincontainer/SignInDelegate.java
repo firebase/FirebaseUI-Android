@@ -249,9 +249,11 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
                     // Go directly to phone flow
-                    String phone = firstIdpConfig.getParams().getString(AuthUI.EXTRA_DEFAULT_PHONE);
+                    Bundle params = firstIdpConfig.getParams();
+                    Intent phoneActivityIntent = PhoneVerificationActivity
+                            .createIntent(getContext(), flowParams, params);
                     startActivityForResult(
-                            PhoneVerificationActivity.createIntent(getContext(), flowParams, phone),
+                            phoneActivityIntent,
                             RC_PHONE_FLOW);
                     break;
                 default:
