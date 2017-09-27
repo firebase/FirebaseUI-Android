@@ -73,12 +73,18 @@ public final class CompletableProgressDialog extends DialogFragment {
 
     public void onComplete(String msg) {
         setMessage(msg);
-        mProgress.setVisibility(View.GONE);
-        mSuccessImage.setVisibility(View.VISIBLE);
+
+        if (mProgress != null) {
+            mProgress.setVisibility(View.GONE);
+        }
+
+        if (mSuccessImage != null) {
+            mSuccessImage.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setMessage(CharSequence message) {
-        if (mProgress != null) {
+        if (mProgress != null && mMessageView != null) {
             mMessageView.setText(message);
         } else {
             mMessage = message;
