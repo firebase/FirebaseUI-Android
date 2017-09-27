@@ -53,6 +53,9 @@ import java.util.concurrent.TimeUnit;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhoneVerificationActivity extends AppCompatBase {
+
+    private static final String TAG = "PhoneVerification";
+
     private enum VerificationState {
         VERIFICATION_NOT_STARTED, VERIFICATION_STARTED, VERIFIED
     }
@@ -158,6 +161,13 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     public void submitConfirmationCode(String confirmationCode) {
+        if (TextUtils.isEmpty(mVerificationId)) {
+            // This situation should never happen except in the case of an extreme race
+            // condition, so we will just ignore the submission.
+            Log.w(TAG, "submitConfirmationCode: mVerificationId is null or empty");
+            return;
+        }
+
         showLoadingDialog(getString(R.string.fui_verifying));
         signIn(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
     }

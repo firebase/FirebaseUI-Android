@@ -172,7 +172,15 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void submitConfirmationCode() {
-        mVerifier.submitConfirmationCode(mConfirmationCodeEditText.getUnspacedText().toString());
+        String confirmationCode = mConfirmationCodeEditText.getUnspacedText().toString();
+        if (TextUtils.isEmpty(confirmationCode)) {
+            // Don't allow submission of empty confirmation codes, do nothing. The button
+            // should be disabled if the field is not full therefore no UI is needed,
+            // the disabled button conveys the state.
+            return;
+        }
+
+        mVerifier.submitConfirmationCode(confirmationCode);
     }
 
     private void setupEditPhoneNumberTextView(@Nullable String phoneNumber) {
