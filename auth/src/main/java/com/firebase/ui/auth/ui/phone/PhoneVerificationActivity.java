@@ -74,9 +74,10 @@ public class PhoneVerificationActivity extends AppCompatBase {
     private PhoneAuthProvider.ForceResendingToken mForceResendingToken;
     private VerificationState mVerificationState;
 
-    public static Intent createIntent(Context context, FlowParameters flowParams, String phone) {
-        return HelperActivityBase.createBaseIntent(context, PhoneVerificationActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_PHONE, phone);
+    public static Intent createIntent(Context context, FlowParameters flowParams, Bundle params) {
+        return HelperActivityBase.createBaseIntent(
+                context, PhoneVerificationActivity.class, flowParams)
+                .putExtra(ExtraConstants.EXTRA_PARAMS, params);
     }
 
     @Override
@@ -95,9 +96,9 @@ public class PhoneVerificationActivity extends AppCompatBase {
             return;
         }
 
-        String phone = getIntent().getExtras().getString(ExtraConstants.EXTRA_PHONE);
+        Bundle params = getIntent().getExtras().getBundle(ExtraConstants.EXTRA_PARAMS);
         VerifyPhoneNumberFragment fragment = VerifyPhoneNumberFragment.newInstance
-                (getFlowParams(), phone);
+                (getFlowParams(), params);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_verify_phone, fragment, VerifyPhoneNumberFragment.TAG)
                 .disallowAddToBackStack()

@@ -49,11 +49,14 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
 
 import java.util.Collections;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE_NO_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_COUNTRY_CODE;
+import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_ISO2;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_RAW_PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.AUTO_RETRIEVAL_TIMEOUT_MILLIS;
 import static junit.framework.Assert.assertEquals;
@@ -107,12 +110,14 @@ public class PhoneVerificationActivityTest {
     }
 
     @Test
-    public void testPhoneNumberFromSmartlock_prePopulatesPhoneNumberInBundle() {
+    public void testDefaultFullPhoneNumber_prePopulatesPhoneNumberInBundle() {
+        Bundle fullPhoneParams = new Bundle();
+        fullPhoneParams.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, YE_RAW_PHONE);
         Intent startIntent = PhoneVerificationActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
                         Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)),
-                YE_RAW_PHONE);
+                fullPhoneParams);
 
         mActivity = Robolectric.buildActivity(PhoneVerificationActivity.class, startIntent)
                 .create(new Bundle()).start().visible().get();
@@ -127,6 +132,34 @@ public class PhoneVerificationActivityTest {
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
         assertEquals(YE_COUNTRY_CODE,
                      String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).countryCode));
+    }
+
+    @Test
+    public void testDefaultCountryCodeAndNationalNumber_prePopulatesPhoneNumberInBundle() {
+        Bundle phoneParams = new Bundle();
+        phoneParams.putString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE, CA_ISO2);
+        phoneParams.putString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER, PHONE_NO_COUNTRY_CODE);
+        Intent startIntent = PhoneVerificationActivity.createIntent(
+                RuntimeEnvironment.application,
+                TestHelper.getFlowParameters(
+                        Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)),
+                phoneParams);
+
+        mActivity = Robolectric.buildActivity(PhoneVerificationActivity.class, startIntent)
+                .create(new Bundle()).start().visible().get();
+
+        VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
+                mActivity.getSupportFragmentManager()
+                        .findFragmentByTag(VerifyPhoneNumberFragment.TAG);
+        assertNotNull(verifyPhoneNumberFragment);
+        mPhoneEditText = mActivity.findViewById(R.id.phone_number);
+        mCountryListSpinner = mActivity.findViewById(R.id.country_list);
+
+        assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
+        assertEquals(CA_COUNTRY_CODE,
+                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).countryCode));
+        assertEquals(new Locale("", CA_ISO2),
+                ((CountryInfo) mCountryListSpinner.getTag()).locale);
     }
 
     @Test

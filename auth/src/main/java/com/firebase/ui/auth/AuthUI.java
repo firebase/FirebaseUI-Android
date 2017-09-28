@@ -16,6 +16,7 @@ package com.firebase.ui.auth;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.CallSuper;
@@ -28,6 +29,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.provider.TwitterProvider;
+import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
@@ -103,6 +105,21 @@ public class AuthUI {
      * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
     public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
+
+    /**
+     * Bundle key for the default full phone number parameter.
+     */
+    public static final String EXTRA_DEFAULT_PHONE_NUMBER = ExtraConstants.EXTRA_PHONE;
+
+    /**
+     * Bundle key for the default phone country code parameter.
+     */
+    public static final String EXTRA_DEFAULT_COUNTRY_CODE = ExtraConstants.EXTRA_COUNTRY_CODE;
+
+    /**
+     * Bundle key for the default national phone number parameter.
+     */
+    public static final String EXTRA_DEFAULT_NATIONAL_NUMBER = ExtraConstants.EXTRA_NATIONAL_NUMBER;
 
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
@@ -269,15 +286,21 @@ public class AuthUI {
     public static class IdpConfig implements Parcelable {
         private final String mProviderId;
         private final List<String> mScopes;
+        private final Bundle mParams;
 
-        private IdpConfig(@SupportedProvider @NonNull String providerId, List<String> scopes) {
+        private IdpConfig(
+                @SupportedProvider @NonNull String providerId,
+                List<String> scopes,
+                Bundle params) {
             mProviderId = providerId;
             mScopes = Collections.unmodifiableList(scopes);
+            mParams = params;
         }
 
         private IdpConfig(Parcel in) {
             mProviderId = in.readString();
             mScopes = Collections.unmodifiableList(in.createStringArrayList());
+            mParams = in.readBundle(getClass().getClassLoader());
         }
 
         @SupportedProvider
@@ -287,6 +310,10 @@ public class AuthUI {
 
         public List<String> getScopes() {
             return mScopes;
+        }
+
+        public Bundle getParams() {
+            return mParams;
         }
 
         public static final Creator<IdpConfig> CREATOR = new Creator<IdpConfig>() {
@@ -310,6 +337,7 @@ public class AuthUI {
         public void writeToParcel(Parcel parcel, int i) {
             parcel.writeString(mProviderId);
             parcel.writeStringList(mScopes);
+            parcel.writeBundle(mParams);
         }
 
         @Override
@@ -332,12 +360,14 @@ public class AuthUI {
             return "IdpConfig{" +
                     "mProviderId='" + mProviderId + '\'' +
                     ", mScopes=" + mScopes +
+                    ", mParams=" + mParams +
                     '}';
         }
 
         public static class Builder {
             @SupportedProvider private String mProviderId;
             private List<String> mScopes = new ArrayList<>();
+            private Bundle mParams = new Bundle();
 
             /**
              * Builds the configuration parameters for an identity provider.
@@ -372,8 +402,13 @@ public class AuthUI {
                 return this;
             }
 
+            public Builder setParams(Bundle params) {
+                mParams = params;
+                return this;
+            }
+
             public IdpConfig build() {
-                return new IdpConfig(mProviderId, mScopes);
+                return new IdpConfig(mProviderId, mScopes, mParams);
             }
         }
     }
@@ -448,8 +483,8 @@ public class AuthUI {
             for (IdpConfig config : idpConfigs) {
                 if (mProviders.contains(config)) {
                     throw new IllegalArgumentException("Each provider can only be set once. "
-                                                               + config.getProviderId()
-                                                               + " was set twice.");
+                            + config.getProviderId()
+                            + " was set twice.");
                 } else {
                     mProviders.add(config);
                 }

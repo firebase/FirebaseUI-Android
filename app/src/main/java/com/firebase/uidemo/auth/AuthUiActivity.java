@@ -205,7 +205,7 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setTosUrl(getSelectedTosUrl())
                         .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
-                                               mEnableHintSelector.isChecked())
+                                mEnableHintSelector.isChecked())
                         .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
                 RC_SIGN_IN);
