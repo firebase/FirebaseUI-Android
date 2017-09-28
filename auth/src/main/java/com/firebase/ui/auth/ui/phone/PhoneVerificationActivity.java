@@ -164,7 +164,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
             // See: https://github.com/firebase/FirebaseUI-Android/issues/922
             Log.w(PHONE_VERIFICATION_LOG_TAG,
                     String.format("submitConfirmationCode: mVerificationId is %s ; " +
-                            "confirmationCode is %s", mVerificationId == null ? "null" : "not null",
+                            "confirmationCode is %s", TextUtils.isEmpty(mVerificationId) ? "empty" : "not empty",
                             TextUtils.isEmpty(confirmationCode) ? "empty" : "not empty"));
             return;
         }
