@@ -39,16 +39,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI Database only
-    compile 'com.firebaseui:firebase-ui-database:2.3.0'
+    compile 'com.firebaseui:firebase-ui-database:2.4.0'
 
     // FirebaseUI Auth only
-    compile 'com.firebaseui:firebase-ui-auth:2.3.0'
+    compile 'com.firebaseui:firebase-ui-auth:2.4.0'
 
     // FirebaseUI Storage only
-    compile 'com.firebaseui:firebase-ui-storage:2.3.0'
+    compile 'com.firebaseui:firebase-ui-storage:2.4.0'
 
     // Single target that includes all FirebaseUI libraries above
-    compile 'com.firebaseui:firebase-ui:2.3.0'
+    compile 'com.firebaseui:firebase-ui:2.4.0'
 }
 ```
 
@@ -91,6 +91,7 @@ For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 2.4.0              | 11.4.0                         |
 | 2.3.0              | 11.0.4                         |
 | 2.2.0              | 11.0.4                         |
 | 2.1.1              | 11.0.2                         |
