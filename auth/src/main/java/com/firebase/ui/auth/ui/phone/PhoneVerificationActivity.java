@@ -63,6 +63,8 @@ public class PhoneVerificationActivity extends AppCompatBase {
     @VisibleForTesting static final long AUTO_RETRIEVAL_TIMEOUT_MILLIS = 120000;
 
     private static final String KEY_VERIFICATION_PHONE = "KEY_VERIFICATION_PHONE";
+    private static final String KEY_VERIFICATION_FORCE_RESEND_TOKEN = "KEY_FORCE_RESEND_TOKEN";
+    private static final String KEY_VERIFICATION_ID = "KEY_VERIFICATION_ID";
     private static final String KEY_STATE = "KEY_STATE";
 
     private AlertDialog mAlertDialog;
@@ -88,6 +90,12 @@ public class PhoneVerificationActivity extends AppCompatBase {
         mVerificationState = VerificationState.VERIFICATION_NOT_STARTED;
         if (savedInstance != null && !savedInstance.isEmpty()) {
             mPhoneNumber = savedInstance.getString(KEY_VERIFICATION_PHONE);
+
+            // We recover any persisted verification state up until the callback is invoked.
+            // See: https://github.com/firebase/FirebaseUI-Android/issues/922
+            mVerificationId = savedInstance.getString(KEY_VERIFICATION_ID);
+            mForceResendingToken = savedInstance.getParcelable(KEY_VERIFICATION_FORCE_RESEND_TOKEN);
+
             if (savedInstance.getSerializable(KEY_STATE) != null) {
                 mVerificationState = (VerificationState) savedInstance.getSerializable(KEY_STATE);
             }
@@ -136,6 +144,8 @@ public class PhoneVerificationActivity extends AppCompatBase {
     protected void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(KEY_STATE, mVerificationState);
         outState.putString(KEY_VERIFICATION_PHONE, mPhoneNumber);
+        outState.putString(KEY_VERIFICATION_ID, mVerificationId);
+        outState.putParcelable(KEY_VERIFICATION_FORCE_RESEND_TOKEN, mForceResendingToken);
         super.onSaveInstanceState(outState);
     }
 
@@ -156,7 +166,15 @@ public class PhoneVerificationActivity extends AppCompatBase {
         }
     }
 
-    public void submitConfirmationCode(String confirmationCode) {
+    public void submitConfirmationCode(@NonNull String confirmationCode) {
+        if (TextUtils.isEmpty(mVerificationId) || TextUtils.isEmpty(confirmationCode)) {
+            // This situation should never happen except in the case of an extreme race
+            // condition, so we will just ignore the submission.
+            Log.w(PHONE_VERIFICATION_LOG_TAG,
+                    "submitConfirmationCode: mVerificationId is null or empty");
+            return;
+        }
+
         showLoadingDialog(getString(R.string.fui_verifying));
         signIn(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
     }
