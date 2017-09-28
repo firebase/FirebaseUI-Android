@@ -3,7 +3,7 @@
 
     <!-- Chooser -->
     <string name="title_auth_activity">Auth UI demo</string>
-    <string name="title_firestore_activity">FirestoreChatActivity</string>
+    <string name="title_firestore_activity">Cloud Firestore Demo</string>
     <string name="title_realtime_database_activity">Real-time database demo</string>
     <string name="title_storage_activity">Storage Image Demo</string>
 
