@@ -10,7 +10,7 @@ project.ext {
 
     buildTools = '26.0.1' // Remember to also update in .travis.yml
 
-    firebaseVersion = '11.0.8'
+    firebaseVersion = '11.4.2'
     supportLibraryVersion = '26.0.1'
     architectureVersion = '1.0.0-alpha8'
 }
