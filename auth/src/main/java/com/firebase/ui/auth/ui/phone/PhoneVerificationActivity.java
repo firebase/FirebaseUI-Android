@@ -88,6 +88,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         mVerificationState = VerificationState.VERIFICATION_NOT_STARTED;
         if (savedInstance != null && !savedInstance.isEmpty()) {
             mPhoneNumber = savedInstance.getString(KEY_VERIFICATION_PHONE);
+
             if (savedInstance.getSerializable(KEY_STATE) != null) {
                 mVerificationState = (VerificationState) savedInstance.getSerializable(KEY_STATE);
             }
@@ -156,7 +157,18 @@ public class PhoneVerificationActivity extends AppCompatBase {
         }
     }
 
-    public void submitConfirmationCode(String confirmationCode) {
+    public void submitConfirmationCode(@NonNull String confirmationCode) {
+        if (TextUtils.isEmpty(mVerificationId) || TextUtils.isEmpty(confirmationCode)) {
+            // This situation should never happen except in the case of an extreme race
+            // condition, so we will just ignore the submission.
+            // See: https://github.com/firebase/FirebaseUI-Android/issues/922
+            Log.w(PHONE_VERIFICATION_LOG_TAG,
+                    String.format("submitConfirmationCode: mVerificationId is %s ; " +
+                            "confirmationCode is %s", TextUtils.isEmpty(mVerificationId) ? "empty" : "not empty",
+                            TextUtils.isEmpty(confirmationCode) ? "empty" : "not empty"));
+            return;
+        }
+
         showLoadingDialog(getString(R.string.fui_verifying));
         signIn(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
     }
