@@ -44,7 +44,7 @@ dependencies {
     compile "com.google.firebase:firebase-database:$firebaseVersion"
     compile "com.google.firebase:firebase-storage:$firebaseVersion"
 
-    compile('com.facebook.android:facebook-android-sdk:4.27.0')
+    compile('com.facebook.android:facebook-login:4.27.0')
     compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
 
     // The following dependencies are not required to use the Firebase UI library.
