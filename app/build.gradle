@@ -12,6 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
 
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -33,6 +34,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:multidex:1.0.1'
     compile "com.android.support:design:$supportLibraryVersion"
 
     compile project(path: ':auth')

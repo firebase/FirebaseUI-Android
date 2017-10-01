@@ -24,8 +24,8 @@ import com.firebase.ui.auth.R;
 public class AppCompatBase extends HelperActivityBase {
 
     @Override
-    protected void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         configureTheme();
     }
 

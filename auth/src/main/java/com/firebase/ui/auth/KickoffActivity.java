@@ -12,7 +12,6 @@ import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.PlayServicesHelper;
-import com.firebase.ui.auth.util.signincontainer.SignInDelegate;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends HelperActivityBase {
@@ -27,10 +26,10 @@ public class KickoffActivity extends HelperActivityBase {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        if (savedInstance == null || savedInstance.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
+        if (savedInstanceState == null || savedInstanceState.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
             if (isOffline()) {
                 Log.d(TAG, "No network connection");
                 finish(RESULT_CANCELED,

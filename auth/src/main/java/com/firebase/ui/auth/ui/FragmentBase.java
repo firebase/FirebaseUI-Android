@@ -8,8 +8,6 @@ import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 import android.view.ContextThemeWrapper;
 
-import com.firebase.ui.auth.util.AuthHelper;
-
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FragmentBase extends Fragment {
 

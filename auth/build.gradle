@@ -48,6 +48,10 @@ dependencies {
     compile "com.android.support:customtabs:$supportLibraryVersion"
     compile 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
 
+    compile "android.arch.lifecycle:runtime:$architectureVersion"
+    compile "android.arch.lifecycle:extensions:$architectureVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
+
     compile "com.google.firebase:firebase-auth:$firebaseVersion"
     compile "com.google.android.gms:play-services-auth:$firebaseVersion"
 

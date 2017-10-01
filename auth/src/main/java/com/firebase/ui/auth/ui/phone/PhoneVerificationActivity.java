@@ -80,16 +80,16 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     @Override
-    protected void onCreate(final Bundle savedInstance) {
-        super.onCreate(savedInstance);
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_phone);
 
         mHandler = new Handler();
         mVerificationState = VerificationState.VERIFICATION_NOT_STARTED;
-        if (savedInstance != null && !savedInstance.isEmpty()) {
-            mPhoneNumber = savedInstance.getString(KEY_VERIFICATION_PHONE);
-            if (savedInstance.getSerializable(KEY_STATE) != null) {
-                mVerificationState = (VerificationState) savedInstance.getSerializable(KEY_STATE);
+        if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
+            mPhoneNumber = savedInstanceState.getString(KEY_VERIFICATION_PHONE);
+            if (savedInstanceState.getSerializable(KEY_STATE) != null) {
+                mVerificationState = (VerificationState) savedInstanceState.getSerializable(KEY_STATE);
             }
             return;
         }
