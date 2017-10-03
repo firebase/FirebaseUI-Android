@@ -37,7 +37,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.User;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.json.JSONException;
@@ -46,7 +45,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
+public class FacebookProvider implements Provider, FacebookCallback<LoginResult> {
     private static final String TAG = "FacebookProvider";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
@@ -54,8 +53,6 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private static CallbackManager sCallbackManager;
 
     private final List<String> mScopes;
-    // DO NOT USE DIRECTLY: see onSuccess(String, LoginResult) and onFailure(Bundle) below
-    private IdpCallback mCallbackObject;
 
     public FacebookProvider(AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
         List<String> scopes = idpConfig.getScopes();
@@ -65,13 +62,6 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
             mScopes = scopes;
         }
         WebDialog.setWebDialogTheme(theme);
-    }
-
-    public static AuthCredential createAuthCredential(IdpResponse response) {
-        if (!response.getProviderType().equals(FacebookAuthProvider.PROVIDER_ID)) {
-            return null;
-        }
-        return FacebookAuthProvider.getCredential(response.getIdpToken());
     }
 
     @Override
@@ -104,11 +94,6 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
         // Log in with permissions
         loginManager.logInWithReadPermissions(activity, permissionsList);
-    }
-
-    @Override
-    public void setAuthenticationCallback(IdpCallback callback) {
-        mCallbackObject = callback;
     }
 
     @Override
@@ -192,17 +177,5 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     private void onFailure() {
         gcCallbackManager();
         mCallbackObject.onFailure();
-    }
-
-    private void gcCallbackManager() {
-        // sCallbackManager must be static to prevent it from being destroyed if the activity
-        // containing FacebookProvider dies.
-        // In startLogin(Activity), LoginManager#registerCallback(CallbackManager, FacebookCallback)
-        // stores the FacebookCallback parameter--in this case a FacebookProvider instance--into
-        // a HashMap in the CallbackManager instance, sCallbackManager.
-        // Because FacebookProvider which contains an instance of an activity, mCallbackObject,
-        // is contained in sCallbackManager, that activity will not be garbage collected.
-        // Thus, we have leaked an Activity.
-        sCallbackManager = null;
     }
 }

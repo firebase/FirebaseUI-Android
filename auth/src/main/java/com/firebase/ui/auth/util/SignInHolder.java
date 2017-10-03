@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.util;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.util.Pair;
 
@@ -10,6 +11,10 @@ import com.google.firebase.auth.PhoneAuthProvider;
 
 public class SignInHolder extends ViewModelBase<Pair<FlowParameters, Bundle>> {
     private FirebaseApp mApp;
+
+    public SignInHolder(Application application) {
+        super(application);
+    }
 
     @Override
     protected void onCreate(Pair<FlowParameters, Bundle> args) {

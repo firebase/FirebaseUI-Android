@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -23,22 +22,14 @@ import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 import com.twitter.sdk.android.core.models.User;
 
 
-public class TwitterProvider extends Callback<TwitterSession> implements IdpProvider {
+public class TwitterProvider extends Callback<TwitterSession> implements Provider {
     private static final String TAG = "TwitterProvider";
 
-    private IdpCallback mCallbackObject;
     private TwitterAuthClient mTwitterAuthClient;
 
     public TwitterProvider(Context context) {
         initialize(context);
         mTwitterAuthClient = new TwitterAuthClient();
-    }
-
-    public static AuthCredential createAuthCredential(IdpResponse response) {
-        if (!response.getProviderType().equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
-            return null;
-        }
-        return TwitterAuthProvider.getCredential(response.getIdpToken(), response.getIdpSecret());
     }
 
     private static void initialize(Context context) {
@@ -74,11 +65,6 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
     @LayoutRes
     public int getButtonLayout() {
         return R.layout.fui_idp_button_twitter;
-    }
-
-    @Override
-    public void setAuthenticationCallback(IdpCallback callback) {
-        mCallbackObject = callback;
     }
 
     @Override

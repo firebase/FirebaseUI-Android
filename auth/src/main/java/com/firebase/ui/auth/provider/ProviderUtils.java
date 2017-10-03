@@ -40,14 +40,14 @@ public final class ProviderUtils {
     }
 
     @Nullable
-    public static AuthCredential getAuthCredential(IdpResponse idpResponse) {
-        switch (idpResponse.getProviderType()) {
+    public static AuthCredential getAuthCredential(IdpResponse response) {
+        switch (response.getProviderType()) {
             case GoogleAuthProvider.PROVIDER_ID:
-                return GoogleProvider.createAuthCredential(idpResponse);
+                return GoogleAuthProvider.getCredential(response.getIdpToken(), null);
             case FacebookAuthProvider.PROVIDER_ID:
-                return FacebookProvider.createAuthCredential(idpResponse);
+                return FacebookAuthProvider.getCredential(response.getIdpToken());
             case TwitterAuthProvider.PROVIDER_ID:
-                return TwitterProvider.createAuthCredential(idpResponse);
+                return TwitterAuthProvider.getCredential(response.getIdpToken(), response.getIdpSecret());
             default:
                 return null;
         }
@@ -63,7 +63,7 @@ public final class ProviderUtils {
                         new TaskFailureLogger(TAG, "Error fetching providers for email"))
                 .continueWith(new Continuation<ProviderQueryResult, String>() {
                     @Override
-                    public String then(@NonNull Task<ProviderQueryResult> task) throws Exception {
+                    public String then(@NonNull Task<ProviderQueryResult> task) {
                         if (!task.isSuccessful()) return null;
 
                         List<String> providers = task.getResult().getProviders();

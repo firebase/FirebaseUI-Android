@@ -1,11 +1,16 @@
 package com.firebase.ui.auth.util;
 
-import android.arch.lifecycle.ViewModel;
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class ViewModelBase<T> extends ViewModel {
+public abstract class ViewModelBase<T> extends AndroidViewModel {
     private AtomicBoolean mIsInitialized = new AtomicBoolean();
+
+    public ViewModelBase(Application application) {
+        super(application);
+    }
 
     public void init(T args) {
         if (!mIsInitialized.get()) {

@@ -2,10 +2,11 @@ package com.firebase.ui.auth.provider;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.LayoutRes;
 
-public interface Provider {
+import com.firebase.ui.auth.util.ActivityResultHandler;
+
+public interface Provider extends ActivityResultHandler {
     /** Retrieves the name of the IDP, for display on-screen. */
     String getName(Context context);
 
@@ -15,10 +16,4 @@ public interface Provider {
 
     /** Start the login process for the IDP, e.g. show the Google sign-in activity. */
     void startLogin(Activity activity);
-
-    /**
-     * Handle the sign result by either finishing the calling activity or sending an {@link
-     * IdpProvider.IdpCallback} response.
-     */
-    void onActivityResult(int requestCode, int resultCode, Intent data);
 }

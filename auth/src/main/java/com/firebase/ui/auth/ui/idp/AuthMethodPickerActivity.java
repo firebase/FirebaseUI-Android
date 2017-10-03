@@ -32,7 +32,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.provider.EmailProvider;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.provider.PhoneProvider;
 import com.firebase.ui.auth.provider.Provider;
@@ -170,17 +169,5 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     public void onFailure() {
         // stay on this screen
         getDialogHolder().dismissDialog();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mProviders != null) {
-            for (Provider provider : mProviders) {
-                if (provider instanceof GoogleProvider) {
-                    ((GoogleProvider) provider).disconnect();
-                }
-            }
-        }
     }
 }
