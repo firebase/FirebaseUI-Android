@@ -76,7 +76,6 @@
 
     <!-- accessibility -->
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">App logo</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Signed in as <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g></string>
 
     <!-- phone number auth -->
     <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Enter your phone number</string>

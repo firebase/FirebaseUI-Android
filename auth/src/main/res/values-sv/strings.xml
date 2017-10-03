@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Läser in…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Logga in</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">Ett fel har uppstått.</string>
@@ -46,7 +46,6 @@
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Skickar…</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">E-postadressen matchar inget befintligt konto</string>
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">Appens logotyp</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Inloggad som %1$s</string>
     <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Ange ditt telefonnummer</string>
     <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Ange ett giltigt telefonnummer</string>
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Ange den sexsiffriga koden vi skickade till</string>

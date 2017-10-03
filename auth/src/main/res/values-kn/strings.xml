@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">ಲೋಡ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">ಸೈನ್ ಇನ್‌</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">ದೋಷ ಸಂಭವಿಸಿದೆ.</string>
@@ -46,7 +46,6 @@
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ…</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">ಆ ಇಮೇಲ್‌ ವಿಳಾಸವು ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ಖಾತೆಗೆ ಹೊಂದಾಣಿಕೆಯಾಗುವುದಿಲ್ಲ</string>
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">ಅಪ್ಲಿಕೇಶನ್‌ ಲೋಗೊ</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">ನೀವು %1$s ನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿರುವಿರಿ</string>
     <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">ನಿಮ್ಮ ಫೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">ಮಾನ್ಯವಾದ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">ನಾವು ಕಳುಹಿಸಿರುವ 6 ಅಂಕಿಯ ಕೋಡ್‌ ನಮೂದಿಸಿ</string>

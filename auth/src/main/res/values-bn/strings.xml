@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">লোড হচ্ছে…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">সাইন-ইন করুন</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">একটি ত্রুটি ঘটেছে৷</string>
@@ -46,7 +46,6 @@
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">পাঠানো হচ্ছে…</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">এই ইমেল অ্যাড্রেসটি আগে থেকে থাকা অ্যাকাউন্টের সাথে মিলছে না</string>
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">অ্যাপের লোগো</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">%1$s হিসাবে সাইন-ইন করেছেন</string>
     <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">আপনার ফোন নম্বর লিখুন</string>
     <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">একটি সঠিক ফোন নম্বর লিখুন</string>
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">আমাদের পাঠানো ৬-সংখ্যার কোডটি লিখুন</string>

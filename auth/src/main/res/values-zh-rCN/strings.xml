@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">正在加载…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">登录</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">发生错误。</string>
@@ -46,7 +46,6 @@
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">正在发送…</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">该电子邮件地址没有相匹配的现有帐号</string>
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">应用徽标</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">已使用 %1$s 登录</string>
     <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">输入您的电话号码</string>
     <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">请输入有效的电话号码</string>
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">输入我们发送至以下电话号码的 6 位数验证码</string>
