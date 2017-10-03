@@ -70,7 +70,6 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_display_name)
     TextView mUserDisplayName;
 
-
     @BindView(R.id.user_phone_number)
     TextView mUserPhoneNumber;
 

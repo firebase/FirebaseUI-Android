@@ -46,10 +46,10 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    compile 'com.firebaseui:firebase-ui-auth:2.3.0'
+    compile 'com.firebaseui:firebase-ui-auth:3.0.0'
 
     // Required only if Facebook login support is required
-    compile('com.facebook.android:facebook-android-sdk:4.22.1')
+    compile('com.facebook.android:facebook-android-sdk:4.26.0')
 
     // Required only if Twitter login support is required
     compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
@@ -263,8 +263,22 @@ country code and phone number input fields. The user is still able to edit the n
 ```java
 // Use a Bundle to hold the default number, and pass it to the Builder via setParams:
 Bundle params = new Bundle();
-params.putString(AuthUI.EXTRA_DEFAULT_PHONE, "+12345678901");
+params.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, "+123456789");
 IdpConfig phoneConfigWithDefaultNumber =
+        new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
+                .setParams(params)
+                .build();
+```
+
+It is also possible to set a default country code along with a national number if a specific country
+is your app's target audience. This will take precedence over the full default phone number if both
+are provided.
+
+```java
+Bundle params = new Bundle();
+params.putString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE, "ca");
+params.putString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER, "23456789");
+IdpConfig phoneConfigWithDefaultCountryAndNationalNumber =
         new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
                 .setParams(params)
                 .build();

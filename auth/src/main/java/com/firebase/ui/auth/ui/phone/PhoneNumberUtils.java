@@ -138,6 +138,22 @@ final class PhoneNumberUtils {
         return new PhoneNumber(phoneNumber, countryIso, countryCode);
     }
 
+    static PhoneNumber getPhoneNumber(
+            @NonNull String providedCountryIso, @NonNull String providedNationalNumber) {
+        Integer countryCode = getCountryCode(providedCountryIso);
+        if (countryCode == null) {
+            // Invalid ISO supplied:
+            countryCode = DEFAULT_COUNTRY_CODE_INT;
+            providedCountryIso = DEFAULT_COUNTRY_CODE;
+        }
+
+        // National number shouldn't include '+', but just in case:
+        providedNationalNumber = stripPlusSign(providedNationalNumber);
+
+        return new PhoneNumber(
+                providedNationalNumber, providedCountryIso, String.valueOf(countryCode));
+    }
+
     private static String countryIsoForCountryCode(String countryCode) {
         final List<String> countries = CountryCodeToRegionCodeMap.get(Integer.valueOf(countryCode));
         if (countries != null) {
@@ -1335,6 +1351,10 @@ final class PhoneNumberUtils {
 
     private static String stripCountryCode(String phoneNumber, String countryCode) {
         return phoneNumber.replaceFirst("^\\+?" + countryCode, "");
+    }
+
+    private static String stripPlusSign(String phoneNumber) {
+        return phoneNumber.replaceFirst("^\\+?", "");
     }
 
     private static Locale getSimBasedLocale(@NonNull Context context) {

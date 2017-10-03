@@ -38,8 +38,21 @@ public final class CompletableProgressDialog extends DialogFragment {
 
     public static CompletableProgressDialog show(FragmentManager manager) {
         CompletableProgressDialog dialog = new CompletableProgressDialog();
-        dialog.show(manager, TAG);
+        dialog.showAllowingStateLoss(manager, TAG);
         return dialog;
+    }
+
+    /**
+     * This method is adapted from {@link #show(FragmentManager, String)}
+     */
+    public void showAllowingStateLoss(FragmentManager manager, String tag) {
+        // This prevents us from hitting FragmentManager.checkStateLoss() which
+        // throws a runtime exception if state has already been saved.
+        if (manager.isStateSaved()) {
+            return;
+        }
+
+        show(manager, tag);
     }
 
     @NonNull
@@ -60,12 +73,18 @@ public final class CompletableProgressDialog extends DialogFragment {
 
     public void onComplete(String msg) {
         setMessage(msg);
-        mProgress.setVisibility(View.GONE);
-        mSuccessImage.setVisibility(View.VISIBLE);
+
+        if (mProgress != null) {
+            mProgress.setVisibility(View.GONE);
+        }
+
+        if (mSuccessImage != null) {
+            mSuccessImage.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setMessage(CharSequence message) {
-        if (mProgress != null) {
+        if (mProgress != null && mMessageView != null) {
             mMessageView.setText(message);
         } else {
             mMessage = message;

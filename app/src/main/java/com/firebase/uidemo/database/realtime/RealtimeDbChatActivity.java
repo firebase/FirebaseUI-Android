@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,8 +15,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.uidemo.R;
-import com.firebase.uidemo.database.Chat;
 import com.firebase.uidemo.database.ChatHolder;
 import com.firebase.uidemo.util.LifecycleActivity;
 import com.firebase.uidemo.util.SignInResultNotifier;
@@ -36,7 +38,7 @@ import butterknife.OnClick;
  * For a general intro to the RecyclerView, see <a href="https://developer.android.com/training/material/lists-cards.html">Creating
  * Lists</a>.
  */
-public abstract class RealtimeDbChatActivity extends LifecycleActivity
+public class RealtimeDbChatActivity extends LifecycleActivity
         implements FirebaseAuth.AuthStateListener {
     private static final String TAG = "RealtimeDatabaseDemo";
 
@@ -130,15 +132,22 @@ public abstract class RealtimeDbChatActivity extends LifecycleActivity
     }
 
     protected RecyclerView.Adapter newAdapter() {
-        return new FirebaseRecyclerAdapter<Chat, ChatHolder>(
-                Chat.class,
-                R.layout.message,
-                ChatHolder.class,
-                sChatQuery,
-                this) {
+        FirebaseRecyclerOptions<Chat> options =
+                new FirebaseRecyclerOptions.Builder<Chat>()
+                        .setQuery(sChatQuery, Chat.class)
+                        .setLifecycleOwner(this)
+                        .build();
+
+        return new FirebaseRecyclerAdapter<Chat, ChatHolder>(options) {
             @Override
-            public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
-                holder.bind(chat);
+            public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new ChatHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.message, parent, false));
+            }
+
+            @Override
+            protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
+                holder.bind(model);
             }
 
             @Override
