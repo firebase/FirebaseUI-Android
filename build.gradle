@@ -44,7 +44,7 @@ allprojects { project ->
     def isLibrary = 'library'.equals(project.name)
     def isSubmodule = submodules.contains(project.name)
 
-    if (isSubmodule || isLibrary) {
+    if (isLibrary || isSubmodule) {
 
         // So that we can resolve 'android' variable
         project.apply plugin: 'com.android.library'
@@ -103,16 +103,44 @@ allprojects { project ->
                 }
             }
         }
-    }
 
-    // POM to meet maven specs
-    if (isLibrary || isSubmodule) {
-        def targetName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
+        // POM to meet maven specs
+        def publicationName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
+        def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
 
         publishing {
             publications {
-                "${targetName}"(MavenPublication) {
+                "${publicationName}"(MavenPublication) {
+
+                    groupId group
+                    artifactId archivesBaseName
+                    version version
+
+                    artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
+                    artifact javadocJar
+                    artifact sourcesJar
+
                     pom.withXml {
+                        // Dependencies
+                        def dependenciesNode = asNode().getAt("dependencies")[0]
+                        if (dependenciesNode == null) {
+                            dependenciesNode = asNode().appendNode("dependencies")
+                        }
+
+                        // Add all that are 'compile'
+                        configurations.compile.allDependencies.each {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+
+                            if (submodules.contains(it.name)) {
+                                dependencyNode.appendNode('artifactId', "firebase-ui-${it.name}")
+                            } else {
+                                dependencyNode.appendNode('artifactId', it.name)
+                            }
+
+                            dependencyNode.appendNode('version', it.version)
+                        }
+
                         // Common values
                         def repoUrl = 'https://github.com/firebase/FirebaseUI-Android'
                         def scmUrl = 'scm:git:git@github.com/firebase/firebaseui-android.git'
@@ -157,91 +185,10 @@ allprojects { project ->
                 }
             }
         }
-    }
 
-    if (isSubmodule) {
-        publishing {
-
-            // Define a publication for each submodule
-            publications {
-
-                // Ex: authLibrary(MavenPublication)
-                "${project.name}Library"(MavenPublication) {
-                    groupId group
-                    artifactId archivesBaseName
-                    version version
-
-                    // Release AAR, Sources, and JavaDoc
-                    artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
-                    artifact javadocJar
-                    artifact sourcesJar
-
-                    pom.withXml {
-                        def dependenciesNode = asNode().getAt("dependencies")[0]
-                        if (dependenciesNode == null) {
-                            dependenciesNode = asNode().appendNode("dependencies")
-                        }
-
-                        // Add all that are 'compile'
-                        configurations.compile.allDependencies.each {
-                            def dependencyNode = dependenciesNode.appendNode('dependency')
-                            dependencyNode.appendNode('groupId', it.group)
-
-                            if (submodules.contains(it.name)) {
-                                dependencyNode.appendNode('artifactId', "firebase-ui-${it.name}")
-                            } else {
-                                dependencyNode.appendNode('artifactId', it.name)
-                            }
-
-                            dependencyNode.appendNode('version', it.version)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if (isLibrary) {
-
-        // Define the monolith publication
-        publishing {
-
-            publications {
-                monolithLibrary(MavenPublication) {
-                    groupId group
-                    artifactId archivesBaseName
-                    version version
-
-                    artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
-                    artifact javadocJar
-                    artifact sourcesJar
-
-                    // Monolith is just a POM that depends on the others
-                    pom.withXml {
-                        def dependenciesNode = asNode().getAt("dependencies")[0]
-                        if (dependenciesNode == null) {
-                            dependenciesNode = asNode().appendNode("dependencies")
-                        }
-
-                        // Add a maven dependency on each submodule
-                        submodules.each { module ->
-                            def dependencyNode = dependenciesNode.appendNode('dependency')
-                            dependencyNode.appendNode('groupId', group)
-                            dependencyNode.appendNode('artifactId', "firebase-ui-${module}")
-                            dependencyNode.appendNode('version', version)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // Bintray Configuration (applies to submodule and the monolith)
-    if (isSubmodule || isLibrary) {
+        // Bintray Configuration (applies to submodule and the monolith)
         project.apply plugin: 'com.jfrog.bintray'
 
-        def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
-        def publicationName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
         def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"
 
         group = project.ext.group
