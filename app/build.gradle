@@ -35,6 +35,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.android.support:design:$supportLibraryVersion"
+    compile 'com.android.support:multidex:1.0.1'
 
     compile project(path: ':auth')
     compile project(path: ':database')
