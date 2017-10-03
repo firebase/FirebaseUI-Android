@@ -1,4 +1,4 @@
-package com.firebase.uidemo.auth;
+package com.firebase.uidemo;
 
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
