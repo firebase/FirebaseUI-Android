@@ -1,11 +1,12 @@
 package com.firebase.uidemo.database.realtime;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-import com.firebase.ui.database.FirebaseIndexRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.uidemo.R;
-import com.firebase.uidemo.database.Chat;
 import com.firebase.uidemo.database.ChatHolder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -21,16 +22,23 @@ public class RealtimeDbChatIndexActivity extends RealtimeDbChatActivity {
                 .child("chatIndices")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        return new FirebaseIndexRecyclerAdapter<Chat, ChatHolder>(
-                Chat.class,
-                R.layout.message,
-                ChatHolder.class,
-                mChatIndicesRef.limitToLast(50),
-                sChatQuery.getRef(),
-                this) {
+        FirebaseRecyclerOptions<Chat> options =
+                new FirebaseRecyclerOptions.Builder<Chat>()
+                        .setIndexedQuery(
+                                mChatIndicesRef.limitToFirst(50), sChatQuery.getRef(), Chat.class)
+                        .setLifecycleOwner(this)
+                        .build();
+
+        return new FirebaseRecyclerAdapter<Chat, ChatHolder>(options) {
             @Override
-            public void populateViewHolder(ChatHolder holder, Chat chat, int position) {
-                holder.bind(chat);
+            public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new ChatHolder(LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.message, parent, false));
+            }
+
+            @Override
+            protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
+                holder.bind(model);
             }
 
             @Override

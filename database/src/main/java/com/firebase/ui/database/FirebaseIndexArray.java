@@ -14,9 +14,11 @@
 
 package com.firebase.ui.database;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
+public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
         implements ChangeEventListener {
     private static final String TAG = "FirebaseIndexArray";
 
@@ -52,25 +54,14 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
     private boolean mHasPendingMoveOrDelete;
 
     /**
-     * Create a new FirebaseIndexArray that parses snapshots as members of a given class.
+     * Create a new FirebaseIndexArray with a custom {@link SnapshotParser}.
      *
      * @param keyQuery The Firebase location containing the list of keys to be found in {@code
      *                 dataRef}. Can also be a slice of a location, using some combination of {@code
      *                 limit()}, {@code startAt()}, and {@code endAt()}.
      * @param dataRef  The Firebase location to watch for data changes. Each key key found at {@code
      *                 keyQuery}'s location represents a list item in the {@link RecyclerView}.
-     * @see ObservableSnapshotArray#ObservableSnapshotArray(Class)
-     */
-    public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, Class<T> tClass) {
-        super(tClass);
-        init(keyQuery, dataRef);
-    }
-
-    /**
-     * Create a new FirebaseIndexArray with a custom {@link SnapshotParser}.
-     *
      * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
-     * @see FirebaseIndexArray#FirebaseIndexArray(Query, DatabaseReference, Class)
      */
     public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, SnapshotParser<T> parser) {
         super(parser);
@@ -105,20 +96,20 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
     }
 
     @Override
-    public void onChildChanged(EventType type, DataSnapshot snapshot, int index, int oldIndex) {
+    public void onChildChanged(ChangeEventType type, DataSnapshot snapshot, int newIndex, int oldIndex) {
         switch (type) {
             case ADDED:
-                onKeyAdded(snapshot, index);
+                onKeyAdded(snapshot, newIndex);
                 break;
             case MOVED:
-                onKeyMoved(snapshot, index, oldIndex);
+                onKeyMoved(snapshot, newIndex, oldIndex);
                 break;
             case CHANGED:
                 // This is a no-op, we don't care when a key 'changes' since that should not
                 // be a supported operation
                 break;
             case REMOVED:
-                onKeyRemoved(snapshot, index);
+                onKeyRemoved(snapshot, newIndex);
                 break;
         }
     }
@@ -126,16 +117,17 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
     @Override
     public void onDataChanged() {
         if (mHasPendingMoveOrDelete || mKeySnapshots.isEmpty()) {
-            notifyListenersOnDataChanged();
+            notifyOnDataChanged();
             mHasPendingMoveOrDelete = false;
         }
     }
 
     @Override
-    public void onCancelled(DatabaseError error) {
+    public void onError(DatabaseError error) {
         Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
     }
 
+    @NonNull
     @Override
     protected List<DataSnapshot> getSnapshots() {
         return mDataSnapshots;
@@ -154,7 +146,7 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
             int keyIndex = 0;
 
             while (dataIndex < dataCount && keyIndex < mKeySnapshots.size()) {
-                String superKey = mKeySnapshots.getObject(keyIndex);
+                String superKey = mKeySnapshots.get(keyIndex);
                 if (key.equals(superKey)) {
                     break;
                 } else if (mDataSnapshots.get(dataIndex).getKey().equals(superKey)) {
@@ -192,11 +184,12 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
         // index instead of the old one. Unfortunately, this does mean move events will be
         // incorrectly ignored if our list is a subset of the key list e.g. a key has null data.
         if (isKeyAtIndex(key, oldIndex)) {
-            DataSnapshot snapshot = removeData(oldIndex);
+            DataSnapshot snapshot = mDataSnapshots.remove(oldIndex);
             int realIndex = returnOrFindIndexForKey(index, key);
             mHasPendingMoveOrDelete = true;
+
             mDataSnapshots.add(realIndex, snapshot);
-            notifyChangeEventListeners(EventType.MOVED, snapshot, realIndex, oldIndex);
+            notifyOnChildChanged(ChangeEventType.MOVED, snapshot, realIndex, oldIndex);
         }
     }
 
@@ -207,37 +200,9 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
 
         int realIndex = returnOrFindIndexForKey(index, key);
         if (isKeyAtIndex(key, realIndex)) {
-            DataSnapshot snapshot = removeData(realIndex);
+            DataSnapshot snapshot = mDataSnapshots.remove(realIndex);
             mHasPendingMoveOrDelete = true;
-            notifyChangeEventListeners(EventType.REMOVED, snapshot, realIndex);
-        }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        if (!super.equals(obj)) return false;
-
-        FirebaseIndexArray array = (FirebaseIndexArray) obj;
-
-        return mDataRef.equals(array.mDataRef) && mDataSnapshots.equals(array.mDataSnapshots);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + mDataRef.hashCode();
-        result = 31 * result + mDataSnapshots.hashCode();
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        if (isListening()) {
-            return "FirebaseIndexArray is listening at " + mDataRef + ":\n" + mDataSnapshots;
-        } else {
-            return "FirebaseIndexArray is inactive";
+            notifyOnChildChanged(ChangeEventType.REMOVED, snapshot, realIndex, -1);
         }
     }
 
@@ -260,18 +225,18 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
             if (snapshot.getValue() != null) {
                 if (isKeyAtIndex(key, index)) {
                     // We already know about this data, just update it
-                    updateData(index, snapshot);
-                    notifyChangeEventListeners(EventType.CHANGED, snapshot, index);
+                    mDataSnapshots.set(index, snapshot);
+                    notifyOnChildChanged(ChangeEventType.CHANGED, snapshot, index, -1);
                 } else {
                     // We don't already know about this data, add it
                     mDataSnapshots.add(index, snapshot);
-                    notifyChangeEventListeners(EventType.ADDED, snapshot, index);
+                    notifyOnChildChanged(ChangeEventType.ADDED, snapshot, index, -1);
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {
                     // This data has disappeared, remove it
-                    removeData(index);
-                    notifyChangeEventListeners(EventType.REMOVED, snapshot, index);
+                    mDataSnapshots.remove(index);
+                    notifyOnChildChanged(ChangeEventType.REMOVED, snapshot, index, -1);
                 } else {
                     // Data does not exist
                     Log.w(TAG, "Key not found at ref: " + snapshot.getRef());
@@ -281,15 +246,15 @@ public class FirebaseIndexArray<T> extends CachingObservableSnapshotArray<T>
             // In theory, we would only want to pop the queue if this listener was just added
             // i.e. `snapshot.value != null && isKeyAtIndex(...)`. However, if the developer makes a
             // mistake and `snapshot.value == null`, we will never pop the queue and
-            // `notifyListenersOnDataChanged()` will never be called. Thus, we pop the queue anytime
+            // `notifyOnDataChanged()` will never be called. Thus, we pop the queue anytime
             // an update is received.
             mKeysWithPendingUpdate.remove(key);
-            if (mKeysWithPendingUpdate.isEmpty()) notifyListenersOnDataChanged();
+            if (mKeysWithPendingUpdate.isEmpty()) notifyOnDataChanged();
         }
 
         @Override
         public void onCancelled(DatabaseError error) {
-            notifyListenersOnCancelled(error);
+            notifyOnError(error);
         }
     }
 }

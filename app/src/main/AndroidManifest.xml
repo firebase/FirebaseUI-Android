@@ -38,6 +38,11 @@
             android:name=".auth.SignedInActivity"
             android:label="@string/title_auth_activity" />
 
+        <!-- Firestore demo -->
+        <activity
+            android:name=".database.firestore.FirestoreChatActivity"
+            android:label="@string/title_firestore_activity" />
+
         <!-- Realtime database demo -->
         <activity
             android:name=".database.realtime.RealtimeDbChatActivity"
