@@ -74,9 +74,10 @@ public class PhoneVerificationActivity extends AppCompatBase {
     private PhoneAuthProvider.ForceResendingToken mForceResendingToken;
     private VerificationState mVerificationState;
 
-    public static Intent createIntent(Context context, FlowParameters flowParams, String phone) {
-        return HelperActivityBase.createBaseIntent(context, PhoneVerificationActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_PHONE, phone);
+    public static Intent createIntent(Context context, FlowParameters flowParams, Bundle params) {
+        return HelperActivityBase.createBaseIntent(
+                context, PhoneVerificationActivity.class, flowParams)
+                .putExtra(ExtraConstants.EXTRA_PARAMS, params);
     }
 
     @Override
@@ -88,15 +89,16 @@ public class PhoneVerificationActivity extends AppCompatBase {
         mVerificationState = VerificationState.VERIFICATION_NOT_STARTED;
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
             mPhoneNumber = savedInstanceState.getString(KEY_VERIFICATION_PHONE);
+
             if (savedInstanceState.getSerializable(KEY_STATE) != null) {
                 mVerificationState = (VerificationState) savedInstanceState.getSerializable(KEY_STATE);
             }
             return;
         }
 
-        String phone = getIntent().getExtras().getString(ExtraConstants.EXTRA_PHONE);
+        Bundle params = getIntent().getExtras().getBundle(ExtraConstants.EXTRA_PARAMS);
         VerifyPhoneNumberFragment fragment = VerifyPhoneNumberFragment.newInstance
-                (getFlowParams(), phone);
+                (getFlowParams(), params);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_verify_phone, fragment, VerifyPhoneNumberFragment.TAG)
                 .disallowAddToBackStack()
@@ -156,7 +158,18 @@ public class PhoneVerificationActivity extends AppCompatBase {
         }
     }
 
-    public void submitConfirmationCode(String confirmationCode) {
+    public void submitConfirmationCode(@NonNull String confirmationCode) {
+        if (TextUtils.isEmpty(mVerificationId) || TextUtils.isEmpty(confirmationCode)) {
+            // This situation should never happen except in the case of an extreme race
+            // condition, so we will just ignore the submission.
+            // See: https://github.com/firebase/FirebaseUI-Android/issues/922
+            Log.w(PHONE_VERIFICATION_LOG_TAG,
+                    String.format("submitConfirmationCode: mVerificationId is %s ; " +
+                            "confirmationCode is %s", TextUtils.isEmpty(mVerificationId) ? "empty" : "not empty",
+                            TextUtils.isEmpty(confirmationCode) ? "empty" : "not empty"));
+            return;
+        }
+
         showLoadingDialog(getString(R.string.fui_verifying));
         signIn(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
     }

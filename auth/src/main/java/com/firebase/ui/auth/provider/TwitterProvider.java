@@ -21,7 +21,6 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 import com.twitter.sdk.android.core.models.User;
 
-
 public class TwitterProvider extends Callback<TwitterSession> implements Provider {
     private static final String TAG = "TwitterProvider";
 

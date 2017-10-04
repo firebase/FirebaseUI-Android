@@ -14,6 +14,7 @@ android {
 
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -36,9 +37,11 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:multidex:1.0.1'
     compile "com.android.support:design:$supportLibraryVersion"
+    compile 'com.android.support:multidex:1.0.1'
 
     compile project(path: ':auth')
     compile project(path: ':database')
+    compile project(path: ':firestore')
     compile project(path: ':storage')
 
     compile "com.google.android.gms:play-services-auth:$firebaseVersion"
@@ -48,6 +51,9 @@ dependencies {
 
     compile('com.facebook.android:facebook-login:4.27.0')
     compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
+
+    compile "android.arch.lifecycle:runtime:$architectureVersion"
+    compile "android.arch.lifecycle:extensions:$architectureVersion"
 
     compile 'com.github.bumptech.glide:glide:4.1.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'

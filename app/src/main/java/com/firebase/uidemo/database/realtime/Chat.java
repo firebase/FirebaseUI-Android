@@ -1,6 +1,11 @@
-package com.firebase.uidemo.database;
+package com.firebase.uidemo.database.realtime;
 
-public class Chat {
+import com.firebase.uidemo.database.AbstractChat;
+import com.google.firebase.database.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
+public class Chat extends AbstractChat {
+
     private String mName;
     private String mMessage;
     private String mUid;

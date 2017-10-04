@@ -3,21 +3,13 @@ package com.firebase.ui.database;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
-import android.support.annotation.LayoutRes;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Query;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class is a generic way of backing a {@link RecyclerView} with a Firebase location. It
@@ -35,88 +27,18 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
     private static final String TAG = "FirebaseRecyclerAdapter";
 
-    protected final ObservableSnapshotArray<T> mSnapshots;
-    protected final Class<VH> mViewHolderClass;
-    protected final int mModelLayout;
+    private final ObservableSnapshotArray<T> mSnapshots;
 
     /**
-     * @param snapshots       The data used to populate the adapter
-     * @param modelLayout     This is the layout used to represent a single item in the list. You
-     *                        will be responsible for populating an instance of the corresponding
-     *                        view with the data from an instance of modelClass.
-     * @param viewHolderClass The class that hold references to all sub-views in an instance
-     *                        modelLayout.
-     * @param owner           the lifecycle owner used to automatically listen and cleanup after
-     *                        {@link FragmentActivity#onStart()} and {@link FragmentActivity#onStop()}
-     *                        events reflectively.
+     * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
+     * {@link FirebaseRecyclerOptions} for configuration options.
      */
-    public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass,
-                                   LifecycleOwner owner) {
-        mSnapshots = snapshots;
-        mViewHolderClass = viewHolderClass;
-        mModelLayout = modelLayout;
+    public FirebaseRecyclerAdapter(FirebaseRecyclerOptions<T> options) {
+        mSnapshots = options.getSnapshots();
 
-        if (owner != null) { owner.getLifecycle().addObserver(this); }
-    }
-
-    /**
-     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class, LifecycleOwner)
-     */
-    public FirebaseRecyclerAdapter(ObservableSnapshotArray<T> snapshots,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass) {
-        this(snapshots, modelLayout, viewHolderClass, null);
-        startListening();
-    }
-
-    /**
-     * @param parser a custom {@link SnapshotParser} to convert a {@link DataSnapshot} to the model
-     *               class
-     * @param query  The Firebase location to watch for data changes. Can also be a slice of a
-     *               location, using some combination of {@code limit()}, {@code startAt()}, and
-     *               {@code endAt()}. <b>Note, this can also be a {@link DatabaseReference}.</b>
-     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class)
-     */
-    public FirebaseRecyclerAdapter(SnapshotParser<T> parser,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass,
-                                   Query query) {
-        this(new FirebaseArray<>(query, parser), modelLayout, viewHolderClass);
-    }
-
-    /**
-     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query)
-     * @see #FirebaseRecyclerAdapter(ObservableSnapshotArray, int, Class, LifecycleOwner)
-     */
-    public FirebaseRecyclerAdapter(SnapshotParser<T> parser,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass,
-                                   Query query,
-                                   LifecycleOwner owner) {
-        this(new FirebaseArray<>(query, parser), modelLayout, viewHolderClass, owner);
-    }
-
-    /**
-     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query)
-     */
-    public FirebaseRecyclerAdapter(Class<T> modelClass,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass,
-                                   Query query) {
-        this(new ClassSnapshotParser<>(modelClass), modelLayout, viewHolderClass, query);
-    }
-
-    /**
-     * @see #FirebaseRecyclerAdapter(SnapshotParser, int, Class, Query, LifecycleOwner)
-     */
-    public FirebaseRecyclerAdapter(Class<T> modelClass,
-                                   @LayoutRes int modelLayout,
-                                   Class<VH> viewHolderClass,
-                                   Query query,
-                                   LifecycleOwner owner) {
-        this(new ClassSnapshotParser<>(modelClass), modelLayout, viewHolderClass, query, owner);
+        if (options.getOwner() != null) {
+            options.getOwner().getLifecycle().addObserver(this);
+        }
     }
 
     @Override
@@ -128,38 +50,34 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    public void cleanup() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void stopListening() {
         mSnapshots.removeChangeEventListener(this);
         notifyDataSetChanged();
     }
 
-    @SuppressWarnings("unused")
-    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
-    void cleanup(LifecycleOwner source, Lifecycle.Event event) {
-        if (event == Lifecycle.Event.ON_STOP) {
-            cleanup();
-        } else if (event == Lifecycle.Event.ON_DESTROY) {
-            source.getLifecycle().removeObserver(this);
-        }
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    void cleanup(LifecycleOwner source) {
+        source.getLifecycle().removeObserver(this);
     }
 
     @Override
-    public void onChildChanged(ChangeEventListener.EventType type,
+    public void onChildChanged(ChangeEventType type,
                                DataSnapshot snapshot,
-                               int index,
+                               int newIndex,
                                int oldIndex) {
         switch (type) {
             case ADDED:
-                notifyItemInserted(index);
+                notifyItemInserted(newIndex);
                 break;
             case CHANGED:
-                notifyItemChanged(index);
+                notifyItemChanged(newIndex);
                 break;
             case REMOVED:
-                notifyItemRemoved(index);
+                notifyItemRemoved(newIndex);
                 break;
             case MOVED:
-                notifyItemMoved(oldIndex, index);
+                notifyItemMoved(oldIndex, newIndex);
                 break;
             default:
                 throw new IllegalStateException("Incomplete case statement");
@@ -171,18 +89,23 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    public void onCancelled(DatabaseError error) {
+    public void onError(DatabaseError error) {
         Log.w(TAG, error.toException());
     }
 
     @Override
+    public ObservableSnapshotArray<T> getSnapshots() {
+        return mSnapshots;
+    }
+
+    @Override
     public T getItem(int position) {
-        return mSnapshots.getObject(position);
+        return mSnapshots.get(position);
     }
 
     @Override
     public DatabaseReference getRef(int position) {
-        return mSnapshots.get(position).getRef();
+        return mSnapshots.getSnapshot(position).getRef();
     }
 
     @Override
@@ -191,44 +114,13 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        try {
-            Constructor<VH> constructor = mViewHolderClass.getConstructor(View.class);
-            return constructor.newInstance(view);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return mModelLayout;
-    }
-
-    @Override
-    public void onBindViewHolder(VH viewHolder, int position) {
-        T model = getItem(position);
-        populateViewHolder(viewHolder, model, position);
+    public void onBindViewHolder(VH holder, int position) {
+        onBindViewHolder(holder, position, getItem(position));
     }
 
     /**
-     * Each time the data at the given Firebase location changes, this method will be called for
-     * each item that needs to be displayed. The first two arguments correspond to the mLayout and
-     * mModelClass given to the constructor of this class. The third argument is the item's position
-     * in the list.
-     * <p>
-     * Your implementation should populate the view using the data contained in the model.
-     *
-     * @param viewHolder The view to populate
-     * @param model      The object containing the data used to populate the view
-     * @param position   The position in the list of the view being populated
+     * @param model the model object containing the data that should be used to populate the view.
+     * @see #onBindViewHolder(RecyclerView.ViewHolder, int)
      */
-    protected abstract void populateViewHolder(VH viewHolder, T model, int position);
+    protected abstract void onBindViewHolder(VH holder, int position, T model);
 }

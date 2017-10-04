@@ -5,7 +5,7 @@
 # See the compat_reports folder
 
 # All FirebaseUI libraries
-LIBRARIES=( firebase-ui-auth firebase-ui-database firebase-ui-storage )
+LIBRARIES=( firebase-ui-auth firebase-ui-database firebase-ui-storage firebase-ui-firestore )
 
 for LIB in "${LIBRARIES[@]}"
 do

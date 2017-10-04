@@ -16,7 +16,9 @@ interface FirebaseAdapter<T> extends ChangeEventListener, LifecycleObserver {
     /**
      * Removes listeners and clears all items in the backing {@link FirebaseArray}.
      */
-    void cleanup();
+    void stopListening();
+
+    ObservableSnapshotArray<T> getSnapshots();
 
     T getItem(int position);
 
