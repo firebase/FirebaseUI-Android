@@ -63,14 +63,10 @@ public class GoogleSignInHandler extends ViewModelBase<AuthUI.IdpConfig>
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result != null) {
-                if (result.isSuccess()) {
-                    mIdpCallback.onSuccess(createIdpResponse(result.getSignInAccount()));
-                } else {
-                    onError(result);
-                }
+            if (result.isSuccess()) {
+                mIdpCallback.onSuccess(createIdpResponse(result.getSignInAccount()));
             } else {
-                onError("No result found in intent");
+                onError(result);
             }
         }
     }
