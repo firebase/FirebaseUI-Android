@@ -1,13 +1,13 @@
-package com.firebase.uidemo.auth;
+package com.firebase.uidemo;
 
-import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 import android.support.v7.app.AppCompatDelegate;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-public class FirebaseUIDemo extends Application {
+public class FirebaseUIDemo extends MultiDexApplication {
     private RefWatcher mRefWatcher;
 
     static {

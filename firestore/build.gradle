@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply from: '../library/quality/quality.gradle'
+check.dependsOn 'compileDebugAndroidTestJavaWithJavac'
+
+android {
+    compileSdkVersion compileSdk
+    buildToolsVersion buildTools
+
+    defaultConfig {
+        minSdkVersion minSdk
+        targetSdkVersion targetSdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt')
+        }
+    }
+}
+
+dependencies {
+    compile project(path: ':common')
+    compile "com.google.firebase:firebase-firestore:$firebaseVersion"
+
+    compile "android.arch.lifecycle:runtime:$architectureVersion"
+    compile "android.arch.lifecycle:extensions:$architectureVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
+
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test:runner:1.0.1'
+    androidTestCompile 'com.android.support.test:rules:1.0.1'
+}

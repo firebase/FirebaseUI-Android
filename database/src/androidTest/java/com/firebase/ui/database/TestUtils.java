@@ -2,6 +2,7 @@ package com.firebase.ui.database;
 
 import android.content.Context;
 
+import com.firebase.ui.common.ChangeEventType;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -18,7 +19,6 @@ public class TestUtils {
     private static final String APP_NAME = "firebaseui-tests";
     private static final int TIMEOUT = 10000;
 
-
     public static FirebaseApp getAppInstance(Context context) {
         try {
             return FirebaseApp.getInstance(APP_NAME);
@@ -34,15 +34,17 @@ public class TestUtils {
                 .build(), APP_NAME);
     }
 
-    public static ChangeEventListener runAndWaitUntil(ObservableSnapshotArray array,
-                                                      Runnable task,
-                                                      Callable<Boolean> done) throws InterruptedException {
+    public static ChangeEventListener runAndWaitUntil(
+            ObservableSnapshotArray<?> array,
+            Runnable task,
+            Callable<Boolean> done) throws InterruptedException {
+
         final Semaphore semaphore = new Semaphore(0);
         ChangeEventListener listener = array.addChangeEventListener(new ChangeEventListener() {
             @Override
-            public void onChildChanged(ChangeEventListener.EventType type,
+            public void onChildChanged(ChangeEventType type,
                                        DataSnapshot snapshot,
-                                       int index,
+                                       int newIndex,
                                        int oldIndex) {
                 semaphore.release();
             }
@@ -52,7 +54,7 @@ public class TestUtils {
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onError(DatabaseError error) {
                 throw new IllegalStateException(error.toException());
             }
         });
@@ -76,8 +78,8 @@ public class TestUtils {
 
     public static boolean isValuesEqual(ObservableSnapshotArray<Integer> array, int[] expected) {
         if (array.size() != expected.length) return false;
-        for (int i = 0; i < array.size(); i++) {
-            if (!array.getObject(i).equals(expected[i])) {
+        for (Integer i : array) {
+            if (!i.equals(expected[i])) {
                 return false;
             }
         }

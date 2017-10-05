@@ -1,7 +1,7 @@
 project.ext {
-    submodules = ['database', 'auth', 'storage']
+    submodules = ['database', 'auth', 'storage', 'firestore', 'common']
     group = 'com.firebaseui'
-    version = '2.4.0'
+    version = '3.0.0'
     pomdesc = 'Firebase UI Android'
 
     compileSdk = 26
@@ -10,6 +10,7 @@ project.ext {
 
     buildTools = '26.0.1' // Remember to also update in .travis.yml
 
-    firebaseVersion = '11.4.0'
-    supportLibraryVersion = '26.0.1'
+    firebaseVersion = '11.4.2'
+    supportLibraryVersion = '26.1.0'
+    architectureVersion = '1.0.0-beta1'
 }
