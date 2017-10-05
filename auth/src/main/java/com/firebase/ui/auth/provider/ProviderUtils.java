@@ -18,15 +18,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -47,7 +51,29 @@ public final class ProviderUtils {
             case FacebookAuthProvider.PROVIDER_ID:
                 return FacebookAuthProvider.getCredential(response.getIdpToken());
             case TwitterAuthProvider.PROVIDER_ID:
-                return TwitterAuthProvider.getCredential(response.getIdpToken(), response.getIdpSecret());
+                return TwitterAuthProvider.getCredential(response.getIdpToken(),
+                        response.getIdpSecret());
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to a
+     * Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
+     */
+    public static String providerIdToAccountType(@AuthUI.SupportedProvider @NonNull String providerId) {
+        switch (providerId) {
+            case GoogleAuthProvider.PROVIDER_ID:
+                return IdentityProviders.GOOGLE;
+            case FacebookAuthProvider.PROVIDER_ID:
+                return IdentityProviders.FACEBOOK;
+            case TwitterAuthProvider.PROVIDER_ID:
+                return IdentityProviders.TWITTER;
+            case EmailAuthProvider.PROVIDER_ID:
+                // The account type for email/password creds is null
+            case PhoneAuthProvider.PROVIDER_ID:
+                // The account type for phone creds is null
             default:
                 return null;
         }

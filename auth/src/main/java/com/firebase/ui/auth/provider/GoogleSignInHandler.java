@@ -1,42 +1,63 @@
 package com.firebase.ui.auth.provider;
 
 import android.app.Application;
-import android.content.Intent;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.User;
-import com.firebase.ui.auth.util.ActivityResultHandler;
-import com.firebase.ui.auth.util.GoogleApiHelper;
+import com.firebase.ui.auth.util.ActivityResult;
+import com.firebase.ui.auth.util.FlowHolder;
+import com.firebase.ui.auth.util.SignInFailedException;
+import com.firebase.ui.auth.util.SignInHandler;
+import com.firebase.ui.auth.util.SingleLiveEvent;
 import com.firebase.ui.auth.util.ViewModelBase;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class GoogleSignInHandler extends ViewModelBase<AuthUI.IdpConfig>
-        implements ActivityResultHandler {
+public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Params>
+        implements Observer<ActivityResult> {
     public static final int RC_SIGN_IN = 20;
 
     private AuthUI.IdpConfig mConfig;
+    private SignInHandler mHandler;
+    private FlowHolder mFlowHolder;
+
+    private final SingleLiveEvent<Status> mSignInFailedNotifier = new SingleLiveEvent<>();
 
     public GoogleSignInHandler(Application application) {
         super(application);
     }
 
+    private static IdpResponse createIdpResponse(GoogleSignInAccount account) {
+        return new IdpResponse.Builder(
+                new User.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
+                        .setName(account.getDisplayName())
+                        .setPhotoUri(account.getPhotoUrl())
+                        .build())
+                .setToken(account.getIdToken())
+                .build();
+    }
+
     @Override
-    protected void onCreate(AuthUI.IdpConfig args) {
-        mConfig = args;
+    protected void onCreate(Params params) {
+        mConfig = params.providerConfig;
+        mHandler = params.signInHandler;
+        mFlowHolder = params.flowHolder;
+
+        mFlowHolder.getOnActivityResult().observeForever(this);
     }
 
     public GoogleSignInOptions getSignInOptions(@Nullable String email) {
@@ -59,51 +80,45 @@ public class GoogleSignInHandler extends ViewModelBase<AuthUI.IdpConfig>
         return builder.build();
     }
 
+    public LiveData<Status> getSignInFailedNotifier() {
+        return mSignInFailedNotifier;
+    }
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess()) {
-                mIdpCallback.onSuccess(createIdpResponse(result.getSignInAccount()));
+    public void onChanged(@Nullable ActivityResult result) {
+        if (result.getRequestCode() == RC_SIGN_IN) {
+            GoogleSignInResult signInResult =
+                    Auth.GoogleSignInApi.getSignInResultFromIntent(result.getData());
+
+            if (signInResult.isSuccess()) {
+                finish(Tasks.forResult(createIdpResponse(signInResult.getSignInAccount())));
             } else {
-                onError(result);
+                Status status = signInResult.getStatus();
+
+                mSignInFailedNotifier.setValue(status);
+                if (status.getStatusCode() != CommonStatusCodes.INVALID_ACCOUNT) {
+                    finish(Tasks.<IdpResponse>forException(new SignInFailedException(
+                            String.valueOf(status.getStatusCode()),
+                            String.valueOf(status.getStatusMessage()))));
+                }
             }
         }
     }
 
-    private void onError(GoogleSignInResult result) {
-        Status status = result.getStatus();
+    private void finish(Task<IdpResponse> task) {
+        mFlowHolder.getOnActivityResult().removeObserver(this);
+        mHandler.start(task);
+    }
 
-        if (status.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
-            mGoogleApiClient.stopAutoManage(mActivity);
-            mGoogleApiClient.disconnect();
-            mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
-                    .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(null))
-                    .build();
-            startLogin(mActivity);
-        } else {
-            if (status.getStatusCode() == CommonStatusCodes.DEVELOPER_ERROR) {
-                Log.w(TAG, "Developer error: this application is misconfigured. Check your SHA1 " +
-                        " and package name in the Firebase console.");
-                Toast.makeText(mActivity, "Developer error.", Toast.LENGTH_SHORT).show();
-            }
-            onError(status.getStatusCode() + " " + status.getStatusMessage());
+    public static final class Params {
+        public final AuthUI.IdpConfig providerConfig;
+        public final SignInHandler signInHandler;
+        public final FlowHolder flowHolder;
+
+        public Params(AuthUI.IdpConfig config, SignInHandler handler, FlowHolder holder) {
+            providerConfig = config;
+            signInHandler = handler;
+            flowHolder = holder;
         }
-    }
-
-    private void onError(String errorMessage) {
-        Log.e(TAG, "Error logging in with Google. " + errorMessage);
-        mIdpCallback.onFailure();
-    }
-
-    private IdpResponse createIdpResponse(GoogleSignInAccount account) {
-        return new IdpResponse.Builder(
-                new User.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
-                        .setName(account.getDisplayName())
-                        .setPhotoUri(account.getPhotoUrl())
-                        .build())
-                .setToken(account.getIdToken())
-                .build();
     }
 }

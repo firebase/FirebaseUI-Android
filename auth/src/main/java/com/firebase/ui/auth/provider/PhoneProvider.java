@@ -1,31 +1,35 @@
 package com.firebase.ui.auth.provider;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
+import android.arch.lifecycle.Observer;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
+import com.firebase.ui.auth.util.ActivityResult;
 
 public class PhoneProvider implements Provider {
-
     private static final int RC_PHONE_FLOW = 4;
 
-    private Activity mActivity;
-    private FlowParameters mFlowParameters;
+    private final AuthUI.IdpConfig mConfig;
 
-    public PhoneProvider(Activity activity, FlowParameters parameters) {
-        mActivity = activity;
-        mFlowParameters = parameters;
-    }
+    public PhoneProvider(final HelperActivityBase activity, AuthUI.IdpConfig config) {
+        mConfig = config;
 
-    @Override
-    public String getName(Context context) {
-        return context.getString(R.string.fui_provider_name_phone);
+        activity.getFlowHolder()
+                .getOnActivityResult()
+                .observe(activity, new Observer<ActivityResult>() {
+                    @Override
+                    public void onChanged(@Nullable ActivityResult result) {
+                        if (result.getRequestCode() == RC_PHONE_FLOW
+                                && result.getResultCode() == Activity.RESULT_OK) {
+                            activity.finish(Activity.RESULT_OK, result.getData());
+                        }
+                    }
+                });
     }
 
     @Override
@@ -35,25 +39,10 @@ public class PhoneProvider implements Provider {
     }
 
     @Override
-    public void startLogin(Activity activity) {
-
-        Bundle params = null;
-        for (AuthUI.IdpConfig idpConfig : mFlowParameters.providerInfo) {
-            if (idpConfig.getProviderId().equals(AuthUI.PHONE_VERIFICATION_PROVIDER)) {
-                params = idpConfig.getParams();
-            }
-        }
-
+    public void startLogin(HelperActivityBase activity) {
         activity.startActivityForResult(
-                PhoneVerificationActivity.createIntent(activity, mFlowParameters, params),
+                PhoneVerificationActivity.createIntent(
+                        activity, activity.getFlowHolder().getParams(), mConfig.getParams()),
                 RC_PHONE_FLOW);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_PHONE_FLOW && resultCode == Activity.RESULT_OK) {
-            mActivity.setResult(Activity.RESULT_OK, data);
-            mActivity.finish();
-        }
     }
 }

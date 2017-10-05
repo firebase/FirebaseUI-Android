@@ -2,11 +2,6 @@
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Учитава се…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Пријави ме</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">Дошло је до грешке.</string>
-    <string name="fui_idp_name_google">Google</string>
-    <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">Имејл</string>
-    <string name="fui_provider_name_phone">Телефон</string>
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">Пријави ме помоћу Google-а</string>
     <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Пријави ме помоћу Facebook-а</string>
     <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Пријави ме помоћу Twitter-а</string>

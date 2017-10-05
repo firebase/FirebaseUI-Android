@@ -2,7 +2,6 @@ package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -16,22 +15,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 
-import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.util.SignInHolder;
-import com.firebase.ui.auth.util.SingleLiveEvent;
-import com.google.firebase.auth.FirebaseUser;
+import com.firebase.ui.auth.util.FlowHolder;
+import com.firebase.ui.auth.util.SignInHandler;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
 @SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class HelperActivityBase extends AppCompatActivity {
-    private FlowParameters mFlowParameters;
-    private SignInHolder mSignInHolder;
-    private ProgressDialogHolder mProgressDialogHolder;
+    private FlowHolder mFlowHolder;
+    private SignInHandler mSignInHandler;
 
-    private SingleLiveEvent<Pair<Intent, Integer>> mIntentStarter = new SingleLiveEvent<>();
-    private SingleLiveEvent<Pair<PendingIntent, Integer>> mPendingIntentStarter = new SingleLiveEvent<>();
+    private ProgressDialogHolder mProgressDialogHolder;
 
     public static Intent createBaseIntent(
             @NonNull Context context,
@@ -47,10 +42,10 @@ public class HelperActivityBase extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSignInHolder().init(Pair.create(getFlowParams(), savedInstanceState));
+        getSignInHandler().init(getFlowHolder());
         mProgressDialogHolder = new ProgressDialogHolder(this);
 
-        mIntentStarter.observe(this, new Observer<Pair<Intent, Integer>>() {
+        getFlowHolder().getIntentStarter().observe(this, new Observer<Pair<Intent, Integer>>() {
             @Override
             public void onChanged(@Nullable Pair<Intent, Integer> request) {
                 if (request == null) {
@@ -60,21 +55,23 @@ public class HelperActivityBase extends AppCompatActivity {
                 startActivityForResult(request.first, request.second);
             }
         });
-        mPendingIntentStarter.observe(this, new Observer<Pair<PendingIntent, Integer>>() {
-            @Override
-            public void onChanged(@Nullable Pair<PendingIntent, Integer> request) {
-                if (request == null) {
-                    throw new IllegalStateException("Cannot start null request");
-                }
+        getFlowHolder().getPendingIntentStarter()
+                .observe(this, new Observer<Pair<PendingIntent, Integer>>() {
+                    @Override
+                    public void onChanged(@Nullable Pair<PendingIntent, Integer> request) {
+                        if (request == null) {
+                            throw new IllegalStateException("Cannot start null request");
+                        }
 
-                try {
-                    startIntentSenderForResult(
-                            request.first.getIntentSender(), request.second, null, 0, 0, 0);
-                } catch (IntentSender.SendIntentException e) {
-                    Log.e("PendingIntentStarter", "Unable to start pending intent", e);
-                }
-            }
-        });
+                        try {
+                            startIntentSenderForResult(
+                                    request.first.getIntentSender(), request.second, null, 0, 0, 0);
+                        } catch (IntentSender.SendIntentException e) {
+                            Log.e("PendingIntentStarter", "Unable to start pending intent", e);
+                            onActivityResult(request.second, Activity.RESULT_CANCELED, null);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -83,56 +80,35 @@ public class HelperActivityBase extends AppCompatActivity {
         mProgressDialogHolder.dismissDialog();
     }
 
-    public FlowParameters getFlowParams() {
-        if (mFlowParameters == null) {
-            mFlowParameters = FlowParameters.fromIntent(getIntent());
-        }
-
-        return mFlowParameters;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getFlowHolder().onActivityResult(requestCode, resultCode, data);
     }
 
-    public SignInHolder getSignInHolder() {
-        if (mSignInHolder == null) {
-            mSignInHolder = ViewModelProviders.of(this).get(SignInHolder.class);
+    public FlowHolder getFlowHolder() {
+        if (mFlowHolder == null) {
+            mFlowHolder = ViewModelProviders.of(this).get(FlowHolder.class);
+            mFlowHolder.init(FlowParameters.fromIntent(getIntent()));
         }
 
-        return mSignInHolder;
+        return mFlowHolder;
+    }
+
+    public SignInHandler getSignInHandler() {
+        if (mSignInHandler == null) {
+            mSignInHandler = ViewModelProviders.of(this).get(SignInHandler.class);
+        }
+
+        return mSignInHandler;
     }
 
     public ProgressDialogHolder getDialogHolder() {
         return mProgressDialogHolder;
     }
 
-    public MutableLiveData<Pair<Intent, Integer>> getIntentStarter() {
-        return mIntentStarter;
-    }
-
-    public MutableLiveData<Pair<PendingIntent, Integer>> getPendingIntentStarter() {
-        return mPendingIntentStarter;
-    }
-
     public void finish(int resultCode, Intent intent) {
         setResult(resultCode, intent);
         finish();
-    }
-
-    public void saveCredentialsOrFinish(
-            @Nullable SaveSmartLock saveSmartLock,
-            FirebaseUser firebaseUser,
-            IdpResponse response) {
-        saveCredentialsOrFinish(saveSmartLock, firebaseUser, null, response);
-    }
-
-    public void saveCredentialsOrFinish(
-            @Nullable SaveSmartLock saveSmartLock,
-            FirebaseUser firebaseUser,
-            @Nullable String password,
-            IdpResponse response) {
-
-        if (saveSmartLock == null) {
-            finish(Activity.RESULT_OK, response.toIntent());
-        } else {
-            saveSmartLock.saveCredentialsOrFinish(firebaseUser, password, response);
-        }
     }
 }

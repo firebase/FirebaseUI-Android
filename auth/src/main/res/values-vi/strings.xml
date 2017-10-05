@@ -2,11 +2,6 @@
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Đang tải…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Đăng nhập</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">Đã xảy ra lỗi.</string>
-    <string name="fui_idp_name_google">Google</string>
-    <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">Email</string>
-    <string name="fui_provider_name_phone">Điện thoại</string>
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">Đăng nhập bằng Google</string>
     <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Đăng nhập bằng Facebook</string>
     <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Đăng nhập bằng Twitter</string>

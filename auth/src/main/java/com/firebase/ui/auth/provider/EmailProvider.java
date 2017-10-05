@@ -1,28 +1,30 @@
 package com.firebase.ui.auth.provider;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
+import android.arch.lifecycle.Observer;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
+import com.firebase.ui.auth.util.ActivityResult;
 
 public class EmailProvider implements Provider {
     private static final int RC_EMAIL_FLOW = 2;
 
-    private Activity mActivity;
-    private FlowParameters mFlowParameters;
-
-    public EmailProvider(Activity activity, FlowParameters flowParameters) {
-        mActivity = activity;
-        mFlowParameters = flowParameters;
-    }
-
-    @Override
-    public String getName(Context context) {
-        return context.getString(R.string.fui_provider_name_email);
+    public EmailProvider(final HelperActivityBase activity) {
+        activity.getFlowHolder()
+                .getOnActivityResult()
+                .observe(activity, new Observer<ActivityResult>() {
+                    @Override
+                    public void onChanged(@Nullable ActivityResult result) {
+                        if (result.getRequestCode() == RC_EMAIL_FLOW
+                                && result.getResultCode() == Activity.RESULT_OK) {
+                            activity.finish(Activity.RESULT_OK, result.getData());
+                        }
+                    }
+                });
     }
 
     @Override
@@ -32,17 +34,9 @@ public class EmailProvider implements Provider {
     }
 
     @Override
-    public void startLogin(Activity activity) {
+    public void startLogin(HelperActivityBase activity) {
         activity.startActivityForResult(
-                RegisterEmailActivity.createIntent(activity, mFlowParameters),
+                RegisterEmailActivity.createIntent(activity, activity.getFlowHolder().getParams()),
                 RC_EMAIL_FLOW);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_EMAIL_FLOW && resultCode == Activity.RESULT_OK) {
-            mActivity.setResult(Activity.RESULT_OK, data);
-            mActivity.finish();
-        }
     }
 }

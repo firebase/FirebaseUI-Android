@@ -14,14 +14,11 @@
 
 package com.firebase.ui.auth.provider;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.util.Log;
 
 import com.facebook.CallbackManager;
@@ -37,6 +34,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.User;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.json.JSONException;
@@ -54,7 +52,7 @@ public class FacebookProvider implements Provider, FacebookCallback<LoginResult>
 
     private final List<String> mScopes;
 
-    public FacebookProvider(AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
+    public FacebookProvider(HelperActivityBase activity, AuthUI.IdpConfig idpConfig) {
         List<String> scopes = idpConfig.getScopes();
         if (scopes == null) {
             mScopes = new ArrayList<>();
@@ -65,18 +63,13 @@ public class FacebookProvider implements Provider, FacebookCallback<LoginResult>
     }
 
     @Override
-    public String getName(Context context) {
-        return context.getString(R.string.fui_idp_name_facebook);
-    }
-
-    @Override
     @LayoutRes
     public int getButtonLayout() {
         return R.layout.fui_idp_button_facebook;
     }
 
     @Override
-    public void startLogin(Activity activity) {
+    public void startLogin(HelperActivityBase activity) {
         sCallbackManager = CallbackManager.Factory.create();
         LoginManager loginManager = LoginManager.getInstance();
         loginManager.registerCallback(sCallbackManager, this);
@@ -92,7 +85,6 @@ public class FacebookProvider implements Provider, FacebookCallback<LoginResult>
             permissionsList.add(PUBLIC_PROFILE);
         }
 
-        // Log in with permissions
         loginManager.logInWithReadPermissions(activity, permissionsList);
     }
 
@@ -112,7 +104,8 @@ public class FacebookProvider implements Provider, FacebookCallback<LoginResult>
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         FacebookRequestError requestError = response.getError();
                         if (requestError != null) {
-                            Log.e(TAG, "Received Facebook error: " + requestError.getErrorMessage());
+                            Log.e(TAG,
+                                    "Received Facebook error: " + requestError.getErrorMessage());
                             onFailure();
                             return;
                         }

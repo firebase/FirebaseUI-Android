@@ -2,11 +2,6 @@
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">正在加载…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">登录</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">发生错误。</string>
-    <string name="fui_idp_name_google">Google</string>
-    <string name="fui_idp_name_facebook">Facebook</string>
-    <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">电子邮件地址</string>
-    <string name="fui_provider_name_phone">电话号码</string>
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">使用 Google 帐号登录</string>
     <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">使用 Facebook 帐号登录</string>
     <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">使用 Twitter 帐号登录</string>

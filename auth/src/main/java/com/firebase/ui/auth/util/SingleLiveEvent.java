@@ -1,10 +1,14 @@
 package com.firebase.ui.auth.util;
 
+import android.arch.lifecycle.GenericLifecycleObserver;
+import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.Nullable;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -13,25 +17,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>
  * This avoids a common problem with events: on configuration change (like rotation) an update can
  * be emitted if the observer is active.
- * <p>
- * Note that only one observer is going to be notified of changes.
  */
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
-    private static final String TAG = "SingleLiveEvent";
-
-    private final AtomicBoolean mPending = new AtomicBoolean(false);
+    private final Map<Class<?>, AtomicBoolean> mObservers = new ConcurrentHashMap<>();
 
     @Override
     public void observe(LifecycleOwner owner, final Observer<T> observer) {
-        if (hasActiveObservers()) {
-            throw new IllegalStateException("Cannot register multiple observers.");
+        if (!mObservers.containsKey(observer.getClass())) {
+            mObservers.put(observer.getClass(), new AtomicBoolean());
         }
 
         super.observe(owner, new Observer<T>() {
             @Override
             public void onChanged(@Nullable T t) {
-                if (mPending.compareAndSet(true, false)) {
+                if (mObservers.get(observer.getClass()).compareAndSet(true, false)) {
                     observer.onChanged(t);
+                }
+            }
+        });
+        owner.getLifecycle().addObserver(new GenericLifecycleObserver() {
+            @Override
+            public void onStateChanged(LifecycleOwner source, Lifecycle.Event event) {
+                if (event == Lifecycle.Event.ON_DESTROY) {
+                    mObservers.remove(observer.getClass());
                 }
             }
         });
@@ -39,7 +47,9 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
     @Override
     public void setValue(@Nullable T t) {
-        mPending.set(true);
+        for (AtomicBoolean aBoolean : mObservers.values()) {
+            aBoolean.set(true);
+        }
         super.setValue(t);
     }
 }
