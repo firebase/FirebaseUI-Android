@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
@@ -8,21 +9,24 @@ import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 import android.view.ContextThemeWrapper;
 
+import com.firebase.ui.auth.util.FlowHolder;
+import com.firebase.ui.auth.util.SignInHandler;
+
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FragmentBase extends Fragment {
 
-    private FlowParameters mFlowParameters;
-    private AuthHelper mAuthHelper;
+    private FlowHolder mFlowHolder;
+    private SignInHandler mSignInHandler;
+
     private ProgressDialogHolder mProgressDialogHolder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mAuthHelper = new AuthHelper(getFlowParams());
-        ContextThemeWrapper context = new ContextThemeWrapper(
-                getContext(), getFlowParams().themeId);
-        mProgressDialogHolder = new ProgressDialogHolder(context);
+        mFlowHolder = ViewModelProviders.of(getActivity()).get(FlowHolder.class);
+        mSignInHandler = ViewModelProviders.of(getActivity()).get(SignInHandler.class);
+        mProgressDialogHolder = new ProgressDialogHolder(new ContextThemeWrapper(
+                getContext(), getFlowHolder().getParams().themeId));
     }
 
     @Override
@@ -31,16 +35,12 @@ public class FragmentBase extends Fragment {
         mProgressDialogHolder.dismissDialog();
     }
 
-    public FlowParameters getFlowParams() {
-        if (mFlowParameters == null) {
-            mFlowParameters = FlowParameters.fromBundle(getArguments());
-        }
-
-        return mFlowParameters;
+    public FlowHolder getFlowHolder() {
+        return mFlowHolder;
     }
 
-    public AuthHelper getAuthHelper() {
-        return mAuthHelper;
+    public SignInHandler getSignInHandler() {
+        return mSignInHandler;
     }
 
     public ProgressDialogHolder getDialogHolder() {

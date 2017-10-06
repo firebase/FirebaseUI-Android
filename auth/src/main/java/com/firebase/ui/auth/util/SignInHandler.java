@@ -11,12 +11,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.User;
 import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
+import com.firebase.ui.auth.util.accountlink.ProfileMerger;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.ConnectionResult;
@@ -28,6 +32,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -76,16 +81,96 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
         public void onComplete(@NonNull Task<IdpResponse> task) {
             if (task.isSuccessful()) {
                 IdpResponse response = task.getResult();
-                mAuth.signInWithCredential(ProviderUtils.getAuthCredential(response))
-                        .addOnSuccessListener(new SuccessFlow(response))
-                        .addOnFailureListener(new FailureFlow(response));
+                AuthCredential credential = ProviderUtils.getAuthCredential(response);
+
+                if (credential == null) {
+                    String provider = response.getProviderType();
+                    if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
+                        handleEmail(response);
+                    } else if (provider.equals(PhoneAuthProvider.PROVIDER_ID)) {
+                        handlePhone(response);
+                    } else {
+                        throw new IllegalStateException("Unknonwn provider: " + provider);
+                    }
+                } else {
+                    handleIdp(response, credential);
+                }
             } else {
                 mFailureListener.setValue(task.getException());
             }
         }
+
+        private void handleEmail(IdpResponse response) {
+            mAuth.createUserWithEmailAndPassword(response.getEmail(), password)
+                    .continueWithTask(new ProfileMerger(response))
+                    .addOnSuccessListener(new EmailSuccessFlow())
+                    .addOnFailureListener(new EmailFailureFlow(response));
+        }
+
+        private void handlePhone(IdpResponse response) {
+            // TODO
+        }
+
+        private void handleIdp(IdpResponse response, AuthCredential credential) {
+            mAuth.signInWithCredential(credential)
+                    .addOnSuccessListener(new IdpSuccessFlow(response))
+                    .addOnFailureListener(new IdpFailureFlow(response));
+        }
     }
 
-    private class SuccessFlow implements OnSuccessListener<AuthResult>,
+    private class EmailSuccessFlow implements OnSuccessListener<AuthResult> {
+        @Override
+        public void onSuccess(AuthResult result) {
+            // TODO save credential
+        }
+    }
+
+    private class EmailFailureFlow implements OnFailureListener, OnSuccessListener<String> {
+        private final String mEmail;
+
+        private EmailFailureFlow(IdpResponse response) {
+            mEmail = response.getEmail();
+        }
+
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            if (e instanceof FirebaseAuthUserCollisionException) {
+                ProviderUtils.fetchTopProvider(mAuth, mEmail).addOnSuccessListener(this);
+            } else {
+                mFailureListener.setValue(e);
+            }
+        }
+
+        @Override
+        public void onSuccess(String provider) {
+            Toast.makeText(getApplication(), R.string.fui_error_user_collision, Toast.LENGTH_LONG)
+                    .show();
+
+            if (provider == null) {
+                throw new IllegalStateException(
+                        "User has no providers even though we got a FirebaseAuthUserCollisionException");
+            } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
+                mFlowHolder.getIntentStarter().setValue(Pair.create(
+                        WelcomeBackPasswordPrompt.createIntent(
+                                getApplication(),
+                                mFlowHolder.getParams(),
+                                new IdpResponse.Builder(new User.Builder(
+                                        EmailAuthProvider.PROVIDER_ID,
+                                        mEmail).build()).build()),
+                        RegisterEmailActivity.RC_WELCOME_BACK_IDP));
+            } else {
+                mFlowHolder.getIntentStarter().setValue(Pair.create(
+                        WelcomeBackIdpPrompt.createIntent(
+                                getApplication(),
+                                mFlowHolder.getParams(),
+                                new User.Builder(provider, mEmail).build(),
+                                null),
+                        RegisterEmailActivity.RC_WELCOME_BACK_IDP));
+            }
+        }
+    }
+
+    private class IdpSuccessFlow implements OnSuccessListener<AuthResult>,
             GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
             ResultCallback<Status>, Observer<ActivityResult> {
         private static final int RC_SAVE = 100;
@@ -100,7 +185,7 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
 
         private GoogleApiClient mClient;
 
-        public SuccessFlow(IdpResponse response) {
+        public IdpSuccessFlow(IdpResponse response) {
             mResponse = response;
 
             mFlowHolder.getOnActivityResult().observeForever(this);
@@ -197,10 +282,10 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
         }
     }
 
-    private class FailureFlow implements OnFailureListener, OnSuccessListener<String> {
+    private class IdpFailureFlow implements OnFailureListener, OnSuccessListener<String> {
         private final IdpResponse mResponse;
 
-        public FailureFlow(IdpResponse response) {
+        public IdpFailureFlow(IdpResponse response) {
             mResponse = response;
 
             mFlowHolder.getOnActivityResult().observeForever(new Observer<ActivityResult>() {
