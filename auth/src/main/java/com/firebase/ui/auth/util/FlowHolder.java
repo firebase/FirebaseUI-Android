@@ -10,7 +10,7 @@ import android.util.Pair;
 import com.firebase.ui.auth.ui.FlowParameters;
 
 public class FlowHolder extends ViewModelBase<FlowParameters> {
-    private final MutableLiveData<ActivityResult> mOnActivityResult = new MutableLiveData<>();
+    private final MutableLiveData<ActivityResult> mOnActivityResult = new SingleLiveEvent<>();
 
     private final SingleLiveEvent<Pair<Intent, Integer>> mIntentStarter = new SingleLiveEvent<>();
     private final SingleLiveEvent<Pair<PendingIntent, Integer>> mPendingIntentStarter = new SingleLiveEvent<>();

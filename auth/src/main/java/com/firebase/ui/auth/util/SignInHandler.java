@@ -43,8 +43,8 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
     private FirebaseAuth mAuth;
     private PhoneAuthProvider mPhoneAuth;
 
-    private final MutableLiveData<Void> mSuccessListener = new MutableLiveData<>();
-    private final MutableLiveData<Exception> mFailureListener = new MutableLiveData<>();
+    private final MutableLiveData<IdpResponse> mSuccessListener = new SingleLiveEvent<>();
+    private final MutableLiveData<Exception> mFailureListener = new SingleLiveEvent<>();
 
     public SignInHandler(Application application) {
         super(application);
@@ -59,7 +59,7 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
         mPhoneAuth = PhoneAuthProvider.getInstance(mAuth);
     }
 
-    public LiveData<Void> getSuccessLiveData() {
+    public LiveData<IdpResponse> getSuccessLiveData() {
         return mSuccessListener;
     }
 
@@ -166,7 +166,7 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
         private void finish() {
             mClient.disconnect();
             mFlowHolder.getOnActivityResult().removeObserver(this);
-            mSuccessListener.setValue(null);
+            mSuccessListener.setValue(mResponse);
         }
 
         @Override
@@ -202,6 +202,24 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
 
         public FailureFlow(IdpResponse response) {
             mResponse = response;
+
+            mFlowHolder.getOnActivityResult().observeForever(new Observer<ActivityResult>() {
+                @Override
+                public void onChanged(@Nullable ActivityResult result) {
+                    if (result.getRequestCode() == RC_ACCOUNT_LINK) {
+                        IdpResponse idpResponse = IdpResponse.fromResultIntent(result.getData());
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            mSuccessListener.setValue(idpResponse);
+                        } else {
+                            mFailureListener.setValue(new SignInFailedException(
+                                    String.valueOf(idpResponse.getErrorCode()),
+                                    "Account linking failed"));
+                        }
+
+                        mFlowHolder.getOnActivityResult().removeObserver(this);
+                    }
+                }
+            });
         }
 
         @Override

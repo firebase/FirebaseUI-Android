@@ -1,58 +1,18 @@
 package com.firebase.ui.auth.provider;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.LayoutRes;
-import android.util.Log;
 
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.google.firebase.auth.TwitterAuthProvider;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterConfig;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
-import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.identity.TwitterAuthClient;
-import com.twitter.sdk.android.core.models.User;
 
-public class TwitterProvider extends Callback<TwitterSession> implements Provider {
-    private static final String TAG = "TwitterProvider";
+public class TwitterProvider implements Provider {
+    private final TwitterSignInHandler mHandler;
 
-    private TwitterAuthClient mTwitterAuthClient;
-
-    public TwitterProvider(Context context) {
-        initialize(context);
-        mTwitterAuthClient = new TwitterAuthClient();
-    }
-
-    private static void initialize(Context context) {
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(
-                context.getString(R.string.twitter_consumer_key),
-                context.getString(R.string.twitter_consumer_secret));
-        TwitterConfig config = new TwitterConfig.Builder(context)
-                .twitterAuthConfig(authConfig)
-                .build();
-        Twitter.initialize(config);
-    }
-
-    public static void signOut(Context context) {
-        try {
-            Twitter.getInstance();
-        } catch (IllegalStateException e) {
-            initialize(context);
-        }
-
-        signOut();
-    }
-
-    private static void signOut() throws IllegalStateException {
-        TwitterCore.getInstance().getSessionManager().clearActiveSession();
+    public TwitterProvider(HelperActivityBase activity) {
+        mHandler = ViewModelProviders.of(activity).get(TwitterSignInHandler.class);
+        mHandler.init(new TwitterSignInHandler.Params(
+                activity.getSignInHandler(), activity.getFlowHolder()));
     }
 
     @Override
@@ -62,56 +22,7 @@ public class TwitterProvider extends Callback<TwitterSession> implements Provide
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mTwitterAuthClient.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public void startLogin(HelperActivityBase activity) {
-        mTwitterAuthClient.authorize(activity, this);
-    }
-
-    @Override
-    public void success(final Result<TwitterSession> sessionResult) {
-        TwitterCore.getInstance()
-                .getApiClient()
-                .getAccountService()
-                .verifyCredentials(false, false, true)
-                .enqueue(new Callback<User>() {
-                    @Override
-                    public void success(Result<User> result) {
-                        User user = result.data;
-                        mCallbackObject.onSuccess(createIdpResponse(
-                                sessionResult.data,
-                                user.email,
-                                user.name,
-                                Uri.parse(user.profileImageUrlHttps)));
-                    }
-
-                    @Override
-                    public void failure(TwitterException exception) {
-                        mCallbackObject.onFailure();
-                    }
-                });
-    }
-
-    @Override
-    public void failure(TwitterException exception) {
-        Log.e(TAG, "Failure logging in to Twitter. " + exception.getMessage());
-        mCallbackObject.onFailure();
-    }
-
-    private IdpResponse createIdpResponse(TwitterSession session,
-                                          String email,
-                                          String name,
-                                          Uri photoUri) {
-        return new IdpResponse.Builder(
-                new com.firebase.ui.auth.User.Builder(TwitterAuthProvider.PROVIDER_ID, email)
-                        .setName(name)
-                        .setPhotoUri(photoUri)
-                        .build())
-                .setToken(session.getAuthToken().token)
-                .setSecret(session.getAuthToken().secret)
-                .build();
+        mHandler.getClient().authorize(activity, mHandler.getCallback());
     }
 }

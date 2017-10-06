@@ -23,7 +23,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.GoogleAuthProvider;
 
@@ -91,13 +90,13 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
                     Auth.GoogleSignInApi.getSignInResultFromIntent(result.getData());
 
             if (signInResult.isSuccess()) {
-                finish(Tasks.forResult(createIdpResponse(signInResult.getSignInAccount())));
+                mHandler.start(Tasks.forResult(createIdpResponse(signInResult.getSignInAccount())));
             } else {
                 Status status = signInResult.getStatus();
 
                 mSignInFailedNotifier.setValue(status);
                 if (status.getStatusCode() != CommonStatusCodes.INVALID_ACCOUNT) {
-                    finish(Tasks.<IdpResponse>forException(new SignInFailedException(
+                    mHandler.start(Tasks.<IdpResponse>forException(new SignInFailedException(
                             String.valueOf(status.getStatusCode()),
                             String.valueOf(status.getStatusMessage()))));
                 }
@@ -105,9 +104,10 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
         }
     }
 
-    private void finish(Task<IdpResponse> task) {
+    @Override
+    protected void onCleared() {
+        super.onCleared();
         mFlowHolder.getOnActivityResult().removeObserver(this);
-        mHandler.start(task);
     }
 
     public static final class Params {
