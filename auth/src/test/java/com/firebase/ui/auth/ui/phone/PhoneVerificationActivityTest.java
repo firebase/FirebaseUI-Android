@@ -23,12 +23,13 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.FirebaseAuthError;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.util.FirebaseAuthError;
+import com.firebase.ui.auth.util.data.CountryInfo;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -53,10 +54,10 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_COUNTRY_CODE;
+import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_ISO2;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE_NO_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_COUNTRY_CODE;
-import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_ISO2;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_RAW_PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.AUTO_RETRIEVAL_TIMEOUT_MILLIS;
 import static junit.framework.Assert.assertEquals;
@@ -131,7 +132,7 @@ public class PhoneVerificationActivityTest {
 
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
         assertEquals(YE_COUNTRY_CODE,
-                     String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).countryCode));
+                     String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).mCountryCode));
     }
 
     @Test
@@ -157,9 +158,9 @@ public class PhoneVerificationActivityTest {
 
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
         assertEquals(CA_COUNTRY_CODE,
-                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).countryCode));
+                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).mCountryCode));
         assertEquals(new Locale("", CA_ISO2),
-                ((CountryInfo) mCountryListSpinner.getTag()).locale);
+                ((CountryInfo) mCountryListSpinner.getTag()).mLocale);
     }
 
     @Test

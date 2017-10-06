@@ -19,6 +19,8 @@
 package com.firebase.ui.auth.ui.phone;
 
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.data.client.CountryListLoadTask;
+import com.firebase.ui.auth.util.data.CountryInfo;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -295,7 +297,7 @@ public class CountryListLoadTaskTests {
     private CountryListLoadTask.Listener listener;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         // Create task and mock dependencies
         listener = mock(CountryListLoadTask.Listener.class);
         task = new CountryListLoadTask(listener);

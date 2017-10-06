@@ -24,12 +24,11 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
+import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;

@@ -34,11 +34,14 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.ImeHelper;
-import com.firebase.ui.auth.util.GoogleApiHelper;
+import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.CountryInfo;
+import com.firebase.ui.auth.util.data.PhoneNumberUtils;
+import com.firebase.ui.auth.util.data.remote.GoogleApiHelper;
+import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;

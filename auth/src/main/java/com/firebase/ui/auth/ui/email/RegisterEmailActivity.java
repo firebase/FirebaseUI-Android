@@ -23,13 +23,13 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.User;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.util.ExtraConstants;
 
 /**
  * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment} and

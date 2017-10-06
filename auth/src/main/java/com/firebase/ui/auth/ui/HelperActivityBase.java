@@ -16,8 +16,10 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.util.FlowHolder;
-import com.firebase.ui.auth.util.SignInHandler;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.remote.SignInHandler;
+import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.ui.FlowHolder;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 

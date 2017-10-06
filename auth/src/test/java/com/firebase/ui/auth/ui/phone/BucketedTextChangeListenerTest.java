@@ -20,6 +20,7 @@ package com.firebase.ui.auth.ui.phone;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.util.ui.BucketedTextChangeListener;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class BucketedTextChangeListenerTest {
     final int anyInt = -1;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         editText = mock(EditText.class);
         contentChangeCallback = mock(BucketedTextChangeListener.ContentChangeCallback.class);
         textChangeListener = new BucketedTextChangeListener(editText, expectedLength,

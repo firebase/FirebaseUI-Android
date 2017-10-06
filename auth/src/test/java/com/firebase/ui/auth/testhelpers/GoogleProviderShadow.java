@@ -18,8 +18,8 @@ import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.ui.provider.GoogleProvider;
+import com.firebase.ui.auth.ui.provider.IdpProvider.IdpCallback;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.robolectric.annotation.Implementation;

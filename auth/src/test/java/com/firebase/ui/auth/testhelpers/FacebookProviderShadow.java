@@ -20,8 +20,8 @@ import android.support.annotation.StyleRes;
 import com.facebook.login.LoginResult;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.provider.FacebookProvider;
-import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
+import com.firebase.ui.auth.ui.provider.FacebookProvider;
+import com.firebase.ui.auth.ui.provider.IdpProvider.IdpCallback;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.robolectric.annotation.Implementation;

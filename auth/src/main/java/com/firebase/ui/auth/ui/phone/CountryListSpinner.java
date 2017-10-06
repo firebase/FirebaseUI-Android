@@ -28,16 +28,20 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
+import com.firebase.ui.auth.data.client.CountryListLoadTask;
+import com.firebase.ui.auth.util.data.CountryInfo;
+import com.firebase.ui.auth.util.data.PhoneNumberUtils;
+
 import java.util.List;
 import java.util.Locale;
 
 public final class CountryListSpinner extends AppCompatEditText implements
         View.OnClickListener, CountryListLoadTask.Listener {
-    private String textFormat;
-    private DialogPopup dialogPopup;
-    private CountryListAdapter countryListAdapter;
-    private OnClickListener listener;
-    private String selectedCountryName;
+    private final String mTextFormat;
+    private final DialogPopup mDialogPopup;
+    private final CountryListAdapter mCountryListAdapter;
+    private OnClickListener mListener;
+    private String mSelectedCountryName;
 
     public CountryListSpinner(Context context) {
         this(context, null, android.R.attr.spinnerStyle);
@@ -49,8 +53,14 @@ public final class CountryListSpinner extends AppCompatEditText implements
 
     public CountryListSpinner(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        super.setOnClickListener(this);
 
-        init();
+        mCountryListAdapter = new CountryListAdapter(getContext());
+        mDialogPopup = new DialogPopup(mCountryListAdapter);
+        mTextFormat = "%1$s  +%2$d";
+        mSelectedCountryName = "";
+        final CountryInfo countryInfo = PhoneNumberUtils.getCurrentCountryInfo(getContext());
+        setSpinnerText(countryInfo.mCountryCode, countryInfo.mLocale);
     }
 
     private static void hideKeyboard(Context context, View view) {
@@ -60,26 +70,15 @@ public final class CountryListSpinner extends AppCompatEditText implements
         }
     }
 
-    private void init() {
-        super.setOnClickListener(this);
-
-        countryListAdapter = new CountryListAdapter(getContext());
-        dialogPopup = new DialogPopup(countryListAdapter);
-        textFormat = "%1$s  +%2$d";
-        selectedCountryName = "";
-        final CountryInfo countryInfo = PhoneNumberUtils.getCurrentCountryInfo(getContext());
-        setSpinnerText(countryInfo.countryCode, countryInfo.locale);
-    }
-
     private void setSpinnerText(int countryCode, Locale locale) {
-        setText(String.format(textFormat, CountryInfo.localeToEmoji(locale), countryCode));
+        setText(String.format(mTextFormat, CountryInfo.localeToEmoji(locale), countryCode));
         setTag(new CountryInfo(locale, countryCode));
     }
 
     public void setSelectedForCountry(final Locale locale, String countryCode) {
         final String countryName = locale.getDisplayName();
         if (!TextUtils.isEmpty(countryName) && !TextUtils.isEmpty(countryCode)) {
-            selectedCountryName = countryName;
+            mSelectedCountryName = countryName;
             setSpinnerText(Integer.parseInt(countryCode), locale);
         }
     }
@@ -88,24 +87,24 @@ public final class CountryListSpinner extends AppCompatEditText implements
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        if (dialogPopup.isShowing()) {
-            dialogPopup.dismiss();
+        if (mDialogPopup.isShowing()) {
+            mDialogPopup.dismiss();
         }
     }
 
     @Override
     public void setOnClickListener(OnClickListener l) {
-        listener = l;
+        mListener = l;
     }
 
     @Override
     public void onClick(View view) {
-        if (countryListAdapter.getCount() == 0) {
+        if (mCountryListAdapter.getCount() == 0) {
             loadCountryList();
         } else {
-            dialogPopup.show(countryListAdapter.getPositionForCountry(selectedCountryName));
+            mDialogPopup.show(mCountryListAdapter.getPositionForCountry(mSelectedCountryName));
         }
-        hideKeyboard(getContext(), CountryListSpinner.this);
+        hideKeyboard(getContext(), this);
         executeUserClickListener(view);
     }
 
@@ -114,15 +113,15 @@ public final class CountryListSpinner extends AppCompatEditText implements
     }
 
     private void executeUserClickListener(View view) {
-        if (listener != null) {
-            listener.onClick(view);
+        if (mListener != null) {
+            mListener.onClick(view);
         }
     }
 
     @Override
     public void onLoadComplete(List<CountryInfo> result) {
-        countryListAdapter.setData(result);
-        dialogPopup.show(countryListAdapter.getPositionForCountry(selectedCountryName));
+        mCountryListAdapter.setData(result);
+        mDialogPopup.show(mCountryListAdapter.getPositionForCountry(mSelectedCountryName));
     }
 
     public class DialogPopup implements DialogInterface.OnClickListener {
@@ -169,8 +168,8 @@ public final class CountryListSpinner extends AppCompatEditText implements
         @Override
         public void onClick(DialogInterface dialog, int which) {
             final CountryInfo countryInfo = listAdapter.getItem(which);
-            selectedCountryName = countryInfo.locale.getDisplayCountry();
-            setSpinnerText(countryInfo.countryCode, countryInfo.locale);
+            mSelectedCountryName = countryInfo.mLocale.getDisplayCountry();
+            setSpinnerText(countryInfo.mCountryCode, countryInfo.mLocale);
             dismiss();
         }
     }

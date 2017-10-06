@@ -8,10 +8,10 @@ import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.remote.PlayServicesHelper;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends HelperActivityBase {
