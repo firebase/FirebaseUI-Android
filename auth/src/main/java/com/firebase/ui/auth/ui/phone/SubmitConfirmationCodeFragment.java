@@ -222,7 +222,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void setUpTermsOfService() {
-        new PreambleHandler(getContext(), getFlowParams(), R.string.fui_continue_phone_login)
+        new PreambleHandler(getContext(), getFlowHolder().getParams(), R.string.fui_continue_phone_login)
                 .setPreamble(mAgreementText);
     }
 
@@ -253,8 +253,8 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         };
     }
 
-    private BucketedTextChangeListener.ContentChangeCallback createBucketOnEditCallback(final
-                                                                                        Button button) {
+    private BucketedTextChangeListener.ContentChangeCallback createBucketOnEditCallback(
+            final Button button) {
         return new BucketedTextChangeListener.ContentChangeCallback() {
             @Override
             public void whileComplete() {

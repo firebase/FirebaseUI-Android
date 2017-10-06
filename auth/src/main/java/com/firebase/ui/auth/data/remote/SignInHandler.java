@@ -88,17 +88,15 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
                 IdpResponse response = task.getResult();
                 AuthCredential credential = ProviderUtils.getAuthCredential(response);
 
-                if (credential == null) {
-                    String provider = response.getProviderType();
-                    if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
+                switch (response.getProviderType()) {
+                    case EmailAuthProvider.PROVIDER_ID:
                         handleEmail(response);
-                    } else if (provider.equals(PhoneAuthProvider.PROVIDER_ID)) {
+                        break;
+                    case PhoneAuthProvider.PROVIDER_ID:
                         handlePhone(response);
-                    } else {
-                        throw new IllegalStateException("Unknonwn provider: " + provider);
-                    }
-                } else {
-                    handleIdp(response, credential);
+                        break;
+                    default:
+                        handleIdp(response, credential);
                 }
             } else {
                 mFailureListener.setValue(task.getException());
@@ -106,7 +104,7 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
         }
 
         private void handleEmail(IdpResponse response) {
-            mAuth.createUserWithEmailAndPassword(response.getEmail(), password)
+            mAuth.createUserWithEmailAndPassword(response.getEmail(), response.getPassword())
                     .continueWithTask(new ProfileMerger(response))
                     .addOnSuccessListener(new EmailSuccessFlow())
                     .addOnFailureListener(new EmailFailureFlow(response));
@@ -205,7 +203,7 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
 
             FirebaseUser user = result.getUser();
             mEmail = user.getEmail();
-            mPassword = password;
+            mPassword = mResponse.getPassword();
             mName = user.getDisplayName();
             mProfilePictureUri = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
 

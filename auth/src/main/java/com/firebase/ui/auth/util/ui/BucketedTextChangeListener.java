@@ -31,7 +31,7 @@ import java.util.Collections;
  * ------ 7----- 76---- 764--- 7641-- 76417- 764176
  */
 public final class BucketedTextChangeListener implements TextWatcher {
-    interface ContentChangeCallback {
+    public interface ContentChangeCallback {
         /**
          * Idempotent function invoked by the listener when the edit text changes and is of expected
          * length

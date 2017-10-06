@@ -19,7 +19,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
@@ -58,12 +57,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         implements View.OnClickListener, ImeHelper.DonePressedListener {
     private static final String TAG = "WelcomeBackPassword";
 
-    private String mEmail;
+    private IdpResponse mResponse;
+
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
-    private IdpResponse mIdpResponse;
-    @Nullable
-    private SaveSmartLock mSaveSmartLock;
 
     public static Intent createIntent(
             Context context,
@@ -81,23 +78,21 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(this);
-        mIdpResponse = IdpResponse.fromResultIntent(getIntent());
-        mEmail = mIdpResponse.getEmail();
-
+        mResponse = IdpResponse.fromResultIntent(getIntent());
         mPasswordLayout = findViewById(R.id.password_layout);
         mPasswordField = findViewById(R.id.password);
 
         ImeHelper.setImeOnDoneListener(mPasswordField, this);
 
         // Create welcome back text with email bolded.
-        String bodyText = getString(R.string.fui_welcome_back_password_prompt_body, mEmail);
+        String bodyText =
+                getString(R.string.fui_welcome_back_password_prompt_body, mResponse.getEmail());
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
-        int emailStart = bodyText.indexOf(mEmail);
+        int emailStart = bodyText.indexOf(mResponse.getEmail());
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
                 emailStart,
-                emailStart + mEmail.length(),
+                emailStart + mResponse.getEmail().length(),
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         TextView bodyTextView = findViewById(R.id.welcome_back_password_body);
@@ -116,8 +111,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } else if (id == R.id.trouble_signing_in) {
             startActivity(RecoverPasswordActivity.createIntent(
                     this,
-                    getFlowParams(),
-                    mEmail));
+                    getFlowHolder().getParams(),
+                    mResponse.getEmail()));
             finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
         }
     }
@@ -128,10 +123,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     }
 
     private void validateAndSignIn() {
-        validateAndSignIn(mEmail, mPasswordField.getText().toString());
+        validateAndSignIn(mPasswordField.getText().toString());
     }
 
-    private void validateAndSignIn(final String email, final String password) {
+    private void validateAndSignIn(final String password) {
         // Check for null or empty password
         if (TextUtils.isEmpty(password)) {
             mPasswordLayout.setError(getString(R.string.fui_required_field));
@@ -141,7 +136,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
         getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
 
-        final AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
+        final AuthCredential authCredential = ProviderUtils.getAuthCredential(mResponse);
 
         final IdpResponse response;
         if (authCredential == null) {
@@ -149,9 +144,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
                     .build();
         } else {
-            response = new IdpResponse.Builder(mIdpResponse.getUser())
-                    .setToken(mIdpResponse.getIdpToken())
-                    .setSecret(mIdpResponse.getIdpSecret())
+            response = new IdpResponse.Builder(mResponse.getUser())
+                    .setToken(mResponse.getIdpToken())
+                    .setSecret(mResponse.getIdpSecret())
                     .build();
         }
 

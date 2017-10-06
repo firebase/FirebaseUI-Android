@@ -21,7 +21,7 @@ public abstract class CustomCountDownTimer {
     private final long mCountDownInterval;
     private CountDownTimer mCountDownTimer;
 
-    CustomCountDownTimer(long millisInFuture, long countDownInterval) {
+    protected CustomCountDownTimer(long millisInFuture, long countDownInterval) {
         mMillisInFuture = millisInFuture;
         mCountDownInterval = countDownInterval;
         mCountDownTimer = create(millisInFuture, countDownInterval);

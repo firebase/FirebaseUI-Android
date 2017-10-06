@@ -25,6 +25,7 @@ import android.text.TextUtils;
 
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -34,17 +35,20 @@ import com.google.firebase.auth.TwitterAuthProvider;
  */
 public class IdpResponse implements Parcelable {
     private final User mUser;
+
+    private final String mPassword;
     private final String mToken;
     private final String mSecret;
 
     private final int mErrorCode;
 
     private IdpResponse(int errorCode) {
-        this(null, null, null, errorCode);
+        this(null, null, null, null, errorCode);
     }
 
-    private IdpResponse(User user, String token, String secret, int errorCode) {
+    private IdpResponse(User user, String password, String token, String secret, int errorCode) {
         mUser = user;
+        mPassword = password;
         mToken = token;
         mSecret = secret;
         mErrorCode = errorCode;
@@ -106,6 +110,15 @@ public class IdpResponse implements Parcelable {
     }
 
     /**
+     * Get the user's password if it's an email account.
+     */
+    @Nullable
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public String getPassword() {
+        return mPassword;
+    }
+
+    /**
      * Get the token received as a result of logging in with the specified IDP
      */
     @Nullable
@@ -136,6 +149,7 @@ public class IdpResponse implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(mUser, flags);
+        dest.writeString(mPassword);
         dest.writeString(mToken);
         dest.writeString(mSecret);
         dest.writeInt(mErrorCode);
@@ -146,6 +160,7 @@ public class IdpResponse implements Parcelable {
         public IdpResponse createFromParcel(Parcel in) {
             return new IdpResponse(
                     in.<User>readParcelable(User.class.getClassLoader()),
+                    in.readString(),
                     in.readString(),
                     in.readString(),
                     in.readInt()
@@ -160,12 +175,19 @@ public class IdpResponse implements Parcelable {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static class Builder {
-        private User mUser;
+        private final User mUser;
+
+        private String mPassword;
         private String mToken;
         private String mSecret;
 
         public Builder(@NonNull User user) {
             mUser = user;
+        }
+
+        public Builder setPassword(String password) {
+            mPassword = password;
+            return this;
         }
 
         public Builder setToken(String token) {
@@ -180,6 +202,11 @@ public class IdpResponse implements Parcelable {
 
         public IdpResponse build() {
             String providerId = mUser.getProviderId();
+            if (providerId.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)
+                    && TextUtils.isEmpty(mPassword)) {
+                throw new IllegalStateException(
+                        "Password cannot be null when using the email provider.");
+            }
             if ((providerId.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)
                     || providerId.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)
                     || providerId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID))
@@ -193,7 +220,7 @@ public class IdpResponse implements Parcelable {
                         "Secret cannot be null when using the Twitter provider.");
             }
 
-            return new IdpResponse(mUser, mToken, mSecret, Activity.RESULT_OK);
+            return new IdpResponse(mUser, mPassword, mToken, mSecret, Activity.RESULT_OK);
         }
     }
 }

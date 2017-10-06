@@ -36,7 +36,6 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
 import com.firebase.ui.auth.ui.provider.GoogleProvider;
-import com.firebase.ui.auth.ui.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -52,7 +51,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
+public class WelcomeBackIdpPrompt extends AppCompatBase {
     private static final String TAG = "WelcomeBackIdpPrompt";
 
     private IdpProvider mIdpProvider;
