@@ -16,7 +16,6 @@ package com.firebase.ui.auth;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -58,7 +57,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -148,11 +146,8 @@ public class AuthUI {
     private AuthUI(FirebaseApp app) {
         mApp = app;
         mAuth = FirebaseAuth.getInstance(mApp);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mAuth.setLanguageCode(Locale.getDefault().getLanguage());
-        } else {
-            mAuth.setLanguageCode(Locale.getDefault().toLanguageTag());
-        }
+
+        mAuth.useAppLanguage();
     }
 
     /**
