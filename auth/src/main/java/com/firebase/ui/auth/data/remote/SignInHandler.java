@@ -9,17 +9,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.CyclicAccountLinkingException;
+import com.firebase.ui.auth.data.model.UnknownErrorException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
-import com.firebase.ui.auth.util.SignInFailedException;
 import com.firebase.ui.auth.util.data.ProfileMerger;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
@@ -41,20 +40,20 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 public class SignInHandler extends ViewModelBase<FlowHolder> {
-    private static final String TAG = "SignInHandler";
     private static final int RC_ACCOUNT_LINK = 3;
+
+    private static final MutableLiveData<IdpResponse> SUCCESS_LISTENER = new SingleLiveEvent<>();
+    private static final MutableLiveData<FirebaseAuthException> FAILURE_LISTENER = new SingleLiveEvent<>();
 
     private FlowHolder mFlowHolder;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider mPhoneAuth;
-
-    private final MutableLiveData<IdpResponse> mSuccessListener = new SingleLiveEvent<>();
-    private final MutableLiveData<Exception> mFailureListener = new SingleLiveEvent<>();
 
     public SignInHandler(Application application) {
         super(application);
@@ -70,11 +69,11 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
     }
 
     public LiveData<IdpResponse> getSuccessLiveData() {
-        return mSuccessListener;
+        return SUCCESS_LISTENER;
     }
 
-    public LiveData<Exception> getFailureLiveData() {
-        return mFailureListener;
+    public LiveData<FirebaseAuthException> getFailureLiveData() {
+        return FAILURE_LISTENER;
     }
 
     public void start(Task<IdpResponse> tokenTask) {
@@ -86,94 +85,52 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
         public void onComplete(@NonNull Task<IdpResponse> task) {
             if (task.isSuccessful()) {
                 IdpResponse response = task.getResult();
-                AuthCredential credential = ProviderUtils.getAuthCredential(response);
 
+                Task<AuthResult> base;
                 switch (response.getProviderType()) {
                     case EmailAuthProvider.PROVIDER_ID:
-                        handleEmail(response);
+                        base = handleEmail(response);
                         break;
                     case PhoneAuthProvider.PROVIDER_ID:
-                        handlePhone(response);
+                        base = handlePhone(response);
                         break;
                     default:
-                        handleIdp(response, credential);
+                        base = handleIdp(response);
                 }
+                base.continueWithTask(new ProfileMerger(response))
+                        .addOnSuccessListener(new SaveCredentialFlow(response))
+                        .addOnFailureListener(new FailureFlow(response));
             } else {
-                mFailureListener.setValue(task.getException());
+                onFailure(task.getException());
             }
         }
 
-        private void handleEmail(IdpResponse response) {
-            mAuth.createUserWithEmailAndPassword(response.getEmail(), response.getPassword())
-                    .continueWithTask(new ProfileMerger(response))
-                    .addOnSuccessListener(new EmailSuccessFlow())
-                    .addOnFailureListener(new EmailFailureFlow(response));
+        private Task<AuthResult> handleEmail(IdpResponse response) {
+            return mAuth.createUserWithEmailAndPassword(
+                    response.getEmail(), response.getPassword());
         }
 
-        private void handlePhone(IdpResponse response) {
+        private Task<AuthResult> handlePhone(IdpResponse response) {
             // TODO
+            throw new IllegalStateException("TODO");
         }
 
-        private void handleIdp(IdpResponse response, AuthCredential credential) {
-            mAuth.signInWithCredential(credential)
-                    .addOnSuccessListener(new IdpSuccessFlow(response))
-                    .addOnFailureListener(new IdpFailureFlow(response));
-        }
-    }
+        private Task<AuthResult> handleIdp(IdpResponse response) {
+            AuthCredential credential = ProviderUtils.getAuthCredential(response);
+            Task<AuthResult> base;
 
-    private class EmailSuccessFlow implements OnSuccessListener<AuthResult> {
-        @Override
-        public void onSuccess(AuthResult result) {
-            // TODO save credential
-        }
-    }
-
-    private class EmailFailureFlow implements OnFailureListener, OnSuccessListener<String> {
-        private final String mEmail;
-
-        private EmailFailureFlow(IdpResponse response) {
-            mEmail = response.getEmail();
-        }
-
-        @Override
-        public void onFailure(@NonNull Exception e) {
-            if (e instanceof FirebaseAuthUserCollisionException) {
-                ProviderUtils.fetchTopProvider(mAuth, mEmail).addOnSuccessListener(this);
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                base = mAuth.signInWithCredential(credential);
             } else {
-                mFailureListener.setValue(e);
+                base = currentUser.linkWithCredential(credential);
             }
-        }
 
-        @Override
-        public void onSuccess(String provider) {
-            Toast.makeText(getApplication(), R.string.fui_error_user_collision, Toast.LENGTH_LONG)
-                    .show();
-
-            if (provider == null) {
-                throw new IllegalStateException(
-                        "User has no providers even though we got a FirebaseAuthUserCollisionException");
-            } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
-                mFlowHolder.getIntentStarter().setValue(Pair.create(
-                        WelcomeBackPasswordPrompt.createIntent(
-                                getApplication(),
-                                mFlowHolder.getParams(),
-                                new IdpResponse.Builder(new User.Builder(
-                                        EmailAuthProvider.PROVIDER_ID,
-                                        mEmail).build()).build()),
-                        RegisterEmailActivity.RC_WELCOME_BACK_IDP));
-            } else {
-                mFlowHolder.getIntentStarter().setValue(Pair.create(
-                        WelcomeBackIdpPrompt.createIntent(
-                                getApplication(),
-                                mFlowHolder.getParams(),
-                                new User.Builder(provider, mEmail).build(),
-                                null),
-                        RegisterEmailActivity.RC_WELCOME_BACK_IDP));
-            }
+            return base;
         }
     }
 
-    private class IdpSuccessFlow implements OnSuccessListener<AuthResult>,
+    private class SaveCredentialFlow implements OnSuccessListener<AuthResult>,
             GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
             ResultCallback<Status>, Observer<ActivityResult> {
         private static final int RC_SAVE = 100;
@@ -188,7 +145,7 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
 
         private GoogleApiClient mClient;
 
-        public IdpSuccessFlow(IdpResponse response) {
+        public SaveCredentialFlow(IdpResponse response) {
             mResponse = response;
 
             mFlowHolder.getOnActivityResult().observeForever(this);
@@ -245,7 +202,6 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
                     mFlowHolder.getPendingIntentStarter()
                             .setValue(Pair.create(status.getResolution(), RC_SAVE));
                 } else {
-                    Log.w(TAG, "Status message:\n" + status.getStatusMessage());
                     finish();
                 }
             }
@@ -254,12 +210,11 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
         private void finish() {
             mClient.disconnect();
             mFlowHolder.getOnActivityResult().removeObserver(this);
-            mSuccessListener.setValue(mResponse);
+            SUCCESS_LISTENER.setValue(mResponse);
         }
 
         @Override
         public void onConnectionFailed(@NonNull ConnectionResult result) {
-            Log.w(TAG, "onConnectionFailed:" + result);
             if (result.hasResolution()) {
                 mFlowHolder.getPendingIntentStarter()
                         .setValue(Pair.create(result.getResolution(), RC_CONNECTION));
@@ -285,29 +240,12 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
         }
     }
 
-    private class IdpFailureFlow implements OnFailureListener, OnSuccessListener<String> {
+    private class FailureFlow implements OnFailureListener, OnSuccessListener<String>,
+            Observer<ActivityResult> {
         private final IdpResponse mResponse;
 
-        public IdpFailureFlow(IdpResponse response) {
+        public FailureFlow(IdpResponse response) {
             mResponse = response;
-
-            mFlowHolder.getOnActivityResult().observeForever(new Observer<ActivityResult>() {
-                @Override
-                public void onChanged(@Nullable ActivityResult result) {
-                    if (result.getRequestCode() == RC_ACCOUNT_LINK) {
-                        IdpResponse idpResponse = IdpResponse.fromResultIntent(result.getData());
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            mSuccessListener.setValue(idpResponse);
-                        } else {
-                            mFailureListener.setValue(new SignInFailedException(
-                                    String.valueOf(idpResponse.getErrorCode()),
-                                    "Account linking failed"));
-                        }
-
-                        mFlowHolder.getOnActivityResult().removeObserver(this);
-                    }
-                }
-            });
         }
 
         @Override
@@ -320,24 +258,29 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    mFailureListener.setValue(e);
+                                    SignInHandler.this.onFailure(e);
                                 }
                             });
                     return;
                 }
-            } else {
-                Log.e(TAG,
-                        "Unexpected exception when signing in with credential "
-                                + mResponse.getProviderType()
-                                + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
-                        e);
             }
 
-            mFailureListener.setValue(e);
+            SignInHandler.this.onFailure(e);
         }
 
         @Override
         public void onSuccess(String provider) {
+            try {
+                mFlowHolder.getOnActivityResult().observeForever(this);
+            } catch (IllegalStateException e) {
+                FAILURE_LISTENER.setValue(new CyclicAccountLinkingException(
+                        "Attempting 3 way linking"));
+                return;
+            }
+
+            Toast.makeText(getApplication(), R.string.fui_error_user_collision, Toast.LENGTH_LONG)
+                    .show();
+
             if (provider == null) {
                 throw new IllegalStateException(
                         "No provider even though we received a FirebaseAuthUserCollisionException");
@@ -359,6 +302,60 @@ public class SignInHandler extends ViewModelBase<FlowHolder> {
                                 mResponse),
                         RC_ACCOUNT_LINK));
             }
+        }
+
+        @Override
+        public void onChanged(@Nullable ActivityResult result) {
+            if (result.getRequestCode() != RC_ACCOUNT_LINK) { return; }
+
+            IdpResponse response = IdpResponse.fromResultIntent(result.getData());
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                onExistingCredentialRetrieved();
+            } else {
+                onExistingCredentialRetrievalFailure(response);
+            }
+
+            mFlowHolder.getOnActivityResult().removeObserver(this);
+        }
+
+        private void onExistingCredentialRetrieved() {
+            mAuth.getCurrentUser()
+                    .linkWithCredential(ProviderUtils.getAuthCredential(mResponse))
+                    .continueWithTask(new ProfileMerger(mResponse))
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            // If linking the user's existing account with the new one fails,
+                            // we just give up because the user's already signed-in anyway.
+                            SUCCESS_LISTENER.setValue(mResponse);
+                        }
+                    });
+        }
+
+        private void onExistingCredentialRetrievalFailure(IdpResponse existingUserResponse) {
+            FirebaseAuthException e = existingUserResponse.getException();
+            if (e instanceof CyclicAccountLinkingException) {
+                // 3 way linking: this will happen when:
+                // 1. The user is already logged-in before starting the auth flow
+                // 2. The user already another account that will cause linking exceptions
+                // 3. The user tries to log in with a third account
+                // For example, the user is logged-in anonymously, has a Google account, and tries
+                // to log in with Facebook.
+
+                onFailure(e);
+                // For now, just fail. In the future, we can support a data migration where the
+                // anonymous account is thrown away and the other two are linked
+            } else {
+                onFailure(e);
+            }
+        }
+    }
+
+    private void onFailure(@NonNull Exception e) {
+        if (e instanceof FirebaseAuthException) {
+            FAILURE_LISTENER.setValue((FirebaseAuthException) e);
+        } else {
+            FAILURE_LISTENER.setValue(new UnknownErrorException(String.valueOf(e.getMessage())));
         }
     }
 }

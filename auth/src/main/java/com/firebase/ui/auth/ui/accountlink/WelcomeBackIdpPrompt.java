@@ -14,57 +14,45 @@
 
 package com.firebase.ui.auth.ui.accountlink;
 
+import android.app.Activity;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.ProviderDisabledException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
 import com.firebase.ui.auth.ui.provider.GoogleProvider;
+import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase {
-    private static final String TAG = "WelcomeBackIdpPrompt";
-
-    private IdpProvider mIdpProvider;
-    private AuthCredential mPrevCredential;
-
     public static Intent createIntent(
             Context context,
             FlowParameters flowParams,
-            User existingUser,
-            @Nullable IdpResponse newUserResponse) {
+            User user,
+            @Nullable IdpResponse response) {
         return HelperActivityBase.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_USER, existingUser)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, newUserResponse);
+                .putExtra(ExtraConstants.EXTRA_USER, user)
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }
 
     @Override
@@ -72,133 +60,59 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_idp_prompt_layout);
 
-        IdpResponse newUserResponse = IdpResponse.fromResultIntent(getIntent());
-        if (newUserResponse != null) {
-            mPrevCredential = ProviderUtils.getAuthCredential(newUserResponse);
-        }
-
         User oldUser = User.getUser(getIntent());
+        Provider idpProvider = null;
 
         String providerId = oldUser.getProviderId();
-        for (IdpConfig idpConfig : getFlowParams().providerInfo) {
+        for (IdpConfig idpConfig : getFlowHolder().getParams().providerInfo) {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new GoogleProvider(this, idpConfig, oldUser.getEmail());
+                        idpProvider = new GoogleProvider(this, idpConfig, oldUser.getEmail());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new FacebookProvider(
-                                idpConfig, getFlowParams().themeId);
+                        idpProvider = new FacebookProvider(this, idpConfig);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
-                        mIdpProvider = new TwitterProvider(this);
+                        idpProvider = new TwitterProvider(this);
                         break;
                     default:
-                        Log.w(TAG, "Unknown provider: " + providerId);
-                        finish(RESULT_CANCELED,
-                               IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-                        return;
+                        throw new IllegalStateException("Unknown provider: " + providerId);
                 }
             }
         }
 
-        if (mIdpProvider == null) {
-            Log.w(TAG, "Firebase login unsuccessful."
-                    + " Account linking failed due to provider not enabled by application: "
-                    + providerId);
-            finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+        if (idpProvider == null) {
+            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                    new ProviderDisabledException(providerId)));
             return;
         }
 
-        ((TextView) findViewById(R.id.welcome_back_idp_prompt))
-                .setText(getIdpPromptString(oldUser.getEmail()));
+        ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
+                R.string.fui_welcome_back_idp_prompt,
+                oldUser.getEmail(),
+                idpProvider.getName(this)));
 
-        mIdpProvider.setAuthenticationCallback(this);
+        final Provider finalIdpProvider = idpProvider;
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
-                mIdpProvider.startLogin(WelcomeBackIdpPrompt.this);
+                finalIdpProvider.startLogin(WelcomeBackIdpPrompt.this);
             }
         });
-    }
 
-    private String getIdpPromptString(String email) {
-        return getString(R.string.fui_welcome_back_idp_prompt, email, mIdpProvider.getName(this));
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mIdpProvider.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onSuccess(final IdpResponse idpResponse) {
-        AuthCredential newCredential = ProviderUtils.getAuthCredential(idpResponse);
-        if (newCredential == null) {
-            Log.e(TAG, "No credential returned");
-            finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-            return;
-        }
-
-        FirebaseUser currentUser = getAuthHelper().getCurrentUser();
-        if (currentUser == null) {
-            getAuthHelper().getFirebaseAuth()
-                    .signInWithCredential(newCredential)
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult result) {
-                            if (mPrevCredential != null) {
-                                result.getUser()
-                                        .linkWithCredential(mPrevCredential)
-                                        .addOnFailureListener(new TaskFailureLogger(
-                                                TAG, "Error signing in with previous credential " +
-                                                idpResponse.getProviderType()))
-                                        .addOnCompleteListener(new FinishListener(idpResponse));
-                            } else {
-                                finish(RESULT_OK, idpResponse.toIntent());
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            finishWithError();
-                        }
-                    })
-                    .addOnFailureListener(
-                            new TaskFailureLogger(TAG, "Error signing in with new credential " +
-                                    idpResponse.getProviderType()));
-        } else {
-            currentUser
-                    .linkWithCredential(newCredential)
-                    .addOnFailureListener(
-                            new TaskFailureLogger(TAG, "Error linking with credential " +
-                                    idpResponse.getProviderType()))
-                    .addOnCompleteListener(new FinishListener(idpResponse));
-        }
-    }
-
-    @Override
-    public void onFailure() {
-        finishWithError();
-    }
-
-    private void finishWithError() {
-        Toast.makeText(this, R.string.fui_general_error, Toast.LENGTH_LONG).show();
-        finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-    }
-
-    private class FinishListener implements OnCompleteListener<AuthResult> {
-        private final IdpResponse mIdpResponse;
-
-        FinishListener(IdpResponse idpResponse) {
-            mIdpResponse = idpResponse;
-        }
-
-        public void onComplete(@NonNull Task task) {
-            finish(RESULT_OK, mIdpResponse.toIntent());
-        }
+        getSignInHandler().getSuccessLiveData().observe(this, new Observer<IdpResponse>() {
+            @Override
+            public void onChanged(@Nullable IdpResponse response) {
+                finish(Activity.RESULT_OK, response.toIntent());
+            }
+        });
+        getSignInHandler().getFailureLiveData().observe(this, new Observer<FirebaseAuthException>() {
+            @Override
+            public void onChanged(@Nullable FirebaseAuthException e) {
+                finish(Activity.RESULT_CANCELED, IdpResponse.getErrorIntent(e));
+            }
+        });
     }
 }

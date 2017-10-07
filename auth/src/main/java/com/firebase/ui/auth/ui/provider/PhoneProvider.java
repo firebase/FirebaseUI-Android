@@ -2,6 +2,7 @@ package com.firebase.ui.auth.ui.provider;
 
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 
@@ -30,6 +31,11 @@ public class PhoneProvider implements Provider {
                         }
                     }
                 });
+    }
+
+    @Override
+    public String getName(Context context) {
+        return context.getString(R.string.fui_provider_name_phone);
     }
 
     @Override

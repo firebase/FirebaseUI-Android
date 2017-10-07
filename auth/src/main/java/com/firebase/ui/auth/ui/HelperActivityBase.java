@@ -15,11 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.remote.SignInHandler;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.FlowHolder;
+import com.google.firebase.auth.FirebaseAuthException;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
@@ -48,16 +48,10 @@ public class HelperActivityBase extends AppCompatActivity {
         getSignInHandler().init(getFlowHolder());
         mProgressDialogHolder = new ProgressDialogHolder(this);
 
-        getSignInHandler().getSuccessLiveData().observe(this, new Observer<IdpResponse>() {
+        getSignInHandler().getFailureLiveData().observe(this, new Observer<FirebaseAuthException>() {
             @Override
-            public void onChanged(@Nullable IdpResponse response) {
-                finish(Activity.RESULT_OK, response.toIntent());
-            }
-        });
-        getSignInHandler().getFailureLiveData().observe(this, new Observer<Exception>() {
-            @Override
-            public void onChanged(@Nullable Exception e) {
-                Log.e("AuthUI", "Sign in failed.", e);
+            public void onChanged(@Nullable FirebaseAuthException e) {
+                Log.e("AuthUI", "Sign in error occurred.", e);
             }
         });
         getFlowHolder().getIntentStarter().observe(this, new Observer<Pair<Intent, Integer>>() {

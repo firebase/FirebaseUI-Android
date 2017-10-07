@@ -27,6 +27,7 @@ import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
@@ -76,9 +77,9 @@ public class RegisterEmailFragment extends FragmentBase implements
 
             }
         });
-        getSignInHandler().getFailureLiveData().observe(this, new Observer<Exception>() {
+        getSignInHandler().getFailureLiveData().observe(this, new Observer<FirebaseAuthException>() {
             @Override
-            public void onChanged(@Nullable Exception e) {
+            public void onChanged(@Nullable FirebaseAuthException e) {
                 if (e instanceof FirebaseAuthWeakPasswordException) {
                     mPasswordInput.setError(getResources().getQuantityString(
                             R.plurals.fui_error_weak_password,

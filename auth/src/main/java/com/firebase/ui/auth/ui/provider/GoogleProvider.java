@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.provider;
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -93,6 +94,11 @@ public class GoogleProvider implements Provider, GoogleApiClient.OnConnectionFai
                 .enableAutoManage(activity, GoogleApiHelper.getSafeAutoManageId(), this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, mHandler.getSignInOptions(email))
                 .build();
+    }
+
+    @Override
+    public String getName(Context context) {
+        return context.getString(R.string.fui_idp_name_google);
     }
 
     @Override

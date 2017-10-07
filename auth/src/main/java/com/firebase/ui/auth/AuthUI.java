@@ -26,14 +26,16 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.remote.GoogleSignInHelper;
+import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Continuation;
@@ -47,6 +49,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.google.firebase.auth.UserInfo;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -213,7 +216,7 @@ public class AuthUI {
 
         // Twitter sign out
         try {
-            TwitterProvider.signOut(activity);
+            TwitterSignInHandler.signOut(activity);
         } catch (NoClassDefFoundError e) {
             // do nothing
         }
@@ -243,7 +246,7 @@ public class AuthUI {
         Task<Void> deleteUserTask = firebaseUser.delete();
 
         // Get all SmartLock credentials associated with the user
-        List<Credential> credentials = SmartLockBase.credentialsFromFirebaseUser(firebaseUser);
+        List<Credential> credentials = credentialsFromFirebaseUser(firebaseUser);
 
         // For each Credential in the list, create a task to delete it.
         List<Task<?>> credentialTasks = new ArrayList<>();
@@ -268,6 +271,39 @@ public class AuthUI {
                 return combinedCredentialTask;
             }
         });
+    }
+
+    /**
+     * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
+     * for saving since we don't have access to the password.
+     */
+    private static List<Credential> credentialsFromFirebaseUser(@NonNull FirebaseUser user) {
+        if (TextUtils.isEmpty(user.getEmail())) {
+            return Collections.emptyList();
+        }
+
+        List<Credential> credentials = new ArrayList<>();
+        for (UserInfo userInfo : user.getProviderData()) {
+            // Get provider ID from Firebase Auth
+            @AuthUI.SupportedProvider String providerId = userInfo.getProviderId();
+
+            // Convert to Credentials API account type
+            String accountType = ProviderUtils.providerIdToAccountType(providerId);
+
+            // Build and add credential
+            Credential.Builder builder = new Credential.Builder(user.getEmail())
+                    .setAccountType(accountType);
+
+            // Null account type means password, we need to add a random password
+            // to make deletion succeed.
+            if (accountType == null) {
+                builder.setPassword("some_password");
+            }
+
+            credentials.add(builder.build());
+        }
+
+        return credentials;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.ui.provider;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 
 import com.firebase.ui.auth.R;
@@ -14,6 +15,11 @@ public class TwitterProvider implements Provider {
         mHandler = ViewModelProviders.of(activity).get(TwitterSignInHandler.class);
         mHandler.init(new TwitterSignInHandler.Params(
                 activity.getSignInHandler(), activity.getFlowHolder()));
+    }
+
+    @Override
+    public String getName(Context context) {
+        return context.getString(R.string.fui_idp_name_twitter);
     }
 
     @Override

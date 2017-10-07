@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -23,10 +22,12 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
+import com.firebase.ui.auth.data.model.NetworkException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -40,18 +41,23 @@ public class IdpResponse implements Parcelable {
     private final String mToken;
     private final String mSecret;
 
-    private final int mErrorCode;
+    @Nullable private final FirebaseAuthException mException;
 
-    private IdpResponse(int errorCode) {
-        this(null, null, null, null, errorCode);
+    private IdpResponse(FirebaseAuthException e) {
+        this(null, null, null, null, e);
     }
 
-    private IdpResponse(User user, String password, String token, String secret, int errorCode) {
+    private IdpResponse(
+            User user,
+            String password,
+            String token,
+            String secret,
+            FirebaseAuthException e) {
         mUser = user;
         mPassword = password;
         mToken = token;
         mSecret = secret;
-        mErrorCode = errorCode;
+        mException = e;
     }
 
     /**
@@ -70,8 +76,8 @@ public class IdpResponse implements Parcelable {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static Intent getErrorCodeIntent(int errorCode) {
-        return new IdpResponse(errorCode).toIntent();
+    public static Intent getErrorIntent(FirebaseAuthException e) {
+        return new IdpResponse(e).toIntent();
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -138,7 +144,17 @@ public class IdpResponse implements Parcelable {
      * Get the error code for a failed sign in
      */
     public int getErrorCode() {
-        return mErrorCode;
+        if (mException instanceof NetworkException) {
+            return ErrorCodes.NO_NETWORK;
+        } else {
+            return ErrorCodes.UNKNOWN_ERROR;
+        }
+    }
+
+    @Nullable
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public FirebaseAuthException getException() {
+        return mException;
     }
 
     @Override
@@ -152,7 +168,7 @@ public class IdpResponse implements Parcelable {
         dest.writeString(mPassword);
         dest.writeString(mToken);
         dest.writeString(mSecret);
-        dest.writeInt(mErrorCode);
+        dest.writeSerializable(mException);
     }
 
     public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
@@ -163,7 +179,7 @@ public class IdpResponse implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readString(),
-                    in.readInt()
+                    (FirebaseAuthException) in.readSerializable()
             );
         }
 
@@ -220,7 +236,7 @@ public class IdpResponse implements Parcelable {
                         "Secret cannot be null when using the Twitter provider.");
             }
 
-            return new IdpResponse(mUser, mPassword, mToken, mSecret, Activity.RESULT_OK);
+            return new IdpResponse(mUser, mPassword, mToken, mSecret, null);
         }
     }
 }

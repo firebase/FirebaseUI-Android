@@ -46,9 +46,8 @@ android {
 dependencies {
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:customtabs:$supportLibraryVersion"
-    compile 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
+    compile 'com.android.support.constraint:constraint-layout:1.1.0-beta2'
 
-    compile "android.arch.lifecycle:runtime:$architectureVersion"
     compile "android.arch.lifecycle:extensions:$architectureVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
 

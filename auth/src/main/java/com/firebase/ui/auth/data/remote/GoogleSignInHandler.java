@@ -10,7 +10,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.util.SignInFailedException;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;

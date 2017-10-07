@@ -19,8 +19,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
  * <b>Note:</b> This operation always returns a successful task to minimize login interruptions.
  */
 public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>> {
-    private static final String TAG = "ProfileMerger";
-
     private final IdpResponse mIdpResponse;
 
     public ProfileMerger(IdpResponse response) {

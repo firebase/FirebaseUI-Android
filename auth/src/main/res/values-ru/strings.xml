@@ -2,6 +2,11 @@
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Загрузка…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Войти</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">Произошла ошибка</string>
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_provider_name_email">Адрес электронной почты</string>
+    <string name="fui_provider_name_phone">Телефон</string>
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">Войти через аккаунт Google</string>
     <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Войти через аккаунт Facebook</string>
     <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Войти через аккаунт Twitter</string>

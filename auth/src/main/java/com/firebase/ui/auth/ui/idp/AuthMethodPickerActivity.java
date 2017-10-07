@@ -14,9 +14,12 @@
 
 package com.firebase.ui.auth.ui.idp;
 
+import android.app.Activity;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -27,6 +30,7 @@ import android.widget.ImageView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -73,6 +77,13 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             ImageView logo = findViewById(R.id.logo);
             logo.setImageResource(logoId);
         }
+
+        getSignInHandler().getSuccessLiveData().observe(this, new Observer<IdpResponse>() {
+            @Override
+            public void onChanged(@Nullable IdpResponse response) {
+                finish(Activity.RESULT_OK, response.toIntent());
+            }
+        });
     }
 
     private void populateIdpList(List<IdpConfig> providerConfigs) {

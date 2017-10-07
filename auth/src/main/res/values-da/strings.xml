@@ -2,6 +2,11 @@
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Indlæser…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Log ind</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">Der opstod en fejl.</string>
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_provider_name_email">Mail</string>
+    <string name="fui_provider_name_phone">Telefon</string>
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">Log ind med Google</string>
     <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Log ind med Facebook</string>
     <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Log ind med Twitter</string>

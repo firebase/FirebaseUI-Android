@@ -113,7 +113,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                     this,
                     getFlowHolder().getParams(),
                     mResponse.getEmail()));
-            finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(ErrorCodes.UNKNOWN_ERROR));
         }
     }
 

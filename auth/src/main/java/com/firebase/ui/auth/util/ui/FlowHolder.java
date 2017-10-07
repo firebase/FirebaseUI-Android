@@ -11,10 +11,10 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
 
 public class FlowHolder extends ViewModelBase<FlowParameters> {
-    private final MutableLiveData<ActivityResult> mOnActivityResult = new SingleLiveEvent<>();
+    private static final MutableLiveData<ActivityResult> ON_ACTIVITY_RESULT = new SingleLiveEvent<>();
 
-    private final SingleLiveEvent<Pair<Intent, Integer>> mIntentStarter = new SingleLiveEvent<>();
-    private final SingleLiveEvent<Pair<PendingIntent, Integer>> mPendingIntentStarter = new SingleLiveEvent<>();
+    private final MutableLiveData<Pair<Intent, Integer>> mIntentStarter = new SingleLiveEvent<>();
+    private final MutableLiveData<Pair<PendingIntent, Integer>> mPendingIntentStarter = new SingleLiveEvent<>();
 
     private FlowParameters mFlowParams;
 
@@ -28,7 +28,7 @@ public class FlowHolder extends ViewModelBase<FlowParameters> {
     }
 
     public LiveData<ActivityResult> getOnActivityResult() {
-        return mOnActivityResult;
+        return ON_ACTIVITY_RESULT;
     }
 
     public MutableLiveData<Pair<Intent, Integer>> getIntentStarter() {
@@ -40,7 +40,7 @@ public class FlowHolder extends ViewModelBase<FlowParameters> {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mOnActivityResult.setValue(new ActivityResult(requestCode, resultCode, data));
+        ON_ACTIVITY_RESULT.setValue(new ActivityResult(requestCode, resultCode, data));
     }
 
     public FlowParameters getParams() {

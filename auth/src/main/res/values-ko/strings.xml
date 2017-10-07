@@ -2,6 +2,11 @@
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">로드 중…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">로그인</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">오류가 발생했습니다.</string>
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_provider_name_email">이메일</string>
+    <string name="fui_provider_name_phone">전화</string>
     <string name="fui_sign_in_with_google" translation_description="Sign in button text">Google 계정으로 로그인</string>
     <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Facebook으로 로그인</string>
     <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Twitter로 로그인</string>

@@ -33,7 +33,7 @@ public class KickoffActivity extends HelperActivityBase {
             if (isOffline()) {
                 Log.d(TAG, "No network connection");
                 finish(RESULT_CANCELED,
-                       IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
+                       IdpResponse.getErrorIntent(ErrorCodes.NO_NETWORK));
                 return;
             }
 
@@ -44,7 +44,7 @@ public class KickoffActivity extends HelperActivityBase {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             finish(RESULT_CANCELED,
-                                   IdpResponse.getErrorCodeIntent(
+                                   IdpResponse.getErrorIntent(
                                            ErrorCodes.UNKNOWN_ERROR));
                         }
                     });
@@ -73,7 +73,7 @@ public class KickoffActivity extends HelperActivityBase {
                 start();
             } else {
                 finish(RESULT_CANCELED,
-                       IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+                       IdpResponse.getErrorIntent(ErrorCodes.UNKNOWN_ERROR));
             }
         } else {
             SignInDelegate delegate = SignInDelegate.getInstance(this);
