@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -71,13 +70,10 @@ public class CheckEmailFragment extends FragmentBase implements
     private EmailFieldValidator mEmailFieldValidator;
     private CheckEmailListener mListener;
 
-    public static CheckEmailFragment newInstance(@NonNull FlowParameters flowParameters,
-                                                 @Nullable String email) {
+    public static CheckEmailFragment newInstance(@Nullable String email) {
         CheckEmailFragment fragment = new CheckEmailFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
         args.putString(ExtraConstants.EXTRA_EMAIL, email);
-
         fragment.setArguments(args);
         return fragment;
     }

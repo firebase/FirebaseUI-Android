@@ -17,7 +17,7 @@ public class AuthViewModel extends ViewModelBase<FlowHolder> {
     protected FirebaseAuth mAuth;
     protected PhoneAuthProvider mPhoneAuth;
 
-    public AuthViewModel(Application application) {
+    protected AuthViewModel(Application application) {
         super(application);
     }
 

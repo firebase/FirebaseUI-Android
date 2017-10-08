@@ -99,8 +99,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         }
 
         Bundle params = getIntent().getExtras().getBundle(ExtraConstants.EXTRA_PARAMS);
-        VerifyPhoneNumberFragment fragment =
-                VerifyPhoneNumberFragment.newInstance(getFlowHolder().getParams(), params);
+        VerifyPhoneNumberFragment fragment = VerifyPhoneNumberFragment.newInstance(params);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_verify_phone, fragment, VerifyPhoneNumberFragment.TAG)
                 .disallowAddToBackStack()
@@ -288,8 +287,8 @@ public class PhoneVerificationActivity extends AppCompatBase {
     private void showSubmitCodeFragment() {
         // idempotent function
         if (getSubmitConfirmationCodeFragment() == null) {
-            SubmitConfirmationCodeFragment f = SubmitConfirmationCodeFragment.newInstance(
-                    getFlowHolder().getParams(), mPhoneNumber);
+            SubmitConfirmationCodeFragment f =
+                    SubmitConfirmationCodeFragment.newInstance(mPhoneNumber);
             FragmentTransaction t = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_verify_phone, f, SubmitConfirmationCodeFragment.TAG)
                     .addToBackStack(null);

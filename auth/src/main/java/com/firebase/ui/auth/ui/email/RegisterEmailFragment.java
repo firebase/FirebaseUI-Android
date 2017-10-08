@@ -51,13 +51,10 @@ public class RegisterEmailFragment extends FragmentBase implements
 
     private User mUser;
 
-    public static RegisterEmailFragment newInstance(FlowParameters flowParameters, User user) {
+    public static RegisterEmailFragment newInstance(User user) {
         RegisterEmailFragment fragment = new RegisterEmailFragment();
-
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
         args.putParcelable(ExtraConstants.EXTRA_USER, user);
-
         fragment.setArguments(args);
         return fragment;
     }

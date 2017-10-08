@@ -39,7 +39,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 public class RegisterEmailActivity extends AppCompatBase implements
         CheckEmailFragment.CheckEmailListener {
 
-    public static final int RC_WELCOME_BACK_IDP = 18;
+    private static final int RC_WELCOME_BACK_IDP = 18;
     private static final int RC_SIGN_IN = 17;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
@@ -64,8 +64,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
         String email = getIntent().getExtras().getString(ExtraConstants.EXTRA_EMAIL);
 
         // Start with check email
-        CheckEmailFragment fragment =
-                CheckEmailFragment.newInstance(getFlowHolder().getParams(), email);
+        CheckEmailFragment fragment = CheckEmailFragment.newInstance(email);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
                 .disallowAddToBackStack()
@@ -114,9 +113,8 @@ public class RegisterEmailActivity extends AppCompatBase implements
 
         TextInputLayout emailLayout = findViewById(R.id.email_layout);
 
-        FlowParameters params = getFlowHolder().getParams();
-        if (params.allowNewEmailAccounts) {
-            RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(params, user);
+        if (getFlowHolder().getParams().allowNewEmailAccounts) {
+            RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(user);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
 

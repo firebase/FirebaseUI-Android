@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class ViewModelBase<T> extends AndroidViewModel {
     private AtomicBoolean mIsInitialized = new AtomicBoolean();
 
-    public ViewModelBase(Application application) {
+    protected ViewModelBase(Application application) {
         super(application);
     }
 

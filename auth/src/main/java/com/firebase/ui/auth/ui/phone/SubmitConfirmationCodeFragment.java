@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.CustomCountDownTimer;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -58,14 +57,10 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private TextView mAgreementText;
     private long mMillisUntilFinished;
 
-    public static SubmitConfirmationCodeFragment newInstance(FlowParameters flowParameters,
-                                                             String phoneNumber) {
+    public static SubmitConfirmationCodeFragment newInstance(String phoneNumber) {
         SubmitConfirmationCodeFragment fragment = new SubmitConfirmationCodeFragment();
-
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
         args.putString(ExtraConstants.EXTRA_PHONE, phoneNumber);
-
         fragment.setArguments(args);
         return fragment;
     }

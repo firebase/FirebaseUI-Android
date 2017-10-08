@@ -34,7 +34,6 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -68,14 +67,10 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     private PhoneVerificationActivity mVerifier;
     private TextView mSmsTermsText;
 
-    public static VerifyPhoneNumberFragment newInstance(
-            FlowParameters flowParameters, Bundle params) {
+    public static VerifyPhoneNumberFragment newInstance(Bundle params) {
         VerifyPhoneNumberFragment fragment = new VerifyPhoneNumberFragment();
-
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
         args.putBundle(ExtraConstants.EXTRA_PARAMS, params);
-
         fragment.setArguments(args);
         return fragment;
     }
