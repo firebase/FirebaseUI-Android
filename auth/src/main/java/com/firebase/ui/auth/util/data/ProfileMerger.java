@@ -19,10 +19,10 @@ import com.google.firebase.auth.UserProfileChangeRequest;
  * <b>Note:</b> This operation always returns a successful task to minimize login interruptions.
  */
 public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>> {
-    private final IdpResponse mIdpResponse;
+    private final IdpResponse mResponse;
 
     public ProfileMerger(IdpResponse response) {
-        mIdpResponse = response;
+        mResponse = response;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>>
             return Tasks.forResult(authResult);
         }
 
-        User user = mIdpResponse.getUser();
+        User user = mResponse.getUser();
         if (TextUtils.isEmpty(name)) { name = user.getName(); }
         if (photoUri == null) { photoUri = user.getPhotoUri(); }
 

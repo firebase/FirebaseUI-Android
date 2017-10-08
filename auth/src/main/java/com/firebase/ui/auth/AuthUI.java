@@ -196,7 +196,7 @@ public class AuthUI {
      */
     public Task<Void> signOut(@NonNull FragmentActivity activity) {
         // Get Credentials Helper
-        GoogleSignInHelper signInHelper = GoogleSignInHelper.getInstance(activity);
+        GoogleSignInHelper signInHelper = GoogleSignInHelper.newInstance(activity);
 
         // Firebase Sign out
         mAuth.signOut();
@@ -234,7 +234,7 @@ public class AuthUI {
      */
     public Task<Void> delete(@NonNull FragmentActivity activity) {
         // Initialize SmartLock helper
-        GoogleSignInHelper signInHelper = GoogleSignInHelper.getInstance(activity);
+        GoogleSignInHelper signInHelper = GoogleSignInHelper.newInstance(activity);
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser == null) {

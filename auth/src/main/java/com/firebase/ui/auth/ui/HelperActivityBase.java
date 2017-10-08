@@ -19,7 +19,6 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.remote.SignInHandler;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.FlowHolder;
-import com.google.firebase.auth.FirebaseAuthException;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
@@ -48,9 +47,9 @@ public class HelperActivityBase extends AppCompatActivity {
         getSignInHandler().init(getFlowHolder());
         mProgressDialogHolder = new ProgressDialogHolder(this);
 
-        getSignInHandler().getFailureLiveData().observe(this, new Observer<FirebaseAuthException>() {
+        getSignInHandler().getFailureLiveData().observe(this, new Observer<Exception>() {
             @Override
-            public void onChanged(@Nullable FirebaseAuthException e) {
+            public void onChanged(@Nullable Exception e) {
                 Log.e("AuthUI", "Sign in error occurred.", e);
             }
         });

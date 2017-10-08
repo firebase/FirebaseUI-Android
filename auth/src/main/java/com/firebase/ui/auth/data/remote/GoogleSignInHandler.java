@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.ProviderErrorException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
 import com.firebase.ui.auth.util.ui.ActivityResult;
@@ -94,9 +95,8 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
 
                 mSignInFailedNotifier.setValue(status);
                 if (status.getStatusCode() != CommonStatusCodes.INVALID_ACCOUNT) {
-                    mHandler.start(Tasks.<IdpResponse>forException(new SignInFailedException(
-                            String.valueOf(status.getStatusCode()),
-                            String.valueOf(status.getStatusMessage()))));
+                    mHandler.start(Tasks.<IdpResponse>forException(new ProviderErrorException(
+                            "Code: " + status.getStatusCode() + ", message: " + status.getStatusMessage())));
                 }
             }
         }

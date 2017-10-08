@@ -6,7 +6,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.google.firebase.auth.FirebaseAuthException;
 
 public class UnknownErrorException extends FirebaseAuthException {
-    public UnknownErrorException(@NonNull String detailMessage) {
+    protected UnknownErrorException(@NonNull String detailMessage) {
         super(String.valueOf(ErrorCodes.UNKNOWN_ERROR), detailMessage);
     }
 }

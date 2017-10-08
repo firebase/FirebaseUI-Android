@@ -41,9 +41,9 @@ public class IdpResponse implements Parcelable {
     private final String mToken;
     private final String mSecret;
 
-    @Nullable private final FirebaseAuthException mException;
+    @Nullable private final Exception mException;
 
-    private IdpResponse(FirebaseAuthException e) {
+    private IdpResponse(Exception e) {
         this(null, null, null, null, e);
     }
 
@@ -52,7 +52,7 @@ public class IdpResponse implements Parcelable {
             String password,
             String token,
             String secret,
-            FirebaseAuthException e) {
+            Exception e) {
         mUser = user;
         mPassword = password;
         mToken = token;
@@ -76,7 +76,7 @@ public class IdpResponse implements Parcelable {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static Intent getErrorIntent(FirebaseAuthException e) {
+    public static Intent getErrorIntent(Exception e) {
         return new IdpResponse(e).toIntent();
     }
 
@@ -153,7 +153,7 @@ public class IdpResponse implements Parcelable {
 
     @Nullable
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public FirebaseAuthException getException() {
+    public Exception getException() {
         return mException;
     }
 

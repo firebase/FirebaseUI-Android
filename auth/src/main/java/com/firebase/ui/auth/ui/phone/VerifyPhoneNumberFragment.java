@@ -40,7 +40,7 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.CountryInfo;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
-import com.firebase.ui.auth.util.data.remote.GoogleApiHelper;
+import com.firebase.ui.auth.util.data.remote.GoogleApiConnector;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -243,7 +243,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
                 .addApi(Auth.CREDENTIALS_API)
                 .enableAutoManage(
                         getActivity(),
-                        GoogleApiHelper.getSafeAutoManageId(),
+                        GoogleApiConnector.getSafeAutoManageId(),
                         new GoogleApiClient.OnConnectionFailedListener() {
                             @Override
                             public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

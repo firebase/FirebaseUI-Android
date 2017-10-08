@@ -39,20 +39,14 @@ import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase {
-    public static Intent createIntent(
-            Context context,
-            FlowParameters flowParams,
-            User user,
-            @Nullable IdpResponse response) {
+    public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
         return HelperActivityBase.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_USER, user)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+                .putExtra(ExtraConstants.EXTRA_USER, user);
     }
 
     @Override
@@ -108,9 +102,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 finish(Activity.RESULT_OK, response.toIntent());
             }
         });
-        getSignInHandler().getFailureLiveData().observe(this, new Observer<FirebaseAuthException>() {
+        getSignInHandler().getFailureLiveData().observe(this, new Observer<Exception>() {
             @Override
-            public void onChanged(@Nullable FirebaseAuthException e) {
+            public void onChanged(@Nullable Exception e) {
                 finish(Activity.RESULT_CANCELED, IdpResponse.getErrorIntent(e));
             }
         });

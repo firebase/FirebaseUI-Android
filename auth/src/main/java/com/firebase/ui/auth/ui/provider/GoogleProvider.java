@@ -29,7 +29,7 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.data.remote.GoogleApiHelper;
+import com.firebase.ui.auth.util.data.remote.GoogleApiConnector;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.google.android.gms.auth.api.Auth;
@@ -91,7 +91,7 @@ public class GoogleProvider implements Provider, GoogleApiClient.OnConnectionFai
 
     private void initClient(HelperActivityBase activity, @Nullable String email) {
         mClient = new GoogleApiClient.Builder(activity)
-                .enableAutoManage(activity, GoogleApiHelper.getSafeAutoManageId(), this)
+                .enableAutoManage(activity, GoogleApiConnector.getSafeAutoManageId(), this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, mHandler.getSignInOptions(email))
                 .build();
     }

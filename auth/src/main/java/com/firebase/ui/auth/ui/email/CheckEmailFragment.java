@@ -1,9 +1,8 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.content.IntentSender;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,21 +21,13 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.data.remote.GoogleApiHelper;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
-import com.google.android.gms.auth.api.credentials.HintRequest;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Fragment that shows a form with an email field and checks for existing accounts with that email.
@@ -73,17 +63,13 @@ public class CheckEmailFragment extends FragmentBase implements
 
     public static final String TAG = "CheckEmailFragment";
 
-    private static final int RC_HINT = 13;
-    private static final int RC_WELCOME_BACK_IDP = 15;
-    private static final int RC_SIGN_IN = 16;
+    private CheckEmailHandler mHandler;
 
     private EditText mEmailEditText;
     private TextInputLayout mEmailLayout;
 
     private EmailFieldValidator mEmailFieldValidator;
     private CheckEmailListener mListener;
-
-    private Credential mLastCredential;
 
     public static CheckEmailFragment newInstance(@NonNull FlowParameters flowParameters,
                                                  @Nullable String email) {
@@ -113,7 +99,8 @@ public class CheckEmailFragment extends FragmentBase implements
 
         ImeHelper.setImeOnDoneListener(mEmailEditText, this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && getFlowHolder().getParams().enableHints) {
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
@@ -126,6 +113,7 @@ public class CheckEmailFragment extends FragmentBase implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mHandler = ViewModelProviders.of(this).get(CheckEmailHandler.class);
 
         // Set listener
         if (!(getActivity() instanceof CheckEmailListener)) {
@@ -143,9 +131,17 @@ public class CheckEmailFragment extends FragmentBase implements
             // Use email passed in
             mEmailEditText.setText(email);
             validateAndProceed();
-        } else if (getFlowParams().enableHints) {
+        } else if (getFlowHolder().getParams().enableHints) {
             // Try SmartLock email autocomplete hint
-            showEmailAutoCompleteHint();
+            mHandler.fetchCredential().observe(this, new Observer<Credential>() {
+                @Override
+                public void onChanged(@Nullable Credential credential) {
+                    if (credential != null) {
+                        mEmailEditText.setText(credential.getId());
+                        validateAndProceed();
+                    }
+                }
+            });
         }
     }
 
@@ -153,29 +149,6 @@ public class CheckEmailFragment extends FragmentBase implements
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RC_HINT:
-                if (data != null) {
-                    mLastCredential = data.getParcelableExtra(Credential.EXTRA_KEY);
-                    if (mLastCredential != null) {
-                        // Get the email from the credential
-                        mEmailEditText.setText(mLastCredential.getId());
-
-                        // Attempt to proceed
-                        validateAndProceed();
-                    }
-                }
-                break;
-            case RC_SIGN_IN:
-            case RC_WELCOME_BACK_IDP:
-                finish(resultCode, data);
-                break;
-        }
     }
 
     private void validateAndProceed() {
@@ -189,23 +162,24 @@ public class CheckEmailFragment extends FragmentBase implements
         getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_checking_accounts);
 
         // Get name from SmartLock, if possible
+        @Nullable Credential credential = mHandler.getCredentialListener().getValue();
         String name = null;
         Uri photoUri = null;
-        if (mLastCredential != null && mLastCredential.getId().equals(email)) {
-            name = mLastCredential.getName();
-            photoUri = mLastCredential.getProfilePictureUri();
+        if (credential != null && credential.getId().equals(email)) {
+            name = credential.getName();
+            photoUri = credential.getProfilePictureUri();
         }
 
         final String finalName = name;
         final Uri finalPhotoUri = photoUri;
 
-        FirebaseAuth auth = getAuthHelper().getFirebaseAuth();
-        ProviderUtils.fetchTopProvider(auth, email)
+        mHandler.getTopProvider(email)
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<String>() {
                     @Override
                     public void onSuccess(String provider) {
                         if (provider == null) {
-                            mListener.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                            mListener.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID,
+                                    email)
                                     .setName(finalName)
                                     .setPhotoUri(finalPhotoUri)
                                     .build());
@@ -225,36 +199,6 @@ public class CheckEmailFragment extends FragmentBase implements
                                 getDialogHolder().dismissDialog();
                             }
                         });
-    }
-
-    private void showEmailAutoCompleteHint() {
-        try {
-            startIntentSenderForResult(getEmailHintIntent().getIntentSender(), RC_HINT);
-        } catch (IntentSender.SendIntentException e) {
-            Log.e(TAG, "Unable to start hint intent", e);
-        }
-    }
-
-    private PendingIntent getEmailHintIntent() {
-        GoogleApiClient client = new GoogleApiClient.Builder(getContext())
-                .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(getActivity(), GoogleApiHelper.getSafeAutoManageId(),
-                        new GoogleApiClient.OnConnectionFailedListener() {
-                            @Override
-                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                                Log.e(TAG, "Client connection failed: " + connectionResult.getErrorMessage());
-                            }
-                        })
-                .build();
-
-        HintRequest hintRequest = new HintRequest.Builder()
-                .setHintPickerConfig(new CredentialPickerConfig.Builder()
-                        .setShowCancelButton(true)
-                        .build())
-                .setEmailAddressIdentifierSupported(true)
-                .build();
-
-        return Auth.CredentialsApi.getHintPickerIntent(client, hintRequest);
     }
 
     @Override

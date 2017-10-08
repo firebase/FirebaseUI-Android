@@ -14,11 +14,13 @@
 
 package com.firebase.ui.auth.ui.accountlink;
 
+import android.app.Activity;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
@@ -30,7 +32,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -39,13 +40,8 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.ProfileMerger;
-import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.EmailAuthProvider;
 
 /**
@@ -55,19 +51,14 @@ import com.google.firebase.auth.EmailAuthProvider;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackPasswordPrompt extends AppCompatBase
         implements View.OnClickListener, ImeHelper.DonePressedListener {
-    private static final String TAG = "WelcomeBackPassword";
-
-    private IdpResponse mResponse;
+    private User mUser;
 
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
 
-    public static Intent createIntent(
-            Context context,
-            FlowParameters flowParams,
-            IdpResponse response) {
+    public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
         return HelperActivityBase.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+                .putExtra(ExtraConstants.EXTRA_USER, user);
     }
 
     @Override
@@ -78,7 +69,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        mResponse = IdpResponse.fromResultIntent(getIntent());
+        mUser = User.getUser(getIntent());
         mPasswordLayout = findViewById(R.id.password_layout);
         mPasswordField = findViewById(R.id.password);
 
@@ -86,13 +77,13 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
         // Create welcome back text with email bolded.
         String bodyText =
-                getString(R.string.fui_welcome_back_password_prompt_body, mResponse.getEmail());
+                getString(R.string.fui_welcome_back_password_prompt_body, mUser.getEmail());
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
-        int emailStart = bodyText.indexOf(mResponse.getEmail());
+        int emailStart = bodyText.indexOf(mUser.getEmail());
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
                 emailStart,
-                emailStart + mResponse.getEmail().length(),
+                emailStart + mUser.getEmail().length(),
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         TextView bodyTextView = findViewById(R.id.welcome_back_password_body);
@@ -101,6 +92,21 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         // Click listeners
         findViewById(R.id.button_done).setOnClickListener(this);
         findViewById(R.id.trouble_signing_in).setOnClickListener(this);
+
+        getSignInHandler().getSuccessLiveData().observe(this, new Observer<IdpResponse>() {
+            @Override
+            public void onChanged(@Nullable IdpResponse response) {
+                finish(Activity.RESULT_OK, response.toIntent());
+            }
+        });
+        getSignInHandler().getFailureLiveData()
+                .observe(this, new Observer<Exception>() {
+                    @Override
+                    public void onChanged(@Nullable Exception e) {
+                        getDialogHolder().dismissDialog();
+                        mPasswordLayout.setError(e.getLocalizedMessage());
+                    }
+                });
     }
 
     @Override
@@ -112,8 +118,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             startActivity(RecoverPasswordActivity.createIntent(
                     this,
                     getFlowHolder().getParams(),
-                    mResponse.getEmail()));
-            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(ErrorCodes.UNKNOWN_ERROR));
+                    mUser.getEmail()));
         }
     }
 
@@ -136,62 +141,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
         getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
 
-        final AuthCredential authCredential = ProviderUtils.getAuthCredential(mResponse);
-
-        final IdpResponse response;
-        if (authCredential == null) {
-            response = new IdpResponse.Builder(
-                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
-                    .build();
-        } else {
-            response = new IdpResponse.Builder(mResponse.getUser())
-                    .setToken(mResponse.getIdpToken())
-                    .setSecret(mResponse.getIdpSecret())
-                    .build();
-        }
-
-        // Sign in with known email and the password provided
-        getAuthHelper().getFirebaseAuth()
-                .signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        // If authCredential is null, the user only has an email account.
-                        // Otherwise, the user has an email account that we need to link to an idp.
-                        if (authCredential == null) {
-                            saveCredentialsOrFinish(
-                                    mSaveSmartLock,
-                                    authResult.getUser(),
-                                    password,
-                                    response);
-                        } else {
-                            authResult.getUser()
-                                    .linkWithCredential(authCredential)
-                                    .continueWithTask(new ProfileMerger(response))
-                                    .addOnFailureListener(new TaskFailureLogger(
-                                            TAG, "Error signing in with credential " +
-                                            authCredential.getProvider()))
-                                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                                        @Override
-                                        public void onSuccess(AuthResult authResult) {
-                                            saveCredentialsOrFinish(
-                                                    mSaveSmartLock,
-                                                    authResult.getUser(),
-                                                    response);
-                                        }
-                                    });
-                        }
-                    }
-                })
-                .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Error signing in with email and password"))
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        getDialogHolder().dismissDialog();
-                        String error = e.getLocalizedMessage();
-                        mPasswordLayout.setError(error);
-                    }
-                });
+        getSignInHandler().start(Tasks.forResult(new IdpResponse.Builder(
+                new User.Builder(EmailAuthProvider.PROVIDER_ID, mUser.getEmail()).build())
+                .setPassword(password)
+                .build()));
     }
 }

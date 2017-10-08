@@ -15,8 +15,8 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.ProviderErrorException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
@@ -95,9 +95,7 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
                         FacebookRequestError error = response.getError();
                         if (error != null || object == null) {
                             mHandler.start(Tasks.<IdpResponse>forException(error == null ?
-                                    new SignInFailedException(
-                                            String.valueOf(ErrorCodes.UNKNOWN_ERROR),
-                                            "Facebook graph request failed")
+                                    new ProviderErrorException("Facebook graph request failed")
                                     : error.getException()));
                             return;
                         }
