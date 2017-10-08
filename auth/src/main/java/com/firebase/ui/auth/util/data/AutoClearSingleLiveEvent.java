@@ -1,5 +1,7 @@
 package com.firebase.ui.auth.util.data;
 
+import android.arch.lifecycle.Observer;
+
 /**
  * LiveData that resets itself when all listeners are removed. Used to support fields which need to
  * be static to support previous activities in the stack dying, but really shouldn't be static.
@@ -12,8 +14,10 @@ public class AutoClearSingleLiveEvent<T> extends SingleLiveEvent<T> {
     }
 
     @Override
-    protected void onInactive() {
-        super.onInactive();
-        mFieldResetter.run();
+    public void removeObserver(Observer<T> observer) {
+        super.removeObserver(observer);
+        if (!hasObservers()) {
+            mFieldResetter.run();
+        }
     }
 }
