@@ -27,7 +27,6 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
-import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -117,9 +116,9 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
             return;
         }
 
-        if (provider.equals(IdentityProviders.GOOGLE)
-                || provider.equals(IdentityProviders.FACEBOOK)
-                || provider.equals(IdentityProviders.TWITTER)) {
+        if (provider.equals(GoogleAuthProvider.PROVIDER_ID)
+                || provider.equals(FacebookAuthProvider.PROVIDER_ID)
+                || provider.equals(TwitterAuthProvider.PROVIDER_ID)) {
             mFlowHolder.getIntentStarter().setValue(Pair.create(
                     SingleSignInActivity.createIntent(
                             getApplication(),
@@ -127,9 +126,7 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
                             new User.Builder(provider, email).build()),
                     RC_IDP_SIGNIN));
         } else {
-            mFlowHolder.getIntentStarter().setValue(Pair.create(
-                    AuthMethodPickerActivity.createIntent(getApplication(), flowParams),
-                    RC_AUTH_METHOD_PICKER));
+            startAuthMethodChoice();
         }
     }
 
@@ -211,7 +208,9 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
         private void handleCredential(Credential credential) {
             String email = credential.getId();
             String password = credential.getPassword();
-            if (!TextUtils.isEmpty(email)) {
+            if (TextUtils.isEmpty(email)) {
+                startAuthMethodChoice();
+            } else {
                 if (TextUtils.isEmpty(password)) {
                     redirectToIdpSignIn(email, ProviderUtils.accountTypeToProviderId(
                             String.valueOf(credential.getAccountType())));
