@@ -74,7 +74,7 @@ public final class PhoneNumberUtils {
         return phoneNumber.startsWith("+")
                 ? phoneNumber
                 : ("+" + String.valueOf(countryInfo.getCountryCode())
-                        + phoneNumber.replaceAll("[^\\d.]", ""));
+                + phoneNumber.replaceAll("[^\\d.]", ""));
     }
 
 

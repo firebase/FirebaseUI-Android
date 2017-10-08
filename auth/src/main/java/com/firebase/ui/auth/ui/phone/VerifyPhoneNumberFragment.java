@@ -246,9 +246,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
                         GoogleApiConnector.getSafeAutoManageId(),
                         new GoogleApiClient.OnConnectionFailedListener() {
                             @Override
-                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                                Log.e(TAG,
-                                      "Client connection failed: " + connectionResult.getErrorMessage());
+                            public void onConnectionFailed(@NonNull ConnectionResult result) {
+                                Log.e(TAG, "Client connection failed: " + result.getErrorMessage());
                             }
                         })
                 .build();
