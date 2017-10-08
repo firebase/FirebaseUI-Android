@@ -60,7 +60,7 @@ public final class CountryListSpinner extends AppCompatEditText implements
         mTextFormat = "%1$s  +%2$d";
         mSelectedCountryName = "";
         final CountryInfo countryInfo = PhoneNumberUtils.getCurrentCountryInfo(getContext());
-        setSpinnerText(countryInfo.mCountryCode, countryInfo.mLocale);
+        setSpinnerText(countryInfo.getCountryCode(), countryInfo.getLocale());
     }
 
     private static void hideKeyboard(Context context, View view) {
@@ -168,8 +168,8 @@ public final class CountryListSpinner extends AppCompatEditText implements
         @Override
         public void onClick(DialogInterface dialog, int which) {
             final CountryInfo countryInfo = listAdapter.getItem(which);
-            mSelectedCountryName = countryInfo.mLocale.getDisplayCountry();
-            setSpinnerText(countryInfo.mCountryCode, countryInfo.mLocale);
+            mSelectedCountryName = countryInfo.getLocale().getDisplayCountry();
+            setSpinnerText(countryInfo.getCountryCode(), countryInfo.getLocale());
             dismiss();
         }
     }

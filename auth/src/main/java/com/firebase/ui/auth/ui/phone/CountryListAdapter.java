@@ -47,13 +47,13 @@ final class CountryListAdapter extends ArrayAdapter<CountryInfo> implements Sect
         // Create index and add entries to adapter
         int index = 0;
         for (CountryInfo countryInfo : countries) {
-            final String key = countryInfo.mLocale.getDisplayCountry().substring(0, 1).toUpperCase
+            final String key = countryInfo.getLocale().getDisplayCountry().substring(0, 1).toUpperCase
                     (Locale.getDefault());
 
             if (!alphaIndex.containsKey(key)) {
                 alphaIndex.put(key, index);
             }
-            countryPosition.put(countryInfo.mLocale.getDisplayCountry(), index);
+            countryPosition.put(countryInfo.getLocale().getDisplayCountry(), index);
 
             index++;
             add(countryInfo);

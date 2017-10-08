@@ -18,7 +18,6 @@
 package com.firebase.ui.auth.util.data;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
@@ -70,10 +69,11 @@ public final class PhoneNumberUtils {
      * @param phoneNumber that may or may not itself have country code
      * @param countryInfo must have locale with ISO 3166 2-letter code for country
      */
-    static String formatPhoneNumber(@NonNull String phoneNumber, @NonNull CountryInfo countryInfo) {
+    public static String formatPhoneNumber(
+            @NonNull String phoneNumber, @NonNull CountryInfo countryInfo) {
         return phoneNumber.startsWith("+")
                 ? phoneNumber
-                : ("+" + String.valueOf(countryInfo.mCountryCode)
+                : ("+" + String.valueOf(countryInfo.getCountryCode())
                         + phoneNumber.replaceAll("[^\\d.]", ""));
     }
 
@@ -86,24 +86,13 @@ public final class PhoneNumberUtils {
      */
 
     @Nullable
-    static String formatPhoneNumberUsingCurrentCountry(
+    public static String formatPhoneNumberUsingCurrentCountry(
             @NonNull String phoneNumber, Context context) {
-        final CountryInfo currentCountry = PhoneNumberUtils.getCurrentCountryInfo(context);
-
-        // TODO(samstern): Remove this call once the next version of Play servics is released
-        //                 estimated timelime August 10th. It is a known issue that phone numbers
-        //                 from the hint selector are susceptible to the false negatives of this
-        //                 method.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return android.telephony.PhoneNumberUtils
-                    .formatNumberToE164(phoneNumber, currentCountry.mLocale.getCountry());
-        }
-
-        return formatPhoneNumber(phoneNumber, currentCountry);
+        return formatPhoneNumber(phoneNumber, getCurrentCountryInfo(context));
     }
 
     @NonNull
-    static CountryInfo getCurrentCountryInfo(@NonNull Context context) {
+    public static CountryInfo getCurrentCountryInfo(@NonNull Context context) {
         Locale locale = getSimBasedLocale(context);
 
         if (locale == null) {
@@ -114,7 +103,7 @@ public final class PhoneNumberUtils {
             return DEFAULT_COUNTRY;
         }
 
-        Integer countryCode = PhoneNumberUtils.getCountryCode(locale.getCountry());
+        Integer countryCode = getCountryCode(locale.getCountry());
 
         return countryCode == null ? DEFAULT_COUNTRY : new CountryInfo(locale, countryCode);
     }
@@ -127,7 +116,7 @@ public final class PhoneNumberUtils {
      * @return an instance of the PhoneNumber using the SIM information
      */
 
-    private static PhoneNumber getPhoneNumber(@NonNull String providedPhoneNumber) {
+    public static PhoneNumber getPhoneNumber(@NonNull String providedPhoneNumber) {
         String countryCode = DEFAULT_COUNTRY_CODE;
         String countryIso = DEFAULT_LOCALE.getCountry();
 
@@ -140,7 +129,7 @@ public final class PhoneNumberUtils {
         return new PhoneNumber(phoneNumber, countryIso, countryCode);
     }
 
-    static PhoneNumber getPhoneNumber(
+    public static PhoneNumber getPhoneNumber(
             @NonNull String providedCountryIso, @NonNull String providedNationalNumber) {
         Integer countryCode = getCountryCode(providedCountryIso);
         if (countryCode == null) {

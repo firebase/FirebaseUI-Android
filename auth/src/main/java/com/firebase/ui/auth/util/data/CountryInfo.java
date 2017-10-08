@@ -47,6 +47,14 @@ public final class CountryInfo implements Comparable<CountryInfo> {
                 (secondLetter));
     }
 
+    public Locale getLocale() {
+        return mLocale;
+    }
+
+    public int getCountryCode() {
+        return mCountryCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
