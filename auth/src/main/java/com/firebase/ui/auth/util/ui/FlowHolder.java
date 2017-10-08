@@ -11,7 +11,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
 
 public class FlowHolder extends ViewModelBase<FlowParameters> {
-    private static final MutableLiveData<ActivityResult> ON_ACTIVITY_RESULT = new SingleLiveEvent<>();
+    private static MutableLiveData<ActivityResult> ACTIVITY_RESULT_LISTENER = new AutoClearActivityResultListener();
 
     private final MutableLiveData<Pair<Intent, Integer>> mIntentStarter = new SingleLiveEvent<>();
     private final MutableLiveData<Pair<PendingIntent, Integer>> mPendingIntentStarter = new SingleLiveEvent<>();
@@ -27,8 +27,8 @@ public class FlowHolder extends ViewModelBase<FlowParameters> {
         mFlowParams = args;
     }
 
-    public LiveData<ActivityResult> getOnActivityResult() {
-        return ON_ACTIVITY_RESULT;
+    public LiveData<ActivityResult> getActivityResultListener() {
+        return ACTIVITY_RESULT_LISTENER;
     }
 
     public MutableLiveData<Pair<Intent, Integer>> getIntentStarter() {
@@ -40,10 +40,19 @@ public class FlowHolder extends ViewModelBase<FlowParameters> {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ON_ACTIVITY_RESULT.setValue(new ActivityResult(requestCode, resultCode, data));
+        ACTIVITY_RESULT_LISTENER.setValue(new ActivityResult(requestCode, resultCode, data));
     }
 
     public FlowParameters getParams() {
         return mFlowParams;
+    }
+
+    private static final class AutoClearActivityResultListener extends SingleLiveEvent<ActivityResult> {
+        @Override
+        protected void onInactive() {
+            // When the all listeners are removed i.e. all sign-in activities have finished,
+            // reset the listener
+            ACTIVITY_RESULT_LISTENER = new AutoClearActivityResultListener();
+        }
     }
 }

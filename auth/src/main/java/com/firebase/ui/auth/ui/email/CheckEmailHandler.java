@@ -34,7 +34,7 @@ public class CheckEmailHandler extends AuthViewModel implements Observer<Activit
     @Override
     protected void onCreate(FlowHolder args) {
         super.onCreate(args);
-        mFlowHolder.getOnActivityResult().observeForever(this);
+        mFlowHolder.getActivityResultListener().observeForever(this);
     }
 
     public LiveData<Credential> fetchCredential() {
@@ -79,6 +79,6 @@ public class CheckEmailHandler extends AuthViewModel implements Observer<Activit
     @Override
     protected void onCleared() {
         super.onCleared();
-        mFlowHolder.getOnActivityResult().removeObserver(this);
+        mFlowHolder.getActivityResultListener().removeObserver(this);
     }
 }

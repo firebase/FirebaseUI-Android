@@ -246,7 +246,7 @@ public class SignInHandler extends AuthViewModel {
         @Override
         public void onSuccess(String provider) {
             try {
-                mFlowHolder.getOnActivityResult().observeForever(this);
+                mFlowHolder.getActivityResultListener().observeForever(this);
             } catch (IllegalStateException e) {
                 // TODO no longer works
                 SIGN_IN_LISTENER.setValue(IdpResponse.fromError(new CyclicAccountLinkingException(
@@ -295,7 +295,7 @@ public class SignInHandler extends AuthViewModel {
                         " just take response or we can't get the user's existing credential");
             }
 
-            mFlowHolder.getOnActivityResult().removeObserver(this);
+            mFlowHolder.getActivityResultListener().removeObserver(this);
         }
 
         private void onExistingCredentialRetrieved() {

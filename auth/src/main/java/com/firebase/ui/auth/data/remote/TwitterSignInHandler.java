@@ -85,7 +85,7 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
         mHandler = params.signInHandler;
         mFlowHolder = params.flowHolder;
 
-        mFlowHolder.getOnActivityResult().observeForever(this);
+        mFlowHolder.getActivityResultListener().observeForever(this);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
     @Override
     protected void onCleared() {
         super.onCleared();
-        mFlowHolder.getOnActivityResult().removeObserver(this);
+        mFlowHolder.getActivityResultListener().removeObserver(this);
     }
 
     private class Callback extends com.twitter.sdk.android.core.Callback<TwitterSession> {

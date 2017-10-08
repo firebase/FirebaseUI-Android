@@ -55,7 +55,7 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
         mHandler = params.signInHandler;
         mFlowHolder = params.flowHolder;
 
-        mFlowHolder.getOnActivityResult().observeForever(this);
+        mFlowHolder.getActivityResultListener().observeForever(this);
     }
 
     public GoogleSignInOptions getSignInOptions(@Nullable String email) {
@@ -105,7 +105,7 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
     @Override
     protected void onCleared() {
         super.onCleared();
-        mFlowHolder.getOnActivityResult().removeObserver(this);
+        mFlowHolder.getActivityResultListener().removeObserver(this);
     }
 
     public static final class Params {

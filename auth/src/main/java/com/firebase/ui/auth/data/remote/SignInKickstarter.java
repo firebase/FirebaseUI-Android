@@ -57,7 +57,7 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
     @Override
     protected void onCreate(FlowHolder args) {
         super.onCreate(args);
-        mFlowHolder.getOnActivityResult().observeForever(this);
+        mFlowHolder.getActivityResultListener().observeForever(this);
     }
 
     public void setSignInHandler(SignInHandler handler) {
@@ -147,7 +147,7 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
     @Override
     protected void onCleared() {
         super.onCleared();
-        mFlowHolder.getOnActivityResult().removeObserver(this);
+        mFlowHolder.getActivityResultListener().removeObserver(this);
     }
 
     private class CredentialRequestFlow extends InternalGoogleApiConnector

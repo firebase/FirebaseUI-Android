@@ -25,13 +25,13 @@ public abstract class InternalGoogleApiConnector extends GoogleApiConnector
     @Override
     protected void connect() {
         super.connect();
-        mFlowHolder.getOnActivityResult().observeForever(this);
+        mFlowHolder.getActivityResultListener().observeForever(this);
     }
 
     @Override
     protected void disconnect() {
         super.disconnect();
-        mFlowHolder.getOnActivityResult().removeObserver(this);
+        mFlowHolder.getActivityResultListener().removeObserver(this);
     }
 
     @Override

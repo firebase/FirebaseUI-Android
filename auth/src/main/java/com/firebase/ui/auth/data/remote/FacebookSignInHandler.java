@@ -76,7 +76,7 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
         mHandler = params.signInHandler;
         mFlowHolder = params.flowHolder;
 
-        mFlowHolder.getOnActivityResult().observeForever(this);
+        mFlowHolder.getActivityResultListener().observeForever(this);
         LoginManager.getInstance().registerCallback(mCallbackManager, this);
     }
 
@@ -140,7 +140,7 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
     @Override
     protected void onCleared() {
         super.onCleared();
-        mFlowHolder.getOnActivityResult().removeObserver(this);
+        mFlowHolder.getActivityResultListener().removeObserver(this);
         LoginManager.getInstance().unregisterCallback(mCallbackManager);
     }
 

@@ -16,7 +16,7 @@ public class EmailProvider implements Provider {
 
     public EmailProvider(final HelperActivityBase activity) {
         activity.getFlowHolder()
-                .getOnActivityResult()
+                .getActivityResultListener()
                 .observe(activity, new Observer<ActivityResult>() {
                     @Override
                     public void onChanged(@Nullable ActivityResult result) {
