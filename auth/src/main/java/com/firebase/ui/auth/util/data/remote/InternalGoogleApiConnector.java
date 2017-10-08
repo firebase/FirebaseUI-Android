@@ -13,7 +13,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 public abstract class InternalGoogleApiConnector extends GoogleApiConnector
         implements Observer<ActivityResult>, GoogleApiClient.OnConnectionFailedListener {
-    private static final int RC_CONNECTION = 28;
+    private static final int RC_CONNECTION = 7;
 
     private final FlowHolder mFlowHolder;
 

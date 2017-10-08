@@ -27,7 +27,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Params>
         implements Observer<ActivityResult> {
-    public static final int RC_SIGN_IN = 20;
+    public static final int RC_SIGN_IN = 13;
 
     private AuthUI.IdpConfig mConfig;
     private SignInHandler mHandler;

@@ -12,7 +12,7 @@ import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 
 public class EmailProvider implements Provider {
-    private static final int RC_EMAIL_FLOW = 2;
+    private static final int RC_EMAIL_FLOW = 8;
 
     public EmailProvider(final HelperActivityBase activity) {
         activity.getFlowHolder()

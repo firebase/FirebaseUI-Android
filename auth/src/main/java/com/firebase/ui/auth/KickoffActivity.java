@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.util.Log;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.GoogleApiConnectionException;
@@ -24,7 +23,6 @@ import com.firebase.ui.auth.util.data.remote.PlayServicesHelper;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends HelperActivityBase {
-    private static final String TAG = "KickoffActivity";
     private static final String IS_WAITING_FOR_PLAY_SERVICES = "is_waiting_for_play_services";
     private static final int RC_PLAY_SERVICES = 1;
 
@@ -56,7 +54,6 @@ public class KickoffActivity extends HelperActivityBase {
 
     private void init() {
         if (isOffline()) {
-            Log.d(TAG, "No network connection");
             finish(RESULT_CANCELED,
                    IdpResponse.fromError(new NetworkException("No network on boot")).toIntent());
             return;

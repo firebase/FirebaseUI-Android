@@ -44,7 +44,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 public class SignInHandler extends AuthViewModel {
-    private static final int RC_ACCOUNT_LINK = 3;
+    private static final int RC_ACCOUNT_LINK = 11;
 
     public SignInHandler(Application application) {
         super(application);
@@ -109,7 +109,7 @@ public class SignInHandler extends AuthViewModel {
 
     private class SaveCredentialFlow extends InternalGoogleApiConnector
             implements OnSuccessListener<AuthResult>, ResultCallback<Status> {
-        private static final int RC_SAVE = 100;
+        private static final int RC_SAVE = 12;
 
         private final IdpResponse mResponse;
 

@@ -39,8 +39,8 @@ import com.firebase.ui.auth.util.ExtraConstants;
 public class RegisterEmailActivity extends AppCompatBase implements
         CheckEmailFragment.CheckEmailListener {
 
-    private static final int RC_WELCOME_BACK_IDP = 18;
-    private static final int RC_SIGN_IN = 17;
+    private static final int RC_WELCOME_BACK_IDP = 15;
+    private static final int RC_SIGN_IN = 16;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createIntent(context, flowParams, null);

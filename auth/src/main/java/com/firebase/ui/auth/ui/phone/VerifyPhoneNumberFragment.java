@@ -56,7 +56,7 @@ import java.util.Locale;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnClickListener {
     public static final String TAG = "VerifyPhoneFragment";
-    private static final int RC_PHONE_HINT = 22;
+    private static final int RC_PHONE_HINT = 14;
 
     private Context mAppContext;
 

@@ -13,7 +13,7 @@ import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 
 public class PhoneProvider implements Provider {
-    private static final int RC_PHONE_FLOW = 4;
+    private static final int RC_PHONE_FLOW = 9;
 
     private final AuthUI.IdpConfig mConfig;
 

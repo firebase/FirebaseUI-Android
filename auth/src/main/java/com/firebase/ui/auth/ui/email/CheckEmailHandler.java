@@ -22,7 +22,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.Task;
 
 public class CheckEmailHandler extends AuthViewModel implements Observer<ActivityResult> {
-    private static final int RC_HINT = 13;
+    private static final int RC_HINT = 2;
 
     private MutableLiveData<Credential> mCredentialListener = new MutableLiveData<>();
     private Pair<String, Task<String>> mCachedProviderFetch;
