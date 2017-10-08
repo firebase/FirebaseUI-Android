@@ -110,6 +110,7 @@ public class CheckEmailFragment extends FragmentBase implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mHandler = ViewModelProviders.of(this).get(CheckEmailHandler.class);
+        mHandler.init(getFlowHolder());
 
         // Set listener
         if (!(getActivity() instanceof CheckEmailListener)) {

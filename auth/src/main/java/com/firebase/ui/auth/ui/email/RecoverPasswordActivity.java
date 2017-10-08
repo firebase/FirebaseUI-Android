@@ -57,6 +57,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         setContentView(R.layout.fui_forgot_password_layout);
 
         mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
+        mHandler.init(getFlowHolder());
 
         mEmailFieldValidator =
                 new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));

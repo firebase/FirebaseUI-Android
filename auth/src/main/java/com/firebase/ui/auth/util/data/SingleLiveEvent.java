@@ -1,7 +1,5 @@
 package com.firebase.ui.auth.util.data;
 
-import android.arch.lifecycle.GenericLifecycleObserver;
-import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
@@ -38,22 +36,19 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
             mObserverStatuses.put(observerClass, new AtomicBoolean());
         }
 
-        super.observe(owner, new Observer<T>() {
-            @Override
-            public void onChanged(@Nullable T t) {
-                if (mObserverStatuses.get(observerClass).compareAndSet(true, false)) {
-                    observer.onChanged(t);
-                }
-            }
-        });
-        owner.getLifecycle().addObserver(new GenericLifecycleObserver() {
-            @Override
-            public void onStateChanged(LifecycleOwner source, Lifecycle.Event event) {
-                if (event == Lifecycle.Event.ON_DESTROY) {
-                    mActiveObservers.remove(observerClass);
-                }
-            }
-        });
+        super.observe(owner, new EventFilterObserver<>(observer));
+    }
+
+    @Override
+    public void removeObserver(Observer<T> observer) {
+        super.removeObserver(observer);
+        Class<? extends  Observer> observerClass;
+        if (observer instanceof EventFilterObserver) {
+            observerClass = ((EventFilterObserver) observer).getOriginalObserver().getClass();
+        } else {
+            observerClass = observer.getClass();
+        }
+        mActiveObservers.remove(observerClass);
     }
 
     @Override
@@ -62,5 +57,24 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
             aBoolean.set(true);
         }
         super.setValue(t);
+    }
+
+    private class EventFilterObserver<T> implements Observer<T> {
+        private final Observer<T> mObserver;
+
+        public EventFilterObserver(Observer<T> observer) {
+            mObserver = observer;
+        }
+
+        private Observer<T> getOriginalObserver() {
+            return mObserver;
+        }
+
+        @Override
+        public void onChanged(@Nullable T t) {
+            if (mObserverStatuses.get(mObserver.getClass()).compareAndSet(true, false)) {
+                mObserver.onChanged(t);
+            }
+        }
     }
 }

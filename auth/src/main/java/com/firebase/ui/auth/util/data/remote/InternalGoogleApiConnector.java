@@ -20,8 +20,6 @@ public abstract class InternalGoogleApiConnector extends GoogleApiConnector
     protected InternalGoogleApiConnector(GoogleApiClient.Builder builder, FlowHolder holder) {
         super(builder);
         mFlowHolder = holder;
-
-        mFlowHolder.getOnActivityResult().observeForever(this);
     }
 
     @Override
@@ -48,7 +46,7 @@ public abstract class InternalGoogleApiConnector extends GoogleApiConnector
     public void onChanged(@Nullable ActivityResult result) {
         if (result.getRequestCode() == RC_CONNECTION) {
             if (result.getResultCode() == Activity.RESULT_OK) {
-                mClient.connect();
+                connect();
             } else {
                 disconnect();
                 onConnectionFailedIrreparably();

@@ -45,7 +45,6 @@ public class HelperActivityBase extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSignInHandler().init(getFlowHolder());
         mProgressDialogHolder = new ProgressDialogHolder(this);
 
         getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
@@ -109,6 +108,7 @@ public class HelperActivityBase extends AppCompatActivity {
     public SignInHandler getSignInHandler() {
         if (mSignInHandler == null) {
             mSignInHandler = ViewModelProviders.of(this).get(SignInHandler.class);
+            mSignInHandler.init(getFlowHolder());
         }
 
         return mSignInHandler;

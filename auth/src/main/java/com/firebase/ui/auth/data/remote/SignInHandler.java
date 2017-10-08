@@ -120,7 +120,7 @@ public class SignInHandler extends AuthViewModel {
 
         public SaveCredentialFlow(IdpResponse response) {
             super(new GoogleApiClient.Builder(getApplication()).addApi(Auth.CREDENTIALS_API),
-                    mFlowHolder);
+                  mFlowHolder);
             mResponse = response;
         }
 

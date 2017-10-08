@@ -37,6 +37,7 @@ public class KickoffActivity extends HelperActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
+        mKickstarter.init(getFlowHolder());
         mKickstarter.setSignInHandler(getSignInHandler());
         getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
             @Override

@@ -3,6 +3,7 @@ package com.firebase.ui.auth.data.remote;
 import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.Observer;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.data.AuthViewModel;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.util.data.remote.InternalGoogleApiConnector;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.google.android.gms.auth.api.Auth;
@@ -39,7 +41,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignInKickstarter extends AuthViewModel implements ResultCallback<CredentialRequestResult>, Observer<ActivityResult> {
+public class SignInKickstarter extends AuthViewModel implements Observer<ActivityResult> {
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
@@ -64,63 +66,9 @@ public class SignInKickstarter extends AuthViewModel implements ResultCallback<C
 
     public void start() {
         if (mFlowHolder.getParams().enableCredentials) {
-            Auth.CredentialsApi.request(
-                    new GoogleApiClient.Builder(getApplication())
-                            .addApi(Auth.CREDENTIALS_API)
-                            .build(),
-                    new CredentialRequest.Builder()
-                            .setPasswordLoginSupported(true)
-                            .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
-                            .build())
-                    .setResultCallback(this);
+            new CredentialRequestFlow().start();
         } else {
             startAuthMethodChoice();
-        }
-    }
-
-    private List<String> getSupportedAccountTypes() {
-        List<String> accounts = new ArrayList<>();
-        for (AuthUI.IdpConfig idpConfig : mFlowHolder.getParams().providerInfo) {
-            @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
-            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
-                    || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
-                accounts.add(ProviderUtils.providerIdToAccountType(providerId));
-            }
-        }
-        return accounts;
-    }
-
-    @Override
-    public void onResult(@NonNull CredentialRequestResult result) {
-        Status status = result.getStatus();
-
-        if (status.isSuccess()) {
-            // Auto sign-in success
-            handleCredential(result.getCredential());
-        } else if (status.hasResolution()
-                && status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-            mFlowHolder.getPendingIntentStarter().setValue(Pair.create(
-                    status.getResolution(),
-                    RC_CREDENTIALS_READ));
-        } else {
-            startAuthMethodChoice();
-        }
-    }
-
-    private void handleCredential(Credential credential) {
-        String email = credential.getId();
-        String password = credential.getPassword();
-        if (!TextUtils.isEmpty(email)) {
-            if (TextUtils.isEmpty(password)) {
-                redirectToIdpSignIn(email, ProviderUtils.accountTypeToProviderId(
-                        String.valueOf(credential.getAccountType())));
-            } else {
-                mHandler.start(Tasks.forResult(new IdpResponse.Builder(
-                        new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
-                        .setPassword(password)
-                        .build()));
-            }
         }
     }
 
@@ -187,7 +135,95 @@ public class SignInKickstarter extends AuthViewModel implements ResultCallback<C
     @Override
     public void onChanged(@Nullable ActivityResult result) {
         switch (result.getRequestCode()) {
-            case RC_CREDENTIALS_READ:
+            case RC_AUTH_METHOD_PICKER:
+            case RC_IDP_SIGNIN:
+            case RC_EMAIL_FLOW:
+            case RC_PHONE_FLOW:
+                SIGN_IN_LISTENER.setValue(IdpResponse.fromResultIntent(result.getData()));
+        }
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        mFlowHolder.getOnActivityResult().removeObserver(this);
+    }
+
+    private class CredentialRequestFlow extends InternalGoogleApiConnector
+            implements ResultCallback<CredentialRequestResult> {
+        protected CredentialRequestFlow() {
+            super(new GoogleApiClient.Builder(getApplication())
+                    .addApi(Auth.CREDENTIALS_API), mFlowHolder);
+        }
+
+        public void start() {
+            connect();
+        }
+
+        @Override
+        public void onConnected(@Nullable Bundle bundle) {
+            Auth.CredentialsApi.request(
+                    mClient,
+                    new CredentialRequest.Builder()
+                            .setPasswordLoginSupported(true)
+                            .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
+                            .build())
+                    .setResultCallback(this);
+        }
+
+        private List<String> getSupportedAccountTypes() {
+            List<String> accounts = new ArrayList<>();
+            for (AuthUI.IdpConfig idpConfig : mFlowHolder.getParams().providerInfo) {
+                @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
+                if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
+                        || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
+                        || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
+                    accounts.add(ProviderUtils.providerIdToAccountType(providerId));
+                }
+            }
+            return accounts;
+        }
+
+        @Override
+        public void onResult(@NonNull CredentialRequestResult result) {
+            Status status = result.getStatus();
+
+            if (status.isSuccess()) {
+                // Auto sign-in success
+                handleCredential(result.getCredential());
+            } else if (status.hasResolution()
+                    && status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+                mFlowHolder.getPendingIntentStarter().setValue(Pair.create(
+                        status.getResolution(),
+                        RC_CREDENTIALS_READ));
+                return;
+            } else {
+                startAuthMethodChoice();
+            }
+
+            disconnect();
+        }
+
+        private void handleCredential(Credential credential) {
+            String email = credential.getId();
+            String password = credential.getPassword();
+            if (!TextUtils.isEmpty(email)) {
+                if (TextUtils.isEmpty(password)) {
+                    redirectToIdpSignIn(email, ProviderUtils.accountTypeToProviderId(
+                            String.valueOf(credential.getAccountType())));
+                } else {
+                    mHandler.start(Tasks.forResult(new IdpResponse.Builder(
+                            new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
+                            .setPassword(password)
+                            .build()));
+                }
+            }
+        }
+
+        @Override
+        public void onChanged(@Nullable ActivityResult result) {
+            super.onChanged(result);
+            if (result.getRequestCode() == RC_CREDENTIALS_READ) {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     handleCredential(
                             (Credential) result.getData().getParcelableExtra(Credential.EXTRA_KEY));
@@ -195,13 +231,14 @@ public class SignInKickstarter extends AuthViewModel implements ResultCallback<C
                     // Smart lock selector cancelled, go to the AuthMethodPicker screen
                     startAuthMethodChoice();
                 }
-                break;
-            case RC_AUTH_METHOD_PICKER:
-            case RC_IDP_SIGNIN:
-            case RC_EMAIL_FLOW:
-            case RC_PHONE_FLOW:
-                SIGN_IN_LISTENER.setValue(IdpResponse.fromResultIntent(result.getData()));
-                break;
+
+                disconnect();
+            }
+        }
+
+        @Override
+        protected void onConnectionFailedIrreparably() {
+            startAuthMethodChoice();
         }
     }
 }
