@@ -87,7 +87,7 @@ public class IdpResponse implements Parcelable {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public Boolean isSuccessful() {
+    public boolean isSuccessful() {
         return mException == null;
     }
 

@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.remote.SignInHandler;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -47,10 +48,12 @@ public class HelperActivityBase extends AppCompatActivity {
         getSignInHandler().init(getFlowHolder());
         mProgressDialogHolder = new ProgressDialogHolder(this);
 
-        getSignInHandler().getFailureLiveData().observe(this, new Observer<Exception>() {
+        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
             @Override
-            public void onChanged(@Nullable Exception e) {
-                Log.e("AuthUI", "Sign in error occurred.", e);
+            public void onChanged(@Nullable IdpResponse response) {
+                if (!response.isSuccessful()) {
+                    Log.e("AuthUI", "Sign in error occurred.", response.getException());
+                }
             }
         });
         getFlowHolder().getIntentStarter().observe(this, new Observer<Pair<Intent, Integer>>() {

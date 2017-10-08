@@ -11,7 +11,6 @@ import android.util.Pair;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.ProviderErrorException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
@@ -201,14 +200,7 @@ public class SignInKickstarter extends AuthViewModel implements ResultCallback<C
             case RC_IDP_SIGNIN:
             case RC_EMAIL_FLOW:
             case RC_PHONE_FLOW:
-                @Nullable IdpResponse response = IdpResponse.fromResultIntent(result.getData());
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    SIGN_IN_LISTENER.setValue(response);
-                } else {
-                    FAILURE_LISTENER.setValue(response == null ?
-                            new ProviderErrorException("Couldn't log in with any providers")
-                            : response.getException());
-                }
+                SIGN_IN_LISTENER.setValue(IdpResponse.fromResultIntent(result.getData()));
                 break;
         }
     }
