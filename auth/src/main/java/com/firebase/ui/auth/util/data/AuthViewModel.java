@@ -11,7 +11,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 public class AuthViewModel extends ViewModelBase<FlowHolder> {
-    protected static MutableLiveData<IdpResponse> SIGN_IN_LISTENER = new AutoClearSignInListener();
+    protected static MutableLiveData<IdpResponse> SIGN_IN_LISTENER =
+            new AutoClearSingleLiveEvent<>(new Runnable() {
+                @Override
+                public void run() {
+                    SIGN_IN_LISTENER = new AutoClearSingleLiveEvent<>(this);
+                }
+            });
 
     protected FlowHolder mFlowHolder;
     protected FirebaseAuth mAuth;
@@ -28,14 +34,5 @@ public class AuthViewModel extends ViewModelBase<FlowHolder> {
         FirebaseApp app = FirebaseApp.getInstance(mFlowHolder.getParams().appName);
         mAuth = FirebaseAuth.getInstance(app);
         mPhoneAuth = PhoneAuthProvider.getInstance(mAuth);
-    }
-
-    private static final class AutoClearSignInListener extends SingleLiveEvent<IdpResponse> {
-        @Override
-        protected void onInactive() {
-            // When the all listeners are removed i.e. all sign-in activities have finished,
-            // reset the listener
-            SIGN_IN_LISTENER = new AutoClearSignInListener();
-        }
     }
 }

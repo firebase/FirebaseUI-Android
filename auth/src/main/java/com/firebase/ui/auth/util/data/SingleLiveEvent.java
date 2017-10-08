@@ -12,11 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * A lifecycle-aware observable that sends only new updates after subscription, used for events like
- * navigation and SnackBar messages.
+ * A LiveData that only notifies observers when new data arrives, used for events like navigation
+ * and SnackBar messages.
  * <p>
  * This avoids a common problem with events: on configuration change (like rotation) an update can
  * be emitted if the observer is active.
+ * <p>
+ * This LiveData supports multiple observers per class definition, but works on a stack model. Only
+ * the newest observers get updates.
  */
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
     private final Map<Class<? extends Observer>, AtomicBoolean> mObserverStatuses = new ConcurrentHashMap<>();

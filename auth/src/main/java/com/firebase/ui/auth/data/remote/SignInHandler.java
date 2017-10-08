@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -83,9 +85,26 @@ public class SignInHandler extends AuthViewModel {
             }
         }
 
-        private Task<AuthResult> handleEmail(IdpResponse response) {
-            return mAuth.createUserWithEmailAndPassword(
-                    response.getEmail(), response.getPassword());
+        private Task<AuthResult> handleEmail(final IdpResponse response) {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+                return currentUser.linkWithCredential(EmailAuthProvider.getCredential(
+                        response.getEmail(), response.getPassword()));
+            } else {
+                return ProviderUtils.fetchTopProvider(mAuth, response.getEmail())
+                        .continueWithTask(new Continuation<String, Task<AuthResult>>() {
+                            @Override
+                            public Task<AuthResult> then(@NonNull Task<String> task) {
+                                if (TextUtils.isEmpty(task.getResult())) {
+                                    return mAuth.createUserWithEmailAndPassword(
+                                            response.getEmail(), response.getPassword());
+                                } else {
+                                    return mAuth.signInWithEmailAndPassword(
+                                            response.getEmail(), response.getPassword());
+                                }
+                            }
+                        });
+            }
         }
 
         private Task<AuthResult> handlePhone(IdpResponse response) {
@@ -120,7 +139,7 @@ public class SignInHandler extends AuthViewModel {
 
         public SaveCredentialFlow(IdpResponse response) {
             super(new GoogleApiClient.Builder(getApplication()).addApi(Auth.CREDENTIALS_API),
-                  mFlowHolder);
+                    mFlowHolder);
             mResponse = response;
         }
 
@@ -289,10 +308,8 @@ public class SignInHandler extends AuthViewModel {
             IdpResponse response = IdpResponse.fromResultIntent(result.getData());
             if (result.getResultCode() == Activity.RESULT_OK) {
                 onExistingCredentialRetrieved();
-            } else {
+            } else if (response != null) {
                 onExistingCredentialRetrievalFailure(response);
-                throw new IllegalStateException("TODO: we need to update the failure listener to" +
-                        " just take response or we can't get the user's existing credential");
             }
 
             mFlowHolder.getActivityResultListener().removeObserver(this);

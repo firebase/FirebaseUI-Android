@@ -118,6 +118,16 @@ public class CheckEmailFragment extends FragmentBase implements
         }
         mListener = (CheckEmailListener) getActivity();
 
+        mHandler.getCredentialListener().observe(this, new Observer<Credential>() {
+            @Override
+            public void onChanged(@Nullable Credential credential) {
+                if (credential != null) {
+                    mEmailEditText.setText(credential.getId());
+                    validateAndProceed();
+                }
+            }
+        });
+
         if (savedInstanceState != null) {
             return;
         }
@@ -130,15 +140,7 @@ public class CheckEmailFragment extends FragmentBase implements
             validateAndProceed();
         } else if (getFlowHolder().getParams().enableHints) {
             // Try SmartLock email autocomplete hint
-            mHandler.fetchCredential().observe(this, new Observer<Credential>() {
-                @Override
-                public void onChanged(@Nullable Credential credential) {
-                    if (credential != null) {
-                        mEmailEditText.setText(credential.getId());
-                        validateAndProceed();
-                    }
-                }
-            });
+            mHandler.fetchCredential();
         }
     }
 

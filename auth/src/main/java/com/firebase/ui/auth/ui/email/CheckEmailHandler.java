@@ -37,9 +37,8 @@ public class CheckEmailHandler extends AuthViewModel implements Observer<Activit
         mFlowHolder.getActivityResultListener().observeForever(this);
     }
 
-    public LiveData<Credential> fetchCredential() {
+    public void fetchCredential() {
         mFlowHolder.getPendingIntentStarter().setValue(Pair.create(getEmailHintIntent(), RC_HINT));
-        return getCredentialListener();
     }
 
     public LiveData<Credential> getCredentialListener() {
