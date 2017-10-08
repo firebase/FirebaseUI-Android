@@ -107,8 +107,8 @@ public class CountryInfoTests {
         String expected = new String(Character.toChars(firstLetter))
                 + new String(Character.toChars(secondLetter))
                 + " "
-                + usCountryInfo.mLocale.getDisplayCountry()
-                + " +" + usCountryInfo.mCountryCode;
+                + usCountryInfo.getLocale().getDisplayCountry()
+                + " +" + usCountryInfo.getCountryCode();
         assertEquals(expected.toString(), usCountryInfo.toString());
     }
 }

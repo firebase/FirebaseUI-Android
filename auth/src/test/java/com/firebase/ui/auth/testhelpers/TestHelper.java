@@ -18,22 +18,15 @@ import android.content.Context;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.mockito.ArgumentCaptor;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TestHelper {
@@ -80,40 +73,5 @@ public class TestHelper {
                 true  /* credentialPickerEnabled */,
                 true  /* hintSelectorEnabled */,
                 true  /* allowNewEmailAccounts */);
-    }
-
-    public static void verifySmartLockSave(String providerId, String email, String password) {
-        verifySmartLockSave(providerId, email, password, null);
-    }
-
-    public static void verifySmartLockSave(String providerId, String email,
-                                           String password, String phoneNumber) {
-
-        ArgumentCaptor<FirebaseUser> userCaptor = ArgumentCaptor.forClass(FirebaseUser.class);
-        ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
-
-        verify(AuthHelperShadow.getSaveSmartLockInstance(null)).saveCredentialsOrFinish(
-                userCaptor.capture(),
-                passwordCaptor.capture(),
-                idpResponseCaptor.capture());
-
-        // Check email and password
-        assertNotNull(userCaptor.getValue());
-        assertEquals(email, userCaptor.getValue().getEmail());
-        assertEquals(password, passwordCaptor.getValue());
-        assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
-
-        // Check phone number (if necessary)
-        if (phoneNumber != null) {
-            assertEquals(phoneNumber, userCaptor.getValue().getPhoneNumber());
-        }
-
-        // Check provider id
-        if (providerId == null) {
-            assertNull(idpResponseCaptor.getValue());
-        } else {
-            assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
-        }
     }
 }

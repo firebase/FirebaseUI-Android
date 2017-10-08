@@ -1,5 +1,6 @@
 package com.firebase.ui.auth;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,9 @@ import android.support.annotation.RestrictTo;
 import android.util.Log;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.GoogleApiConnectionException;
+import com.firebase.ui.auth.data.model.NetworkException;
+import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.remote.PlayServicesHelper;
@@ -19,6 +23,7 @@ public class KickoffActivity extends HelperActivityBase {
     private static final String IS_WAITING_FOR_PLAY_SERVICES = "is_waiting_for_play_services";
     private static final int RC_PLAY_SERVICES = 1;
 
+    private SignInKickstarter mKickstarter;
     private boolean mIsWaitingForPlayServices = false;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
@@ -28,12 +33,13 @@ public class KickoffActivity extends HelperActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
 
         if (savedInstanceState == null || savedInstanceState.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
             if (isOffline()) {
                 Log.d(TAG, "No network connection");
-                finish(RESULT_CANCELED,
-                       IdpResponse.getErrorIntent(ErrorCodes.NO_NETWORK));
+                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                        new NetworkException("No network on boot")));
                 return;
             }
 
@@ -43,14 +49,14 @@ public class KickoffActivity extends HelperActivityBase {
                     new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
-                            finish(RESULT_CANCELED,
-                                   IdpResponse.getErrorIntent(
-                                           ErrorCodes.UNKNOWN_ERROR));
+                            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                                    new GoogleApiConnectionException(
+                                            "User cancelled Play Services availability request on boot")));
                         }
                     });
 
             if (isPlayServicesAvailable) {
-                start();
+                mKickstarter.start();
             } else {
                 mIsWaitingForPlayServices = true;
             }
@@ -70,20 +76,12 @@ public class KickoffActivity extends HelperActivityBase {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_PLAY_SERVICES) {
             if (resultCode == RESULT_OK) {
-                start();
+                mKickstarter.start();
             } else {
-                finish(RESULT_CANCELED,
-                       IdpResponse.getErrorIntent(ErrorCodes.UNKNOWN_ERROR));
+                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new GoogleApiConnectionException(
+                        "Couldn't make Play Services available on boot")));
             }
-        } else {
-            SignInDelegate delegate = SignInDelegate.getInstance(this);
-            if (delegate != null) delegate.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    private void start() {
-        FlowParameters flowParams = getFlowParams();
-        SignInDelegate.delegate(this, flowParams);
     }
 
     /**

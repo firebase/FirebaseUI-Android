@@ -24,8 +24,6 @@ import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
-import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.FirebaseAuthError;
@@ -132,7 +130,7 @@ public class PhoneVerificationActivityTest {
 
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
         assertEquals(YE_COUNTRY_CODE,
-                     String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).mCountryCode));
+                     String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).getCountryCode()));
     }
 
     @Test
@@ -158,9 +156,9 @@ public class PhoneVerificationActivityTest {
 
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
         assertEquals(CA_COUNTRY_CODE,
-                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).mCountryCode));
+                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).getCountryCode()));
         assertEquals(new Locale("", CA_ISO2),
-                ((CountryInfo) mCountryListSpinner.getTag()).mLocale);
+                ((CountryInfo) mCountryListSpinner.getTag()).getLocale());
     }
 
     @Test

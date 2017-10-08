@@ -37,6 +37,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -120,7 +121,8 @@ public class PhoneVerificationActivity extends AppCompatBase {
             sendCode(mPhoneNumber, false);
         } else if (mVerificationState == VerificationState.VERIFIED) {
             // activity was recreated when verified dialog was displayed
-            finish(getAuthHelper().getCurrentUser());
+            finish(null);
+            throw new IllegalStateException("TODO");
         }
     }
 
@@ -240,7 +242,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
         mPhoneNumber = phoneNumber;
         mVerificationState = VerificationState.VERIFICATION_STARTED;
 
-        getAuthHelper().getPhoneAuthProvider().verifyPhoneNumber(
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,
                 AUTO_RETRIEVAL_TIMEOUT_MILLIS,
                 TimeUnit.MILLISECONDS,
@@ -271,6 +273,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
                     }
                 },
                 forceResend ? mForceResendingToken : null);
+        throw new IllegalStateException("TODO");
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
@@ -314,8 +317,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void signIn(@NonNull PhoneAuthCredential credential) {
-        getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(credential)
+        Tasks.<AuthResult>forException(new IllegalStateException("TODO"))
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(final AuthResult authResult) {
