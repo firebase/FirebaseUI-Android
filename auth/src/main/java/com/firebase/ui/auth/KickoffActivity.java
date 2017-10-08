@@ -34,32 +34,37 @@ public class KickoffActivity extends HelperActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
+        mKickstarter.setSignInHandler(getSignInHandler());
 
         if (savedInstanceState == null || savedInstanceState.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
-            if (isOffline()) {
-                Log.d(TAG, "No network connection");
-                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
-                        new NetworkException("No network on boot")));
-                return;
-            }
+            init();
+        }
+    }
 
-            boolean isPlayServicesAvailable = PlayServicesHelper.makePlayServicesAvailable(
-                    this,
-                    RC_PLAY_SERVICES,
-                    new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
-                                    new GoogleApiConnectionException(
-                                            "User cancelled Play Services availability request on boot")));
-                        }
-                    });
+    private void init() {
+        if (isOffline()) {
+            Log.d(TAG, "No network connection");
+            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                    new NetworkException("No network on boot")));
+            return;
+        }
 
-            if (isPlayServicesAvailable) {
-                mKickstarter.start();
-            } else {
-                mIsWaitingForPlayServices = true;
-            }
+        boolean isPlayServicesAvailable = PlayServicesHelper.makePlayServicesAvailable(
+                this,
+                RC_PLAY_SERVICES,
+                new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                                new GoogleApiConnectionException(
+                                        "User cancelled Play Services availability request on boot")));
+                    }
+                });
+
+        if (isPlayServicesAvailable) {
+            mKickstarter.start();
+        } else {
+            mIsWaitingForPlayServices = true;
         }
     }
 

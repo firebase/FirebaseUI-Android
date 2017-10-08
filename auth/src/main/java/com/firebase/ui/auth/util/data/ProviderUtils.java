@@ -76,6 +76,20 @@ public final class ProviderUtils {
         }
     }
 
+    @AuthUI.SupportedProvider
+    public static String accountTypeToProviderId(@NonNull String accountType) {
+        switch (accountType) {
+            case IdentityProviders.GOOGLE:
+                return GoogleAuthProvider.PROVIDER_ID;
+            case IdentityProviders.FACEBOOK:
+                return FacebookAuthProvider.PROVIDER_ID;
+            case IdentityProviders.TWITTER:
+                return TwitterAuthProvider.PROVIDER_ID;
+            default:
+                return null;
+        }
+    }
+
     public static Task<String> fetchTopProvider(FirebaseAuth auth, @NonNull String email) {
         if (TextUtils.isEmpty(email)) {
             return Tasks.forException(new NullPointerException("Email cannot be empty"));

@@ -6,6 +6,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,10 +42,14 @@ public class GoogleSignInHelper extends GoogleApiConnector implements LifecycleO
     }
 
     public static GoogleSignInHelper newInstance(FragmentActivity activity) {
-        GoogleApiClient.Builder builder = new GoogleApiClient.Builder(activity)
+        return newInstance(activity, activity);
+    }
+
+    public static GoogleSignInHelper newInstance(Context context, LifecycleOwner owner) {
+        GoogleApiClient.Builder builder = new GoogleApiClient.Builder(context)
                 .addApi(Auth.CREDENTIALS_API)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, GoogleSignInOptions.DEFAULT_SIGN_IN);
-        return new GoogleSignInHelper(builder, activity);
+        return new GoogleSignInHelper(builder, owner);
     }
 
     public Task<Status> signOut() {

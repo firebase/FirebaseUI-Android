@@ -2,8 +2,10 @@ package com.firebase.ui.auth.data.remote;
 
 import android.app.Activity;
 import android.app.Application;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +23,6 @@ import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.data.AuthViewModel;
 import com.firebase.ui.auth.util.data.ProfileMerger;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.data.SingleLiveEvent;
 import com.firebase.ui.auth.util.data.remote.InternalGoogleApiConnector;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.google.android.gms.auth.api.Auth;
@@ -36,15 +37,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 public class SignInHandler extends AuthViewModel {
     private static final int RC_ACCOUNT_LINK = 3;
-
-    private static final MutableLiveData<IdpResponse> SUCCESS_LISTENER = new SingleLiveEvent<>();
-    private static final MutableLiveData<Exception> FAILURE_LISTENER = new SingleLiveEvent<>();
 
     public SignInHandler(Application application) {
         super(application);
@@ -93,7 +93,6 @@ public class SignInHandler extends AuthViewModel {
         }
 
         private Task<AuthResult> handlePhone(IdpResponse response) {
-            // TODO
             throw new IllegalStateException("TODO");
         }
 
@@ -209,9 +208,9 @@ public class SignInHandler extends AuthViewModel {
 
         @Override
         public void onFailure(@NonNull Exception e) {
-            if (e instanceof FirebaseAuthUserCollisionException) {
-                String email = mResponse.getEmail();
-                if (email != null) {
+            String email = mResponse.getEmail();
+            if (email != null) {
+                if (e instanceof FirebaseAuthUserCollisionException) {
                     ProviderUtils.fetchTopProvider(mAuth, email)
                             .addOnSuccessListener(this)
                             .addOnFailureListener(new OnFailureListener() {
@@ -221,6 +220,27 @@ public class SignInHandler extends AuthViewModel {
                                 }
                             });
                     return;
+                } else if (e instanceof FirebaseAuthInvalidUserException
+                        || e instanceof FirebaseAuthInvalidCredentialsException) {
+                    LifecycleOwner owner = new LifecycleOwner() {
+                        private final Lifecycle mLifecycle = new LifecycleRegistry(this);
+
+                        @Override
+                        public Lifecycle getLifecycle() {
+                            return mLifecycle;
+                        }
+                    };
+                    final LifecycleRegistry lifecycle = (LifecycleRegistry) owner.getLifecycle();
+
+                    lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+                    GoogleSignInHelper.newInstance(getApplication(), owner)
+                            .delete(new Credential.Builder(email).build())
+                            .addOnCompleteListener(new OnCompleteListener<Status>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Status> task) {
+                                    lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+                                }
+                            });
                 }
             }
 
@@ -274,6 +294,8 @@ public class SignInHandler extends AuthViewModel {
                 onExistingCredentialRetrieved();
             } else {
                 onExistingCredentialRetrievalFailure(response);
+                throw new IllegalStateException("TODO: we need to update the failure listener to" +
+                        " just take response or we can't get the user's existing credential");
             }
 
             mFlowHolder.getOnActivityResult().removeObserver(this);
