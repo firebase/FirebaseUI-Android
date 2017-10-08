@@ -248,6 +248,7 @@ public class SignInHandler extends AuthViewModel {
             try {
                 mFlowHolder.getOnActivityResult().observeForever(this);
             } catch (IllegalStateException e) {
+                // TODO no longer works
                 SIGN_IN_LISTENER.setValue(IdpResponse.fromError(new CyclicAccountLinkingException(
                         "Attempting 3 way linking")));
                 return;

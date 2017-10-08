@@ -51,7 +51,7 @@ public class HelperActivityBase extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable IdpResponse response) {
                 if (!response.isSuccessful()) {
-                    Log.e("AuthUI", "Sign in error occurred.", response.getException());
+                    Log.d("AuthUI", "Sign in error occurred.", response.getException());
                 }
             }
         });

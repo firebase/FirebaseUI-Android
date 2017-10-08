@@ -129,7 +129,7 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
 
     @Override
     public void onCancel() {
-        onError(new FacebookException("Graph request cancelled."));
+        onError(new FacebookException("Sign in request cancelled."));
     }
 
     @Override

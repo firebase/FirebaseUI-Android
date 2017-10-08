@@ -13,6 +13,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
@@ -139,7 +140,10 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
             case RC_IDP_SIGNIN:
             case RC_EMAIL_FLOW:
             case RC_PHONE_FLOW:
-                SIGN_IN_LISTENER.setValue(IdpResponse.fromResultIntent(result.getData()));
+                @Nullable IdpResponse response = IdpResponse.fromResultIntent(result.getData());
+                SIGN_IN_LISTENER.setValue(response == null ?
+                        IdpResponse.fromError(new UserCancellationException("User pressed back"))
+                        : response);
         }
     }
 

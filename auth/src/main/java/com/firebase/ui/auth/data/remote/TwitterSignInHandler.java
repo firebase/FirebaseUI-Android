@@ -28,11 +28,13 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
     private SignInHandler mHandler;
     private FlowHolder mFlowHolder;
 
-    private final TwitterAuthClient mClient = new TwitterAuthClient();
+    private final TwitterAuthClient mClient;
     private final Callback mCallback = new Callback();
 
     public TwitterSignInHandler(Application application) {
         super(application);
+        initialize(getApplication());
+        mClient = new TwitterAuthClient();
     }
 
     public static void signOut(Context context) {
@@ -83,7 +85,6 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
         mHandler = params.signInHandler;
         mFlowHolder = params.flowHolder;
 
-        initialize(getApplication());
         mFlowHolder.getOnActivityResult().observeForever(this);
     }
 
