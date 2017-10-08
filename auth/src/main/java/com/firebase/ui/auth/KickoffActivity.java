@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.util.Log;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.GoogleApiConnectionException;
 import com.firebase.ui.auth.data.model.NetworkException;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -100,6 +102,17 @@ public class KickoffActivity extends HelperActivityBase {
                         .toIntent());
             }
         }
+    }
+
+    @Override
+    public void finish(int resultCode, Intent intent) {
+        @NonNull IdpResponse response = IdpResponse.fromResultIntent(intent);
+        // TODO return the full response when we decide to break backwards compatibility.
+        // For now, if the user cancelled the request, we return a null response.
+
+        super.finish(resultCode,
+                response.isSuccessful() || !(response.getException() instanceof UserCancellationException) ?
+                        intent : null);
     }
 
     /**
