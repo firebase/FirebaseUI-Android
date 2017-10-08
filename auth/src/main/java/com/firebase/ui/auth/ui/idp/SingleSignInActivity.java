@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.KickoffActivity;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.ProviderDisabledException;
 import com.firebase.ui.auth.data.model.User;
@@ -25,7 +24,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 public class SingleSignInActivity extends HelperActivityBase {
     public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
-        return HelperActivityBase.createBaseIntent(context, KickoffActivity.class, flowParams)
+        return HelperActivityBase.createBaseIntent(context, SingleSignInActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_USER, user);
     }
 
