@@ -85,6 +85,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
             for (EventFilterObserver<T> observer : mActiveObservers) {
                 Observer<T> originalObserver = observer.getOriginalObserver();
                 if (originalObserver.getClass() == mObserver.getClass()) {
+                    //noinspection unchecked
                     return (Observer<T2>) originalObserver;
                 }
             }
