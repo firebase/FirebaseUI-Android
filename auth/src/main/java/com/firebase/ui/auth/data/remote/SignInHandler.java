@@ -50,12 +50,8 @@ public class SignInHandler extends AuthViewModel {
         super(application);
     }
 
-    public LiveData<IdpResponse> getSuccessLiveData() {
-        return SUCCESS_LISTENER;
-    }
-
-    public LiveData<Exception> getFailureLiveData() {
-        return FAILURE_LISTENER;
+    public LiveData<IdpResponse> getSignInLiveData() {
+        return SIGN_IN_LISTENER;
     }
 
     public void start(Task<IdpResponse> tokenTask) {
@@ -83,7 +79,7 @@ public class SignInHandler extends AuthViewModel {
                         .addOnSuccessListener(new SaveCredentialFlow(response))
                         .addOnFailureListener(new FailureFlow(response));
             } else {
-                FAILURE_LISTENER.setValue(task.getException());
+                SIGN_IN_LISTENER.setValue(IdpResponse.fromError(task.getException()));
             }
         }
 
@@ -194,7 +190,7 @@ public class SignInHandler extends AuthViewModel {
 
         private void finish() {
             disconnect();
-            SUCCESS_LISTENER.setValue(mResponse);
+            SIGN_IN_LISTENER.setValue(mResponse);
         }
     }
 
@@ -216,7 +212,7 @@ public class SignInHandler extends AuthViewModel {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    FAILURE_LISTENER.setValue(e);
+                                    SIGN_IN_LISTENER.setValue(IdpResponse.fromError(e));
                                 }
                             });
                     return;
@@ -244,7 +240,7 @@ public class SignInHandler extends AuthViewModel {
                 }
             }
 
-            FAILURE_LISTENER.setValue(e);
+            SIGN_IN_LISTENER.setValue(IdpResponse.fromError(e));
         }
 
         @Override
@@ -252,8 +248,8 @@ public class SignInHandler extends AuthViewModel {
             try {
                 mFlowHolder.getOnActivityResult().observeForever(this);
             } catch (IllegalStateException e) {
-                FAILURE_LISTENER.setValue(new CyclicAccountLinkingException(
-                        "Attempting 3 way linking"));
+                SIGN_IN_LISTENER.setValue(IdpResponse.fromError(new CyclicAccountLinkingException(
+                        "Attempting 3 way linking")));
                 return;
             }
 
@@ -310,7 +306,7 @@ public class SignInHandler extends AuthViewModel {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             // If linking the user's existing account with the new one fails,
                             // we just give up because the user's already signed-in anyway.
-                            SUCCESS_LISTENER.setValue(mResponse);
+                            SIGN_IN_LISTENER.setValue(mResponse);
                         }
                     });
         }
@@ -325,11 +321,11 @@ public class SignInHandler extends AuthViewModel {
                 // For example, the user is logged-in anonymously, has a Google account, and tries
                 // to log in with Facebook.
 
-                FAILURE_LISTENER.setValue(e);
+                SIGN_IN_LISTENER.setValue(IdpResponse.fromError(e));
                 // For now, just fail. In the future, we can support a data migration where the
                 // anonymous account is thrown away and the other two are linked
             } else {
-                FAILURE_LISTENER.setValue(e);
+                SIGN_IN_LISTENER.setValue(IdpResponse.fromError(e));
             }
         }
     }

@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -76,13 +77,18 @@ public class IdpResponse implements Parcelable {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static Intent getErrorIntent(Exception e) {
-        return new IdpResponse(e).toIntent();
+    public static IdpResponse fromError(@NonNull Exception e) {
+        return new IdpResponse(e);
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public Intent toIntent() {
         return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public Boolean isSuccessful() {
+        return mException == null;
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -144,7 +150,9 @@ public class IdpResponse implements Parcelable {
      * Get the error code for a failed sign in
      */
     public int getErrorCode() {
-        if (mException instanceof NetworkException) {
+        if (isSuccessful()) {
+            return Activity.RESULT_OK;
+        } else if (mException instanceof NetworkException) {
             return ErrorCodes.NO_NETWORK;
         } else {
             return ErrorCodes.UNKNOWN_ERROR;

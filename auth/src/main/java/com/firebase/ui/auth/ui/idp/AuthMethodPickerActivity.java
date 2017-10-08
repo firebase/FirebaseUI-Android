@@ -78,10 +78,12 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             logo.setImageResource(logoId);
         }
 
-        getSignInHandler().getSuccessLiveData().observe(this, new Observer<IdpResponse>() {
+        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
             @Override
             public void onChanged(@Nullable IdpResponse response) {
-                finish(Activity.RESULT_OK, response.toIntent());
+                if (response.isSuccessful()) {
+                    finish(Activity.RESULT_OK, response.toIntent());
+                }
             }
         });
     }

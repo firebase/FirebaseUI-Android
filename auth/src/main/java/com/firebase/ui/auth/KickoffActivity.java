@@ -1,11 +1,14 @@
 package com.firebase.ui.auth;
 
+import android.app.Activity;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
@@ -35,6 +38,13 @@ public class KickoffActivity extends HelperActivityBase {
         super.onCreate(savedInstanceState);
         mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
         mKickstarter.setSignInHandler(getSignInHandler());
+        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
+            @Override
+            public void onChanged(@Nullable IdpResponse response) {
+                finish(response.isSuccessful() ? Activity.RESULT_OK : Activity.RESULT_CANCELED,
+                       response.toIntent());
+            }
+        });
 
         if (savedInstanceState == null || savedInstanceState.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
             init();
@@ -44,8 +54,8 @@ public class KickoffActivity extends HelperActivityBase {
     private void init() {
         if (isOffline()) {
             Log.d(TAG, "No network connection");
-            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
-                    new NetworkException("No network on boot")));
+            finish(RESULT_CANCELED,
+                   IdpResponse.fromError(new NetworkException("No network on boot")).toIntent());
             return;
         }
 
@@ -55,9 +65,10 @@ public class KickoffActivity extends HelperActivityBase {
                 new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
-                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                        finish(RESULT_CANCELED, IdpResponse.fromError(
                                 new GoogleApiConnectionException(
-                                        "User cancelled Play Services availability request on boot")));
+                                        "User cancelled Play Services availability request on boot"))
+                                .toIntent());
                     }
                 });
 
@@ -83,8 +94,9 @@ public class KickoffActivity extends HelperActivityBase {
             if (resultCode == RESULT_OK) {
                 mKickstarter.start();
             } else {
-                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new GoogleApiConnectionException(
-                        "Couldn't make Play Services available on boot")));
+                finish(RESULT_CANCELED, IdpResponse.fromError(new GoogleApiConnectionException(
+                        "Couldn't make Play Services available on boot"))
+                        .toIntent());
             }
         }
     }

@@ -93,20 +93,17 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         findViewById(R.id.button_done).setOnClickListener(this);
         findViewById(R.id.trouble_signing_in).setOnClickListener(this);
 
-        getSignInHandler().getSuccessLiveData().observe(this, new Observer<IdpResponse>() {
+        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
             @Override
             public void onChanged(@Nullable IdpResponse response) {
-                finish(Activity.RESULT_OK, response.toIntent());
+                if (response.isSuccessful()) {
+                    finish(Activity.RESULT_OK, response.toIntent());
+                } else {
+                    getDialogHolder().dismissDialog();
+                    mPasswordLayout.setError(response.getException().getLocalizedMessage());
+                }
             }
         });
-        getSignInHandler().getFailureLiveData()
-                .observe(this, new Observer<Exception>() {
-                    @Override
-                    public void onChanged(@Nullable Exception e) {
-                        getDialogHolder().dismissDialog();
-                        mPasswordLayout.setError(e.getLocalizedMessage());
-                    }
-                });
     }
 
     @Override

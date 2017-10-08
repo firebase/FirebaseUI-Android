@@ -15,6 +15,7 @@ import com.firebase.ui.auth.data.model.ProviderErrorException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
 import com.firebase.ui.auth.util.data.AuthViewModel;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -41,6 +42,7 @@ import java.util.List;
 
 public class SignInKickstarter extends AuthViewModel implements ResultCallback<CredentialRequestResult>, Observer<ActivityResult> {
     private static final int RC_CREDENTIALS_READ = 2;
+    private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
     private static final int RC_EMAIL_FLOW = 5;
     private static final int RC_PHONE_FLOW = 6;
@@ -112,7 +114,8 @@ public class SignInKickstarter extends AuthViewModel implements ResultCallback<C
         String password = credential.getPassword();
         if (!TextUtils.isEmpty(email)) {
             if (TextUtils.isEmpty(password)) {
-                redirectToIdpSignIn(email, credential.getAccountType());
+                redirectToIdpSignIn(email, ProviderUtils.accountTypeToProviderId(
+                        String.valueOf(credential.getAccountType())));
             } else {
                 mHandler.start(Tasks.forResult(new IdpResponse.Builder(
                         new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
@@ -146,7 +149,7 @@ public class SignInKickstarter extends AuthViewModel implements ResultCallback<C
                     break;
                 default:
                     // Launch IDP flow
-                    redirectToIdpSignIn(null, ProviderUtils.providerIdToAccountType(firstProvider));
+                    redirectToIdpSignIn(null, firstProvider);
                     break;
             }
         } else {
@@ -156,24 +159,25 @@ public class SignInKickstarter extends AuthViewModel implements ResultCallback<C
         }
     }
 
-    private void redirectToIdpSignIn(String email, String accountType) {
+    private void redirectToIdpSignIn(String email, String provider) {
         FlowParameters flowParams = mFlowHolder.getParams();
 
-        if (TextUtils.isEmpty(accountType)) {
+        if (TextUtils.isEmpty(provider)) {
             mFlowHolder.getIntentStarter().setValue(Pair.create(
                     RegisterEmailActivity.createIntent(getApplication(), flowParams, email),
                     RC_EMAIL_FLOW));
             return;
         }
 
-        if (accountType.equals(IdentityProviders.GOOGLE)
-                || accountType.equals(IdentityProviders.FACEBOOK)
-                || accountType.equals(IdentityProviders.TWITTER)) {
-            IdpSignInContainer.signIn(
-                    getActivity(),
-                    getFlowParams(),
-                    new User.Builder(ProviderUtils.accountTypeToProviderId(accountType), email)
-                            .build());
+        if (provider.equals(IdentityProviders.GOOGLE)
+                || provider.equals(IdentityProviders.FACEBOOK)
+                || provider.equals(IdentityProviders.TWITTER)) {
+            mFlowHolder.getIntentStarter().setValue(Pair.create(
+                    SingleSignInActivity.createIntent(
+                            getApplication(),
+                            flowParams,
+                            new User.Builder(provider, email).build()),
+                    RC_IDP_SIGNIN));
         } else {
             mFlowHolder.getIntentStarter().setValue(Pair.create(
                     AuthMethodPickerActivity.createIntent(getApplication(), flowParams),
@@ -194,11 +198,12 @@ public class SignInKickstarter extends AuthViewModel implements ResultCallback<C
                 }
                 break;
             case RC_AUTH_METHOD_PICKER:
+            case RC_IDP_SIGNIN:
             case RC_EMAIL_FLOW:
             case RC_PHONE_FLOW:
                 @Nullable IdpResponse response = IdpResponse.fromResultIntent(result.getData());
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    SUCCESS_LISTENER.setValue(response);
+                    SIGN_IN_LISTENER.setValue(response);
                 } else {
                     FAILURE_LISTENER.setValue(response == null ?
                             new ProviderErrorException("Couldn't log in with any providers")

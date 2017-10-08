@@ -54,6 +54,17 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_idp_prompt_layout);
 
+        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
+            @Override
+            public void onChanged(@Nullable IdpResponse response) {
+                finish(response.isSuccessful() ? Activity.RESULT_OK : Activity.RESULT_CANCELED,
+                       response.toIntent());
+            }
+        });
+        setupProvider();
+    }
+
+    private void setupProvider() {
         User oldUser = User.getUser(getIntent());
         Provider idpProvider = null;
 
@@ -77,8 +88,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         }
 
         if (idpProvider == null) {
-            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
-                    new ProviderDisabledException(providerId)));
+            finish(RESULT_CANCELED,
+                   IdpResponse.fromError(new ProviderDisabledException(providerId)).toIntent());
             return;
         }
 
@@ -93,19 +104,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             public void onClick(View view) {
                 getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
                 finalIdpProvider.startLogin(WelcomeBackIdpPrompt.this);
-            }
-        });
-
-        getSignInHandler().getSuccessLiveData().observe(this, new Observer<IdpResponse>() {
-            @Override
-            public void onChanged(@Nullable IdpResponse response) {
-                finish(Activity.RESULT_OK, response.toIntent());
-            }
-        });
-        getSignInHandler().getFailureLiveData().observe(this, new Observer<Exception>() {
-            @Override
-            public void onChanged(@Nullable Exception e) {
-                finish(Activity.RESULT_CANCELED, IdpResponse.getErrorIntent(e));
             }
         });
     }

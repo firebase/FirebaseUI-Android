@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.os.Build;
 import android.os.Bundle;
@@ -70,28 +71,27 @@ public class RegisterEmailFragment extends FragmentBase implements
             mUser = User.getUser(savedInstanceState);
         }
 
-        getSignInHandler().getSuccessLiveData().observe(this, new Observer<IdpResponse>() {
+        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
             @Override
             public void onChanged(@Nullable IdpResponse response) {
-
-            }
-        });
-        getSignInHandler().getFailureLiveData().observe(this, new Observer<Exception>() {
-            @Override
-            public void onChanged(@Nullable Exception e) {
-                if (e instanceof FirebaseAuthWeakPasswordException) {
-                    mPasswordInput.setError(getResources().getQuantityString(
-                            R.plurals.fui_error_weak_password,
-                            R.integer.fui_min_password_length));
-                } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    mEmailInput.setError(getString(R.string.fui_invalid_email_address));
+                if (response.isSuccessful()) {
+                    finish(Activity.RESULT_OK, response.toIntent());
                 } else {
-                    // General error message, this branch should not be invoked but
-                    // covers future API changes
-                    mEmailInput.setError(getString(R.string.fui_email_account_creation_error));
-                }
+                    Exception e = response.getException();
+                    if (e instanceof FirebaseAuthWeakPasswordException) {
+                        mPasswordInput.setError(getResources().getQuantityString(
+                                R.plurals.fui_error_weak_password,
+                                R.integer.fui_min_password_length));
+                    } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                        mEmailInput.setError(getString(R.string.fui_invalid_email_address));
+                    } else {
+                        // General error message, this branch should not be invoked but
+                        // covers future API changes
+                        mEmailInput.setError(getString(R.string.fui_email_account_creation_error));
+                    }
 
-                getDialogHolder().dismissDialog();
+                    getDialogHolder().dismissDialog();
+                }
             }
         });
     }

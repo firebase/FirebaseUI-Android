@@ -11,8 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 public class AuthViewModel extends ViewModelBase<FlowHolder> {
-    protected static final MutableLiveData<IdpResponse> SUCCESS_LISTENER = new SingleLiveEvent<>();
-    protected static final MutableLiveData<Exception> FAILURE_LISTENER = new SingleLiveEvent<>();
+    protected static final MutableLiveData<IdpResponse> SIGN_IN_LISTENER = new SingleLiveEvent<>();
 
     protected FlowHolder mFlowHolder;
     protected FirebaseAuth mAuth;
