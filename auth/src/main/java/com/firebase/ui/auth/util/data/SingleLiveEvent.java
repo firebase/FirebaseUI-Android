@@ -23,16 +23,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
     private final Map<Class<? extends Observer>, AtomicBoolean> mObserverStatuses = new ConcurrentHashMap<>();
-    private final List<EventFilterObserver<T>> mActiveObservers = new ArrayList<>();
+    private final List<EventFilterObserver<T>> mObservers = new ArrayList<>();
 
     @Override
-    public void observe(LifecycleOwner owner, final Observer<T> observer) {
+    public void observe(LifecycleOwner owner, Observer<T> observer) {
         if (!mObserverStatuses.containsKey(observer.getClass())) {
             mObserverStatuses.put(observer.getClass(), new AtomicBoolean());
         }
 
         EventFilterObserver<T> filterObserver = new EventFilterObserver<>(observer);
-        mActiveObservers.add(0, filterObserver);
+        mObservers.add(0, filterObserver);
         super.observe(owner, filterObserver);
     }
 
@@ -43,7 +43,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
             filterObserver = (EventFilterObserver<T>) observer;
         } else {
             filterObserver = null;
-            for (EventFilterObserver<T> activeObserver : mActiveObservers) {
+            for (EventFilterObserver<T> activeObserver : mObservers) {
                 Observer<T> originalObserver = activeObserver.getOriginalObserver();
                 if (originalObserver == observer) {
                     filterObserver = activeObserver;
@@ -54,7 +54,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
                 throw new IllegalStateException("Observer added without filter");
             }
         }
-        mActiveObservers.remove(filterObserver);
+        mObservers.remove(filterObserver);
         super.removeObserver(filterObserver);
     }
 
@@ -66,6 +66,16 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
         super.setValue(t);
     }
 
+    public boolean isObserving(Class<? extends Observer> observerClass) {
+        for (EventFilterObserver<T> filterObserver : mObservers) {
+            if (observerClass == filterObserver.getOriginalObserver().getClass()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private class EventFilterObserver<T2> implements Observer<T2> {
         private final Observer<T2> mObserver;
 
@@ -73,7 +83,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
             mObserver = observer;
         }
 
-        private Observer<T2> getOriginalObserver() {
+        public Observer<T2> getOriginalObserver() {
             return mObserver;
         }
 
@@ -85,7 +95,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
         }
 
         private Observer<T2> getNewestObserver() {
-            for (EventFilterObserver<T> observer : mActiveObservers) {
+            for (EventFilterObserver<T> observer : mObservers) {
                 Observer<T> originalObserver = observer.getOriginalObserver();
                 if (originalObserver.getClass() == mObserver.getClass()) {
                     //noinspection unchecked

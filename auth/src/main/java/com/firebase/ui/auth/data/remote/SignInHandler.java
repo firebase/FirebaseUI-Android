@@ -24,6 +24,7 @@ import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.data.AuthViewModel;
 import com.firebase.ui.auth.util.data.ProfileMerger;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.util.data.SingleLiveEvent;
 import com.firebase.ui.auth.util.data.remote.InternalGoogleApiConnector;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.google.android.gms.auth.api.Auth;
@@ -264,13 +265,13 @@ public class SignInHandler extends AuthViewModel {
 
         @Override
         public void onSuccess(String provider) {
-            try {
-                mFlowHolder.getActivityResultListener().observeForever(this);
-            } catch (IllegalStateException e) {
-                // TODO no longer works
+            if (((SingleLiveEvent<ActivityResult>) mFlowHolder.getActivityResultListener())
+                    .isObserving(getClass())) {
                 SIGN_IN_LISTENER.setValue(IdpResponse.fromError(new CyclicAccountLinkingException(
                         "Attempting 3 way linking")));
                 return;
+            } else {
+                mFlowHolder.getActivityResultListener().observeForever(this);
             }
 
             Toast.makeText(getApplication(), R.string.fui_error_user_collision, Toast.LENGTH_LONG)
