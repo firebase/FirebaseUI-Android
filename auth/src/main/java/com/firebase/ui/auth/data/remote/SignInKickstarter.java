@@ -81,21 +81,18 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
             String firstProvider = firstIdpConfig.getProviderId();
             switch (firstProvider) {
                 case EmailAuthProvider.PROVIDER_ID:
-                    // Go directly to email flow
                     mFlowHolder.getIntentStarter().setValue(Pair.create(
                             RegisterEmailActivity.createIntent(getApplication(), flowParams),
                             RC_EMAIL_FLOW));
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    // Go directly to phone flow
                     mFlowHolder.getIntentStarter().setValue(Pair.create(
                             PhoneVerificationActivity.createIntent(
                                     getApplication(), flowParams, firstIdpConfig.getParams()),
                             RC_PHONE_FLOW));
                     break;
                 default:
-                    // Launch IDP flow
-                    redirectToIdpSignIn(null, firstProvider);
+                    redirectToIdpSignIn(firstProvider, null);
                     break;
             }
         } else {
@@ -105,7 +102,7 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
         }
     }
 
-    private void redirectToIdpSignIn(String email, String provider) {
+    private void redirectToIdpSignIn(String provider, String email) {
         FlowParameters flowParams = mFlowHolder.getParams();
 
         if (TextUtils.isEmpty(provider)) {
@@ -189,7 +186,6 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
             Status status = result.getStatus();
 
             if (status.isSuccess()) {
-                // Auto sign-in success
                 handleCredential(result.getCredential());
             } else if (status.hasResolution()
                     && status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
@@ -209,16 +205,14 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
             String password = credential.getPassword();
             if (TextUtils.isEmpty(email)) {
                 startAuthMethodChoice();
+            } else if (TextUtils.isEmpty(password)) {
+                redirectToIdpSignIn(ProviderUtils.accountTypeToProviderId(
+                        String.valueOf(credential.getAccountType())), email);
             } else {
-                if (TextUtils.isEmpty(password)) {
-                    redirectToIdpSignIn(email, ProviderUtils.accountTypeToProviderId(
-                            String.valueOf(credential.getAccountType())));
-                } else {
-                    mHandler.start(new IdpResponse.Builder(
-                            new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
-                            .setPassword(password)
-                            .build());
-                }
+                mHandler.start(new IdpResponse.Builder(
+                        new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
+                        .setPassword(password)
+                        .build());
             }
         }
 
@@ -230,7 +224,6 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
                     handleCredential(
                             (Credential) result.getData().getParcelableExtra(Credential.EXTRA_KEY));
                 } else {
-                    // Smart lock selector cancelled, go to the AuthMethodPicker screen
                     startAuthMethodChoice();
                 }
 

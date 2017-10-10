@@ -313,6 +313,10 @@ public class SignInHandler extends AuthViewModel {
             mFlowHolder.getActivityResultListener().removeObserver(this);
         }
 
+        /**
+         * Called when the user just logged in with their existing account. Now, we can proceed to
+         * linking that existing account with the new response we got originally.
+         */
         private void onExistingCredentialRetrieved() {
             mAuth.getCurrentUser()
                     .linkWithCredential(ProviderUtils.getAuthCredential(mResponse))
@@ -327,6 +331,10 @@ public class SignInHandler extends AuthViewModel {
                     });
         }
 
+        /**
+         * Called when logging in with the existing user fails. This could be because of an
+         * attempted data loss link or because of some other unpredictable failure.
+         */
         private void onExistingCredentialRetrievalFailure(IdpResponse existingUserResponse) {
             Exception e = existingUserResponse.getException();
             if (e instanceof CyclicAccountLinkingException) {

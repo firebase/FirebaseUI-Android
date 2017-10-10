@@ -12,7 +12,6 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.firebase.ui.auth.util.ui.ViewModelBase;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -110,7 +109,7 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
                         @Override
                         public void success(Result<com.twitter.sdk.android.core.models.User> result) {
                             com.twitter.sdk.android.core.models.User user = result.data;
-                            Tasks.forResult(createIdpResponse(
+                            mHandler.start(createIdpResponse(
                                     sessionResult.data,
                                     user.email,
                                     user.name,
