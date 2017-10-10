@@ -19,7 +19,6 @@ import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -74,9 +73,6 @@ public class CheckEmailHandler extends AuthViewModel implements Observer<Activit
                         .addApi(Auth.CREDENTIALS_API)
                         .build(),
                 new HintRequest.Builder()
-                        .setHintPickerConfig(new CredentialPickerConfig.Builder()
-                                .setShowCancelButton(true)
-                                .build())
                         .setEmailAddressIdentifierSupported(true)
                         .build());
     }

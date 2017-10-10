@@ -43,7 +43,6 @@ import com.firebase.ui.auth.util.data.remote.GoogleApiConnector;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -249,10 +248,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
 
 
         HintRequest hintRequest = new HintRequest.Builder()
-                .setHintPickerConfig(
-                        new CredentialPickerConfig.Builder().setShowCancelButton(true).build())
                 .setPhoneNumberIdentifierSupported(true)
-                .setEmailAddressIdentifierSupported(false)
                 .build();
 
         return Auth.CredentialsApi.getHintPickerIntent(client, hintRequest);
