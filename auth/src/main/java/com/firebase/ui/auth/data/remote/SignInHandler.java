@@ -171,21 +171,19 @@ public class SignInHandler extends AuthViewModel {
         @Override
         public void onConnected(@Nullable Bundle bundle) {
             Credential.Builder builder = new Credential.Builder(mEmail);
-            builder.setPassword(mPassword);
-            if (mPassword == null && mResponse != null) {
+            if (mResponse.getProviderType().equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
+                builder.setPassword(mPassword);
+            } else {
                 builder.setAccountType(ProviderUtils.providerIdToAccountType(
                         mResponse.getProviderType()));
             }
 
-            if (mName != null) {
-                builder.setName(mName);
-            }
-
-            if (mProfilePictureUri != null) {
-                builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
-            }
-
-            Auth.CredentialsApi.save(mClient, builder.build()).setResultCallback(this);
+            Auth.CredentialsApi.save(
+                    mClient,
+                    builder.setName(mName)
+                            .setProfilePictureUri(Uri.parse(mProfilePictureUri))
+                            .build())
+                    .setResultCallback(this);
         }
 
         @Override
