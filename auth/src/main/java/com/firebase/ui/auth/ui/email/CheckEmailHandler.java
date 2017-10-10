@@ -12,6 +12,7 @@ import android.util.Pair;
 
 import com.firebase.ui.auth.util.data.AuthViewModel;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.util.data.SingleLiveEvent;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.google.android.gms.auth.api.Auth;
@@ -24,7 +25,7 @@ import com.google.android.gms.tasks.Task;
 public class CheckEmailHandler extends AuthViewModel implements Observer<ActivityResult> {
     private static final int RC_HINT = 17;
 
-    private MutableLiveData<Credential> mCredentialListener = new MutableLiveData<>();
+    private MutableLiveData<Credential> mCredentialListener = new SingleLiveEvent<>();
     private Pair<String, Task<String>> mCachedProviderFetch;
 
     public CheckEmailHandler(Application application) {
