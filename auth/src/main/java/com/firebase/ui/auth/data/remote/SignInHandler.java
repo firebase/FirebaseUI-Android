@@ -88,10 +88,7 @@ public class SignInHandler extends AuthViewModel {
 
         private Task<AuthResult> handleEmail(final IdpResponse response) {
             FirebaseUser currentUser = mAuth.getCurrentUser();
-            if (currentUser != null) {
-                return currentUser.linkWithCredential(EmailAuthProvider.getCredential(
-                        response.getEmail(), response.getPassword()));
-            } else {
+            if (currentUser == null) {
                 return ProviderUtils.fetchTopProvider(mAuth, response.getEmail())
                         .continueWithTask(new Continuation<String, Task<AuthResult>>() {
                             @Override
@@ -105,6 +102,9 @@ public class SignInHandler extends AuthViewModel {
                                 }
                             }
                         });
+            } else {
+                return currentUser.linkWithCredential(EmailAuthProvider.getCredential(
+                        response.getEmail(), response.getPassword()));
             }
         }
 
