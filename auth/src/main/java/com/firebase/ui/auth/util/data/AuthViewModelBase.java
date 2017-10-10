@@ -10,7 +10,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthProvider;
 
-public class AuthViewModel extends ViewModelBase<FlowHolder> {
+public class AuthViewModelBase extends ViewModelBase<FlowHolder> {
     protected static MutableLiveData<IdpResponse> SIGN_IN_LISTENER =
             new AutoClearSingleLiveEvent<>(new Runnable() {
                 @Override
@@ -23,7 +23,7 @@ public class AuthViewModel extends ViewModelBase<FlowHolder> {
     protected FirebaseAuth mAuth;
     protected PhoneAuthProvider mPhoneAuth;
 
-    protected AuthViewModel(Application application) {
+    protected AuthViewModelBase(Application application) {
         super(application);
     }
 

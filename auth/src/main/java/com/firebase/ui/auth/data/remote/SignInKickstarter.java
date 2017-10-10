@@ -18,7 +18,7 @@ import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
-import com.firebase.ui.auth.util.data.AuthViewModel;
+import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.remote.InternalGoogleApiConnector;
 import com.firebase.ui.auth.util.ui.ActivityResult;
@@ -40,7 +40,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignInKickstarter extends AuthViewModel implements Observer<ActivityResult> {
+public class SignInKickstarter extends AuthViewModelBase implements Observer<ActivityResult> {
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;

@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v4.app.FragmentActivity;
@@ -39,12 +38,10 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.CountryInfo;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
-import com.firebase.ui.auth.util.data.remote.GoogleApiConnector;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.HintRequest;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.Locale;
@@ -235,17 +232,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     private PendingIntent getPhoneHintIntent() {
         GoogleApiClient client = new GoogleApiClient.Builder(getContext())
                 .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(
-                        getActivity(),
-                        GoogleApiConnector.getSafeAutoManageId(),
-                        new GoogleApiClient.OnConnectionFailedListener() {
-                            @Override
-                            public void onConnectionFailed(@NonNull ConnectionResult result) {
-                                Log.e(TAG, "Client connection failed: " + result.getErrorMessage());
-                            }
-                        })
                 .build();
-
 
         HintRequest hintRequest = new HintRequest.Builder()
                 .setPhoneNumberIdentifierSupported(true)

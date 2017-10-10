@@ -7,13 +7,13 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.firebase.ui.auth.util.data.AuthViewModel;
+import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 
-public class RecoverPasswordHandler extends AuthViewModel {
+public class RecoverPasswordHandler extends AuthViewModelBase {
     private Pair<String, Task<Void>> mCachedPasswordReset;
     private MutableLiveData<Task<String>> mPasswordResetListener = new SingleLiveEvent<>();
 

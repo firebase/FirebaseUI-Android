@@ -12,7 +12,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.util.data.AuthViewModel;
+import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
 import com.firebase.ui.auth.util.ui.ActivityResult;
@@ -25,7 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 @SuppressWarnings("WrongConstant")
-public class CheckEmailHandler extends AuthViewModel implements Observer<ActivityResult> {
+public class CheckEmailHandler extends AuthViewModelBase implements Observer<ActivityResult> {
     private static final int RC_HINT = 17;
 
     private MutableLiveData<User> mProviderListener = new SingleLiveEvent<>();

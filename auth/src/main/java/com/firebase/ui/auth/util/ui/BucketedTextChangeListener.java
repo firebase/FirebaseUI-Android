@@ -27,8 +27,14 @@ import android.widget.EditText;
 import java.util.Collections;
 
 /**
- * Listens for changes to a text field that has hyphens and replaces with the characted being typed
- * ------ 7----- 76---- 764--- 7641-- 76417- 764176
+ * Listens for changes to a text field that has hyphens and replaces with the character being typed:
+ * ------
+ * 7-----
+ * 76----
+ * 764---
+ * 7641--
+ * 76417-
+ * 764176
  */
 public final class BucketedTextChangeListener implements TextWatcher {
     public interface ContentChangeCallback {

@@ -59,7 +59,7 @@ public final class CountryListSpinner extends AppCompatEditText implements
         mDialogPopup = new DialogPopup(mCountryListAdapter);
         mTextFormat = "%1$s  +%2$d";
         mSelectedCountryName = "";
-        final CountryInfo countryInfo = PhoneNumberUtils.getCurrentCountryInfo(getContext());
+        CountryInfo countryInfo = PhoneNumberUtils.getCurrentCountryInfo(getContext());
         setSpinnerText(countryInfo.getCountryCode(), countryInfo.getLocale());
     }
 

@@ -21,7 +21,7 @@ import com.firebase.ui.auth.data.model.CyclicAccountLinkingException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.util.data.AuthViewModel;
+import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.ProfileMerger;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
@@ -46,7 +46,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthProvider;
 
-public class SignInHandler extends AuthViewModel {
+public class SignInHandler extends AuthViewModelBase {
     private static final int RC_ACCOUNT_LINK = 11;
 
     public SignInHandler(Application application) {
