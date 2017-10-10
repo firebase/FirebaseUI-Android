@@ -31,7 +31,6 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -215,10 +214,10 @@ public class SignInKickstarter extends AuthViewModel implements Observer<Activit
                     redirectToIdpSignIn(email, ProviderUtils.accountTypeToProviderId(
                             String.valueOf(credential.getAccountType())));
                 } else {
-                    mHandler.start(Tasks.forResult(new IdpResponse.Builder(
+                    mHandler.start(new IdpResponse.Builder(
                             new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
                             .setPassword(password)
-                            .build()));
+                            .build());
                 }
             }
         }

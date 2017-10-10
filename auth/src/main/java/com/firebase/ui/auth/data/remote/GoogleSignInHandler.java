@@ -22,7 +22,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Params>
@@ -89,13 +88,13 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
                     Auth.GoogleSignInApi.getSignInResultFromIntent(result.getData());
 
             if (signInResult.isSuccess()) {
-                mHandler.start(Tasks.forResult(createIdpResponse(signInResult.getSignInAccount())));
+                mHandler.start(createIdpResponse(signInResult.getSignInAccount()));
             } else {
                 Status status = signInResult.getStatus();
 
                 mSignInFailedNotifier.setValue(status);
                 if (status.getStatusCode() != CommonStatusCodes.INVALID_ACCOUNT) {
-                    mHandler.start(Tasks.<IdpResponse>forException(new ProviderErrorException(
+                    mHandler.start(IdpResponse.fromError(new ProviderErrorException(
                             "Code: " + status.getStatusCode() + ", message: " + status.getStatusMessage())));
                 }
             }

@@ -26,7 +26,6 @@ import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
@@ -217,13 +216,13 @@ public class RegisterEmailFragment extends FragmentBase implements
         boolean nameValid = mNameValidator.validate(name);
         if (emailValid && passwordValid && nameValid) {
             getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_up);
-            getSignInHandler().start(Tasks.forResult(new IdpResponse.Builder(
+            getSignInHandler().start(new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
                             .setName(name)
                             .setPhotoUri(mUser.getPhotoUri())
                             .build())
                     .setPassword(password)
-                    .build()));
+                    .build());
         }
     }
 }

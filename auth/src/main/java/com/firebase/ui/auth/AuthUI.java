@@ -45,6 +45,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -233,20 +234,19 @@ public class AuthUI {
      * @param activity the calling {@link Activity}.
      */
     public Task<Void> delete(@NonNull FragmentActivity activity) {
-        // Initialize SmartLock helper
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            // If the current user is null, return a failed task immediately
+            return Tasks.forException(new FirebaseAuthInvalidUserException(
+                    String.valueOf(ErrorCodes.UNKNOWN_ERROR), "No currently signed in user."));
+        }
         GoogleSignInHelper signInHelper = GoogleSignInHelper.newInstance(activity);
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser == null) {
-            // If the current user is null, return a failed task immediately
-            return Tasks.forException(new Exception("No currently signed in user."));
-        }
-
         // Delete the Firebase user
-        Task<Void> deleteUserTask = firebaseUser.delete();
+        Task<Void> deleteUserTask = currentUser.delete();
 
         // Get all SmartLock credentials associated with the user
-        List<Credential> credentials = credentialsFromFirebaseUser(firebaseUser);
+        List<Credential> credentials = credentialsFromFirebaseUser(currentUser);
 
         // For each Credential in the list, create a task to delete it.
         List<Task<?>> credentialTasks = new ArrayList<>();
@@ -284,23 +284,9 @@ public class AuthUI {
 
         List<Credential> credentials = new ArrayList<>();
         for (UserInfo userInfo : user.getProviderData()) {
-            // Get provider ID from Firebase Auth
-            @AuthUI.SupportedProvider String providerId = userInfo.getProviderId();
-
-            // Convert to Credentials API account type
-            String accountType = ProviderUtils.providerIdToAccountType(providerId);
-
-            // Build and add credential
-            Credential.Builder builder = new Credential.Builder(user.getEmail())
-                    .setAccountType(accountType);
-
-            // Null account type means password, we need to add a random password
-            // to make deletion succeed.
-            if (accountType == null) {
-                builder.setPassword("some_password");
-            }
-
-            credentials.add(builder.build());
+            credentials.add(new Credential.Builder(user.getEmail())
+                    .setAccountType(ProviderUtils.providerIdToAccountType(userInfo.getProviderId()))
+                    .build());
         }
 
         return credentials;
@@ -424,15 +410,13 @@ public class AuthUI {
              * Specifies the additional permissions that the application will request for this
              * identity provider.
              * <p>
-             * For Facebook permissions see:
-             * https://developers.facebook.com/docs/facebook-login/android
+             * For Facebook permissions see: https://developers.facebook.com/docs/facebook-login/android
              * https://developers.facebook.com/docs/facebook-login/permissions
              * <p>
-             * For Google permissions see:
-             * https://developers.google.com/identity/protocols/googlescopes
+             * For Google permissions see: https://developers.google.com/identity/protocols/googlescopes
              * <p>
-             * Twitter permissions are only configurable through the
-             * <a href="https://apps.twitter.com/">Twitter developer console</a>.
+             * Twitter permissions are only configurable through the <a href="https://apps.twitter.com/">Twitter
+             * developer console</a>.
              */
             public Builder setPermissions(List<String> permissions) {
                 mScopes = permissions;

@@ -118,15 +118,15 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
                         }
 
                         @Override
-                        public void failure(TwitterException exception) {
-                            mHandler.start(Tasks.<IdpResponse>forException(exception));
+                        public void failure(TwitterException e) {
+                            mHandler.start(IdpResponse.fromError(e));
                         }
                     });
         }
 
         @Override
-        public void failure(TwitterException exception) {
-            mHandler.start(Tasks.<IdpResponse>forException(exception));
+        public void failure(TwitterException e) {
+            mHandler.start(IdpResponse.fromError(e));
         }
     }
 

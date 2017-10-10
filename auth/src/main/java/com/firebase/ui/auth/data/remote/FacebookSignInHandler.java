@@ -21,7 +21,6 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.firebase.ui.auth.util.ui.ViewModelBase;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.json.JSONException;
@@ -94,7 +93,7 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         FacebookRequestError error = response.getError();
                         if (error != null || object == null) {
-                            mHandler.start(Tasks.<IdpResponse>forException(error == null ?
+                            mHandler.start(IdpResponse.fromError(error == null ?
                                     new ProviderErrorException("Facebook graph request failed")
                                     : error.getException()));
                             return;
@@ -116,8 +115,7 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
                                     .getString("url"));
                         } catch (JSONException ignored) {}
 
-                        mHandler.start(Tasks.forResult(
-                                createIdpResponse(result, email, name, photoUri)));
+                        mHandler.start(createIdpResponse(result, email, name, photoUri));
                     }
                 });
 
@@ -133,8 +131,8 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
     }
 
     @Override
-    public void onError(FacebookException error) {
-        mHandler.start(Tasks.<IdpResponse>forException(error));
+    public void onError(FacebookException e) {
+        mHandler.start(IdpResponse.fromError(e));
     }
 
     @Override

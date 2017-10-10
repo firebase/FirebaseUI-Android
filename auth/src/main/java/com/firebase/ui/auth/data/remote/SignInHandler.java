@@ -57,82 +57,73 @@ public class SignInHandler extends AuthViewModel {
         return SIGN_IN_LISTENER;
     }
 
-    public void start(Task<IdpResponse> tokenTask) {
-        tokenTask.addOnCompleteListener(new IdpResponseFlow());
+    public void start(IdpResponse response) {
+        if (response.isSuccessful()) {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null && currentUser.getProviders() != null
+                    && currentUser.getProviders().contains(response.getProviderType())
+                    && TextUtils.equals(currentUser.getEmail(), response.getEmail())) {
+                SIGN_IN_LISTENER.setValue(response);
+                return;
+            }
+
+            Task<AuthResult> base;
+            switch (response.getProviderType()) {
+                case EmailAuthProvider.PROVIDER_ID:
+                    base = handleEmail(response);
+                    break;
+                case PhoneAuthProvider.PROVIDER_ID:
+                    base = handlePhone(response);
+                    break;
+                default:
+                    base = handleIdp(response);
+            }
+            base.continueWithTask(new ProfileMerger(response))
+                    .addOnSuccessListener(new SaveCredentialFlow(response))
+                    .addOnFailureListener(new FailureFlow(response));
+        } else {
+            SIGN_IN_LISTENER.setValue(response);
+        }
     }
 
-    private class IdpResponseFlow implements OnCompleteListener<IdpResponse> {
-        @Override
-        public void onComplete(@NonNull Task<IdpResponse> task) {
-            if (task.isSuccessful()) {
-                IdpResponse response = task.getResult();
-
-                FirebaseUser currentUser = mAuth.getCurrentUser();
-                if (currentUser != null && currentUser.getProviders() != null
-                        && currentUser.getProviders().contains(response.getProviderType())
-                        && TextUtils.equals(currentUser.getEmail(), response.getEmail())) {
-                    SIGN_IN_LISTENER.setValue(response);
-                    return;
-                }
-
-                Task<AuthResult> base;
-                switch (response.getProviderType()) {
-                    case EmailAuthProvider.PROVIDER_ID:
-                        base = handleEmail(response);
-                        break;
-                    case PhoneAuthProvider.PROVIDER_ID:
-                        base = handlePhone(response);
-                        break;
-                    default:
-                        base = handleIdp(response);
-                }
-                base.continueWithTask(new ProfileMerger(response))
-                        .addOnSuccessListener(new SaveCredentialFlow(response))
-                        .addOnFailureListener(new FailureFlow(response));
-            } else {
-                SIGN_IN_LISTENER.setValue(IdpResponse.fromError(task.getException()));
-            }
-        }
-
-        private Task<AuthResult> handleEmail(final IdpResponse response) {
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if (currentUser == null) {
-                return ProviderUtils.fetchTopProvider(mAuth, response.getEmail())
-                        .continueWithTask(new Continuation<String, Task<AuthResult>>() {
-                            @Override
-                            public Task<AuthResult> then(@NonNull Task<String> task) {
-                                if (TextUtils.isEmpty(task.getResult())) {
-                                    return mAuth.createUserWithEmailAndPassword(
-                                            response.getEmail(), response.getPassword());
-                                } else {
-                                    return mAuth.signInWithEmailAndPassword(
-                                            response.getEmail(), response.getPassword());
-                                }
+    private Task<AuthResult> handleEmail(final IdpResponse response) {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            return ProviderUtils.fetchTopProvider(mAuth, response.getEmail())
+                    .continueWithTask(new Continuation<String, Task<AuthResult>>() {
+                        @Override
+                        public Task<AuthResult> then(@NonNull Task<String> task) {
+                            if (TextUtils.isEmpty(task.getResult())) {
+                                return mAuth.createUserWithEmailAndPassword(
+                                        response.getEmail(), response.getPassword());
+                            } else {
+                                return mAuth.signInWithEmailAndPassword(
+                                        response.getEmail(), response.getPassword());
                             }
-                        });
-            } else {
-                return currentUser.linkWithCredential(EmailAuthProvider.getCredential(
-                        response.getEmail(), response.getPassword()));
-            }
+                        }
+                    });
+        } else {
+            return currentUser.linkWithCredential(EmailAuthProvider.getCredential(
+                    response.getEmail(), response.getPassword()));
+        }
+    }
+
+    private Task<AuthResult> handlePhone(IdpResponse response) {
+        throw new IllegalStateException("TODO");
+    }
+
+    private Task<AuthResult> handleIdp(IdpResponse response) {
+        AuthCredential credential = ProviderUtils.getAuthCredential(response);
+        Task<AuthResult> base;
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            base = mAuth.signInWithCredential(credential);
+        } else {
+            base = currentUser.linkWithCredential(credential);
         }
 
-        private Task<AuthResult> handlePhone(IdpResponse response) {
-            throw new IllegalStateException("TODO");
-        }
-
-        private Task<AuthResult> handleIdp(IdpResponse response) {
-            AuthCredential credential = ProviderUtils.getAuthCredential(response);
-            Task<AuthResult> base;
-
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-            if (currentUser == null) {
-                base = mAuth.signInWithCredential(credential);
-            } else {
-                base = currentUser.linkWithCredential(credential);
-            }
-
-            return base;
-        }
+        return base;
     }
 
     private class SaveCredentialFlow extends InternalGoogleApiConnector
