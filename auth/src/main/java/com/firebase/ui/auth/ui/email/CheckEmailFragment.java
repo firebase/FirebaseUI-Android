@@ -72,17 +72,20 @@ public class CheckEmailFragment extends FragmentBase implements
         return fragment;
     }
 
-    @SuppressLint("NewApi") // TODO remove once lint understands Build.VERSION_CODES.O
-    @Nullable
     @Override
+    @Nullable
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fui_check_email_layout, container, false);
+        return inflater.inflate(R.layout.fui_check_email_layout, container, false);
+    }
 
+    @Override
+    @SuppressLint("NewApi") // TODO remove once lint understands Build.VERSION_CODES.O
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         // Email field and validator
-        mEmailLayout = v.findViewById(R.id.email_layout);
-        mEmailEditText = v.findViewById(R.id.email);
+        mEmailLayout = view.findViewById(R.id.email_layout);
+        mEmailEditText = view.findViewById(R.id.email);
         mEmailFieldValidator = new EmailFieldValidator(mEmailLayout);
         mEmailLayout.setOnClickListener(this);
         mEmailEditText.setOnClickListener(this);
@@ -94,10 +97,7 @@ public class CheckEmailFragment extends FragmentBase implements
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
-        // "Next" button
-        v.findViewById(R.id.button_next).setOnClickListener(this);
-
-        return v;
+        view.findViewById(R.id.button_next).setOnClickListener(this);
     }
 
     @Override
@@ -106,7 +106,6 @@ public class CheckEmailFragment extends FragmentBase implements
         mHandler = ViewModelProviders.of(this).get(CheckEmailHandler.class);
         mHandler.init(getFlowHolder());
 
-        // Set listener
         if (!(getActivity() instanceof CheckEmailListener)) {
             throw new IllegalStateException("Activity must implement CheckEmailListener");
         }
@@ -143,11 +142,9 @@ public class CheckEmailFragment extends FragmentBase implements
         // Check for email
         String email = getArguments().getString(ExtraConstants.EXTRA_EMAIL);
         if (!TextUtils.isEmpty(email)) {
-            // Use email passed in
             mEmailEditText.setText(email);
             validateAndProceed();
         } else if (getFlowHolder().getParams().enableHints) {
-            // Try SmartLock email autocomplete hint
             mHandler.fetchCredential();
         }
     }
