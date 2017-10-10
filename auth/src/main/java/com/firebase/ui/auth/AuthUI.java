@@ -410,13 +410,15 @@ public class AuthUI {
              * Specifies the additional permissions that the application will request for this
              * identity provider.
              * <p>
-             * For Facebook permissions see: https://developers.facebook.com/docs/facebook-login/android
+             * For Facebook permissions see:
+             * https://developers.facebook.com/docs/facebook-login/android
              * https://developers.facebook.com/docs/facebook-login/permissions
              * <p>
-             * For Google permissions see: https://developers.google.com/identity/protocols/googlescopes
+             * For Google permissions see:
+             * https://developers.google.com/identity/protocols/googlescopes
              * <p>
-             * Twitter permissions are only configurable through the <a href="https://apps.twitter.com/">Twitter
-             * developer console</a>.
+             * Twitter permissions are only configurable through the
+             * <a href="https://apps.twitter.com/">Twitter developer console</a>.
              */
             public Builder setPermissions(List<String> permissions) {
                 mScopes = permissions;
