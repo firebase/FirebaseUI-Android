@@ -28,7 +28,6 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -187,7 +186,7 @@ public class IdpResponse implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readString(),
-                    (FirebaseAuthException) in.readSerializable()
+                    (Exception) in.readSerializable()
             );
         }
 

@@ -67,6 +67,14 @@ public class SignInHandler extends AuthViewModel {
             if (task.isSuccessful()) {
                 IdpResponse response = task.getResult();
 
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                if (currentUser != null && currentUser.getProviders() != null
+                        && currentUser.getProviders().contains(response.getProviderType())
+                        && TextUtils.equals(currentUser.getEmail(), response.getEmail())) {
+                    SIGN_IN_LISTENER.setValue(response);
+                    return;
+                }
+
                 Task<AuthResult> base;
                 switch (response.getProviderType()) {
                     case EmailAuthProvider.PROVIDER_ID:

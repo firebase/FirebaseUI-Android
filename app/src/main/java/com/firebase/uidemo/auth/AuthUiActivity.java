@@ -17,6 +17,7 @@ package com.firebase.uidemo.auth;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.StringRes;
@@ -147,12 +148,16 @@ public class AuthUiActivity extends AppCompatActivity {
         setContentView(R.layout.auth_ui_layout);
         ButterKnife.bind(this);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            startSignedInActivity(null);
-            finish();
-            return;
-        }
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                if (auth.getCurrentUser() != null) {
+                    startSignedInActivity(null);
+                    finish();
+                }
+            }
+        });
 
         if (isGoogleMisconfigured()) {
             mUseGoogleProvider.setChecked(false);

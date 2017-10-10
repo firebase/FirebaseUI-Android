@@ -6,10 +6,12 @@ import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.data.AuthViewModel;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
@@ -20,12 +22,14 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
 import com.google.android.gms.auth.api.credentials.HintRequest;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+@SuppressWarnings("WrongConstant")
 public class CheckEmailHandler extends AuthViewModel implements Observer<ActivityResult> {
     private static final int RC_HINT = 17;
 
-    private MutableLiveData<Credential> mCredentialListener = new SingleLiveEvent<>();
+    private MutableLiveData<User> mProviderListener = new SingleLiveEvent<>();
     private Pair<String, Task<String>> mCachedProviderFetch;
 
     public CheckEmailHandler(Application application) {
@@ -38,20 +42,30 @@ public class CheckEmailHandler extends AuthViewModel implements Observer<Activit
         mFlowHolder.getActivityResultListener().observeForever(this);
     }
 
+    public LiveData<User> getProviderListener() {
+        return mProviderListener;
+    }
+
     public void fetchCredential() {
         mFlowHolder.getPendingIntentStarter().setValue(Pair.create(getEmailHintIntent(), RC_HINT));
     }
 
-    public LiveData<Credential> getCredentialListener() {
-        return mCredentialListener;
+    public void fetchProvider(final String email) {
+        updateFetchProviderCache(email);
+        mCachedProviderFetch.second.addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                mProviderListener.setValue(task.isSuccessful() ?
+                        new User.Builder(task.getResult(), email).build()
+                        : null);
+            }
+        });
     }
 
-    public Task<String> getTopProvider(String email) {
+    private void updateFetchProviderCache(String email) {
         if (mCachedProviderFetch == null || !TextUtils.equals(email, mCachedProviderFetch.first)) {
             mCachedProviderFetch = Pair.create(email, ProviderUtils.fetchTopProvider(mAuth, email));
         }
-
-        return mCachedProviderFetch.second;
     }
 
     private PendingIntent getEmailHintIntent() {
@@ -69,11 +83,23 @@ public class CheckEmailHandler extends AuthViewModel implements Observer<Activit
 
     @Override
     public void onChanged(@Nullable ActivityResult result) {
-        if (result.getRequestCode() != RC_HINT) { return; }
+        if (result.getRequestCode() == RC_HINT && result.getResultCode() == Activity.RESULT_OK) {
+            final Credential credential = result.getData().getParcelableExtra(Credential.EXTRA_KEY);
 
-        mCredentialListener.setValue(result.getResultCode() == Activity.RESULT_OK ?
-                (Credential) result.getData().getParcelableExtra(Credential.EXTRA_KEY)
-                : null);
+            final String email = credential.getId();
+            updateFetchProviderCache(email);
+            mCachedProviderFetch.second.addOnCompleteListener(new OnCompleteListener<String>() {
+                @Override
+                public void onComplete(@NonNull Task<String> task) {
+                    mProviderListener.setValue(task.isSuccessful() ?
+                            new User.Builder(task.getResult(), email)
+                                    .setName(credential.getName())
+                                    .setPhotoUri(credential.getProfilePictureUri())
+                                    .build()
+                            : null);
+                }
+            });
+        }
     }
 
     @Override

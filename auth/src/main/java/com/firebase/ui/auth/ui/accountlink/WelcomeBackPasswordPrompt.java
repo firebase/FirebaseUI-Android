@@ -42,7 +42,6 @@ import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.auth.EmailAuthProvider;
 
 /**
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
@@ -128,7 +127,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         validateAndSignIn(mPasswordField.getText().toString());
     }
 
-    private void validateAndSignIn(final String password) {
+    private void validateAndSignIn(String password) {
         // Check for null or empty password
         if (TextUtils.isEmpty(password)) {
             mPasswordLayout.setError(getString(R.string.fui_required_field));
@@ -138,8 +137,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
         getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
 
-        getSignInHandler().start(Tasks.forResult(new IdpResponse.Builder(
-                new User.Builder(EmailAuthProvider.PROVIDER_ID, mUser.getEmail()).build())
+        getSignInHandler().start(Tasks.forResult(new IdpResponse.Builder(mUser)
                 .setPassword(password)
                 .build()));
     }

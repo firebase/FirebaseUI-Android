@@ -3,10 +3,8 @@ package com.firebase.ui.auth.ui.email;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
@@ -22,10 +20,6 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
 
 /**
@@ -118,19 +112,33 @@ public class CheckEmailFragment extends FragmentBase implements
         }
         mListener = (CheckEmailListener) getActivity();
 
-        mHandler.getCredentialListener().observe(this, new Observer<Credential>() {
+        mHandler.getProviderListener().observe(this, new Observer<User>() {
             @Override
-            public void onChanged(@Nullable Credential credential) {
-                if (credential != null) {
-                    mEmailEditText.setText(credential.getId());
-                    validateAndProceed();
+            public void onChanged(@Nullable User user) {
+                if (user == null) {
+                    getDialogHolder().dismissDialog();
+                    return;
+                }
+
+                String email = user.getEmail();
+                String provider = user.getProviderId();
+
+                mEmailEditText.setText(email);
+                //noinspection ConstantConditions
+                if (provider == null) {
+                    mListener.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                            .setName(user.getName())
+                            .setPhotoUri(user.getPhotoUri())
+                            .build());
+                } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
+                    mListener.onExistingEmailUser(user);
+                } else {
+                    mListener.onExistingIdpUser(user);
                 }
             }
         });
 
-        if (savedInstanceState != null) {
-            return;
-        }
+        if (savedInstanceState != null) { return; }
 
         // Check for email
         String email = getArguments().getString(ExtraConstants.EXTRA_EMAIL);
@@ -153,51 +161,9 @@ public class CheckEmailFragment extends FragmentBase implements
     private void validateAndProceed() {
         String email = mEmailEditText.getText().toString();
         if (mEmailFieldValidator.validate(email)) {
-            checkAccountExists(email);
+            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_checking_accounts);
+            mHandler.fetchProvider(email);
         }
-    }
-
-    private void checkAccountExists(@NonNull final String email) {
-        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_checking_accounts);
-
-        // Get name from SmartLock, if possible
-        @Nullable Credential credential = mHandler.getCredentialListener().getValue();
-        String name = null;
-        Uri photoUri = null;
-        if (credential != null && credential.getId().equals(email)) {
-            name = credential.getName();
-            photoUri = credential.getProfilePictureUri();
-        }
-
-        final String finalName = name;
-        final Uri finalPhotoUri = photoUri;
-
-        mHandler.getTopProvider(email)
-                .addOnSuccessListener(getActivity(), new OnSuccessListener<String>() {
-                    @Override
-                    public void onSuccess(String provider) {
-                        if (provider == null) {
-                            mListener.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID,
-                                    email)
-                                    .setName(finalName)
-                                    .setPhotoUri(finalPhotoUri)
-                                    .build());
-                        } else if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
-                            mListener.onExistingEmailUser(
-                                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build());
-                        } else {
-                            mListener.onExistingIdpUser(new User.Builder(provider, email).build());
-                        }
-                    }
-                })
-                .addOnCompleteListener(
-                        getActivity(),
-                        new OnCompleteListener<String>() {
-                            @Override
-                            public void onComplete(@NonNull Task<String> task) {
-                                getDialogHolder().dismissDialog();
-                            }
-                        });
     }
 
     @Override
