@@ -23,7 +23,6 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.google.android.gms.auth.api.Auth;
 
 public class GoogleProvider implements Provider {
     private final GoogleSignInHandler mHandler;
@@ -32,7 +31,7 @@ public class GoogleProvider implements Provider {
         this(activity, idpConfig, null);
     }
 
-    public GoogleProvider(final HelperActivityBase activity,
+    public GoogleProvider(HelperActivityBase activity,
                           IdpConfig idpConfig,
                           @Nullable String email) {
         mHandler = ViewModelProviders.of(activity).get(GoogleSignInHandler.class);
@@ -53,8 +52,6 @@ public class GoogleProvider implements Provider {
 
     @Override
     public void startLogin(HelperActivityBase activity) {
-        activity.startActivityForResult(
-                Auth.GoogleSignInApi.getSignInIntent(mHandler.getClient()),
-                GoogleSignInHandler.RC_SIGN_IN);
+        mHandler.start();
     }
 }

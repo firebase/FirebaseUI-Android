@@ -26,7 +26,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Params>
         implements Observer<ActivityResult> {
-    public static final int RC_SIGN_IN = 13;
+    private static final int RC_SIGN_IN = 13;
 
     private AuthUI.IdpConfig mConfig;
     private SignInHandler mHandler;
@@ -57,8 +57,10 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
         initClient(params.email);
     }
 
-    public GoogleApiClient getClient() {
-        return mClient;
+    public void start() {
+        mFlowHolder.getIntentStarter().setValue(Pair.create(
+                Auth.GoogleSignInApi.getSignInIntent(mClient),
+                RC_SIGN_IN));
     }
 
     private void initClient(@Nullable String email) {
@@ -100,9 +102,7 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
 
                 if (status.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
                     initClient(null);
-                    mFlowHolder.getIntentStarter().setValue(Pair.create(
-                            Auth.GoogleSignInApi.getSignInIntent(mClient),
-                            RC_SIGN_IN));
+                    start();
                 } else {
                     mHandler.start(IdpResponse.fromError(new ProviderErrorException(
                             "Code: " + status.getStatusCode() + ", message: " + status.getStatusMessage())));
