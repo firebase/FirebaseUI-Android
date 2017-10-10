@@ -14,11 +14,12 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
@@ -29,10 +30,8 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
@@ -40,14 +39,15 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
  * Activity to initiate the "forgot password" flow by asking for the user's email.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
+public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener, ImeHelper.DonePressedListener {
     private RecoverPasswordHandler mHandler;
 
+    private TextInputLayout mEmailInputLayout;
     private EditText mEmailEditText;
     private EmailFieldValidator mEmailFieldValidator;
 
-    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return HelperActivityBase.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
+    public static Intent createIntent(Context context, FlowParameters params, String email) {
+        return HelperActivityBase.createBaseIntent(context, RecoverPasswordActivity.class, params)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 
@@ -58,48 +58,45 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
         mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
         mHandler.init(getFlowHolder());
+        mHandler.getPasswordResetListener().observe(this, new Observer<Task<String>>() {
+            @Override
+            public void onChanged(@Nullable Task<String> task) {
+                getDialogHolder().dismissDialog();
 
-        mEmailFieldValidator =
-                new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
+                if (task.isSuccessful()) {
+                    mEmailInputLayout.setError(null);
+                    RecoveryEmailSentDialog.show(task.getResult(), getSupportFragmentManager());
+                } else if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                    // No FirebaseUser exists with this email address, show error.
+                    mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
+                }
+            }
+        });
+
+        mEmailInputLayout = findViewById(R.id.email_layout);
         mEmailEditText = findViewById(R.id.email);
+        mEmailFieldValidator = new EmailFieldValidator(mEmailInputLayout);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         if (email != null) {
             mEmailEditText.setText(email);
         }
 
+        ImeHelper.setImeOnDoneListener(mEmailEditText, this);
         findViewById(R.id.button_done).setOnClickListener(this);
-    }
-
-    private void next(final String email) {
-        mHandler.getPasswordResetTask(email).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                RecoveryEmailSentDialog.show(email, getSupportFragmentManager());
-            }
-        }).addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                if (e instanceof FirebaseAuthInvalidUserException) {
-                    // No FirebaseUser exists with this email address, show error.
-                    mEmailEditText.setError(getString(R.string.fui_error_email_does_not_exist));
-                }
-            }
-        }).addOnCompleteListener(this, new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> aVoid) {
-                getDialogHolder().dismissDialog();
-            }
-        });
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.button_done) {
-            if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
-                getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_sending);
-                next(mEmailEditText.getText().toString());
-            }
+        if (view.getId() == R.id.button_done
+                && mEmailFieldValidator.validate(mEmailEditText.getText())) {
+            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_sending);
+            onDonePressed();
         }
+    }
+
+    @Override
+    public void onDonePressed() {
+        mHandler.startReset(mEmailEditText.getText().toString());
     }
 }
