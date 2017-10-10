@@ -95,8 +95,7 @@ public class KickoffActivity extends HelperActivityBase {
                 mKickstarter.start();
             } else {
                 finish(RESULT_CANCELED, IdpResponse.fromError(new GoogleApiConnectionException(
-                        "Couldn't make Play Services available on boot"))
-                        .toIntent());
+                        "Couldn't make Play Services available on boot")).toIntent());
             }
         }
     }

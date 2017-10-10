@@ -14,28 +14,19 @@
 
 package com.firebase.ui.auth.ui.provider;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Status;
 
 public class GoogleProvider implements Provider {
-    private static final String TAG = "GoogleProvider";
-
     private final GoogleSignInHandler mHandler;
-    private GoogleApiClient mClient;
 
     public GoogleProvider(HelperActivityBase activity, IdpConfig idpConfig) {
         this(activity, idpConfig, null);
@@ -46,29 +37,7 @@ public class GoogleProvider implements Provider {
                           @Nullable String email) {
         mHandler = ViewModelProviders.of(activity).get(GoogleSignInHandler.class);
         mHandler.init(new GoogleSignInHandler.Params(
-                idpConfig, activity.getSignInHandler(), activity.getFlowHolder()));
-
-        initClient(activity, email);
-
-        mHandler.getSignInFailedNotifier().observe(activity, new Observer<Status>() {
-            @Override
-            public void onChanged(@Nullable Status status) {
-                if (status.getStatusCode() == CommonStatusCodes.DEVELOPER_ERROR) {
-                    Log.w(TAG, "Developer error: this application is misconfigured." +
-                            " Check your SHA1 and package name in the Firebase console.");
-                    Toast.makeText(activity, "Developer error.", Toast.LENGTH_SHORT).show();
-                } else if (status.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
-                    initClient(activity, null);
-                    startLogin(activity);
-                }
-            }
-        });
-    }
-
-    private void initClient(HelperActivityBase activity, @Nullable String email) {
-        mClient = new GoogleApiClient.Builder(activity)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, mHandler.getSignInOptions(email))
-                .build();
+                idpConfig, activity.getSignInHandler(), activity.getFlowHolder(), email));
     }
 
     @Override
@@ -85,7 +54,7 @@ public class GoogleProvider implements Provider {
     @Override
     public void startLogin(HelperActivityBase activity) {
         activity.startActivityForResult(
-                Auth.GoogleSignInApi.getSignInIntent(mClient),
+                Auth.GoogleSignInApi.getSignInIntent(mHandler.getClient()),
                 GoogleSignInHandler.RC_SIGN_IN);
     }
 }

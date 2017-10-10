@@ -88,36 +88,7 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
     @Override
     public void onSuccess(final LoginResult result) {
         GraphRequest request = GraphRequest.newMeRequest(result.getAccessToken(),
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        FacebookRequestError error = response.getError();
-                        if (error != null || object == null) {
-                            mHandler.start(IdpResponse.fromError(error == null ?
-                                    new ProviderErrorException("Facebook graph request failed")
-                                    : error.getException()));
-                            return;
-                        }
-
-                        String email = null;
-                        String name = null;
-                        Uri photoUri = null;
-
-                        try {
-                            email = object.getString("email");
-                        } catch (JSONException ignored) {}
-                        try {
-                            name = object.getString("name");
-                        } catch (JSONException ignored) {}
-                        try {
-                            photoUri = Uri.parse(object.getJSONObject("picture")
-                                    .getJSONObject("data")
-                                    .getString("url"));
-                        } catch (JSONException ignored) {}
-
-                        mHandler.start(createIdpResponse(result, email, name, photoUri));
-                    }
-                });
+                new ProfileRequest(result));
 
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id,name,email,picture");
@@ -151,6 +122,43 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
             providerConfig = config;
             signInHandler = handler;
             flowHolder = holder;
+        }
+    }
+
+    private class ProfileRequest implements GraphRequest.GraphJSONObjectCallback {
+        private final LoginResult mResult;
+
+        public ProfileRequest(LoginResult result) {
+            mResult = result;
+        }
+
+        @Override
+        public void onCompleted(JSONObject object, GraphResponse response) {
+            FacebookRequestError error = response.getError();
+            if (error != null || object == null) {
+                mHandler.start(IdpResponse.fromError(error == null ?
+                        new ProviderErrorException("Facebook graph request failed")
+                        : error.getException()));
+                return;
+            }
+
+            String email = null;
+            String name = null;
+            Uri photoUri = null;
+
+            try {
+                email = object.getString("email");
+            } catch (JSONException ignored) {}
+            try {
+                name = object.getString("name");
+            } catch (JSONException ignored) {}
+            try {
+                photoUri = Uri.parse(object.getJSONObject("picture")
+                        .getJSONObject("data")
+                        .getString("url"));
+            } catch (JSONException ignored) {}
+
+            mHandler.start(createIdpResponse(mResult, email, name, photoUri));
         }
     }
 }

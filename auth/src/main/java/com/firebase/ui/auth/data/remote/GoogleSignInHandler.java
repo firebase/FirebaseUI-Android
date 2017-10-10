@@ -1,17 +1,16 @@
 package com.firebase.ui.auth.data.remote;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.ProviderErrorException;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.util.data.SingleLiveEvent;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.firebase.ui.auth.util.ui.ViewModelBase;
@@ -20,6 +19,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -31,8 +31,7 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
     private AuthUI.IdpConfig mConfig;
     private SignInHandler mHandler;
     private FlowHolder mFlowHolder;
-
-    private final SingleLiveEvent<Status> mSignInFailedNotifier = new SingleLiveEvent<>();
+    private GoogleApiClient mClient;
 
     public GoogleSignInHandler(Application application) {
         super(application);
@@ -55,9 +54,20 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
         mFlowHolder = params.flowHolder;
 
         mFlowHolder.getActivityResultListener().observeForever(this);
+        initClient(params.email);
     }
 
-    public GoogleSignInOptions getSignInOptions(@Nullable String email) {
+    public GoogleApiClient getClient() {
+        return mClient;
+    }
+
+    private void initClient(@Nullable String email) {
+        mClient = new GoogleApiClient.Builder(getApplication())
+                .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(email))
+                .build();
+    }
+
+    private GoogleSignInOptions getSignInOptions(@Nullable String email) {
         String clientId = getApplication().getString(R.string.default_web_client_id);
 
         GoogleSignInOptions.Builder builder =
@@ -77,10 +87,6 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
         return builder.build();
     }
 
-    public LiveData<Status> getSignInFailedNotifier() {
-        return mSignInFailedNotifier;
-    }
-
     @Override
     public void onChanged(@Nullable ActivityResult result) {
         if (result.getRequestCode() == RC_SIGN_IN) {
@@ -92,8 +98,12 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
             } else {
                 Status status = signInResult.getStatus();
 
-                mSignInFailedNotifier.setValue(status);
-                if (status.getStatusCode() != CommonStatusCodes.INVALID_ACCOUNT) {
+                if (status.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
+                    initClient(null);
+                    mFlowHolder.getIntentStarter().setValue(Pair.create(
+                            Auth.GoogleSignInApi.getSignInIntent(mClient),
+                            RC_SIGN_IN));
+                } else {
                     mHandler.start(IdpResponse.fromError(new ProviderErrorException(
                             "Code: " + status.getStatusCode() + ", message: " + status.getStatusMessage())));
                 }
@@ -111,11 +121,16 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
         public final AuthUI.IdpConfig providerConfig;
         public final SignInHandler signInHandler;
         public final FlowHolder flowHolder;
+        @Nullable public final String email;
 
-        public Params(AuthUI.IdpConfig config, SignInHandler handler, FlowHolder holder) {
+        public Params(AuthUI.IdpConfig config,
+                      SignInHandler handler,
+                      FlowHolder holder,
+                      @Nullable String email) {
             providerConfig = config;
             signInHandler = handler;
             flowHolder = holder;
+            this.email = email;
         }
     }
 }
