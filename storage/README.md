@@ -19,7 +19,7 @@ To load an image from a `StorageReference`, first register in your `AppGlideModu
 public class MyAppGlideModule extends AppGlideModule {
 
     @Override
-    public void registerComponents(Context context, Registry registry) {
+    public void registerComponents(Context context, Glide glide, Registry registry) {
         // Register FirebaseImageLoader to handle StorageReference
         registry.append(StorageReference.class, InputStream.class,
                 new FirebaseImageLoader.Factory());
@@ -38,10 +38,12 @@ ImageView imageView = ...;
 
 // Download directly from StorageReference using Glide
 // (See MyAppGlideModule for Loader registration)
-GlidApp.with(this /* context */)
+GlideApp.with(this /* context */)
         .load(storageReference)
         .into(imageView);
 ```
+
+If GlideApp is not an importable class, build your application first before trying to use. For more information, see Glide v4 ['Generated API'][generated-api] documentation.
 
 Images displayed using `FirebaseImageLoader` are cached by their path in Cloud Storage, so
 repeated loads will be fast and conserve bandwidth. For more information on caching in Glide,
@@ -51,3 +53,4 @@ see [this guide][glide-caching].
 [glide]: https://github.com/bumptech/glide
 [storage-reference]: https://firebase.google.com/docs/reference/android/com/google/firebase/storage/StorageReference
 [glide-caching]: https://github.com/bumptech/glide/wiki/Caching-and-Cache-Invalidation
+[generated-api]: https://bumptech.github.io/glide/doc/generatedapi.html
