@@ -49,7 +49,7 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-auth:3.0.0'
 
     // Required only if Facebook login support is required
-    compile('com.facebook.android:facebook-android-sdk:4.27.0')
+    compile 'com.facebook.android:facebook-login:4.27.0'
 
     // Required only if Twitter login support is required
     compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
