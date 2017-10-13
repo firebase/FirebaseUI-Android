@@ -121,10 +121,10 @@ public class PhoneVerificationActivityTest {
         mActivity = Robolectric.buildActivity(PhoneVerificationActivity.class, startIntent)
                 .create(new Bundle()).start().visible().get();
 
-        VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
+        CheckPhoneNumberFragment checkPhoneNumberFragment = (CheckPhoneNumberFragment)
                 mActivity.getSupportFragmentManager()
-                        .findFragmentByTag(VerifyPhoneNumberFragment.TAG);
-        assertNotNull(verifyPhoneNumberFragment);
+                        .findFragmentByTag(CheckPhoneNumberFragment.TAG);
+        assertNotNull(checkPhoneNumberFragment);
         mPhoneEditText = mActivity.findViewById(R.id.phone_number);
         mCountryListSpinner = mActivity.findViewById(R.id.country_list);
 
@@ -147,10 +147,10 @@ public class PhoneVerificationActivityTest {
         mActivity = Robolectric.buildActivity(PhoneVerificationActivity.class, startIntent)
                 .create(new Bundle()).start().visible().get();
 
-        VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
+        CheckPhoneNumberFragment checkPhoneNumberFragment = (CheckPhoneNumberFragment)
                 mActivity.getSupportFragmentManager()
-                        .findFragmentByTag(VerifyPhoneNumberFragment.TAG);
-        assertNotNull(verifyPhoneNumberFragment);
+                        .findFragmentByTag(CheckPhoneNumberFragment.TAG);
+        assertNotNull(checkPhoneNumberFragment);
         mPhoneEditText = mActivity.findViewById(R.id.phone_number);
         mCountryListSpinner = mActivity.findViewById(R.id.country_list);
 
@@ -163,10 +163,10 @@ public class PhoneVerificationActivityTest {
 
     @Test
     public void testBadPhoneNumber_showsInlineError() {
-        VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
+        CheckPhoneNumberFragment checkPhoneNumberFragment = (CheckPhoneNumberFragment)
                 mActivity.getSupportFragmentManager()
-                        .findFragmentByTag(VerifyPhoneNumberFragment.TAG);
-        assertNotNull(verifyPhoneNumberFragment);
+                        .findFragmentByTag(CheckPhoneNumberFragment.TAG);
+        assertNotNull(checkPhoneNumberFragment);
 
         mSendCodeButton.performClick();
         assertEquals(mErrorEditText.getText(), mActivity.getString(R.string.fui_invalid_phone_number));
@@ -349,14 +349,14 @@ public class PhoneVerificationActivityTest {
         testSendConfirmationCode();
         TextView mEditPhoneTextView = mActivity.findViewById(R.id.edit_phone_number);
         mEditPhoneTextView.performClick();
-        VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
+        CheckPhoneNumberFragment checkPhoneNumberFragment = (CheckPhoneNumberFragment)
                 mActivity.getSupportFragmentManager()
-                        .findFragmentByTag(VerifyPhoneNumberFragment.TAG);
+                        .findFragmentByTag(CheckPhoneNumberFragment.TAG);
         SubmitConfirmationCodeFragment submitConfirmationCodeFragment =
                 (SubmitConfirmationCodeFragment) mActivity.getSupportFragmentManager()
                         .findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
 
-        assertNotNull(verifyPhoneNumberFragment);
+        assertNotNull(checkPhoneNumberFragment);
 
         assertNull(submitConfirmationCodeFragment);
     }

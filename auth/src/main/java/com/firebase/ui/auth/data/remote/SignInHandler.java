@@ -44,6 +44,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 public class SignInHandler extends AuthViewModelBase {
@@ -58,6 +59,10 @@ public class SignInHandler extends AuthViewModelBase {
     }
 
     public void start(IdpResponse response) {
+        start(response, null);
+    }
+
+    public void start(IdpResponse response, @Nullable PhoneAuthCredential credential) {
         if (response.isSuccessful()) {
             FirebaseUser currentUser = mAuth.getCurrentUser();
             if (currentUser != null && currentUser.getProviders() != null
@@ -73,7 +78,12 @@ public class SignInHandler extends AuthViewModelBase {
                     base = handleEmail(response);
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    base = handlePhone(response);
+                    if (credential == null) {
+                        throw new IllegalStateException(
+                                "Phone credential cannot be null when signing in with phone provider.");
+                    }
+
+                    base = handlePhone(credential);
                     break;
                 default:
                     base = handleIdp(response);
@@ -108,12 +118,15 @@ public class SignInHandler extends AuthViewModelBase {
         }
     }
 
-    private Task<AuthResult> handlePhone(IdpResponse response) {
-        throw new IllegalStateException("TODO");
+    private Task<AuthResult> handlePhone(PhoneAuthCredential credential) {
+        return handleCredential(credential);
     }
 
     private Task<AuthResult> handleIdp(IdpResponse response) {
-        AuthCredential credential = ProviderUtils.getAuthCredential(response);
+        return handleCredential(ProviderUtils.getAuthCredential(response));
+    }
+
+    private Task<AuthResult> handleCredential(AuthCredential credential) {
         Task<AuthResult> base;
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -169,12 +182,12 @@ public class SignInHandler extends AuthViewModelBase {
                         mResponse.getProviderType()));
             }
 
-            Auth.CredentialsApi.save(
-                    mClient,
-                    builder.setName(mName)
-                            .setProfilePictureUri(Uri.parse(mProfilePictureUri))
-                            .build())
-                    .setResultCallback(this);
+            builder.setName(mName);
+            if (mProfilePictureUri != null) {
+                builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
+            }
+
+            Auth.CredentialsApi.save(mClient, builder.build()).setResultCallback(this);
         }
 
         @Override

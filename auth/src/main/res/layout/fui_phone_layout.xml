@@ -9,37 +9,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.firebase.ui.auth.ui.phone.CountryListSpinner
-            android:id="@+id/country_list"
-            style="@style/FirebaseUI.CountrySpinner" />
+        <LinearLayout
+            android:id="@+id/code_and_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
 
-        <EditText
-            android:id="@+id/phone_number"
-            style="@style/FirebaseUI.TextInputEditText.PhoneField"
-            android:layout_toEndOf="@id/country_list"
-            android:layout_toRightOf="@id/country_list"
-            android:layout_alignBaseline="@id/country_list"
-            android:layout_gravity="end"
-            android:imeOptions="actionDone" />
+            <com.firebase.ui.auth.ui.phone.CountryListSpinner
+                android:id="@+id/country_list"
+                style="@style/FirebaseUI.CountrySpinner"
+                android:layout_gravity="bottom" />
 
-        <TextView
-            android:id="@+id/phone_number_error"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignStart="@id/phone_number"
-            android:layout_alignLeft="@id/phone_number"
-            android:layout_below="@id/phone_number"
-            android:paddingStart="2dp"
-            android:paddingEnd="2dp"
-            android:text=""
-            android:textColor="@color/fui_errorColor" />
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/phone_layout"
+                style="@style/FirebaseUI.TextInputLayout.PhoneField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/phone_number"
+                    style="@style/FirebaseUI.TextInputEditText.PhoneField"
+                    android:imeOptions="actionDone" />
+
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/send_code"
             style="@style/FirebaseUI.VerifyPhoneButton"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/phone_number_error"
+            android:layout_below="@id/code_and_phone"
             android:text="@string/fui_verify_phone_number" />
 
         <TextView

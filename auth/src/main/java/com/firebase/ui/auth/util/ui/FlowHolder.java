@@ -5,11 +5,13 @@ import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
+import android.support.annotation.RestrictTo;
 import android.util.Pair;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.data.AutoClearSingleLiveEvent;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FlowHolder extends ViewModelBase<FlowParameters> {
     private static MutableLiveData<ActivityResult> ACTIVITY_RESULT_LISTENER =
             new AutoClearSingleLiveEvent<>(new Runnable() {

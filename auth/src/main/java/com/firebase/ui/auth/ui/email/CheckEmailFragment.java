@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
@@ -81,7 +80,6 @@ public class CheckEmailFragment extends FragmentBase implements
     }
 
     @Override
-    @SuppressLint("NewApi") // TODO remove once lint understands Build.VERSION_CODES.O
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         // Email field and validator
         mEmailLayout = view.findViewById(R.id.email_layout);

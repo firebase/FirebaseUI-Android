@@ -41,6 +41,9 @@ public class CheckEmailHandler extends AuthViewModelBase implements Observer<Act
         mFlowHolder.getActivityResultListener().observeForever(this);
     }
 
+    /**
+     * This user can have a null provider in which case it's a new user.
+     */
     public LiveData<User> getProviderListener() {
         return mProviderListener;
     }
@@ -69,12 +72,8 @@ public class CheckEmailHandler extends AuthViewModelBase implements Observer<Act
 
     private PendingIntent getEmailHintIntent() {
         return Auth.CredentialsApi.getHintPickerIntent(
-                new GoogleApiClient.Builder(getApplication())
-                        .addApi(Auth.CREDENTIALS_API)
-                        .build(),
-                new HintRequest.Builder()
-                        .setEmailAddressIdentifierSupported(true)
-                        .build());
+                new GoogleApiClient.Builder(getApplication()).addApi(Auth.CREDENTIALS_API).build(),
+                new HintRequest.Builder().setEmailAddressIdentifierSupported(true).build());
     }
 
     @Override

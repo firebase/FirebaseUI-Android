@@ -24,7 +24,7 @@
     <!-- Email common-->
     <string name="fui_next_default" translation_description="Button text to continue">Next</string>
     <string name="fui_email_hint" translation_description="Hint in email input field">Email</string>
-    <string name="fui_phone_hint" translation_description="Hint for phone input field">Phone Number</string>
+    <string name="fui_phone_hint" translation_description="Hint for phone input field">Phone number</string>
     <string name="fui_password_hint" translation_description="Hint for password input field">Password</string>
     <string name="fui_required_field" translation_description="Inline error for required field">You can\'t leave this empty.</string>
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">That email address isn\'t correct</string>

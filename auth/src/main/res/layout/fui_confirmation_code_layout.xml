@@ -28,31 +28,38 @@
             android:textColor="@color/fui_linkColor"
             tools:ignore="SelectableText" />
 
-        <com.firebase.ui.auth.ui.phone.SpacedEditText
-            android:id="@+id/confirmation_code"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/confirmation_code_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:layout_below="@+id/edit_phone_number"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:background="@color/fui_transparent"
-            android:cursorVisible="false"
-            android:ems="10"
-            android:fontFamily="monospace"
-            android:gravity="center"
-            android:imeOptions="actionDone"
-            android:inputType="number"
-            android:textSize="32sp"
-            android:typeface="monospace"
-            app:spacingProportion="1.1" />
+            android:gravity="center">
+
+            <com.firebase.ui.auth.ui.phone.SpacedEditText
+                android:id="@+id/confirmation_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/fui_transparent"
+                android:cursorVisible="false"
+                android:ems="10"
+                android:fontFamily="monospace"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:textSize="32sp"
+                android:typeface="monospace"
+                app:spacingProportion="1.1" />
+
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/submit_confirmation_code"
             style="@style/FirebaseUI.VerifyPhoneButton"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/confirmation_code"
+            android:layout_below="@id/confirmation_code_layout"
             android:text="@string/fui_continue_phone_login" />
 
         <LinearLayout

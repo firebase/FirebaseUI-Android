@@ -19,6 +19,7 @@
 package com.firebase.ui.auth.util.ui;
 
 import android.annotation.SuppressLint;
+import android.support.annotation.RestrictTo;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -36,6 +37,7 @@ import java.util.Collections;
  * 76417-
  * 764176
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class BucketedTextChangeListener implements TextWatcher {
     public interface ContentChangeCallback {
         /**

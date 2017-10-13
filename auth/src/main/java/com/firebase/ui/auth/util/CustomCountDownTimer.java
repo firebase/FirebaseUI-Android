@@ -15,7 +15,9 @@
 package com.firebase.ui.auth.util;
 
 import android.os.CountDownTimer;
+import android.support.annotation.RestrictTo;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class CustomCountDownTimer {
     private final long mMillisInFuture;
     private final long mCountDownInterval;

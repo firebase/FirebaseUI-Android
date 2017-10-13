@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.os.Build;
@@ -100,7 +99,6 @@ public class RegisterEmailFragment extends FragmentBase implements
         return inflater.inflate(R.layout.fui_register_email_layout, container, false);
     }
 
-    @SuppressLint("NewApi") // TODO remove once lint understands Build.VERSION_CODES.O
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mEmailEditText = view.findViewById(R.id.email);
@@ -124,10 +122,12 @@ public class RegisterEmailFragment extends FragmentBase implements
         view.findViewById(R.id.button_create).setOnClickListener(this);
 
         FlowParameters params = getFlowHolder().getParams();
-        new PreambleHandler(getContext(), params, R.string.fui_button_text_save)
-                .setPreamble(view.<TextView>findViewById(R.id.create_account_text));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                && params.enableCredentials) {
+        PreambleHandler.setup(
+                getContext(),
+                params,
+                R.string.fui_button_text_save,
+                view.<TextView>findViewById(R.id.create_account_text));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && params.enableCredentials) {
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
