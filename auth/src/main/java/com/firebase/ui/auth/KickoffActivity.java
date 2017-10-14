@@ -19,7 +19,7 @@ import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.remote.PlayServicesHelper;
+import com.firebase.ui.auth.util.PlayServicesHelper;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends HelperActivityBase {

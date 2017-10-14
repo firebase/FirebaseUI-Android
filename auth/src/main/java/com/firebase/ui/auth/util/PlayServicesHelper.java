@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.util.data.remote;
+package com.firebase.ui.auth.util;
 
 import android.app.Activity;
 import android.app.Dialog;
