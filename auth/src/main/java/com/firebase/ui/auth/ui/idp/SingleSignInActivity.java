@@ -50,7 +50,7 @@ public class SingleSignInActivity extends HelperActivityBase {
 
         AuthUI.IdpConfig providerConfig = null;
         for (AuthUI.IdpConfig config : getFlowHolder().getParams().providerInfo) {
-            if (config.getProviderId().equalsIgnoreCase(provider)) {
+            if (config.getProviderId().equals(provider)) {
                 providerConfig = config;
                 break;
             }
@@ -64,14 +64,19 @@ public class SingleSignInActivity extends HelperActivityBase {
         }
 
         Provider uiProvider;
-        if (provider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
-            uiProvider = new GoogleProvider(this, providerConfig, user.getEmail());
-        } else if (provider.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)) {
-            uiProvider = new FacebookProvider(this, providerConfig);
-        } else if (provider.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)) {
-            uiProvider = new TwitterProvider(this);
-        } else {
-            throw new IllegalStateException("Provider config id does not equal Firebase auth one");
+        switch (provider) {
+            case GoogleAuthProvider.PROVIDER_ID:
+                uiProvider = new GoogleProvider(this, providerConfig, user.getEmail());
+                break;
+            case FacebookAuthProvider.PROVIDER_ID:
+                uiProvider = new FacebookProvider(this, providerConfig);
+                break;
+            case TwitterAuthProvider.PROVIDER_ID:
+                uiProvider = new TwitterProvider(this);
+                break;
+            default:
+                throw new IllegalStateException(
+                        "Provider config id does not equal Firebase auth one");
         }
 
         uiProvider.startLogin(this);

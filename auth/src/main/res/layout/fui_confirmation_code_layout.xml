@@ -33,10 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:layout_below="@+id/edit_phone_number"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center">
+            android:layout_below="@+id/edit_phone_number">
 
             <com.firebase.ui.auth.ui.phone.SpacedEditText
                 android:id="@+id/confirmation_code"
@@ -46,6 +43,7 @@
                 android:cursorVisible="false"
                 android:ems="10"
                 android:fontFamily="monospace"
+                android:gravity="center"
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:textSize="32sp"

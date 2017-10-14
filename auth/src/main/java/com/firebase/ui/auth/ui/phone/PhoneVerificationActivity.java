@@ -53,6 +53,20 @@ public class PhoneVerificationActivity extends AppCompatBase implements Observer
                 ViewModelProviders.of(this).get(CheckPhoneNumberHandler.class);
         handler.init(getFlowHolder());
         handler.setSignInHandler(getSignInHandler());
+        handler.getVerificationErrorListener().observe(this, new Observer<Exception>() {
+            @Override
+            public void onChanged(@Nullable Exception e) {
+                if (e instanceof PhoneNumberVerificationRequiredException) {
+                    // Ignore if resending verification code
+                    if (getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG) == null) {
+                        showSubmitCodeFragment(
+                                ((PhoneNumberVerificationRequiredException) e).getPhoneNumber());
+                    }
+                } else {
+                    handleError(e);
+                }
+            }
+        });
 
         getSignInHandler().getSignInLiveData().observe(this, this);
 
@@ -71,17 +85,8 @@ public class PhoneVerificationActivity extends AppCompatBase implements Observer
         if (response.isSuccessful()) {
             finish(Activity.RESULT_OK, response.toIntent());
         } else {
-            TextInputLayout errorView = getErrorView();
             Exception e = response.getException();
-            if (e instanceof PhoneNumberVerificationRequiredException) {
-                showSubmitCodeFragment(
-                        ((PhoneNumberVerificationRequiredException) e).getPhoneNumber());
-            } else if (e instanceof FirebaseAuthException) {
-                errorView.setError(getErrorMessage(
-                        FirebaseAuthError.fromException((FirebaseAuthException) e)));
-            } else {
-                errorView.setError(e.getLocalizedMessage());
-            }
+            handleError(e);
         }
     }
 
@@ -94,16 +99,30 @@ public class PhoneVerificationActivity extends AppCompatBase implements Observer
         }
     }
 
+    private void handleError(Exception e) {
+        TextInputLayout errorView = getErrorView();
+        if (errorView == null) { return; }
+
+        if (e instanceof FirebaseAuthException) {
+            errorView.setError(getErrorMessage(
+                    FirebaseAuthError.fromException((FirebaseAuthException) e)));
+        } else {
+            errorView.setError(e.getLocalizedMessage());
+        }
+    }
+
     private TextInputLayout getErrorView() {
         CheckPhoneNumberFragment checkFragment = (CheckPhoneNumberFragment)
                 getSupportFragmentManager().findFragmentByTag(CheckPhoneNumberFragment.TAG);
         SubmitConfirmationCodeFragment submitFragment = (SubmitConfirmationCodeFragment)
                 getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
 
-        if (checkFragment != null) {
+        if (checkFragment != null && checkFragment.getView() != null) {
             return checkFragment.getView().findViewById(R.id.phone_layout);
-        } else {
+        } else if (submitFragment != null && submitFragment.getView() != null) {
             return submitFragment.getView().findViewById(R.id.confirmation_code_layout);
+        } else {
+            return null;
         }
     }
 

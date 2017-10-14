@@ -278,17 +278,17 @@ public class AuthUI {
      * for saving since we don't have access to the password.
      */
     private static List<Credential> credentialsFromFirebaseUser(@NonNull FirebaseUser user) {
-        if (TextUtils.isEmpty(user.getEmail())) {
+        if (TextUtils.isEmpty(user.getEmail()) && TextUtils.isEmpty(user.getPhoneNumber())) {
             return Collections.emptyList();
         }
 
         List<Credential> credentials = new ArrayList<>();
         for (UserInfo userInfo : user.getProviderData()) {
-            credentials.add(new Credential.Builder(user.getEmail())
+            credentials.add(new Credential.Builder(
+                    user.getEmail() == null ? user.getPhoneNumber() : user.getEmail())
                     .setAccountType(ProviderUtils.providerIdToAccountType(userInfo.getProviderId()))
                     .build());
         }
-
         return credentials;
     }
 

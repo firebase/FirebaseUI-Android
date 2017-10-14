@@ -36,6 +36,8 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.List;
 
 public final class ProviderUtils {
+    private static final String PHONE_IDENTITY = "https://phone.firebase";
+
     private ProviderUtils() {
         throw new AssertionError("No instance for you!");
     }
@@ -70,7 +72,7 @@ public final class ProviderUtils {
             case EmailAuthProvider.PROVIDER_ID:
                 // The account type for email/password creds is null
             case PhoneAuthProvider.PROVIDER_ID:
-                // The account type for phone creds is null
+                return PHONE_IDENTITY;
             default:
                 return null;
         }
@@ -85,6 +87,8 @@ public final class ProviderUtils {
                 return FacebookAuthProvider.PROVIDER_ID;
             case IdentityProviders.TWITTER:
                 return TwitterAuthProvider.PROVIDER_ID;
+            case PHONE_IDENTITY:
+                return PhoneAuthProvider.PROVIDER_ID;
             default:
                 return null;
         }

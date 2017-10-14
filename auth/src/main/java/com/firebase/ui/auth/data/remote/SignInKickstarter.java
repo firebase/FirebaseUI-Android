@@ -174,7 +174,8 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
                 @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
                 if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
                         || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                        || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
+                        || providerId.equals(TwitterAuthProvider.PROVIDER_ID)
+                        || providerId.equals(PhoneAuthProvider.PROVIDER_ID)) {
                     accounts.add(ProviderUtils.providerIdToAccountType(providerId));
                 }
             }
@@ -201,16 +202,26 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
         }
 
         private void handleCredential(Credential credential) {
-            String email = credential.getId();
+            String id = credential.getId();
             String password = credential.getPassword();
-            if (TextUtils.isEmpty(email)) {
-                startAuthMethodChoice();
-            } else if (TextUtils.isEmpty(password)) {
-                redirectToIdpSignIn(ProviderUtils.accountTypeToProviderId(
-                        String.valueOf(credential.getAccountType())), email);
+            if (TextUtils.isEmpty(password)) {
+                String provider = ProviderUtils.accountTypeToProviderId(
+                        String.valueOf(credential.getAccountType()));
+                if (TextUtils.equals(provider, PhoneAuthProvider.PROVIDER_ID)) {
+                    Bundle args = new Bundle();
+                    args.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, id);
+                    mFlowHolder.getIntentStarter().setValue(Pair.create(
+                            PhoneVerificationActivity.createIntent(
+                                    getApplication(),
+                                    mFlowHolder.getParams(),
+                                    args),
+                            RC_PHONE_FLOW));
+                } else {
+                    redirectToIdpSignIn(provider, id);
+                }
             } else {
                 mHandler.start(new IdpResponse.Builder(
-                        new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
+                        new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build())
                         .setPassword(password)
                         .build());
             }

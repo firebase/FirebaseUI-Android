@@ -7,7 +7,6 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -139,16 +138,33 @@ public class SignInHandler extends AuthViewModelBase {
         return base;
     }
 
+    private void deleteCredential(String id) {
+        LifecycleOwner owner = new LifecycleOwner() {
+            private final Lifecycle mLifecycle = new LifecycleRegistry(this);
+
+            @Override
+            public Lifecycle getLifecycle() {
+                return mLifecycle;
+            }
+        };
+        final LifecycleRegistry lifecycle = (LifecycleRegistry) owner.getLifecycle();
+
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+        GoogleSignInHelper.newInstance(getApplication(), owner)
+                .delete(new Credential.Builder(id).build())
+                .addOnCompleteListener(new OnCompleteListener<Status>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Status> task) {
+                        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+                    }
+                });
+    }
+
     private class SaveCredentialFlow extends InternalGoogleApiConnector
             implements OnSuccessListener<AuthResult>, ResultCallback<Status> {
         private static final int RC_SAVE = 12;
 
         private final IdpResponse mResponse;
-
-        private String mEmail;
-        private String mPassword;
-        private String mName;
-        private String mProfilePictureUri;
 
         public SaveCredentialFlow(IdpResponse response) {
             super(new GoogleApiClient.Builder(getApplication()).addApi(Auth.CREDENTIALS_API),
@@ -158,35 +174,40 @@ public class SignInHandler extends AuthViewModelBase {
 
         @Override
         public void onSuccess(AuthResult result) {
-            if (!mFlowHolder.getParams().enableCredentials) {
+            if (mFlowHolder.getParams().enableCredentials) {
+                connect();
+            } else {
                 finish();
-                return;
             }
-
-            FirebaseUser user = result.getUser();
-            mEmail = user.getEmail();
-            mPassword = mResponse.getPassword();
-            mName = user.getDisplayName();
-            mProfilePictureUri = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
-
-            connect();
         }
 
         @Override
         public void onConnected(@Nullable Bundle bundle) {
-            Credential.Builder builder = new Credential.Builder(mEmail);
-            if (mResponse.getProviderType().equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)) {
-                builder.setPassword(mPassword);
+            User user = mResponse.getUser();
+
+            Credential.Builder builder;
+            if (TextUtils.isEmpty(user.getEmail())) {
+                builder = new Credential.Builder(user.getPhoneNumber());
+            } else {
+                builder = new Credential.Builder(user.getEmail());
+
+                String number = user.getPhoneNumber();
+                if (!TextUtils.isEmpty(number)) {
+                    // Delete the phone number credential if there is one in favor of
+                    // safer and easier password/idp creds
+                    deleteCredential(number);
+                }
+            }
+
+            if (mResponse.getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
+                builder.setPassword(mResponse.getPassword());
             } else {
                 builder.setAccountType(ProviderUtils.providerIdToAccountType(
                         mResponse.getProviderType()));
             }
 
-            builder.setName(mName);
-            if (mProfilePictureUri != null) {
-                builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
-            }
-
+            builder.setName(user.getName());
+            builder.setProfilePictureUri(user.getPhotoUri());
             Auth.CredentialsApi.save(mClient, builder.build()).setResultCallback(this);
         }
 
@@ -248,25 +269,7 @@ public class SignInHandler extends AuthViewModelBase {
                     return;
                 } else if (e instanceof FirebaseAuthInvalidUserException
                         || e instanceof FirebaseAuthInvalidCredentialsException) {
-                    LifecycleOwner owner = new LifecycleOwner() {
-                        private final Lifecycle mLifecycle = new LifecycleRegistry(this);
-
-                        @Override
-                        public Lifecycle getLifecycle() {
-                            return mLifecycle;
-                        }
-                    };
-                    final LifecycleRegistry lifecycle = (LifecycleRegistry) owner.getLifecycle();
-
-                    lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-                    GoogleSignInHelper.newInstance(getApplication(), owner)
-                            .delete(new Credential.Builder(email).build())
-                            .addOnCompleteListener(new OnCompleteListener<Status>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Status> task) {
-                                    lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
-                                }
-                            });
+                    deleteCredential(email);
                 }
             }
 

@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.os.Build;
 import android.os.Bundle;
@@ -69,9 +68,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
             @Override
             public void onChanged(@Nullable IdpResponse response) {
-                if (response.isSuccessful()) {
-                    finish(Activity.RESULT_OK, response.toIntent());
-                } else {
+                if (!response.isSuccessful()) {
                     Exception e = response.getException();
                     if (e instanceof FirebaseAuthWeakPasswordException) {
                         mPasswordInput.setError(getResources().getQuantityString(

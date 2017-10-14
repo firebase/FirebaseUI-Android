@@ -225,19 +225,21 @@ public class IdpResponse implements Parcelable {
 
         public IdpResponse build() {
             String providerId = mUser.getProviderId();
-            if (providerId.equalsIgnoreCase(EmailAuthProvider.PROVIDER_ID)
-                    && TextUtils.isEmpty(mPassword)) {
+            if (!AuthUI.SUPPORTED_PROVIDERS.contains(providerId)) {
+                throw new IllegalStateException("Unknown provider: " + providerId);
+            }
+            if (providerId.equals(EmailAuthProvider.PROVIDER_ID) && TextUtils.isEmpty(mPassword)) {
                 throw new IllegalStateException(
                         "Password cannot be null when using the email provider.");
             }
-            if ((providerId.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)
-                    || providerId.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)
-                    || providerId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID))
+            if ((providerId.equals(GoogleAuthProvider.PROVIDER_ID)
+                    || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
+                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID))
                     && TextUtils.isEmpty(mToken)) {
                 throw new IllegalStateException(
                         "Token cannot be null when using a non-email provider.");
             }
-            if (providerId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
+            if (providerId.equals(TwitterAuthProvider.PROVIDER_ID)
                     && TextUtils.isEmpty(mSecret)) {
                 throw new IllegalStateException(
                         "Secret cannot be null when using the Twitter provider.");

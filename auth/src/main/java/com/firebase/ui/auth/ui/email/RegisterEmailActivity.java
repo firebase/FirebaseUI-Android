@@ -14,13 +14,17 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import android.app.Activity;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
@@ -55,6 +59,15 @@ public class RegisterEmailActivity extends AppCompatBase implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_email);
+
+        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
+            @Override
+            public void onChanged(@Nullable IdpResponse response) {
+                if (response.isSuccessful()) {
+                    finish(Activity.RESULT_OK, response.toIntent());
+                }
+            }
+        });
 
         if (savedInstanceState != null) {
             return;

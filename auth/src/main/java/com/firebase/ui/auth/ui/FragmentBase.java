@@ -1,8 +1,6 @@
 package com.firebase.ui.auth.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -14,7 +12,6 @@ import com.firebase.ui.auth.util.ui.FlowHolder;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FragmentBase extends Fragment {
-
     private FlowHolder mFlowHolder;
     private SignInHandler mSignInHandler;
 
@@ -45,15 +42,5 @@ public class FragmentBase extends Fragment {
 
     public ProgressDialogHolder getDialogHolder() {
         return mProgressDialogHolder;
-    }
-
-    public void finish(int resultCode, Intent resultIntent) {
-        getActivity().setResult(resultCode, resultIntent);
-        getActivity().finish();
-    }
-
-    public void startIntentSenderForResult(IntentSender sender, int requestCode)
-            throws IntentSender.SendIntentException {
-        startIntentSenderForResult(sender, requestCode, null, 0, 0, 0, null);
     }
 }

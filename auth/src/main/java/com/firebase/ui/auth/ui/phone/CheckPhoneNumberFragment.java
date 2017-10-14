@@ -54,9 +54,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         mHandler.getPhoneNumberListener().observe(this, new Observer<PhoneNumber>() {
             @Override
             public void onChanged(@Nullable PhoneNumber number) {
-                setPhoneNumber(number);
-                setCountryCode(number);
-                onNext();
+                start(number);
             }
         });
     }
@@ -125,19 +123,33 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
             phone = params.getString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER);
             countryCode = params.getString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE);
             nationalNumber = params.getString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER);
+
+            // Clear these args so the user doesn't get stuck being sent to the submit code fragment
+            params.remove(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER);
+            params.remove(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE);
+            params.remove(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER);
         }
 
         if (!TextUtils.isEmpty(countryCode) && !TextUtils.isEmpty(nationalNumber)) {
-            PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(countryCode, nationalNumber);
-            setPhoneNumber(phoneNumber);
-            setCountryCode(phoneNumber);
+            start(PhoneNumberUtils.getPhoneNumber(countryCode, nationalNumber));
         } else if (!TextUtils.isEmpty(phone)) {
-            PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(phone);
-            setPhoneNumber(phoneNumber);
-            setCountryCode(phoneNumber);
+            start(PhoneNumberUtils.getPhoneNumber(phone));
         } else if (getFlowHolder().getParams().enableHints) {
             mHandler.fetchCredential();
         }
+    }
+
+    private void start(PhoneNumber number) {
+        if (PhoneNumber.isValid(number)) {
+            mPhoneEditText.setText(number.getPhoneNumber());
+            mPhoneEditText.setSelection(number.getPhoneNumber().length());
+        }
+        if (PhoneNumber.isCountryValid(number)) {
+            mCountryListSpinner.setSelectedForCountry(
+                    new Locale("", number.getCountryIso()), number.getCountryCode());
+        }
+
+        onNext();
     }
 
     @Override
@@ -164,19 +176,5 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         }
 
         return PhoneNumberUtils.format(everythingElse, countryInfo);
-    }
-
-    private void setPhoneNumber(PhoneNumber phoneNumber) {
-        if (PhoneNumber.isValid(phoneNumber)) {
-            mPhoneEditText.setText(phoneNumber.getPhoneNumber());
-            mPhoneEditText.setSelection(phoneNumber.getPhoneNumber().length());
-        }
-    }
-
-    private void setCountryCode(PhoneNumber phoneNumber) {
-        if (PhoneNumber.isCountryValid(phoneNumber)) {
-            mCountryListSpinner.setSelectedForCountry(
-                    new Locale("", phoneNumber.getCountryIso()), phoneNumber.getCountryCode());
-        }
     }
 }

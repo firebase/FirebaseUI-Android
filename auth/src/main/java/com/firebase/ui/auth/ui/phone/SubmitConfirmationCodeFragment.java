@@ -90,12 +90,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mSubmitConfirmationButton = view.findViewById(R.id.submit_confirmation_code);
 
         getActivity().setTitle(getString(R.string.fui_verify_your_phone_title));
-        mSubmitConfirmationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitCode();
-            }
-        });
+        setupSubmitConfirmationButton();
         setupConfirmationCodeEditText();
         setupEditPhoneNumberTextView();
         setupResendConfirmationCodeTextView();
@@ -133,6 +128,16 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(EXTRA_MILLIS_UNTIL_FINISHED, mMillisUntilFinished);
+    }
+
+    private void setupSubmitConfirmationButton() {
+        mSubmitConfirmationButton.setEnabled(false);
+        mSubmitConfirmationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitCode();
+            }
+        });
     }
 
     private void setupConfirmationCodeEditText() {
@@ -192,7 +197,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
             protected void onTick(long millisUntilFinished) {
                 mMillisUntilFinished = millisUntilFinished;
                 mCountDownTextView.setText(String.format(getString(R.string.fui_resend_code_in),
-                        TimeUnit.MILLISECONDS.toSeconds(mMillisUntilFinished)));
+                        TimeUnit.MILLISECONDS.toSeconds(mMillisUntilFinished) + 1));
             }
 
             @Override

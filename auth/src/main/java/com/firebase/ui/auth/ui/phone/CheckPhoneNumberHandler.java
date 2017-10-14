@@ -36,6 +36,7 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
     private static final int RC_HINT = 14;
 
     private MutableLiveData<PhoneNumber> mPhoneNumberListener = new SingleLiveEvent<>();
+    private MutableLiveData<Exception> mVerificationErrorListener = new SingleLiveEvent<>();
     private SignInHandler mHandler;
 
     private String mPhoneNumber;
@@ -60,9 +61,15 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
         return mPhoneNumberListener;
     }
 
+    public LiveData<Exception> getVerificationErrorListener() {
+        return mVerificationErrorListener;
+    }
+
     public void fetchCredential() {
-        mFlowHolder.getPendingIntentStarter()
-                .setValue(Pair.create(getPhoneNumberHintIntent(), RC_HINT));
+        if (mPhoneNumber == null) {
+            mFlowHolder.getPendingIntentStarter()
+                    .setValue(Pair.create(getPhoneNumberHintIntent(), RC_HINT));
+        }
     }
 
     private PendingIntent getPhoneNumberHintIntent() {
@@ -105,7 +112,7 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
 
                     @Override
                     public void onVerificationFailed(FirebaseException e) {
-                        mHandler.start(IdpResponse.fromError(e));
+                        mVerificationErrorListener.setValue(e);
                     }
 
                     @Override
@@ -113,8 +120,8 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
                                            @NonNull PhoneAuthProvider.ForceResendingToken token) {
                         mVerificationId = verificationId;
                         mForceResendingToken = token;
-                        mHandler.start(IdpResponse.fromError(
-                                new PhoneNumberVerificationRequiredException(number)));
+                        mVerificationErrorListener.setValue(
+                                new PhoneNumberVerificationRequiredException(number));
                     }
                 },
                 force ? mForceResendingToken : null);
