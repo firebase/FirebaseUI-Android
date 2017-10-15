@@ -210,7 +210,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         boolean passwordValid = mPasswordFieldValidator.validate(password);
         boolean nameValid = mNameValidator.validate(name);
         if (emailValid && passwordValid && nameValid) {
-            getSignInHandler().start(new IdpResponse.Builder(
+            getSignInHandler().signIn(new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
                             .setName(name)
                             .setPhotoUri(mUser.getPhotoUri())

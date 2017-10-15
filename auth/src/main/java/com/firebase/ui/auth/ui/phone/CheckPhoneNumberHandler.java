@@ -132,7 +132,7 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
     }
 
     private void start(PhoneAuthCredential credential, String number) {
-        mHandler.start(
+        mHandler.signIn(
                 new IdpResponse.Builder(
                         new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
                                 .setPhoneNumber(number)

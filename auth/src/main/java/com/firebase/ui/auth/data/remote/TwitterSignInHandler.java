@@ -109,7 +109,7 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
                         @Override
                         public void success(Result<com.twitter.sdk.android.core.models.User> result) {
                             com.twitter.sdk.android.core.models.User user = result.data;
-                            mHandler.start(createIdpResponse(
+                            mHandler.signIn(createIdpResponse(
                                     sessionResult.data,
                                     user.email,
                                     user.name,
@@ -118,14 +118,14 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
 
                         @Override
                         public void failure(TwitterException e) {
-                            mHandler.start(IdpResponse.fromError(e));
+                            mHandler.signIn(IdpResponse.fromError(e));
                         }
                     });
         }
 
         @Override
         public void failure(TwitterException e) {
-            mHandler.start(IdpResponse.fromError(e));
+            mHandler.signIn(IdpResponse.fromError(e));
         }
     }
 

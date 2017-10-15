@@ -96,7 +96,7 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
                     Auth.GoogleSignInApi.getSignInResultFromIntent(result.getData());
 
             if (signInResult.isSuccess()) {
-                mHandler.start(createIdpResponse(signInResult.getSignInAccount()));
+                mHandler.signIn(createIdpResponse(signInResult.getSignInAccount()));
             } else {
                 Status status = signInResult.getStatus();
 
@@ -104,7 +104,7 @@ public class GoogleSignInHandler extends ViewModelBase<GoogleSignInHandler.Param
                     initClient(null);
                     start();
                 } else {
-                    mHandler.start(IdpResponse.fromError(new ProviderErrorException(
+                    mHandler.signIn(IdpResponse.fromError(new ProviderErrorException(
                             "Code: " + status.getStatusCode() + ", message: " + status.getStatusMessage())));
                 }
             }

@@ -56,11 +56,11 @@ public class SignInHandler extends AuthViewModelBase {
         return SIGN_IN_LISTENER;
     }
 
-    public void start(IdpResponse response) {
-        start(response, null);
+    public void signIn(IdpResponse response) {
+        signIn(response, null);
     }
 
-    public void start(IdpResponse response, @Nullable PhoneAuthCredential credential) {
+    public void signIn(IdpResponse response, @Nullable PhoneAuthCredential credential) {
         if (response.isSuccessful()) {
             FirebaseUser currentUser = mAuth.getCurrentUser();
             if (currentUser != null && currentUser.getProviders() != null

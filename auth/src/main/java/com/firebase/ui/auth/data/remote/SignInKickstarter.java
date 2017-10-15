@@ -220,7 +220,7 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
                     redirectToIdpSignIn(provider, id);
                 }
             } else {
-                mHandler.start(new IdpResponse.Builder(
+                mHandler.signIn(new IdpResponse.Builder(
                         new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build())
                         .setPassword(password)
                         .build());

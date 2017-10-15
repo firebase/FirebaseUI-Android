@@ -134,6 +134,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             mPasswordLayout.setError(null);
         }
 
-        getSignInHandler().start(new IdpResponse.Builder(mUser).setPassword(password).build());
+        getSignInHandler().signIn(new IdpResponse.Builder(mUser).setPassword(password).build());
     }
 }
