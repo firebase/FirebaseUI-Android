@@ -45,7 +45,7 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-firestore:3.0.0'
 
     // FirebaseUI for Firebase Auth
-    compile 'com.firebaseui:firebase-ui-auth:3.0.0'
+    compile 'com.firebaseui:firebase-ui-auth:0.4.0'
 
     // FirebaseUI for Cloud Storage
     compile 'com.firebaseui:firebase-ui-storage:3.0.0'
