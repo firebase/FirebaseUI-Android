@@ -7,9 +7,9 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.ActivityResult;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.email.EmailActivity;
-import com.firebase.ui.auth.util.ui.ActivityResult;
 
 public class EmailProvider implements Provider {
     private static final int RC_EMAIL_FLOW = 8;

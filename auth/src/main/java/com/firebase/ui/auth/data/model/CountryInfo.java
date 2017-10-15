@@ -16,7 +16,7 @@
  * Modifications copyright (C) 2017 Google Inc
  *
  */
-package com.firebase.ui.auth.util.data;
+package com.firebase.ui.auth.data.model;
 
 import java.text.Collator;
 import java.util.Locale;

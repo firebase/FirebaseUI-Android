@@ -23,6 +23,7 @@ import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 
 import java.util.Collections;

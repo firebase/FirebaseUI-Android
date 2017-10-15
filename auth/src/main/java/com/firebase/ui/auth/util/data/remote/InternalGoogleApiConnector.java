@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.firebase.ui.auth.util.ui.ActivityResult;
+import com.firebase.ui.auth.data.model.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;

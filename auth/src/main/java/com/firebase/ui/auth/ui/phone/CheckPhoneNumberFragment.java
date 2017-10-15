@@ -16,10 +16,10 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.CountryInfo;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 

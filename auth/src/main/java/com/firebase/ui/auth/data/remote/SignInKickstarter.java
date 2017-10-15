@@ -11,6 +11,7 @@ import android.util.Pair;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.ActivityResult;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.model.UserCancellationException;
@@ -21,7 +22,6 @@ import com.firebase.ui.auth.ui.phone.PhoneNumberActivity;
 import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.remote.InternalGoogleApiConnector;
-import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;

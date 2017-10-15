@@ -23,7 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.SectionIndexer;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.util.data.CountryInfo;
+import com.firebase.ui.auth.data.model.CountryInfo;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

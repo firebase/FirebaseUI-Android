@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.annotation.RestrictTo;
 import android.util.Pair;
 
+import com.firebase.ui.auth.data.model.ActivityResult;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.data.AutoClearSingleLiveEvent;
 

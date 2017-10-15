@@ -20,7 +20,7 @@ package com.firebase.ui.auth.data.client;
 
 import android.os.AsyncTask;
 
-import com.firebase.ui.auth.util.data.CountryInfo;
+import com.firebase.ui.auth.data.model.CountryInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;

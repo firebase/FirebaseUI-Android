@@ -29,7 +29,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 
 import com.firebase.ui.auth.data.client.CountryListLoadTask;
-import com.firebase.ui.auth.util.data.CountryInfo;
+import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 
 import java.util.List;

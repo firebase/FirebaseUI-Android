@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.ActivityResult;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
 import com.firebase.ui.auth.data.model.User;
@@ -18,7 +19,6 @@ import com.firebase.ui.auth.data.remote.SignInHandler;
 import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
-import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;

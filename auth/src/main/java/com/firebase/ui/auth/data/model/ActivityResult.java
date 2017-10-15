@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.util.ui;
+package com.firebase.ui.auth.data.model;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;

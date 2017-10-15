@@ -8,8 +8,8 @@ import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.ActivityResult;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.util.ui.ActivityResult;
 import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.firebase.ui.auth.util.ui.ViewModelBase;
 import com.google.firebase.auth.TwitterAuthProvider;

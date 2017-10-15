@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.util.data;
+package com.firebase.ui.auth.data.remote;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
