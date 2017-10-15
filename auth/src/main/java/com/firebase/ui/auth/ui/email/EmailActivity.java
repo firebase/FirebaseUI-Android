@@ -40,7 +40,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
  * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class RegisterEmailActivity extends AppCompatBase implements
+public class EmailActivity extends AppCompatBase implements
         CheckEmailFragment.CheckEmailListener {
 
     private static final int RC_WELCOME_BACK_IDP = 15;
@@ -51,7 +51,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
     }
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return HelperActivityBase.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
+        return HelperActivityBase.createBaseIntent(context, EmailActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 

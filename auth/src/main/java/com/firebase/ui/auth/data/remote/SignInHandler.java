@@ -354,16 +354,9 @@ public class SignInHandler extends AuthViewModelBase {
         private void onExistingCredentialRetrievalFailure(IdpResponse existingUserResponse) {
             Exception e = existingUserResponse.getException();
             if (e instanceof CyclicAccountLinkingException) {
-                // 3 way linking: this will happen when:
-                // 1. The user is already logged-in before starting the auth flow
-                // 2. The user already another account that will cause linking exceptions
-                // 3. The user tries to log in with a third account
-                // For example, the user is logged-in anonymously, has a Google account, and tries
-                // to log in with Facebook.
-
-                SIGN_IN_LISTENER.setValue(IdpResponse.fromError(e));
                 // For now, just fail. In the future, we can support a data migration where the
                 // anonymous account is thrown away and the other two are linked
+                SIGN_IN_LISTENER.setValue(IdpResponse.fromError(e));
             } else {
                 SIGN_IN_LISTENER.setValue(IdpResponse.fromError(e));
             }

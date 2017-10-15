@@ -51,13 +51,13 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import static com.firebase.ui.auth.ui.phone.PhoneNumberActivity.AUTO_RETRIEVAL_TIMEOUT_MILLIS;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_ISO2;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE_NO_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_RAW_PHONE;
-import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.AUTO_RETRIEVAL_TIMEOUT_MILLIS;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -72,8 +72,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
-public class PhoneVerificationActivityTest {
-    private PhoneVerificationActivity mActivity;
+public class PhoneNumberActivityTest {
+    private PhoneNumberActivity mActivity;
     private TextView mErrorEditText;
     private Button mSendCodeButton;
     private EditText mPhoneEditText;
@@ -88,12 +88,12 @@ public class PhoneVerificationActivityTest {
 
     private String verificationId = "hjksdf737hc";
 
-    private PhoneVerificationActivity createActivity() {
-        Intent startIntent = PhoneVerificationActivity.createIntent(
+    private PhoneNumberActivity createActivity() {
+        Intent startIntent = PhoneNumberActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
                         Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)), null);
-        return Robolectric.buildActivity(PhoneVerificationActivity.class, startIntent)
+        return Robolectric.buildActivity(PhoneNumberActivity.class, startIntent)
                 .create(new Bundle()).start().visible().get();
     }
 
@@ -112,13 +112,13 @@ public class PhoneVerificationActivityTest {
     public void testDefaultFullPhoneNumber_prePopulatesPhoneNumberInBundle() {
         Bundle fullPhoneParams = new Bundle();
         fullPhoneParams.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, YE_RAW_PHONE);
-        Intent startIntent = PhoneVerificationActivity.createIntent(
+        Intent startIntent = PhoneNumberActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
                         Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)),
                 fullPhoneParams);
 
-        mActivity = Robolectric.buildActivity(PhoneVerificationActivity.class, startIntent)
+        mActivity = Robolectric.buildActivity(PhoneNumberActivity.class, startIntent)
                 .create(new Bundle()).start().visible().get();
 
         CheckPhoneNumberFragment checkPhoneNumberFragment = (CheckPhoneNumberFragment)
@@ -138,13 +138,13 @@ public class PhoneVerificationActivityTest {
         Bundle phoneParams = new Bundle();
         phoneParams.putString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE, CA_ISO2);
         phoneParams.putString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER, PHONE_NO_COUNTRY_CODE);
-        Intent startIntent = PhoneVerificationActivity.createIntent(
+        Intent startIntent = PhoneNumberActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
                         Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)),
                 phoneParams);
 
-        mActivity = Robolectric.buildActivity(PhoneVerificationActivity.class, startIntent)
+        mActivity = Robolectric.buildActivity(PhoneNumberActivity.class, startIntent)
                 .create(new Bundle()).start().visible().get();
 
         CheckPhoneNumberFragment checkPhoneNumberFragment = (CheckPhoneNumberFragment)

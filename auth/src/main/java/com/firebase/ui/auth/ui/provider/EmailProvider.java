@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
+import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 
 public class EmailProvider implements Provider {
@@ -42,7 +42,7 @@ public class EmailProvider implements Provider {
     @Override
     public void startLogin(HelperActivityBase activity) {
         activity.startActivityForResult(
-                RegisterEmailActivity.createIntent(activity, activity.getFlowHolder().getParams()),
+                EmailActivity.createIntent(activity, activity.getFlowHolder().getParams()),
                 RC_EMAIL_FLOW);
     }
 }

@@ -14,10 +14,10 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.model.UserCancellationException;
-import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
+import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
-import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
+import com.firebase.ui.auth.ui.phone.PhoneNumberActivity;
 import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.remote.InternalGoogleApiConnector;
@@ -82,12 +82,12 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
             switch (firstProvider) {
                 case EmailAuthProvider.PROVIDER_ID:
                     mFlowHolder.getIntentStarter().setValue(Pair.create(
-                            RegisterEmailActivity.createIntent(getApplication(), flowParams),
+                            EmailActivity.createIntent(getApplication(), flowParams),
                             RC_EMAIL_FLOW));
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
                     mFlowHolder.getIntentStarter().setValue(Pair.create(
-                            PhoneVerificationActivity.createIntent(
+                            PhoneNumberActivity.createIntent(
                                     getApplication(), flowParams, firstIdpConfig.getParams()),
                             RC_PHONE_FLOW));
                     break;
@@ -107,7 +107,7 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
 
         if (TextUtils.isEmpty(provider)) {
             mFlowHolder.getIntentStarter().setValue(Pair.create(
-                    RegisterEmailActivity.createIntent(getApplication(), flowParams, email),
+                    EmailActivity.createIntent(getApplication(), flowParams, email),
                     RC_EMAIL_FLOW));
             return;
         }
@@ -211,7 +211,7 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
                     Bundle args = new Bundle();
                     args.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, id);
                     mFlowHolder.getIntentStarter().setValue(Pair.create(
-                            PhoneVerificationActivity.createIntent(
+                            PhoneNumberActivity.createIntent(
                                     getApplication(),
                                     mFlowHolder.getParams(),
                                     args),

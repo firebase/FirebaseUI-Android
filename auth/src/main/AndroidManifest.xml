@@ -38,12 +38,12 @@
             android:exported="false"/>
 
         <activity
-            android:name=".ui.email.RegisterEmailActivity"
+            android:name=".ui.email.EmailActivity"
             android:label="@string/fui_sign_in_default"
             android:exported="false"/>
 
         <activity
-            android:name=".ui.phone.PhoneVerificationActivity"
+            android:name=".ui.phone.PhoneNumberActivity"
             android:label="@string/fui_sign_in_with_phone_number"
             android:windowSoftInputMode="stateAlwaysVisible"
             android:exported="false"/>

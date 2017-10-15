@@ -151,6 +151,10 @@ public class AuthUiActivity extends AppCompatActivity {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
+                // We need to post this to the main thread to ensure `onActivityResult` is called
+                // first. Otherwise, coming back from a deeply nested hierarchy kills this activity
+                // and we don't show the IdpResponse
+
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 if (auth.getCurrentUser() != null) {
                     startSignedInActivity(null);

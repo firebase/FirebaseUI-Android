@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
+import com.firebase.ui.auth.ui.phone.PhoneNumberActivity;
 import com.firebase.ui.auth.util.ui.ActivityResult;
 
 public class PhoneProvider implements Provider {
@@ -47,7 +47,7 @@ public class PhoneProvider implements Provider {
     @Override
     public void startLogin(HelperActivityBase activity) {
         activity.startActivityForResult(
-                PhoneVerificationActivity.createIntent(
+                PhoneNumberActivity.createIntent(
                         activity, activity.getFlowHolder().getParams(), mConfig.getParams()),
                 RC_PHONE_FLOW);
     }
