@@ -61,8 +61,6 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         mHandler.getPasswordResetListener().observe(this, new Observer<Task<String>>() {
             @Override
             public void onChanged(@Nullable Task<String> task) {
-                getDialogHolder().dismissDialog();
-
                 if (task.isSuccessful()) {
                     mEmailInputLayout.setError(null);
                     RecoveryEmailSentDialog.show(task.getResult(), getSupportFragmentManager());
@@ -90,7 +88,6 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     public void onClick(View view) {
         if (view.getId() == R.id.button_done
                 && mEmailFieldValidator.validate(mEmailEditText.getText())) {
-            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_sending);
             onDonePressed();
         }
     }

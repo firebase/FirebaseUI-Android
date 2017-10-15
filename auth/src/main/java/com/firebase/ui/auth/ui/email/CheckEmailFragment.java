@@ -112,10 +112,7 @@ public class CheckEmailFragment extends FragmentBase implements
         mHandler.getProviderListener().observe(this, new Observer<User>() {
             @Override
             public void onChanged(@Nullable User user) {
-                if (user == null) {
-                    getDialogHolder().dismissDialog();
-                    return;
-                }
+                if (user == null) { return; }
 
                 String email = user.getEmail();
                 String provider = user.getProviderId();
@@ -156,7 +153,6 @@ public class CheckEmailFragment extends FragmentBase implements
     private void validateAndProceed() {
         String email = mEmailEditText.getText().toString();
         if (mEmailFieldValidator.validate(email)) {
-            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_checking_accounts);
             mHandler.fetchProvider(email);
         }
     }

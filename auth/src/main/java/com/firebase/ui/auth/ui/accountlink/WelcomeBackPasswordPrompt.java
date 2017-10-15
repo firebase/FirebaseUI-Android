@@ -97,7 +97,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 if (response.isSuccessful()) {
                     finish(Activity.RESULT_OK, response.toIntent());
                 } else {
-                    getDialogHolder().dismissDialog();
                     mPasswordLayout.setError(response.getException().getLocalizedMessage());
                 }
             }
@@ -134,7 +133,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } else {
             mPasswordLayout.setError(null);
         }
-        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
 
         getSignInHandler().start(new IdpResponse.Builder(mUser).setPassword(password).build());
     }

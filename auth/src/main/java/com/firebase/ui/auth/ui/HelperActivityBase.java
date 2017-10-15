@@ -29,8 +29,6 @@ public class HelperActivityBase extends AppCompatActivity {
     private FlowHolder mFlowHolder;
     private SignInHandler mSignInHandler;
 
-    private ProgressDialogHolder mProgressDialogHolder;
-
     public static Intent createBaseIntent(
             @NonNull Context context,
             @NonNull Class<? extends Activity> target,
@@ -45,8 +43,6 @@ public class HelperActivityBase extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mProgressDialogHolder = new ProgressDialogHolder(this);
-
         getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
             @Override
             public void onChanged(@Nullable IdpResponse response) {
@@ -90,12 +86,6 @@ public class HelperActivityBase extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mProgressDialogHolder.dismissDialog();
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         getFlowHolder().onActivityResult(requestCode, resultCode, data);
@@ -117,10 +107,6 @@ public class HelperActivityBase extends AppCompatActivity {
         }
 
         return mSignInHandler;
-    }
-
-    public ProgressDialogHolder getDialogHolder() {
-        return mProgressDialogHolder;
     }
 
     public void finish(int resultCode, Intent intent) {

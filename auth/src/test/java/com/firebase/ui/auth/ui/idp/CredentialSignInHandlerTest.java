@@ -26,7 +26,6 @@ import com.firebase.ui.auth.testhelpers.FakeProviderQueryResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ProgressDialogHolder;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.google.android.gms.tasks.Task;

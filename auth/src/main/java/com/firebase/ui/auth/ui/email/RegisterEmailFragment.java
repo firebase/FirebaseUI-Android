@@ -81,8 +81,6 @@ public class RegisterEmailFragment extends FragmentBase implements
                         // covers future API changes
                         mEmailInput.setError(getString(R.string.fui_email_account_creation_error));
                     }
-
-                    getDialogHolder().dismissDialog();
                 }
             }
         });
@@ -212,7 +210,6 @@ public class RegisterEmailFragment extends FragmentBase implements
         boolean passwordValid = mPasswordFieldValidator.validate(password);
         boolean nameValid = mNameValidator.validate(name);
         if (emailValid && passwordValid && nameValid) {
-            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_up);
             getSignInHandler().start(new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
                             .setName(name)
