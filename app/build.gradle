@@ -35,16 +35,6 @@ android {
     }
 }
 
-// TODO(samstern): Why do I need this
-configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        def requested = details.requested
-        if (requested.group == 'com.android.support' && requested.name != 'multidex') {
-            details.useVersion("$supportLibraryVersion")
-        }
-    }
-}
-
 dependencies {
     implementation "com.google.firebase:firebase-core:$firebaseVersion"
     implementation "com.android.support:design:$supportLibraryVersion"
