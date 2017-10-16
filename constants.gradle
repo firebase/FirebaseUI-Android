@@ -8,9 +8,7 @@ project.ext {
     targetSdk = 26
     minSdk = 14
 
-    buildTools = '26.0.1' // Remember to also update in .travis.yml
-
     firebaseVersion = '11.4.2'
     supportLibraryVersion = '26.1.0'
-    architectureVersion = '1.0.0-beta1'
+    architectureVersion = '1.0.0-beta2'
 }

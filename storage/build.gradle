@@ -3,7 +3,6 @@ apply from: '../library/quality/quality.gradle'
 
 android {
     compileSdkVersion compileSdk
-    buildToolsVersion buildTools
 
     defaultConfig {
         minSdkVersion minSdk
@@ -11,20 +10,13 @@ android {
         versionCode 1
         versionName "1.0"
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-        }
-    }
 }
 
 dependencies {
     compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile "com.android.support:palette-v7:$supportLibraryVersion"
 
-    provided 'com.github.bumptech.glide:glide:4.1.1'
+    provided 'com.github.bumptech.glide:glide:4.2.0'
 
     compile "com.google.firebase:firebase-storage:$firebaseVersion"
 }

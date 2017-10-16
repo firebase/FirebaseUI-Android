@@ -3,7 +3,6 @@ check.dependsOn 'testAll', 'prepareArtifacts'
 
 android {
     compileSdkVersion compileSdk
-    buildToolsVersion buildTools
 
     defaultConfig {
         minSdkVersion 16
@@ -15,23 +14,16 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-        }
-    }
-
     lintOptions {
         abortOnError false
     }
 }
 
 dependencies {
-    compile project(':auth')
-    compile project(':database')
-    compile project(':firestore')
-    compile project(':storage')
+    implementation project(':auth')
+    implementation project(':database')
+    implementation project(':firestore')
+    implementation project(':storage')
 }
 
 /**

@@ -17,7 +17,7 @@ android:
     - tools
 before_script:
   - mv library/google-services.json app/google-services.json
-  - echo y | ${ANDROID_HOME}tools/bin/sdkmanager --channel=3 "tools" "platform-tools" "build-tools;26.0.1" "platforms;android-26" "extras;google;m2repository"
+  - echo y | ${ANDROID_HOME}tools/bin/sdkmanager --channel=3 "tools" "platform-tools" "build-tools;26.0.2" "platforms;android-26"
 script: ./gradlew clean assembleDebug check
 after_failure:
   # tests

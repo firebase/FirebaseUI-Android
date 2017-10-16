@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:3.0.0-rc1'
         classpath 'com.google.gms:google-services:3.1.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
@@ -50,7 +50,6 @@ allprojects { project ->
         project.apply plugin: 'com.android.library'
         android {
             compileSdkVersion compileSdk
-            buildToolsVersion buildTools
         }
 
         // Task to generate sources JAR
