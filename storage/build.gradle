@@ -24,6 +24,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation "com.android.support:palette-v7:$supportLibraryVersion"
 
-    api 'com.github.bumptech.glide:glide:3.7.0'
+    compileOnly 'com.github.bumptech.glide:glide:4.1.1'
+
     api "com.google.firebase:firebase-storage:$firebaseVersion"
 }

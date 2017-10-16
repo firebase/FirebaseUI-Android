@@ -1,0 +1,2215 @@
+<!-- kind:binary;verdict:incompatible;affected:60.7;added:47;removed:66;type_problems_high:6;type_problems_medium:0;type_problems_low:2;method_problems_high:0;method_problems_medium:0;method_problems_low:0;checked_methods:159;checked_types:22;tool_version:2.1 -->
+<!-- kind:source;verdict:incompatible;affected:60.7;added:47;removed:66;type_problems_high:6;type_problems_medium:0;type_problems_low:0;method_problems_high:0;method_problems_medium:0;method_problems_low:0;checked_methods:159;checked_types:22;tool_version:2.1 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="firebase-ui-database, compatibility" />
+<meta name="description" content="Compatibility report for the firebase-ui-database library between 2.3.0 and 3.0.0 versions" />
+<title>firebase-ui-database: 2.3.0 to 3.0.0 compatibility report</title>
+<style type="text/css">
+body {
+    font-family:Arial, sans-serif;
+    background-color:White;
+    color:Black;
+}
+hr {
+    color:Black;
+    background-color:Black;
+    height:1px;
+    border:0;
+}
+h1 {
+    margin-bottom:0px;
+    padding-bottom:0px;
+    font-size:1.625em;
+}
+h2 {
+    margin-bottom:0px;
+    padding-bottom:0px;
+    font-size:1.25em;
+    white-space:nowrap;
+}
+div.symbols {
+    color:#003E69;
+}
+div.symbols i {
+    color:Brown;
+}
+span.section {
+    font-weight:bold;
+    cursor:pointer;
+    color:#003E69;
+    white-space:nowrap;
+    margin-left:0.3125em;
+}
+span:hover.section {
+    color:#336699;
+}
+span.sect_aff {
+    cursor:pointer;
+    padding-left:1.55em;
+    font-size:0.875em;
+    color:#cc3300;
+}
+span.ext {
+    font-weight:100;
+}
+span.jar {
+    color:#cc3300;
+    font-size:0.875em;
+    font-weight:bold;
+}
+div.jar_list {
+    padding-left:0.4em;
+    font-size:0.94em;
+}
+span.pkg_t {
+    color:#408080;
+    font-size:0.875em;
+}
+span.pkg {
+    color:#408080;
+    font-size:0.875em;
+    font-weight:bold;
+}
+span.cname {
+    color:Green;
+    font-size:0.875em;
+    font-weight:bold;
+}
+span.iname_b {
+    font-weight:bold;
+}
+span.iname_a {
+    color:#333333;
+    font-weight:bold;
+    font-size:0.94em;
+}
+span.sym_p {
+    font-weight:normal;
+    white-space:normal;
+}
+span.sym_pd {
+    white-space:normal;
+}
+span.sym_p span, span.sym_pd span {
+    white-space:nowrap;
+}
+span.attr {
+    color:Black;
+    font-weight:100;
+}
+span.deprecated {
+    color:Red;
+    font-weight:bold;
+    font-family:Monaco, monospace;
+}
+div.affect {
+    padding-left:1em;
+    padding-bottom:10px;
+    font-size:0.87em;
+    font-style:italic;
+    line-height:0.9em;
+}
+div.affected {
+    padding-left:2em;
+    padding-top:10px;
+}
+table.ptable {
+    border-collapse:collapse;
+    border:1px outset black;
+    margin-left:0.95em;
+    margin-top:3px;
+    margin-bottom:3px;
+    width:56.25em;
+}
+table.ptable td {
+    border:1px solid Gray;
+    padding:3px;
+    font-size:0.875em;
+    text-align:left;
+    vertical-align:top;
+    max-width:28em;
+    word-wrap:break-word;
+}
+table.ptable th {
+    background-color:#eeeeee;
+    font-weight:bold;
+    color:#333333;
+    font-family:Verdana, Arial;
+    font-size:0.875em;
+    border:1px solid Gray;
+    text-align:center;
+    vertical-align:top;
+    white-space:nowrap;
+    padding:3px;
+}
+table.summary {
+    border-collapse:collapse;
+    border:1px outset black;
+}
+table.summary th {
+    background-color:#eeeeee;
+    font-weight:100;
+    text-align:left;
+    font-size:0.94em;
+    white-space:nowrap;
+    border:1px inset Gray;
+    padding:3px;
+}
+table.summary td {
+    text-align:right;
+    white-space:nowrap;
+    border:1px inset Gray;
+    padding:3px 5px 3px 10px;
+}
+span.mngl {
+    padding-left:1em;
+    font-size:0.875em;
+    cursor:text;
+    color:#444444;
+    font-weight:bold;
+}
+span.pleft {
+    padding-left:2.5em;
+}
+span.color_p {
+    font-style:italic;
+    color:Brown;
+}
+span.param {
+    font-style:italic;
+}
+span.focus_p {
+    font-style:italic;
+    background-color:#DCDCDC;
+}
+span.ttype {
+    font-weight:100;
+}
+span.nowrap {
+    white-space:nowrap;
+}
+span.value {
+    white-space:nowrap;
+    font-weight:bold;
+}
+.passed {
+    background-color:#CCFFCC;
+    font-weight:100;
+}
+.warning {
+    background-color:#F4F4AF;
+    font-weight:100;
+}
+.failed {
+    background-color:#FFCCCC;
+    font-weight:100;
+}
+.new {
+    background-color:#C6DEFF;
+    font-weight:100;
+}
+
+.compatible {
+    background-color:#CCFFCC;
+    font-weight:100;
+}
+.almost_compatible {
+    background-color:#FFDAA3;
+    font-weight:100;
+}
+.incompatible {
+    background-color:#FFCCCC;
+    font-weight:100;
+}
+.gray {
+    background-color:#DCDCDC;
+    font-weight:100;
+}
+
+.top_ref {
+    font-size:0.69em;
+}
+.footer {
+    font-size:0.8125em;
+}
+.tabset {
+    float:left;
+}
+a.tab {
+    border:1px solid Black;
+    float:left;
+    margin:0px 5px -1px 0px;
+    padding:3px 5px 3px 5px;
+    position:relative;
+    font-size:0.875em;
+    background-color:#DDD;
+    text-decoration:none;
+    color:Black;
+}
+a.disabled:hover
+{
+    color:Black;
+    background:#EEE;
+}
+a.active:hover
+{
+    color:Black;
+    background:White;
+}
+a.active {
+    border-bottom-color:White;
+    background-color:White;
+}
+div.tab {
+    border-top:1px solid Black;
+    padding:0px;
+    width:100%;
+    clear:both;
+}
+
+</style>
+<script type="text/javascript" language="JavaScript">
+<!--
+function sC(header, id)
+{
+    e = document.getElementById(id);
+    if(e.style.display == 'none')
+    {
+        e.style.display = 'block';
+        e.style.visibility = 'visible';
+        header.innerHTML = header.innerHTML.replace(/\[[^0-9 ]\]/gi, "[&minus;]");
+    }
+    else
+    {
+        e.style.display = 'none';
+        e.style.visibility = 'hidden';
+        header.innerHTML = header.innerHTML.replace(/\[[^0-9 ]\]/gi, "[+]");
+    }
+}
+function initTabs()
+{
+    var url = window.location.href;
+    if(url.indexOf('_Source_')!=-1 || url.indexOf('#Source')!=-1)
+    {
+        var tab1 = document.getElementById('BinaryID');
+        var tab2 = document.getElementById('SourceID');
+        tab1.className='tab disabled';
+        tab2.className='tab active';
+    }
+    
+    var sets = document.getElementsByTagName('div');
+    for (var i = 0; i < sets.length; i++)
+    {
+        if (sets[i].className.indexOf('tabset') != -1)
+        {
+            var tabs = [];
+            var links = sets[i].getElementsByTagName('a');
+            for (var j = 0; j < links.length; j++)
+            {
+                if (links[j].className.indexOf('tab') != -1)
+                {
+                    tabs.push(links[j]);
+                    links[j].tabs = tabs;
+                    var tab = document.getElementById(links[j].href.substr(links[j].href.indexOf('#') + 1));
+                    //reset all tabs on start
+                    if (tab)
+                    {
+                        if (links[j].className.indexOf('active')!=-1) {
+                            tab.style.display = 'block';
+                        }
+                        else {
+                            tab.style.display = 'none';
+                        }
+                    }
+                    links[j].onclick = function()
+                    {
+                        var tab = document.getElementById(this.href.substr(this.href.indexOf('#') + 1));
+                        if (tab)
+                        {
+                            //reset all tabs before change
+                            for (var k = 0; k < this.tabs.length; k++)
+                            {
+                                document.getElementById(this.tabs[k].href.substr(this.tabs[k].href.indexOf('#') + 1)).style.display = 'none';
+                                this.tabs[k].className = this.tabs[k].className.replace('active', 'disabled');
+                            }
+                            this.className = 'tab active';
+                            tab.style.display = 'block';
+                            // window.location.hash = this.id.replace('ID', '');
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    if(url.indexOf('#')!=-1) {
+        location.href=location.href;
+    }
+}
+
+if (window.addEventListener) window.addEventListener('load', initTabs, false);
+else if (window.attachEvent) window.attachEvent('onload', initTabs);
+
+-->
+</script>
+</head>
+<body><a name='Source'></a><a name='Binary'></a><a name='Top'></a><h1>API compatibility report for the <span style='color:Blue;'>firebase-ui-database</span> library between <span style='color:Red;'>2.3.0</span> and <span style='color:Red;'>3.0.0</span> versions</h1>
+<br/><div class='tabset'>
+<a id='BinaryID' href='#BinaryTab' class='tab active'>Binary<br/>Compatibility</a>
+<a id='SourceID' href='#SourceTab' style='margin-left:3px' class='tab disabled'>Source<br/>Compatibility</a>
+</div>
+<div id='BinaryTab' class='tab'>
+<h2>Test Info</h2><hr/>
+<table class='summary'>
+<tr><th>Library Name</th><td>firebase-ui-database</td></tr>
+<tr><th>Version #1</th><td>2.3.0</td></tr>
+<tr><th>Version #2</th><td>3.0.0</td></tr>
+<tr><th>Subject</th><td width='150px'>Binary Compatibility</td></tr>
+</table>
+<h2>Test Results</h2><hr/>
+<table class='summary'>
+<tr><th>Total JARs</th><td><a href='#Checked_Archives' style='color:Blue;'>1</a></td></tr>
+<tr><th>Total Methods / Classes</th><td>159 / 22</td></tr>
+<tr><th>Compatibility</th>
+<td class='incompatible'>39.3%</td>
+</tr>
+</table>
+<h2>Problem Summary</h2><hr/>
+<table class='summary'>
+<tr><th></th><th style='text-align:center;'>Severity</th><th style='text-align:center;'>Count</th></tr>
+<tr><th>Added Methods</th><td>-</td><td class='new'><a href='#Binary_Added' style='color:Blue;'>47</a></td></tr>
+<tr><th>Removed Methods</th><td>High</td><td class='failed'><a href='#Binary_Removed' style='color:Blue;'>66</a></td></tr>
+<tr><th rowspan='3'>Problems with<br/>Data Types</th><td>High</td><td class='failed'><a href='#Type_Binary_Problems_High' style='color:Blue;'>6</a></td></tr>
+<tr><td>Medium</td><td>0</td></tr>
+<tr><td>Low</td><td class='warning'><a href='#Type_Binary_Problems_Low' style='color:Blue;'>2</a></td></tr>
+<tr><th rowspan='3'>Problems with<br/>Methods</th><td>High</td><td>0</td></tr>
+<tr><td>Medium</td><td>0</td></tr>
+<tr><td>Low</td><td>0</td></tr>
+</table>
+
+<a name='Binary_Added'></a><h2>Added Methods <span class='new'>&nbsp;47&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span>, <span class='cname'>Builder.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_1')">
+FirebaseListOptions.Builder&lt;T&gt;.build&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions&lt;T&gt;</span></span>
+<br/>
+<div id="c_1" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.build:()Lcom/firebase/ui/database/FirebaseListOptions;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_2')">
+FirebaseListOptions.Builder&lt;T&gt;.FirebaseListOptions.Builder&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_2" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.com.firebase.ui.database.FirebaseListOptions.Builder:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_3')">
+FirebaseListOptions.Builder&lt;T&gt;.setIndexedQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_3" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setIndexedQuery:(Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Ljava/lang/Class;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_4')">
+FirebaseListOptions.Builder&lt;T&gt;.setIndexedQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_4" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setIndexedQuery:(Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Lcom/firebase/ui/database/SnapshotParser;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_5')">
+FirebaseListOptions.Builder&lt;T&gt;.setLayout&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>layout</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_5" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setLayout:(I)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_6')">
+FirebaseListOptions.Builder&lt;T&gt;.setLifecycleOwner&#160;<span class='sym_p'><span>(&#160;LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_6" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setLifecycleOwner:(Landroid/arch/lifecycle/LifecycleOwner;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_7')">
+FirebaseListOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_7" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/database/Query;Ljava/lang/Class;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_8')">
+FirebaseListOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_8" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/database/Query;Lcom/firebase/ui/database/SnapshotParser;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_9')">
+FirebaseListOptions.Builder&lt;T&gt;.setSnapshotArray&#160;<span class='sym_p'><span>(&#160;ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_9" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setSnapshotArray:(Lcom/firebase/ui/database/ObservableSnapshotArray;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_10')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.build&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions&lt;T&gt;</span></span>
+<br/>
+<div id="c_10" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.build:()Lcom/firebase/ui/database/FirebaseRecyclerOptions;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_11')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.FirebaseRecyclerOptions.Builder&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_11" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.com.firebase.ui.database.FirebaseRecyclerOptions.Builder:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_12')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setIndexedQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_12" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setIndexedQuery:(Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Ljava/lang/Class;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_13')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setIndexedQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>snapshotParser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_13" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setIndexedQuery:(Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Lcom/firebase/ui/database/SnapshotParser;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_14')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setLifecycleOwner&#160;<span class='sym_p'><span>(&#160;LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_14" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setLifecycleOwner:(Landroid/arch/lifecycle/LifecycleOwner;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_15')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_15" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/database/Query;Ljava/lang/Class;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_16')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>snapshotParser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_16" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/database/Query;Lcom/firebase/ui/database/SnapshotParser;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_17')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setSnapshotArray&#160;<span class='sym_p'><span>(&#160;ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_17" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setSnapshotArray:(Lcom/firebase/ui/database/ObservableSnapshotArray;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>CachingSnapshotParser.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_18')">
+CachingSnapshotParser&lt;T&gt;.CachingSnapshotParser&#160;<span class='sym_p'><span>(&#160;BaseSnapshotParser&lt;DataSnapshot,T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_18" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingSnapshotParser&lt;T&gt;.com.firebase.ui.database.CachingSnapshotParser:(Lcom/firebase/ui/common/BaseSnapshotParser;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_19')">
+CachingSnapshotParser&lt;T&gt;.getId&#160;<span class='sym_p'><span>(&#160;DataSnapshot <span class='color_p'>snapshot</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;String</span></span>
+<br/>
+<div id="c_19" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingSnapshotParser&lt;T&gt;.getId:(Lcom/google/firebase/database/DataSnapshot;)Ljava/lang/String;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_20')">
+CachingSnapshotParser&lt;T&gt;.getId&#160;<span class='sym_p'><span>(&#160;Object <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;String</span></span>
+<br/>
+<div id="c_20" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingSnapshotParser&lt;T&gt;.getId:(Ljava/lang/Object;)Ljava/lang/String;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>ClassSnapshotParser.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_21')">
+ClassSnapshotParser&lt;T&gt;.parseSnapshot&#160;<span class='sym_p'><span>(&#160;Object <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;Object</span></span>
+<br/>
+<div id="c_21" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ClassSnapshotParser&lt;T&gt;.parseSnapshot:(Ljava/lang/Object;)Ljava/lang/Object;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseIndexArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_22')">
+FirebaseIndexArray&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>p1</span></span>, <span>Object <span class='color_p'>p2</span></span>, <span>int <span class='color_p'>p3</span></span>, <span>int <span class='color_p'>p4</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_22" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Ljava/lang/Object;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_23')">
+FirebaseIndexArray&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>newIndex</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_23" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_24')">
+FirebaseIndexArray&lt;T&gt;.onError&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_24" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onError:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_25')">
+FirebaseIndexArray&lt;T&gt;.onError&#160;<span class='sym_p'><span>(&#160;Object <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_25" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onError:(Ljava/lang/Object;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseListAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_26')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;FirebaseListOptions&lt;T&gt; <span class='color_p'>options</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_26" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Lcom/firebase/ui/database/FirebaseListOptions;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_27')">
+FirebaseListAdapter&lt;T&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ObservableSnapshotArray&lt;T&gt;</span></span>
+<br/>
+<div id="c_27" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.getSnapshots:()Lcom/firebase/ui/database/ObservableSnapshotArray;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_28')">
+FirebaseListAdapter&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>p1</span></span>, <span>Object <span class='color_p'>p2</span></span>, <span>int <span class='color_p'>p3</span></span>, <span>int <span class='color_p'>p4</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_28" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Ljava/lang/Object;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_29')">
+FirebaseListAdapter&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>newIndex</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_29" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_30')">
+FirebaseListAdapter&lt;T&gt;.onError&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_30" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onError:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_31')">
+FirebaseListAdapter&lt;T&gt;.onError&#160;<span class='sym_p'><span>(&#160;Object <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_31" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onError:(Ljava/lang/Object;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_32')">
+FirebaseListAdapter&lt;T&gt;.stopListening&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_32" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.stopListening:()V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseListOptions.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_33')">
+FirebaseListOptions&lt;T&gt;.getLayout&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;int</span></span>
+<br/>
+<div id="c_33" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions&lt;T&gt;.getLayout:()I</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_34')">
+FirebaseListOptions&lt;T&gt;.getOwner&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LifecycleOwner</span></span>
+<br/>
+<div id="c_34" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions&lt;T&gt;.getOwner:()Landroid/arch/lifecycle/LifecycleOwner;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_35')">
+FirebaseListOptions&lt;T&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ObservableSnapshotArray&lt;T&gt;</span></span>
+<br/>
+<div id="c_35" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions&lt;T&gt;.getSnapshots:()Lcom/firebase/ui/database/ObservableSnapshotArray;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseRecyclerAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_36')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;FirebaseRecyclerOptions&lt;T&gt; <span class='color_p'>options</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_36" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Lcom/firebase/ui/database/FirebaseRecyclerOptions;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_37')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ObservableSnapshotArray&lt;T&gt;</span></span>
+<br/>
+<div id="c_37" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.getSnapshots:()Lcom/firebase/ui/database/ObservableSnapshotArray;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_38')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onBindViewHolder&#160;<span class='sym_p'><span>(&#160;VH <span class='color_p'>p1</span></span>, <span>int <span class='color_p'>p2</span></span>, <span>T <span class='color_p'>p3</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_38" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onBindViewHolder:(Landroid/support/v7/widget/RecyclerView$ViewHolder;ILjava/lang/Object;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_39')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>p1</span></span>, <span>Object <span class='color_p'>p2</span></span>, <span>int <span class='color_p'>p3</span></span>, <span>int <span class='color_p'>p4</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_39" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Ljava/lang/Object;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_40')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>newIndex</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_40" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_41')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onError&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_41" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onError:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_42')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onError&#160;<span class='sym_p'><span>(&#160;Object <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_42" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onError:(Ljava/lang/Object;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_43')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.stopListening&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_43" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.stopListening:()V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseRecyclerOptions.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_44')">
+FirebaseRecyclerOptions&lt;T&gt;.getOwner&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LifecycleOwner</span></span>
+<br/>
+<div id="c_44" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions&lt;T&gt;.getOwner:()Landroid/arch/lifecycle/LifecycleOwner;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_45')">
+FirebaseRecyclerOptions&lt;T&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ObservableSnapshotArray&lt;T&gt;</span></span>
+<br/>
+<div id="c_45" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions&lt;T&gt;.getSnapshots:()Lcom/firebase/ui/database/ObservableSnapshotArray;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>ObservableSnapshotArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_46')">
+ObservableSnapshotArray&lt;T&gt;.ObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_46" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;T&gt;.com.firebase.ui.database.ObservableSnapshotArray:(Lcom/firebase/ui/database/SnapshotParser;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_47')">
+ObservableSnapshotArray&lt;T&gt;.notifyListenersOnCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span> <span class='deprecated'>*DEPRECATED*</span></span>
+<br/>
+<div id="c_47" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;T&gt;.notifyListenersOnCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<br/>
+<a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='Binary_Removed'></a><a name='Binary_Withdrawn'></a><h2>Removed Methods <span class='failed'>&nbsp;66&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span>, <span class='cname'>CachingObservableSnapshotArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_48')">
+CachingObservableSnapshotArray&lt;T&gt;.clearData&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span> <span class='deprecated'>*DEPRECATED*</span></span>
+<br/>
+<div id="c_48" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.clearData:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_49')">
+CachingObservableSnapshotArray&lt;T&gt;.CachingObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <span class='color_p'>tClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_49" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.com.firebase.ui.database.CachingObservableSnapshotArray:(Ljava/lang/Class;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_50')">
+CachingObservableSnapshotArray&lt;T&gt;.CachingObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_50" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.com.firebase.ui.database.CachingObservableSnapshotArray:(Lcom/firebase/ui/database/SnapshotParser;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_51')">
+CachingObservableSnapshotArray&lt;T&gt;.getObject&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>index</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;T</span></span>
+<br/>
+<div id="c_51" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.getObject:(I)Ljava/lang/Object;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_52')">
+CachingObservableSnapshotArray&lt;T&gt;.onDestroy&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_52" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.onDestroy:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_53')">
+CachingObservableSnapshotArray&lt;T&gt;.removeData&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>index</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;DataSnapshot</span></span>
+<br/>
+<div id="c_53" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.removeData:(I)Lcom/google/firebase/database/DataSnapshot;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_54')">
+CachingObservableSnapshotArray&lt;T&gt;.updateData&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>index</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_54" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.updateData:(ILcom/google/firebase/database/DataSnapshot;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>ChangeEventListener.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_55')">
+ChangeEventListener.onCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>p1</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_55" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ChangeEventListener.onCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_56')">
+ChangeEventListener.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>p1</span></span>, <span>DataSnapshot <span class='color_p'>p2</span></span>, <span>int <span class='color_p'>p3</span></span>, <span>int <span class='color_p'>p4</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_56" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ChangeEventListener.onChildChanged:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_57')">
+ChangeEventListener.onDataChanged&#160;<span class='sym_p'>(&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_57" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ChangeEventListener.onDataChanged:()V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>DataRefListener.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_58')">
+FirebaseIndexArray.DataRefListener.FirebaseIndexArray.DataRefListener&#160;<span class='sym_p'><span>(&#160;FirebaseIndexArray <span class='color_p'>p1</span></span>&#160;)</span></span>
+<br/>
+<div id="c_58" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray.DataRefListener.&quot;&lt;init&gt;&quot;:(Lcom/firebase/ui/database/FirebaseIndexArray;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>EventType.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_59')">
+ChangeEventListener.EventType.valueOf&#160;<span class='sym_p'><span>(&#160;String <span class='color_p'>name</span></span>&#160;)</span> <span class='attr'>[static]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ChangeEventListener.EventType</span></span>
+<br/>
+<div id="c_59" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ChangeEventListener.EventType.valueOf:(Ljava/lang/String;)Lcom/firebase/ui/database/ChangeEventListener$EventType;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_60')">
+ChangeEventListener.EventType.values&#160;<span class='sym_p'>(&#160;)</span> <span class='attr'>[static]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ChangeEventListener.EventType[&#160;]</span></span>
+<br/>
+<div id="c_60" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ChangeEventListener.EventType.values:()[Lcom/firebase/ui/database/ChangeEventListener$EventType;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_61')">
+FirebaseArray&lt;T&gt;.FirebaseArray&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Class&lt;T&gt; <span class='color_p'>tClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_61" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseArray&lt;T&gt;.com.firebase.ui.database.FirebaseArray:(Lcom/google/firebase/database/Query;Ljava/lang/Class;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseIndexArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_62')">
+FirebaseIndexArray&lt;T&gt;.FirebaseIndexArray&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>Class&lt;T&gt; <span class='color_p'>tClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_62" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.com.firebase.ui.database.FirebaseIndexArray:(Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Ljava/lang/Class;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_63')">
+FirebaseIndexArray&lt;T&gt;.onCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_63" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_64')">
+FirebaseIndexArray&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>index</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_64" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_65')">
+FirebaseIndexArray&lt;T&gt;.onKeyAdded&#160;<span class='sym_p'><span>(&#160;DataSnapshot <span class='color_p'>data</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_65" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onKeyAdded:(Lcom/google/firebase/database/DataSnapshot;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseIndexListAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_66')">
+FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_66" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseIndexListAdapter:(Landroid/content/Context;Ljava/lang/Class;ILcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_67')">
+FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_67" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseIndexListAdapter:(Landroid/content/Context;Ljava/lang/Class;ILcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_68')">
+FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_68" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseIndexListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/SnapshotParser;ILcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_69')">
+FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_69" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseIndexListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/SnapshotParser;ILcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseIndexRecyclerAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_70')">
+FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_70" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseIndexRecyclerAdapter:(Ljava/lang/Class;ILjava/lang/Class;Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_71')">
+FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_71" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseIndexRecyclerAdapter:(Ljava/lang/Class;ILjava/lang/Class;Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_72')">
+FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_72" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseIndexRecyclerAdapter:(Lcom/firebase/ui/database/SnapshotParser;ILjava/lang/Class;Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_73')">
+FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_73" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseIndexRecyclerAdapter:(Lcom/firebase/ui/database/SnapshotParser;ILjava/lang/Class;Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseListAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_74')">
+FirebaseListAdapter&lt;T&gt;.cleanup&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_74" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.cleanup:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_75')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>query</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_75" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Ljava/lang/Class;ILcom/google/firebase/database/Query;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_76')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>query</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_76" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Ljava/lang/Class;ILcom/google/firebase/database/Query;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_77')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>, <span>int <span class='color_p'>modelLayout</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_77" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/ObservableSnapshotArray;I)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_78')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_78" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/ObservableSnapshotArray;ILandroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_79')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>query</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_79" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/SnapshotParser;ILcom/google/firebase/database/Query;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_80')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>query</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_80" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/SnapshotParser;ILcom/google/firebase/database/Query;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_81')">
+FirebaseListAdapter&lt;T&gt;.onCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_81" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_82')">
+FirebaseListAdapter&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>index</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_82" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseRecyclerAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_83')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.cleanup&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_83" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.cleanup:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_84')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>query</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_84" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Ljava/lang/Class;ILjava/lang/Class;Lcom/google/firebase/database/Query;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_85')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>query</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_85" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Ljava/lang/Class;ILjava/lang/Class;Lcom/google/firebase/database/Query;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_86')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_86" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Lcom/firebase/ui/database/ObservableSnapshotArray;ILjava/lang/Class;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_87')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_87" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Lcom/firebase/ui/database/ObservableSnapshotArray;ILjava/lang/Class;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_88')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>query</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_88" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Lcom/firebase/ui/database/SnapshotParser;ILjava/lang/Class;Lcom/google/firebase/database/Query;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_89')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>query</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_89" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Lcom/firebase/ui/database/SnapshotParser;ILjava/lang/Class;Lcom/google/firebase/database/Query;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_90')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.getItemViewType&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>position</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;int</span></span>
+<br/>
+<div id="c_90" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.getItemViewType:(I)I</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_91')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_91" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_92')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>index</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_92" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_93')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onCreateViewHolder&#160;<span class='sym_p'><span>(&#160;ViewGroup <span class='color_p'>parent</span></span>, <span>int <span class='color_p'>viewType</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;VH</span></span>
+<br/>
+<div id="c_93" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onCreateViewHolder:(Landroid/view/ViewGroup;I)Landroid/support/v7/widget/RecyclerView$ViewHolder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_94')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.populateViewHolder&#160;<span class='sym_p'><span>(&#160;VH <span class='color_p'>p1</span></span>, <span>T <span class='color_p'>p2</span></span>, <span>int <span class='color_p'>p3</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_94" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.populateViewHolder:(Landroid/support/v7/widget/RecyclerView$ViewHolder;Ljava/lang/Object;I)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>ObservableSnapshotArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_95')">
+ObservableSnapshotArray&lt;E&gt;.addChangeEventListener&#160;<span class='sym_p'><span>(&#160;ChangeEventListener <span class='color_p'>listener</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ChangeEventListener</span></span>
+<br/>
+<div id="c_95" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.addChangeEventListener:(Lcom/firebase/ui/database/ChangeEventListener;)Lcom/firebase/ui/database/ChangeEventListener;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_96')">
+ObservableSnapshotArray&lt;E&gt;.ObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;Class&lt;E&gt; <span class='color_p'>clazz</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_96" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.com.firebase.ui.database.ObservableSnapshotArray:(Ljava/lang/Class;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_97')">
+ObservableSnapshotArray&lt;E&gt;.ObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;E&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_97" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.com.firebase.ui.database.ObservableSnapshotArray:(Lcom/firebase/ui/database/SnapshotParser;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_98')">
+ObservableSnapshotArray&lt;E&gt;.get&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>index</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;DataSnapshot</span></span>
+<br/>
+<div id="c_98" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.get:(I)Lcom/google/firebase/database/DataSnapshot;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_99')">
+ObservableSnapshotArray&lt;E&gt;.get&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;Object</span></span>
+<br/>
+<div id="c_99" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.get:(I)Ljava/lang/Object;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_100')">
+ObservableSnapshotArray&lt;E&gt;.getObject&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>index</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;E</span></span>
+<br/>
+<div id="c_100" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.getObject:(I)Ljava/lang/Object;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_101')">
+ObservableSnapshotArray&lt;E&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;List&lt;DataSnapshot&gt;</span></span>
+<br/>
+<div id="c_101" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.getSnapshots:()Ljava/util/List;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_102')">
+ObservableSnapshotArray&lt;E&gt;.isListening&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;boolean</span></span>
+<br/>
+<div id="c_102" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.isListening:()Z</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_103')">
+ObservableSnapshotArray&lt;E&gt;.isListening&#160;<span class='sym_p'><span>(&#160;ChangeEventListener <span class='color_p'>listener</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;boolean</span></span>
+<br/>
+<div id="c_103" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.isListening:(Lcom/firebase/ui/database/ChangeEventListener;)Z</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_104')">
+ObservableSnapshotArray&lt;E&gt;.notifyChangeEventListeners&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>index</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_104" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.notifyChangeEventListeners:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;I)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_105')">
+ObservableSnapshotArray&lt;E&gt;.notifyChangeEventListeners&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>index</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_105" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.notifyChangeEventListeners:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_106')">
+ObservableSnapshotArray&lt;E&gt;.notifyListenersOnCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_106" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.notifyListenersOnCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_107')">
+ObservableSnapshotArray&lt;E&gt;.notifyListenersOnDataChanged&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_107" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.notifyListenersOnDataChanged:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_108')">
+ObservableSnapshotArray&lt;E&gt;.onCreate&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_108" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.onCreate:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_109')">
+ObservableSnapshotArray&lt;E&gt;.onDestroy&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_109" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.onDestroy:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_110')">
+ObservableSnapshotArray&lt;E&gt;.removeAllListeners&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_110" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.removeAllListeners:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_111')">
+ObservableSnapshotArray&lt;E&gt;.removeChangeEventListener&#160;<span class='sym_p'><span>(&#160;ChangeEventListener <span class='color_p'>listener</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_111" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.removeChangeEventListener:(Lcom/firebase/ui/database/ChangeEventListener;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_112')">
+ObservableSnapshotArray&lt;E&gt;.size&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;int</span></span>
+<br/>
+<div id="c_112" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.size:()I</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>SnapshotParser.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_113')">
+SnapshotParser&lt;T&gt;.parseSnapshot&#160;<span class='sym_p'><span>(&#160;DataSnapshot <span class='color_p'>p1</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;T</span></span>
+<br/>
+<div id="c_113" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/SnapshotParser&lt;T&gt;.parseSnapshot:(Lcom/google/firebase/database/DataSnapshot;)Ljava/lang/Object;</span><br/><br/></div>
+
+<br/>
+<a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='High_Risk_Binary_Problems'></a><a name='Type_Binary_Problems_High'></a>
+<h2>Problems with Data Types, High Severity <span class='failed'>&nbsp;6&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_114')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> CachingObservableSnapshotArray&lt;T&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_114" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class has been removed.</td>
+<td>A client program may be interrupted by <b>NoClassDefFoundError</b> exception.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_115')">
+[+] affected methods: 7 (4.4%)</span>
+<div id="c_115" style="display:none;">
+<div class='affected'><span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.clearData&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.CachingObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <i>parser</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.CachingObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <i>tClass</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.getObject&#160;<span class='sym_p'><span>(&#160;int <i>index</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.onDestroy&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.removeData&#160;<span class='sym_p'><span>(&#160;int <i>index</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.updateData&#160;<span class='sym_p'><span>(&#160;int <i>index</i></span>, <span>DataSnapshot <i>snapshot</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_116')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> ChangeEventListener.EventType <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_116" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class has been removed.</td>
+<td>A client program may be interrupted by <b>NoClassDefFoundError</b> exception.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_117')">
+[+] affected methods: 2 (1.3%)</span>
+<div id="c_117" style="display:none;">
+<div class='affected'><span class='iname_a'>ChangeEventListener.EventType.valueOf&#160;<span class='sym_p'><span>(&#160;String <i>name</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ChangeEventListener.EventType' class.</div>
+<span class='iname_a'>ChangeEventListener.EventType.values&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'ChangeEventListener.EventType' class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_118')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirebaseIndexArray.DataRefListener <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_118" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class became <b>final</b>.</td>
+<td>A client program may be interrupted by <b>VerifyError</b> exception.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_119')">
+[+] affected methods: 2 (1.3%)</span>
+<div id="c_119" style="display:none;">
+<div class='affected'><span class='iname_a'>FirebaseIndexArray.DataRefListener.onCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <i>error</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexArray.DataRefListener' class.</div>
+<span class='iname_a'>FirebaseIndexArray.DataRefListener.onDataChange&#160;<span class='sym_p'><span>(&#160;DataSnapshot <i>snapshot</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexArray.DataRefListener' class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_120')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirebaseIndexListAdapter&lt;T&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_120" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class has been removed.</td>
+<td>A client program may be interrupted by <b>NoClassDefFoundError</b> exception.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_121')">
+[+] affected methods: 4 (2.5%)</span>
+<div id="c_121" style="display:none;">
+<div class='affected'><span class='iname_a'>FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <i>context</i></span>, <span>SnapshotParser&lt;T&gt; <i>parser</i></span>, <span>int <i>modelLayout</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexListAdapter&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <i>context</i></span>, <span>SnapshotParser&lt;T&gt; <i>parser</i></span>, <span>int <i>modelLayout</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>, <span>LifecycleOwner <i>owner</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexListAdapter&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <i>context</i></span>, <span>Class&lt;T&gt; <i>modelClass</i></span>, <span>int <i>modelLayout</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexListAdapter&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <i>context</i></span>, <span>Class&lt;T&gt; <i>modelClass</i></span>, <span>int <i>modelLayout</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>, <span>LifecycleOwner <i>owner</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexListAdapter&lt;T&gt;' abstract class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_122')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirebaseIndexRecyclerAdapter&lt;T,VH&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_122" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class has been removed.</td>
+<td>A client program may be interrupted by <b>NoClassDefFoundError</b> exception.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_123')">
+[+] affected methods: 4 (2.5%)</span>
+<div id="c_123" style="display:none;">
+<div class='affected'><span class='iname_a'>FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <i>parser</i></span>, <span>int <i>modelLayout</i></span>, <span>Class&lt;VH&gt; <i>viewHolderClass</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexRecyclerAdapter&lt;T,VH&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <i>parser</i></span>, <span>int <i>modelLayout</i></span>, <span>Class&lt;VH&gt; <i>viewHolderClass</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>, <span>LifecycleOwner <i>owner</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexRecyclerAdapter&lt;T,VH&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <i>modelClass</i></span>, <span>int <i>modelLayout</i></span>, <span>Class&lt;VH&gt; <i>viewHolderClass</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexRecyclerAdapter&lt;T,VH&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <i>modelClass</i></span>, <span>int <i>modelLayout</i></span>, <span>Class&lt;VH&gt; <i>viewHolderClass</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>, <span>LifecycleOwner <i>owner</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexRecyclerAdapter&lt;T,VH&gt;' abstract class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_124')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> ObservableSnapshotArray&lt;E&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_124" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class has been removed.</td>
+<td>A client program may be interrupted by <b>NoClassDefFoundError</b> exception.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_125')">
+[+] affected methods: 18 (11.3%)</span>
+<div id="c_125" style="display:none;">
+<div class='affected'><span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.addChangeEventListener&#160;<span class='sym_p'><span>(&#160;ChangeEventListener <i>listener</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.ObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;E&gt; <i>parser</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.ObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;Class&lt;E&gt; <i>clazz</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.get&#160;<span class='sym_p'><span>(&#160;int <i>index</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.get&#160;<span class='sym_p'><span>(&#160;int <i>p1</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.getObject&#160;<span class='sym_p'><span>(&#160;int <i>index</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This abstract method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.isListening&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.isListening&#160;<span class='sym_p'><span>(&#160;ChangeEventListener <i>listener</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.notifyChangeEventListeners&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <i>type</i></span>, <span>DataSnapshot <i>snapshot</i></span>, <span>int <i>index</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+ <b>...</b>
+<br/>
+</div></div>
+<br/><br/></div>
+
+<br/><a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='Low_Risk_Binary_Problems'></a><a name='Type_Binary_Problems_Low'></a>
+<h2>Problems with Data Types, Low Severity <span class='warning'>&nbsp;2&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_126')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirebaseArray&lt;T&gt; <span class='warning'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_126" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>Method <span class='iname_b'>FirebaseArray&lt;T&gt;.equals&#160;<span class='sym_pd'><span>(&#160;Object</span>&#160;)</span></span> has been moved up type hierarchy to <b>java/lang/Object.equals:(Ljava/lang/Object;)Z</b>.</td>
+<td>Method <b>java/lang/Object.equals:(Ljava/lang/Object;)Z</b> will be called instead of <span class='iname_b'>FirebaseArray&lt;T&gt;.equals&#160;<span class='sym_pd'><span>(&#160;Object</span>&#160;)</span></span> in a client program.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_127')">
+[+] affected methods: 3 (1.9%)</span>
+<div id="c_127" style="display:none;">
+<div class='affected'><span class='iname_a'>FirebaseArray&lt;T&gt;.equals&#160;<span class='sym_p'><span>(&#160;Object <i>obj</i></span>&#160;)</span></span><br/><div class='affect'>Method 'java/lang/Object.equals:(Ljava/lang/Object;)Z' will be called instead of this method in a client program.</div>
+<span class='iname_a'>FirebaseArray&lt;T&gt;.hashCode&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>Method 'java/lang/Object.hashCode:()I' will be called instead of this method in a client program.</div>
+<span class='iname_a'>FirebaseArray&lt;T&gt;.toString&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>Method 'java/lang/Object.toString:()Ljava/lang/String;' will be called instead of this method in a client program.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_128')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirebaseIndexArray&lt;T&gt; <span class='warning'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_128" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>Method <span class='iname_b'>FirebaseIndexArray&lt;T&gt;.equals&#160;<span class='sym_pd'><span>(&#160;Object</span>&#160;)</span></span> has been moved up type hierarchy to <b>java/lang/Object.equals:(Ljava/lang/Object;)Z</b>.</td>
+<td>Method <b>java/lang/Object.equals:(Ljava/lang/Object;)Z</b> will be called instead of <span class='iname_b'>FirebaseIndexArray&lt;T&gt;.equals&#160;<span class='sym_pd'><span>(&#160;Object</span>&#160;)</span></span> in a client program.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_129')">
+[+] affected methods: 3 (1.9%)</span>
+<div id="c_129" style="display:none;">
+<div class='affected'><span class='iname_a'>FirebaseIndexArray&lt;T&gt;.equals&#160;<span class='sym_p'><span>(&#160;Object <i>obj</i></span>&#160;)</span></span><br/><div class='affect'>Method 'java/lang/Object.equals:(Ljava/lang/Object;)Z' will be called instead of this method in a client program.</div>
+<span class='iname_a'>FirebaseIndexArray&lt;T&gt;.hashCode&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>Method 'java/lang/Object.hashCode:()I' will be called instead of this method in a client program.</div>
+<span class='iname_a'>FirebaseIndexArray&lt;T&gt;.toString&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>Method 'java/lang/Object.toString:()Ljava/lang/String;' will be called instead of this method in a client program.</div>
+</div></div>
+<br/><br/></div>
+
+<br/><a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='Checked_Archives'></a><h2>Java Archives <span class='gray'>&nbsp;1&nbsp;</span></h2>
+<hr/><div class='jar_list'>
+classes.jar<br/>
+</div><br/><a class='top_ref' href='#Top'>to the top</a><br/>
+<br/><br/><br/></div><div id='SourceTab' class='tab'>
+<h2>Test Info</h2><hr/>
+<table class='summary'>
+<tr><th>Library Name</th><td>firebase-ui-database</td></tr>
+<tr><th>Version #1</th><td>2.3.0</td></tr>
+<tr><th>Version #2</th><td>3.0.0</td></tr>
+<tr><th>Subject</th><td width='150px'>Source Compatibility</td></tr>
+</table>
+<h2>Test Results</h2><hr/>
+<table class='summary'>
+<tr><th>Total JARs</th><td><a href='#Checked_Archives' style='color:Blue;'>1</a></td></tr>
+<tr><th>Total Methods / Classes</th><td>159 / 22</td></tr>
+<tr><th>Compatibility</th>
+<td class='incompatible'>39.3%</td>
+</tr>
+</table>
+<h2>Problem Summary</h2><hr/>
+<table class='summary'>
+<tr><th></th><th style='text-align:center;'>Severity</th><th style='text-align:center;'>Count</th></tr>
+<tr><th>Added Methods</th><td>-</td><td class='new'><a href='#Source_Added' style='color:Blue;'>47</a></td></tr>
+<tr><th>Removed Methods</th><td>High</td><td class='failed'><a href='#Source_Removed' style='color:Blue;'>66</a></td></tr>
+<tr><th rowspan='3'>Problems with<br/>Data Types</th><td>High</td><td class='failed'><a href='#Type_Source_Problems_High' style='color:Blue;'>6</a></td></tr>
+<tr><td>Medium</td><td>0</td></tr>
+<tr><td>Low</td><td>0</td></tr>
+<tr><th rowspan='3'>Problems with<br/>Methods</th><td>High</td><td>0</td></tr>
+<tr><td>Medium</td><td>0</td></tr>
+<tr><td>Low</td><td>0</td></tr>
+</table>
+
+<a name='Source_Added'></a><h2>Added Methods <span class='new'>&nbsp;47&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span>, <span class='cname'>Builder.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_130')">
+FirebaseListOptions.Builder&lt;T&gt;.build&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions&lt;T&gt;</span></span>
+<br/>
+<div id="c_130" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.build:()Lcom/firebase/ui/database/FirebaseListOptions;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_131')">
+FirebaseListOptions.Builder&lt;T&gt;.FirebaseListOptions.Builder&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_131" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.com.firebase.ui.database.FirebaseListOptions.Builder:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_132')">
+FirebaseListOptions.Builder&lt;T&gt;.setIndexedQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_132" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setIndexedQuery:(Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Ljava/lang/Class;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_133')">
+FirebaseListOptions.Builder&lt;T&gt;.setIndexedQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_133" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setIndexedQuery:(Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Lcom/firebase/ui/database/SnapshotParser;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_134')">
+FirebaseListOptions.Builder&lt;T&gt;.setLayout&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>layout</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_134" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setLayout:(I)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_135')">
+FirebaseListOptions.Builder&lt;T&gt;.setLifecycleOwner&#160;<span class='sym_p'><span>(&#160;LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_135" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setLifecycleOwner:(Landroid/arch/lifecycle/LifecycleOwner;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_136')">
+FirebaseListOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_136" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/database/Query;Ljava/lang/Class;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_137')">
+FirebaseListOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_137" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/database/Query;Lcom/firebase/ui/database/SnapshotParser;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_138')">
+FirebaseListOptions.Builder&lt;T&gt;.setSnapshotArray&#160;<span class='sym_p'><span>(&#160;ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseListOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_138" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions.Builder&lt;T&gt;.setSnapshotArray:(Lcom/firebase/ui/database/ObservableSnapshotArray;)Lcom/firebase/ui/database/FirebaseListOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_139')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.build&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions&lt;T&gt;</span></span>
+<br/>
+<div id="c_139" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.build:()Lcom/firebase/ui/database/FirebaseRecyclerOptions;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_140')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.FirebaseRecyclerOptions.Builder&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_140" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.com.firebase.ui.database.FirebaseRecyclerOptions.Builder:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_141')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setIndexedQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_141" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setIndexedQuery:(Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Ljava/lang/Class;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_142')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setIndexedQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>snapshotParser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_142" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setIndexedQuery:(Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Lcom/firebase/ui/database/SnapshotParser;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_143')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setLifecycleOwner&#160;<span class='sym_p'><span>(&#160;LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_143" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setLifecycleOwner:(Landroid/arch/lifecycle/LifecycleOwner;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_144')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_144" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/database/Query;Ljava/lang/Class;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_145')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setQuery&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>snapshotParser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_145" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setQuery:(Lcom/google/firebase/database/Query;Lcom/firebase/ui/database/SnapshotParser;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_146')">
+FirebaseRecyclerOptions.Builder&lt;T&gt;.setSnapshotArray&#160;<span class='sym_p'><span>(&#160;ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;FirebaseRecyclerOptions.Builder&lt;T&gt;</span></span>
+<br/>
+<div id="c_146" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions.Builder&lt;T&gt;.setSnapshotArray:(Lcom/firebase/ui/database/ObservableSnapshotArray;)Lcom/firebase/ui/database/FirebaseRecyclerOptions$Builder;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>CachingSnapshotParser.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_147')">
+CachingSnapshotParser&lt;T&gt;.CachingSnapshotParser&#160;<span class='sym_p'><span>(&#160;BaseSnapshotParser&lt;DataSnapshot,T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_147" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingSnapshotParser&lt;T&gt;.com.firebase.ui.database.CachingSnapshotParser:(Lcom/firebase/ui/common/BaseSnapshotParser;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_148')">
+CachingSnapshotParser&lt;T&gt;.getId&#160;<span class='sym_p'><span>(&#160;DataSnapshot <span class='color_p'>snapshot</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;String</span></span>
+<br/>
+<div id="c_148" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingSnapshotParser&lt;T&gt;.getId:(Lcom/google/firebase/database/DataSnapshot;)Ljava/lang/String;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_149')">
+CachingSnapshotParser&lt;T&gt;.getId&#160;<span class='sym_p'><span>(&#160;Object <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;String</span></span>
+<br/>
+<div id="c_149" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingSnapshotParser&lt;T&gt;.getId:(Ljava/lang/Object;)Ljava/lang/String;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>ClassSnapshotParser.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_150')">
+ClassSnapshotParser&lt;T&gt;.parseSnapshot&#160;<span class='sym_p'><span>(&#160;Object <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;Object</span></span>
+<br/>
+<div id="c_150" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ClassSnapshotParser&lt;T&gt;.parseSnapshot:(Ljava/lang/Object;)Ljava/lang/Object;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseIndexArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_151')">
+FirebaseIndexArray&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>p1</span></span>, <span>Object <span class='color_p'>p2</span></span>, <span>int <span class='color_p'>p3</span></span>, <span>int <span class='color_p'>p4</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_151" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Ljava/lang/Object;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_152')">
+FirebaseIndexArray&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>newIndex</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_152" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_153')">
+FirebaseIndexArray&lt;T&gt;.onError&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_153" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onError:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_154')">
+FirebaseIndexArray&lt;T&gt;.onError&#160;<span class='sym_p'><span>(&#160;Object <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_154" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onError:(Ljava/lang/Object;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseListAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_155')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;FirebaseListOptions&lt;T&gt; <span class='color_p'>options</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_155" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Lcom/firebase/ui/database/FirebaseListOptions;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_156')">
+FirebaseListAdapter&lt;T&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ObservableSnapshotArray&lt;T&gt;</span></span>
+<br/>
+<div id="c_156" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.getSnapshots:()Lcom/firebase/ui/database/ObservableSnapshotArray;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_157')">
+FirebaseListAdapter&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>p1</span></span>, <span>Object <span class='color_p'>p2</span></span>, <span>int <span class='color_p'>p3</span></span>, <span>int <span class='color_p'>p4</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_157" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Ljava/lang/Object;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_158')">
+FirebaseListAdapter&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>newIndex</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_158" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_159')">
+FirebaseListAdapter&lt;T&gt;.onError&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_159" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onError:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_160')">
+FirebaseListAdapter&lt;T&gt;.onError&#160;<span class='sym_p'><span>(&#160;Object <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_160" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onError:(Ljava/lang/Object;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_161')">
+FirebaseListAdapter&lt;T&gt;.stopListening&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_161" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.stopListening:()V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseListOptions.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_162')">
+FirebaseListOptions&lt;T&gt;.getLayout&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;int</span></span>
+<br/>
+<div id="c_162" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions&lt;T&gt;.getLayout:()I</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_163')">
+FirebaseListOptions&lt;T&gt;.getOwner&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LifecycleOwner</span></span>
+<br/>
+<div id="c_163" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions&lt;T&gt;.getOwner:()Landroid/arch/lifecycle/LifecycleOwner;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_164')">
+FirebaseListOptions&lt;T&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ObservableSnapshotArray&lt;T&gt;</span></span>
+<br/>
+<div id="c_164" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListOptions&lt;T&gt;.getSnapshots:()Lcom/firebase/ui/database/ObservableSnapshotArray;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseRecyclerAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_165')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;FirebaseRecyclerOptions&lt;T&gt; <span class='color_p'>options</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_165" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Lcom/firebase/ui/database/FirebaseRecyclerOptions;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_166')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ObservableSnapshotArray&lt;T&gt;</span></span>
+<br/>
+<div id="c_166" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.getSnapshots:()Lcom/firebase/ui/database/ObservableSnapshotArray;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_167')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onBindViewHolder&#160;<span class='sym_p'><span>(&#160;VH <span class='color_p'>p1</span></span>, <span>int <span class='color_p'>p2</span></span>, <span>T <span class='color_p'>p3</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_167" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onBindViewHolder:(Landroid/support/v7/widget/RecyclerView$ViewHolder;ILjava/lang/Object;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_168')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>p1</span></span>, <span>Object <span class='color_p'>p2</span></span>, <span>int <span class='color_p'>p3</span></span>, <span>int <span class='color_p'>p4</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_168" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Ljava/lang/Object;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_169')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>newIndex</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_169" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged:(Lcom/firebase/ui/common/ChangeEventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_170')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onError&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_170" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onError:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_171')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onError&#160;<span class='sym_p'><span>(&#160;Object <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_171" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onError:(Ljava/lang/Object;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_172')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.stopListening&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_172" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.stopListening:()V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseRecyclerOptions.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_173')">
+FirebaseRecyclerOptions&lt;T&gt;.getOwner&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;LifecycleOwner</span></span>
+<br/>
+<div id="c_173" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions&lt;T&gt;.getOwner:()Landroid/arch/lifecycle/LifecycleOwner;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_174')">
+FirebaseRecyclerOptions&lt;T&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ObservableSnapshotArray&lt;T&gt;</span></span>
+<br/>
+<div id="c_174" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerOptions&lt;T&gt;.getSnapshots:()Lcom/firebase/ui/database/ObservableSnapshotArray;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>ObservableSnapshotArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_175')">
+ObservableSnapshotArray&lt;T&gt;.ObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_175" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;T&gt;.com.firebase.ui.database.ObservableSnapshotArray:(Lcom/firebase/ui/database/SnapshotParser;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_176')">
+ObservableSnapshotArray&lt;T&gt;.notifyListenersOnCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span> <span class='deprecated'>*DEPRECATED*</span></span>
+<br/>
+<div id="c_176" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;T&gt;.notifyListenersOnCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<br/>
+<a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='Source_Removed'></a><a name='Source_Withdrawn'></a><h2>Removed Methods <span class='failed'>&nbsp;66&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span>, <span class='cname'>CachingObservableSnapshotArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_177')">
+CachingObservableSnapshotArray&lt;T&gt;.clearData&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span> <span class='deprecated'>*DEPRECATED*</span></span>
+<br/>
+<div id="c_177" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.clearData:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_178')">
+CachingObservableSnapshotArray&lt;T&gt;.CachingObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <span class='color_p'>tClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_178" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.com.firebase.ui.database.CachingObservableSnapshotArray:(Ljava/lang/Class;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_179')">
+CachingObservableSnapshotArray&lt;T&gt;.CachingObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_179" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.com.firebase.ui.database.CachingObservableSnapshotArray:(Lcom/firebase/ui/database/SnapshotParser;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_180')">
+CachingObservableSnapshotArray&lt;T&gt;.getObject&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>index</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;T</span></span>
+<br/>
+<div id="c_180" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.getObject:(I)Ljava/lang/Object;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_181')">
+CachingObservableSnapshotArray&lt;T&gt;.onDestroy&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_181" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.onDestroy:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_182')">
+CachingObservableSnapshotArray&lt;T&gt;.removeData&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>index</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;DataSnapshot</span></span>
+<br/>
+<div id="c_182" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.removeData:(I)Lcom/google/firebase/database/DataSnapshot;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_183')">
+CachingObservableSnapshotArray&lt;T&gt;.updateData&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>index</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_183" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/CachingObservableSnapshotArray&lt;T&gt;.updateData:(ILcom/google/firebase/database/DataSnapshot;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>ChangeEventListener.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_184')">
+ChangeEventListener.onCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>p1</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_184" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ChangeEventListener.onCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_185')">
+ChangeEventListener.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>p1</span></span>, <span>DataSnapshot <span class='color_p'>p2</span></span>, <span>int <span class='color_p'>p3</span></span>, <span>int <span class='color_p'>p4</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_185" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ChangeEventListener.onChildChanged:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_186')">
+ChangeEventListener.onDataChanged&#160;<span class='sym_p'>(&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_186" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ChangeEventListener.onDataChanged:()V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>DataRefListener.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_187')">
+FirebaseIndexArray.DataRefListener.FirebaseIndexArray.DataRefListener&#160;<span class='sym_p'><span>(&#160;FirebaseIndexArray <span class='color_p'>p1</span></span>&#160;)</span></span>
+<br/>
+<div id="c_187" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray.DataRefListener.&quot;&lt;init&gt;&quot;:(Lcom/firebase/ui/database/FirebaseIndexArray;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>EventType.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_188')">
+ChangeEventListener.EventType.valueOf&#160;<span class='sym_p'><span>(&#160;String <span class='color_p'>name</span></span>&#160;)</span> <span class='attr'>[static]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ChangeEventListener.EventType</span></span>
+<br/>
+<div id="c_188" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ChangeEventListener.EventType.valueOf:(Ljava/lang/String;)Lcom/firebase/ui/database/ChangeEventListener$EventType;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_189')">
+ChangeEventListener.EventType.values&#160;<span class='sym_p'>(&#160;)</span> <span class='attr'>[static]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ChangeEventListener.EventType[&#160;]</span></span>
+<br/>
+<div id="c_189" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ChangeEventListener.EventType.values:()[Lcom/firebase/ui/database/ChangeEventListener$EventType;</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_190')">
+FirebaseArray&lt;T&gt;.FirebaseArray&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>query</span></span>, <span>Class&lt;T&gt; <span class='color_p'>tClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_190" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseArray&lt;T&gt;.com.firebase.ui.database.FirebaseArray:(Lcom/google/firebase/database/Query;Ljava/lang/Class;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseIndexArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_191')">
+FirebaseIndexArray&lt;T&gt;.FirebaseIndexArray&#160;<span class='sym_p'><span>(&#160;Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>Class&lt;T&gt; <span class='color_p'>tClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_191" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.com.firebase.ui.database.FirebaseIndexArray:(Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Ljava/lang/Class;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_192')">
+FirebaseIndexArray&lt;T&gt;.onCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_192" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_193')">
+FirebaseIndexArray&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>index</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_193" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_194')">
+FirebaseIndexArray&lt;T&gt;.onKeyAdded&#160;<span class='sym_p'><span>(&#160;DataSnapshot <span class='color_p'>data</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_194" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexArray&lt;T&gt;.onKeyAdded:(Lcom/google/firebase/database/DataSnapshot;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseIndexListAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_195')">
+FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_195" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseIndexListAdapter:(Landroid/content/Context;Ljava/lang/Class;ILcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_196')">
+FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_196" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseIndexListAdapter:(Landroid/content/Context;Ljava/lang/Class;ILcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_197')">
+FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_197" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseIndexListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/SnapshotParser;ILcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_198')">
+FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_198" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseIndexListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/SnapshotParser;ILcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseIndexRecyclerAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_199')">
+FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_199" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseIndexRecyclerAdapter:(Ljava/lang/Class;ILjava/lang/Class;Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_200')">
+FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_200" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseIndexRecyclerAdapter:(Ljava/lang/Class;ILjava/lang/Class;Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_201')">
+FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_201" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseIndexRecyclerAdapter:(Lcom/firebase/ui/database/SnapshotParser;ILjava/lang/Class;Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_202')">
+FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>keyQuery</span></span>, <span>DatabaseReference <span class='color_p'>dataRef</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_202" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseIndexRecyclerAdapter:(Lcom/firebase/ui/database/SnapshotParser;ILjava/lang/Class;Lcom/google/firebase/database/Query;Lcom/google/firebase/database/DatabaseReference;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseListAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_203')">
+FirebaseListAdapter&lt;T&gt;.cleanup&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_203" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.cleanup:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_204')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>query</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_204" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Ljava/lang/Class;ILcom/google/firebase/database/Query;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_205')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>query</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_205" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Ljava/lang/Class;ILcom/google/firebase/database/Query;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_206')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>, <span>int <span class='color_p'>modelLayout</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_206" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/ObservableSnapshotArray;I)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_207')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_207" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/ObservableSnapshotArray;ILandroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_208')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>query</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_208" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/SnapshotParser;ILcom/google/firebase/database/Query;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_209')">
+FirebaseListAdapter&lt;T&gt;.FirebaseListAdapter&#160;<span class='sym_p'><span>(&#160;Context <span class='color_p'>context</span></span>, <span>SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Query <span class='color_p'>query</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_209" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.com.firebase.ui.database.FirebaseListAdapter:(Landroid/content/Context;Lcom/firebase/ui/database/SnapshotParser;ILcom/google/firebase/database/Query;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_210')">
+FirebaseListAdapter&lt;T&gt;.onCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_210" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_211')">
+FirebaseListAdapter&lt;T&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>index</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_211" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseListAdapter&lt;T&gt;.onChildChanged:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>FirebaseRecyclerAdapter.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_212')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.cleanup&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_212" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.cleanup:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_213')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>query</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_213" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Ljava/lang/Class;ILjava/lang/Class;Lcom/google/firebase/database/Query;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_214')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <span class='color_p'>modelClass</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>query</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_214" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Ljava/lang/Class;ILjava/lang/Class;Lcom/google/firebase/database/Query;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_215')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_215" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Lcom/firebase/ui/database/ObservableSnapshotArray;ILjava/lang/Class;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_216')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;ObservableSnapshotArray&lt;T&gt; <span class='color_p'>snapshots</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_216" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Lcom/firebase/ui/database/ObservableSnapshotArray;ILjava/lang/Class;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_217')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>query</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_217" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Lcom/firebase/ui/database/SnapshotParser;ILjava/lang/Class;Lcom/google/firebase/database/Query;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_218')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.FirebaseRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <span class='color_p'>parser</span></span>, <span>int <span class='color_p'>modelLayout</span></span>, <span>Class&lt;VH&gt; <span class='color_p'>viewHolderClass</span></span>, <span>Query <span class='color_p'>query</span></span>, <span>LifecycleOwner <span class='color_p'>owner</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_218" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.com.firebase.ui.database.FirebaseRecyclerAdapter:(Lcom/firebase/ui/database/SnapshotParser;ILjava/lang/Class;Lcom/google/firebase/database/Query;Landroid/arch/lifecycle/LifecycleOwner;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_219')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.getItemViewType&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>position</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;int</span></span>
+<br/>
+<div id="c_219" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.getItemViewType:(I)I</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_220')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_220" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_221')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>index</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_221" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onChildChanged:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_222')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.onCreateViewHolder&#160;<span class='sym_p'><span>(&#160;ViewGroup <span class='color_p'>parent</span></span>, <span>int <span class='color_p'>viewType</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;VH</span></span>
+<br/>
+<div id="c_222" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.onCreateViewHolder:(Landroid/view/ViewGroup;I)Landroid/support/v7/widget/RecyclerView$ViewHolder;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_223')">
+FirebaseRecyclerAdapter&lt;T,VH&gt;.populateViewHolder&#160;<span class='sym_p'><span>(&#160;VH <span class='color_p'>p1</span></span>, <span>T <span class='color_p'>p2</span></span>, <span>int <span class='color_p'>p3</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_223" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/FirebaseRecyclerAdapter&lt;T,VH&gt;.populateViewHolder:(Landroid/support/v7/widget/RecyclerView$ViewHolder;Ljava/lang/Object;I)V</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>ObservableSnapshotArray.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_224')">
+ObservableSnapshotArray&lt;E&gt;.addChangeEventListener&#160;<span class='sym_p'><span>(&#160;ChangeEventListener <span class='color_p'>listener</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;ChangeEventListener</span></span>
+<br/>
+<div id="c_224" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.addChangeEventListener:(Lcom/firebase/ui/database/ChangeEventListener;)Lcom/firebase/ui/database/ChangeEventListener;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_225')">
+ObservableSnapshotArray&lt;E&gt;.ObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;Class&lt;E&gt; <span class='color_p'>clazz</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_225" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.com.firebase.ui.database.ObservableSnapshotArray:(Ljava/lang/Class;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_226')">
+ObservableSnapshotArray&lt;E&gt;.ObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;E&gt; <span class='color_p'>parser</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;public</span></span>
+<br/>
+<div id="c_226" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.com.firebase.ui.database.ObservableSnapshotArray:(Lcom/firebase/ui/database/SnapshotParser;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_227')">
+ObservableSnapshotArray&lt;E&gt;.get&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>index</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;DataSnapshot</span></span>
+<br/>
+<div id="c_227" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.get:(I)Lcom/google/firebase/database/DataSnapshot;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_228')">
+ObservableSnapshotArray&lt;E&gt;.get&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>p1</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;Object</span></span>
+<br/>
+<div id="c_228" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.get:(I)Ljava/lang/Object;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_229')">
+ObservableSnapshotArray&lt;E&gt;.getObject&#160;<span class='sym_p'><span>(&#160;int <span class='color_p'>index</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;E</span></span>
+<br/>
+<div id="c_229" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.getObject:(I)Ljava/lang/Object;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_230')">
+ObservableSnapshotArray&lt;E&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;List&lt;DataSnapshot&gt;</span></span>
+<br/>
+<div id="c_230" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.getSnapshots:()Ljava/util/List;</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_231')">
+ObservableSnapshotArray&lt;E&gt;.isListening&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;boolean</span></span>
+<br/>
+<div id="c_231" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.isListening:()Z</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_232')">
+ObservableSnapshotArray&lt;E&gt;.isListening&#160;<span class='sym_p'><span>(&#160;ChangeEventListener <span class='color_p'>listener</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;boolean</span></span>
+<br/>
+<div id="c_232" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.isListening:(Lcom/firebase/ui/database/ChangeEventListener;)Z</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_233')">
+ObservableSnapshotArray&lt;E&gt;.notifyChangeEventListeners&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>index</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_233" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.notifyChangeEventListeners:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;I)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_234')">
+ObservableSnapshotArray&lt;E&gt;.notifyChangeEventListeners&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <span class='color_p'>type</span></span>, <span>DataSnapshot <span class='color_p'>snapshot</span></span>, <span>int <span class='color_p'>index</span></span>, <span>int <span class='color_p'>oldIndex</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_234" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.notifyChangeEventListeners:(Lcom/firebase/ui/database/ChangeEventListener$EventType;Lcom/google/firebase/database/DataSnapshot;II)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_235')">
+ObservableSnapshotArray&lt;E&gt;.notifyListenersOnCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <span class='color_p'>error</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_235" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.notifyListenersOnCancelled:(Lcom/google/firebase/database/DatabaseError;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_236')">
+ObservableSnapshotArray&lt;E&gt;.notifyListenersOnDataChanged&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_236" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.notifyListenersOnDataChanged:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_237')">
+ObservableSnapshotArray&lt;E&gt;.onCreate&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_237" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.onCreate:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_238')">
+ObservableSnapshotArray&lt;E&gt;.onDestroy&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_238" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.onDestroy:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_239')">
+ObservableSnapshotArray&lt;E&gt;.removeAllListeners&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_239" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.removeAllListeners:()V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_240')">
+ObservableSnapshotArray&lt;E&gt;.removeChangeEventListener&#160;<span class='sym_p'><span>(&#160;ChangeEventListener <span class='color_p'>listener</span></span>&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;void</span></span>
+<br/>
+<div id="c_240" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.removeChangeEventListener:(Lcom/firebase/ui/database/ChangeEventListener;)V</span><br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_241')">
+ObservableSnapshotArray&lt;E&gt;.size&#160;<span class='sym_p'>(&#160;)</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;int</span></span>
+<br/>
+<div id="c_241" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/ObservableSnapshotArray&lt;E&gt;.size:()I</span><br/><br/></div>
+
+<br/>
+<span class='jar'>classes.jar</span>, <span class='cname'>SnapshotParser.class</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_242')">
+SnapshotParser&lt;T&gt;.parseSnapshot&#160;<span class='sym_p'><span>(&#160;DataSnapshot <span class='color_p'>p1</span></span>&#160;)</span> <span class='attr'>[abstract]</span><span class='sym_p nowrap'> &#160;<b>:</b>&#160;&#160;T</span></span>
+<br/>
+<div id="c_242" style="display:none;">
+<span class='mngl'>com/firebase/ui/database/SnapshotParser&lt;T&gt;.parseSnapshot:(Lcom/google/firebase/database/DataSnapshot;)Ljava/lang/Object;</span><br/><br/></div>
+
+<br/>
+<a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='High_Risk_Source_Problems'></a><a name='Type_Source_Problems_High'></a>
+<h2>Problems with Data Types, High Severity <span class='failed'>&nbsp;6&nbsp;</span></h2><hr/>
+<span class='jar'>classes.jar</span><br/>
+<span class='pkg_t'>package</span> <span class='pkg'>com.firebase.ui.database</span><br/>
+<span class="section" onclick="sC(this, 'c_243')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> CachingObservableSnapshotArray&lt;T&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_243" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class has been removed.</td>
+<td>Recompilation of a client program may be terminated with the message: cannot find class <b>CachingObservableSnapshotArray&lt;T&gt;</b>.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_244')">
+[+] affected methods: 7 (4.4%)</span>
+<div id="c_244" style="display:none;">
+<div class='affected'><span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.clearData&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.CachingObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <i>parser</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.CachingObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <i>tClass</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.getObject&#160;<span class='sym_p'><span>(&#160;int <i>index</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.onDestroy&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.removeData&#160;<span class='sym_p'><span>(&#160;int <i>index</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>CachingObservableSnapshotArray&lt;T&gt;.updateData&#160;<span class='sym_p'><span>(&#160;int <i>index</i></span>, <span>DataSnapshot <i>snapshot</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'CachingObservableSnapshotArray&lt;T&gt;' abstract class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_245')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> ChangeEventListener.EventType <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_245" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class has been removed.</td>
+<td>Recompilation of a client program may be terminated with the message: cannot find class <b>ChangeEventListener.EventType</b>.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_246')">
+[+] affected methods: 2 (1.3%)</span>
+<div id="c_246" style="display:none;">
+<div class='affected'><span class='iname_a'>ChangeEventListener.EventType.valueOf&#160;<span class='sym_p'><span>(&#160;String <i>name</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ChangeEventListener.EventType' class.</div>
+<span class='iname_a'>ChangeEventListener.EventType.values&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'ChangeEventListener.EventType' class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_247')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirebaseIndexArray.DataRefListener <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_247" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class became <b>final</b>.</td>
+<td>Recompilation of a client program may be terminated with the message: cannot inherit from final <b>FirebaseIndexArray.DataRefListener</b>.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_248')">
+[+] affected methods: 2 (1.3%)</span>
+<div id="c_248" style="display:none;">
+<div class='affected'><span class='iname_a'>FirebaseIndexArray.DataRefListener.onCancelled&#160;<span class='sym_p'><span>(&#160;DatabaseError <i>error</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexArray.DataRefListener' class.</div>
+<span class='iname_a'>FirebaseIndexArray.DataRefListener.onDataChange&#160;<span class='sym_p'><span>(&#160;DataSnapshot <i>snapshot</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexArray.DataRefListener' class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_249')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirebaseIndexListAdapter&lt;T&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_249" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class has been removed.</td>
+<td>Recompilation of a client program may be terminated with the message: cannot find class <b>FirebaseIndexListAdapter&lt;T&gt;</b>.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_250')">
+[+] affected methods: 4 (2.5%)</span>
+<div id="c_250" style="display:none;">
+<div class='affected'><span class='iname_a'>FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <i>context</i></span>, <span>SnapshotParser&lt;T&gt; <i>parser</i></span>, <span>int <i>modelLayout</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexListAdapter&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <i>context</i></span>, <span>SnapshotParser&lt;T&gt; <i>parser</i></span>, <span>int <i>modelLayout</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>, <span>LifecycleOwner <i>owner</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexListAdapter&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <i>context</i></span>, <span>Class&lt;T&gt; <i>modelClass</i></span>, <span>int <i>modelLayout</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexListAdapter&lt;T&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexListAdapter&lt;T&gt;.FirebaseIndexListAdapter&#160;<span class='sym_p'><span>(&#160;Context <i>context</i></span>, <span>Class&lt;T&gt; <i>modelClass</i></span>, <span>int <i>modelLayout</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>, <span>LifecycleOwner <i>owner</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexListAdapter&lt;T&gt;' abstract class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_251')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> FirebaseIndexRecyclerAdapter&lt;T,VH&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_251" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class has been removed.</td>
+<td>Recompilation of a client program may be terminated with the message: cannot find class <b>FirebaseIndexRecyclerAdapter&lt;T,VH&gt;</b>.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_252')">
+[+] affected methods: 4 (2.5%)</span>
+<div id="c_252" style="display:none;">
+<div class='affected'><span class='iname_a'>FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <i>parser</i></span>, <span>int <i>modelLayout</i></span>, <span>Class&lt;VH&gt; <i>viewHolderClass</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexRecyclerAdapter&lt;T,VH&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;T&gt; <i>parser</i></span>, <span>int <i>modelLayout</i></span>, <span>Class&lt;VH&gt; <i>viewHolderClass</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>, <span>LifecycleOwner <i>owner</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexRecyclerAdapter&lt;T,VH&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <i>modelClass</i></span>, <span>int <i>modelLayout</i></span>, <span>Class&lt;VH&gt; <i>viewHolderClass</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexRecyclerAdapter&lt;T,VH&gt;' abstract class.</div>
+<span class='iname_a'>FirebaseIndexRecyclerAdapter&lt;T,VH&gt;.FirebaseIndexRecyclerAdapter&#160;<span class='sym_p'><span>(&#160;Class&lt;T&gt; <i>modelClass</i></span>, <span>int <i>modelLayout</i></span>, <span>Class&lt;VH&gt; <i>viewHolderClass</i></span>, <span>Query <i>keyQuery</i></span>, <span>DatabaseReference <i>dataRef</i></span>, <span>LifecycleOwner <i>owner</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'FirebaseIndexRecyclerAdapter&lt;T,VH&gt;' abstract class.</div>
+</div></div>
+<br/><br/></div>
+
+<span class="section" onclick="sC(this, 'c_253')">
+<span class='ext'>[+]</span> <span class='ttype'>class</span> ObservableSnapshotArray&lt;E&gt; <span class='failed'>&nbsp;1&nbsp;</span></span>
+<br/>
+<div id="c_253" style="display:none;">
+<table class='ptable'><tr><th width='2%'></th><th width='47%'>Change</th><th>Effect</th></tr><tr>
+<th>1</th>
+<td>This class has been removed.</td>
+<td>Recompilation of a client program may be terminated with the message: cannot find class <b>ObservableSnapshotArray&lt;E&gt;</b>.</td>
+</tr>
+</table><span class="sect_aff" onclick="sC(this, 'c_254')">
+[+] affected methods: 18 (11.3%)</span>
+<div id="c_254" style="display:none;">
+<div class='affected'><span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.addChangeEventListener&#160;<span class='sym_p'><span>(&#160;ChangeEventListener <i>listener</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.ObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;SnapshotParser&lt;E&gt; <i>parser</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.ObservableSnapshotArray&#160;<span class='sym_p'><span>(&#160;Class&lt;E&gt; <i>clazz</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.get&#160;<span class='sym_p'><span>(&#160;int <i>index</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.get&#160;<span class='sym_p'><span>(&#160;int <i>p1</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.getObject&#160;<span class='sym_p'><span>(&#160;int <i>index</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.getSnapshots&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This abstract method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.isListening&#160;<span class='sym_p'>(&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.isListening&#160;<span class='sym_p'><span>(&#160;ChangeEventListener <i>listener</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+<span class='iname_a'>ObservableSnapshotArray&lt;E&gt;.notifyChangeEventListeners&#160;<span class='sym_p'><span>(&#160;ChangeEventListener.EventType <i>type</i></span>, <span>DataSnapshot <i>snapshot</i></span>, <span>int <i>index</i></span>&#160;)</span></span><br/><div class='affect'>This method is from 'ObservableSnapshotArray&lt;E&gt;' abstract class.</div>
+ <b>...</b>
+<br/>
+</div></div>
+<br/><br/></div>
+
+<br/><a class='top_ref' href='#Top'>to the top</a><br/>
+<a name='Checked_Archives'></a><h2>Java Archives <span class='gray'>&nbsp;1&nbsp;</span></h2>
+<hr/><div class='jar_list'>
+classes.jar<br/>
+</div><br/><a class='top_ref' href='#Top'>to the top</a><br/>
+<br/><br/><br/></div><hr/><div class='footer' align='right'><i>Generated by <a href='https://github.com/lvc/japi-compliance-checker'>Java API Compliance Checker</a> 2.1 &#160;</i></div><br/>
+</body></html>

@@ -51,7 +51,7 @@ dependencies {
     implementation "com.google.firebase:firebase-auth:$firebaseVersion"
     implementation "com.google.android.gms:play-services-auth:$firebaseVersion"
 
-    compileOnly'com.facebook.android:facebook-android-sdk:4.25.0'
+    compileOnly 'com.facebook.android:facebook-login:4.27.0'
     compileOnly("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
 
     // The following libraries are needed to prevent incompatibilities with the facebook
@@ -62,7 +62,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     testImplementation 'org.mockito:mockito-core:2.8.+'
     testImplementation 'org.robolectric:robolectric:3.4'
-    testImplementation 'com.facebook.android:facebook-android-sdk:4.25.0'
+    testImplementation 'com.facebook.android:facebook-login:4.27.0'
 }
 
 javadoc.exclude([

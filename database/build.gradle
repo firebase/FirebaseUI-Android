@@ -23,16 +23,14 @@ android {
 }
 
 dependencies {
-    implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
-    implementation "com.android.support:support-v4:$supportLibraryVersion"
-
-    api 'android.arch.lifecycle:runtime:1.0.0-alpha9'
-    api 'android.arch.lifecycle:extensions:1.0.0-alpha9'
-    annotationProcessor 'android.arch.lifecycle:compiler:1.0.0-alpha9'
-
+    implementation project(path: ':common')
     api "com.google.firebase:firebase-database:$firebaseVersion"
 
+    api "android.arch.lifecycle:runtime:$architectureVersion"
+    api "android.arch.lifecycle:extensions:$architectureVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
+
     androidTestImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.0'
-    androidTestImplementation 'com.android.support.test:rules:1.0.0'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test:rules:1.0.1'
 }

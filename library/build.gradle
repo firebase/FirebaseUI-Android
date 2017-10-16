@@ -12,6 +12,7 @@ android {
         versionName "0.0.0"
 
         consumerProguardFiles 'consumer-proguard-rules.pro'
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -27,13 +28,14 @@ android {
 }
 
 dependencies {
-    compile project(':database')
-    compile project(':auth')
-    compile project(':storage')
+    implementation project(':auth')
+    implementation project(':database')
+    implementation project(':firestore')
+    implementation project(':storage')
 }
 
 /**
- * Returns list of tasks names that prepareArtfacts should depend on.
+ * Returns list of tasks names that prepareArtifacts should depend on.
  */
 def prepareArtifactsTasks() {
     return submodules.collect { name ->

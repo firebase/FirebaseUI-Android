@@ -43,7 +43,7 @@ public class FirebaseArrayTest {
     public void setUp() throws Exception {
         FirebaseApp app = getAppInstance(InstrumentationRegistry.getContext());
         mRef = FirebaseDatabase.getInstance(app).getReference().child("firebasearray");
-        mArray = new FirebaseArray<>(mRef, Integer.class);
+        mArray = new FirebaseArray<>(mRef, new ClassSnapshotParser<>(Integer.class));
         mRef.removeValue();
         mListener = runAndWaitUntil(mArray, new Runnable() {
             @Override
@@ -54,14 +54,14 @@ public class FirebaseArrayTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return mArray.size() == INITIAL_SIZE;
             }
         });
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         mArray.removeChangeEventListener(mListener);
         mRef.getRoot().removeValue();
     }
@@ -75,7 +75,7 @@ public class FirebaseArrayTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return mArray.size() == 4;
             }
         });
@@ -90,8 +90,8 @@ public class FirebaseArrayTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
-                return mArray.getObject(3).equals(4);
+            public Boolean call() {
+                return mArray.get(3).equals(4);
             }
         });
     }
@@ -105,9 +105,8 @@ public class FirebaseArrayTest {
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
-                return mArray.getObject(3).equals(3)
-                        && mArray.getObject(0).equals(4);
+            public Boolean call() {
+                return mArray.get(3).equals(3) && mArray.get(0).equals(4);
             }
         });
     }
@@ -117,11 +116,11 @@ public class FirebaseArrayTest {
         runAndWaitUntil(mArray, new Runnable() {
             @Override
             public void run() {
-                mArray.get(2).getRef().setPriority(0.5);
+                mArray.getSnapshot(2).getRef().setPriority(0.5);
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return isValuesEqual(mArray, new int[]{3, 1, 2});
             }
         });
@@ -132,11 +131,11 @@ public class FirebaseArrayTest {
         runAndWaitUntil(mArray, new Runnable() {
             @Override
             public void run() {
-                mArray.get(0).getRef().setPriority(4);
+                mArray.getSnapshot(0).getRef().setPriority(4);
             }
         }, new Callable<Boolean>() {
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 return isValuesEqual(mArray, new int[]{2, 3, 1});
             }
         });

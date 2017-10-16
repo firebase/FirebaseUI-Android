@@ -26,5 +26,8 @@ public class ExtraConstants {
     public static final String EXTRA_USER = "extra_user";
     public static final String EXTRA_EMAIL = "extra_email";
     public static final String EXTRA_PHONE = "extra_phone_number";
+    public static final String EXTRA_COUNTRY_CODE = "extra_country_code";
+    public static final String EXTRA_NATIONAL_NUMBER = "extra_national_number";
     public static final String HAS_EXISTING_INSTANCE = "has_existing_instance";
+    public static final String EXTRA_PARAMS = "extra_params";
 }
