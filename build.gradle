@@ -50,7 +50,6 @@ allprojects { project ->
         project.apply plugin: 'com.android.library'
         android {
             compileSdkVersion compileSdk
-            buildToolsVersion buildTools
         }
 
         // Task to generate sources JAR

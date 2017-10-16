@@ -3,7 +3,6 @@ apply from: '../library/quality/quality.gradle'
 
 android {
     compileSdkVersion compileSdk
-    buildToolsVersion buildTools
 
     defaultConfig {
         applicationId "com.firebase.uidemo"
@@ -18,12 +17,16 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
-
             // For the purposes of the sample, allow testing of a proguarded release build
             // using the debug key
             signingConfig signingConfigs.debug
+
+            postprocessing {
+                removeUnusedCode true
+                removeUnusedResources true
+                obfuscate true
+                optimizeCode true
+            }
         }
     }
 
@@ -43,34 +46,30 @@ configurations.all {
 }
 
 dependencies {
+    implementation "com.google.firebase:firebase-core:$firebaseVersion"
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation 'com.android.support:multidex:1.0.2'
 
     implementation project(path: ':auth')
-    implementation project(path: ':database')
     implementation project(path: ':firestore')
+    implementation project(path: ':database')
     implementation project(path: ':storage')
 
-    implementation "com.google.android.gms:play-services-auth:$firebaseVersion"
-    implementation "com.google.firebase:firebase-auth:$firebaseVersion"
-    implementation "com.google.firebase:firebase-database:$firebaseVersion"
-    implementation "com.google.firebase:firebase-storage:$firebaseVersion"
+    implementation 'com.facebook.android:facebook-login:4.27.0'
+    // Needed to override Facebook
+    implementation "com.android.support:cardview-v7:$supportLibraryVersion"
+    implementation "com.android.support:customtabs:$supportLibraryVersion"
+    implementation("com.twitter.sdk.android:twitter-core:3.1.0@aar") { transitive = true }
 
-    implementation('com.facebook.android:facebook-login:4.27.0')
-    implementation("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
-
-    implementation "android.arch.lifecycle:runtime:$architectureVersion"
-    implementation "android.arch.lifecycle:extensions:$architectureVersion"
-
-    implementation 'com.github.bumptech.glide:glide:4.1.1'
+    implementation 'com.github.bumptech.glide:glide:4.2.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
 
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
     implementation 'pub.devrel:easypermissions:1.0.1'
-    implementation 'com.jakewharton:butterknife:8.7.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'

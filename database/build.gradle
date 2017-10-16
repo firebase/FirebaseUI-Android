@@ -4,7 +4,6 @@ check.dependsOn 'compileDebugAndroidTestJavaWithJavac'
 
 android {
     compileSdkVersion compileSdk
-    buildToolsVersion buildTools
 
     defaultConfig {
         minSdkVersion minSdk
@@ -13,20 +12,13 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-        }
-    }
 }
 
 dependencies {
-    implementation project(path: ':common')
+    api project(path: ':common')
     api "com.google.firebase:firebase-database:$firebaseVersion"
 
-    api "android.arch.lifecycle:runtime:$architectureVersion"
+    api "com.android.support:recyclerview-v7:$supportLibraryVersion"
     api "android.arch.lifecycle:extensions:$architectureVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
 

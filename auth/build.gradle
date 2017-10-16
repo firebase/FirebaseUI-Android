@@ -3,7 +3,6 @@ apply from: '../library/quality/quality.gradle'
 
 android {
     compileSdkVersion compileSdk
-    buildToolsVersion buildTools
 
     defaultConfig {
         minSdkVersion 16
@@ -17,16 +16,9 @@ android {
 
     buildTypes {
         release {
-            manifestPlaceholders = [enableFbLogging: true]
-
-            minifyEnabled false
-            consumerProguardFiles 'auth-proguard.pro'
-        }
-
-        debug {
-            // This is needed for tests to pass. Facebook automatically enables app logging
-            // which causes a null pointer exception while running tests.
-            manifestPlaceholders = [enableFbLogging: false]
+            postprocessing {
+                consumerProguardFile 'auth-proguard.pro'
+            }
         }
     }
 
@@ -35,10 +27,8 @@ android {
     }
 
     testOptions {
-        unitTests.all {
-            testLogging {
-                exceptionFormat = 'full'
-            }
+        unitTests {
+            includeAndroidResources true
         }
     }
 }
@@ -46,31 +36,24 @@ android {
 dependencies {
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.android.support:customtabs:$supportLibraryVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
 
-    implementation "com.google.firebase:firebase-auth:$firebaseVersion"
-    implementation "com.google.android.gms:play-services-auth:$firebaseVersion"
+    api "com.google.firebase:firebase-auth:$firebaseVersion"
+    api "com.google.android.gms:play-services-auth:$firebaseVersion"
 
     compileOnly 'com.facebook.android:facebook-login:4.27.0'
-    compileOnly("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
-
-    // The following libraries are needed to prevent incompatibilities with the facebook
-    // library when updating com.android.support libraries:
+    // Needed to override Facebook
     implementation "com.android.support:cardview-v7:$supportLibraryVersion"
+    implementation "com.android.support:customtabs:$supportLibraryVersion"
+    compileOnly("com.twitter.sdk.android:twitter-core:3.1.0@aar") { transitive = true }
 
     testImplementation 'junit:junit:4.12'
     //noinspection GradleDynamicVersion
-    testImplementation 'org.mockito:mockito-core:2.8.+'
-    testImplementation 'org.robolectric:robolectric:3.4'
+    testImplementation 'org.mockito:mockito-core:2.11.+'
+    testImplementation 'org.robolectric:robolectric:3.4.2'
     testImplementation 'com.facebook.android:facebook-login:4.27.0'
+    testImplementation("com.twitter.sdk.android:twitter-core:3.1.0@aar") { transitive = true }
 }
-
-javadoc.exclude([
-        'com/firebase/ui/auth/provider/**',
-        'com/firebase/ui/auth/ui/ExtraConstants',
-        'com/firebase/ui/auth/ui/email/field_validators/**',
-        'com/firebase/ui/auth/util/**',
-])
 
 javadoc.include([
         'com/google/firebase/auth/**'
