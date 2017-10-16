@@ -73,11 +73,9 @@ task pmd(type: Pmd) {
 
 android {
     lintOptions {
-        // We have okio as a transitive dependency, which causes some lint errors due to
-        // using Java 8 nio packages. Safely downgrading them to warning.
-        // https://github.com/square/okio/issues/58
-        disable 'InvalidPackage',
-                'IconLauncherFormat', 'IconExpectedSize', // TODO remove with 3.0 Gradle Plugin
+        disable 'WrongConstant', // TODO it's being unruly, figure that out later
+                'ObsoleteLintCustomCheck', // TODO ButterKnife will fix this in v9.0
+                'IconExpectedSize',
                 'NewerVersionAvailable', 'GradleDependency' // For reproducible builds
 
         baseline file("$configDir/lint-baseline.xml")

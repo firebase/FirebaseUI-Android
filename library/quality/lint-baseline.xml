@@ -1,32 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="4" by="lint 2.4.0-alpha7">
+<issues by="lint 3.0.0-rc1" format="4">
 
+    <!-- Let the client decide -->
     <issue
         id="RtlEnabled"
         message="The project references RTL attributes, but does not explicitly enable or disable RTL support with `android:supportsRtl` in the manifest">
-        <location
-            file="src/main/AndroidManifest.xml"/>
-    </issue>
-
-    <issue
-        id="UnusedResources"
-        severity="Error"
-        message="The resource `R.string.google_crash_reporting_api_key` appears to be unused"
-        category="Performance"
-        priority="3"
-        summary="Unused resources"
-        explanation="Unused resources make applications larger and slow down builds."
-        errorLine1="    &lt;string name=&quot;google_crash_reporting_api_key&quot; translatable=&quot;false&quot;>&lt;/string>"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-        quickfix="studio">
-        <location
-            file="build/generated/res/google-services/debug/values/values.xml"
-            line="7"
-            column="13"/>
-        <location
-            file="build/generated/res/google-services/release/values/values.xml"
-            line="7"
-            column="13"/>
+        <location file="src/main/AndroidManifest.xml" />
     </issue>
 
     <issue

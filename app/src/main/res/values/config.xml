@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--
     The Facebook Application ID associated with this Android application. To
     use Facebook accounts with the demo application, register an application
@@ -9,7 +9,7 @@
     <!--
     Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs.
     -->
-    <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
+    <string name="facebook_login_protocol_scheme" translatable="false" tools:ignore="UnusedResources">fbYOUR_APP_ID</string>
 
 
     <!--

@@ -23,7 +23,7 @@
             style="@style/FirebaseUI.Text.T08"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/dgts_titleText"
+            android:layout_below="@id/dgts_titleText"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/fui_linkColor"
             tools:ignore="SelectableText" />
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:layout_below="@+id/edit_phone_number"
+            android:layout_below="@id/edit_phone_number"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:background="@color/fui_transparent"
