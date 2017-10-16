@@ -12,7 +12,7 @@ public class Chat extends AbstractChat {
     private String mName;
     private String mMessage;
     private String mUid;
-    private Date mTimestamp;
+    private @ServerTimestamp Date mTimestamp;
 
     public Chat() {
         // Needed for Firebase
@@ -48,7 +48,6 @@ public class Chat extends AbstractChat {
         mUid = uid;
     }
 
-    @ServerTimestamp
     public Date getTimestamp() {
         return mTimestamp;
     }
