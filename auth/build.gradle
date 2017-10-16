@@ -27,10 +27,8 @@ android {
     }
 
     testOptions {
-        unitTests.all {
-            testLogging {
-                exceptionFormat = 'full'
-            }
+        unitTests {
+            includeAndroidResources true
         }
     }
 }
@@ -54,6 +52,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.11.+'
     testImplementation 'org.robolectric:robolectric:3.4.2'
     testImplementation 'com.facebook.android:facebook-login:4.27.0'
+    testImplementation("com.twitter.sdk.android:twitter-core:3.1.0@aar") { transitive = true }
 }
 
 javadoc.include([
