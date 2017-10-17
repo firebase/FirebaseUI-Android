@@ -23,11 +23,8 @@
     <string name="fui_title_register_email" translation_description="Title for signup form">Inscrever-se</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">Nome próprio e apelido</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Guardar</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">A realizar a inscrição...</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caracteres e uma combinação de letras e números</item>
-        <item quantity="other">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caracteres e uma combinação de letras e números</item>
-    </plurals>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">A realizar a inscrição…</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caracteres e uma combinação de letras e números</item> <item quantity="other">A palavra-passe não é suficientemente forte. Utilize, pelo menos, %1$d caracteres e uma combinação de letras e números</item> </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">O registo da conta de email não foi bem-sucedido</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Já existe uma conta com o endereço de email em questão.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Ao tocar em %1$s, indica que aceita os %2$s e a %3$s.</string>
@@ -55,7 +52,7 @@
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Introduza o código de 6 dígitos que enviámos para</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Reenviar código em 0:%02d</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Validar o número de telefone</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">A verificar...</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">A verificar…</string>
     <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">A obter SMS…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Código errado. Tente novamente.</string>
     <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
@@ -70,5 +67,5 @@
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">Reenviar código</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Validar número de telefone</string>
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Continuar</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Ao tocar em \"%1$s\", pode gerar o envio de uma SMS. Podem aplicar-se tarifas de mensagens e dados.</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Ao tocar em “%1$s”, pode gerar o envio de uma SMS. Podem aplicar-se tarifas de mensagens e dados.</string>
 </resources>

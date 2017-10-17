@@ -19,17 +19,12 @@
     <string name="fui_required_field" translation_description="Inline error for required field">Nie możesz zostawić tego pola pustego.</string>
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">Nieprawidłowy adres e-mail</string>
     <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Aby kontynuować, wpisz adres e-mail</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Szukam istniejących kont...</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Szukam istniejących kont…</string>
     <string name="fui_title_register_email" translation_description="Title for signup form">Rejestracja</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">Imię i nazwisko</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Zapisz</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Rejestruję...</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znak i być kombinacją liter i cyfr.</item>
-        <item quantity="few">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaki i być kombinacją liter i cyfr.</item>
-        <item quantity="many">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaków i być kombinacją liter i cyfr.</item>
-        <item quantity="other">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaku i być kombinacją liter i cyfr</item>
-    </plurals>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Rejestruję…</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znak i być kombinacją liter i cyfr.</item> <item quantity="few">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaki i być kombinacją liter i cyfr.</item> <item quantity="many">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaków i być kombinacją liter i cyfr.</item> <item quantity="other">Hasło jest za słabe. Powinno mieć przynajmniej %1$d znaku i być kombinacją liter i cyfr</item> </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Rejestracja konta e-mail nie powiodła się</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Istnieje już konto z tym adresem e-mail</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Klikając %1$s, potwierdzasz, że znane Ci są %2$s oraz %3$s i akceptujesz je.</string>

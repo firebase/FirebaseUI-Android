@@ -23,15 +23,8 @@
     <string name="fui_title_register_email" translation_description="Title for signup form">اشتراك</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">الاسم الأول واسم العائلة</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">حفظ</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">جارٍ الاشتراك...</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="zero">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item>
-        <item quantity="one">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقم واحد (%1$d) على الأقل ومزيج من الأحرف والأرقام</item>
-        <item quantity="two">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقمين (%1$d) على الأقل ومزيج من الأحرف والأرقام</item>
-        <item quantity="few">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d أرقام على الأقل ومزيج من الأحرف والأرقام</item>
-        <item quantity="many">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقمًا على الأقل ومزيج من الأحرف والأرقام</item>
-        <item quantity="other">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item>
-    </plurals>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">جارٍ الاشتراك…</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="zero">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="one">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقم واحد (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="two">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام رقمين (%1$d) على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="few">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d أرقام على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="many">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقمًا على الأقل ومزيج من الأحرف والأرقام</item> <item quantity="other">كلمة المرور ليست قوية بما فيه الكفاية. يجب استخدام %1$d رقم على الأقل ومزيج من الأحرف والأرقام</item> </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">فشل تسجيل حساب البريد الإلكتروني</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">ثمة حساب يستخدم عنوان البريد الإلكتروني هذا.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">يُعد النقر على %1$s دليلاً على أنك توافق على %2$s و%3$s.</string>
@@ -41,16 +34,13 @@
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">سياسة الخصوصية</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">لديك حساب حاليًا</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">تسرّنا عودتك!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">لقد سبق أن استخدمت %1$s.
-        سجّل الدخول باستخدام %2$s للمتابعة.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">لقد سبق أن استخدمت %1$s
-        لتسجيل الدخول. يُرجى إدخال كلمة المرور لهذا الحساب.</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">جارٍ تسجيل الدخول...</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">لقد سبق أن استخدمت %1$s. سجّل الدخول باستخدام %2$s للمتابعة.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">لقد سبق أن استخدمت %1$s لتسجيل الدخول. يُرجى إدخال كلمة المرور لهذا الحساب.</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">جارٍ تسجيل الدخول…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">هل تواجه مشكلة في تسجيل الدخول؟</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">استرداد كلمة المرور</string>
     <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">إثبات ملكية بريدك الإلكتروني</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">تم إرسال تعليمات إلى البريد الإلكتروني هذا تشرح كيفية
-        إعادة تعيين كلمة المرور.</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">تم إرسال تعليمات إلى البريد الإلكتروني هذا تشرح كيفية إعادة تعيين كلمة المرور.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">إرسال</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">اتبع التعليمات التي تم إرسالها إلى %1$s لاسترداد كلمة المرور.</string>
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">جارٍ الإرسال…</string>
@@ -62,7 +52,7 @@
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">إعادة إرسال الرمز بعد 0:%02d</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">إثبات ملكية رقم هاتفك</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">جارٍ إثبات الملكية ...</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">جارٍ إثبات الملكية…</string>
     <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">جارٍ استرداد الرسائل القصيرة SMS…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">الرمز غير صحيح. يُرجى المحاولة مجددًا.</string>
     <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">موافق</string>
@@ -77,5 +67,5 @@
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">إعادة إرسال الرمز</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">تأكيد ملكية رقم الهاتف</string>
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">متابعة</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">قد يتم إرسال رسالة قصيرة SMS من خلال النقر على \"%1$s\". وقد يتم تطبيق رسوم الرسائل والبيانات.</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">قد يتم إرسال رسالة قصيرة SMS من خلال النقر على “%1$s”. وقد يتم تطبيق رسوم الرسائل والبيانات.</string>
 </resources>

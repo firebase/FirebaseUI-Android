@@ -24,11 +24,7 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">Име и презиме</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Сачувај</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Регистрација је у току…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">Лозинка није довољно јака. Употребите бар %1$d знак, уз комбинацију бројева и слова</item>
-        <item quantity="few">Лозинка није довољно јака. Употребите бар %1$d знака, уз комбинацију бројева и слова</item>
-        <item quantity="other">Лозинка није довољно јака. Употребите бар %1$d знакова, уз комбинацију бројева и слова</item>
-    </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Лозинка није довољно јака. Употребите бар %1$d знак, уз комбинацију бројева и слова</item> <item quantity="few">Лозинка није довољно јака. Употребите бар %1$d знака, уз комбинацију бројева и слова</item> <item quantity="other">Лозинка није довољно јака. Употребите бар %1$d знакова, уз комбинацију бројева и слова</item> </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Регистрација налога преко имејла није успела</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Већ постоји налог са том имејл адресом.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Додиром на %1$s потврђујете да прихватате %2$s и %3$s.</string>
@@ -38,10 +34,8 @@
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Политику приватности</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Већ имате налог</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Добро дошли поново!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Већ сте користили адресу %1$s.
-        Пријавите се преко %2$s-а да бисте наставили.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Већ сте користили адресу %1$s
-        за пријављивање. Унесите лозинку за тај налог.</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Већ сте користили адресу %1$s. Пријавите се преко %2$s-а да бисте наставили.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Већ сте користили адресу %1$s за пријављивање. Унесите лозинку за тај налог.</string>
     <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Пријављивање…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Имате проблема при пријављивању?</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Повратите лозинку</string>

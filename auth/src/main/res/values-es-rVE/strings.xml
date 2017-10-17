@@ -24,10 +24,7 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">Nombre y apellido</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Guardar</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Registrando…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">La contraseña no es lo suficientemente segura. Usa al menos %1$d carácter y una combinación de letras y números</item>
-        <item quantity="other">La contraseña no es lo suficientemente segura. Usa al menos %1$d caracteres y una combinación de letras y números</item>
-    </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">La contraseña no es lo suficientemente segura. Usa al menos %1$d carácter y una combinación de letras y números</item> <item quantity="other">La contraseña no es lo suficientemente segura. Usa al menos %1$d caracteres y una combinación de letras y números</item> </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">No se pudo registrar la cuenta de correo electrónico</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Ya existe una cuenta con esa dirección de correo electrónico.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Si presionas %1$s, indicas que aceptas las %2$s y la %3$s.</string>

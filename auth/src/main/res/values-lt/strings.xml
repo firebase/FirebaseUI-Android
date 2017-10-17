@@ -24,12 +24,7 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">Vardas ir pavardė</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Išsaugoti</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Prisiregistruojama…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolį ir raidžių bei skaičių derinį.</item>
-        <item quantity="few">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolius ir raidžių bei skaičių derinį.</item>
-        <item quantity="many">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolio ir raidžių bei skaičių derinį.</item>
-        <item quantity="other">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolių ir raidžių bei skaičių derinį.</item>
-    </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolį ir raidžių bei skaičių derinį.</item> <item quantity="few">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolius ir raidžių bei skaičių derinį.</item> <item quantity="many">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolio ir raidžių bei skaičių derinį.</item> <item quantity="other">Slaptažodis nepakankamai sudėtingas. Naudokite bent %1$d simbolių ir raidžių bei skaičių derinį.</item> </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">El. pašto paskyros užregistruoti nepavyko</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Šiuo el. pašto adresu jau užregistruota paskyra.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Paliesdami „%1$s“ nurodote, kad sutinkate su %2$s ir %3$s.</string>
@@ -39,8 +34,7 @@
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Privatumo politika</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Jūs jau turite paskyrą</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Sveiki sugrįžę!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Jau panaudojote %1$s.
-Jei norite tęsti, prisijunkite per „%2$s“.</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Jau panaudojote %1$s.Jei norite tęsti, prisijunkite per „%2$s“.</string>
     <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Jūs jau prisijungėte naudodami %1$s. Įveskite tos paskyros slaptažodį.</string>
     <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Prisijungiama…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Kyla problemų prisijungiant?</string>
@@ -59,7 +53,7 @@ Jei norite tęsti, prisijunkite per „%2$s“.</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Siųsti kodą iš naujo po 0:%02d</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Patvirtinti telefono numerį</string>
     <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Patvirtinama…</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Gaunama SMS...</string>
+    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Gaunama SMS…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Klaidingas kodas. Bandykite dar kartą.</string>
     <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">Gerai</string>
     <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Šis telefono numeris panaudotas per daug kartų</string>

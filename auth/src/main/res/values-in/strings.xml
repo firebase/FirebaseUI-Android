@@ -24,10 +24,7 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">Nama depan &amp; belakang</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Simpan</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Mendaftar…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item>
-        <item quantity="other">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item>
-    </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item> <item quantity="other">Sandi tidak cukup kuat. Gunakan minimal %1$d karakter dan merupakan kombinasi huruf dan angka</item> </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Pendaftaran akun email tidak berhasil</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Sudah ada akun dengan alamat email tersebut.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Dengan menge-tap %1$s Anda menyatakan setuju dengan %2$s dan %3$s.</string>
@@ -37,19 +34,16 @@
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Kebijakan Privasi</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Anda sudah memiliki akun</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Selamat datang kembali!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Anda telah menggunakan %1$s.
-        Login dengan %2$s untuk melanjutkan.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Anda telah menggunakan %1$s
-        untuk login. Masukkan sandi untuk akun tersebut.</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Login...</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Anda telah menggunakan %1$s. Login dengan %2$s untuk melanjutkan.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Anda telah menggunakan %1$s untuk login. Masukkan sandi untuk akun tersebut.</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Login…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Terjadi masalah saat login?</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Pulihkan sandi</string>
     <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Periksa email Anda</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Dapatkan petunjuk yang dikirimkan ke email ini yang menjelaskan cara
-        menyetel ulang sandi Anda.</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Dapatkan petunjuk yang dikirimkan ke email ini yang menjelaskan cara menyetel ulang sandi Anda.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">Kirim</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Ikuti petunjuk yang dikirimkan ke %1$s untuk memulihkan sandi Anda.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Mengirim...</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Mengirim…</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Alamat email tidak cocok dengan akun yang ada</string>
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">Logo aplikasi</string>
     <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Login sebagai %1$s</string>

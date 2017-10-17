@@ -24,10 +24,7 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">For- og efternavn</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Gem</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Tilmelder…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
-        <item quantity="one">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item>
-        <item quantity="other">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item>
-    </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item> <item quantity="other">Adgangskoden er ikke stærk nok. Brug mindst %1$d tegn og en blanding af bogstaver og tal</item> </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Registrering af mailkonto mislykkedes</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Der findes allerede en konto med den mailadresse.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Ved at trykke på %1$s accepterer du %2$s og %3$s.</string>
@@ -37,16 +34,13 @@
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Privatlivspolitik</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Du har allerede en konto</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Velkommen tilbage!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har allerede brugt %1$s.
-        Log ind med %2$s for at fortsætte.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har allerede brugt %1$s
-        til at logge ind. Angiv din adgangskode for den pågældende konto.</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Du har allerede brugt %1$s. Log ind med %2$s for at fortsætte.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Du har allerede brugt %1$s til at logge ind. Angiv din adgangskode for den pågældende konto.</string>
     <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Logger ind…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Har du problemer med at logge ind?</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Gendan adgangskode</string>
     <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Tjek din mail.</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Få en vejledning sendt til denne mail om, hvordan du
-        nulstiller din adgangskode.</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Få en vejledning sendt til denne mail om, hvordan du nulstiller din adgangskode.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">Send</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Følg vejledningen, der blev sendt til %1$s, for at gendanne din adgangskode.</string>
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Sender…</string>
@@ -73,5 +67,5 @@
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">Send koden igen</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Bekræft telefonnummer</string>
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Fortsæt</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Når du trykker på \"%1$s\", sendes der en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Når du trykker på “%1$s”, sendes der en sms. Der opkræves muligvis gebyrer for beskeder og data.</string>
 </resources>
