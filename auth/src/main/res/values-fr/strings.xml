@@ -24,7 +24,10 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">Nom et prénom</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Enregistrer</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Inscription…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractère et une combinaison de chiffres et de lettres.</item> <item quantity="other">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractères et une combinaison de chiffres et de lettres.</item> </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractère et une combinaison de chiffres et de lettres.</item>
+        <item quantity="other">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractères et une combinaison de chiffres et de lettres.</item>
+    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Échec de la création du compte avec une adresse e-mail</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Il existe déjà un compte associé à cette adresse e-mail.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">En appuyant sur %1$s, vous acceptez les %2$s et les %3$s.</string>
@@ -67,5 +70,5 @@
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">Renvoyer le code</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Valider le numéro de téléphone</string>
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Continuer</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">En appuyant sur “%1$s”, vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">En appuyant sur \"%1$s\", vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
 </resources>

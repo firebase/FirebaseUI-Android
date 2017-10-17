@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading...</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">An error has occurred.</string>
     <string name="fui_idp_name_google">Google</string>
@@ -24,7 +24,10 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">First name &amp; surname</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Save</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Signing up…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item> <item quantity="other">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item> </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">Password not strong enough. Use at least %1$d character and a mix of letters and numbers</item>
+        <item quantity="other">Password not strong enough. Use at least %1$d characters and a mix of letters and numbers</item>
+    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Email account registration unsuccessful</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">An account already exists with that email address.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">By tapping %1$s you are indicating that you agree to the %2$s and the %3$s.</string>
@@ -34,13 +37,16 @@
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Privacy Policy</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">You already have an account</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Welcome back!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">You\'ve already used %1$s. Sign in with %2$s to continue.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">You\'ve already used %1$s to sign in. Enter your password for that account.</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">You\'ve already used %1$s.
+        Sign in with %2$s to continue.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">You\'ve already used %1$s
+        to sign in. Enter your password for that account.</string>
     <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Signing in…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Trouble signing in?</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Recover password</string>
     <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Check your email</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Receive instructions to this email that explain how to reset your password.</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Receive instructions to this email that explain how to
+        reset your password.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">Send</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Follow the instructions sent to %1$s to recover your password.</string>
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Sending…</string>

@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Memuatkan…</string>
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Memuatkan...</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Log masuk</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">Ralat telah berlaku.</string>
     <string name="fui_idp_name_google">Google</string>
@@ -24,7 +24,10 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">Nama pertama &amp; keluarga</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Simpan</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Mendaftar…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item> <item quantity="other">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item> </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item>
+        <item quantity="other">Kata laluan tidak kukuh. Gunakan sekuang-kurangnya %1$d aksara dan gabungkan huruf dengan nombor</item>
+    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Pendaftaran akaun e-mel tidak berjaya</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Akaun dengan alamat e-mel tersebut sudah wujud.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Dengan mengetik %1$s, anda menyatakan bahawa anda bersetuju dengan %2$s dan %3$s.</string>
@@ -36,14 +39,14 @@
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Selamat kembali!</string>
     <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Anda sudah menggunakan %1$s. Log masuk dengan %2$s untuk teruskan.</string>
     <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Anda sudah menggunakan %1$s untuk log masuk. Masukkan kata laluan anda untuk akaun tersebut.</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Log masuk…</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Log masuk...</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Menghadapi masalah log masuk?</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Pulihkan kata laluan</string>
     <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Semak e-mel anda</string>
     <string name="fui_password_recovery_body" translation_description="Password recovery message body">Dapatkan arahan pada e-mel ini untuk mengetahui cara menetapkan semula kata laluan anda.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">Hantar</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Ikut arahan yang dihantar ke %1$s untuk memulihkan kata laluan anda.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Menghantar…</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Menghantar...</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Alamat e-mel tersebut tidak sepadan dengan akaun sedia ada</string>
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">Logo apl</string>
     <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Dilog masuk sebagai %1$s</string>

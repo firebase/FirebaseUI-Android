@@ -24,7 +24,10 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">姓名</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">保存</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">正在注册…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> <item quantity="other">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item> </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item>
+        <item quantity="other">密码的安全系数不够高。请使用至少 %1$d 个字符，并混合使用字母和数字</item>
+    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">未能使用电子邮件地址注册帐号</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">已存在一个使用该电子邮件地址的帐号。</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">点按“%1$s”即表示您同意 %2$s 和 %3$s。</string>

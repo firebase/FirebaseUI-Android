@@ -24,7 +24,10 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">Etu- ja sukunimi</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Tallenna</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Rekisteröityminen käynnissä…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item> <item quantity="other">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item> </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item>
+        <item quantity="other">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item>
+    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Sähköpostitilin rekisteröinti epäonnistui.</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Kyseisellä sähköpostiosoitteella on jo rekisteröity tili.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Valitsemalla %1$s vahvistat, että hyväksyt %2$s ja %3$s.</string>
@@ -34,13 +37,16 @@
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">tietosuojakäytännön</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Sinulla on jo tili.</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Tervetuloa takaisin!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Olet jo käyttänyt osoitetta %1$s. Jatka kirjautumalla palvelun %2$s kautta.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Olet jo käyttänyt osoitetta %1$s kirjautumiseen. Anna kyseisen tilin salasana.</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Olet jo käyttänyt osoitetta %1$s.
+        Jatka kirjautumalla palvelun %2$s kautta.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Olet jo käyttänyt osoitetta %1$s
+        kirjautumiseen. Anna kyseisen tilin salasana.</string>
     <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Kirjaudutaan sisään…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Eikö kirjautuminen onnistu?</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Palauta salasana</string>
     <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Tarkista sähköpostisi</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Tilaa tähän sähköpostiin ohjeet, joissa neuvotaan, miten voit nollata salasanan.</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Tilaa tähän sähköpostiin ohjeet, joissa neuvotaan, miten
+        voit nollata salasanan.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">Lähetä</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Palauta salasana noudattamalla osoitteeseen %1$s lähetettyjä ohjeita.</string>
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Lähetetään…</string>

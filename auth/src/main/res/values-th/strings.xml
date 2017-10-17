@@ -24,7 +24,10 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">ชื่อและนามสกุล</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">บันทึก</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">กำลังลงชื่อสมัครใช้…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item> <item quantity="other">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item> </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item>
+        <item quantity="other">รหัสผ่านไม่รัดกุมมากพอ ใช้อักขระอย่างน้อย %1$d ตัวและต้องเป็นตัวอักษรปนกับตัวเลข</item>
+    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">การลงทะเบียนบัญชีอีเมลไม่สำเร็จ</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">มีบัญชีที่ใช้ที่อยู่อีเมลนี้อยู่แล้ว</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">การแตะ%1$sแสดงว่าคุณยอมรับ%2$sและ%3$s</string>
@@ -67,5 +70,5 @@
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">ส่งรหัสอีกครั้ง</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">ยืนยันหมายเลขโทรศัพท์</string>
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">ต่อไป</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">เมื่อคุณแตะ “%1$s” ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">เมื่อคุณแตะ \"%1$s\" ระบบจะส่ง SMS ให้คุณ อาจมีค่าบริการรับส่งข้อความและค่าบริการอินเทอร์เน็ต</string>
 </resources>

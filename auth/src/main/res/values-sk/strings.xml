@@ -23,8 +23,13 @@
     <string name="fui_title_register_email" translation_description="Title for signup form">Registrovať sa</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">Krstné meno a priezvisko</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Uložiť</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Prebieha registrácia…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Heslo nie je dostatočne silné. Použite aspoň %1$d znak a kombináciu písmen a čísel</item> <item quantity="few">Heslo nie je dostatočne silné. Použite aspoň %1$d znaky a kombináciu písmen a čísel</item> <item quantity="many">Heslo nie je dostatočne silné. Použite aspoň %1$d znaku a kombináciu písmen a čísel</item> <item quantity="other">Heslo nie je dostatočne silné. Použite aspoň %1$d znakov a kombináciu písmen a čísel</item> </plurals>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Prebieha registrácia...</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">Heslo nie je dostatočne silné. Použite aspoň %1$d znak a kombináciu písmen a čísel</item>
+        <item quantity="few">Heslo nie je dostatočne silné. Použite aspoň %1$d znaky a kombináciu písmen a čísel</item>
+        <item quantity="many">Heslo nie je dostatočne silné. Použite aspoň %1$d znaku a kombináciu písmen a čísel</item>
+        <item quantity="other">Heslo nie je dostatočne silné. Použite aspoň %1$d znakov a kombináciu písmen a čísel</item>
+    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Registrácia e-mailového účtu nebola úspešná</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Už existuje účet s touto e-mailovou adresou.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Klepnutím na tlačidlo %1$s vyjadrujete súhlas so zmluvnými podmienkami %2$s a pravidlami ochrany súkromia %3$s.</string>
@@ -34,13 +39,16 @@
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Pravidlá ochrany súkromia</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Už máte účet</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Vitajte späť!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Už ste použili adresu %1$s. Ak chcete pokračovať, prihláste sa pomocou účtu %2$s.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Na prihlásenie ste už použili adresu %1$s. Zadajte svoje heslo pre daný účet.</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Už ste použili adresu %1$s.
+        Ak chcete pokračovať, prihláste sa pomocou účtu %2$s.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Na prihlásenie ste už použili adresu %1$s.
+        Zadajte svoje heslo pre daný účet.</string>
     <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Prihlasovanie…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Máte problémy s prihlásením?</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Obnovenie hesla</string>
     <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Skontrolujte si e-mail</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Nechajte si na tento e-mail poslať pokyny s vysvetlením, ako obnoviť svoje heslo.</string>
+    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Nechajte si na tento e-mail poslať pokyny s vysvetlením, ako
+        obnoviť svoje heslo.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">Odoslať</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Obnovte si heslo podľa pokynov odoslaných na adresu %1$s.</string>
     <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Odosiela sa…</string>
@@ -52,7 +60,7 @@
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Zadajte 6-ciferný kód, ktorý sme odoslali na adresu</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Kód sa znova odošle o 0:%02d</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Overiť telefónne číslo</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Overuje sa…</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Overuje sa...</string>
     <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Načítava sa SMS…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Nesprávny kód. Skúste to znova.</string>
     <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>

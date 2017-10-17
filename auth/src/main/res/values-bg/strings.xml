@@ -24,7 +24,10 @@
     <string name="fui_name_hint" translation_description="Hint for last name input field">Име и фамилия</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">Запазване</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Създава се регистрация…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Паролата не е достатъчно надеждна. Използвайте поне %1$d знак и комбинация от букви и цифри</item> <item quantity="other">Паролата не е достатъчно надеждна. Използвайте поне %1$d знака и комбинация от букви и цифри</item> </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">Паролата не е достатъчно надеждна. Използвайте поне %1$d знак и комбинация от букви и цифри</item>
+        <item quantity="other">Паролата не е достатъчно надеждна. Използвайте поне %1$d знака и комбинация от букви и цифри</item>
+    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Регистрацията с имейл адрес не бе успешна</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Вече съществува профил с този имейл адрес.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Докосвайки %1$s, приемате %2$s и %3$s.</string>

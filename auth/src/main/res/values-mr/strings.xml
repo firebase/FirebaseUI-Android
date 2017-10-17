@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">लोड करत आहे…</string>
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">लोड करत आहे...</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">साइन इन करा</string>
     <string name="fui_general_error" translation_description="Toast text flashing general error">एक एरर आला आहे.</string>
     <string name="fui_idp_name_google">Google</string>
@@ -19,12 +19,15 @@
     <string name="fui_required_field" translation_description="Inline error for required field">तुम्ही हे रिक्त सोडू शकत नाही.</string>
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">तो ईमेल अॅड्रेस चुकीचा आहे</string>
     <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">सुरू ठेवण्यासाठी तुमचा ईमेल अॅड्रेस टाका</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">सध्याच्या खात्यांसाठी तपासत आहे…</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">सध्याच्या खात्यांसाठी तपासत आहे...</string>
     <string name="fui_title_register_email" translation_description="Title for signup form">साइन अप करा</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">नाव आणि आडनाव</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">सेव्ह करा</string>
     <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">साइन अप करत आहे…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक व अक्षराचे मिश्रण वापरा</item> <item quantity="other">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक अक्षरांचे मिश्रण वापरा</item> </plurals>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक व अक्षराचे मिश्रण वापरा</item>
+        <item quantity="other">पासवर्ड हवा तितका सक्षम नाही. कमीत कमी %1$d वर्ण आणि अंक अक्षरांचे मिश्रण वापरा</item>
+    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">ईमेल खात्याची नोंदणी अयशस्वी झाली</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">त्या ईमेल अॅड्रेसवर आधीपासूनच एक खाते नोंदवलेले आहे.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">%1$s वर टॅप केल्याने तुम्ही %2$s आणि %3$sशी सहमती असल्याचे दाखवत आहात.</string>
@@ -36,14 +39,14 @@
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">पुन्हा एकदा स्वागत आहे!</string>
     <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">तुम्ही %1$s आधीच वापरला आहे. सुरू ठेवण्यासाठी %2$s ने साइन इन करा.</string>
     <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">तुम्ही %1$s आधीच वापरला आहे. साइन इन करण्यासाठी तुमचा त्या खात्याचा पासवर्ड टाका.</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">साइन इन करत आहे…</string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">साइन इन करत आहे...</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">साइन इन करताना समस्या आली?</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">पासवर्ड पुन्हा मिळवा</string>
     <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">तुमचा ईमेल तपासा</string>
     <string name="fui_password_recovery_body" translation_description="Password recovery message body">तुमचा पासवर्ड रीसेट कसा करावा यासंबंधित या ईमेलवर पाठवलेल्या सूचना मिळवा.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">पाठवा</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">तुमचा पासवर्ड परत मिळवण्यासाठी %1$sवर पाठवलेल्या सूचनांचे पालन करा.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">पाठवत आहे…</string>
+    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">पाठवत आहे...</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">तो ईमेल अॅड्रेस सध्याच्या खात्याशी जुळत नाही</string>
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">अ‍ॅप लोगो</string>
     <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">%1$s म्हणून साइन इन केले</string>

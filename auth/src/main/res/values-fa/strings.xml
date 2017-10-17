@@ -19,12 +19,15 @@
     <string name="fui_required_field" translation_description="Inline error for required field">اینجا نباید خالی باشد.</string>
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">آن آدرس رایانامه درست نیست</string>
     <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">برای ادامه، آدرس رایانامه‌تان را وارد کنید</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">در حال بررسی حساب‌های موجود…</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">در حال بررسی حساب‌های موجود...</string>
     <string name="fui_title_register_email" translation_description="Title for signup form">ثبت‌نام</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">نام و نام خانوادگی</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">ذخیره</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">در حال ثبت‌نام…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item> <item quantity="other">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item> </plurals>
+    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">در حال ثبت‌نام...</string>
+    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password">
+        <item quantity="one">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item>
+        <item quantity="other">گذرواژه به اندازه کافی قوی نیست. حداقل باید از %1$d نویسه و ترکیبی از حروف و اعداد استفاده شود</item>
+    </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">ثبت حساب رایانامه ناموفق بود</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">حسابی با این آدرس رایانامه از قبل وجود دارد.</string>
     <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">با ضربه زدن روی %1$s موافقتتان را با %2$s و %3$s اعلام می‌کنید.</string>
@@ -34,8 +37,10 @@
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">«خط‌مشی حریم خصوصی»</string>
     <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">از قبل حسابی دارید</string>
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">باز هم خوش آمدید!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">قبلاً از %1$s استفاده کرده‌اید. برای ادامه، با %2$s وارد سیستم شوید.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">قبلاً از %1$s برای ورود به سیستم استفاده کرده‌اید. گذرواژه این حساب را وارد کنید.</string>
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">قبلاً از %1$s استفاده کرده‌اید.
+      برای ادامه، با %2$s وارد سیستم شوید.</string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">قبلاً از %1$s برای ورود به سیستم
+      استفاده کرده‌اید. گذرواژه این حساب را وارد کنید.</string>
     <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">درحال ورود به سیستم…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">مشکل در ورود به سیستم؟</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">بازیابی گذرواژه</string>
@@ -52,8 +57,8 @@
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">وارد کردن کد ۶ رقمی ارسال‌شده به</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">کد پس از %02d:0 مجدداً ارسال می‌شود</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">تأیید شماره تلفن</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">در حال تأیید…</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">در حال بازیابی پیامک…</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">در حال تأیید...</string>
+    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">در حال بازیابی پیامک...</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">کد اشتباه است. دوباره امتحان کنید.</string>
     <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">تأیید</string>
     <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">از این شماره تلفن به دفعات زیاد استفاده شده است</string>
@@ -63,7 +68,7 @@
     <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">انجام شد</string>
     <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">تأیید شد!</string>
     <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">کد ارسال شد!</string>
-    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">در حال ارسال مجدد…</string>
+    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">در حال ارسال مجدد...</string>
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">ارسال مجدد کد</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">تأیید شماره تلفن</string>
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">ادامه</string>
