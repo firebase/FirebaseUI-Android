@@ -10,6 +10,7 @@ GOOD_ELLIPSIS = "…"
 BAD_ELLIPSIS_SPACING = " …"
 GOOD_ELLIPSIS_SPACING = "…"
 
+BAD_SINGLE_QUOTE = "\\\'%1$s\\\'"
 BAD_DOUBLE_QUOTE = "\\\"%1$s\\\""
 GOOD_DOUBLE_QUOTE = "“%1$s”"
 
@@ -20,7 +21,8 @@ class FixTypographyScript(BaseStringScript):
         lineString = ''.join(oldLine) \
             .replace(BAD_ELLIPSIS, GOOD_ELLIPSIS) \
             .replace(BAD_ELLIPSIS_SPACING, GOOD_ELLIPSIS_SPACING) \
-            .replace(BAD_DOUBLE_QUOTE, GOOD_DOUBLE_QUOTE)
+            .replace(BAD_DOUBLE_QUOTE, GOOD_DOUBLE_QUOTE) \
+            .replace(BAD_SINGLE_QUOTE, GOOD_DOUBLE_QUOTE)
         newLine = lineString.split("(?!^)")
 
         minimizedWhitespaceLine = []
