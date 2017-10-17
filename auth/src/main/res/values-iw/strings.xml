@@ -67,5 +67,5 @@
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">שלח קוד חדש</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">אמת את מספר הטלפון</string>
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">המשך</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">הקשה על \'%1$s\' תגרום לשליחה של הודעת SMS. ייתכנו חיובים על ההודעה ועל נתונים.</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">הקשה על “%1$s” תגרום לשליחה של הודעת SMS. ייתכנו חיובים על ההודעה ועל נתונים.</string>
 </resources>
