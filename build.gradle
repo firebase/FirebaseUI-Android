@@ -127,7 +127,7 @@ allprojects { project ->
                         }
 
                         // Add all that are 'compile'
-                        configurations.compile.allDependencies.each {
+                        configurations.api.allDependencies.each {
                             def dependencyNode = dependenciesNode.appendNode('dependency')
                             dependencyNode.appendNode('groupId', it.group)
 
