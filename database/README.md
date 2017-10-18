@@ -228,8 +228,6 @@ FirebaseListAdapter<Chat> adapter = new FirebaseListAdapter<Chat>(options) {
 If your data is [properly indexed][indexed-data], change your adapter initialization
 to use `setIndexedQuery`:
 
-For a `RecyclerView`, use `FirebaseIndexRecyclerAdapter` instead of `FirebaseRecyclerAdapter`:
-
 ```java
 // keyQuery - the Firebase location containing the list of keys to be found in dataRef
 // dataRef - the Firebase location to watch for data changes. Each key found at 
