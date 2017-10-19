@@ -399,7 +399,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
     }
 
     private void dismissLoadingDialog() {
-        if (mProgressDialog != null) {
+        if (mProgressDialog != null && !isFinishing()) {
             mProgressDialog.dismissAllowingStateLoss();
             mProgressDialog = null;
         }

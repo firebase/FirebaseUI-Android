@@ -147,6 +147,8 @@ public class AuthUI {
     private AuthUI(FirebaseApp app) {
         mApp = app;
         mAuth = FirebaseAuth.getInstance(mApp);
+
+        mAuth.useAppLanguage();
     }
 
     /**

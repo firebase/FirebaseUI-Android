@@ -3,12 +3,6 @@
     <color name="colorPrimaryDark">#0288D1</color>
     <color name="colorAccent">#FFA000</color>
 
-    <!-- Text -->
-    <color name="text_default_material_dark_primary">#ffffffff</color>
-    <color name="text_default_material_light_primary">#de000000</color>
-    <color name="text_default_material_dark_secondary">#b3ffffff</color>
-    <color name="text_default_material_light_secondary">#8a000000</color>
-
     <color name="material_deep_purple_50">#EDE7F6</color>
     <color name="material_deep_purple_500">#673AB7</color>
     <color name="material_deep_purple_700">#512DA8</color>
@@ -20,15 +14,9 @@
 
     <color name="material_gray_300">#E0E0E0</color>
     <color name="material_gray_500">#9e9e9e</color>
-    <color name="material_gray_850">#ff303030</color>
-    <color name="material_gray_900">#ff212121</color>
 
     <color name="material_lime_a700">#AEEA00</color>
-
-    <color name="material_purple_50">#F3E5F5</color>
     <color name="material_purple_a700">#AA00FF</color>
-
     <color name="material_red_a200">#FF5252</color>
 
-    <color name="material_deep_teal_a200">#ff80cbc4</color>
 </resources>

@@ -23,6 +23,7 @@ import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -195,6 +196,10 @@ public class AuthUiActivity extends AppCompatActivity {
         if (isGoogleMisconfigured() || isFacebookMisconfigured() || isTwitterMisconfigured()) {
             showSnackbar(R.string.configuration_required);
         }
+
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            mUseDarkTheme.setChecked(true);
+        }
     }
 
     @OnClick(R.id.sign_in)
@@ -285,22 +290,26 @@ public class AuthUiActivity extends AppCompatActivity {
         mFacebookScopePhotos.setEnabled(enabled);
     }
 
+    @OnClick({R.id.default_theme, R.id.purple_theme, R.id.green_theme, R.id.dark_theme})
+    public void toggleDarkTheme() {
+        int mode = mUseDarkTheme.isChecked() ?
+                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_AUTO;
+        AppCompatDelegate.setDefaultNightMode(mode);
+        getDelegate().setLocalNightMode(mode);
+    }
+
     @MainThread
     @StyleRes
     private int getSelectedTheme() {
-        if (mUseDefaultTheme.isChecked()) {
-            return AuthUI.getDefaultTheme();
+        if (mUseGreenTheme.isChecked()) {
+            return R.style.GreenTheme;
         }
 
         if (mUsePurpleTheme.isChecked()) {
             return R.style.PurpleTheme;
         }
 
-        if (mUseDarkTheme.isChecked()) {
-            return R.style.DarkTheme;
-        }
-
-        return R.style.GreenTheme;
+        return AuthUI.getDefaultTheme();
     }
 
     @MainThread
