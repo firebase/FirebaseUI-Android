@@ -35,7 +35,7 @@ dependencies {
 }
 
 /**
- * Returns list of tasks names that prepareArtfacts should depend on.
+ * Returns list of tasks names that prepareArtifacts should depend on.
  */
 def prepareArtifactsTasks() {
     return submodules.collect { name ->

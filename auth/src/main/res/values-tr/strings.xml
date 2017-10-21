@@ -16,7 +16,7 @@
     <string name="fui_email_hint" translation_description="Hint in email input field">E-posta</string>
     <string name="fui_phone_hint" translation_description="Hint for phone input field">Telefon Numarası</string>
     <string name="fui_password_hint" translation_description="Hint for password input field">Şifre</string>
-    <string name="fui_required_field" translation_description="Inline error for required field">Bunu boş bırakamazsınız.</string>
+    <string name="fui_required_field" translation_description="Inline error for required field">Bu alanı boş bırakamazsınız.</string>
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">E-posta adresi doğru değil</string>
     <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Devam etmek için e-posta adresinizi girin</string>
     <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Mevcut hesaplar kontrol ediliyor…</string>

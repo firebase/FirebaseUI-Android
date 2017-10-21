@@ -19,7 +19,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.database.ChatHolder;
-import com.firebase.uidemo.database.realtime.Chat;
 import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
