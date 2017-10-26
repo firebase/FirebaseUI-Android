@@ -66,7 +66,7 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return mSnapshots.size();
+        return mSnapshots.isListening(this) ? mSnapshots.size() : 0;
     }
 
     @Override

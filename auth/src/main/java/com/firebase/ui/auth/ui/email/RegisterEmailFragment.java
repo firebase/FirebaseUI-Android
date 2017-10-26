@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,12 +24,12 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.util.accountlink.ProfileMerger;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.ui.email.fieldvalidators.RequiredFieldValidator;
+import com.firebase.ui.auth.util.accountlink.ProfileMerger;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -89,7 +88,6 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
     }
 
-    @SuppressLint("NewApi") // TODO remove once lint understands Build.VERSION_CODES.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,

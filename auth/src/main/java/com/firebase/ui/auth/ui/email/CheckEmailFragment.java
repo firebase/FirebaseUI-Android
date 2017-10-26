@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -96,7 +95,6 @@ public class CheckEmailFragment extends FragmentBase implements
         return fragment;
     }
 
-    @SuppressLint("NewApi") // TODO remove once lint understands Build.VERSION_CODES.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
