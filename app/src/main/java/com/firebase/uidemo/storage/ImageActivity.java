@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.firebase.uidemo.BuildConfig;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.util.SignInResultNotifier;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -108,9 +109,10 @@ public class ImageActivity extends AppCompatActivity implements EasyPermissions.
                 .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        //noinspection LogConditional
-                        Log.d(TAG, "uploadPhoto:onSuccess:" +
-                                taskSnapshot.getMetadata().getReference().getPath());
+                        if (BuildConfig.DEBUG) {
+                            Log.d(TAG, "uploadPhoto:onSuccess:" +
+                                    taskSnapshot.getMetadata().getReference().getPath());
+                        }
                         Toast.makeText(ImageActivity.this, "Image uploaded",
                                        Toast.LENGTH_SHORT).show();
 

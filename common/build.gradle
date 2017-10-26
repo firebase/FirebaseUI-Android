@@ -3,7 +3,6 @@ apply from: '../library/quality/quality.gradle'
 
 android {
     compileSdkVersion compileSdk
-    buildToolsVersion buildTools
 
     defaultConfig {
         minSdkVersion minSdk
@@ -11,23 +10,8 @@ android {
         versionCode 1
         versionName "1.0"
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-        }
-    }
 }
 
 dependencies {
-    // Common dependencies across database modules. Each module still has to provide an
-    // Architecture Components annotation processor and optionally, test dependencies.
-
-    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
-    // Needed to override play services
-    compile "com.android.support:support-v4:$supportLibraryVersion"
-
-    compile "android.arch.lifecycle:runtime:$architectureVersion"
-    compile "android.arch.lifecycle:extensions:$architectureVersion"
+    implementation "com.android.support:support-annotations:$supportLibraryVersion"
 }
