@@ -10,5 +10,5 @@ project.ext {
 
     firebaseVersion = '11.4.2'
     supportLibraryVersion = '26.1.0'
-    architectureVersion = '1.0.0-beta2'
+    architectureVersion = '1.0.0-rc1'
 }
