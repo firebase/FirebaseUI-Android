@@ -366,7 +366,7 @@ their existing account so as not to forget why they came to your app in the firs
 great for users, but problematic for us developers: your user now has two different ids that match
 the same person! The above example isn't just limited to anonymous accounts; **anytime a user has
 two existing accounts, a user collision will occur and you will have to manually merge those
-accounts together**. To help you do this, FirebaseUI provides a service to guides you through to
+accounts together**. To help you do this, FirebaseUI provides a service to guide you through to
 process of loading and the transferring the user's data.
 
 The following is an example of how you would move data from the user's previous uid to their new one
