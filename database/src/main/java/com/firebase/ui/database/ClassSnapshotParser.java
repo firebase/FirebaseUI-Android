@@ -1,6 +1,7 @@
 package com.firebase.ui.database;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.firebase.ui.common.Preconditions;
 import com.google.firebase.database.DataSnapshot;
@@ -18,9 +19,13 @@ public class ClassSnapshotParser<T> implements SnapshotParser<T> {
         mClass = Preconditions.checkNotNull(clazz);
     }
 
-    @NonNull
+    @Nullable
     @Override
     public T parseSnapshot(@NonNull DataSnapshot snapshot) {
+        // In FirebaseUI controlled usages, we can guarantee that our getValue calls will be nonnull
+        // because we check for nullity with ValueEventListeners and use ChildEventListeners.
+        // However, since this API is public, devs could use it for any snapshot including null
+        // ones. Hence the nullability discrepancy.
         return snapshot.getValue(mClass);
     }
 }
