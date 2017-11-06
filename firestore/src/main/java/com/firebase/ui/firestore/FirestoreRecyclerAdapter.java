@@ -19,7 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
  * @param <VH> {@link RecyclerView.ViewHolder} class.
  */
 public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
+        extends RecyclerView.Adapter<VH> implements FirestoreAdapter<T> {
 
     private static final String TAG = "FirestoreRecycler";
 
