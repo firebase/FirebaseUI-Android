@@ -14,4 +14,6 @@ android {
 
 dependencies {
     implementation "com.android.support:support-annotations:$supportLibraryVersion"
+    implementation "android.arch.lifecycle:extensions:$architectureVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
 }
