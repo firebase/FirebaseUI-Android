@@ -74,8 +74,8 @@ public class FirestoreArrayTest {
         private static final String TAG = "FirestoreTest_Listener";
 
         @Override
-        public void onChildChanged(ChangeEventType type,
-                                   DocumentSnapshot snapshot,
+        public void onChildChanged(@NonNull ChangeEventType type,
+                                   @NonNull DocumentSnapshot snapshot,
                                    int newIndex,
                                    int oldIndex) {
             Log.d(TAG, "onChildChanged: " + type + " at index " + newIndex);
@@ -87,7 +87,7 @@ public class FirestoreArrayTest {
         }
 
         @Override
-        public void onError(FirebaseFirestoreException e) {
+        public void onError(@NonNull FirebaseFirestoreException e) {
             Log.w(TAG, "onError", e);
         }
     }
@@ -188,9 +188,7 @@ public class FirestoreArrayTest {
             @Override
             public Boolean call() {
                 if (mArray.size() == (INITIAL_SIZE + 1)) {
-                    if (mArray.get(mArray.size() - 1).field == value) {
-                        return true;
-                    }
+                    return mArray.get(mArray.size() - 1).field == value;
                 }
 
                 return false;
@@ -215,9 +213,7 @@ public class FirestoreArrayTest {
             @Override
             public Boolean call() {
                 if (mArray.size() == (INITIAL_SIZE + 1)) {
-                    if (mArray.get(0).field == value) {
-                        return true;
-                    }
+                    return mArray.get(0).field == value;
                 }
 
                 return false;

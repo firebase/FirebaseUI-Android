@@ -3,6 +3,7 @@ package com.firebase.ui.database;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -33,7 +34,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
      * {@link FirebaseRecyclerOptions} for configuration options.
      */
-    public FirebaseRecyclerAdapter(FirebaseRecyclerOptions<T> options) {
+    public FirebaseRecyclerAdapter(@NonNull FirebaseRecyclerOptions<T> options) {
         mSnapshots = options.getSnapshots();
 
         if (options.getOwner() != null) {
@@ -62,8 +63,8 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    public void onChildChanged(ChangeEventType type,
-                               DataSnapshot snapshot,
+    public void onChildChanged(@NonNull ChangeEventType type,
+                               @NonNull DataSnapshot snapshot,
                                int newIndex,
                                int oldIndex) {
         switch (type) {
@@ -89,20 +90,23 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    public void onError(DatabaseError error) {
+    public void onError(@NonNull DatabaseError error) {
         Log.w(TAG, error.toException());
     }
 
+    @NonNull
     @Override
     public ObservableSnapshotArray<T> getSnapshots() {
         return mSnapshots;
     }
 
+    @NonNull
     @Override
     public T getItem(int position) {
         return mSnapshots.get(position);
     }
 
+    @NonNull
     @Override
     public DatabaseReference getRef(int position) {
         return mSnapshots.getSnapshot(position).getRef();
@@ -114,7 +118,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(VH holder, int position) {
+    public void onBindViewHolder(@NonNull VH holder, int position) {
         onBindViewHolder(holder, position, getItem(position));
     }
 
@@ -122,5 +126,5 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * @param model the model object containing the data that should be used to populate the view.
      * @see #onBindViewHolder(RecyclerView.ViewHolder, int)
      */
-    protected abstract void onBindViewHolder(VH holder, int position, T model);
+    protected abstract void onBindViewHolder(@NonNull VH holder, int position, @NonNull T model);
 }

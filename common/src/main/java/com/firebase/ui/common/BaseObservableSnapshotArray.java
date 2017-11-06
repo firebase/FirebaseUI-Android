@@ -41,6 +41,7 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
     protected abstract List<S> getSnapshots();
 
     @Override
+    @NonNull
     public T get(int index) {
         return mCachingParser.parseSnapshot(getSnapshot(index));
     }
@@ -50,6 +51,15 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
         return getSnapshots().size();
     }
 
+    /**
+     * Returns the snapshot at the specified position in this list.
+     *
+     * @param index index of the snapshot to return
+     * @return the snapshot at the specified position in this list
+     * @throws IndexOutOfBoundsException if the index is out of range (<tt>index &lt; 0 || index
+     *                                   &gt;= size()</tt>)
+     */
+    @NonNull
     public S getSnapshot(int index) {
         return getSnapshots().get(index);
     }
@@ -63,6 +73,7 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
      * If this is the first listener, {@link #onCreate()} will be called.
      */
     @CallSuper
+    @NonNull
     public L addChangeEventListener(@NonNull L listener) {
         Preconditions.checkNotNull(listener);
         boolean wasListening = isListening();

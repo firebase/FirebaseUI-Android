@@ -18,8 +18,9 @@ public class ClassSnapshotParser<T> implements SnapshotParser<T> {
         mClass = Preconditions.checkNotNull(clazz);
     }
 
+    @NonNull
     @Override
-    public T parseSnapshot(DataSnapshot snapshot) {
+    public T parseSnapshot(@NonNull DataSnapshot snapshot) {
         return snapshot.getValue(mClass);
     }
 }

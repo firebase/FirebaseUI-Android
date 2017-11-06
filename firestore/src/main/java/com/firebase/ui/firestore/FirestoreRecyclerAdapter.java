@@ -1,9 +1,9 @@
 package com.firebase.ui.firestore;
 
 import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
@@ -19,18 +19,17 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
  * @param <VH> {@link RecyclerView.ViewHolder} class.
  */
 public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH>
-        implements ChangeEventListener, LifecycleObserver {
+        extends RecyclerView.Adapter<VH> implements FirebaseAdapter<T> {
 
     private static final String TAG = "FirestoreRecycler";
 
-    private ObservableSnapshotArray<T> mSnapshots;
+    private final ObservableSnapshotArray<T> mSnapshots;
 
     /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See
-     * {@link FirestoreRecyclerOptions} for configuration options.
+     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
+     * FirestoreRecyclerOptions} for configuration options.
      */
-    public FirestoreRecyclerAdapter(FirestoreRecyclerOptions<T> options) {
+    public FirestoreRecyclerAdapter(@NonNull FirestoreRecyclerOptions<T> options) {
         mSnapshots = options.getSnapshots();
 
         if (options.getOwner() != null) {
@@ -38,6 +37,7 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         }
     }
 
+    @Override
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         if (!mSnapshots.isListening(this)) {
@@ -45,6 +45,7 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         }
     }
 
+    @Override
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
         mSnapshots.removeChangeEventListener(this);
@@ -56,10 +57,14 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         source.getLifecycle().removeObserver(this);
     }
 
+    @NonNull
+    @Override
     public ObservableSnapshotArray<T> getSnapshots() {
         return mSnapshots;
     }
 
+    @NonNull
+    @Override
     public T getItem(int position) {
         return mSnapshots.get(position);
     }
@@ -70,8 +75,10 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     }
 
     @Override
-    public void onChildChanged(ChangeEventType type, DocumentSnapshot snapshot,
-                               int newIndex, int oldIndex) {
+    public void onChildChanged(@NonNull ChangeEventType type,
+                               @NonNull DocumentSnapshot snapshot,
+                               int newIndex,
+                               int oldIndex) {
         switch (type) {
             case ADDED:
                 notifyItemInserted(newIndex);
@@ -95,12 +102,12 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     }
 
     @Override
-    public void onError(FirebaseFirestoreException e) {
+    public void onError(@NonNull FirebaseFirestoreException e) {
         Log.w(TAG, "onError", e);
     }
 
     @Override
-    public void onBindViewHolder(VH holder, int position) {
+    public void onBindViewHolder(@NonNull VH holder, int position) {
         onBindViewHolder(holder, position, getItem(position));
     }
 
@@ -108,5 +115,5 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
      * @param model the model object containing the data that should be used to populate the view.
      * @see #onBindViewHolder(RecyclerView.ViewHolder, int)
      */
-    protected abstract void onBindViewHolder(VH holder, int position, T model);
+    protected abstract void onBindViewHolder(@NonNull VH holder, int position, @NonNull T model);
 }

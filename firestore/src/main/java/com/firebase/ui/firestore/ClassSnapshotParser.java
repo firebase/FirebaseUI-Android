@@ -1,5 +1,7 @@
 package com.firebase.ui.firestore;
 
+import android.support.annotation.NonNull;
+
 import com.firebase.ui.common.Preconditions;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -11,12 +13,13 @@ public class ClassSnapshotParser<T> implements SnapshotParser<T> {
 
     private final Class<T> mModelClass;
 
-    public ClassSnapshotParser(Class<T> modelClass) {
+    public ClassSnapshotParser(@NonNull Class<T> modelClass) {
         mModelClass = Preconditions.checkNotNull(modelClass);
     }
 
+    @NonNull
     @Override
-    public T parseSnapshot(DocumentSnapshot snapshot) {
+    public T parseSnapshot(@NonNull DocumentSnapshot snapshot) {
         return snapshot.toObject(mModelClass);
     }
 

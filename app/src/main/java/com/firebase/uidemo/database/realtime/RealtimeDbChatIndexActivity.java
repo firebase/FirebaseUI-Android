@@ -1,5 +1,6 @@
 package com.firebase.uidemo.database.realtime;
 
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ public class RealtimeDbChatIndexActivity extends RealtimeDbChatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
+            protected void onBindViewHolder(@NonNull ChatHolder holder, int position, @NonNull Chat model) {
                 holder.bind(model);
             }
 
