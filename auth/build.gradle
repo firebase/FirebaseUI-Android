@@ -46,7 +46,7 @@ android {
 dependencies {
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:customtabs:$supportLibraryVersion"
-    compile "com.android.support.constraint:constraint-layout:architectureVersion"
+    compile "com.android.support.constraint:constraint-layout:$architectureVersion"
 
     compile "com.google.firebase:firebase-auth:$firebaseVersion"
     compile "com.google.android.gms:play-services-auth:$firebaseVersion"
