@@ -31,8 +31,8 @@ import java.util.List;
  */
 public class FirebaseArray<T> extends ObservableSnapshotArray<T>
         implements ChildEventListener, ValueEventListener {
-    private Query mQuery;
-    private List<DataSnapshot> mSnapshots = new ArrayList<>();
+    private final Query mQuery;
+    private final List<DataSnapshot> mSnapshots = new ArrayList<>();
 
     /**
      * Create a new FirebaseArray with a custom {@link SnapshotParser}.
@@ -42,12 +42,8 @@ public class FirebaseArray<T> extends ObservableSnapshotArray<T>
      *              {@code endAt()}.
      * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
      */
-    public FirebaseArray(Query query, SnapshotParser<T> parser) {
+    public FirebaseArray(@NonNull Query query, @NonNull SnapshotParser<T> parser) {
         super(parser);
-        init(query);
-    }
-
-    private void init(Query query) {
         mQuery = query;
     }
 

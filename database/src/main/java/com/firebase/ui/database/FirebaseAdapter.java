@@ -1,6 +1,7 @@
 package com.firebase.ui.database;
 
 import android.arch.lifecycle.LifecycleObserver;
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
 import com.google.firebase.database.DatabaseReference;
@@ -18,9 +19,12 @@ interface FirebaseAdapter<T> extends ChangeEventListener, LifecycleObserver {
      */
     void stopListening();
 
+    @NonNull
     ObservableSnapshotArray<T> getSnapshots();
 
+    @NonNull
     T getItem(int position);
 
+    @NonNull
     DatabaseReference getRef(int position);
 }

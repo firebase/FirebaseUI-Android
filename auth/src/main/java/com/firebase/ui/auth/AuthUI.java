@@ -156,6 +156,7 @@ public class AuthUI {
      *
      * @throws IllegalStateException if the default app is not initialized.
      */
+    @NonNull
     public static AuthUI getInstance() {
         return getInstance(FirebaseApp.getInstance());
     }
@@ -163,7 +164,8 @@ public class AuthUI {
     /**
      * Retrieves the {@link AuthUI} instance associated the the specified app.
      */
-    public static AuthUI getInstance(FirebaseApp app) {
+    @NonNull
+    public static AuthUI getInstance(@NonNull FirebaseApp app) {
         AuthUI authUi;
         synchronized (INSTANCES) {
             authUi = INSTANCES.get(app);
@@ -192,6 +194,7 @@ public class AuthUI {
      * Task#isSuccessful()}, or that the sign-out attempt failed unexpectedly !{@link
      * Task#isSuccessful()}).
      */
+    @NonNull
     public Task<Void> signOut(@NonNull FragmentActivity activity) {
         // Get Credentials Helper
         GoogleSignInHelper signInHelper = GoogleSignInHelper.getInstance(activity);
@@ -230,6 +233,7 @@ public class AuthUI {
      *
      * @param activity the calling {@link Activity}.
      */
+    @NonNull
     public Task<Void> delete(@NonNull FragmentActivity activity) {
         // Initialize SmartLock helper
         GoogleSignInHelper signInHelper = GoogleSignInHelper.getInstance(activity);
@@ -275,6 +279,7 @@ public class AuthUI {
      * Starts the process of creating a sign in intent, with the mandatory application context
      * parameter.
      */
+    @NonNull
     public SignInIntentBuilder createSignInIntentBuilder() {
         return new SignInIntentBuilder();
     }
@@ -292,8 +297,8 @@ public class AuthUI {
 
         private IdpConfig(
                 @SupportedProvider @NonNull String providerId,
-                List<String> scopes,
-                Bundle params) {
+                @NonNull List<String> scopes,
+                @NonNull Bundle params) {
             mProviderId = providerId;
             mScopes = Collections.unmodifiableList(scopes);
             mParams = params;
@@ -305,15 +310,18 @@ public class AuthUI {
             mParams = in.readBundle(getClass().getClassLoader());
         }
 
+        @NonNull
         @SupportedProvider
         public String getProviderId() {
             return mProviderId;
         }
 
+        @NonNull
         public List<String> getScopes() {
             return mScopes;
         }
 
+        @NonNull
         public Bundle getParams() {
             return mParams;
         }
@@ -380,7 +388,7 @@ public class AuthUI {
              */
             public Builder(@SupportedProvider @NonNull String providerId) {
                 if (!SUPPORTED_PROVIDERS.contains(providerId)) {
-                    throw new IllegalArgumentException("Unkown provider: " + providerId);
+                    throw new IllegalArgumentException("Unknown provider: " + providerId);
                 }
                 mProviderId = providerId;
             }
@@ -399,17 +407,23 @@ public class AuthUI {
              * Twitter permissions are only configurable through the
              * <a href="https://apps.twitter.com/">Twitter developer console</a>.
              */
-            public Builder setPermissions(List<String> permissions) {
+            @NonNull
+            public Builder setPermissions(@Nullable List<String> permissions) {
                 mScopes = permissions;
                 return this;
             }
 
-            public Builder setParams(Bundle params) {
+            @NonNull
+            public Builder setParams(@Nullable Bundle params) {
                 mParams = params;
                 return this;
             }
 
+            @NonNull
             public IdpConfig build() {
+                mScopes = mScopes == null ? Collections.<String>emptyList() : mScopes;
+                mParams = mParams == null ? new Bundle() : mParams;
+
                 return new IdpConfig(mProviderId, mScopes, mParams);
             }
         }
@@ -434,6 +448,7 @@ public class AuthUI {
          * Specifies the theme to use for the application flow. If no theme is specified, a default
          * theme will be used.
          */
+        @NonNull
         public T setTheme(@StyleRes int theme) {
             Preconditions.checkValidStyle(
                     mApp.getApplicationContext(),
@@ -447,6 +462,7 @@ public class AuthUI {
          * Specifies the logo to use for the {@link AuthMethodPickerActivity}. If no logo is
          * specified, none will be used.
          */
+        @NonNull
         public T setLogo(@DrawableRes int logo) {
             mLogo = logo;
             return (T) this;
@@ -455,6 +471,7 @@ public class AuthUI {
         /**
          * Specifies the terms-of-service URL for the application.
          */
+        @NonNull
         public T setTosUrl(@Nullable String tosUrl) {
             mTosUrl = tosUrl;
             return (T) this;
@@ -463,6 +480,7 @@ public class AuthUI {
         /**
          * Specifies the privacy policy URL for the application.
          */
+        @NonNull
         public T setPrivacyPolicyUrl(@Nullable String privacyPolicyUrl) {
             mPrivacyPolicyUrl = privacyPolicyUrl;
             return (T) this;
@@ -479,6 +497,7 @@ public class AuthUI {
          *                   configuration parameters for the IDP.
          * @see IdpConfig
          */
+        @NonNull
         public T setAvailableProviders(@NonNull List<IdpConfig> idpConfigs) {
             mProviders.clear();
 
@@ -554,6 +573,7 @@ public class AuthUI {
          *
          * @param enabled enables smartlock's credential selector and hint selector
          */
+        @NonNull
         public T setIsSmartLockEnabled(boolean enabled) {
             setIsSmartLockEnabled(enabled, enabled);
             return (T) this;
@@ -568,6 +588,7 @@ public class AuthUI {
          * @param enableCredentials enables credential selector before signup
          * @param enableHints       enable hint selector in respective signup screens
          */
+        @NonNull
         public T setIsSmartLockEnabled(boolean enableCredentials, boolean enableHints) {
             mEnableCredentials = enableCredentials;
             mEnableHints = enableHints;
@@ -575,6 +596,7 @@ public class AuthUI {
         }
 
         @CallSuper
+        @NonNull
         public Intent build() {
             if (mProviders.isEmpty()) {
                 mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
@@ -601,6 +623,7 @@ public class AuthUI {
          * <p>
          * <p>Account creation is enabled by default.
          */
+        @NonNull
         public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
             mAllowNewEmailAccounts = enabled;
             return this;
