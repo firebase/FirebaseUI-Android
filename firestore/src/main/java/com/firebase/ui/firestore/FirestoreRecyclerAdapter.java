@@ -1,6 +1,7 @@
 package com.firebase.ui.firestore;
 
 import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.support.annotation.NonNull;
@@ -19,15 +20,16 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
  * @param <VH> {@link RecyclerView.ViewHolder} class.
  */
 public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> implements FirestoreAdapter<T> {
+        extends RecyclerView.Adapter<VH>
+        implements ChangeEventListener, LifecycleObserver {
 
     private static final String TAG = "FirestoreRecycler";
 
     private final ObservableSnapshotArray<T> mSnapshots;
 
     /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
-     * FirestoreRecyclerOptions} for configuration options.
+     * Create a new RecyclerView adapter that listens to a Firestore Query.  See
+     * {@link FirestoreRecyclerOptions} for configuration options.
      */
     public FirestoreRecyclerAdapter(@NonNull FirestoreRecyclerOptions<T> options) {
         mSnapshots = options.getSnapshots();
@@ -37,7 +39,6 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         }
     }
 
-    @Override
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         if (!mSnapshots.isListening(this)) {
@@ -45,7 +46,6 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         }
     }
 
-    @Override
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
         mSnapshots.removeChangeEventListener(this);
@@ -58,13 +58,11 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     }
 
     @NonNull
-    @Override
     public ObservableSnapshotArray<T> getSnapshots() {
         return mSnapshots;
     }
 
     @NonNull
-    @Override
     public T getItem(int position) {
         return mSnapshots.get(position);
     }
