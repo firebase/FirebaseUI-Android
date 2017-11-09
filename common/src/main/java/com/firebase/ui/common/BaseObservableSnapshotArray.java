@@ -39,7 +39,7 @@ public abstract class BaseObservableSnapshotArray<S, E, L extends BaseChangeEven
 
     /**
      * Get the list of snapshots mirroring the server's data. Must be mutable and use a single
-     * instance during this class's active lifecycle.
+     * instance over the lifetime of this class's active lifecycle.
      *
      * @return the local copy of the server's snapshots
      */
