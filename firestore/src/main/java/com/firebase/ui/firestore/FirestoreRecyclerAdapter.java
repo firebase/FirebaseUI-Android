@@ -28,8 +28,8 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
     private final ObservableSnapshotArray<T> mSnapshots;
 
     /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See
-     * {@link FirestoreRecyclerOptions} for configuration options.
+     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
+     * FirestoreRecyclerOptions} for configuration options.
      */
     public FirestoreRecyclerAdapter(@NonNull FirestoreRecyclerOptions<T> options) {
         mSnapshots = options.getSnapshots();
@@ -39,6 +39,9 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         }
     }
 
+    /**
+     * Start listening for database changes and populate the adapter.
+     */
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
         if (!mSnapshots.isListening(this)) {
@@ -46,6 +49,9 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         }
     }
 
+    /**
+     * Stop listening for database changes and clear all items in the adapter.
+     */
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
         mSnapshots.removeChangeEventListener(this);
@@ -57,11 +63,21 @@ public abstract class FirestoreRecyclerAdapter<T, VH extends RecyclerView.ViewHo
         source.getLifecycle().removeObserver(this);
     }
 
+    /**
+     * Returns the backing {@link ObservableSnapshotArray} used to populate this adapter.
+     *
+     * @return the backing snapshot array
+     */
     @NonNull
     public ObservableSnapshotArray<T> getSnapshots() {
         return mSnapshots;
     }
 
+    /**
+     * Gets the item at the specified position from the backing snapshot array.
+     *
+     * @see ObservableSnapshotArray#get(int)
+     */
     @NonNull
     public T getItem(int position) {
         return mSnapshots.get(position);
