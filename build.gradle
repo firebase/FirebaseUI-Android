@@ -45,6 +45,11 @@ allprojects { project ->
     def isSubmodule = submodules.contains(project.name)
 
     if (isLibrary || isSubmodule) {
+        tasks.whenTaskAdded { task ->
+            if (task.name.contains("publish") && task.name.contains("PublicationToMavenLocal")) {
+                task.dependsOn 'assemble'
+            }
+        }
 
         // So that we can resolve 'android' variable
         project.apply plugin: 'com.android.library'
