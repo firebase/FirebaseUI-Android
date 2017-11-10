@@ -1,5 +1,7 @@
 package com.firebase.ui.common;
 
+import android.support.annotation.NonNull;
+
 /**
  * Common interface for snapshot parsers.
  *
@@ -14,6 +16,7 @@ public interface BaseSnapshotParser<S, T> {
      * @param snapshot the Snapshot to extract the model from
      * @return the model extracted from the DataSnapshot
      */
-    T parseSnapshot(S snapshot);
+    @NonNull
+    T parseSnapshot(@NonNull S snapshot);
 
 }

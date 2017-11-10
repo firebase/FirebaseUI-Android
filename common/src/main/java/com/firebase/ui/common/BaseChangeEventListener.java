@@ -1,5 +1,7 @@
 package com.firebase.ui.common;
 
+import android.support.annotation.NonNull;
+
 /**
  * Event listener for changes in an {@link BaseObservableSnapshotArray}.
  */
@@ -14,7 +16,8 @@ public interface BaseChangeEventListener<S, E> {
      * @param oldIndex  The previous index of the element, or -1 if it was not
      *                  previously tracked.
      */
-    void onChildChanged(ChangeEventType type, S snapshot, int newIndex, int oldIndex);
+    void onChildChanged(
+            @NonNull ChangeEventType type, @NonNull S snapshot, int newIndex, int oldIndex);
 
     /**
      * Callback triggered after all child events in a particular snapshot have been
@@ -29,6 +32,6 @@ public interface BaseChangeEventListener<S, E> {
      * Callback when an error has been detected in the underlying listener.
      * @param e the error that occurred.
      */
-    void onError(E e);
+    void onError(@NonNull E e);
 
 }

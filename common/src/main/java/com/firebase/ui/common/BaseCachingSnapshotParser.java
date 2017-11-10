@@ -1,5 +1,6 @@
 package com.firebase.ui.common;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.util.LruCache;
 
@@ -15,17 +16,19 @@ public abstract class BaseCachingSnapshotParser<S, T> implements BaseSnapshotPar
     private final LruCache<String, T> mObjectCache = new LruCache<>(MAX_CACHE_SIZE);
     private final BaseSnapshotParser<S, T> mParser;
 
-    public BaseCachingSnapshotParser(BaseSnapshotParser<S, T> parser) {
+    public BaseCachingSnapshotParser(@NonNull BaseSnapshotParser<S, T> parser) {
         mParser = parser;
     }
 
     /**
      * Get a unique identifier for a snapshot, should not depend on snapshot content.
      */
-    public abstract String getId(S snapshot);
+    @NonNull
+    public abstract String getId(@NonNull S snapshot);
 
+    @NonNull
     @Override
-    public T parseSnapshot(S snapshot) {
+    public T parseSnapshot(@NonNull S snapshot) {
         String id = getId(snapshot);
         T result = mObjectCache.get(id);
         if (result == null) {
@@ -46,7 +49,7 @@ public abstract class BaseCachingSnapshotParser<S, T> implements BaseSnapshotPar
     /**
      * Invalidate the cache for a certain document.
      */
-    public void invalidate(S snapshot) {
+    public void invalidate(@NonNull S snapshot) {
         mObjectCache.remove(getId(snapshot));
     }
 
