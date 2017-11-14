@@ -3,6 +3,7 @@ package com.firebase.ui.database;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     private final ObservableSnapshotArray<T> mSnapshots;
     protected final int mLayout;
 
-    public FirebaseListAdapter(FirebaseListOptions<T> options) {
+    public FirebaseListAdapter(@NonNull FirebaseListOptions<T> options) {
         mSnapshots = options.getSnapshots();
         mLayout = options.getLayout();
 
@@ -61,8 +62,8 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     @Override
-    public void onChildChanged(ChangeEventType type,
-                               DataSnapshot snapshot,
+    public void onChildChanged(@NonNull ChangeEventType type,
+                               @NonNull DataSnapshot snapshot,
                                int newIndex,
                                int oldIndex) {
         notifyDataSetChanged();
@@ -73,20 +74,23 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Fire
     }
 
     @Override
-    public void onError(DatabaseError error) {
+    public void onError(@NonNull DatabaseError error) {
         Log.w(TAG, error.toException());
     }
 
+    @NonNull
     @Override
     public ObservableSnapshotArray<T> getSnapshots() {
         return mSnapshots;
     }
 
+    @NonNull
     @Override
     public T getItem(int position) {
         return mSnapshots.get(position);
     }
 
+    @NonNull
     @Override
     public DatabaseReference getRef(int position) {
         return mSnapshots.getSnapshot(position).getRef();

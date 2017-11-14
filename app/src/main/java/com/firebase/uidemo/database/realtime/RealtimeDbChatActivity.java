@@ -146,7 +146,7 @@ public class RealtimeDbChatActivity extends AppCompatActivity
             }
 
             @Override
-            protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
+            protected void onBindViewHolder(@NonNull ChatHolder holder, int position, @NonNull Chat model) {
                 holder.bind(model);
             }
 

@@ -1,6 +1,7 @@
 package com.firebase.ui.database;
 
 import android.arch.lifecycle.LifecycleOwner;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +34,7 @@ public class FirebaseRecyclerOptions<T> {
     /**
      * Get the {@link ObservableSnapshotArray} to listen to.
      */
+    @NonNull
     public ObservableSnapshotArray<T> getSnapshots() {
         return mSnapshots;
     }
@@ -61,7 +63,8 @@ public class FirebaseRecyclerOptions<T> {
          * <p>
          * Do not call this method after calling {@code setQuery}.
          */
-        public Builder<T> setSnapshotArray(ObservableSnapshotArray<T> snapshots) {
+        @NonNull
+        public Builder<T> setSnapshotArray(@NonNull ObservableSnapshotArray<T> snapshots) {
             assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
 
             mSnapshots = snapshots;
@@ -74,7 +77,9 @@ public class FirebaseRecyclerOptions<T> {
          * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setQuery(Query query, SnapshotParser<T> snapshotParser) {
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query,
+                                   @NonNull SnapshotParser<T> snapshotParser) {
             assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
 
             mSnapshots = new FirebaseArray<>(query, snapshotParser);
@@ -87,7 +92,8 @@ public class FirebaseRecyclerOptions<T> {
          * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setQuery(Query query, Class<T> modelClass) {
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query, @NonNull Class<T> modelClass) {
             return setQuery(query, new ClassSnapshotParser<>(modelClass));
         }
 
@@ -99,9 +105,10 @@ public class FirebaseRecyclerOptions<T> {
          * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setIndexedQuery(Query keyQuery,
-                                          DatabaseReference dataRef,
-                                          SnapshotParser<T> snapshotParser) {
+        @NonNull
+        public Builder<T> setIndexedQuery(@NonNull Query keyQuery,
+                                          @NonNull DatabaseReference dataRef,
+                                          @NonNull SnapshotParser<T> snapshotParser) {
             assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
 
             mSnapshots = new FirebaseIndexArray<>(keyQuery, dataRef, snapshotParser);
@@ -115,9 +122,10 @@ public class FirebaseRecyclerOptions<T> {
          * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setIndexedQuery(Query keyQuery,
-                                          DatabaseReference dataRef,
-                                          Class<T> modelClass) {
+        @NonNull
+        public Builder<T> setIndexedQuery(@NonNull Query keyQuery,
+                                          @NonNull DatabaseReference dataRef,
+                                          @NonNull Class<T> modelClass) {
             return setIndexedQuery(keyQuery, dataRef, new ClassSnapshotParser<>(modelClass));
         }
 
@@ -125,7 +133,8 @@ public class FirebaseRecyclerOptions<T> {
          * Set the (optional) {@link LifecycleOwner}. Listens will start and stop after the
          * appropriate lifecycle events.
          */
-        public Builder<T> setLifecycleOwner(LifecycleOwner owner) {
+        @NonNull
+        public Builder<T> setLifecycleOwner(@Nullable LifecycleOwner owner) {
             mOwner = owner;
             return this;
         }
@@ -133,6 +142,7 @@ public class FirebaseRecyclerOptions<T> {
         /**
          * Build a {@link FirebaseRecyclerOptions} from the provided arguments.
          */
+        @NonNull
         public FirebaseRecyclerOptions<T> build() {
             assertNonNull(mSnapshots, ERR_SNAPSHOTS_NULL);
 

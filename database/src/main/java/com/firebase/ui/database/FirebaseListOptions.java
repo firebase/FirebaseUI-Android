@@ -2,6 +2,7 @@ package com.firebase.ui.database;
 
 import android.arch.lifecycle.LifecycleOwner;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +36,7 @@ public class FirebaseListOptions<T> {
     /**
      * Get the {@link ObservableSnapshotArray} to observe.
      */
+    @NonNull
     public ObservableSnapshotArray<T> getSnapshots() {
         return mSnapshots;
     }
@@ -57,6 +59,7 @@ public class FirebaseListOptions<T> {
 
     /**
      * Builder for {@link FirebaseListOptions}.
+     *
      * @param <T> the model class for the {@link FirebaseListAdapter}.
      */
     public static class Builder<T> {
@@ -67,10 +70,11 @@ public class FirebaseListOptions<T> {
 
         /**
          * Directly set the {@link ObservableSnapshotArray} to observe.
-         *
+         * <p>
          * Do not call this method after calling {@code setQuery}.
          */
-        public Builder<T> setSnapshotArray(ObservableSnapshotArray<T> snapshots) {
+        @NonNull
+        public Builder<T> setSnapshotArray(@NonNull ObservableSnapshotArray<T> snapshots) {
             assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
 
             mSnapshots = snapshots;
@@ -79,66 +83,71 @@ public class FirebaseListOptions<T> {
 
         /**
          * Set the query to listen on and a {@link SnapshotParser} to parse data snapshots.
-         *
+         * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setQuery(Query query, SnapshotParser<T> parser) {
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query, @NonNull SnapshotParser<T> parser) {
             assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
 
-            mSnapshots = new FirebaseArray<T>(query, parser);
+            mSnapshots = new FirebaseArray<>(query, parser);
             return this;
         }
 
         /**
          * Set the query to listen on and a {@link Class} to which data snapshots should be
-         * converted. Do not call this method after calling
-         * {@link #setSnapshotArray(ObservableSnapshotArray)}.
+         * converted. Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setQuery(Query query, Class<T> modelClass) {
-            return setQuery(query, new ClassSnapshotParser<T>(modelClass));
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query, @NonNull Class<T> modelClass) {
+            return setQuery(query, new ClassSnapshotParser<>(modelClass));
         }
 
         /**
          * Set an indexed query to listen on and a {@link SnapshotParser} to parse data snapshots.
          * The keyQuery is used to find a list of IDs, which are then queried at the dataRef.
-         *
+         * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setIndexedQuery(Query keyQuery,
-                                          DatabaseReference dataRef,
-                                          SnapshotParser<T> parser) {
+        @NonNull
+        public Builder<T> setIndexedQuery(@NonNull Query keyQuery,
+                                          @NonNull DatabaseReference dataRef,
+                                          @NonNull SnapshotParser<T> parser) {
             assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
 
-            mSnapshots = new FirebaseIndexArray<T>(keyQuery, dataRef, parser);
+            mSnapshots = new FirebaseIndexArray<>(keyQuery, dataRef, parser);
             return this;
         }
 
         /**
-         * Set an indexed query to listen on and a {@link Class} to which data snapshots should
-         * be converted. The keyQuery is used to find a list of keys, which are then queried
-         * at the dataRef.
-         *
+         * Set an indexed query to listen on and a {@link Class} to which data snapshots should be
+         * converted. The keyQuery is used to find a list of keys, which are then queried at the
+         * dataRef.
+         * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setIndexedQuery(Query keyQuery,
-                                          DatabaseReference dataRef,
-                                          Class<T> modelClass) {
-            return setIndexedQuery(keyQuery, dataRef, new ClassSnapshotParser<T>(modelClass));
+        @NonNull
+        public Builder<T> setIndexedQuery(@NonNull Query keyQuery,
+                                          @NonNull DatabaseReference dataRef,
+                                          @NonNull Class<T> modelClass) {
+            return setIndexedQuery(keyQuery, dataRef, new ClassSnapshotParser<>(modelClass));
         }
 
         /**
          * Set the resource ID for the item layout.
          */
+        @NonNull
         public Builder<T> setLayout(@LayoutRes int layout) {
             mLayout = layout;
             return this;
         }
 
         /**
-         * Set the optional {@link LifecycleOwner}. Listening will stop/start after the
-         * appropriate lifecycle events.
+         * Set the optional {@link LifecycleOwner}. Listening will stop/start after the appropriate
+         * lifecycle events.
          */
-        public Builder<T> setLifecycleOwner(LifecycleOwner owner) {
+        @NonNull
+        public Builder<T> setLifecycleOwner(@Nullable LifecycleOwner owner) {
             mOwner = owner;
             return this;
         }
@@ -146,6 +155,7 @@ public class FirebaseListOptions<T> {
         /**
          * Build a {@link FirebaseListOptions} from the provided arguments.
          */
+        @NonNull
         public FirebaseListOptions<T> build() {
             assertNonNull(mSnapshots, "Snapshot array cannot be null. " +
                     "Call setQuery or setSnapshotArray.");

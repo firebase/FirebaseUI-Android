@@ -34,18 +34,18 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
         implements ChangeEventListener {
     private static final String TAG = "FirebaseIndexArray";
 
-    private DatabaseReference mDataRef;
-    private Map<DatabaseReference, ValueEventListener> mRefs = new HashMap<>();
+    private final DatabaseReference mDataRef;
+    private final Map<DatabaseReference, ValueEventListener> mRefs = new HashMap<>();
 
-    private FirebaseArray<String> mKeySnapshots;
-    private List<DataSnapshot> mDataSnapshots = new ArrayList<>();
+    private final FirebaseArray<String> mKeySnapshots;
+    private final List<DataSnapshot> mDataSnapshots = new ArrayList<>();
 
     /**
      * When keys are added in {@link FirebaseArray}, we need to fetch the data async. This list
      * contains keys that exist in the backing {@link FirebaseArray}, but their data hasn't been
      * downloaded yet in this array.
      */
-    private List<String> mKeysWithPendingUpdate = new ArrayList<>();
+    private final List<String> mKeysWithPendingUpdate = new ArrayList<>();
     /**
      * Moves or deletions don't need to fetch new data so they can be performed instantly once the
      * backing {@link FirebaseArray} is done updating. This will be true if the backing {@link
@@ -63,16 +63,15 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
      *                 keyQuery}'s location represents a list item in the {@link RecyclerView}.
      * @see ObservableSnapshotArray#ObservableSnapshotArray(SnapshotParser)
      */
-    public FirebaseIndexArray(Query keyQuery, DatabaseReference dataRef, SnapshotParser<T> parser) {
+    public FirebaseIndexArray(@NonNull Query keyQuery,
+                              @NonNull DatabaseReference dataRef,
+                              @NonNull SnapshotParser<T> parser) {
         super(parser);
-        init(keyQuery, dataRef);
-    }
-
-    private void init(Query keyQuery, DatabaseReference dataRef) {
         mDataRef = dataRef;
         mKeySnapshots = new FirebaseArray<>(keyQuery, new SnapshotParser<String>() {
+            @NonNull
             @Override
-            public String parseSnapshot(DataSnapshot snapshot) {
+            public String parseSnapshot(@NonNull DataSnapshot snapshot) {
                 return snapshot.getKey();
             }
         });
@@ -96,7 +95,10 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
     }
 
     @Override
-    public void onChildChanged(ChangeEventType type, DataSnapshot snapshot, int newIndex, int oldIndex) {
+    public void onChildChanged(@NonNull ChangeEventType type,
+                               @NonNull DataSnapshot snapshot,
+                               int newIndex,
+                               int oldIndex) {
         switch (type) {
             case ADDED:
                 onKeyAdded(snapshot, newIndex);
@@ -123,7 +125,7 @@ public class FirebaseIndexArray<T> extends ObservableSnapshotArray<T>
     }
 
     @Override
-    public void onError(DatabaseError error) {
+    public void onError(@NonNull DatabaseError error) {
         Log.e(TAG, "A fatal error occurred retrieving the necessary keys to populate your adapter.");
     }
 

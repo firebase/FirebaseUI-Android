@@ -1,6 +1,7 @@
 package com.firebase.ui.firestore;
 
 import android.arch.lifecycle.LifecycleOwner;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.firebase.firestore.Query;
@@ -33,6 +34,7 @@ public class FirestoreRecyclerOptions<T> {
     /**
      * Get the {@link ObservableSnapshotArray} to observe.
      */
+    @NonNull
     public ObservableSnapshotArray<T> getSnapshots() {
         return mSnapshots;
     }
@@ -60,7 +62,8 @@ public class FirestoreRecyclerOptions<T> {
          * <p>
          * Do not call this method after calling {@code setQuery}.
          */
-        public Builder<T> setSnapshotArray(ObservableSnapshotArray<T> snapshots) {
+        @NonNull
+        public Builder<T> setSnapshotArray(@NonNull ObservableSnapshotArray<T> snapshots) {
             assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
 
             mSnapshots = snapshots;
@@ -72,9 +75,10 @@ public class FirestoreRecyclerOptions<T> {
          * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setQuery(Query query,
-                                   QueryListenOptions options,
-                                   SnapshotParser<T> parser) {
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query,
+                                   @NonNull QueryListenOptions options,
+                                   @NonNull SnapshotParser<T> parser) {
             assertNull(mSnapshots, ERR_SNAPSHOTS_SET);
 
             mSnapshots = new FirestoreArray<>(query, options, parser);
@@ -86,7 +90,8 @@ public class FirestoreRecyclerOptions<T> {
          * Calls {@link #setQuery(Query, QueryListenOptions, Class)} with the default {@link
          * QueryListenOptions}.
          */
-        public Builder<T> setQuery(Query query, SnapshotParser<T> parser) {
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query, @NonNull SnapshotParser<T> parser) {
             return setQuery(query, new QueryListenOptions(), parser);
         }
 
@@ -96,7 +101,10 @@ public class FirestoreRecyclerOptions<T> {
          * <p>
          * Do not call this method after calling {@link #setSnapshotArray(ObservableSnapshotArray)}.
          */
-        public Builder<T> setQuery(Query query, QueryListenOptions options, Class<T> modelClass) {
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query,
+                                   @NonNull QueryListenOptions options,
+                                   @NonNull Class<T> modelClass) {
             return setQuery(query, options, new ClassSnapshotParser<>(modelClass));
         }
 
@@ -104,7 +112,8 @@ public class FirestoreRecyclerOptions<T> {
          * Calls {@link #setQuery(Query, QueryListenOptions, Class)} with the default {@link
          * QueryListenOptions}.
          */
-        public Builder<T> setQuery(Query query, Class<T> modelClass) {
+        @NonNull
+        public Builder<T> setQuery(@NonNull Query query, @NonNull Class<T> modelClass) {
             return setQuery(query, new QueryListenOptions(), modelClass);
         }
 
@@ -112,7 +121,8 @@ public class FirestoreRecyclerOptions<T> {
          * Set a {@link LifecycleOwner} for the adapter. Listening will stop/start after the
          * appropriate lifecycle events.
          */
-        public Builder<T> setLifecycleOwner(LifecycleOwner owner) {
+        @NonNull
+        public Builder<T> setLifecycleOwner(@Nullable LifecycleOwner owner) {
             mOwner = owner;
             return this;
         }
@@ -120,6 +130,7 @@ public class FirestoreRecyclerOptions<T> {
         /**
          * Build a {@link FirestoreRecyclerOptions} from the provided arguments.
          */
+        @NonNull
         public FirestoreRecyclerOptions<T> build() {
             assertNonNull(mSnapshots, ERR_SNAPSHOTS_NULL);
 
