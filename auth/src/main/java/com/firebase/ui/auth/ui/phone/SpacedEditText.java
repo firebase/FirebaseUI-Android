@@ -36,7 +36,7 @@ import com.firebase.ui.auth.R;
  */
 public final class SpacedEditText extends TextInputEditText {
     private float mProportion;
-    private SpannableStringBuilder mOriginalText;
+    private SpannableStringBuilder mOriginalText = new SpannableStringBuilder("");
 
     public SpacedEditText(Context context) {
         super(context);
@@ -44,7 +44,10 @@ public final class SpacedEditText extends TextInputEditText {
 
     public SpacedEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mOriginalText = new SpannableStringBuilder("");
+        initAttrs(context, attrs);
+    }
+
+    void initAttrs(Context context, AttributeSet attrs) {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.SpacedEditText);
         // Controls the ScaleXSpan applied on the injected spaces
         mProportion = array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1);

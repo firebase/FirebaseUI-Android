@@ -17,15 +17,11 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
-import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
@@ -43,12 +39,8 @@ import org.robolectric.shadows.ShadowActivity;
 
 import java.util.Collections;
 
-import static com.firebase.ui.auth.testhelpers.TestHelper.verifySmartLockSave;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
@@ -62,10 +54,7 @@ public class WelcomeBackPasswordPromptTest {
         Intent startIntent = WelcomeBackPasswordPrompt.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)),
-                new IdpResponse.Builder(
-                        new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
-                                .build())
-                        .build());
+                new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
         return Robolectric
                 .buildActivity(WelcomeBackPasswordPrompt.class, startIntent)
                 .create()
@@ -89,33 +78,5 @@ public class WelcomeBackPasswordPromptTest {
         ShadowActivity.IntentForResult nextIntent =
                 Shadows.shadowOf(welcomeBack).getNextStartedActivityForResult();
         assertNull(nextIntent);
-    }
-
-    @Test
-    @Config(shadows = {AuthHelperShadow.class})
-    public void testSignInButton_signsInAndSavesCredentials() {
-        // initialize mocks
-        reset(AuthHelperShadow.getSaveSmartLockInstance(null));
-
-        WelcomeBackPasswordPrompt welcomeBackActivity = createActivity();
-        EditText passwordField = welcomeBackActivity.findViewById(R.id.password);
-        passwordField.setText(TestConstants.PASSWORD);
-
-        when(AuthHelperShadow.getFirebaseAuth().signInWithEmailAndPassword(
-                TestConstants.EMAIL,
-                TestConstants.PASSWORD)).thenReturn(
-                new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
-
-        Button signIn = welcomeBackActivity.findViewById(R.id.button_done);
-        signIn.performClick();
-
-        verify(AuthHelperShadow.getFirebaseAuth()).signInWithEmailAndPassword(
-                TestConstants.EMAIL,
-                TestConstants.PASSWORD);
-
-        verifySmartLockSave(
-                EmailAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL,
-                TestConstants.PASSWORD);
     }
 }

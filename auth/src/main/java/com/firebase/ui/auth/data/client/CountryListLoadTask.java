@@ -296,7 +296,7 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
     }
 
     @Override
-    protected void onPostExecute(List<CountryInfo> result) {
+    public void onPostExecute(List<CountryInfo> result) {
         if (mListener != null) {
             mListener.onLoadComplete(result);
         }
