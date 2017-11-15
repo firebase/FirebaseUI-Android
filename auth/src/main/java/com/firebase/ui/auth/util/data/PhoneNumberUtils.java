@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.PhoneNumber;
@@ -46,8 +47,8 @@ public final class PhoneNumberUtils {
     private static final int MAX_COUNTRY_CODES = 286;
     private static final int MAX_LENGTH_COUNTRY_CODE = 3;
 
-    private static final Map<Integer, List<String>> COUNTRY_TO_REGION_CODES =
-            Collections.unmodifiableMap(createCountryCodeToRegionCodeMap());
+    private static final SparseArray<List<String>> COUNTRY_TO_REGION_CODES =
+            createCountryCodeToRegionCodeMap();
     private static final Map<String, Integer> COUNTRY_TO_ISO_CODES =
             Collections.unmodifiableMap(createCountryCodeByIsoMap());
 
@@ -169,7 +170,7 @@ public final class PhoneNumberUtils {
             String potentialCountryCode = phoneWithoutPlusPrefix.substring(0, i);
             Integer countryCodeKey = Integer.valueOf(potentialCountryCode);
 
-            if (COUNTRY_TO_REGION_CODES.containsKey(countryCodeKey)) {
+            if (COUNTRY_TO_REGION_CODES.indexOfKey(countryCodeKey) >= 0) {
                 return potentialCountryCode;
             }
         }
@@ -195,8 +196,8 @@ public final class PhoneNumberUtils {
         return Locale.getDefault();
     }
 
-    private static synchronized Map<Integer, List<String>> createCountryCodeToRegionCodeMap() {
-        Map<Integer, List<String>> map = new HashMap<>(MAX_COUNTRY_CODES);
+    private static synchronized SparseArray<List<String>> createCountryCodeToRegionCodeMap() {
+        SparseArray<List<String>> map = new SparseArray<>(MAX_COUNTRY_CODES);
 
         map.put(1, asList(
                 "US", "AG", "AI", "AS", "BB", "BM", "BS", "CA", "DM", "DO", "GD", "GU", "JM", "KN",
