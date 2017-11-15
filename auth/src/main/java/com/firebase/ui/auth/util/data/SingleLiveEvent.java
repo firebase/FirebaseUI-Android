@@ -3,6 +3,7 @@ package com.firebase.ui.auth.util.data;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
     private final List<EventFilterObserver<T>> mObservers = new ArrayList<>();
 
     @Override
-    public void observe(LifecycleOwner owner, Observer<T> observer) {
+    public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<T> observer) {
         if (!mObserverStatuses.containsKey(observer.getClass())) {
             mObserverStatuses.put(observer.getClass(), new AtomicBoolean());
         }
@@ -37,7 +38,7 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
     }
 
     @Override
-    public void removeObserver(Observer<T> observer) {
+    public void removeObserver(@NonNull Observer<T> observer) {
         EventFilterObserver<T> filterObserver;
         if (observer instanceof EventFilterObserver) {
             filterObserver = (EventFilterObserver<T>) observer;

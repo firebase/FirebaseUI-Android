@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.util.data;
 
 import android.arch.lifecycle.Observer;
+import android.support.annotation.NonNull;
 
 /**
  * LiveData that resets itself when all listeners are removed. Used to support fields which need to
@@ -14,7 +15,7 @@ public class AutoClearSingleLiveEvent<T> extends SingleLiveEvent<T> {
     }
 
     @Override
-    public void removeObserver(Observer<T> observer) {
+    public void removeObserver(@NonNull Observer<T> observer) {
         super.removeObserver(observer);
         if (!hasObservers()) {
             mFieldResetter.run();

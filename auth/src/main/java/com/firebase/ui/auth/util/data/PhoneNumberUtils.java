@@ -150,7 +150,7 @@ public final class PhoneNumberUtils {
     }
 
     private static String countryIsoForCountryCode(String countryCode) {
-        List<String> countries = COUNTRY_TO_REGION_CODES.get(Integer.valueOf(countryCode));
+        List<String> countries = COUNTRY_TO_REGION_CODES.get(Integer.parseInt(countryCode));
         if (countries != null) {
             return countries.get(0);
         }
