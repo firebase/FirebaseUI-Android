@@ -34,6 +34,7 @@ public class FacebookProvider implements Provider {
 
     @Override
     public void startLogin(HelperActivityBase activity) {
+        activity.getFlowHolder().getProgressListener().setValue(false);
         LoginManager.getInstance().logInWithReadPermissions(activity, mHandler.getPermissions());
     }
 }

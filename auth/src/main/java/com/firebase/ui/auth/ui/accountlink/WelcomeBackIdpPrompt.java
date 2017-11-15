@@ -24,6 +24,7 @@ import android.support.annotation.RestrictTo;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
@@ -59,6 +60,14 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             public void onChanged(@Nullable IdpResponse response) {
                 finish(response.isSuccessful() ? Activity.RESULT_OK : Activity.RESULT_CANCELED,
                        response.toIntent());
+            }
+        });
+        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isDone) {
+                Toast.makeText(WelcomeBackIdpPrompt.this,
+                        "TODO isDone:  " + isDone,
+                        Toast.LENGTH_SHORT).show();
             }
         });
         setupProvider();

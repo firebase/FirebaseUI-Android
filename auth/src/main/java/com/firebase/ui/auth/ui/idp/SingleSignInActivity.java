@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -36,6 +37,14 @@ public class SingleSignInActivity extends HelperActivityBase {
             public void onChanged(@Nullable IdpResponse response) {
                 finish(response.isSuccessful() ? Activity.RESULT_OK : Activity.RESULT_CANCELED,
                        response.toIntent());
+            }
+        });
+        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isDone) {
+                Toast.makeText(SingleSignInActivity.this,
+                        "TODO isDone:  " + isDone,
+                        Toast.LENGTH_SHORT).show();
             }
         });
 

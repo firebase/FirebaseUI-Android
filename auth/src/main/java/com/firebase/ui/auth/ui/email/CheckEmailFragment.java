@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
@@ -96,6 +97,15 @@ public class CheckEmailFragment extends FragmentBase implements
         }
 
         view.findViewById(R.id.button_next).setOnClickListener(this);
+
+        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isDone) {
+                Toast.makeText(getContext(),
+                        "TODO isDone:  " + isDone,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

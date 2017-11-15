@@ -65,6 +65,7 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
 
     public void start() {
         if (mFlowHolder.getParams().enableCredentials) {
+            mFlowHolder.getProgressListener().setValue(false);
             new CredentialRequestFlow().start();
         } else {
             startAuthMethodChoice();
@@ -72,6 +73,8 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
     }
 
     private void startAuthMethodChoice() {
+        mFlowHolder.getProgressListener().setValue(true);
+
         FlowParameters flowParams = mFlowHolder.getParams();
         List<AuthUI.IdpConfig> idpConfigs = flowParams.providerInfo;
 
@@ -103,6 +106,8 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
     }
 
     private void redirectToIdpSignIn(String provider, String email) {
+        mFlowHolder.getProgressListener().setValue(true);
+
         FlowParameters flowParams = mFlowHolder.getParams();
 
         if (TextUtils.isEmpty(provider)) {
@@ -208,6 +213,8 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
                 String provider = ProviderUtils.accountTypeToProviderId(
                         String.valueOf(credential.getAccountType()));
                 if (TextUtils.equals(provider, PhoneAuthProvider.PROVIDER_ID)) {
+                    mFlowHolder.getProgressListener().setValue(true);
+
                     Bundle args = new Bundle();
                     args.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, id);
                     mFlowHolder.getIntentStarter().setValue(Pair.create(

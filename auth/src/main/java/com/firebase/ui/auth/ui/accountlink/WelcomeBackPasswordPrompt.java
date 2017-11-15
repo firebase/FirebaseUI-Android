@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -99,6 +100,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 } else {
                     mPasswordLayout.setError(response.getException().getLocalizedMessage());
                 }
+            }
+        });
+        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isDone) {
+                Toast.makeText(WelcomeBackPasswordPrompt.this,
+                        "TODO isDone:  " + isDone,
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }

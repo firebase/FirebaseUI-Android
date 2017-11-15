@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -82,6 +83,14 @@ public class RegisterEmailFragment extends FragmentBase implements
                         mEmailInput.setError(getString(R.string.fui_email_account_creation_error));
                     }
                 }
+            }
+        });
+        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isDone) {
+                Toast.makeText(getContext(),
+                        "TODO isDone:  " + isDone,
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }

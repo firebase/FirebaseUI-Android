@@ -66,6 +66,8 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
     }
 
     public void fetchCredential() {
+        mFlowHolder.getProgressListener().setValue(false);
+
         if (mPhoneNumber == null) {
             mFlowHolder.getPendingIntentStarter()
                     .setValue(Pair.create(getPhoneNumberHintIntent(), RC_HINT));
@@ -80,7 +82,10 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
 
     @Override
     public void onChanged(@Nullable ActivityResult result) {
-        if (result.getRequestCode() == RC_HINT && result.getResultCode() == Activity.RESULT_OK) {
+        if (result.getRequestCode() == RC_HINT) {
+            mFlowHolder.getProgressListener().setValue(true);
+            if (result.getResultCode() != Activity.RESULT_OK) { return; }
+
             final Credential credential = result.getData().getParcelableExtra(Credential.EXTRA_KEY);
 
             String formattedPhone = PhoneNumberUtils.formatUsingCurrentCountry(
@@ -98,6 +103,8 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
     }
 
     public void verifyPhoneNumber(final String number, boolean force) {
+        mFlowHolder.getProgressListener().setValue(false);
+
         mPhoneNumber = number;
         mPhoneAuth.verifyPhoneNumber(
                 number,
@@ -112,12 +119,15 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
 
                     @Override
                     public void onVerificationFailed(FirebaseException e) {
+                        mFlowHolder.getProgressListener().setValue(true);
                         mVerificationErrorListener.setValue(e);
                     }
 
                     @Override
                     public void onCodeSent(@NonNull String verificationId,
                                            @NonNull PhoneAuthProvider.ForceResendingToken token) {
+                        mFlowHolder.getProgressListener().setValue(true);
+
                         mVerificationId = verificationId;
                         mForceResendingToken = token;
                         mVerificationErrorListener.setValue(

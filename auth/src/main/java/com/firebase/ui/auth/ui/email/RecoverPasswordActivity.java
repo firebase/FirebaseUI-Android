@@ -24,6 +24,7 @@ import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -68,6 +69,14 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                     // No FirebaseUser exists with this email address, show error.
                     mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
                 }
+            }
+        });
+        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isDone) {
+                Toast.makeText(RecoverPasswordActivity.this,
+                        "TODO isDone:  " + isDone,
+                        Toast.LENGTH_SHORT).show();
             }
         });
 

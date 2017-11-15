@@ -30,9 +30,11 @@ public class RecoverPasswordHandler extends AuthViewModelBase {
             mCachedPasswordReset = Pair.create(email, mAuth.sendPasswordResetEmail(email));
         }
 
+        mFlowHolder.getProgressListener().setValue(false);
         mCachedPasswordReset.second.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                mFlowHolder.getProgressListener().setValue(true);
                 mPasswordResetListener.setValue(task.isSuccessful() ?
                         Tasks.forResult(email) : Tasks.<String>forException(task.getException()));
             }

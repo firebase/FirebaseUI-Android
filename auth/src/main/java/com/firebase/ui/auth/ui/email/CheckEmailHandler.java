@@ -49,14 +49,17 @@ public class CheckEmailHandler extends AuthViewModelBase implements Observer<Act
     }
 
     public void fetchCredential() {
+        mFlowHolder.getProgressListener().setValue(false);
         mFlowHolder.getPendingIntentStarter().setValue(Pair.create(getEmailHintIntent(), RC_HINT));
     }
 
     public void fetchProvider(final String email) {
+        mFlowHolder.getProgressListener().setValue(false);
         updateFetchProviderCache(email);
         mCachedProviderFetch.second.addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
             public void onComplete(@NonNull Task<String> task) {
+                mFlowHolder.getProgressListener().setValue(true);
                 mProviderListener.setValue(task.isSuccessful() ?
                         new User.Builder(task.getResult(), email).build()
                         : null);
@@ -78,7 +81,12 @@ public class CheckEmailHandler extends AuthViewModelBase implements Observer<Act
 
     @Override
     public void onChanged(@Nullable ActivityResult result) {
-        if (result.getRequestCode() == RC_HINT && result.getResultCode() == Activity.RESULT_OK) {
+        if (result.getRequestCode() == RC_HINT) {
+            if (result.getResultCode() != Activity.RESULT_OK) {
+                mFlowHolder.getProgressListener().setValue(true);
+                return;
+            }
+
             final Credential credential = result.getData().getParcelableExtra(Credential.EXTRA_KEY);
 
             final String email = credential.getId();
@@ -86,6 +94,7 @@ public class CheckEmailHandler extends AuthViewModelBase implements Observer<Act
             mCachedProviderFetch.second.addOnCompleteListener(new OnCompleteListener<String>() {
                 @Override
                 public void onComplete(@NonNull Task<String> task) {
+                    mFlowHolder.getProgressListener().setValue(true);
                     mProviderListener.setValue(task.isSuccessful() ?
                             new User.Builder(task.getResult(), email)
                                     .setName(credential.getName())

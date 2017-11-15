@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.phone;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.FragmentBase;
@@ -71,6 +73,15 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         super.onCreate(savedInstanceState);
         mHandler = ViewModelProviders.of(getActivity()).get(CheckPhoneNumberHandler.class);
         mPhoneNumber = getArguments().getString(ExtraConstants.EXTRA_PHONE);
+
+        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isDone) {
+                Toast.makeText(getContext(),
+                        "TODO isDone:  " + isDone,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Nullable

@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
@@ -84,6 +85,14 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 if (response.isSuccessful()) {
                     finish(Activity.RESULT_OK, response.toIntent());
                 }
+            }
+        });
+        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isDone) {
+                Toast.makeText(AuthMethodPickerActivity.this,
+                        "TODO isDone:  " + isDone,
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }

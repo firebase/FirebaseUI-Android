@@ -70,6 +70,8 @@ public class SignInHandler extends AuthViewModelBase {
                 return;
             }
 
+            mFlowHolder.getProgressListener().setValue(false);
+
             Task<AuthResult> base;
             switch (response.getProviderType()) {
                 case EmailAuthProvider.PROVIDER_ID:

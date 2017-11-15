@@ -36,6 +36,8 @@ public class FlowHolder extends ViewModelBase<FlowParameters> {
                 }
             });
 
+    private final MutableLiveData<Boolean> mProgressListener = new MutableLiveData<>();
+
     private FlowParameters mFlowParams;
 
     public FlowHolder(Application application) {
@@ -49,6 +51,10 @@ public class FlowHolder extends ViewModelBase<FlowParameters> {
 
     public LiveData<ActivityResult> getActivityResultListener() {
         return ACTIVITY_RESULT_LISTENER;
+    }
+
+    public MutableLiveData<Boolean> getProgressListener() {
+        return mProgressListener;
     }
 
     public MutableLiveData<Pair<Intent, Integer>> getIntentStarter() {

@@ -30,6 +30,7 @@ public class TwitterProvider implements Provider {
 
     @Override
     public void startLogin(HelperActivityBase activity) {
+        activity.getFlowHolder().getProgressListener().setValue(false);
         mHandler.getClient().authorize(activity, mHandler.getCallback());
     }
 }
