@@ -1,7 +1,5 @@
 <resources>
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">טוען…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">כניסה</string>
-    <string name="fui_general_error" translation_description="Toast text flashing general error">אירעה שגיאה.</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
@@ -19,11 +17,9 @@
     <string name="fui_required_field" translation_description="Inline error for required field">אי אפשר להשאיר את השדה הזה ריק.</string>
     <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">כתובת האימייל שגויה</string>
     <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">כדי להמשיך, עליך להזין כתובת אימייל</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">מחפש חשבונות קיימים…</string>
     <string name="fui_title_register_email" translation_description="Title for signup form">הרשמה</string>
     <string name="fui_name_hint" translation_description="Hint for last name input field">שם מלא</string>
     <string name="fui_button_text_save" translation_description="Button text to save input form">שמור</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">אנחנו רושמים אותך…</string>
     <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך תו אחד (%1$d) לפחות שמכילה אותיות ומספרים</item> <item quantity="two">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> <item quantity="many">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> <item quantity="other">הסיסמה חלשה מדי. סיסמה חזקה היא סיסמה באורך %1$d תווים לפחות שמכילה אותיות ומספרים</item> </plurals>
     <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">לא הצלחנו להשלים את הרישום לחשבון באמצעות כתובת האימייל</string>
     <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">כבר קיים חשבון המשויך לכתובת האימייל הזו.</string>
@@ -36,14 +32,12 @@
     <string name="fui_welcome_back_email_header" translation_description="Message for returning users">ברוכים השבים!</string>
     <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">כבר השתמשת בכתובת %1$s. כדי להמשיך, עליך להיכנס באמצעות %2$s.</string>
     <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">כבר השתמשת בכתובת %1$s. כדי להיכנס. עליך להזין את הסיסמה לחשבון המשויך אליה.</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">נכנס…</string>
     <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">לא מצליח להיכנס?</string>
     <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">שחזור הסיסמה</string>
     <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">שלחנו לך אימייל</string>
     <string name="fui_password_recovery_body" translation_description="Password recovery message body">אנחנו יכולים לשלוח לכתובת הזו הוראות לאיפוס הסיסמה.</string>
     <string name="fui_button_text_send" translation_description="Button text to send recovery email">שלח</string>
     <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">כדי לשחזר את הסיסמה, עליך לפעול לפי ההוראות ששלחנו לכתובת %1$s.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">מתבצעת שליחה…</string>
     <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">אין חשבון המשויך לכתובת האימייל הזו</string>
     <string name="fui_accessibility_logo" translation_description="Content description for app logo">הלוגו של האפליקציה</string>
     <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">הזן את מספר הטלפון שלך</string>
@@ -51,18 +45,11 @@
     <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">הזן את הקוד בן 6 הספרות ששלחנו אל</string>
     <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">שולח קוד חדש בעוד %02d:0</string>
     <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">אמת את מספר הטלפון</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">מאמת…</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">מאחזר SMS…</string>
     <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">הקוד שגוי. נסה שוב.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">אישור</string>
     <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">למספר הטלפון הזה כבר נשלחו יותר מדי קודים</string>
     <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">אירעה בעיה באימות של מספר הטלפון</string>
     <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">הקוד הזה כבר לא בתוקף</string>
     <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">כניסה באמצעות מספר טלפון</string>
-    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">סיום</string>
-    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">אומת.</string>
-    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">הקוד נשלח.</string>
-    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">שולח קוד חדש…</string>
     <string name="fui_resend_code" translation_description="Link text to resend verification sms">שלח קוד חדש</string>
     <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">אמת את מספר הטלפון</string>
     <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">המשך</string>
