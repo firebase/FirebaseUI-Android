@@ -150,9 +150,9 @@ public class AuthUI {
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static final Set<String> SOCIAL_PROVIDERS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-            GoogleAuthProvider.PROVIDER_ID,
-            FacebookAuthProvider.PROVIDER_ID,
-            TwitterAuthProvider.PROVIDER_ID)));
+                    GoogleAuthProvider.PROVIDER_ID,
+                    FacebookAuthProvider.PROVIDER_ID,
+                    TwitterAuthProvider.PROVIDER_ID)));
 
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
 
