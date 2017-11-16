@@ -24,8 +24,6 @@ import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.data.model.FirebaseUiException;
-import com.firebase.ui.auth.data.model.FirebaseUiNetworkException;
-import com.firebase.ui.auth.data.model.FirebaseUiUnknownErrorException;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -38,7 +36,7 @@ public class IdpResponse implements Parcelable {
     private final String mToken;
     private final String mSecret;
 
-    @Nullable private final FirebaseUiException mException;
+    private final FirebaseUiException mException;
 
     private IdpResponse(@NonNull FirebaseUiException e) {
         this(null, null, null, e);
@@ -88,13 +86,7 @@ public class IdpResponse implements Parcelable {
     @Deprecated
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static Intent getErrorCodeIntent(int errorCode) {
-        FirebaseUiException e;
-        if (errorCode == ErrorCodes.NO_NETWORK) {
-            e = new FirebaseUiNetworkException("Unknown network error");
-        } else {
-            e = new FirebaseUiUnknownErrorException("Unknown error: " + errorCode);
-        }
-        return new IdpResponse(e).toIntent();
+        return new IdpResponse(new FirebaseUiException(errorCode)).toIntent();
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -159,10 +151,8 @@ public class IdpResponse implements Parcelable {
     public int getErrorCode() {
         if (isSuccessful()) {
             return Activity.RESULT_OK;
-        } else if (mException instanceof FirebaseUiNetworkException) {
-            return ErrorCodes.NO_NETWORK;
         } else {
-            return ErrorCodes.UNKNOWN_ERROR;
+            return mException.getErrorCode();
         }
     }
 
