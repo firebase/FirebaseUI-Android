@@ -41,6 +41,7 @@ import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
@@ -212,15 +213,10 @@ public class AuthUI {
      */
     @NonNull
     public Task<Void> signOut(@NonNull Context context) {
-        // Firebase Sign out
         mAuth.signOut();
-
-        // Disable credentials auto sign-in
-        Task<Void> disableCredentialsTask =
-                GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn();
-
-        // Wait for all tasks to complete
-        return Tasks.whenAll(signOutIdps(context), disableCredentialsTask);
+        return Tasks.whenAll(
+                signOutIdps(context),
+                GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn());
     }
 
     /**
@@ -233,50 +229,46 @@ public class AuthUI {
      */
     @NonNull
     public Task<Void> delete(@NonNull Context context) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            // If the current user is null, return a failed task immediately
             return Tasks.forException(new FirebaseAuthInvalidUserException(
                     String.valueOf(CommonStatusCodes.SIGN_IN_REQUIRED),
                     "No currently signed in user."));
         }
 
-        // Delete the Firebase user
-        Task<Void> deleteUserTask = currentUser.delete();
+        final List<Credential> credentials = getCredentialsFromFirebaseUser(currentUser);
+        final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
 
-        // Get all SmartLock credentials associated with the user
-        List<Credential> credentials = credentialsFromFirebaseUser(currentUser);
+        // Ensure the order in which tasks are executed properly destructures the user.
+        return signOutIdps(context).continueWithTask(new Continuation<Void, Task<Void>>() {
+            @Override
+            public Task<Void> then(@NonNull Task<Void> task) {
+                task.getResult(); // Propagate exception if there was one
+                return currentUser.delete();
+            }
+        }).continueWithTask(new Continuation<Void, Task<Void>>() {
+            @Override
+            public Task<Void> then(@NonNull Task<Void> task) {
+                task.getResult(); // Propagate exception if there was one
 
-        CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
-        // For each Credential in the list, create a task to delete it.
-        List<Task<?>> credentialTasks = new ArrayList<>();
-        for (Credential credential : credentials) {
-            credentialTasks.add(client.delete(credential));
-        }
-
-        // Create a combined task that will succeed when all credential delete operations
-        // have completed (even if they fail).
-        final Task<Void> combinedCredentialTask = Tasks.whenAll(credentialTasks);
-
-        return Tasks.whenAll(deleteUserTask, signOutIdps(context), combinedCredentialTask);
+                List<Task<?>> credentialTasks = new ArrayList<>();
+                for (Credential credential : credentials) {
+                    credentialTasks.add(client.delete(credential));
+                }
+                return Tasks.whenAll(credentialTasks);
+            }
+        });
     }
 
     private Task<Void> signOutIdps(@NonNull Context context) {
-        // Facebook sign out
         try {
             LoginManager.getInstance().logOut();
-        } catch (NoClassDefFoundError e) {
-            // do nothing
-        }
-
-        // Twitter sign out
-        try {
             TwitterProvider.signOut(context);
         } catch (NoClassDefFoundError e) {
-            // do nothing
+            // Do nothing: this is perfectly fine if the dev doesn't include Facebook/Twitter
+            // support
         }
 
-        // Google sign out
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
     }
 
@@ -284,7 +276,7 @@ public class AuthUI {
      * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
      * for saving since we don't have access to the password.
      */
-    private static List<Credential> credentialsFromFirebaseUser(@NonNull FirebaseUser user) {
+    private static List<Credential> getCredentialsFromFirebaseUser(@NonNull FirebaseUser user) {
         if (TextUtils.isEmpty(user.getEmail()) && TextUtils.isEmpty(user.getPhoneNumber())) {
             return Collections.emptyList();
         }
