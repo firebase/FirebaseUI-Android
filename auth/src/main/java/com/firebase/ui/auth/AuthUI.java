@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +23,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
@@ -33,10 +33,10 @@ import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -144,6 +144,16 @@ public class AuthUI {
                     PHONE_VERIFICATION_PROVIDER
             )));
 
+    /**
+     * The set of social authentication providers supported in Firebase Auth UI.
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static final Set<String> SOCIAL_PROVIDERS =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+            GoogleAuthProvider.PROVIDER_ID,
+            FacebookAuthProvider.PROVIDER_ID,
+            TwitterAuthProvider.PROVIDER_ID)));
+
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
 
     private final FirebaseApp mApp;
@@ -206,13 +216,8 @@ public class AuthUI {
         mAuth.signOut();
 
         // Disable credentials auto sign-in
-        CredentialsClient client;
-        if (context instanceof Activity) {
-            client = Credentials.getClient((Activity) context);
-        } else {
-            client = Credentials.getClient(context);
-        }
-        Task<Void> disableCredentialsTask = client.disableAutoSignIn();
+        Task<Void> disableCredentialsTask =
+                GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn();
 
         // Wait for all tasks to complete
         return Tasks.whenAll(signOutIdps(context), disableCredentialsTask);
@@ -242,12 +247,7 @@ public class AuthUI {
         // Get all SmartLock credentials associated with the user
         List<Credential> credentials = credentialsFromFirebaseUser(currentUser);
 
-        CredentialsClient client;
-        if (context instanceof Activity) {
-            client = Credentials.getClient((Activity) context);
-        } else {
-            client = Credentials.getClient(context);
-        }
+        CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
         // For each Credential in the list, create a task to delete it.
         List<Task<?>> credentialTasks = new ArrayList<>();
         for (Credential credential : credentials) {
