@@ -15,6 +15,7 @@
 package com.firebase.ui.auth;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -25,20 +26,20 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.remote.GoogleSignInHelper;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.auth.api.credentials.Credentials;
+import com.google.android.gms.auth.api.credentials.CredentialsClient;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
@@ -46,6 +47,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -192,40 +194,27 @@ public class AuthUI {
     /**
      * Signs the current user out, if one is signed in.
      *
-     * @param activity the activity requesting the user be signed out
+     * @param context the context requesting the user be signed out
      * @return A task which, upon completion, signals that the user has been signed out ({@link
      * Task#isSuccessful()}, or that the sign-out attempt failed unexpectedly !{@link
      * Task#isSuccessful()}).
      */
     @NonNull
-    public Task<Void> signOut(@NonNull FragmentActivity activity) {
-        // Get Credentials Helper
-        GoogleSignInHelper signInHelper = GoogleSignInHelper.newInstance(activity);
-
+    public Task<Void> signOut(@NonNull Context context) {
         // Firebase Sign out
         mAuth.signOut();
 
         // Disable credentials auto sign-in
-        Task<Status> disableCredentialsTask = signInHelper.disableAutoSignIn();
-
-        // Google sign out
-        Task<Status> signOutTask = signInHelper.signOut();
-
-        // Facebook sign out
-        try {
-            LoginManager.getInstance().logOut();
-        } catch (NoClassDefFoundError e) {
-            // do nothing
+        CredentialsClient client;
+        if (context instanceof Activity) {
+            client = Credentials.getClient((Activity) context);
+        } else {
+            client = Credentials.getClient(context);
         }
+        Task<Void> disableCredentialsTask = client.disableAutoSignIn();
 
-        // Twitter sign out
-        try {
-            TwitterSignInHandler.signOut(activity);
-        } catch (NoClassDefFoundError e) {
-            // do nothing
-        }
         // Wait for all tasks to complete
-        return Tasks.whenAll(disableCredentialsTask, signOutTask);
+        return Tasks.whenAll(signOutIdps(context), disableCredentialsTask);
     }
 
     /**
@@ -234,17 +223,16 @@ public class AuthUI {
      * fails if the Firebase Auth deletion fails. Credentials deletion failures are handled
      * silently.
      *
-     * @param activity the calling {@link Activity}.
+     * @param context the calling {@link Context}.
      */
     @NonNull
-    public Task<Void> delete(@NonNull FragmentActivity activity) {
+    public Task<Void> delete(@NonNull Context context) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             // If the current user is null, return a failed task immediately
             return Tasks.forException(new FirebaseAuthInvalidUserException(
                     String.valueOf(ErrorCodes.UNKNOWN_ERROR), "No currently signed in user."));
         }
-        GoogleSignInHelper signInHelper = GoogleSignInHelper.newInstance(activity);
 
         // Delete the Firebase user
         Task<Void> deleteUserTask = currentUser.delete();
@@ -255,26 +243,40 @@ public class AuthUI {
         // For each Credential in the list, create a task to delete it.
         List<Task<?>> credentialTasks = new ArrayList<>();
         for (Credential credential : credentials) {
-            credentialTasks.add(signInHelper.delete(credential));
+            CredentialsClient client;
+            if (context instanceof Activity) {
+                client = Credentials.getClient((Activity) context);
+            } else {
+                client = Credentials.getClient(context);
+            }
+
+            credentialTasks.add(client.delete(credential));
         }
 
         // Create a combined task that will succeed when all credential delete operations
         // have completed (even if they fail).
         final Task<Void> combinedCredentialTask = Tasks.whenAll(credentialTasks);
 
-        // Chain the Firebase Auth delete task with the combined Credentials task
-        // and return.
-        return deleteUserTask.continueWithTask(new Continuation<Void, Task<Void>>() {
-            @Override
-            public Task<Void> then(@NonNull Task<Void> task) throws Exception {
-                // Call getResult() to propagate failure by throwing an exception
-                // if there was one.
-                task.getResult(Exception.class);
+        return Tasks.whenAll(deleteUserTask, signOutIdps(context), combinedCredentialTask);
+    }
 
-                // Return the combined credential task
-                return combinedCredentialTask;
-            }
-        });
+    private Task<Void> signOutIdps(@NonNull Context context) {
+        // Facebook sign out
+        try {
+            LoginManager.getInstance().logOut();
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
+
+        // Twitter sign out
+        try {
+            TwitterSignInHandler.signOut(context);
+        } catch (NoClassDefFoundError e) {
+            // do nothing
+        }
+
+        // Google sign out
+        return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
     }
 
     /**
@@ -288,11 +290,18 @@ public class AuthUI {
 
         List<Credential> credentials = new ArrayList<>();
         for (UserInfo userInfo : user.getProviderData()) {
+            if (FirebaseAuthProvider.PROVIDER_ID.equals(userInfo.getProviderId())) {
+                continue;
+            }
+
+            String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
+
             credentials.add(new Credential.Builder(
                     user.getEmail() == null ? user.getPhoneNumber() : user.getEmail())
-                    .setAccountType(ProviderUtils.providerIdToAccountType(userInfo.getProviderId()))
+                    .setAccountType(type)
                     .build());
         }
+
         return credentials;
     }
 

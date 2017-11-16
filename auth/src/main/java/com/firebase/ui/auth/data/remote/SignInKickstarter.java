@@ -21,16 +21,15 @@ import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneNumberActivity;
 import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.data.remote.InternalGoogleApiConnector;
 import com.firebase.ui.auth.util.ui.FlowHolder;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
+import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
+import com.google.android.gms.auth.api.credentials.Credentials;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -66,7 +65,13 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
     public void start() {
         if (mFlowHolder.getParams().enableCredentials) {
             mFlowHolder.getProgressListener().setValue(false);
-            new CredentialRequestFlow().start();
+
+            Credentials.getClient(getApplication()).request(
+                    new CredentialRequest.Builder()
+                            .setPasswordLoginSupported(true)
+                            .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
+                            .build())
+                    .addOnCompleteListener(new CredentialRequestFlow());
         } else {
             startAuthMethodChoice();
         }
@@ -131,6 +136,20 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
         }
     }
 
+    private List<String> getSupportedAccountTypes() {
+        List<String> accounts = new ArrayList<>();
+        for (AuthUI.IdpConfig idpConfig : mFlowHolder.getParams().providerInfo) {
+            @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
+            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
+                    || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
+                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)
+                    || providerId.equals(PhoneAuthProvider.PROVIDER_ID)) {
+                accounts.add(ProviderUtils.providerIdToAccountType(providerId));
+            }
+        }
+        return accounts;
+    }
+
     @Override
     public void onChanged(@Nullable ActivityResult result) {
         switch (result.getRequestCode()) {
@@ -151,59 +170,26 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
         mFlowHolder.getActivityResultListener().removeObserver(this);
     }
 
-    private class CredentialRequestFlow extends InternalGoogleApiConnector
-            implements ResultCallback<CredentialRequestResult> {
-        protected CredentialRequestFlow() {
-            super(new GoogleApiClient.Builder(getApplication())
-                    .addApi(Auth.CREDENTIALS_API), mFlowHolder);
-        }
-
-        public void start() {
-            connect();
+    private class CredentialRequestFlow implements OnCompleteListener<CredentialRequestResponse>,
+            Observer<ActivityResult> {
+        public CredentialRequestFlow() {
+            mFlowHolder.getActivityResultListener().observeForever(this);
         }
 
         @Override
-        public void onConnected(@Nullable Bundle bundle) {
-            Auth.CredentialsApi.request(
-                    mClient,
-                    new CredentialRequest.Builder()
-                            .setPasswordLoginSupported(true)
-                            .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
-                            .build())
-                    .setResultCallback(this);
-        }
-
-        private List<String> getSupportedAccountTypes() {
-            List<String> accounts = new ArrayList<>();
-            for (AuthUI.IdpConfig idpConfig : mFlowHolder.getParams().providerInfo) {
-                @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
-                if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
-                        || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                        || providerId.equals(TwitterAuthProvider.PROVIDER_ID)
-                        || providerId.equals(PhoneAuthProvider.PROVIDER_ID)) {
-                    accounts.add(ProviderUtils.providerIdToAccountType(providerId));
-                }
-            }
-            return accounts;
-        }
-
-        @Override
-        public void onResult(@NonNull CredentialRequestResult result) {
-            Status status = result.getStatus();
-
-            if (status.isSuccess()) {
-                handleCredential(result.getCredential());
-            } else if (status.hasResolution()
-                    && status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+        public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
+            try {
+                handleCredential(task.getResult(ApiException.class).getCredential());
+            } catch (ResolvableApiException e) {
                 mFlowHolder.getPendingIntentStarter().setValue(Pair.create(
-                        status.getResolution(),
+                        e.getResolution(),
                         RC_CREDENTIALS_READ));
                 return;
-            } else {
+            } catch (ApiException e) {
                 startAuthMethodChoice();
             }
 
-            disconnect();
+            mFlowHolder.getActivityResultListener().removeObserver(this);
         }
 
         private void handleCredential(Credential credential) {
@@ -236,7 +222,6 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
 
         @Override
         public void onChanged(@Nullable ActivityResult result) {
-            super.onChanged(result);
             if (result.getRequestCode() == RC_CREDENTIALS_READ) {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     handleCredential(
@@ -245,13 +230,8 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
                     startAuthMethodChoice();
                 }
 
-                disconnect();
+                mFlowHolder.getActivityResultListener().removeObserver(this);
             }
-        }
-
-        @Override
-        protected void onConnectionFailedIrreparably() {
-            startAuthMethodChoice();
         }
     }
 }

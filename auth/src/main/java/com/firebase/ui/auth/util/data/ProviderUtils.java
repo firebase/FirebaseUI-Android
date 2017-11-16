@@ -69,10 +69,10 @@ public final class ProviderUtils {
                 return IdentityProviders.FACEBOOK;
             case TwitterAuthProvider.PROVIDER_ID:
                 return IdentityProviders.TWITTER;
-            case EmailAuthProvider.PROVIDER_ID:
-                // The account type for email/password creds is null
             case PhoneAuthProvider.PROVIDER_ID:
                 return PHONE_IDENTITY;
+            // The account type for email/password creds is null
+            case EmailAuthProvider.PROVIDER_ID:
             default:
                 return null;
         }

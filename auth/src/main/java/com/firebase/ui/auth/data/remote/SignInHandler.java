@@ -7,7 +7,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.os.Bundle;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -24,17 +24,17 @@ import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
-import com.firebase.ui.auth.util.data.remote.InternalGoogleApiConnector;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
+import com.google.android.gms.auth.api.credentials.Credentials;
+import com.google.android.gms.auth.api.credentials.CredentialsClient;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -44,6 +44,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+
+import java.lang.reflect.Constructor;
 
 public class SignInHandler extends AuthViewModelBase {
     private static final int RC_ACCOUNT_LINK = 11;
@@ -89,7 +91,13 @@ public class SignInHandler extends AuthViewModelBase {
                     base = handleIdp(response);
             }
             base.continueWithTask(new ProfileMerger(response))
-                    .addOnSuccessListener(new SaveCredentialFlow(response))
+                    .continueWithTask(new SaveCredentialFlow(response))
+                    .addOnSuccessListener(new OnSuccessListener<IdpResponse>() {
+                        @Override
+                        public void onSuccess(IdpResponse response) {
+                            SIGN_IN_LISTENER.setValue(response);
+                        }
+                    })
                     .addOnFailureListener(new FailureFlow(response));
         } else {
             SIGN_IN_LISTENER.setValue(response);
@@ -143,6 +151,7 @@ public class SignInHandler extends AuthViewModelBase {
         LifecycleOwner owner = new LifecycleOwner() {
             private final Lifecycle mLifecycle = new LifecycleRegistry(this);
 
+            @NonNull
             @Override
             public Lifecycle getLifecycle() {
                 return mLifecycle;
@@ -151,98 +160,117 @@ public class SignInHandler extends AuthViewModelBase {
         final LifecycleRegistry lifecycle = (LifecycleRegistry) owner.getLifecycle();
 
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-        GoogleSignInHelper.newInstance(getApplication(), owner)
-                .delete(new Credential.Builder(id).build())
-                .addOnCompleteListener(new OnCompleteListener<Status>() {
+        Credentials.getClient(getApplication()).delete(new Credential.Builder(id).build())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<Status> task) {
+                    public void onComplete(@NonNull Task<Void> task) {
                         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
                     }
                 });
     }
 
-    private class SaveCredentialFlow extends InternalGoogleApiConnector
-            implements OnSuccessListener<AuthResult>, ResultCallback<Status> {
+    private class SaveCredentialFlow implements Continuation<AuthResult, Task<IdpResponse>>,
+            Observer<ActivityResult>, OnSuccessListener<Void>, OnFailureListener {
         private static final int RC_SAVE = 12;
 
         private final IdpResponse mResponse;
+        private final TaskCompletionSource<IdpResponse> mFinished = new TaskCompletionSource<>();
 
         public SaveCredentialFlow(IdpResponse response) {
-            super(new GoogleApiClient.Builder(getApplication()).addApi(Auth.CREDENTIALS_API),
-                    mFlowHolder);
             mResponse = response;
+
+            mFlowHolder.getActivityResultListener().observeForever(this);
         }
 
         @Override
-        public void onSuccess(AuthResult result) {
+        public Task<IdpResponse> then(@NonNull Task<AuthResult> task) {
+            task.getResult(); // Rethrow exception if there was one.
+
             if (mFlowHolder.getParams().enableCredentials) {
-                connect();
-            } else {
-                finish();
-            }
-        }
+                User user = mResponse.getUser();
 
-        @Override
-        public void onConnected(@Nullable Bundle bundle) {
-            User user = mResponse.getUser();
-
-            Credential.Builder builder;
-            if (TextUtils.isEmpty(user.getEmail())) {
-                builder = new Credential.Builder(user.getPhoneNumber());
-            } else {
-                builder = new Credential.Builder(user.getEmail());
-
-                String number = user.getPhoneNumber();
-                if (!TextUtils.isEmpty(number)) {
-                    // Delete the phone number credential if there is one in favor of
-                    // safer and easier password/idp creds
-                    deleteCredential(number);
-                }
-            }
-
-            if (mResponse.getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
-                builder.setPassword(mResponse.getPassword());
-            } else {
-                builder.setAccountType(ProviderUtils.providerIdToAccountType(
-                        mResponse.getProviderType()));
-            }
-
-            builder.setName(user.getName());
-            builder.setProfilePictureUri(user.getPhotoUri());
-            Auth.CredentialsApi.save(mClient, builder.build()).setResultCallback(this);
-        }
-
-        @Override
-        public void onResult(@NonNull Status status) {
-            if (status.isSuccess()) {
-                finish();
-            } else {
-                if (status.hasResolution()) {
-                    // This will prompt the user if the credential is new.
-                    mFlowHolder.getPendingIntentStarter()
-                            .setValue(Pair.create(status.getResolution(), RC_SAVE));
+                Credential.Builder builder;
+                if (TextUtils.isEmpty(user.getEmail())) {
+                    builder = new Credential.Builder(user.getPhoneNumber());
                 } else {
-                    finish();
+                    builder = new Credential.Builder(user.getEmail());
+
+                    String number = user.getPhoneNumber();
+                    if (!TextUtils.isEmpty(number)) {
+                        // Delete the phone number credential if there is one in favor of
+                        // safer and easier password/idp creds
+                        deleteCredential(number);
+                    }
                 }
+
+                if (mResponse.getProviderType().equals(EmailAuthProvider.PROVIDER_ID)) {
+                    builder.setPassword(mResponse.getPassword());
+                } else {
+                    builder.setAccountType(ProviderUtils.providerIdToAccountType(
+                            mResponse.getProviderType()));
+                }
+
+                builder.setName(user.getName());
+                builder.setProfilePictureUri(user.getPhotoUri());
+
+
+                CredentialsClient client;
+                try {
+                    // TODO Hmmm...
+                    Constructor<CredentialsClient> clientConstructor = CredentialsClient.class
+                            .getDeclaredConstructor(
+                                    Context.class, Auth.AuthCredentialsOptions.class);
+                    Constructor<Auth.AuthCredentialsOptions> optionsConstructor =
+                            Auth.AuthCredentialsOptions.class
+                                    .getDeclaredConstructor(Auth.AuthCredentialsOptions.Builder.class);
+
+                    clientConstructor.setAccessible(true);
+                    optionsConstructor.setAccessible(true);
+
+                    client = clientConstructor.newInstance(
+                            getApplication(),
+                            optionsConstructor.newInstance(
+                                    new Auth.AuthCredentialsOptions.Builder().forceEnableSaveDialog()));
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+                client.save(builder.build())
+                        .addOnSuccessListener(this)
+                        .addOnFailureListener(this);
+            } else {
+                finish();
+            }
+
+            return mFinished.getTask();
+        }
+
+        @Override
+        public void onSuccess(Void aVoid) {
+            finish();
+        }
+
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            if (e instanceof ResolvableApiException) {
+                // This will prompt the user if the credential is new.
+                mFlowHolder.getPendingIntentStarter().setValue(Pair.create(
+                        ((ResolvableApiException) e).getResolution(),
+                        RC_SAVE));
+            } else {
+                finish();
             }
         }
 
         @Override
         public void onChanged(@Nullable ActivityResult result) {
-            super.onChanged(result);
             if (result.getRequestCode() == RC_SAVE) {
                 finish();
             }
         }
 
-        @Override
-        protected void onConnectionFailedIrreparably() {
-            finish();
-        }
-
         private void finish() {
-            disconnect();
-            SIGN_IN_LISTENER.setValue(mResponse);
+            mFlowHolder.getActivityResultListener().removeObserver(this);
+            mFinished.setResult(mResponse);
         }
     }
 

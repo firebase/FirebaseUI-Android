@@ -2,7 +2,6 @@ package com.firebase.ui.auth.ui.phone;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
@@ -20,10 +19,9 @@ import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.SingleLiveEvent;
 import com.firebase.ui.auth.util.ui.FlowHolder;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.HintRequest;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -69,15 +67,12 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
         mFlowHolder.getProgressListener().setValue(false);
 
         if (mPhoneNumber == null) {
-            mFlowHolder.getPendingIntentStarter()
-                    .setValue(Pair.create(getPhoneNumberHintIntent(), RC_HINT));
+            mFlowHolder.getPendingIntentStarter().setValue(Pair.create(
+                    Credentials.getClient(getApplication()).getHintPickerIntent(
+                            new HintRequest.Builder().setPhoneNumberIdentifierSupported(true)
+                                    .build()),
+                    RC_HINT));
         }
-    }
-
-    private PendingIntent getPhoneNumberHintIntent() {
-        return Auth.CredentialsApi.getHintPickerIntent(
-                new GoogleApiClient.Builder(getApplication()).addApi(Auth.CREDENTIALS_API).build(),
-                new HintRequest.Builder().setPhoneNumberIdentifierSupported(true).build());
     }
 
     @Override
