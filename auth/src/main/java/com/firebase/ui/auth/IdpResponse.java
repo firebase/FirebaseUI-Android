@@ -23,6 +23,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
+import com.firebase.ui.auth.data.model.NetworkException;
 import com.firebase.ui.auth.ui.ExtraConstants;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -33,20 +34,25 @@ import com.google.firebase.auth.TwitterAuthProvider;
  */
 public class IdpResponse implements Parcelable {
     private final User mUser;
+
     private final String mToken;
     private final String mSecret;
 
-    private final int mErrorCode;
+    @Nullable private final Exception mException;
 
-    private IdpResponse(int errorCode) {
-        this(null, null, null, errorCode);
+    private IdpResponse(Exception e) {
+        this(null, null, null, e);
     }
 
-    private IdpResponse(User user, String token, String secret, int errorCode) {
+    private IdpResponse(
+            User user,
+            String token,
+            String secret,
+            @Nullable Exception e) {
         mUser = user;
         mToken = token;
         mSecret = secret;
-        mErrorCode = errorCode;
+        mException = e;
     }
 
     /**
@@ -65,13 +71,33 @@ public class IdpResponse implements Parcelable {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static IdpResponse fromError(@NonNull Exception e) {
+        return new IdpResponse(e);
+    }
+
+    /**
+     * @deprecated migrate internals to {@link #fromError(Exception)}
+     */
+    @Deprecated
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static Intent getErrorCodeIntent(int errorCode) {
-        return new IdpResponse(errorCode).toIntent();
+        Exception e;
+        if (errorCode == ErrorCodes.NO_NETWORK) {
+            e = new NetworkException("Unknown network error");
+        } else {
+            e = new Exception("Unknown error: " + errorCode);
+        }
+        return new IdpResponse(e).toIntent();
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public Intent toIntent() {
         return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public boolean isSuccessful() {
+        return mException == null;
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -124,7 +150,19 @@ public class IdpResponse implements Parcelable {
      * Get the error code for a failed sign in
      */
     public int getErrorCode() {
-        return mErrorCode;
+        if (isSuccessful()) {
+            return Activity.RESULT_OK;
+        } else if (mException instanceof NetworkException) {
+            return ErrorCodes.NO_NETWORK;
+        } else {
+            return ErrorCodes.UNKNOWN_ERROR;
+        }
+    }
+
+    @Nullable
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public Exception getException() {
+        return mException;
     }
 
     @Override
@@ -137,7 +175,7 @@ public class IdpResponse implements Parcelable {
         dest.writeParcelable(mUser, flags);
         dest.writeString(mToken);
         dest.writeString(mSecret);
-        dest.writeInt(mErrorCode);
+        dest.writeSerializable(mException);
     }
 
     public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
@@ -147,7 +185,7 @@ public class IdpResponse implements Parcelable {
                     in.<User>readParcelable(User.class.getClassLoader()),
                     in.readString(),
                     in.readString(),
-                    in.readInt()
+                    (Exception) in.readSerializable()
             );
         }
 
@@ -159,7 +197,8 @@ public class IdpResponse implements Parcelable {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static class Builder {
-        private User mUser;
+        private final User mUser;
+
         private String mToken;
         private String mSecret;
 
@@ -179,20 +218,23 @@ public class IdpResponse implements Parcelable {
 
         public IdpResponse build() {
             String providerId = mUser.getProviderId();
-            if ((providerId.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)
-                    || providerId.equalsIgnoreCase(FacebookAuthProvider.PROVIDER_ID)
-                    || providerId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID))
+            if (!AuthUI.SUPPORTED_PROVIDERS.contains(providerId)) {
+                throw new IllegalStateException("Unknown provider: " + providerId);
+            }
+            if ((providerId.equals(GoogleAuthProvider.PROVIDER_ID)
+                    || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
+                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID))
                     && TextUtils.isEmpty(mToken)) {
                 throw new IllegalStateException(
                         "Token cannot be null when using a non-email provider.");
             }
-            if (providerId.equalsIgnoreCase(TwitterAuthProvider.PROVIDER_ID)
+            if (providerId.equals(TwitterAuthProvider.PROVIDER_ID)
                     && TextUtils.isEmpty(mSecret)) {
                 throw new IllegalStateException(
                         "Secret cannot be null when using the Twitter provider.");
             }
 
-            return new IdpResponse(mUser, mToken, mSecret, Activity.RESULT_OK);
+            return new IdpResponse(mUser, mToken, mSecret, null);
         }
     }
 }

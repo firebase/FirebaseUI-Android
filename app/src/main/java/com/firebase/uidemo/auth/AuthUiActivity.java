@@ -17,6 +17,7 @@ package com.firebase.uidemo.auth;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.StringRes;
@@ -148,12 +149,20 @@ public class AuthUiActivity extends AppCompatActivity {
         setContentView(R.layout.auth_ui_layout);
         ButterKnife.bind(this);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            startSignedInActivity(null);
-            finish();
-            return;
-        }
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                // We need to post this to the main thread to ensure `onActivityResult` is called
+                // first. Otherwise, coming back from a deeply nested hierarchy kills this activity
+                // and we don't show the IdpResponse
+
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                if (auth.getCurrentUser() != null) {
+                    startSignedInActivity(null);
+                    finish();
+                }
+            }
+        });
 
         if (isGoogleMisconfigured()) {
             mUseGoogleProvider.setChecked(false);
