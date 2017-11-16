@@ -12,7 +12,15 @@ from a [`StorageReference`][storage-reference] and display it using the popular
 [Glide][glide] library. This technique allows you to get all of Glide's performance
 benefits while leveraging Cloud Storage's authenticated storage capabilities.
 
-To load an image from a `StorageReference`, first register in your `AppGlideModule`:
+If you're not already using Glide in your application, add the following dependencies
+to your `app/build.gradle` file:
+
+```groovy
+compile 'com.github.bumptech.glide:glide:4.1.1'
+annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
+```
+
+To load an image from a `StorageReference`, first register an `AppGlideModule`:
 
 ```java
 @GlideModule
@@ -27,7 +35,12 @@ public class MyAppGlideModule extends AppGlideModule {
 }
 ```
 
-Then you can load a `StorageReference` into an `ImageView`:
+The class `MyAppGlideModule` can live anywhere in your source directory and is
+processed by the Glide annotation processor at compile time in order to create
+the `GlideApp` class.
+
+Once you have created an `AppGlideModule` class and done a clean build,
+you can use `GlideApp` to load a `StorageReference` into an `ImageView`:
 
 ```java
 // Reference to an image file in Cloud Storage
