@@ -242,16 +242,15 @@ public class AuthUI {
         // Get all SmartLock credentials associated with the user
         List<Credential> credentials = credentialsFromFirebaseUser(currentUser);
 
+        CredentialsClient client;
+        if (context instanceof Activity) {
+            client = Credentials.getClient((Activity) context);
+        } else {
+            client = Credentials.getClient(context);
+        }
         // For each Credential in the list, create a task to delete it.
         List<Task<?>> credentialTasks = new ArrayList<>();
         for (Credential credential : credentials) {
-            CredentialsClient client;
-            if (context instanceof Activity) {
-                client = Credentials.getClient((Activity) context);
-            } else {
-                client = Credentials.getClient(context);
-            }
-
             credentialTasks.add(client.delete(credential));
         }
 
