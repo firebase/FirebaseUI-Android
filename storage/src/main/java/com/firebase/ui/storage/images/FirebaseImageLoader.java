@@ -149,11 +149,13 @@ public class FirebaseImageLoader implements ModelLoader<StorageReference, InputS
             }
         }
 
+        @NonNull
         @Override
         public Class<InputStream> getDataClass() {
             return InputStream.class;
         }
 
+        @NonNull
         @Override
         public DataSource getDataSource() {
             return DataSource.REMOTE;
