@@ -38,21 +38,24 @@ dependencies {
     implementation "com.android.support:customtabs:$supportLibraryVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
 
+    implementation "android.arch.lifecycle:extensions:$architectureVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
+
     api "com.google.firebase:firebase-auth:$firebaseVersion"
     api "com.google.android.gms:play-services-auth:$firebaseVersion"
 
-    compileOnly 'com.facebook.android:facebook-login:4.27.0'
+    compileOnly 'com.facebook.android:facebook-login:4.28.0'
     // Needed to override Facebook
     implementation "com.android.support:cardview-v7:$supportLibraryVersion"
     implementation "com.android.support:customtabs:$supportLibraryVersion"
-    compileOnly("com.twitter.sdk.android:twitter-core:3.1.0@aar") { transitive = true }
+    compileOnly("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }
 
     testImplementation 'junit:junit:4.12'
     //noinspection GradleDynamicVersion
-    testImplementation 'org.mockito:mockito-core:2.11.+'
-    testImplementation 'org.robolectric:robolectric:3.4.2'
-    testImplementation 'com.facebook.android:facebook-login:4.27.0'
-    testImplementation("com.twitter.sdk.android:twitter-core:3.1.0@aar") { transitive = true }
+    testImplementation 'org.mockito:mockito-core:2.12.+'
+    testImplementation 'org.robolectric:robolectric:3.5.1'
+    testImplementation 'com.facebook.android:facebook-login:4.28.0'
+    testImplementation("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }
 }
 
 javadoc.include([
