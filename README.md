@@ -18,7 +18,7 @@ A compatible FirebaseUI client is also available for [iOS](https://github.com/fi
 
 ## Usage
 
-FirebaseUI has separate modules for using Firebase Realtime Database, Cloud Firestore, 
+FirebaseUI has separate modules for using Firebase Realtime Database, Cloud Firestore,
 Firebase Auth, and Cloud Storage. To get started, see the individual instructions for each module:
 
   * [firebase-ui-database](database/README.md)
@@ -38,17 +38,17 @@ libraries.
 
 ```groovy
 dependencies {
-    // FirebaseUI for Firebase Realtime Database
-    compile 'com.firebaseui:firebase-ui-database:3.1.0'
-    
-    // FirebaseUI for Cloud Firestore
-    compile 'com.firebaseui:firebase-ui-firestore:3.1.0'
+// FirebaseUI for Firebase Realtime Database
+implementation 'com.firebaseui:firebase-ui-database:3.1.0'
 
-    // FirebaseUI for Firebase Auth
-    compile 'com.firebaseui:firebase-ui-auth:3.1.0'
+// FirebaseUI for Cloud Firestore
+implementation 'com.firebaseui:firebase-ui-firestore:3.1.0'
 
-    // FirebaseUI for Cloud Storage
-    compile 'com.firebaseui:firebase-ui-storage:3.1.0'
+// FirebaseUI for Firebase Auth
+implementation 'com.firebaseui:firebase-ui-auth:3.1.0'
+
+// FirebaseUI for Cloud Storage
+implementation 'com.firebaseui:firebase-ui-storage:3.1.0'
 }
 ```
 
@@ -88,7 +88,8 @@ firebase-ui-storage
 
 Each version of FirebaseUI has dependency on a fixed version of these libraries, defined as the variable `firebase_version`
 in `common/constants.gradle`.  If you are using any dependencies in your app of the form
-`compile 'com.google.firebase:firebase-*:x.y.z'` or `compile 'com.google.android.gms:play-services-*:x.y.z'`
+`implementation 'com.google.firebase:firebase-*:x.y.z'` or
+`implementation 'com.google.android.gms:play-services-*:x.y.z'`
 you need to make sure that you use the same version that your chosen version of FirebaseUI requires.
 
 For convenience, here are some recent examples:
@@ -112,59 +113,59 @@ For convenience, here are some recent examples:
 
 If you would like to use a newer version of one of FirebaseUI's transitive dependencies, such
 as Firebase, Play services, or the Android support libraries, you need to add explicit
-`compile` declarations in your `build.gradle` for all of FirebaseUI's dependencies at the version
+`implementation` declarations in your `build.gradle` for all of FirebaseUI's dependencies at the version
 you want to use. For example if you want to use Play services/Firebase version `FOO` and support
 libraries version `BAR` add the following extra lines for each FirebaseUI module you're using:
 
 Auth:
 
 ```groovy
-compile "com.google.firebase:firebase-auth:$FOO"
-compile "com.google.android.gms:play-services-auth:$FOO"
+implementation "com.google.firebase:firebase-auth:$FOO"
+implementation "com.google.android.gms:play-services-auth:$FOO"
 
-compile "com.android.support:design:$BAR"
-compile "com.android.support:customtabs:$BAR"
-compile "com.android.support:cardview-v7:$BAR"
+implementation "com.android.support:design:$BAR"
+implementation "com.android.support:customtabs:$BAR"
+implementation "com.android.support:cardview-v7:$BAR"
 ```
 
 Realtime Database:
 
 ```groovy
-compile "com.google.firebase:firebase-database:$FOO"
+implementation "com.google.firebase:firebase-database:$FOO"
 
-compile "com.android.support:recyclerview-v7:$BAR"
-compile "com.android.support:support-v4:$BAR"
+implementation "com.android.support:recyclerview-v7:$BAR"
+implementation "com.android.support:support-v4:$BAR"
 ```
 
 Firestore:
 
 ```groovy
-compile "com.google.firebase:firebase-firestore:$FOO"
+implementation "com.google.firebase:firebase-firestore:$FOO"
 
-compile "com.android.support:recyclerview-v7:$BAR"
-compile "com.android.support:support-v4:$BAR"
+implementation "com.android.support:recyclerview-v7:$BAR"
+implementation "com.android.support:support-v4:$BAR"
 ```
 
 Storage:
 
 ```groovy
-compile "com.google.firebase:firebase-storage:$FOO"
+implementation "com.google.firebase:firebase-storage:$FOO"
 
-compile "com.android.support:appcompat-v7:$BAR"
-compile "com.android.support:palette-v7:$BAR"
+implementation "com.android.support:appcompat-v7:$BAR"
+implementation "com.android.support:palette-v7:$BAR"
 ```
 
 NOTE :
-Starting version 25.4.0, support libraries are now available through [Google's Maven repository](https://developer.android.com/studio/build/dependencies.html#google-maven), so ensure that you have that added to your project's repositories.
+Starting version 25.4.0, support libraries are now available through
+[Google's Maven repository](https://developer.android.com/studio/build/dependencies.html#google-maven),
+so ensure that you have that added to your project's repositories.
 
 Open the `build.gradle` file for your project and modify it as following,
 
 ```
 allprojects {
     repositories {
-        maven {
-            url "https://maven.google.com"
-        }
+        google()
         jcenter()
     }
 }
