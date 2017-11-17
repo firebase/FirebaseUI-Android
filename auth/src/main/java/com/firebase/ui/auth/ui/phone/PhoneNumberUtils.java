@@ -15,6 +15,7 @@
  *
  * Modifications copyright (C) 2017 Google Inc
  */
+
 package com.firebase.ui.auth.ui.phone;
 
 import android.content.Context;
