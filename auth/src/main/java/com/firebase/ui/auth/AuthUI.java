@@ -29,9 +29,13 @@ import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 
 import com.facebook.login.LoginManager;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -277,7 +281,7 @@ public class AuthUI {
     private Task<Void> signOutIdps(@NonNull Context context) {
         try {
             LoginManager.getInstance().logOut();
-            TwitterProvider.signOut(context);
+            TwitterSignInHandler.signOut(context);
         } catch (NoClassDefFoundError e) {
             // Do nothing: this is perfectly fine if the dev doesn't include Facebook/Twitter
             // support
@@ -301,7 +305,7 @@ public class AuthUI {
                 continue;
             }
 
-            String type = SaveSmartLock.providerIdToAccountType(userInfo.getProviderId());
+            String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
 
             credentials.add(new Credential.Builder(
                     user.getEmail() == null ? user.getPhoneNumber() : user.getEmail())
