@@ -281,10 +281,18 @@ public class AuthUI {
     private Task<Void> signOutIdps(@NonNull Context context) {
         try {
             LoginManager.getInstance().logOut();
-            TwitterProvider.signOut(context);
         } catch (NoClassDefFoundError e) {
             // Do nothing: this is perfectly fine if the dev doesn't include Facebook/Twitter
             // support
+        }
+
+        try {
+            TwitterProvider.signOut(context);
+        } catch (NoClassDefFoundError e) {
+            // See comment above
+            // Note: we need to have speperate try/catch statements since devs can include
+            // _either_ one of the providers. If one crashes, we still need to sign out of
+            // the other one.
         }
 
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
