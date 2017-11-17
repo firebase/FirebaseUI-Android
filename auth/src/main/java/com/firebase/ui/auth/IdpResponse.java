@@ -82,6 +82,11 @@ public class IdpResponse implements Parcelable {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static IdpResponse fromError(@NonNull Exception e) {
+        return fromError(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, e));
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static IdpResponse fromError(@NonNull FirebaseUiException e) {
         return new IdpResponse(e);
     }

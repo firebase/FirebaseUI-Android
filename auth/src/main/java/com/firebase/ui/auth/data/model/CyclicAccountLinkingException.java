@@ -2,6 +2,8 @@ package com.firebase.ui.auth.data.model;
 
 import android.support.annotation.NonNull;
 
+import com.firebase.ui.auth.ErrorCodes;
+
 /**
  * Represents a sign-in failure that requires manual data transfer on the client's part.
  * <p>
@@ -12,8 +14,8 @@ import android.support.annotation.NonNull;
  * For example, the user is logged-in anonymously, has a Google account, and tries to log in with
  * Facebook.
  */
-public class CyclicAccountLinkingException extends UnknownErrorException {
+public class CyclicAccountLinkingException extends FirebaseUiException {
     public CyclicAccountLinkingException(@NonNull String detailMessage) {
-        super(detailMessage);
+        super(ErrorCodes.LINK_FAILURE, detailMessage);
     }
 }
