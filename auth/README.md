@@ -45,14 +45,16 @@ Gradle, add the dependency:
 
 ```groovy
 dependencies {
-    // ...
-    compile 'com.firebaseui:firebase-ui-auth:3.1.0'
+// ...
+implementation 'com.firebaseui:firebase-ui-auth:3.1.0'
 
-    // Required only if Facebook login support is required
-    compile 'com.facebook.android:facebook-login:4.27.0'
+// Required only if Facebook login support is required
+// Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
+implementation 'com.facebook.android:facebook-login:4.x'
 
-    // Required only if Twitter login support is required
-    compile("com.twitter.sdk.android:twitter-core:3.0.0@aar") { transitive = true }
+// Required only if Twitter login support is required
+// Find the latest Twitter SDK releases here: https://goo.gl/E5wZvQ
+implementation("com.twitter.sdk.android:twitter-core:3.x@aar") { transitive = true }
 }
 ```
 
@@ -353,6 +355,22 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 Twitter also returns an AuthToken Secret which can be accessed with `idpResponse.getIdpSecret()`.
 
+##### User metadata
+
+While `IdpResponse` provides user information about a specific sign-in instance, it is usually
+preferable to find the user name, email, and other metadata directly from the currently signed-in
+`FirebaseUser` instance (`auth.getCurrentUser()`). For example, you could determine if the user
+who just signed in is an existing or new one by comparing the user's creation and last sign-in time:
+
+```java
+FirebaseUserMetadata metadata = auth.getCurrentUser().getMetadata();
+if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
+    // The user is new, show them a fancy intro screen!
+} else {
+    // This is an existing user, show them a welcome back screen.
+}
+```
+
 ### Sign out
 
 With the integrations provided by AuthUI, signing out a user is a multi-stage process:
@@ -456,7 +474,7 @@ to override certain or all styling attributes. For example, a green sign-in them
     <item name="colorPrimary">@color/material_green_500</item>
     <item name="colorPrimaryDark">@color/material_green_700</item>
     <item name="colorAccent">@color/material_purple_a700</item>
-    
+
     <item name="colorControlNormal">@color/material_green_500</item>
     <item name="colorControlActivated">@color/material_lime_a700</item>
     <item name="colorControlHighlight">@color/material_green_a200</item>

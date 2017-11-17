@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,22 +23,22 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 
 import com.facebook.login.LoginManager;
-import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
-import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
@@ -143,6 +142,16 @@ public class AuthUI {
                     PHONE_VERIFICATION_PROVIDER
             )));
 
+    /**
+     * The set of social authentication providers supported in Firebase Auth UI.
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static final Set<String> SOCIAL_PROVIDERS =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+                    GoogleAuthProvider.PROVIDER_ID,
+                    FacebookAuthProvider.PROVIDER_ID,
+                    TwitterAuthProvider.PROVIDER_ID)));
+
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
 
     private final FirebaseApp mApp;
@@ -201,20 +210,10 @@ public class AuthUI {
      */
     @NonNull
     public Task<Void> signOut(@NonNull Context context) {
-        // Firebase Sign out
         mAuth.signOut();
-
-        // Disable credentials auto sign-in
-        CredentialsClient client;
-        if (context instanceof Activity) {
-            client = Credentials.getClient((Activity) context);
-        } else {
-            client = Credentials.getClient(context);
-        }
-        Task<Void> disableCredentialsTask = client.disableAutoSignIn();
-
-        // Wait for all tasks to complete
-        return Tasks.whenAll(signOutIdps(context), disableCredentialsTask);
+        return Tasks.whenAll(
+                signOutIdps(context),
+                GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn());
     }
 
     /**
@@ -227,55 +226,63 @@ public class AuthUI {
      */
     @NonNull
     public Task<Void> delete(@NonNull Context context) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            // If the current user is null, return a failed task immediately
             return Tasks.forException(new FirebaseAuthInvalidUserException(
-                    String.valueOf(ErrorCodes.UNKNOWN_ERROR), "No currently signed in user."));
+                    String.valueOf(CommonStatusCodes.SIGN_IN_REQUIRED),
+                    "No currently signed in user."));
         }
 
-        // Delete the Firebase user
-        Task<Void> deleteUserTask = currentUser.delete();
+        final List<Credential> credentials = getCredentialsFromFirebaseUser(currentUser);
+        final CredentialsClient client = GoogleApiUtils.getCredentialsClient(context);
 
-        // Get all SmartLock credentials associated with the user
-        List<Credential> credentials = credentialsFromFirebaseUser(currentUser);
-
-        // For each Credential in the list, create a task to delete it.
-        List<Task<?>> credentialTasks = new ArrayList<>();
-        for (Credential credential : credentials) {
-            CredentialsClient client;
-            if (context instanceof Activity) {
-                client = Credentials.getClient((Activity) context);
-            } else {
-                client = Credentials.getClient(context);
+        // Ensure the order in which tasks are executed properly destructures the user.
+        return signOutIdps(context).continueWithTask(new Continuation<Void, Task<Void>>() {
+            @Override
+            public Task<Void> then(@NonNull Task<Void> task) {
+                task.getResult(); // Propagate exception if there was one
+                return currentUser.delete();
             }
+        }).continueWithTask(new Continuation<Void, Task<Void>>() {
+            @Override
+            public Task<Void> then(@NonNull Task<Void> task) {
+                task.getResult(); // Propagate exception if there was one
 
-            credentialTasks.add(client.delete(credential));
-        }
+                List<Task<?>> credentialTasks = new ArrayList<>();
+                for (Credential credential : credentials) {
+                    credentialTasks.add(client.delete(credential));
+                }
+                return Tasks.whenAll(credentialTasks)
+                        .continueWithTask(new Continuation<Void, Task<Void>>() {
+                            @Override
+                            public Task<Void> then(@NonNull Task<Void> task) {
+                                Exception e = task.getException();
+                                Throwable t = e == null ? null : e.getCause();
+                                if (!(t instanceof ApiException)
+                                        || ((ApiException) t).getStatusCode() != CommonStatusCodes.CANCELED) {
+                                    // Only propagate the exception if it isn't an invalid account
+                                    // one. This can occur if we failed to save the credential or it
+                                    // was deleted elsewhere. However, a lack of stored credential
+                                    // doesn't mean fully deleting the user failed.
+                                    task.getResult();
+                                }
 
-        // Create a combined task that will succeed when all credential delete operations
-        // have completed (even if they fail).
-        final Task<Void> combinedCredentialTask = Tasks.whenAll(credentialTasks);
-
-        return Tasks.whenAll(deleteUserTask, signOutIdps(context), combinedCredentialTask);
+                                return Tasks.forResult(null);
+                            }
+                        });
+            }
+        });
     }
 
     private Task<Void> signOutIdps(@NonNull Context context) {
-        // Facebook sign out
         try {
             LoginManager.getInstance().logOut();
+            TwitterProvider.signOut(context);
         } catch (NoClassDefFoundError e) {
-            // do nothing
+            // Do nothing: this is perfectly fine if the dev doesn't include Facebook/Twitter
+            // support
         }
 
-        // Twitter sign out
-        try {
-            TwitterSignInHandler.signOut(context);
-        } catch (NoClassDefFoundError e) {
-            // do nothing
-        }
-
-        // Google sign out
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
     }
 
@@ -283,7 +290,7 @@ public class AuthUI {
      * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
      * for saving since we don't have access to the password.
      */
-    private static List<Credential> credentialsFromFirebaseUser(@NonNull FirebaseUser user) {
+    private static List<Credential> getCredentialsFromFirebaseUser(@NonNull FirebaseUser user) {
         if (TextUtils.isEmpty(user.getEmail()) && TextUtils.isEmpty(user.getPhoneNumber())) {
             return Collections.emptyList();
         }
@@ -294,7 +301,7 @@ public class AuthUI {
                 continue;
             }
 
-            String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
+            String type = SaveSmartLock.providerIdToAccountType(userInfo.getProviderId());
 
             credentials.add(new Credential.Builder(
                     user.getEmail() == null ? user.getPhoneNumber() : user.getEmail())

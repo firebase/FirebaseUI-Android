@@ -23,6 +23,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
+import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.NetworkException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -41,10 +42,18 @@ public class IdpResponse implements Parcelable {
     private final String mToken;
     private final String mSecret;
 
-    @Nullable private final Exception mException;
+    private final FirebaseUiException mException;
 
-    private IdpResponse(Exception e) {
+    private IdpResponse(@NonNull FirebaseUiException e) {
         this(null, null, null, null, e);
+    }
+
+    private IdpResponse(
+            @NonNull User user,
+            @Nullable String password,
+            @Nullable String token,
+            @Nullable String secret) {
+        this(user, password, token, secret, null);
     }
 
     private IdpResponse(
@@ -52,7 +61,7 @@ public class IdpResponse implements Parcelable {
             String password,
             String token,
             String secret,
-            Exception e) {
+            FirebaseUiException e) {
         mUser = user;
         mPassword = password;
         mToken = token;
@@ -76,7 +85,7 @@ public class IdpResponse implements Parcelable {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static IdpResponse fromError(@NonNull Exception e) {
+    public static IdpResponse fromError(@NonNull FirebaseUiException e) {
         return new IdpResponse(e);
     }
 
@@ -151,16 +160,14 @@ public class IdpResponse implements Parcelable {
     public int getErrorCode() {
         if (isSuccessful()) {
             return Activity.RESULT_OK;
-        } else if (mException instanceof NetworkException) {
-            return ErrorCodes.NO_NETWORK;
         } else {
-            return ErrorCodes.UNKNOWN_ERROR;
+            return mException.getErrorCode();
         }
     }
 
     @Nullable
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public Exception getException() {
+    public FirebaseUiException getException() {
         return mException;
     }
 
@@ -186,7 +193,7 @@ public class IdpResponse implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readString(),
-                    (Exception) in.readSerializable()
+                    (FirebaseUiException) in.readSerializable()
             );
         }
 
@@ -232,10 +239,7 @@ public class IdpResponse implements Parcelable {
                 throw new IllegalStateException(
                         "Password cannot be null when using the email provider.");
             }
-            if ((providerId.equals(GoogleAuthProvider.PROVIDER_ID)
-                    || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID))
-                    && TextUtils.isEmpty(mToken)) {
+            if (AuthUI.SOCIAL_PROVIDERS.contains(providerId) && TextUtils.isEmpty(mToken)) {
                 throw new IllegalStateException(
                         "Token cannot be null when using a non-email provider.");
             }
@@ -245,7 +249,7 @@ public class IdpResponse implements Parcelable {
                         "Secret cannot be null when using the Twitter provider.");
             }
 
-            return new IdpResponse(mUser, mPassword, mToken, mSecret, null);
+            return new IdpResponse(mUser, mPassword, mToken, mSecret);
         }
     }
 }

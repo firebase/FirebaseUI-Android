@@ -149,21 +149,6 @@ public class AuthUiActivity extends AppCompatActivity {
         setContentView(R.layout.auth_ui_layout);
         ButterKnife.bind(this);
 
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                // We need to post this to the main thread to ensure `onActivityResult` is called
-                // first. Otherwise, coming back from a deeply nested hierarchy kills this activity
-                // and we don't show the IdpResponse
-
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                if (auth.getCurrentUser() != null) {
-                    startSignedInActivity(null);
-                    finish();
-                }
-            }
-        });
-
         if (isGoogleMisconfigured()) {
             mUseGoogleProvider.setChecked(false);
             mUseGoogleProvider.setEnabled(false);
@@ -234,6 +219,16 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         showSnackbar(R.string.unknown_response);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            startSignedInActivity(null);
+            finish();
+        }
     }
 
     @MainThread
