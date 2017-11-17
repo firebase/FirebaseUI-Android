@@ -355,6 +355,22 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 Twitter also returns an AuthToken Secret which can be accessed with `idpResponse.getIdpSecret()`.
 
+##### User metadata
+
+While `IdpResponse` provides user information about a specific sign-in instance, it is usually
+preferable to find the user name, email, and other metadata directly from the currently signed-in
+`FirebaseUser` instance (`auth.getCurrentUser()`). For example, you could determine if the user
+who just signed in is an existing or new one by comparing the user's creation and last sign-in time:
+
+```java
+FirebaseUserMetadata metadata = auth.getCurrentUser().getMetadata();
+if (metadata.getCreationTimestamp() == metadata.getLastSignInTimestamp()) {
+    // The user is new, show them a fancy intro screen!
+} else {
+    // This is an existing user, show them a welcome back screen.
+}
+```
+
 ### Sign out
 
 With the integrations provided by AuthUI, signing out a user is a multi-stage process:
