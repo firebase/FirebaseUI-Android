@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui.phone;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,10 +54,10 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_COUNTRY_CODE;
+import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_ISO2;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE_NO_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_COUNTRY_CODE;
-import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_ISO2;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_RAW_PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.AUTO_RETRIEVAL_TIMEOUT_MILLIS;
 import static junit.framework.Assert.assertEquals;
@@ -75,7 +76,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @Config(constants = BuildConfig.class, sdk = 25)
 public class PhoneVerificationActivityTest {
     private PhoneVerificationActivity mActivity;
-    private TextView mErrorEditText;
+    private TextInputLayout mPhoneLayout;
     private Button mSendCodeButton;
     private EditText mPhoneEditText;
     private CountryListSpinner mCountryListSpinner;
@@ -104,7 +105,7 @@ public class PhoneVerificationActivityTest {
         initMocks(this);
         mActivity = createActivity();
         mPhoneEditText = mActivity.findViewById(R.id.phone_number);
-        mErrorEditText = mActivity.findViewById(R.id.phone_number_error);
+        mPhoneLayout = mActivity.findViewById(R.id.phone_layout);
         mSendCodeButton = mActivity.findViewById(R.id.send_code);
         mCountryListSpinner = mActivity.findViewById(R.id.country_list);
     }
@@ -170,10 +171,10 @@ public class PhoneVerificationActivityTest {
         assertNotNull(verifyPhoneNumberFragment);
 
         mSendCodeButton.performClick();
-        assertEquals(mErrorEditText.getText(), mActivity.getString(R.string.fui_invalid_phone_number));
+        assertEquals(mPhoneLayout.getError(), mActivity.getString(R.string.fui_invalid_phone_number));
 
         mCountryListSpinner.performClick();
-        assertEquals(mErrorEditText.getText(), "");
+        assertNull(mPhoneLayout.getError());
     }
 
     @Test
@@ -204,7 +205,7 @@ public class PhoneVerificationActivityTest {
                         "any_message"));
 
         //was error displayed
-        assertEquals(mErrorEditText.getText(), mActivity.getString(R.string.fui_invalid_phone_number));
+        assertEquals(mPhoneLayout.getError(), mActivity.getString(R.string.fui_invalid_phone_number));
     }
 
     @Test
