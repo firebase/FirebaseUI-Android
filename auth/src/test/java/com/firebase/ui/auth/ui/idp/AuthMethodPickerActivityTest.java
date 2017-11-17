@@ -30,8 +30,8 @@ import com.firebase.ui.auth.testhelpers.GoogleProviderShadow;
 import com.firebase.ui.auth.testhelpers.LoginManagerShadow;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
-import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
-import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
+import com.firebase.ui.auth.ui.email.EmailActivity;
+import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -95,7 +95,7 @@ public class AuthMethodPickerActivityTest {
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
 
         assertEquals(
-                RegisterEmailActivity.class.getName(),
+                EmailActivity.class.getName(),
                 nextIntent.intent.getComponent().getClassName());
     }
 
@@ -111,7 +111,7 @@ public class AuthMethodPickerActivityTest {
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
 
         assertEquals(
-                PhoneVerificationActivity.class.getName(),
+                PhoneActivity.class.getName(),
                 nextIntent.intent.getComponent().getClassName());
     }
 

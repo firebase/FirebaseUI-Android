@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.ui.email.EmailActivity;
 
 public class EmailProvider implements Provider {
     private static final int RC_EMAIL_FLOW = 2;
@@ -34,7 +34,7 @@ public class EmailProvider implements Provider {
     @Override
     public void startLogin(Activity activity) {
         activity.startActivityForResult(
-                RegisterEmailActivity.createIntent(activity, mFlowParameters),
+                EmailActivity.createIntent(activity, mFlowParameters),
                 RC_EMAIL_FLOW);
     }
 

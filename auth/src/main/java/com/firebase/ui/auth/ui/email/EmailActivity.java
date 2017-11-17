@@ -23,13 +23,13 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.User;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.util.ExtraConstants;
 
 /**
  * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment} and
@@ -37,7 +37,7 @@ import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
  * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class RegisterEmailActivity extends AppCompatBase implements
+public class EmailActivity extends AppCompatBase implements
         CheckEmailFragment.CheckEmailListener {
 
     public static final int RC_WELCOME_BACK_IDP = 18;
@@ -48,7 +48,7 @@ public class RegisterEmailActivity extends AppCompatBase implements
     }
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return HelperActivityBase.createBaseIntent(context, RegisterEmailActivity.class, flowParams)
+        return HelperActivityBase.createBaseIntent(context, EmailActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 

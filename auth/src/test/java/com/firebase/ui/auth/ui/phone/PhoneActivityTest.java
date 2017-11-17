@@ -23,12 +23,13 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
-import com.firebase.ui.auth.FirebaseAuthError;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -52,13 +53,13 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import static com.firebase.ui.auth.ui.phone.PhoneActivity.AUTO_RETRIEVAL_TIMEOUT_MILLIS;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_COUNTRY_CODE;
+import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_ISO2;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.PHONE_NO_COUNTRY_CODE;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_COUNTRY_CODE;
-import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.CA_ISO2;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.YE_RAW_PHONE;
-import static com.firebase.ui.auth.ui.phone.PhoneVerificationActivity.AUTO_RETRIEVAL_TIMEOUT_MILLIS;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -73,8 +74,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
-public class PhoneVerificationActivityTest {
-    private PhoneVerificationActivity mActivity;
+public class PhoneActivityTest {
+    private PhoneActivity mActivity;
     private TextView mErrorEditText;
     private Button mSendCodeButton;
     private EditText mPhoneEditText;
@@ -89,12 +90,12 @@ public class PhoneVerificationActivityTest {
 
     private String verificationId = "hjksdf737hc";
 
-    private PhoneVerificationActivity createActivity() {
-        Intent startIntent = PhoneVerificationActivity.createIntent(
+    private PhoneActivity createActivity() {
+        Intent startIntent = PhoneActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
                         Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)), null);
-        return Robolectric.buildActivity(PhoneVerificationActivity.class, startIntent)
+        return Robolectric.buildActivity(PhoneActivity.class, startIntent)
                 .create(new Bundle()).start().visible().get();
     }
 
@@ -113,13 +114,13 @@ public class PhoneVerificationActivityTest {
     public void testDefaultFullPhoneNumber_prePopulatesPhoneNumberInBundle() {
         Bundle fullPhoneParams = new Bundle();
         fullPhoneParams.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, YE_RAW_PHONE);
-        Intent startIntent = PhoneVerificationActivity.createIntent(
+        Intent startIntent = PhoneActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
                         Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)),
                 fullPhoneParams);
 
-        mActivity = Robolectric.buildActivity(PhoneVerificationActivity.class, startIntent)
+        mActivity = Robolectric.buildActivity(PhoneActivity.class, startIntent)
                 .create(new Bundle()).start().visible().get();
 
         VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
@@ -131,7 +132,7 @@ public class PhoneVerificationActivityTest {
 
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
         assertEquals(YE_COUNTRY_CODE,
-                     String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).countryCode));
+                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).getCountryCode()));
     }
 
     @Test
@@ -139,13 +140,13 @@ public class PhoneVerificationActivityTest {
         Bundle phoneParams = new Bundle();
         phoneParams.putString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE, CA_ISO2);
         phoneParams.putString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER, PHONE_NO_COUNTRY_CODE);
-        Intent startIntent = PhoneVerificationActivity.createIntent(
+        Intent startIntent = PhoneActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
                         Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)),
                 phoneParams);
 
-        mActivity = Robolectric.buildActivity(PhoneVerificationActivity.class, startIntent)
+        mActivity = Robolectric.buildActivity(PhoneActivity.class, startIntent)
                 .create(new Bundle()).start().visible().get();
 
         VerifyPhoneNumberFragment verifyPhoneNumberFragment = (VerifyPhoneNumberFragment)
@@ -157,9 +158,9 @@ public class PhoneVerificationActivityTest {
 
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
         assertEquals(CA_COUNTRY_CODE,
-                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).countryCode));
+                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).getCountryCode()));
         assertEquals(new Locale("", CA_ISO2),
-                ((CountryInfo) mCountryListSpinner.getTag()).locale);
+                ((CountryInfo) mCountryListSpinner.getTag()).getLocale());
     }
 
     @Test

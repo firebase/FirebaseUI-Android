@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth.util;
 
 import android.support.annotation.RestrictTo;
 
@@ -20,7 +20,7 @@ import android.support.annotation.RestrictTo;
  * Constants used for passing Intent extra params between authentication flow activities.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class ExtraConstants {
+public final class ExtraConstants {
     public static final String EXTRA_FLOW_PARAMS = "extra_flow_params";
     public static final String EXTRA_IDP_RESPONSE = "extra_idp_response";
     public static final String EXTRA_USER = "extra_user";
@@ -30,4 +30,8 @@ public class ExtraConstants {
     public static final String EXTRA_NATIONAL_NUMBER = "extra_national_number";
     public static final String HAS_EXISTING_INSTANCE = "has_existing_instance";
     public static final String EXTRA_PARAMS = "extra_params";
+
+    private ExtraConstants() {
+        throw new AssertionError("No instance for you!");
+    }
 }

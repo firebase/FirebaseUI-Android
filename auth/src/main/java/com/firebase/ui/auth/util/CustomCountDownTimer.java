@@ -12,16 +12,19 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.phone;
+package com.firebase.ui.auth.util;
 
 import android.os.CountDownTimer;
+import android.support.annotation.RestrictTo;
+import android.support.annotation.VisibleForTesting;
 
-abstract class CustomCountDownTimer {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+public abstract class CustomCountDownTimer {
     private final long mMillisInFuture;
     private final long mCountDownInterval;
     private CountDownTimer mCountDownTimer;
 
-    CustomCountDownTimer(long millisInFuture, long countDownInterval) {
+    protected CustomCountDownTimer(long millisInFuture, long countDownInterval) {
         mMillisInFuture = millisInFuture;
         mCountDownInterval = countDownInterval;
         mCountDownTimer = create(millisInFuture, countDownInterval);
@@ -59,7 +62,8 @@ abstract class CustomCountDownTimer {
         mCountDownTimer.start();
     }
 
-    protected abstract void onFinish();
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    public abstract void onFinish();
 
     protected abstract void onTick(long millisUntilFinished);
 }

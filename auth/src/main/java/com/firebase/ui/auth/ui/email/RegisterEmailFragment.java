@@ -16,21 +16,22 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.User;
-import com.firebase.ui.auth.provider.ProviderUtils;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.ImeHelper;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
-import com.firebase.ui.auth.ui.email.fieldvalidators.EmailFieldValidator;
-import com.firebase.ui.auth.ui.email.fieldvalidators.PasswordFieldValidator;
-import com.firebase.ui.auth.ui.email.fieldvalidators.RequiredFieldValidator;
-import com.firebase.ui.auth.util.accountlink.ProfileMerger;
+import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
+import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.auth.util.ui.PreambleHandler;
+import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
+import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
+import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -170,8 +171,10 @@ public class RegisterEmailFragment extends FragmentBase implements
 
         mActivity = (HelperActivityBase) getActivity();
         mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(mActivity);
-        new PreambleHandler(getContext(), getFlowParams(), R.string.fui_button_text_save)
-                .setPreamble(mAgreementText);
+        PreambleHandler.setup(getContext(),
+                getFlowParams(),
+                R.string.fui_button_text_save,
+                mAgreementText);
     }
 
     @Override
@@ -285,7 +288,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                                 new IdpResponse.Builder(new User.Builder(
                                                                         EmailAuthProvider.PROVIDER_ID,
                                                                         email).build()).build()),
-                                                        RegisterEmailActivity.RC_WELCOME_BACK_IDP);
+                                                        EmailActivity.RC_WELCOME_BACK_IDP);
                                             } else {
                                                 getActivity().startActivityForResult(
                                                         WelcomeBackIdpPrompt.createIntent(
@@ -294,7 +297,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                                 new User.Builder(provider, email)
                                                                         .build(),
                                                                 null),
-                                                        RegisterEmailActivity.RC_WELCOME_BACK_IDP);
+                                                        EmailActivity.RC_WELCOME_BACK_IDP);
                                             }
                                         }
                                     })

@@ -16,15 +16,16 @@ import android.util.Log;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.User;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
+import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
-import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
+import com.firebase.ui.auth.ui.phone.PhoneActivity;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -53,7 +54,7 @@ import java.util.List;
  * Attempts to acquire a credential from Smart Lock for Passwords to sign in an existing account. If
  * this succeeds, an attempt is made to sign the user in with this credential. If it does not, the
  * {@link AuthMethodPickerActivity authentication method picker activity} is started, unless only
- * email is supported, in which case the {@link RegisterEmailActivity} is started.
+ * email is supported, in which case the {@link EmailActivity} is started.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
@@ -190,7 +191,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
                     || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
                     || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
-                accounts.add(providerIdToAccountType(providerId));
+                accounts.add(ProviderUtils.providerIdToAccountType(providerId));
             }
         }
         return accounts;
@@ -244,13 +245,13 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 case EmailAuthProvider.PROVIDER_ID:
                     // Go directly to email flow
                     startActivityForResult(
-                            RegisterEmailActivity.createIntent(getContext(), flowParams),
+                            EmailActivity.createIntent(getContext(), flowParams),
                             RC_EMAIL_FLOW);
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
                     // Go directly to phone flow
                     Bundle params = firstIdpConfig.getParams();
-                    Intent phoneActivityIntent = PhoneVerificationActivity
+                    Intent phoneActivityIntent = PhoneActivity
                             .createIntent(getContext(), flowParams, params);
                     startActivityForResult(
                             phoneActivityIntent,
@@ -258,7 +259,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                     break;
                 default:
                     // Launch IDP flow
-                    redirectToIdpSignIn(null, providerIdToAccountType(firstProvider));
+                    redirectToIdpSignIn(null, ProviderUtils.providerIdToAccountType(firstProvider));
                     break;
             }
         } else {
@@ -334,7 +335,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private void redirectToIdpSignIn(String email, String accountType) {
         if (TextUtils.isEmpty(accountType)) {
             startActivityForResult(
-                    RegisterEmailActivity.createIntent(
+                    EmailActivity.createIntent(
                             getContext(),
                             getFlowParams(),
                             email),
@@ -348,7 +349,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
             IdpSignInContainer.signIn(
                     getActivity(),
                     getFlowParams(),
-                    new User.Builder(SmartLockBase.accountTypeToProviderId(accountType), email)
+                    new User.Builder(ProviderUtils.accountTypeToProviderId(accountType), email)
                             .build());
         } else {
             Log.w(TAG, "Unknown provider: " + accountType);

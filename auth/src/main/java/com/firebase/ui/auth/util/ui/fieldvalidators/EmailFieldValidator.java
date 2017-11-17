@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.email.fieldvalidators;
+package com.firebase.ui.auth.util.ui.fieldvalidators;
 
 import android.support.design.widget.TextInputLayout;
 import android.util.Patterns;
@@ -20,7 +20,6 @@ import android.util.Patterns;
 import com.firebase.ui.auth.R;
 
 public class EmailFieldValidator extends BaseValidator {
-
     public EmailFieldValidator(TextInputLayout errorContainer) {
         super(errorContainer);
         mErrorMessage = mErrorContainer.getResources().getString(R.string.fui_invalid_email_address);

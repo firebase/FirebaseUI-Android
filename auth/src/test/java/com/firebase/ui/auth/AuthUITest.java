@@ -16,10 +16,10 @@ package com.firebase.ui.auth;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.AuthUI.SignInIntentBuilder;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.FirebaseApp;
 
 import org.junit.Before;

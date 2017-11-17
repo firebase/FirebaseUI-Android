@@ -16,28 +16,30 @@
  * Modifications copyright (C) 2017 Google Inc
  */
 
-package com.firebase.ui.auth.ui.phone;
+package com.firebase.ui.auth.data.client;
 
 import android.os.AsyncTask;
+
+import com.firebase.ui.auth.data.model.CountryInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-// We need to move away from ListView and AsyncTask in the future and use (say)
+// TODO We need to move away from ListView and AsyncTask in the future and use (say)
 // RecyclerView and Task/ThreadPoolExecutor .
-final class CountryListLoadTask extends AsyncTask<Void, Void, List<CountryInfo>> {
+public final class CountryListLoadTask extends AsyncTask<Void, Void, List<CountryInfo>> {
     public interface Listener {
         void onLoadComplete(List<CountryInfo> result);
     }
 
     private static final int MAX_COUNTRIES = 291;
 
-    private final Listener listener;
+    private final Listener mListener;
 
     public CountryListLoadTask(Listener listener) {
-        this.listener = listener;
+        mListener = listener;
     }
 
     @Override
@@ -294,9 +296,9 @@ final class CountryListLoadTask extends AsyncTask<Void, Void, List<CountryInfo>>
     }
 
     @Override
-    protected void onPostExecute(List<CountryInfo> result) {
-        if (listener != null) {
-            listener.onLoadComplete(result);
+    public void onPostExecute(List<CountryInfo> result) {
+        if (mListener != null) {
+            mListener.onLoadComplete(result);
         }
     }
 }

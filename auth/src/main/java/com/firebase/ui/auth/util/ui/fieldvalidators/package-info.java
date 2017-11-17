@@ -17,4 +17,4 @@
  * contents of this package should be considered an implementation detail and not part of the main
  * API.
  */
-package com.firebase.ui.auth.ui.email.fieldvalidators;
+package com.firebase.ui.auth.util.ui.fieldvalidators;

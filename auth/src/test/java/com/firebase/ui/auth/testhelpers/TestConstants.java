@@ -18,7 +18,6 @@ import android.net.Uri;
 
 public class TestConstants {
     public static final String EMAIL = "test@example.com";
-    public static final String PHONE = "+15555555555";
     public static final String PASSWORD = "hunter2";
     public static final String NAME = "Test Testerson";
     public static final String TOKEN = "token";

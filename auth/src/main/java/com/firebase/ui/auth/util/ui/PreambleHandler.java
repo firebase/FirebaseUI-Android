@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.ui.email;
+package com.firebase.ui.auth.util.ui;
 
 import android.content.Context;
 import android.net.Uri;
@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.data.model.FlowParameters;
 
 public class PreambleHandler {
     private static final String BTN_TARGET = "%BTN%";
@@ -31,16 +31,24 @@ public class PreambleHandler {
 
     private SpannableStringBuilder mBuilder;
 
-    public PreambleHandler(Context context, FlowParameters parameters, @StringRes int buttonText) {
+    private PreambleHandler(Context context, FlowParameters parameters, @StringRes int buttonText) {
         mContext = context;
         mFlowParameters = parameters;
         mButtonText = buttonText;
-        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.fui_linkColor));
+        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext,
+                R.color.fui_linkColor));
 
         setupCreateAccountPreamble();
     }
 
-    public void setPreamble(TextView textView) {
+    public static void setup(Context context,
+                             FlowParameters parameters,
+                             @StringRes int buttonText,
+                             TextView textView) {
+        new PreambleHandler(context, parameters, buttonText).setPreamble(textView);
+    }
+
+    private void setPreamble(TextView textView) {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(mBuilder);
     }
@@ -54,7 +62,10 @@ public class PreambleHandler {
         mBuilder = new SpannableStringBuilder(withTargets);
 
         replaceTarget(BTN_TARGET, mButtonText);
-        replaceUrlTarget(TOS_TARGET, R.string.fui_terms_of_service, mFlowParameters.termsOfServiceUrl);
+        replaceUrlTarget(
+                TOS_TARGET,
+                R.string.fui_terms_of_service,
+                mFlowParameters.termsOfServiceUrl);
         replaceUrlTarget(PP_TARGET, R.string.fui_privacy_policy, mFlowParameters.privacyPolicyUrl);
     }
 

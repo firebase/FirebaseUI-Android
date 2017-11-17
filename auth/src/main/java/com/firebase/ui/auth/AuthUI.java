@@ -28,10 +28,10 @@ import android.support.annotation.StyleRes;
 import android.support.v4.app.FragmentActivity;
 
 import com.facebook.login.LoginManager;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.provider.TwitterProvider;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.signincontainer.SmartLockBase;

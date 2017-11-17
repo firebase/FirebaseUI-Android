@@ -16,22 +16,21 @@
  * Modifications copyright (C) 2017 Google Inc
  *
  */
-package com.firebase.ui.auth.ui.phone;
+package com.firebase.ui.auth.data.model;
 
 import java.text.Collator;
 import java.util.Locale;
 
-final class CountryInfo implements Comparable<CountryInfo> {
-    private final Collator collator;
-    public final Locale locale;
-    public final int countryCode;
+public final class CountryInfo implements Comparable<CountryInfo> {
+    private final Collator mCollator;
+    private final Locale mLocale;
+    private final int mCountryCode;
 
     public CountryInfo(Locale locale, int countryCode) {
-        collator = Collator.getInstance(Locale.getDefault());
-        collator.setStrength(Collator.PRIMARY);
-
-        this.locale = locale;
-        this.countryCode = countryCode;
+        mCollator = Collator.getInstance(Locale.getDefault());
+        mCollator.setStrength(Collator.PRIMARY);
+        mLocale = locale;
+        mCountryCode = countryCode;
     }
 
     public static String localeToEmoji(Locale locale) {
@@ -48,6 +47,14 @@ final class CountryInfo implements Comparable<CountryInfo> {
                 (secondLetter));
     }
 
+    public Locale getLocale() {
+        return mLocale;
+    }
+
+    public int getCountryCode() {
+        return mCountryCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -55,24 +62,24 @@ final class CountryInfo implements Comparable<CountryInfo> {
 
         final CountryInfo that = (CountryInfo) o;
 
-        return countryCode == that.countryCode
-                && (locale != null ? locale.equals(that.locale) : that.locale == null);
+        return mCountryCode == that.mCountryCode
+                && (mLocale != null ? mLocale.equals(that.mLocale) : that.mLocale == null);
     }
 
     @Override
     public int hashCode() {
-        int result = locale != null ? locale.hashCode() : 0;
-        result = 31 * result + countryCode;
+        int result = mLocale != null ? mLocale.hashCode() : 0;
+        result = 31 * result + mCountryCode;
         return result;
     }
 
     @Override
     public String toString() {
-        return localeToEmoji(locale) + " " + this.locale.getDisplayCountry() + " +" + countryCode;
+        return localeToEmoji(mLocale) + " " + mLocale.getDisplayCountry() + " +" + mCountryCode;
     }
 
     @Override
     public int compareTo(CountryInfo info) {
-        return collator.compare(this.locale.getDisplayCountry(), info.locale.getDisplayCountry());
+        return mCollator.compare(mLocale.getDisplayCountry(), info.mLocale.getDisplayCountry());
     }
 }

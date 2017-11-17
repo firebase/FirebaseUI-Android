@@ -1,4 +1,4 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.util;
 
 import android.support.annotation.RestrictTo;
 

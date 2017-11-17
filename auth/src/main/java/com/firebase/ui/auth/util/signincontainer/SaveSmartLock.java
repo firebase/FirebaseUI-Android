@@ -35,6 +35,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.ConnectionResult;
@@ -95,7 +96,8 @@ public class SaveSmartLock extends SmartLockBase<Status> {
         Credential.Builder builder = new Credential.Builder(mEmail);
         builder.setPassword(mPassword);
         if (mPassword == null && mResponse != null) {
-            String translatedProvider = providerIdToAccountType(mResponse.getProviderType());
+            String translatedProvider =
+                    ProviderUtils.providerIdToAccountType(mResponse.getProviderType());
             if (translatedProvider != null) {
                 builder.setAccountType(translatedProvider);
             } else {

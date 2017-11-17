@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.ui.idp;
+package com.firebase.ui.auth.util.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;

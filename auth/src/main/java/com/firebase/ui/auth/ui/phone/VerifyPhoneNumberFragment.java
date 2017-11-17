@@ -34,11 +34,14 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.data.model.CountryInfo;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.ImeHelper;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiHelper;
+import com.firebase.ui.auth.util.data.PhoneNumberUtils;
+import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
@@ -62,7 +65,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     private EditText mPhoneEditText;
     private TextView mErrorEditText;
     private Button mSendCodeButton;
-    private PhoneVerificationActivity mVerifier;
+    private PhoneActivity mVerifier;
     private TextView mSmsTermsText;
 
     public static VerifyPhoneNumberFragment newInstance(
@@ -122,10 +125,10 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Set listener
-        if (!(getActivity() instanceof PhoneVerificationActivity)) {
+        if (!(getActivity() instanceof PhoneActivity)) {
             throw new IllegalStateException("Activity must implement PhoneVerificationHandler");
         }
-        mVerifier = (PhoneVerificationActivity) getActivity();
+        mVerifier = (PhoneActivity) getActivity();
 
         if (savedInstanceState != null) {
             return;
@@ -170,7 +173,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
                     // To accommodate either case, we normalize to e164 with best effort
                     final String unformattedPhone = cred.getId();
                     final String formattedPhone =
-                            PhoneNumberUtils.formatPhoneNumberUsingCurrentCountry(unformattedPhone,
+                            PhoneNumberUtils.formatUsingCurrentCountry(unformattedPhone,
                                     mAppContext);
                     if (formattedPhone == null) {
                         Log.e(TAG, "Unable to normalize phone number from hint selector:"
@@ -210,7 +213,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
             return null;
         }
 
-        return PhoneNumberUtils.formatPhoneNumber(everythingElse, countryInfo);
+        return PhoneNumberUtils.format(everythingElse, countryInfo);
     }
 
     private void setupCountrySpinner() {

@@ -1,4 +1,4 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.data.model;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,7 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
-import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.util.ExtraConstants;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class User implements Parcelable {
@@ -87,6 +88,7 @@ public class User implements Parcelable {
 
         return mProviderId.equals(user.mProviderId)
                 && (mEmail == null ? user.mEmail == null : mEmail.equals(user.mEmail))
+                && (mPhoneNumber == null ? user.mPhoneNumber == null : mPhoneNumber.equals(user.mPhoneNumber))
                 && (mName == null ? user.mName == null : mName.equals(user.mName))
                 && (mPhotoUri == null ? user.mPhotoUri == null : mPhotoUri.equals(user.mPhotoUri));
     }
@@ -95,6 +97,7 @@ public class User implements Parcelable {
     public int hashCode() {
         int result = mProviderId.hashCode();
         result = 31 * result + (mEmail == null ? 0 : mEmail.hashCode());
+        result = 31 * result + (mPhoneNumber == null ? 0 : mPhoneNumber.hashCode());
         result = 31 * result + (mName == null ? 0 : mName.hashCode());
         result = 31 * result + (mPhotoUri == null ? 0 : mPhotoUri.hashCode());
         return result;
@@ -105,6 +108,7 @@ public class User implements Parcelable {
         return "User{" +
                 "mProviderId='" + mProviderId + '\'' +
                 ", mEmail='" + mEmail + '\'' +
+                ", mPhoneNumber='" + mPhoneNumber + '\'' +
                 ", mName='" + mName + '\'' +
                 ", mPhotoUri=" + mPhotoUri +
                 '}';
