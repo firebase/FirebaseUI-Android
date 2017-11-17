@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.accountlink;
+package com.firebase.ui.auth.ui.idp;
 
 import android.content.Context;
 import android.content.Intent;

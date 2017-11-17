@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.accountlink;
+package com.firebase.ui.auth.ui.email;
 
 import android.content.Context;
 import android.content.Intent;
@@ -40,7 +40,6 @@ import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.RecoverPasswordActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;

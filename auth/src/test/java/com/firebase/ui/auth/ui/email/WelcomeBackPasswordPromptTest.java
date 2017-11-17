@@ -29,7 +29,6 @@ import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
-import com.firebase.ui.auth.ui.accountlink.WelcomeBackPasswordPrompt;
 import com.google.firebase.auth.EmailAuthProvider;
 
 import org.junit.Before;

@@ -38,12 +38,12 @@
             android:windowSoftInputMode="stateAlwaysVisible" />
 
         <activity
-            android:name=".ui.accountlink.WelcomeBackIdpPrompt"
+            android:name=".ui.idp.WelcomeBackIdpPrompt"
             android:label="@string/fui_title_welcome_back_idp_prompt"
             android:exported="false" />
 
         <activity
-            android:name=".ui.accountlink.WelcomeBackPasswordPrompt"
+            android:name=".ui.email.WelcomeBackPasswordPrompt"
             android:label="@string/fui_title_welcome_back_password_prompt"
             android:exported="false" />
 
