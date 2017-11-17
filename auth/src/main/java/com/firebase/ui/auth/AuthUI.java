@@ -40,6 +40,7 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -255,7 +256,24 @@ public class AuthUI {
                 for (Credential credential : credentials) {
                     credentialTasks.add(client.delete(credential));
                 }
-                return Tasks.whenAll(credentialTasks);
+                return Tasks.whenAll(credentialTasks)
+                        .continueWithTask(new Continuation<Void, Task<Void>>() {
+                            @Override
+                            public Task<Void> then(@NonNull Task<Void> task) {
+                                Exception e = task.getException();
+                                Throwable t = e == null ? null : e.getCause();
+                                if (!(t instanceof ApiException)
+                                        || ((ApiException) t).getStatusCode() != CommonStatusCodes.CANCELED) {
+                                    // Only propagate the exception if it isn't an invalid account
+                                    // one. This can occur if we failed to save the credential or it
+                                    // was deleted elsewhere. However, a lack of stored credential
+                                    // doesn't mean fully deleting the user failed.
+                                    task.getResult();
+                                }
+
+                                return Tasks.forResult(null);
+                            }
+                        });
             }
         });
     }
