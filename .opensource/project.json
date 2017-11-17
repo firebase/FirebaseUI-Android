@@ -1,0 +1,46 @@
+{
+    "name": "FirebaseUI for Android",
+    "parent": "firebaseui",
+    "type": "library",
+  
+    "platforms": [
+      "Android"
+    ],
+  
+    // TODO: Add logo
+    "content": "README.md",
+  
+    // These are relative paths in the same repo,
+    // each of these paths must have a .opensource/project.json
+    "subprojects": [
+       "auth",
+       "database",
+       "firestore",
+       "storage"
+    ],
+
+    // Other markdown pages that should be rendered nicely
+    "pages" : [
+        "auth/README.md",
+        "database/README.md",
+        "storage/README.md",
+        "firestore/README.md",
+        "docs/upgrade-to-2.0.md",
+        "docs/upgrade-to-3.0.md"
+    ],
+  
+    // Related projects on Github, in the format $owner/$repo[/$subproject]
+    // where subproject is optional.
+    "related": [
+      "firebase/firebaseui-ios",
+      "firebase/firebaseui-web"
+    ],
+  
+    "tags": [
+      "firebase-auth",
+      "firebase-database",
+      "firebase-firestore",
+      "firebase-storage"
+    ]
+  }
+  
