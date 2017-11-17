@@ -5,7 +5,6 @@
     <color name="colorPrimaryDark" tools:ignore="ResourceName">#303F9F</color>
     <color name="colorAccent" tools:ignore="ResourceName">#FF4081</color>
 
-    <color name="fui_errorColor">#DD2C00</color>
     <color name="fui_linkColor">#4285F4</color>
     <color name="fui_transparent">#00000000</color>
 

@@ -23,6 +23,7 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
         <item name="android:paddingLeft">@dimen/fui_wrapper_padding_horiz</item>
         <item name="android:paddingRight">@dimen/fui_wrapper_padding_horiz</item>
     </style>
@@ -102,7 +103,6 @@
     <style name="FirebaseUI.VerifyPhoneButton" parent="FirebaseUI.Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
     <style name="FirebaseUI.TextInputEditText">
@@ -120,11 +120,7 @@
     </style>
 
     <style name="FirebaseUI.TextInputEditText.PhoneField">
-        <item name="android:hint">@string/fui_phone_hint</item>
         <item name="android:inputType">phone</item>
-        <item name="android:imeOptions">actionNext</item>
-        <item name="android:paddingBottom">16dp</item>
-        <item name="android:paddingTop">16dp</item>
     </style>
 
     <style name="FirebaseUI.TextInputEditText.PasswordField">
@@ -135,6 +131,10 @@
 
     <style name="FirebaseUI.TextInputLayout.EmailField">
         <item name="android:hint">@string/fui_email_hint</item>
+    </style>
+
+    <style name="FirebaseUI.TextInputLayout.PhoneField">
+        <item name="android:hint">@string/fui_phone_hint</item>
     </style>
 
     <style name="FirebaseUI.TextInputLayout.NameField">
@@ -160,12 +160,9 @@
         <item name="android:paddingBottom">@dimen/fui_body_padding_bottom</item>
     </style>
 
-    <style name="FirebaseUI.CountrySpinner" parent="@style/Widget.AppCompat.Spinner.Underlined">
+    <style name="FirebaseUI.CountrySpinner" parent="Widget.AppCompat.Spinner.Underlined">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">left</item>
-        <item name="android:paddingBottom">16dp</item>
-        <item name="android:paddingTop">16dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
 
