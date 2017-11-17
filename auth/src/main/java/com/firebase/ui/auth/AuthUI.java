@@ -230,7 +230,7 @@ public class AuthUI {
      */
     @NonNull
     public Task<Void> delete(@NonNull Context context) {
-        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             return Tasks.forException(new FirebaseAuthInvalidUserException(
                     String.valueOf(CommonStatusCodes.SIGN_IN_REQUIRED),
