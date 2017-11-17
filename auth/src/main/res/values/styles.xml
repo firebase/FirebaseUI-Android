@@ -22,10 +22,10 @@
     <style name="FirebaseUI.WrapperStyle">
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:paddingTop">16dp</item>
-        <item name="android:paddingBottom">16dp</item>
-        <item name="android:paddingLeft">@dimen/fui_wrapper_padding_horiz</item>
-        <item name="android:paddingRight">@dimen/fui_wrapper_padding_horiz</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginLeft">@dimen/fui_wrapper_padding_horiz</item>
+        <item name="android:layout_marginRight">@dimen/fui_wrapper_padding_horiz</item>
     </style>
 
     <style name="FirebaseUI.Text">
@@ -150,14 +150,13 @@
     </style>
 
     <style name="FirebaseUI.Text.Heading" parent="FirebaseUI.Text.T07">
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">@dimen/fui_heading_padding_bottom</item>
+        <item name="android:layout_marginBottom">@dimen/fui_heading_padding_bottom</item>
     </style>
 
     <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingBottom">@dimen/fui_body_padding_bottom</item>
+        <item name="android:layout_marginBottom">@dimen/fui_body_padding_bottom</item>
     </style>
 
     <style name="FirebaseUI.CountrySpinner" parent="Widget.AppCompat.Spinner.Underlined">
@@ -181,8 +180,8 @@
         <item name="android:minWidth">@dimen/fui_auth_method_button_width</item>
         <item name="android:orientation">vertical</item>
         <item name="android:clipToPadding">false</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:paddingRight">4dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginRight">4dp</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser">
