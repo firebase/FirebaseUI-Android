@@ -148,13 +148,6 @@ public class AuthUiActivity extends AppCompatActivity {
         setContentView(R.layout.auth_ui_layout);
         ButterKnife.bind(this);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            startSignedInActivity(null);
-            finish();
-            return;
-        }
-
         if (isGoogleMisconfigured()) {
             mUseGoogleProvider.setChecked(false);
             mUseGoogleProvider.setEnabled(false);
@@ -225,6 +218,16 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         showSnackbar(R.string.unknown_response);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            startSignedInActivity(null);
+            finish();
+        }
     }
 
     @MainThread

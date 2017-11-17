@@ -4,14 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -19,22 +16,14 @@ import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
-import com.google.firebase.auth.UserInfo;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public abstract class SmartLockBase<R extends Result> extends FragmentBase implements
         GoogleApiClient.ConnectionCallbacks,
         ResultCallback<R>,
         GoogleApiClient.OnConnectionFailedListener {
-    private static final String TAG = "SmartLockBase";
-
     protected GoogleApiClient mGoogleApiClient;
 
     private boolean mWasProgressDialogShowing;
@@ -75,40 +64,6 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
             default:
                 return null;
         }
-    }
-
-    /**
-     * Make a list of {@link Credential} from a FirebaseUser. Useful for deleting Credentials, not
-     * for saving since we don't have access to the password.
-     */
-    public static List<Credential> credentialsFromFirebaseUser(@NonNull FirebaseUser user) {
-        if (TextUtils.isEmpty(user.getEmail())) {
-            Log.w(TAG, "Can't get credentials from user with no email: " + user);
-            return Collections.emptyList();
-        }
-
-        List<Credential> credentials = new ArrayList<>();
-        for (UserInfo userInfo : user.getProviderData()) {
-            // Get provider ID from Firebase Auth
-            @AuthUI.SupportedProvider String providerId = userInfo.getProviderId();
-
-            // Convert to Credentials API account type
-            String accountType = providerIdToAccountType(providerId);
-
-            // Build and add credential
-            Credential.Builder builder = new Credential.Builder(user.getEmail())
-                    .setAccountType(accountType);
-
-            // Null account type means password, we need to add a random password
-            // to make deletion succeed.
-            if (accountType == null) {
-                builder.setPassword("some_password");
-            }
-
-            credentials.add(builder.build());
-        }
-
-        return credentials;
     }
 
     @Override
