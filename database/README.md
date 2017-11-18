@@ -41,7 +41,7 @@ public class Chat {
 }
 ```
 
-A few things to note abot this model class:
+A few things to note about this model class:
 
   * The getters and setters follow the JavaBean naming pattern which allows Firebase to map
     the data to field names (ex: `getName()` provides the `name` field).
@@ -49,18 +49,18 @@ A few things to note abot this model class:
   
 For a properly constructed model class like the `Chat` class above, Firebase can perform automatic
 serialization in `DatabaseReference#setValue()` and automatic deserialization in 
-`DataSnapshot.getValue()`.
+`DataSnapshot#getValue()`.
 
 ### Querying
 
-On the main screenof your app, you may want to show the 50 most recent chat messages. With Firebase
+On the main screen of your app, you may want to show the 50 most recent chat messages. With Firebase
 you would use the following query:
 
 ```java
 Query query = FirebaseDatabase.getInstance()
         .getReference()
         .child("chats")
-        .limitToLast(50)
+        .limitToLast(50);
 ```
 
 To retrieve this data without FirebaseUI, you might use `addChildEventListener` to listen for
@@ -140,7 +140,7 @@ FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
 };
 ```
 
-Finally attach the adapter to your `RecyclerView` with the `RecyclerView#setAdapter()`.
+Finally attach the adapter to your `RecyclerView` with the `RecyclerView#setAdapter()` method.
 Don't forget to also set a `LayoutManager`!
 
 
@@ -226,9 +226,7 @@ FirebaseListAdapter<Chat> adapter = new FirebaseListAdapter<Chat>(options) {
 ## Using FirebaseUI with indexed data
 
 If your data is [properly indexed][indexed-data], change your adapter initialization
-to use `setIndexedQuery`:
-
-For a `RecyclerView`, use `FirebaseIndexRecyclerAdapter` instead of `FirebaseRecyclerAdapter`:
+to use `setIndexedQuery()`:
 
 ```java
 // keyQuery - the Firebase location containing the list of keys to be found in dataRef
@@ -239,11 +237,11 @@ FirebaseRecyclerOptions<Chat> options = new FirebaseRecyclerOptions.Builder<Chat
         .build();
 ```
 
-`keyQuery` is the location of your keys, and `dataRef` is the location of your data.
+Where `keyQuery` is the location of your keys, and `dataRef` is the location of your data.
 
 ### A note on ordering
 
-The order in which your receive your data depends on the order from `keyRef`, not `dataRef`:
+The order in which you receive your data depends on the order from `keyRef`, not `dataRef`:
 
 ```javascript
 {
