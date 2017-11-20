@@ -7,17 +7,11 @@
       "Android"
     ],
   
-    // TODO: Add logo
     "content": "README.md",
   
     // These are relative paths in the same repo,
     // each of these paths must have a .opensource/project.json
-    "subprojects": [
-       "auth",
-       "database",
-       "firestore",
-       "storage"
-    ],
+    "subprojects": [],
 
     // Other markdown pages that should be rendered nicely
     "pages" : [
