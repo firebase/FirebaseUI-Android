@@ -32,6 +32,7 @@ import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.ProviderUtils;
