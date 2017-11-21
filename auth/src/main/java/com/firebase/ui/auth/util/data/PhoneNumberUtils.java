@@ -105,7 +105,7 @@ public final class PhoneNumberUtils {
     }
 
     @NonNull
-    static CountryInfo getCurrentCountryInfo(@NonNull Context context) {
+    public static CountryInfo getCurrentCountryInfo(@NonNull Context context) {
         Locale locale = getSimBasedLocale(context);
 
         if (locale == null) {
