@@ -123,6 +123,12 @@ for displaying each item. In this case we will use a custom `ChatHolder` class:
 ```java
 FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(options) {
     @Override
+    protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
+        // Bind the Chat object to the ChatHolder
+        // ...
+    }
+    
+    @Override
     public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Create a new instance of the ViewHolder, in this case we are using a custom
         // layout called R.layout.message for each item
@@ -130,12 +136,6 @@ FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
                 .inflate(R.layout.message, parent, false);
         
         return new ChatHolder(view);
-    }
-    
-    @Override
-    protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
-        // Bind the Chat object to the ChatHolder
-        // ...
     }
 };
 ```
