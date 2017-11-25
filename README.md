@@ -39,16 +39,16 @@ libraries.
 ```groovy
 dependencies {
     // FirebaseUI for Firebase Realtime Database
-    compile 'com.firebaseui:firebase-ui-database:3.1.0'
+    implementation 'com.firebaseui:firebase-ui-database:3.1.0'
     
     // FirebaseUI for Cloud Firestore
-    compile 'com.firebaseui:firebase-ui-firestore:3.1.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:3.1.0'
 
     // FirebaseUI for Firebase Auth
-    compile 'com.firebaseui:firebase-ui-auth:3.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:3.1.0'
 
     // FirebaseUI for Cloud Storage
-    compile 'com.firebaseui:firebase-ui-storage:3.1.0'
+    implementation 'com.firebaseui:firebase-ui-storage:3.1.0'
 }
 ```
 
@@ -119,39 +119,39 @@ libraries version `BAR` add the following extra lines for each FirebaseUI module
 Auth:
 
 ```groovy
-compile "com.google.firebase:firebase-auth:$FOO"
-compile "com.google.android.gms:play-services-auth:$FOO"
+implementation "com.google.firebase:firebase-auth:$FOO"
+implementation "com.google.android.gms:play-services-auth:$FOO"
 
-compile "com.android.support:design:$BAR"
-compile "com.android.support:customtabs:$BAR"
-compile "com.android.support:cardview-v7:$BAR"
+implementation "com.android.support:design:$BAR"
+implementation "com.android.support:customtabs:$BAR"
+implementation "com.android.support:cardview-v7:$BAR"
 ```
 
 Realtime Database:
 
 ```groovy
-compile "com.google.firebase:firebase-database:$FOO"
+implementation "com.google.firebase:firebase-database:$FOO"
 
-compile "com.android.support:recyclerview-v7:$BAR"
-compile "com.android.support:support-v4:$BAR"
+implementation "com.android.support:recyclerview-v7:$BAR"
+implementation "com.android.support:support-v4:$BAR"
 ```
 
 Firestore:
 
 ```groovy
-compile "com.google.firebase:firebase-firestore:$FOO"
+implementation "com.google.firebase:firebase-firestore:$FOO"
 
-compile "com.android.support:recyclerview-v7:$BAR"
-compile "com.android.support:support-v4:$BAR"
+implementation "com.android.support:recyclerview-v7:$BAR"
+implementation "com.android.support:support-v4:$BAR"
 ```
 
 Storage:
 
 ```groovy
-compile "com.google.firebase:firebase-storage:$FOO"
+implementation "com.google.firebase:firebase-storage:$FOO"
 
-compile "com.android.support:appcompat-v7:$BAR"
-compile "com.android.support:palette-v7:$BAR"
+implementation "com.android.support:appcompat-v7:$BAR"
+implementation "com.android.support:palette-v7:$BAR"
 ```
 
 NOTE :
