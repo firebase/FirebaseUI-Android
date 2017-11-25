@@ -16,7 +16,7 @@ If you're not already using Glide in your application, add the following depende
 to your `app/build.gradle` file:
 
 ```groovy
-compile 'com.github.bumptech.glide:glide:4.1.1'
+implementation 'com.github.bumptech.glide:glide:4.1.1'
 annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
 ```
 
