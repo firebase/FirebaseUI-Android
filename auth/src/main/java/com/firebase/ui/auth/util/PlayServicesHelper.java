@@ -11,9 +11,13 @@ import com.google.android.gms.common.GoogleApiAvailability;
  * client application
  */
 public class PlayServicesHelper {
-    @Deprecated
+    private static GoogleApiAvailability mApiAvailability;
+
     public static GoogleApiAvailability getGoogleApiAvailability() {
-        return GoogleApiAvailability.getInstance();
+        if (mApiAvailability == null) {
+            mApiAvailability = GoogleApiAvailability.getInstance();
+        }
+        return mApiAvailability;
     }
 
     /**
@@ -25,9 +29,9 @@ public class PlayServicesHelper {
     public static boolean makePlayServicesAvailable(Activity activity,
                                                     int requestCode,
                                                     DialogInterface.OnCancelListener cancelListener) {
-        Dialog errorDialog = GoogleApiAvailability.getInstance().getErrorDialog(
+        Dialog errorDialog = getGoogleApiAvailability().getErrorDialog(
                 activity,
-                GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(activity),
+                getGoogleApiAvailability().isGooglePlayServicesAvailable(activity),
                 requestCode,
                 cancelListener);
 

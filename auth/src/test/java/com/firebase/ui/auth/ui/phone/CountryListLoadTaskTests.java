@@ -293,22 +293,22 @@ public class CountryListLoadTaskTests {
         COUNTRY_LIST.add(new CountryInfo(new Locale("", "ZW"), 263));
     }
 
-    private CountryListLoadTask mTask;
-    private CountryListLoadTask.Listener mListener;
+    private CountryListLoadTask task;
+    private CountryListLoadTask.Listener listener;
 
     @Before
     public void setUp() {
         // Create task and mock dependencies
-        mListener = mock(CountryListLoadTask.Listener.class);
-        mTask = new CountryListLoadTask(mListener);
+        listener = mock(CountryListLoadTask.Listener.class);
+        task = new CountryListLoadTask(listener);
     }
 
     @Test
     public void testExecute() {
-        mTask.execute();
+        task.execute();
 
         try {
-            final List<CountryInfo> result = mTask.get();
+            final List<CountryInfo> result = task.get();
             Collections.sort(COUNTRY_LIST);
             assertEquals(COUNTRY_LIST, result);
         } catch (InterruptedException e) {
@@ -320,9 +320,9 @@ public class CountryListLoadTaskTests {
 
     @Test
     public void testOnPostExecute_nullListener() {
-        mTask = new CountryListLoadTask(null);
+        task = new CountryListLoadTask(null);
         try {
-            mTask.onPostExecute(COUNTRY_LIST);
+            task.onPostExecute(COUNTRY_LIST);
         } catch (NullPointerException ex) {
             fail("Should not throw NullPointerException");
         }
@@ -330,7 +330,7 @@ public class CountryListLoadTaskTests {
 
     @Test
     public void testOnPostExecute() {
-        mTask.onPostExecute(COUNTRY_LIST);
-        verify(mListener).onLoadComplete(COUNTRY_LIST);
+        task.onPostExecute(COUNTRY_LIST);
+        verify(listener).onLoadComplete(COUNTRY_LIST);
     }
 }

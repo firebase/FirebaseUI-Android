@@ -28,7 +28,8 @@ import android.widget.EditText;
 import java.util.Collections;
 
 /**
- * Listens for changes to a text field that has hyphens and replaces with the character being typed:
+ * Listens for changes to a text field that has hyphens and replaces with the characted being
+ * typed
  * ------
  * 7-----
  * 76----
@@ -53,30 +54,68 @@ public final class BucketedTextChangeListener implements TextWatcher {
         void whileIncomplete();
     }
 
-    private final EditText mEditText;
-    private final ContentChangeCallback mCallback;
-    private final String[] mPostFixes;
-    private final String mPlaceHolder;
-    private final int mExpectedContentLength;
+    private final EditText editText;
+    private final ContentChangeCallback callback;
+    private final String[] postFixes;
+    private final String placeHolder;
+    private final int expectedContentLength;
 
     public BucketedTextChangeListener(EditText editText, int expectedContentLength, String
             placeHolder, ContentChangeCallback callback) {
-        mEditText = editText;
-        mExpectedContentLength = expectedContentLength;
-        mPostFixes = generatePostfixArray(placeHolder, expectedContentLength);
-        mCallback = callback;
-        mPlaceHolder = placeHolder;
+        this.editText = editText;
+        this.expectedContentLength = expectedContentLength;
+        this.postFixes = generatePostfixArray(placeHolder, expectedContentLength);
+        this.callback = callback;
+        this.placeHolder = placeHolder;
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onTextChanged(CharSequence s, int ignoredParam1, int ignoredParam2, int
+            ignoredParam3) {
+        // The listener is expected to be used in conjunction with the SpacedEditText.
+
+        // Approach
+        // 1) Strip all spaces and hyphens introduced by the SET for aesthetics
+        final String numericContents = s.toString().replaceAll(" ", "").replaceAll(placeHolder, "");
+
+        // 2) Trim the content to acceptable length.
+        final int enteredContentLength = Math.min(numericContents.length(), expectedContentLength);
+        final String enteredContent = numericContents.substring(0, enteredContentLength);
+
+        // 3) Reset the text to be the content + required hyphens. The SET automatically inserts
+        // spaces requires for aesthetics. This requires removing and resetting the listener to
+        // avoid recursion.
+        editText.removeTextChangedListener(this);
+        editText.setText(enteredContent + postFixes[expectedContentLength - enteredContentLength]);
+        editText.setSelection(enteredContentLength);
+        editText.addTextChangedListener(this);
+
+        // 4) Callback listeners waiting on content to be of expected length
+        if (enteredContentLength == expectedContentLength && callback != null) {
+            callback.whileComplete();
+        } else if (callback != null) {
+            callback.whileIncomplete();
+        }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
     }
 
     /**
-     * For example, passing in ("-", 6) would return the following result: {"", "-", "--", "---",
-     * "----", "-----", "------"}
+     * For example, passing in ("-", 6) would return the following result:
+     * {"", "-", "--", "---", "----", "-----", "------"}
      *
      * @param repeatableChar the char to repeat to the specified length
      * @param length         the maximum length of repeated chars
      * @return an increasing sequence array of chars up the specified length
      */
-    private static String[] generatePostfixArray(CharSequence repeatableChar, int length) {
+    private String[] generatePostfixArray(CharSequence repeatableChar, int length) {
         final String[] ret = new String[length + 1];
 
         for (int i = 0; i <= length; i++) {
@@ -85,42 +124,4 @@ public final class BucketedTextChangeListener implements TextWatcher {
 
         return ret;
     }
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onTextChanged(
-            CharSequence s, int ignoredParam1, int ignoredParam2, int ignoredParam3) {
-        // The listener is expected to be used in conjunction with the SpacedEditText.
-
-        // Approach
-        // 1) Strip all spaces and hyphens introduced by the SET for aesthetics
-        final String numericContents = s.toString()
-                .replaceAll(" ", "")
-                .replaceAll(mPlaceHolder, "");
-
-        // 2) Trim the content to acceptable length.
-        final int enteredContentLength = Math.min(numericContents.length(), mExpectedContentLength);
-        final String enteredContent = numericContents.substring(0, enteredContentLength);
-
-        // 3) Reset the text to be the content + required hyphens. The SET automatically inserts
-        // spaces requires for aesthetics. This requires removing and resetting the listener to
-        // avoid recursion.
-        mEditText.removeTextChangedListener(this);
-        mEditText.setText(enteredContent + mPostFixes[mExpectedContentLength - enteredContentLength]);
-        mEditText.setSelection(enteredContentLength);
-        mEditText.addTextChangedListener(this);
-
-        // 4) Callback listeners waiting on content to be of expected length
-        if (enteredContentLength == mExpectedContentLength && mCallback != null) {
-            mCallback.whileComplete();
-        } else if (mCallback != null) {
-            mCallback.whileIncomplete();
-        }
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-    @Override
-    public void afterTextChanged(Editable s) {}
 }

@@ -31,7 +31,7 @@ public class PreambleHandler {
 
     private SpannableStringBuilder mBuilder;
 
-    private PreambleHandler(Context context, FlowParameters parameters, @StringRes int buttonText) {
+    public PreambleHandler(Context context, FlowParameters parameters, @StringRes int buttonText) {
         mContext = context;
         mFlowParameters = parameters;
         mButtonText = buttonText;
@@ -41,14 +41,7 @@ public class PreambleHandler {
         setupCreateAccountPreamble();
     }
 
-    public static void setup(Context context,
-                             FlowParameters parameters,
-                             @StringRes int buttonText,
-                             TextView textView) {
-        new PreambleHandler(context, parameters, buttonText).setPreamble(textView);
-    }
-
-    private void setPreamble(TextView textView) {
+    public void setPreamble(TextView textView) {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(mBuilder);
     }
@@ -62,8 +55,7 @@ public class PreambleHandler {
         mBuilder = new SpannableStringBuilder(withTargets);
 
         replaceTarget(BTN_TARGET, mButtonText);
-        replaceUrlTarget(
-                TOS_TARGET,
+        replaceUrlTarget(TOS_TARGET,
                 R.string.fui_terms_of_service,
                 mFlowParameters.termsOfServiceUrl);
         replaceUrlTarget(PP_TARGET, R.string.fui_privacy_policy, mFlowParameters.privacyPolicyUrl);

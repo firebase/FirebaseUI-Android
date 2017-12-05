@@ -22,15 +22,16 @@ import java.text.Collator;
 import java.util.Locale;
 
 public final class CountryInfo implements Comparable<CountryInfo> {
-    private final Collator mCollator;
-    private final Locale mLocale;
-    private final int mCountryCode;
+    private final Collator collator;
+    public final Locale locale;
+    public final int countryCode;
 
     public CountryInfo(Locale locale, int countryCode) {
-        mCollator = Collator.getInstance(Locale.getDefault());
-        mCollator.setStrength(Collator.PRIMARY);
-        mLocale = locale;
-        mCountryCode = countryCode;
+        collator = Collator.getInstance(Locale.getDefault());
+        collator.setStrength(Collator.PRIMARY);
+
+        this.locale = locale;
+        this.countryCode = countryCode;
     }
 
     public static String localeToEmoji(Locale locale) {
@@ -47,14 +48,6 @@ public final class CountryInfo implements Comparable<CountryInfo> {
                 (secondLetter));
     }
 
-    public Locale getLocale() {
-        return mLocale;
-    }
-
-    public int getCountryCode() {
-        return mCountryCode;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,24 +55,24 @@ public final class CountryInfo implements Comparable<CountryInfo> {
 
         final CountryInfo that = (CountryInfo) o;
 
-        return mCountryCode == that.mCountryCode
-                && (mLocale != null ? mLocale.equals(that.mLocale) : that.mLocale == null);
+        return countryCode == that.countryCode
+                && (locale != null ? locale.equals(that.locale) : that.locale == null);
     }
 
     @Override
     public int hashCode() {
-        int result = mLocale != null ? mLocale.hashCode() : 0;
-        result = 31 * result + mCountryCode;
+        int result = locale != null ? locale.hashCode() : 0;
+        result = 31 * result + countryCode;
         return result;
     }
 
     @Override
     public String toString() {
-        return localeToEmoji(mLocale) + " " + mLocale.getDisplayCountry() + " +" + mCountryCode;
+        return localeToEmoji(locale) + " " + locale.getDisplayCountry() + " +" + countryCode;
     }
 
     @Override
     public int compareTo(CountryInfo info) {
-        return mCollator.compare(mLocale.getDisplayCountry(), info.mLocale.getDisplayCountry());
+        return collator.compare(locale.getDisplayCountry(), info.locale.getDisplayCountry());
     }
 }

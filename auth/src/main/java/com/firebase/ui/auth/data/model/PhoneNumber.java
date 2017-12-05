@@ -22,14 +22,14 @@ import android.text.TextUtils;
 public final class PhoneNumber {
     private static final PhoneNumber EMPTY_PHONE_NUMBER = new PhoneNumber("", "", "");
 
-    private final String mPhoneNumber;
-    private final String mCountryIso;
-    private final String mCountryCode;
+    private final String phoneNumber;
+    private final String countryIso;
+    private final String countryCode;
 
     public PhoneNumber(String phoneNumber, String countryIso, String countryCode) {
-        mPhoneNumber = phoneNumber;
-        mCountryIso = countryIso;
-        mCountryCode = countryCode;
+        this.phoneNumber = phoneNumber;
+        this.countryIso = countryIso;
+        this.countryCode = countryCode;
     }
 
     /**
@@ -58,20 +58,20 @@ public final class PhoneNumber {
      * Returns country code
      */
     public String getCountryCode() {
-        return mCountryCode;
+        return countryCode;
     }
 
     /**
      * Returns phone number without country code
      */
     public String getPhoneNumber() {
-        return mPhoneNumber;
+        return phoneNumber;
     }
 
     /**
      * Returns 2 char country ISO
      */
     public String getCountryIso() {
-        return mCountryIso;
+        return countryIso;
     }
 }

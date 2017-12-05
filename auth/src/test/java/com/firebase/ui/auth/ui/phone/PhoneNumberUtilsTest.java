@@ -101,20 +101,20 @@ public class PhoneNumberUtilsTest {
         // Leaving tests in place to formally identify cases
 
         // no leading +
-        // assertEquals(validPhoneNumber, format("919994947354", indiaCountryInfo));
+        // assertEquals(validPhoneNumber, formatPhoneNumber("919994947354", indiaCountryInfo));
 
         // with hyphens
-        // assertEquals(validPhoneNumber, format("+91-(999)-(49)-(47354)",
+        // assertEquals(validPhoneNumber, formatPhoneNumber("+91-(999)-(49)-(47354)",
         // indiaCountryInfo));
 
         // with spaces leading plus
-        // assertEquals(validPhoneNumber, format("+91 99949 47354", indiaCountryInfo));
+        // assertEquals(validPhoneNumber, formatPhoneNumber("+91 99949 47354", indiaCountryInfo));
 
         // space formatting
-        // assertEquals(validPhoneNumber, format("91 99949 47354", indiaCountryInfo));
+        // assertEquals(validPhoneNumber, formatPhoneNumber("91 99949 47354", indiaCountryInfo));
 
         // invalid phone number
-        // assertNull(format("999474735", indiaCountryInfo));
+        // assertNull(formatPhoneNumber("999474735", indiaCountryInfo));
     }
 
     @Test

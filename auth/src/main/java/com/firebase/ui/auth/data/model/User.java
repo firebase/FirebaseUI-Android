@@ -88,7 +88,6 @@ public class User implements Parcelable {
 
         return mProviderId.equals(user.mProviderId)
                 && (mEmail == null ? user.mEmail == null : mEmail.equals(user.mEmail))
-                && (mPhoneNumber == null ? user.mPhoneNumber == null : mPhoneNumber.equals(user.mPhoneNumber))
                 && (mName == null ? user.mName == null : mName.equals(user.mName))
                 && (mPhotoUri == null ? user.mPhotoUri == null : mPhotoUri.equals(user.mPhotoUri));
     }
@@ -97,7 +96,6 @@ public class User implements Parcelable {
     public int hashCode() {
         int result = mProviderId.hashCode();
         result = 31 * result + (mEmail == null ? 0 : mEmail.hashCode());
-        result = 31 * result + (mPhoneNumber == null ? 0 : mPhoneNumber.hashCode());
         result = 31 * result + (mName == null ? 0 : mName.hashCode());
         result = 31 * result + (mPhotoUri == null ? 0 : mPhotoUri.hashCode());
         return result;
@@ -108,7 +106,6 @@ public class User implements Parcelable {
         return "User{" +
                 "mProviderId='" + mProviderId + '\'' +
                 ", mEmail='" + mEmail + '\'' +
-                ", mPhoneNumber='" + mPhoneNumber + '\'' +
                 ", mName='" + mName + '\'' +
                 ", mPhotoUri=" + mPhotoUri +
                 '}';

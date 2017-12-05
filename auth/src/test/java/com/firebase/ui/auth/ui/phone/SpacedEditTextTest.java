@@ -40,64 +40,66 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class SpacedEditTextTest {
-    private static final float SPACING_PROPORTION = 1.1f;
-
-    private SpacedEditText mSpacedEditText;
+    SpacedEditText spacedEditText;
+    AttributeSet attrs;
+    Context context;
+    TypedArray array;
+    final float spacingProportion = 1.1f;
 
     @Before
     public void setUp() {
-        AttributeSet attrs = mock(AttributeSet.class);
-        Context context = mock(Context.class);
-        TypedArray array = mock(TypedArray.class);
+        attrs = mock(AttributeSet.class);
+        context = mock(Context.class);
+        array = mock(TypedArray.class);
 
         when(array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1))
-                .thenReturn(SPACING_PROPORTION);
+                .thenReturn(spacingProportion);
         when(context.obtainStyledAttributes(attrs, R.styleable.SpacedEditText)).thenReturn(array);
-        mSpacedEditText = new SpacedEditText(RuntimeEnvironment.application, attrs);
-        mSpacedEditText.initAttrs(context, attrs);
+        spacedEditText = new SpacedEditText(RuntimeEnvironment.application, attrs);
+        spacedEditText.initAttrs(context, attrs);
     }
 
     @Test
     public void testSpacedEditText_setTextEmpty() {
-        mSpacedEditText.setText("");
-        testSpacing("", "", mSpacedEditText);
+        spacedEditText.setText("");
+        testSpacing("", "", spacedEditText);
     }
 
     @Test
     public void testSpacedEditText_setTextNonEmpty() {
-        mSpacedEditText.setText("123456");
-        testSpacing("1 2 3 4 5 6", "123456", mSpacedEditText);
+        spacedEditText.setText("123456");
+        testSpacing("1 2 3 4 5 6", "123456", spacedEditText);
     }
 
     @Test
     public void testSpacedEditText_setTextWithOneCharacter() {
-        mSpacedEditText.setText("1");
-        testSpacing("1", "1", mSpacedEditText);
+        spacedEditText.setText("1");
+        testSpacing("1", "1", spacedEditText);
     }
 
     @Test
     public void testSpacedEditText_setTextWithExistingSpaces() {
-        mSpacedEditText.setText("1 2 3");
-        testSpacing("1   2   3", "1 2 3", mSpacedEditText);
+        spacedEditText.setText("1 2 3");
+        testSpacing("1   2   3", "1 2 3", spacedEditText);
     }
 
     @Test
     public void testSpacedEditText_noSetText() {
-        testSpacing("", "", mSpacedEditText);
+        testSpacing("", "", spacedEditText);
     }
 
     @Test
     public void testSpacedEditText_setLeadingSelection() {
-        mSpacedEditText.setText("123456");
-        mSpacedEditText.setSelection(0);
-        assertEquals(0, mSpacedEditText.getSelectionStart());
+        spacedEditText.setText("123456");
+        spacedEditText.setSelection(0);
+        assertEquals(0, spacedEditText.getSelectionStart());
     }
 
     @Test
     public void testSpacedEditText_setInnerSelection() {
-        mSpacedEditText.setText("123456");
-        mSpacedEditText.setSelection(3);
-        assertEquals(5, mSpacedEditText.getSelectionStart());
+        spacedEditText.setText("123456");
+        spacedEditText.setSelection(3);
+        assertEquals(5, spacedEditText.getSelectionStart());
     }
 
     /**
@@ -115,7 +117,7 @@ public class SpacedEditTextTest {
         assertEquals(expectedOriginalText, editText.getUnspacedText().toString());
 
         for (ScaleXSpan span : spans) {
-            assertEquals(SPACING_PROPORTION, span.getScaleX());
+            assertEquals(spacingProportion, span.getScaleX());
 
             final int spanStart = editable.getSpanStart(span);
             final int spanEnd = editable.getSpanEnd(span);
