@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
@@ -84,13 +85,8 @@ public class SupportVectorDrawablesButton extends AppCompatButton {
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    drawableStart, drawableTop, drawableEnd, drawableBottom);
-        } else {
-            setCompoundDrawablesWithIntrinsicBounds(
-                    drawableStart, drawableTop, drawableEnd, drawableBottom);
-        }
+        TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                this, drawableStart, drawableTop, drawableEnd, drawableBottom);
 
         attributeArray.recycle();
     }

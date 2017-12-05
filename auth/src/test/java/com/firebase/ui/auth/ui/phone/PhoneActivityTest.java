@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui.phone;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,7 +77,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @Config(constants = BuildConfig.class, sdk = 25)
 public class PhoneActivityTest {
     private PhoneActivity mActivity;
-    private TextView mErrorEditText;
+    private TextInputLayout mPhoneLayout;
     private Button mSendCodeButton;
     private EditText mPhoneEditText;
     private CountryListSpinner mCountryListSpinner;
@@ -105,7 +106,7 @@ public class PhoneActivityTest {
         initMocks(this);
         mActivity = createActivity();
         mPhoneEditText = mActivity.findViewById(R.id.phone_number);
-        mErrorEditText = mActivity.findViewById(R.id.phone_number_error);
+        mPhoneLayout = mActivity.findViewById(R.id.phone_layout);
         mSendCodeButton = mActivity.findViewById(R.id.send_code);
         mCountryListSpinner = mActivity.findViewById(R.id.country_list);
     }
@@ -171,10 +172,10 @@ public class PhoneActivityTest {
         assertNotNull(verifyPhoneNumberFragment);
 
         mSendCodeButton.performClick();
-        assertEquals(mErrorEditText.getText(), mActivity.getString(R.string.fui_invalid_phone_number));
+        assertEquals(mPhoneLayout.getError(), mActivity.getString(R.string.fui_invalid_phone_number));
 
         mCountryListSpinner.performClick();
-        assertEquals(mErrorEditText.getText(), "");
+        assertNull(mPhoneLayout.getError());
     }
 
     @Test
@@ -205,7 +206,7 @@ public class PhoneActivityTest {
                         "any_message"));
 
         //was error displayed
-        assertEquals(mErrorEditText.getText(), mActivity.getString(R.string.fui_invalid_phone_number));
+        assertEquals(mPhoneLayout.getError(), mActivity.getString(R.string.fui_invalid_phone_number));
     }
 
     @Test

@@ -29,13 +29,14 @@
         <activity
             android:name=".ui.email.EmailActivity"
             android:label="@string/fui_sign_in_default"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.phone.PhoneActivity"
             android:label="@string/fui_sign_in_with_phone_number"
             android:exported="false"
-            android:windowSoftInputMode="stateAlwaysVisible" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
             android:name=".ui.idp.WelcomeBackIdpPrompt"
@@ -45,7 +46,8 @@
         <activity
             android:name=".ui.email.WelcomeBackPasswordPrompt"
             android:label="@string/fui_title_welcome_back_password_prompt"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.idp.AuthMethodPickerActivity"
