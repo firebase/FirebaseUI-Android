@@ -180,8 +180,9 @@
         <item name="android:minWidth">@dimen/fui_auth_method_button_width</item>
         <item name="android:orientation">vertical</item>
         <item name="android:clipToPadding">false</item>
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginRight">4dp</item>
+        <!-- These have to be padding instead of margin so the shadows aren't clipped. -->
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
     </style>
 
     <style name="FirebaseUI.Button.AccountChooser">
