@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -59,8 +60,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     private Context mAppContext;
 
     private CountryListSpinner mCountryListSpinner;
+    private TextInputLayout mPhoneInputLayout;
     private EditText mPhoneEditText;
-    private TextView mErrorEditText;
     private Button mSendCodeButton;
     private PhoneVerificationActivity mVerifier;
     private TextView mSmsTermsText;
@@ -91,8 +92,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         View v = inflater.inflate(R.layout.fui_phone_layout, container, false);
 
         mCountryListSpinner = v.findViewById(R.id.country_list);
+        mPhoneInputLayout = v.findViewById(R.id.phone_layout);
         mPhoneEditText = v.findViewById(R.id.phone_number);
-        mErrorEditText = v.findViewById(R.id.phone_number_error);
         mSendCodeButton = v.findViewById(R.id.send_code);
         mSmsTermsText = v.findViewById(R.id.send_sms_tos);
 
@@ -195,7 +196,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     private void onNext() {
         String phoneNumber = getPseudoValidPhoneNumber();
         if (phoneNumber == null) {
-            mErrorEditText.setText(R.string.fui_invalid_phone_number);
+            mPhoneInputLayout.setError(getString(R.string.fui_invalid_phone_number));
         } else {
             mVerifier.verifyPhoneNumber(phoneNumber, false);
         }
@@ -218,7 +219,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         mCountryListSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mErrorEditText.setText("");
+                mPhoneInputLayout.setError(null);
             }
         });
     }
@@ -276,6 +277,6 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     }
 
     void showError(String e) {
-        mErrorEditText.setText(e);
+        mPhoneInputLayout.setError(e);
     }
 }
