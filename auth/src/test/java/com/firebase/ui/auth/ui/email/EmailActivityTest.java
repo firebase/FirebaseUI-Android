@@ -22,7 +22,7 @@ import android.widget.EditText;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.User;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
@@ -49,14 +49,14 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
-public class RegisterEmailActivityTest {
+public class EmailActivityTest {
 
-    private RegisterEmailActivity createActivity() {
-        Intent startIntent = RegisterEmailActivity.createIntent(
+    private EmailActivity createActivity() {
+        Intent startIntent = EmailActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)));
 
-        return Robolectric.buildActivity(RegisterEmailActivity.class, startIntent)
+        return Robolectric.buildActivity(EmailActivity.class, startIntent)
                 .create()
                 .start()
                 .visible()
@@ -70,27 +70,27 @@ public class RegisterEmailActivityTest {
 
     @Test
     public void testSignUpButton_validatesFields() {
-        RegisterEmailActivity registerEmailActivity = createActivity();
+        EmailActivity emailActivity = createActivity();
 
         // Trigger RegisterEmailFragment (bypass check email)
-        registerEmailActivity.onNewUser(
+        emailActivity.onNewUser(
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
 
-        Button button = registerEmailActivity.findViewById(R.id.button_create);
+        Button button = emailActivity.findViewById(R.id.button_create);
         button.performClick();
 
-        TextInputLayout nameLayout = registerEmailActivity.findViewById(R.id.name_layout);
-        TextInputLayout passwordLayout = registerEmailActivity.findViewById(R.id.password_layout);
+        TextInputLayout nameLayout = emailActivity.findViewById(R.id.name_layout);
+        TextInputLayout passwordLayout = emailActivity.findViewById(R.id.password_layout);
 
         assertEquals(
-                registerEmailActivity.getString(R.string.fui_required_field),
+                emailActivity.getString(R.string.fui_required_field),
                 nameLayout.getError().toString());
         assertEquals(
                 String.format(
-                        registerEmailActivity.getResources().getQuantityString(
+                        emailActivity.getResources().getQuantityString(
                                 R.plurals.fui_error_weak_password,
                                 R.integer.fui_min_password_length),
-                        registerEmailActivity.getResources()
+                        emailActivity.getResources()
                                 .getInteger(R.integer.fui_min_password_length)
                 ),
                 passwordLayout.getError().toString());
@@ -103,18 +103,18 @@ public class RegisterEmailActivityTest {
         reset(AuthHelperShadow.getSaveSmartLockInstance(null));
 
         TestHelper.initializeApp(RuntimeEnvironment.application);
-        RegisterEmailActivity registerEmailActivity = createActivity();
+        EmailActivity emailActivity = createActivity();
 
         // Trigger new user UI (bypassing check email)
-        registerEmailActivity.onNewUser(
+        emailActivity.onNewUser(
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
                         .setName(TestConstants.NAME)
                         .setPhotoUri(TestConstants.PHOTO_URI)
                         .build());
 
-        EditText email = registerEmailActivity.findViewById(R.id.email);
-        EditText name = registerEmailActivity.findViewById(R.id.name);
-        EditText password = registerEmailActivity.findViewById(R.id.password);
+        EditText email = emailActivity.findViewById(R.id.email);
+        EditText name = emailActivity.findViewById(R.id.name);
+        EditText password = emailActivity.findViewById(R.id.password);
 
         email.setText(TestConstants.EMAIL);
         name.setText(TestConstants.NAME);
@@ -126,7 +126,7 @@ public class RegisterEmailActivityTest {
         when(AuthHelperShadow.getCurrentUser().updateProfile(any(UserProfileChangeRequest.class)))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
-        Button button = registerEmailActivity.findViewById(R.id.button_create);
+        Button button = emailActivity.findViewById(R.id.button_create);
         button.performClick();
 
         // Verify create user request

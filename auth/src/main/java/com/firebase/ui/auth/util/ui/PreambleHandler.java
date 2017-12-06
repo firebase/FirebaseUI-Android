@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.ui.email;
+package com.firebase.ui.auth.util.ui;
 
 import android.content.Context;
 import android.net.Uri;
@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.data.model.FlowParameters;
 
 public class PreambleHandler {
     private static final String BTN_TARGET = "%BTN%";
@@ -35,7 +35,8 @@ public class PreambleHandler {
         mContext = context;
         mFlowParameters = parameters;
         mButtonText = buttonText;
-        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.fui_linkColor));
+        mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext,
+                R.color.fui_linkColor));
 
         setupCreateAccountPreamble();
     }
@@ -54,7 +55,9 @@ public class PreambleHandler {
         mBuilder = new SpannableStringBuilder(withTargets);
 
         replaceTarget(BTN_TARGET, mButtonText);
-        replaceUrlTarget(TOS_TARGET, R.string.fui_terms_of_service, mFlowParameters.termsOfServiceUrl);
+        replaceUrlTarget(TOS_TARGET,
+                R.string.fui_terms_of_service,
+                mFlowParameters.termsOfServiceUrl);
         replaceUrlTarget(PP_TARGET, R.string.fui_privacy_policy, mFlowParameters.privacyPolicyUrl);
     }
 

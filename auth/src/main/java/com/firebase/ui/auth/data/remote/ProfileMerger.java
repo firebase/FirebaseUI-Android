@@ -1,11 +1,11 @@
-package com.firebase.ui.auth.util.accountlink;
+package com.firebase.ui.auth.data.remote;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.User;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -29,7 +29,7 @@ public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>>
     }
 
     @Override
-    public Task<AuthResult> then(@NonNull Task<AuthResult> task) throws Exception {
+    public Task<AuthResult> then(@NonNull Task<AuthResult> task) {
         final AuthResult authResult = task.getResult();
         FirebaseUser firebaseUser = authResult.getUser();
 
@@ -51,7 +51,7 @@ public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>>
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error updating profile"))
                 .continueWithTask(new Continuation<Void, Task<AuthResult>>() {
                     @Override
-                    public Task<AuthResult> then(@NonNull Task<Void> task) throws Exception {
+                    public Task<AuthResult> then(@NonNull Task<Void> task) {
                         return Tasks.forResult(authResult);
                     }
                 });

@@ -22,6 +22,9 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 
 import com.firebase.ui.auth.BuildConfig;
+import com.firebase.ui.auth.data.model.CountryInfo;
+import com.firebase.ui.auth.data.model.PhoneNumber;
+import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,11 +33,11 @@ import org.robolectric.annotation.Config;
 
 import java.util.Locale;
 
-import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.formatPhoneNumber;
-import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.getCountryCode;
-import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.getCurrentCountryInfo;
-import static com.firebase.ui.auth.ui.phone.PhoneNumberUtils.getPhoneNumber;
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.RAW_PHONE;
+import static com.firebase.ui.auth.util.data.PhoneNumberUtils.formatPhoneNumber;
+import static com.firebase.ui.auth.util.data.PhoneNumberUtils.getCountryCode;
+import static com.firebase.ui.auth.util.data.PhoneNumberUtils.getCurrentCountryInfo;
+import static com.firebase.ui.auth.util.data.PhoneNumberUtils.getPhoneNumber;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -43,7 +46,7 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class PhoneNumberUtilsTest {
     @Test
-    public void testGetPhoneNumber() throws Exception {
+    public void testGetPhoneNumber() {
         final PhoneNumber number = getPhoneNumber(RAW_PHONE);
         assertEquals(PhoneTestConstants.PHONE_NO_COUNTRY_CODE, number.getPhoneNumber());
         assertEquals(PhoneTestConstants.US_COUNTRY_CODE, number.getCountryCode());
@@ -51,7 +54,7 @@ public class PhoneNumberUtilsTest {
     }
 
     @Test
-    public void testGetPhoneNumber_withLongestCountryCode() throws Exception {
+    public void testGetPhoneNumber_withLongestCountryCode() {
         final PhoneNumber phoneNumber = getPhoneNumber(PhoneTestConstants.YE_RAW_PHONE);
         assertEquals(PhoneTestConstants.PHONE_NO_COUNTRY_CODE, phoneNumber.getPhoneNumber());
         assertEquals(PhoneTestConstants.YE_COUNTRY_CODE, phoneNumber.getCountryCode());
@@ -59,7 +62,7 @@ public class PhoneNumberUtilsTest {
     }
 
     @Test
-    public void testGetPhoneNumber_withPhoneWithoutPlusSign() throws Exception {
+    public void testGetPhoneNumber_withPhoneWithoutPlusSign() {
         final PhoneNumber phoneNumber = getPhoneNumber(PhoneTestConstants.PHONE);
         assertEquals(PhoneTestConstants.PHONE, phoneNumber.getPhoneNumber());
         assertEquals(PhoneTestConstants.US_COUNTRY_CODE, phoneNumber.getCountryCode());
@@ -67,7 +70,7 @@ public class PhoneNumberUtilsTest {
     }
 
     @Test
-    public void testGetPhoneNumber_noCountryCode() throws Exception {
+    public void testGetPhoneNumber_noCountryCode() {
         final PhoneNumber number = getPhoneNumber("0" + PhoneTestConstants
                 .PHONE_NO_COUNTRY_CODE);
         assertEquals("0" + PhoneTestConstants.PHONE_NO_COUNTRY_CODE, number.getPhoneNumber());
@@ -76,7 +79,7 @@ public class PhoneNumberUtilsTest {
     }
 
     @Test
-    public void testGetCountryCode() throws Exception {
+    public void testGetCountryCode() {
         assertEquals(Integer.valueOf(86), getCountryCode(Locale.CHINA.getCountry()));
         assertEquals(null, getCountryCode(null));
         assertEquals(null, getCountryCode(new Locale("", "DJJZ").getCountry()));

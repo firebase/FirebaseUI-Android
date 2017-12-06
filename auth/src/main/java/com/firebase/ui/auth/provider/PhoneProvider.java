@@ -8,8 +8,8 @@ import android.support.annotation.LayoutRes;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.FlowParameters;
-import com.firebase.ui.auth.ui.phone.PhoneVerificationActivity;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.ui.phone.PhoneActivity;
 
 public class PhoneProvider implements Provider {
 
@@ -45,7 +45,7 @@ public class PhoneProvider implements Provider {
         }
 
         activity.startActivityForResult(
-                PhoneVerificationActivity.createIntent(activity, mFlowParameters, params),
+                PhoneActivity.createIntent(activity, mFlowParameters, params),
                 RC_PHONE_FLOW);
     }
 

@@ -27,14 +27,14 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.firebase.ui.auth.FirebaseAuthError;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.User;
+import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * VerifyPhoneNumberFragment} and {@link SubmitConfirmationCodeFragment}
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class PhoneVerificationActivity extends AppCompatBase {
+public class PhoneActivity extends AppCompatBase {
     private enum VerificationState {
         VERIFICATION_NOT_STARTED, VERIFICATION_STARTED, VERIFIED
     }
@@ -76,7 +76,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
 
     public static Intent createIntent(Context context, FlowParameters flowParams, Bundle params) {
         return HelperActivityBase.createBaseIntent(
-                context, PhoneVerificationActivity.class, flowParams)
+                context, PhoneActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_PARAMS, params);
     }
 
@@ -249,14 +249,14 @@ public class PhoneVerificationActivity extends AppCompatBase {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                         if (!mIsDestroyed) {
-                            PhoneVerificationActivity.this.onVerificationSuccess(phoneAuthCredential);
+                            PhoneActivity.this.onVerificationSuccess(phoneAuthCredential);
                         }
                     }
 
                     @Override
                     public void onVerificationFailed(FirebaseException ex) {
                         if (!mIsDestroyed) {
-                            PhoneVerificationActivity.this.onVerificationFailed(ex);
+                            PhoneActivity.this.onVerificationFailed(ex);
                         }
                     }
 
@@ -266,7 +266,7 @@ public class PhoneVerificationActivity extends AppCompatBase {
                         mVerificationId = verificationId;
                         mForceResendingToken = forceResendingToken;
                         if (!mIsDestroyed) {
-                            PhoneVerificationActivity.this.onCodeSent();
+                            PhoneActivity.this.onCodeSent();
                         }
                     }
                 },

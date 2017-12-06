@@ -1,4 +1,4 @@
-package com.firebase.ui.auth;
+package com.firebase.ui.auth.data.model;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,7 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
-import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.util.ExtraConstants;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class User implements Parcelable {

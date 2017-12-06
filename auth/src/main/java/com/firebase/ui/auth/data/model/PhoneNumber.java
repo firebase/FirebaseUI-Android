@@ -15,11 +15,11 @@
  *
  * Modifications copyright (C) 2017 Google Inc
  */
-package com.firebase.ui.auth.ui.phone;
+package com.firebase.ui.auth.data.model;
 
 import android.text.TextUtils;
 
-final class PhoneNumber {
+public final class PhoneNumber {
     private static final PhoneNumber EMPTY_PHONE_NUMBER = new PhoneNumber("", "", "");
 
     private final String phoneNumber;

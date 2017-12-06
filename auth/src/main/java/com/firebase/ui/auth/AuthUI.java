@@ -29,13 +29,13 @@ import android.support.annotation.StyleRes;
 import android.text.TextUtils;
 
 import com.facebook.login.LoginManager;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.provider.TwitterProvider;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -313,7 +313,7 @@ public class AuthUI {
                 continue;
             }
 
-            String type = SaveSmartLock.providerIdToAccountType(userInfo.getProviderId());
+            String type = ProviderUtils.providerIdToAccountType(userInfo.getProviderId());
 
             credentials.add(new Credential.Builder(
                     user.getEmail() == null ? user.getPhoneNumber() : user.getEmail())

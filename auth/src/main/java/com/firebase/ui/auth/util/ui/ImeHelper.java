@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth.util.ui;
 
 import android.support.annotation.RestrictTo;
 import android.view.KeyEvent;

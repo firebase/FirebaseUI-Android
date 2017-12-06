@@ -23,13 +23,14 @@ import android.widget.ArrayAdapter;
 import android.widget.SectionIndexer;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.CountryInfo;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
-/*
+/**
  * Array adapter used to display a list of countries with section indices.
  */
 final class CountryListAdapter extends ArrayAdapter<CountryInfo> implements SectionIndexer {

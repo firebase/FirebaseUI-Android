@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth.util;
 
 import android.support.annotation.RestrictTo;
 

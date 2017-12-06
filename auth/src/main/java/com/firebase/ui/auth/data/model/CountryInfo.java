@@ -16,12 +16,12 @@
  * Modifications copyright (C) 2017 Google Inc
  *
  */
-package com.firebase.ui.auth.ui.phone;
+package com.firebase.ui.auth.data.model;
 
 import java.text.Collator;
 import java.util.Locale;
 
-final class CountryInfo implements Comparable<CountryInfo> {
+public final class CountryInfo implements Comparable<CountryInfo> {
     private final Collator collator;
     public final Locale locale;
     public final int countryCode;
@@ -68,11 +68,11 @@ final class CountryInfo implements Comparable<CountryInfo> {
 
     @Override
     public String toString() {
-        return localeToEmoji(locale) + " " + this.locale.getDisplayCountry() + " +" + countryCode;
+        return localeToEmoji(locale) + " " + locale.getDisplayCountry() + " +" + countryCode;
     }
 
     @Override
     public int compareTo(CountryInfo info) {
-        return collator.compare(this.locale.getDisplayCountry(), info.locale.getDisplayCountry());
+        return collator.compare(locale.getDisplayCountry(), info.locale.getDisplayCountry());
     }
 }

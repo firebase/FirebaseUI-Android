@@ -29,11 +29,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ExtraConstants;
-import com.firebase.ui.auth.ui.FlowParameters;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.ImeHelper;
-import com.firebase.ui.auth.ui.email.PreambleHandler;
+import com.firebase.ui.auth.util.CustomCountDownTimer;
+import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.ui.BucketedTextChangeListener;
+import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.auth.util.ui.PreambleHandler;
 
 /**
  * Display confirmation code to verify phone numbers input in {{@link VerifyPhoneNumberFragment}}
@@ -52,7 +54,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private SpacedEditText mConfirmationCodeEditText;
     private Button mSubmitConfirmationButton;
     private CustomCountDownTimer mCountdownTimer;
-    private PhoneVerificationActivity mVerifier;
+    private PhoneActivity mVerifier;
     private TextView mAgreementText;
     private long mMillisUntilFinished;
 
@@ -111,10 +113,10 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
             mCountdownTimer.update(savedInstanceState.getLong(EXTRA_MILLIS_UNTIL_FINISHED));
         }
 
-        if (!(getActivity() instanceof PhoneVerificationActivity)) {
+        if (!(getActivity() instanceof PhoneActivity)) {
             throw new IllegalStateException("Activity must implement PhoneVerificationHandler");
         }
-        mVerifier = (PhoneVerificationActivity) getActivity();
+        mVerifier = (PhoneActivity) getActivity();
     }
 
     @Override

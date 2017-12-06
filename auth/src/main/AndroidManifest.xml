@@ -27,24 +27,24 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.email.RegisterEmailActivity"
+            android:name=".ui.email.EmailActivity"
             android:label="@string/fui_sign_in_default"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".ui.phone.PhoneVerificationActivity"
+            android:name=".ui.phone.PhoneActivity"
             android:label="@string/fui_sign_in_with_phone_number"
             android:exported="false"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
-            android:name=".ui.accountlink.WelcomeBackIdpPrompt"
+            android:name=".ui.idp.WelcomeBackIdpPrompt"
             android:label="@string/fui_title_welcome_back_idp_prompt"
             android:exported="false" />
 
         <activity
-            android:name=".ui.accountlink.WelcomeBackPasswordPrompt"
+            android:name=".ui.email.WelcomeBackPasswordPrompt"
             android:label="@string/fui_title_welcome_back_password_prompt"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

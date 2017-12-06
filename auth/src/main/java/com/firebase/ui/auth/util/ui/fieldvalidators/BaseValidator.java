@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package com.firebase.ui.auth.ui.email.fieldvalidators;
+package com.firebase.ui.auth.util.ui.fieldvalidators;
 
 import android.support.design.widget.TextInputLayout;
 

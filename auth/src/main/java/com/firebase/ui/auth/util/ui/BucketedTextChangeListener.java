@@ -16,9 +16,10 @@
  * Modifications copyright (C) 2017 Google Inc
  */
 
-package com.firebase.ui.auth.ui.phone;
+package com.firebase.ui.auth.util.ui;
 
 import android.annotation.SuppressLint;
+import android.support.annotation.RestrictTo;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -37,8 +38,9 @@ import java.util.Collections;
  * 76417-
  * 764176
  */
-final class BucketedTextChangeListener implements TextWatcher {
-    interface ContentChangeCallback {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+public final class BucketedTextChangeListener implements TextWatcher {
+    public interface ContentChangeCallback {
         /**
          * Idempotent function invoked by the listener when the edit text changes and is of expected
          * length
@@ -110,7 +112,7 @@ final class BucketedTextChangeListener implements TextWatcher {
      * {"", "-", "--", "---", "----", "-----", "------"}
      *
      * @param repeatableChar the char to repeat to the specified length
-     * @param length the maximum length of repeated chars
+     * @param length         the maximum length of repeated chars
      * @return an increasing sequence array of chars up the specified length
      */
     private String[] generatePostfixArray(CharSequence repeatableChar, int length) {

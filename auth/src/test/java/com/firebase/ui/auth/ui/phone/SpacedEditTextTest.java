@@ -47,7 +47,7 @@ public class SpacedEditTextTest {
     final float spacingProportion = 1.1f;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         attrs = mock(AttributeSet.class);
         context = mock(Context.class);
         array = mock(TypedArray.class);
@@ -60,43 +60,43 @@ public class SpacedEditTextTest {
     }
 
     @Test
-    public void testSpacedEditText_setTextEmpty() throws Exception {
+    public void testSpacedEditText_setTextEmpty() {
         spacedEditText.setText("");
         testSpacing("", "", spacedEditText);
     }
 
     @Test
-    public void testSpacedEditText_setTextNonEmpty() throws Exception {
+    public void testSpacedEditText_setTextNonEmpty() {
         spacedEditText.setText("123456");
         testSpacing("1 2 3 4 5 6", "123456", spacedEditText);
     }
 
     @Test
-    public void testSpacedEditText_setTextWithOneCharacter() throws Exception {
+    public void testSpacedEditText_setTextWithOneCharacter() {
         spacedEditText.setText("1");
         testSpacing("1", "1", spacedEditText);
     }
 
     @Test
-    public void testSpacedEditText_setTextWithExistingSpaces() throws Exception {
+    public void testSpacedEditText_setTextWithExistingSpaces() {
         spacedEditText.setText("1 2 3");
         testSpacing("1   2   3", "1 2 3", spacedEditText);
     }
 
     @Test
-    public void testSpacedEditText_noSetText() throws Exception {
+    public void testSpacedEditText_noSetText() {
         testSpacing("", "", spacedEditText);
     }
 
     @Test
-    public void testSpacedEditText_setLeadingSelection() throws Exception {
+    public void testSpacedEditText_setLeadingSelection() {
         spacedEditText.setText("123456");
         spacedEditText.setSelection(0);
         assertEquals(0, spacedEditText.getSelectionStart());
     }
 
     @Test
-    public void testSpacedEditText_setInnerSelection() throws Exception {
+    public void testSpacedEditText_setInnerSelection() {
         spacedEditText.setText("123456");
         spacedEditText.setSelection(3);
         assertEquals(5, spacedEditText.getSelectionStart());

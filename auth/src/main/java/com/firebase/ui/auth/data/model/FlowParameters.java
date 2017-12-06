@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.firebase.ui.auth.ui;
+package com.firebase.ui.auth.data.model;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +24,7 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.StyleRes;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.Preconditions;
 
 import java.util.Collections;
