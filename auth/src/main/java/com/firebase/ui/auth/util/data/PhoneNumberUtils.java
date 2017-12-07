@@ -136,16 +136,13 @@ public final class PhoneNumberUtils {
         providedNationalNumber = stripPlusSign(providedNationalNumber);
 
         return new PhoneNumber(
-                providedNationalNumber,
-                providedCountryIso,
-                String.valueOf(countryCode));
+                providedNationalNumber, providedCountryIso, String.valueOf(countryCode));
     }
 
     @Nullable
     public static Integer getCountryCode(String countryIso) {
         return countryIso == null
-                ? null
-                : COUNTRY_TO_ISO_CODES.get(countryIso.toUpperCase(Locale.getDefault()));
+                ? null : COUNTRY_TO_ISO_CODES.get(countryIso.toUpperCase(Locale.getDefault()));
     }
 
     private static String countryIsoForCountryCode(String countryCode) {
