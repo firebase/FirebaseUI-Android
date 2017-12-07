@@ -133,7 +133,7 @@ public class PhoneActivityTest {
 
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
         assertEquals(YE_COUNTRY_CODE,
-                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).countryCode));
+                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).getCountryCode()));
     }
 
     @Test
@@ -159,9 +159,9 @@ public class PhoneActivityTest {
 
         assertEquals(PHONE_NO_COUNTRY_CODE, mPhoneEditText.getText().toString());
         assertEquals(CA_COUNTRY_CODE,
-                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).countryCode));
+                String.valueOf(((CountryInfo) mCountryListSpinner.getTag()).getCountryCode()));
         assertEquals(new Locale("", CA_ISO2),
-                ((CountryInfo) mCountryListSpinner.getTag()).locale);
+                ((CountryInfo) mCountryListSpinner.getTag()).getLocale());
     }
 
     @Test

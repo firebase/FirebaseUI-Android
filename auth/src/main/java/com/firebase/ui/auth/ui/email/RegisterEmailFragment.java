@@ -170,8 +170,10 @@ public class RegisterEmailFragment extends FragmentBase implements
 
         mActivity = (HelperActivityBase) getActivity();
         mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(mActivity);
-        new PreambleHandler(getContext(), getFlowParams(), R.string.fui_button_text_save)
-                .setPreamble(mAgreementText);
+        PreambleHandler.setup(getContext(),
+                getFlowParams(),
+                R.string.fui_button_text_save,
+                mAgreementText);
     }
 
     @Override

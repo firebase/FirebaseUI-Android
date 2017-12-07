@@ -22,10 +22,10 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>> {
     private static final String TAG = "ProfileMerger";
 
-    private final IdpResponse mIdpResponse;
+    private final IdpResponse mResponse;
 
     public ProfileMerger(IdpResponse response) {
-        mIdpResponse = response;
+        mResponse = response;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>>
             return Tasks.forResult(authResult);
         }
 
-        User user = mIdpResponse.getUser();
+        User user = mResponse.getUser();
         if (TextUtils.isEmpty(name)) { name = user.getName(); }
         if (photoUri == null) { photoUri = user.getPhotoUri(); }
 

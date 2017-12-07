@@ -75,7 +75,7 @@ public final class PhoneNumberUtils {
                                            @NonNull CountryInfo countryInfo) {
         return phoneNumber.startsWith("+")
                 ? phoneNumber
-                : ("+" + String.valueOf(countryInfo.countryCode)
+                : ("+" + String.valueOf(countryInfo.getCountryCode())
                 + phoneNumber.replaceAll("[^\\d.]", ""));
     }
 
@@ -98,7 +98,7 @@ public final class PhoneNumberUtils {
         //                 method.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return android.telephony.PhoneNumberUtils
-                    .formatNumberToE164(phoneNumber, currentCountry.locale.getCountry());
+                    .formatNumberToE164(phoneNumber, currentCountry.getLocale().getCountry());
         }
 
         return formatPhoneNumber(phoneNumber, currentCountry);

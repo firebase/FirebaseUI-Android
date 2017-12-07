@@ -36,10 +36,10 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
 
     private static final int MAX_COUNTRIES = 291;
 
-    private final Listener listener;
+    private final Listener mListener;
 
     public CountryListLoadTask(Listener listener) {
-        this.listener = listener;
+        mListener = listener;
     }
 
     @Override
@@ -297,8 +297,8 @@ public final class CountryListLoadTask extends AsyncTask<Void, Void, List<Countr
 
     @Override
     public void onPostExecute(List<CountryInfo> result) {
-        if (listener != null) {
-            listener.onLoadComplete(result);
+        if (mListener != null) {
+            mListener.onLoadComplete(result);
         }
     }
 }

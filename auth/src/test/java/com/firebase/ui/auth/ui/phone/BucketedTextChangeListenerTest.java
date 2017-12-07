@@ -36,81 +36,81 @@ import static org.mockito.Mockito.verify;
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class BucketedTextChangeListenerTest {
-    EditText editText;
-    BucketedTextChangeListener.ContentChangeCallback contentChangeCallback;
-    BucketedTextChangeListener textChangeListener;
+    private static final int EXPECTED_LENGTH = 6;
+    private static final String PLACE_HOLDER = "-";
+    private static final int ANY_INT = -1;
 
-    final int expectedLength = 6;
-    final String placeHolder = "-";
-    final int anyInt = -1;
+    private EditText mEditText;
+    private BucketedTextChangeListener.ContentChangeCallback mContentChangeCallback;
+    private BucketedTextChangeListener mTextChangeListener;
 
     @Before
     public void setUp() {
-        editText = mock(EditText.class);
-        contentChangeCallback = mock(BucketedTextChangeListener.ContentChangeCallback.class);
-        textChangeListener = new BucketedTextChangeListener(editText, expectedLength,
-                placeHolder, contentChangeCallback);
+        mEditText = mock(EditText.class);
+        mContentChangeCallback = mock(BucketedTextChangeListener.ContentChangeCallback.class);
+        mTextChangeListener = new BucketedTextChangeListener(mEditText, EXPECTED_LENGTH,
+                PLACE_HOLDER, mContentChangeCallback);
     }
 
     @Test
     public void testTextChange_empty() {
-        textChangeListener.onTextChanged("------", anyInt, anyInt, anyInt);
-        testListener(editText, "------", 0, false);
+        mTextChangeListener.onTextChanged("------", ANY_INT, ANY_INT, ANY_INT);
+        testListener(mEditText, "------", 0, false);
     }
 
     @Test
     public void testTextChange_atIndex0() {
-        textChangeListener.onTextChanged("1------", anyInt, anyInt, anyInt);
-        testListener(editText, "1-----", 1, false);
+        mTextChangeListener.onTextChanged("1------", ANY_INT, ANY_INT, ANY_INT);
+        testListener(mEditText, "1-----", 1, false);
     }
 
     @Test
     public void testTextChange_atIndex1() {
-        textChangeListener.onTextChanged("12-----", anyInt, anyInt, anyInt);
-        testListener(editText, "12----", 2, false);
+        mTextChangeListener.onTextChanged("12-----", ANY_INT, ANY_INT, ANY_INT);
+        testListener(mEditText, "12----", 2, false);
     }
 
     @Test
     public void testTextChange_atIndex5() {
-        textChangeListener.onTextChanged("123456-", anyInt, anyInt, anyInt);
-        testListener(editText, "123456", 6, true);
+        mTextChangeListener.onTextChanged("123456-", ANY_INT, ANY_INT, ANY_INT);
+        testListener(mEditText, "123456", 6, true);
     }
 
     @Test
     public void testTextChange_exceedingMaxLength() {
-        textChangeListener.onTextChanged("1234567", anyInt, anyInt, anyInt);
-        testListener(editText, "123456", 6, true);
+        mTextChangeListener.onTextChanged("1234567", ANY_INT, ANY_INT, ANY_INT);
+        testListener(mEditText, "123456", 6, true);
     }
 
     @Test
     public void testTextChange_onClear() {
-        textChangeListener.onTextChanged("", anyInt, anyInt, anyInt);
-        testListener(editText, "------", 0, false);
+        mTextChangeListener.onTextChanged("", ANY_INT, ANY_INT, ANY_INT);
+        testListener(mEditText, "------", 0, false);
     }
 
     @Test
     public void testTextChange_onPartialClear() {
-        textChangeListener.onTextChanged("123", anyInt, anyInt, anyInt);
-        testListener(editText, "123---", 3, false);
+        mTextChangeListener.onTextChanged("123", ANY_INT, ANY_INT, ANY_INT);
+        testListener(mEditText, "123---", 3, false);
     }
 
     @Test
     public void testTextChange_onIncorrectInsertion() {
-        textChangeListener.onTextChanged("1--3--", anyInt, anyInt, anyInt);
-        testListener(editText, "13----", 2, false);
+        mTextChangeListener.onTextChanged("1--3--", ANY_INT, ANY_INT, ANY_INT);
+        testListener(mEditText, "13----", 2, false);
     }
 
     private void testListener(EditText editText, String expectedText, int expectedSelection,
                               boolean isComplete) {
         final InOrder inOrder = inOrder(editText);
-        inOrder.verify(editText).removeTextChangedListener(textChangeListener);
+        inOrder.verify(editText).removeTextChangedListener(mTextChangeListener);
         inOrder.verify(editText).setText(expectedText);
         inOrder.verify(editText).setSelection(expectedSelection);
-        inOrder.verify(editText).addTextChangedListener(textChangeListener);
+        inOrder.verify(editText).addTextChangedListener(mTextChangeListener);
         if (isComplete) {
-            verify(contentChangeCallback).whileComplete();
+            verify(mContentChangeCallback).whileComplete();
         } else {
-            verify(contentChangeCallback).whileIncomplete();
+            verify(mContentChangeCallback).whileIncomplete();
         }
     }
 }

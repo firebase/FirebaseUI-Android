@@ -62,7 +62,7 @@ public class CountryInfoTests {
     public void testEquals_differentClass() {
         final CountryInfo countryInfo = new CountryInfo(COUNTRY_NAME_US, COUNTRY_CODE_US);
 
-        assertFalse(countryInfo.equals(new Integer(0)));
+        assertFalse(countryInfo.equals(0));
     }
 
     @Test
@@ -107,8 +107,8 @@ public class CountryInfoTests {
         String expected = new String(Character.toChars(firstLetter))
                 + new String(Character.toChars(secondLetter))
                 + " "
-                + usCountryInfo.locale.getDisplayCountry()
-                + " +" + usCountryInfo.countryCode;
-        assertEquals(expected.toString(), usCountryInfo.toString());
+                + usCountryInfo.getLocale().getDisplayCountry()
+                + " +" + usCountryInfo.getCountryCode();
+        assertEquals(expected, usCountryInfo.toString());
     }
 }

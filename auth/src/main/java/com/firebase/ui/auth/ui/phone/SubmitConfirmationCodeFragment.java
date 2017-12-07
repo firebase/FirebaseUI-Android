@@ -222,8 +222,10 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void setUpTermsOfService() {
-        new PreambleHandler(getContext(), getFlowParams(), R.string.fui_continue_phone_login)
-                .setPreamble(mAgreementText);
+        PreambleHandler.setup(getContext(),
+                getFlowParams(),
+                R.string.fui_continue_phone_login,
+                mAgreementText);
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
