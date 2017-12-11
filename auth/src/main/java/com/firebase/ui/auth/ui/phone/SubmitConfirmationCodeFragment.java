@@ -212,7 +212,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
             }
 
             @Override
-            protected void onFinish() {
+            public void onFinish() {
                 mCountDownTextView.setText("");
                 mCountDownTextView.setVisibility(View.GONE);
                 mResendCodeTextView.setVisibility(View.VISIBLE);

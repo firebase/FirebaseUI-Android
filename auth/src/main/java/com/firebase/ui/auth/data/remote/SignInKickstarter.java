@@ -18,7 +18,7 @@ import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
-import com.firebase.ui.auth.ui.phone.PhoneNumberActivity;
+import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.FlowHolder;
@@ -95,7 +95,7 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
                     mFlowHolder.getIntentStarter().setValue(Pair.create(
-                            PhoneNumberActivity.createIntent(
+                            PhoneActivity.createIntent(
                                     getApplication(), flowParams, firstIdpConfig.getParams()),
                             RC_PHONE_FLOW));
                     break;
@@ -204,7 +204,7 @@ public class SignInKickstarter extends AuthViewModelBase implements Observer<Act
                     Bundle args = new Bundle();
                     args.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, id);
                     mFlowHolder.getIntentStarter().setValue(Pair.create(
-                            PhoneNumberActivity.createIntent(
+                            PhoneActivity.createIntent(
                                     getApplication(),
                                     mFlowHolder.getParams(),
                                     args),

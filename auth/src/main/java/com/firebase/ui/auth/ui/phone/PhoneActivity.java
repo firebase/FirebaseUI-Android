@@ -39,9 +39,9 @@ import com.google.firebase.auth.FirebaseAuthException;
  * CheckPhoneNumberFragment} and {@link SubmitConfirmationCodeFragment}
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class PhoneNumberActivity extends AppCompatBase implements Observer<IdpResponse> {
+public class PhoneActivity extends AppCompatBase implements Observer<IdpResponse> {
     public static Intent createIntent(Context context, FlowParameters params, Bundle args) {
-        return HelperActivityBase.createBaseIntent(context, PhoneNumberActivity.class, params)
+        return HelperActivityBase.createBaseIntent(context, PhoneActivity.class, params)
                 .putExtra(ExtraConstants.EXTRA_PARAMS, args);
     }
 
