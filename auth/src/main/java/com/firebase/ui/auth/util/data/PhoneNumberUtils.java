@@ -424,13 +424,17 @@ public final class PhoneNumberUtils {
             List<String> regions = COUNTRY_TO_REGION_CODES.get(code);
 
             for (String region : regions) {
+                if (region.equals("001")) { continue; }
+                if (map.containsKey(region)) {
+                    throw new IllegalStateException("Duplicate regions for country code: " + code);
+                }
+
                 map.put(region, code);
             }
         }
 
         // TODO Figure out why these exceptions exist.
         // This map used to be hardcoded so this is the diff from the generated version.
-        map.remove("001");
         map.remove("TA");
         map.put("HM", 672);
         map.put("GS", 500);
