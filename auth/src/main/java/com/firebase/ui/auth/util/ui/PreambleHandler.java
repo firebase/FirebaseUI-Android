@@ -37,15 +37,15 @@ public class PreambleHandler {
         mButtonText = buttonText;
         mLinkSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext,
                 R.color.fui_linkColor));
-
-        setupCreateAccountPreamble();
     }
 
     public static void setup(Context context,
                              FlowParameters parameters,
                              @StringRes int buttonText,
                              TextView textView) {
-        new PreambleHandler(context, parameters, buttonText).setPreamble(textView);
+        PreambleHandler handler = new PreambleHandler(context, parameters, buttonText);
+        handler.setPreamble(textView);
+        handler.setupCreateAccountPreamble();
     }
 
     private void setPreamble(TextView textView) {

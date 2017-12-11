@@ -137,6 +137,10 @@
         <item name="android:hint">@string/fui_phone_hint</item>
     </style>
 
+    <style name="FirebaseUI.TextInputLayout.PhoneField">
+        <item name="android:hint">@string/fui_phone_hint</item>
+    </style>
+
     <style name="FirebaseUI.TextInputLayout.NameField">
         <item name="android:hint">@string/fui_name_hint</item>
     </style>
@@ -150,14 +154,13 @@
     </style>
 
     <style name="FirebaseUI.Text.Heading" parent="FirebaseUI.Text.T07">
-        <item name="android:paddingTop">0dp</item>
-        <item name="android:paddingBottom">@dimen/fui_heading_padding_bottom</item>
+        <item name="android:layout_marginBottom">@dimen/fui_heading_padding_bottom</item>
     </style>
 
     <style name="FirebaseUI.Text.BodyText" parent="FirebaseUI.Text.T08">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingBottom">@dimen/fui_body_padding_bottom</item>
+        <item name="android:layout_marginBottom">@dimen/fui_body_padding_bottom</item>
     </style>
 
     <style name="FirebaseUI.CountrySpinner" parent="Widget.AppCompat.Spinner.Underlined">
@@ -181,6 +184,7 @@
         <item name="android:minWidth">@dimen/fui_auth_method_button_width</item>
         <item name="android:orientation">vertical</item>
         <item name="android:clipToPadding">false</item>
+        <!-- These have to be padding instead of margin so the shadows aren't clipped. -->
         <item name="android:paddingLeft">4dp</item>
         <item name="android:paddingRight">4dp</item>
     </style>

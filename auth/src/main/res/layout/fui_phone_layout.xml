@@ -13,9 +13,9 @@
             android:id="@+id/country_list"
             style="@style/FirebaseUI.CountrySpinner"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/phone_layout" />
+            app:layout_constraintBaseline_toBaselineOf="@id/phone_layout" />
 
-        <android.support.design.widget.TextInputLayout
+        <com.firebase.ui.auth.util.ui.BaselineTextInputLayout
             android:id="@+id/phone_layout"
             style="@style/FirebaseUI.TextInputLayout.PhoneField"
             android:layout_width="0dp"
@@ -29,7 +29,7 @@
                 style="@style/FirebaseUI.TextInputEditText.PhoneField"
                 android:imeOptions="actionDone" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.firebase.ui.auth.util.ui.BaselineTextInputLayout>
 
         <Button
             android:id="@+id/send_code"

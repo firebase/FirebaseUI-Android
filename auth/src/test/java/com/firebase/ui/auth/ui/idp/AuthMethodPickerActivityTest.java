@@ -24,7 +24,7 @@ import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.EmailActivity;
-import com.firebase.ui.auth.ui.phone.PhoneNumberActivity;
+import com.firebase.ui.auth.ui.phone.PhoneActivity;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,7 +90,7 @@ public class AuthMethodPickerActivityTest {
                 Shadows.shadowOf(authMethodPickerActivity).getNextStartedActivityForResult();
 
         assertEquals(
-                PhoneNumberActivity.class.getName(),
+                PhoneActivity.class.getName(),
                 nextIntent.intent.getComponent().getClassName());
     }
 
