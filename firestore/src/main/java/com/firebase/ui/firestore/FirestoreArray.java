@@ -110,13 +110,16 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
             // Document modified only
             mSnapshots.set(change.getNewIndex(), change.getDocument());
             notifyOnChildChanged(ChangeEventType.CHANGED, change.getDocument(),
-                    change.getNewIndex(), change.getOldIndex());
+                    change.getNewIndex(), change.getNewIndex());
         } else {
             // Document moved and possibly also modified
             mSnapshots.remove(change.getOldIndex());
             mSnapshots.add(change.getNewIndex(), change.getDocument());
+
             notifyOnChildChanged(ChangeEventType.MOVED, change.getDocument(),
                     change.getNewIndex(), change.getOldIndex());
+            notifyOnChildChanged(ChangeEventType.CHANGED, change.getDocument(),
+                    change.getNewIndex(), change.getNewIndex());
         }
     }
 }

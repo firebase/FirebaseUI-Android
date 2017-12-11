@@ -5,7 +5,6 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
 public class Chat extends AbstractChat {
-
     private String mName;
     private String mMessage;
     private String mUid;
@@ -42,5 +41,34 @@ public class Chat extends AbstractChat {
 
     public void setUid(String uid) {
         mUid = uid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Chat chat = (Chat) o;
+
+        return mUid.equals(chat.mUid)
+                && (mName == null ? chat.mName == null : mName.equals(chat.mName))
+                && (mMessage == null ? chat.mMessage == null : mMessage.equals(chat.mMessage));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mName == null ? 0 : mName.hashCode();
+        result = 31 * result + (mMessage == null ? 0 : mMessage.hashCode());
+        result = 31 * result + mUid.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "mName='" + mName + '\'' +
+                ", mMessage='" + mMessage + '\'' +
+                ", mUid='" + mUid + '\'' +
+                '}';
     }
 }
