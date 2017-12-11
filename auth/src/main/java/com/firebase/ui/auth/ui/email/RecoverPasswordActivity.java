@@ -14,10 +14,12 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
@@ -27,25 +29,25 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 /**
  * Activity to initiate the "forgot password" flow by asking for the user's email.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener {
-    private static final String TAG = "RecoverPasswordActivity";
+public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener, ImeHelper.DonePressedListener {
+    private RecoverPasswordHandler mHandler;
 
+    private TextInputLayout mEmailInputLayout;
     private EditText mEmailEditText;
     private EmailFieldValidator mEmailFieldValidator;
 
-    public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return HelperActivityBase.createBaseIntent(context, RecoverPasswordActivity.class, flowParams)
+    public static Intent createIntent(Context context, FlowParameters params, String email) {
+        return HelperActivityBase.createBaseIntent(context, RecoverPasswordActivity.class, params)
                 .putExtra(ExtraConstants.EXTRA_EMAIL, email);
     }
 
@@ -54,51 +56,54 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_forgot_password_layout);
 
-        mEmailFieldValidator =
-                new EmailFieldValidator((TextInputLayout) findViewById(R.id.email_layout));
+        mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
+        mHandler.init(getFlowHolder());
+        mHandler.getPasswordResetListener().observe(this, new Observer<Task<String>>() {
+            @Override
+            public void onChanged(@Nullable Task<String> task) {
+                if (task.isSuccessful()) {
+                    mEmailInputLayout.setError(null);
+                    RecoveryEmailSentDialog.show(task.getResult(), getSupportFragmentManager());
+                } else if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                    // No FirebaseUser exists with this email address, show error.
+                    mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
+                }
+            }
+        });
+        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isDone) {
+                if (isDone) {
+                    getDialogHolder().dismissDialog();
+                } else {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_sending);
+                }
+            }
+        });
+
+        mEmailInputLayout = findViewById(R.id.email_layout);
         mEmailEditText = findViewById(R.id.email);
+        mEmailFieldValidator = new EmailFieldValidator(mEmailInputLayout);
 
         String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
         if (email != null) {
             mEmailEditText.setText(email);
         }
 
+        ImeHelper.setImeOnDoneListener(mEmailEditText, this);
         findViewById(R.id.button_done).setOnClickListener(this);
-    }
-
-    private void next(final String email) {
-        getAuthHelper().getFirebaseAuth()
-                .sendPasswordResetEmail(email)
-                .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Error sending password reset email"))
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        getDialogHolder().dismissDialog();
-                        RecoveryEmailSentDialog.show(
-                                email, getSupportFragmentManager());
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        getDialogHolder().dismissDialog();
-
-                        if (e instanceof FirebaseAuthInvalidUserException) {
-                            // No FirebaseUser exists with this email address, show error.
-                            mEmailEditText.setError(getString(R.string.fui_error_email_does_not_exist));
-                        }
-                    }
-                });
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.button_done) {
-            if (mEmailFieldValidator.validate(mEmailEditText.getText())) {
-                getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_sending);
-                next(mEmailEditText.getText().toString());
-            }
+        if (view.getId() == R.id.button_done
+                && mEmailFieldValidator.validate(mEmailEditText.getText())) {
+            onDonePressed();
         }
+    }
+
+    @Override
+    public void onDonePressed() {
+        mHandler.startReset(mEmailEditText.getText().toString());
     }
 }
