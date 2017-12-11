@@ -34,7 +34,7 @@ import org.robolectric.annotation.Config;
 import java.util.Locale;
 
 import static com.firebase.ui.auth.ui.phone.PhoneTestConstants.RAW_PHONE;
-import static com.firebase.ui.auth.util.data.PhoneNumberUtils.formatPhoneNumber;
+import static com.firebase.ui.auth.util.data.PhoneNumberUtils.format;
 import static com.firebase.ui.auth.util.data.PhoneNumberUtils.getCountryCode;
 import static com.firebase.ui.auth.util.data.PhoneNumberUtils.getCurrentCountryInfo;
 import static com.firebase.ui.auth.util.data.PhoneNumberUtils.getPhoneNumber;
@@ -91,11 +91,11 @@ public class PhoneNumberUtilsTest {
         String validPhoneNumber = "+919994947354";
         CountryInfo indiaCountryInfo = new CountryInfo(new Locale("", "IN"), 91);
         // no leading plus
-        assertEquals(validPhoneNumber, formatPhoneNumber("9994947354", indiaCountryInfo));
+        assertEquals(validPhoneNumber, format("9994947354", indiaCountryInfo));
         // fully formatted
-        assertEquals(validPhoneNumber, formatPhoneNumber("+919994947354", indiaCountryInfo));
+        assertEquals(validPhoneNumber, format("+919994947354", indiaCountryInfo));
         // parantheses and hyphens
-        assertEquals(validPhoneNumber, formatPhoneNumber("(99949) 47-354", indiaCountryInfo));
+        assertEquals(validPhoneNumber, format("(99949) 47-354", indiaCountryInfo));
 
         // The following cases would fail for lower api versions.
         // Leaving tests in place to formally identify cases
