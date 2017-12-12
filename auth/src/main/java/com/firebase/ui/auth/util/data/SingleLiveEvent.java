@@ -61,8 +61,8 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
     @Override
     public void setValue(@Nullable T t) {
-        for (AtomicBoolean aBoolean : mObserverStatuses.values()) {
-            aBoolean.set(true);
+        for (AtomicBoolean isNewDataAvailable : mObserverStatuses.values()) {
+            isNewDataAvailable.set(true);
         }
         super.setValue(t);
     }

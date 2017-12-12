@@ -19,7 +19,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
@@ -33,6 +32,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 /**
@@ -60,19 +60,22 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         mHandler.init(getFlowHolder());
         mHandler.getPasswordResetListener().observe(this, new Observer<Task<String>>() {
             @Override
-            public void onChanged(@Nullable Task<String> task) {
+            public void onChanged(Task<String> task) {
                 if (task.isSuccessful()) {
                     mEmailInputLayout.setError(null);
                     RecoveryEmailSentDialog.show(task.getResult(), getSupportFragmentManager());
-                } else if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                } else if (task.getException() instanceof FirebaseAuthInvalidUserException
+                        || task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                     // No FirebaseUser exists with this email address, show error.
                     mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
+                } else {
+                    mEmailInputLayout.setError(task.getException().getLocalizedMessage());
                 }
             }
         });
         getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(@Nullable Boolean isDone) {
+            public void onChanged(Boolean isDone) {
                 if (isDone) {
                     getDialogHolder().dismissDialog();
                 } else {

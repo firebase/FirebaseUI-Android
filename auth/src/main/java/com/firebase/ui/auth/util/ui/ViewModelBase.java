@@ -13,9 +13,8 @@ public abstract class ViewModelBase<T> extends AndroidViewModel {
     }
 
     public void init(T args) {
-        if (!mIsInitialized.get()) {
+        if (mIsInitialized.compareAndSet(false, true)) {
             onCreate(args);
-            mIsInitialized.set(true);
         }
     }
 
