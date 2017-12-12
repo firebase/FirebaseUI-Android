@@ -15,6 +15,9 @@ android:
     # https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943
     - tools
     - tools
+    - platform-tools
+    - android-26
+    - build-tools-26.0.1
 before_script:
   - mv library/google-services.json app/google-services.json
   - echo y | ${ANDROID_HOME}tools/bin/sdkmanager --channel=3 "tools" "platform-tools" "build-tools;26.0.1" "platforms;android-26" "extras;google;m2repository"
