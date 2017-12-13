@@ -27,14 +27,14 @@ public class RecoverPasswordHandler extends AuthViewModelBase {
 
     public void startReset(final String email) {
         if (mCachedPasswordReset == null || !TextUtils.equals(email, mCachedPasswordReset.first)) {
-            mCachedPasswordReset = Pair.create(email, mAuth.sendPasswordResetEmail(email));
+            mCachedPasswordReset = Pair.create(email, getAuth().sendPasswordResetEmail(email));
         }
 
-        mFlowHolder.getProgressListener().setValue(false);
+        getFlowHolder().getProgressListener().setValue(false);
         mCachedPasswordReset.second.addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                mFlowHolder.getProgressListener().setValue(true);
+                getFlowHolder().getProgressListener().setValue(true);
                 mPasswordResetListener.setValue(task.isSuccessful() ?
                         Tasks.forResult(email) : Tasks.<String>forException(task.getException()));
             }

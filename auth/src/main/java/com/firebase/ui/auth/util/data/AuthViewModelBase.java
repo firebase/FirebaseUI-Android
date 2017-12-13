@@ -9,9 +9,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 public class AuthViewModelBase extends ViewModelBase<FlowHolder> {
-    protected FlowHolder mFlowHolder;
-    protected FirebaseAuth mAuth;
-    protected PhoneAuthProvider mPhoneAuth;
+    private FlowHolder mFlowHolder;
+    private FirebaseAuth mAuth;
+    private PhoneAuthProvider mPhoneAuth;
 
     protected AuthViewModelBase(Application application) {
         super(application);
@@ -24,5 +24,17 @@ public class AuthViewModelBase extends ViewModelBase<FlowHolder> {
         FirebaseApp app = FirebaseApp.getInstance(mFlowHolder.getParams().appName);
         mAuth = FirebaseAuth.getInstance(app);
         mPhoneAuth = PhoneAuthProvider.getInstance(mAuth);
+    }
+
+    protected FlowHolder getFlowHolder() {
+        return mFlowHolder;
+    }
+
+    protected FirebaseAuth getAuth() {
+        return mAuth;
+    }
+
+    protected PhoneAuthProvider getPhoneAuth() {
+        return mPhoneAuth;
     }
 }
