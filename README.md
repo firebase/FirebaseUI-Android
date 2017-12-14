@@ -39,16 +39,16 @@ libraries.
 ```groovy
 dependencies {
 // FirebaseUI for Firebase Realtime Database
-implementation 'com.firebaseui:firebase-ui-database:3.1.0'
+implementation 'com.firebaseui:firebase-ui-database:3.1.1'
 
 // FirebaseUI for Cloud Firestore
-implementation 'com.firebaseui:firebase-ui-firestore:3.1.0'
+implementation 'com.firebaseui:firebase-ui-firestore:3.1.1'
 
 // FirebaseUI for Firebase Auth
-implementation 'com.firebaseui:firebase-ui-auth:3.1.0'
+implementation 'com.firebaseui:firebase-ui-auth:3.1.1'
 
 // FirebaseUI for Cloud Storage
-implementation 'com.firebaseui:firebase-ui-storage:3.1.0'
+implementation 'com.firebaseui:firebase-ui-storage:3.1.1'
 }
 ```
 
@@ -96,6 +96,7 @@ For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
+| 3.1.1              | 11.6.2                         |
 | 3.1.0              | 11.4.2                         |
 | 3.0.0              | 11.4.2                         |
 | 2.4.0              | 11.4.0                         |
