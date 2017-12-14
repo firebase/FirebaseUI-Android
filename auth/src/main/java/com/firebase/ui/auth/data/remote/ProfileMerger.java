@@ -2,6 +2,7 @@ package com.firebase.ui.auth.data.remote;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -19,6 +20,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
  * <p>
  * <b>Note:</b> This operation always returns a successful task to minimize login interruptions.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>> {
     private static final String TAG = "ProfileMerger";
 

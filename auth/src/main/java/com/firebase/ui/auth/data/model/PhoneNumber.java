@@ -17,8 +17,10 @@
  */
 package com.firebase.ui.auth.data.model;
 
+import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class PhoneNumber {
     private static final PhoneNumber EMPTY_PHONE_NUMBER = new PhoneNumber("", "", "");
 
