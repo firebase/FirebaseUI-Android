@@ -19,6 +19,7 @@
 package com.firebase.ui.auth.data.client;
 
 import android.os.AsyncTask;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.CountryInfo;
 
@@ -29,7 +30,10 @@ import java.util.Locale;
 
 // TODO We need to move away from ListView and AsyncTask in the future and use (say)
 // RecyclerView and Task/ThreadPoolExecutor .
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class CountryListLoadTask extends AsyncTask<Void, Void, List<CountryInfo>> {
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public interface Listener {
         void onLoadComplete(List<CountryInfo> result);
     }

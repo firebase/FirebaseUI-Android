@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.RestrictTo;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatButton;
@@ -19,6 +20,7 @@ import com.firebase.ui.auth.R;
  * compatibility attribute for compound drawables. Thus, we must load compound drawables at runtime
  * using AppCompat and inject them into the button to support pre-L devices.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class SupportVectorDrawablesButton extends AppCompatButton {
     public SupportVectorDrawablesButton(Context context) {
         super(context);

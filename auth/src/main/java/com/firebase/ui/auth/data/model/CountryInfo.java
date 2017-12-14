@@ -18,9 +18,12 @@
  */
 package com.firebase.ui.auth.data.model;
 
+import android.support.annotation.RestrictTo;
+
 import java.text.Collator;
 import java.util.Locale;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class CountryInfo implements Comparable<CountryInfo> {
     private final Collator mCollator;
     private final Locale mLocale;

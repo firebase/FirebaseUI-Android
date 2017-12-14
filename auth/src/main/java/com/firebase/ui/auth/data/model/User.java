@@ -128,6 +128,7 @@ public class User implements Parcelable {
         dest.writeParcelable(mPhotoUri, flags);
     }
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static class Builder {
         private String mProviderId;
         private String mEmail;
