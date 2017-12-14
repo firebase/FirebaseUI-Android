@@ -46,7 +46,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
 // ...
-implementation 'com.firebaseui:firebase-ui-auth:3.1.0'
+implementation 'com.firebaseui:firebase-ui-auth:3.1.1'
 
 // Required only if Facebook login support is required
 // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
