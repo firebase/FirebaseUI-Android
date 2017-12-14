@@ -41,6 +41,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.accountlink.ManualMergeUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.firebase.ui.auth.util.ui.ImeHelper;
@@ -167,7 +168,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 response,
                 new Callable<Task<AuthResult>>() {
                     @Override
-                    public Task<AuthResult> call() throws Exception {
+                    public Task<AuthResult> call() {
                         // Sign in with known email and the password provided
                         return getAuthHelper().getFirebaseAuth()
                                 .signInWithEmailAndPassword(email, password);

@@ -18,6 +18,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
@@ -25,6 +26,7 @@ import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
+import com.firebase.ui.auth.util.accountlink.ManualMergeUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -119,7 +121,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         // It doesn't matter what we put here, we just don't want outState to be empty
         outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
         super.onSaveInstanceState(outState);
@@ -291,7 +293,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
                 response,
                 new Callable<Task<AuthResult>>() {
                     @Override
-                    public Task<AuthResult> call() throws Exception {
+                    public Task<AuthResult> call() {
                         return getAuthHelper().getFirebaseAuth()
                                 .signInWithEmailAndPassword(email, password);
                     }

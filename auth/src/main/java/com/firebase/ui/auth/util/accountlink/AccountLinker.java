@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -124,7 +125,7 @@ public class AccountLinker implements OnSuccessListener<AuthResult>, OnFailureLi
                     mIdpResponse,
                     new Callable<Task<AuthResult>>() {
                         @Override
-                        public Task<AuthResult> call() throws Exception {
+                        public Task<AuthResult> call() {
                             return mActivity.getAuthHelper().getFirebaseAuth()
                                     .signInWithCredential(mExistingCredential)
                                     .continueWithTask(new ProfileMerger(mIdpResponse));
