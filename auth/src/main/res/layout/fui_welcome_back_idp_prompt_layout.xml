@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/FirebaseUI.WrapperStyle"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        style="@style/FirebaseUI.Text.Heading"
-        android:layout_width="match_parent"
+    <LinearLayout
+        style="@style/FirebaseUI.WrapperStyle"
         android:layout_height="wrap_content"
-        android:text="@string/fui_welcome_back_idp_header" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/welcome_back_idp_prompt"
-        style="@style/FirebaseUI.Text.BodyText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textIsSelectable="false"
-        tools:text="Good news! You've already used jane.doe@example.com. Sign in with Google to continue to SuperApp" />
+        <TextView
+            style="@style/FirebaseUI.Text.Heading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fui_welcome_back_idp_header" />
 
-    <Button
-        android:id="@+id/welcome_back_idp_button"
-        style="@style/FirebaseUI.Button"
-        android:text="@string/fui_sign_in_default" />
+        <TextView
+            android:id="@+id/welcome_back_idp_prompt"
+            style="@style/FirebaseUI.Text.BodyText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="false"
+            tools:text="Good news! You've already used jane.doe@example.com. Sign in with Google to continue to SuperApp" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/welcome_back_idp_button"
+            style="@style/FirebaseUI.Button"
+            android:text="@string/fui_sign_in_default" />
+
+    </LinearLayout>
+
+</ScrollView>

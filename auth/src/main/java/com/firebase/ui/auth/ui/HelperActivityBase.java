@@ -10,7 +10,9 @@ import android.support.annotation.RestrictTo;
 import android.support.v7.app.AppCompatActivity;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.AuthHelper;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.FirebaseUser;
 

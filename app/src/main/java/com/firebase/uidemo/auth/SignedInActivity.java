@@ -43,6 +43,8 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -202,14 +204,24 @@ public class SignedInActivity extends AppCompatActivity {
             Iterator<String> providerIter = user.getProviders().iterator();
             while (providerIter.hasNext()) {
                 String provider = providerIter.next();
-                if (GoogleAuthProvider.PROVIDER_ID.equals(provider)) {
-                    providerList.append("Google");
-                } else if (FacebookAuthProvider.PROVIDER_ID.equals(provider)) {
-                    providerList.append("Facebook");
-                } else if (EmailAuthProvider.PROVIDER_ID.equals(provider)) {
-                    providerList.append("Password");
-                } else {
-                    providerList.append(provider);
+                switch (provider) {
+                    case GoogleAuthProvider.PROVIDER_ID:
+                        providerList.append("Google");
+                        break;
+                    case FacebookAuthProvider.PROVIDER_ID:
+                        providerList.append("Facebook");
+                        break;
+                    case TwitterAuthProvider.PROVIDER_ID:
+                        providerList.append("Twitter");
+                        break;
+                    case EmailAuthProvider.PROVIDER_ID:
+                        providerList.append("Email");
+                        break;
+                    case PhoneAuthProvider.PROVIDER_ID:
+                        providerList.append("Phone");
+                        break;
+                    default:
+                        throw new IllegalStateException("Unknown provider: " + provider);
                 }
 
                 if (providerIter.hasNext()) {

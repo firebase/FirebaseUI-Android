@@ -12,7 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.ui.ExtraConstants;
+import com.firebase.ui.auth.util.ExtraConstants;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RecoveryEmailSentDialog extends DialogFragment {

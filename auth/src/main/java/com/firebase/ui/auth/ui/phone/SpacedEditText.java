@@ -20,7 +20,7 @@ package com.firebase.ui.auth.ui.phone;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.widget.AppCompatEditText;
+import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -34,9 +34,9 @@ import com.firebase.ui.auth.R;
  * spaces using spannables. This is required since Android's letter spacing is not available until
  * API 21.
  */
-public final class SpacedEditText extends AppCompatEditText {
-    private float proportion;
-    private SpannableStringBuilder originalText;
+public final class SpacedEditText extends TextInputEditText {
+    private float mProportion;
+    private SpannableStringBuilder mOriginalText = new SpannableStringBuilder("");
 
     public SpacedEditText(Context context) {
         super(context);
@@ -48,18 +48,16 @@ public final class SpacedEditText extends AppCompatEditText {
     }
 
     void initAttrs(Context context, AttributeSet attrs) {
-        originalText = new SpannableStringBuilder("");
-        final TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.SpacedEditText);
-        //Controls the ScaleXSpan applied on the injected spaces
-        proportion = array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.SpacedEditText);
+        // Controls the ScaleXSpan applied on the injected spaces
+        mProportion = array.getFloat(R.styleable.SpacedEditText_spacingProportion, 1);
         array.recycle();
     }
 
     @Override
     public void setText(CharSequence text, BufferType type) {
-        originalText = new SpannableStringBuilder(text);
-        final SpannableStringBuilder spacedOutString = getSpacedOutString(text);
-        super.setText(spacedOutString, BufferType.SPANNABLE);
+        mOriginalText = new SpannableStringBuilder(text);
+        super.setText(getSpacedOutString(text), BufferType.SPANNABLE);
     }
 
     /**
@@ -67,22 +65,29 @@ public final class SpacedEditText extends AppCompatEditText {
      */
     @Override
     public void setSelection(int index) {
-        //if the index is the leading edge, there are no spaces before it.
-        //for all other cases, the index is preceeded by index - 1 spaces.
-        int spacesUptoIndex;
+        // If the index is the leading edge, there are no spaces before it.
+        // For all other cases, the index is preceded by index - 1 spaces.
+        int spacesUpToIndex;
         if (index == 0) {
-            spacesUptoIndex = 0;
+            spacesUpToIndex = 0;
         } else {
-            spacesUptoIndex = index - 1;
+            spacesUpToIndex = index - 1;
         }
-        final int recalculatedIndex = index + spacesUptoIndex;
 
-        super.setSelection(recalculatedIndex);
+        try {
+            super.setSelection(index + spacesUpToIndex);
+        } catch (IndexOutOfBoundsException e) {
+            // TODO remove once we figure out the bug.
+            throw new IndexOutOfBoundsException(e.getMessage() +
+                    ", requestedIndex=" + index +
+                    ", spacesUpToIndex=" + spacesUpToIndex +
+                    ", originalText=" + mOriginalText);
+        }
     }
 
     private SpannableStringBuilder getSpacedOutString(CharSequence text) {
-        final SpannableStringBuilder builder = new SpannableStringBuilder();
-        final int textLength = text.length();
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        int textLength = text.length();
         int lastSpaceIndex = -1;
 
         //Insert a space in front of all characters upto the last character
@@ -91,7 +96,7 @@ public final class SpacedEditText extends AppCompatEditText {
             builder.append(text.charAt(i));
             builder.append(" ");
             lastSpaceIndex += 2;
-            builder.setSpan(new ScaleXSpan(proportion), lastSpaceIndex, lastSpaceIndex + 1,
+            builder.setSpan(new ScaleXSpan(mProportion), lastSpaceIndex, lastSpaceIndex + 1,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
@@ -102,6 +107,6 @@ public final class SpacedEditText extends AppCompatEditText {
     }
 
     public Editable getUnspacedText() {
-        return this.originalText;
+        return mOriginalText;
     }
 }

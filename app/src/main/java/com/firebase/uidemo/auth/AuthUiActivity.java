@@ -150,13 +150,6 @@ public class AuthUiActivity extends AppCompatActivity {
         setContentView(R.layout.auth_ui_layout);
         ButterKnife.bind(this);
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null
-                && !getIntent().getBooleanExtra(OVERRIDE_LOGIN_CHECKS_EXTRA, false)) {
-            startSignedInActivity(null);
-            finish();
-            return;
-        }
-
         if (isGoogleMisconfigured()) {
             mUseGoogleProvider.setChecked(false);
             mUseGoogleProvider.setEnabled(false);
@@ -228,6 +221,16 @@ public class AuthUiActivity extends AppCompatActivity {
         }
 
         showSnackbar(R.string.unknown_response);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null
+                && !getIntent().getBooleanExtra(OVERRIDE_LOGIN_CHECKS_EXTRA, false)) {
+            startSignedInActivity(null);
+            finish();
+        }
     }
 
     @MainThread

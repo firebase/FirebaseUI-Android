@@ -30,6 +30,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.provider.EmailProvider;
 import com.firebase.ui.auth.provider.FacebookProvider;
 import com.firebase.ui.auth.provider.GoogleProvider;
@@ -37,14 +38,13 @@ import com.firebase.ui.auth.provider.IdpProvider;
 import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
 import com.firebase.ui.auth.provider.PhoneProvider;
 import com.firebase.ui.auth.provider.Provider;
-import com.firebase.ui.auth.provider.ProviderUtils;
 import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
-import com.firebase.ui.auth.ui.email.RegisterEmailActivity;
-import com.firebase.ui.auth.util.accountlink.ProfileMerger;
+import com.firebase.ui.auth.ui.email.EmailActivity;
+import com.firebase.ui.auth.ui.phone.PhoneActivity;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -56,8 +56,8 @@ import java.util.List;
 /**
  * Presents the list of authentication options for this app to the user. If an identity provider
  * option is selected, a {@link CredentialSignInHandler} is launched to manage the IDP-specific
- * sign-in flow. If email authentication is chosen, the {@link RegisterEmailActivity} is started. if
- * phone authentication is chosen, the {@link com.firebase.ui.auth.ui.phone.PhoneVerificationActivity}
+ * sign-in flow. If email authentication is chosen, the {@link EmailActivity} is started. if
+ * phone authentication is chosen, the {@link PhoneActivity}
  * is started.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)

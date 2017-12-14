@@ -1,4 +1,4 @@
-<com.firebase.ui.auth.ui.idp.SupportVectorDrawablesButton
+<com.firebase.ui.auth.util.ui.SupportVectorDrawablesButton
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/google_button"

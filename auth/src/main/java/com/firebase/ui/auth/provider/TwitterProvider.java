@@ -125,7 +125,8 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
                                           String name,
                                           Uri photoUri) {
         return new IdpResponse.Builder(
-                new com.firebase.ui.auth.User.Builder(TwitterAuthProvider.PROVIDER_ID, email)
+                new com.firebase.ui.auth.data.model.User.Builder(TwitterAuthProvider.PROVIDER_ID,
+                        email)
                         .setName(name)
                         .setPhotoUri(photoUri)
                         .build())
