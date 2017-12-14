@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ImeHelper {
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public interface DonePressedListener {
         void onDonePressed();
     }

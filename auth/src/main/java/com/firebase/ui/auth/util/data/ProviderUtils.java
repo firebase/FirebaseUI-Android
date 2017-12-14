@@ -16,6 +16,7 @@ package com.firebase.ui.auth.util.data;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
@@ -35,6 +36,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.List;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class ProviderUtils {
     private static final String PHONE_IDENTITY = "https://phone.firebase";
 

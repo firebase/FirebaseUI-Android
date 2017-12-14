@@ -4,6 +4,9 @@
 # Results:
 # See the compat_reports folder
 
+# Script dir
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # All FirebaseUI libraries
 LIBRARIES=( firebase-ui-auth firebase-ui-database firebase-ui-storage firebase-ui-firestore )
 
@@ -24,7 +27,8 @@ do
 
     # Compare them
     japi-compliance-checker --lib=$LIB \
-    $VERSION_1/classes.jar $VERSION_2/classes.jar
+        -skip-annotations-list $DIR/exclude-annotations.txt \
+        $VERSION_1/classes.jar $VERSION_2/classes.jar
 
     # Remove AARs
     rm $VERSION_1_AAR $VERSION_2_AAR
