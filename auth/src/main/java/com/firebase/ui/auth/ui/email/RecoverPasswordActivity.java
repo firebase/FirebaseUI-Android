@@ -14,24 +14,27 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.ProgressState;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
@@ -39,7 +42,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
  * Activity to initiate the "forgot password" flow by asking for the user's email.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener, ImeHelper.DonePressedListener {
+public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener,
+        ImeHelper.DonePressedListener, DialogInterface.OnDismissListener {
     private RecoverPasswordHandler mHandler;
 
     private TextInputLayout mEmailInputLayout;
@@ -58,26 +62,24 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
         mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
         mHandler.init(getFlowHolder());
-        mHandler.getPasswordResetListener().observe(this, new Observer<Task<String>>() {
+        getFlowHolder().getProgressLiveData().observe(this, new Observer<ProgressState>() {
             @Override
-            public void onChanged(Task<String> task) {
-                if (task.isSuccessful()) {
-                    mEmailInputLayout.setError(null);
-                    RecoveryEmailSentDialog.show(task.getResult(), getSupportFragmentManager());
-                } else if (task.getException() instanceof FirebaseAuthInvalidUserException
-                        || task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                    // No FirebaseUser exists with this email address, show error.
-                    mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
-                } else {
-                    mEmailInputLayout.setError(task.getException().getLocalizedMessage());
-                }
-            }
-        });
-        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isDone) {
-                if (isDone) {
+            public void onChanged(ProgressState flexibleState) {
+                if (!(flexibleState instanceof RecoverPasswordProgressState)) { return; }
+                RecoverPasswordProgressState state = (RecoverPasswordProgressState) flexibleState;
+
+                if (state.isDone()) {
                     getDialogHolder().dismissDialog();
+                    if (state.isSuccessful()) {
+                        mEmailInputLayout.setError(null);
+                        showEmailSentDialog(state.getEmail());
+                    } else if (state.getException() instanceof FirebaseAuthInvalidUserException
+                            || state.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                        // No FirebaseUser exists with this email address, show error.
+                        mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
+                    } else {
+                        mEmailInputLayout.setError(state.getException().getLocalizedMessage());
+                    }
                 } else {
                     getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_sending);
                 }
@@ -108,5 +110,19 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     @Override
     public void onDonePressed() {
         mHandler.startReset(mEmailEditText.getText().toString());
+    }
+
+    private void showEmailSentDialog(String email) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.fui_title_confirm_recover_password)
+                .setMessage(getString(R.string.fui_confirm_recovery_body, email))
+                .setOnDismissListener(this)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        finish(Activity.RESULT_OK, new Intent());
     }
 }

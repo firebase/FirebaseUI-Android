@@ -10,6 +10,7 @@ import com.firebase.ui.auth.data.model.ActivityResult;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.IntentRequest;
 import com.firebase.ui.auth.data.model.PendingIntentRequest;
+import com.firebase.ui.auth.data.model.ProgressState;
 import com.firebase.ui.auth.util.data.AutoClearSingleLiveEvent;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -36,7 +37,7 @@ public class FlowHolder extends ViewModelBase<FlowParameters> {
                 }
             });
 
-    private final MutableLiveData<Boolean> mProgressListener = new MutableLiveData<>();
+    private final MutableLiveData<ProgressState> mProgressLiveData = new MutableLiveData<>();
 
     private FlowParameters mFlowParams;
 
@@ -53,8 +54,8 @@ public class FlowHolder extends ViewModelBase<FlowParameters> {
         return ACTIVITY_RESULT_LISTENER;
     }
 
-    public MutableLiveData<Boolean> getProgressListener() {
-        return mProgressListener;
+    public MutableLiveData<ProgressState> getProgressLiveData() {
+        return mProgressLiveData;
     }
 
     public MutableLiveData<IntentRequest> getIntentStarter() {
