@@ -1,8 +1,11 @@
 package com.firebase.ui.auth.data.model;
 
+import android.support.annotation.RestrictTo;
+
 /**
  * Base class for all FirebaseUI exceptions.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FirebaseUiException extends Exception {
     private final int mErrorCode;
 
