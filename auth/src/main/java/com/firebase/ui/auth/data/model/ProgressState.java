@@ -16,7 +16,7 @@ public abstract class ProgressState {
     }
 
     public final boolean isSuccessful() {
-        return mException == null;
+        return isDone() && mException == null;
     }
 
     @Nullable
