@@ -131,7 +131,7 @@ allprojects { project ->
                             dependenciesNode = asNode().appendNode("dependencies")
                         }
 
-                        configurations.api.allDependencies.each {
+                        configurations.api.dependencies.each {
                             def dependencyNode = dependenciesNode.appendNode('dependency')
                             dependencyNode.appendNode('groupId', it.group)
 
@@ -145,7 +145,7 @@ allprojects { project ->
 
                             dependencyNode.appendNode('scope', 'compile')
                         }
-                        configurations.implementation.allDependencies.each {
+                        configurations.implementation.dependencies.each {
                             def dependencyNode = dependenciesNode.appendNode('dependency')
                             dependencyNode.appendNode('groupId', it.group)
 
