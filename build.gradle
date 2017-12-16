@@ -143,7 +143,7 @@ allprojects { project ->
 
                             dependencyNode.appendNode('version', it.version)
 
-                            dependencyNode.appendNode('scope', 'runtime')
+                            dependencyNode.appendNode('scope', 'compile')
                         }
                         configurations.implementation.allDependencies.each {
                             def dependencyNode = dependenciesNode.appendNode('dependency')
@@ -157,7 +157,7 @@ allprojects { project ->
 
                             dependencyNode.appendNode('version', it.version)
 
-                            dependencyNode.appendNode('scope', 'compile')
+                            dependencyNode.appendNode('scope', 'runtime')
                         }
 
                         // Common values
