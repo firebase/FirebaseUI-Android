@@ -159,6 +159,20 @@ allprojects { project ->
 
                             dependencyNode.appendNode('scope', 'runtime')
                         }
+                        configurations.compileOnly.dependencies.each {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+
+                            if (submodules.contains(it.name)) {
+                                dependencyNode.appendNode('artifactId', "firebase-ui-${it.name}")
+                            } else {
+                                dependencyNode.appendNode('artifactId', it.name)
+                            }
+
+                            dependencyNode.appendNode('version', it.version)
+
+                            dependencyNode.appendNode('scope', 'provided')
+                        }
 
                         // Common values
                         def repoUrl = 'https://github.com/firebase/FirebaseUI-Android'
