@@ -131,8 +131,7 @@ allprojects { project ->
                             dependenciesNode = asNode().appendNode("dependencies")
                         }
 
-                        // Add all that are 'compile'
-                        configurations.api.allDependencies.each {
+                        configurations.api.dependencies.each {
                             def dependencyNode = dependenciesNode.appendNode('dependency')
                             dependencyNode.appendNode('groupId', it.group)
 
@@ -143,6 +142,22 @@ allprojects { project ->
                             }
 
                             dependencyNode.appendNode('version', it.version)
+
+                            dependencyNode.appendNode('scope', 'compile')
+                        }
+                        configurations.implementation.dependencies.each {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+
+                            if (submodules.contains(it.name)) {
+                                dependencyNode.appendNode('artifactId', "firebase-ui-${it.name}")
+                            } else {
+                                dependencyNode.appendNode('artifactId', it.name)
+                            }
+
+                            dependencyNode.appendNode('version', it.version)
+
+                            dependencyNode.appendNode('scope', 'runtime')
                         }
 
                         // Common values
