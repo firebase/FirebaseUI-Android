@@ -56,6 +56,8 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:3.5.1'
     testImplementation 'com.facebook.android:facebook-login:4.28.0'
     testImplementation("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }
+
+    lintChecks project(':lint')
 }
 
 javadoc.include([

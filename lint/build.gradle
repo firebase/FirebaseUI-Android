@@ -1,0 +1,17 @@
+apply plugin: 'java-library'
+
+configurations {
+    lintChecks
+}
+
+dependencies {
+    compileOnly 'com.android.tools.lint:lint-api:26.0.1'
+    compileOnly 'com.android.tools.lint:lint-checks:26.0.1'
+}
+
+
+jar {
+    manifest {
+        attributes('Lint-Registry-v2': 'com.firebaseui.lint.LintIssueRegistry')
+    }
+}
