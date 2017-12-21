@@ -43,7 +43,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RecoverPasswordActivity extends AppCompatBase implements View.OnClickListener,
-        ImeHelper.DonePressedListener, DialogInterface.OnDismissListener {
+        ImeHelper.DonePressedListener {
     private RecoverPasswordHandler mHandler;
 
     private TextInputLayout mEmailInputLayout;
@@ -68,7 +68,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 if (!(flexibleState instanceof RecoverPasswordProgressState)) { return; }
                 RecoverPasswordProgressState state = (RecoverPasswordProgressState) flexibleState;
 
-                if (state.isDone()) {
+                if (state.isComplete()) {
                     getDialogHolder().dismissDialog();
                     if (state.isSuccessful()) {
                         mEmailInputLayout.setError(null);
@@ -116,13 +116,13 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         new AlertDialog.Builder(this)
                 .setTitle(R.string.fui_title_confirm_recover_password)
                 .setMessage(getString(R.string.fui_confirm_recovery_body, email))
-                .setOnDismissListener(this)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        finish(Activity.RESULT_OK, new Intent());
+                    }
+                })
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        finish(Activity.RESULT_OK, new Intent());
     }
 }

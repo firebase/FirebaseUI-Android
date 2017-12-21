@@ -1,27 +1,32 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.ProgressState;
 
+/**
+ * Password recovery state.
+ * <p>
+ * When this state is successful, the email who's password was reset can be retrieved.
+ */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class RecoverPasswordProgressState extends ProgressState {
     private final String mEmail;
 
-    public RecoverPasswordProgressState(boolean done) {
-        this(done, null, null);
+    public RecoverPasswordProgressState() {
+        super();
+        mEmail = null;
     }
 
-    public RecoverPasswordProgressState(boolean done,
-                                        @Nullable String email,
-                                        @Nullable Exception e) {
-        super(done, e);
+    public RecoverPasswordProgressState(@NonNull String email) {
+        super(null);
         mEmail = email;
+    }
 
-        if (isSuccessful() && TextUtils.isEmpty(email)) {
-            throw new IllegalStateException("Email cannot be null in the success state");
-        }
+    public RecoverPasswordProgressState(@NonNull Exception e) {
+        super(e);
+        mEmail = null;
     }
 
     @NonNull
@@ -33,10 +38,28 @@ public final class RecoverPasswordProgressState extends ProgressState {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        RecoverPasswordProgressState state = (RecoverPasswordProgressState) o;
+
+        return mEmail == null ? state.mEmail == null : mEmail.equals(state.mEmail);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (mEmail == null ? 0 : mEmail.hashCode());
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "RecoverPasswordProgressState{" +
                 "mEmail='" + mEmail + '\'' +
-                ", done=" + isDone() +
+                ", complete=" + isComplete() +
                 ", successful=" + isSuccessful() +
                 ", exception=" + getException() +
                 '}';

@@ -2,7 +2,13 @@ package com.firebase.ui.auth.data.model;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
+/**
+ * Immutable object representation of an {@link android.app.Activity#onActivityResult(int, int,
+ * Intent) activity result}.
+ */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class ActivityResult {
     private final int mRequestCode;
     private final int mResultCode;
@@ -24,7 +30,7 @@ public final class ActivityResult {
 
     @Nullable
     public Intent getData() {
-        return mData;
+        return mData == null ? null : new Intent(mData);
     }
 
     @Override
