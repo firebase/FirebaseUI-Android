@@ -1,4 +1,4 @@
-package com.firebaseui.lint;
+package com.firebaseui.lint
 
 import com.android.tools.lint.checks.infrastructure.TestFiles.xml
 import com.android.tools.lint.checks.infrastructure.TestLintTask.lint
