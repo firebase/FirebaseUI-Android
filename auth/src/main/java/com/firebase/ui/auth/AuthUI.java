@@ -166,6 +166,7 @@ public class AuthUI {
         mAuth = FirebaseAuth.getInstance(mApp);
 
         mAuth.useAppLanguage();
+        mAuth.setFirebaseUIVersion(BuildConfig.VERSION_NAME);
     }
 
     /**

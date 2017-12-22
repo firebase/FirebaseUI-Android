@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         targetSdkVersion targetSdk
         versionCode 1
-        versionName "1.0"
+        versionName version
 
         vectorDrawables.useSupportLibrary = true
         resourcePrefix "fui_"
@@ -36,7 +36,7 @@ android {
 dependencies {
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.android.support:customtabs:$supportLibraryVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta4'
 
     implementation "android.arch.lifecycle:extensions:$architectureVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
@@ -52,9 +52,9 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     //noinspection GradleDynamicVersion
-    testImplementation 'org.mockito:mockito-core:2.12.+'
-    testImplementation 'org.robolectric:robolectric:3.5.1'
-    testImplementation 'com.facebook.android:facebook-login:4.28.0'
+    testImplementation 'org.mockito:mockito-core:2.13.+'
+    testImplementation 'org.robolectric:robolectric:3.6.1'
+    testImplementation 'com.facebook.android:facebook-login:4.29.0'
     testImplementation("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }
 
     lintChecks project(':lint')
