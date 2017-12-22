@@ -15,7 +15,7 @@ import org.w3c.dom.Element
  * "@+id" instead.
  */
 class NonGlobalIdDetector : LayoutDetector() {
-    override fun getApplicableElements() = Detector.XmlScanner.ALL
+    override fun getApplicableElements(): List<String> = Detector.XmlScanner.ALL
 
     override fun visitElement(context: XmlContext, element: Element) {
         (0 until element.attributes.length)
