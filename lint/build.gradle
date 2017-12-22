@@ -1,14 +1,12 @@
-apply plugin: 'java-library'
-
-configurations {
-    lintChecks
-}
+apply plugin: 'kotlin'
 
 dependencies {
     compileOnly 'com.android.tools.lint:lint-api:26.0.1'
-    compileOnly 'com.android.tools.lint:lint-checks:26.0.1'
-}
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlinVersion"
 
+    testImplementation 'com.android.tools.lint:lint-api:26.0.1'
+    testImplementation 'com.android.tools.lint:lint-tests:26.0.1'
+}
 
 jar {
     manifest {

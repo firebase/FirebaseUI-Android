@@ -11,4 +11,5 @@ project.ext {
     firebaseVersion = '11.8.0'
     supportLibraryVersion = '27.0.2'
     architectureVersion = '1.0.0'
+    kotlinVersion = '1.2.10'
 }
