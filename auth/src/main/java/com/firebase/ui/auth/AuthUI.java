@@ -166,7 +166,6 @@ public class AuthUI {
         mAuth = FirebaseAuth.getInstance(mApp);
 
         mAuth.useAppLanguage();
-        mAuth.setFirebaseUIVersion(BuildConfig.VERSION_NAME);
     }
 
     /**
@@ -185,6 +184,20 @@ public class AuthUI {
      */
     @NonNull
     public static AuthUI getInstance(@NonNull FirebaseApp app) {
+        AuthUI authUi;
+        synchronized (INSTANCES) {
+            authUi = INSTANCES.get(app);
+            if (authUi == null) {
+                authUi = new AuthUI(app);
+                authUi.mAuth.setFirebaseUIVersion(BuildConfig.VERSION_NAME);
+                INSTANCES.put(app, authUi);
+            }
+        }
+        return authUi;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    static AuthUI getTestInstance(FirebaseApp app) {
         AuthUI authUi;
         synchronized (INSTANCES) {
             authUi = INSTANCES.get(app);

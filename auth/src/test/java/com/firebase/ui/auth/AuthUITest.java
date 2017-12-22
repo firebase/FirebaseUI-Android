@@ -46,7 +46,7 @@ public class AuthUITest {
     @Test
     public void testCreateStartIntent_shouldHaveEmailAsDefaultProvider() {
         FlowParameters flowParameters = AuthUI
-                .getInstance(mFirebaseApp)
+                .getTestInstance(mFirebaseApp)
                 .createSignInIntentBuilder()
                 .build()
                 .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
@@ -57,7 +57,7 @@ public class AuthUITest {
     @Test(expected = IllegalArgumentException.class)
     public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
         SignInIntentBuilder startIntent =
-                AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder();
+                AuthUI.getTestInstance(mFirebaseApp).createSignInIntentBuilder();
         startIntent.setAvailableProviders(
                 Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                               new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()));
@@ -65,7 +65,8 @@ public class AuthUITest {
 
     @Test
     public void testCreatingStartIntent() {
-        FlowParameters flowParameters = AuthUI.getInstance(mFirebaseApp).createSignInIntentBuilder()
+        FlowParameters flowParameters = AuthUI.getTestInstance(mFirebaseApp)
+                .createSignInIntentBuilder()
                 .setAvailableProviders(
                         Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                       new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
