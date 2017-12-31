@@ -166,6 +166,9 @@ public class AuthUI {
                     FacebookAuthProvider.PROVIDER_ID,
                     TwitterAuthProvider.PROVIDER_ID)));
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static final String UNCONFIGURED_CONFIG_VALUE = "CHANGE-ME";
+
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
 
     private static Context sApplicationContext;
@@ -588,6 +591,11 @@ public class AuthUI {
             public GoogleBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
                 super(GoogleAuthProvider.PROVIDER_ID);
+                if (getApplicationContext().getString(R.string.default_web_client_id)
+                        .equals(UNCONFIGURED_CONFIG_VALUE)) {
+                    throw new RuntimeException("Check your google-services plugin configuration," +
+                            " the client id string wasn't populated.");
+                }
             }
 
             @NonNull
@@ -645,6 +653,28 @@ public class AuthUI {
             public FacebookBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
                 super(FacebookAuthProvider.PROVIDER_ID);
+
+                try {
+                    //noinspection unused to possibly throw
+                    Class c = com.facebook.FacebookSdk.class;
+                } catch (NoClassDefFoundError e) {
+                    throw new RuntimeException(
+                            "Facebook provider cannot be configured " +
+                                    "without dependency. Did you forget to add " +
+                                    "'com.facebook.android:facebook-login:VERSION' dependency?");
+                }
+
+                if (getApplicationContext().getString(R.string.facebook_application_id)
+                        .equals(UNCONFIGURED_CONFIG_VALUE)) {
+                    throw new RuntimeException("Facebook provider unconfigured. Make sure to add" +
+                            " a `facebook_application_id` string. See the docs for more info:" +
+                            " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#facebook");
+                }
+                if (getApplicationContext().getString(R.string.facebook_login_protocol_scheme)
+                        .equals("fbYOUR_APP_ID")) {
+                    Log.w("FacebookBuilder", "Facebook provider unconfigured for Chrome" +
+                            " Custom Tabs.");
+                }
             }
 
             /**
@@ -667,6 +697,25 @@ public class AuthUI {
         public static final class TwitterBuilder extends Builder {
             public TwitterBuilder() {
                 super(TwitterAuthProvider.PROVIDER_ID);
+
+                try {
+                    //noinspection unused to possibly throw
+                    Class c = com.twitter.sdk.android.core.TwitterCore.class;
+                } catch (NoClassDefFoundError e) {
+                    throw new RuntimeException(
+                            "Twitter provider cannot be configured " +
+                                    "without dependency. Did you forget to add " +
+                                    "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
+                }
+
+                if (getApplicationContext().getString(R.string.twitter_consumer_key)
+                        .equals(UNCONFIGURED_CONFIG_VALUE)
+                        || getApplicationContext().getString(R.string.twitter_consumer_secret)
+                        .equals(UNCONFIGURED_CONFIG_VALUE)) {
+                    throw new RuntimeException("Twitter provider unconfigured. Make sure to add" +
+                            " your key and secret. See the docs for more info:" +
+                            " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#twitter");
+                }
             }
         }
     }
@@ -750,30 +799,6 @@ public class AuthUI {
                             + " was set twice.");
                 } else {
                     mProviders.add(config);
-                }
-
-                if (config.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID)) {
-                    try {
-                        //noinspection unused to possibly throw
-                        Class c = com.facebook.FacebookSdk.class;
-                    } catch (NoClassDefFoundError e) {
-                        throw new RuntimeException(
-                                "Facebook provider cannot be configured " +
-                                        "without dependency. Did you forget to add " +
-                                        "'com.facebook.android:facebook-android-sdk:VERSION' dependency?");
-                    }
-                }
-
-                if (config.getProviderId().equals(TwitterAuthProvider.PROVIDER_ID)) {
-                    try {
-                        //noinspection unused to possibly throw
-                        Class c = com.twitter.sdk.android.core.TwitterCore.class;
-                    } catch (NoClassDefFoundError e) {
-                        throw new RuntimeException(
-                                "Twitter provider cannot be configured " +
-                                        "without dependency. Did you forget to add " +
-                                        "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
-                    }
                 }
             }
 

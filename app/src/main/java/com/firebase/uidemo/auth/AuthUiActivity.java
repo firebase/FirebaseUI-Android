@@ -49,7 +49,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AuthUiActivity extends AppCompatActivity {
-    private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
     private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google.com/policies/privacy/";
@@ -373,12 +372,12 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @MainThread
     private boolean isGoogleMisconfigured() {
-        return UNCHANGED_CONFIG_VALUE.equals(getString(R.string.default_web_client_id));
+        return AuthUI.UNCONFIGURED_CONFIG_VALUE.equals(getString(R.string.default_web_client_id));
     }
 
     @MainThread
     private boolean isFacebookMisconfigured() {
-        return UNCHANGED_CONFIG_VALUE.equals(getString(R.string.facebook_application_id));
+        return AuthUI.UNCONFIGURED_CONFIG_VALUE.equals(getString(R.string.facebook_application_id));
     }
 
     @MainThread
@@ -388,7 +387,7 @@ public class AuthUiActivity extends AppCompatActivity {
                 getString(R.string.twitter_consumer_secret)
         );
 
-        return twitterConfigs.contains(UNCHANGED_CONFIG_VALUE);
+        return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
     @MainThread
