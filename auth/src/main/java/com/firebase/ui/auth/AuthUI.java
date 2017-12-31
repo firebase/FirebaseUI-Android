@@ -516,7 +516,7 @@ public class AuthUI {
             @NonNull
             @Deprecated
             public Builder setParams(@Nullable Bundle params) {
-                mParams.putAll(params);
+                mParams.putAll(params == null ? new Bundle() : params);
                 return this;
             }
 
@@ -553,10 +553,10 @@ public class AuthUI {
 
             /**
              * @param number the phone number in international format
-             * @see #setDefaultPhoneNumber(String, String)
+             * @see #setDefaultPhoneNumber(int, String)
              */
             @NonNull
-            public PhoneBuilder setDefaultPhoneNumber(String number) {
+            public PhoneBuilder setDefaultPhoneNumber(@NonNull String number) {
                 if (getParams().containsKey(ExtraConstants.EXTRA_COUNTRY_CODE)
                         || getParams().containsKey(ExtraConstants.EXTRA_NATIONAL_NUMBER)) {
                     throw new IllegalStateException("Cannot overwrite previously set phone number");
@@ -575,13 +575,26 @@ public class AuthUI {
              * @param number the phone number in local format
              */
             @NonNull
-            public PhoneBuilder setDefaultPhoneNumber(String code, String number) {
+            public PhoneBuilder setDefaultPhoneNumber(int code, @NonNull String number) {
                 if (getParams().containsKey(ExtraConstants.EXTRA_PHONE)) {
                     throw new IllegalStateException("Cannot overwrite previously set phone number");
                 }
 
-                getParams().putString(ExtraConstants.EXTRA_COUNTRY_CODE, code);
+                getParams().putString(ExtraConstants.EXTRA_COUNTRY_CODE, String.valueOf(code));
                 getParams().putString(ExtraConstants.EXTRA_NATIONAL_NUMBER, number);
+
+                return this;
+            }
+
+            @NonNull
+            public PhoneBuilder setDefaultCountryCode(int code) {
+                if (getParams().containsKey(ExtraConstants.EXTRA_PHONE)
+                        || getParams().containsKey(ExtraConstants.EXTRA_COUNTRY_CODE)
+                        || getParams().containsKey(ExtraConstants.EXTRA_NATIONAL_NUMBER)) {
+                    throw new IllegalStateException("Cannot overwrite previously set phone number");
+                }
+
+                getParams().putString(ExtraConstants.EXTRA_COUNTRY_CODE, String.valueOf(code));
 
                 return this;
             }

@@ -151,6 +151,12 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
             PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(countryCode, nationalNumber);
             setPhoneNumber(phoneNumber);
             setCountryCode(phoneNumber);
+        } else if (!TextUtils.isEmpty(countryCode)) {
+            // User supplied full phone number
+            setCountryCode(new PhoneNumber(
+                    "",
+                    PhoneNumberUtils.getCountryIsoForCountryCode(countryCode),
+                    countryCode));
         } else if (!TextUtils.isEmpty(phone)) {
             // User supplied full phone number
             PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(phone);
