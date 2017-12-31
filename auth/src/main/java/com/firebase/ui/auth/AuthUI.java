@@ -649,6 +649,8 @@ public class AuthUI {
         }
 
         public static final class FacebookBuilder extends Builder {
+            private static final String TAG = "FacebookBuilder";
+
             public FacebookBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
                 super(FacebookAuthProvider.PROVIDER_ID);
@@ -671,8 +673,7 @@ public class AuthUI {
                 }
                 if (getApplicationContext().getString(R.string.facebook_login_protocol_scheme)
                         .equals("fbYOUR_APP_ID")) {
-                    Log.w("FacebookBuilder", "Facebook provider unconfigured for Chrome" +
-                            " Custom Tabs.");
+                    Log.w(TAG, "Facebook provider unconfigured for Chrome Custom Tabs.");
                 }
             }
 
@@ -881,6 +882,8 @@ public class AuthUI {
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
+        private static final String TAG = "SignInIntentBuilder";
+
         private SignInIntentBuilder() {
             super();
         }
@@ -895,9 +898,8 @@ public class AuthUI {
         public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
             int emailIndex = mProviders.indexOf(new IdpConfig.EmailBuilder().build());
             if (emailIndex == -1) {
-                Log.e("SignInIntentBuilder", "Move the allowNewEmailAccounts builder" +
-                        " option below the setAvailableProviders option to ensure backwards" +
-                        " compatibility.");
+                Log.e(TAG, "Move the allowNewEmailAccounts builder option below the" +
+                        " setAvailableProviders option to ensure backwards compatibility.");
             } else {
                 mProviders.set(emailIndex, new IdpConfig.EmailBuilder()
                         .setAllowNewAccounts(enabled)
