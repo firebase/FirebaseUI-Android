@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/container"
+        app:layout_constraintBottom_toTopOf="@+id/container"
         tools:ignore="ContentDescription" /> <!-- TODO remove once the bug is fixed: https://issuetracker.google.com/issues/38281866-->
 
     <ScrollView
