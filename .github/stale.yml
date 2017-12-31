@@ -4,6 +4,7 @@ exemptLabels:
   - feature
   - enhancement
   - bug
+  - refactor
   - docs
   - fix-implemented
 staleLabel: stale
