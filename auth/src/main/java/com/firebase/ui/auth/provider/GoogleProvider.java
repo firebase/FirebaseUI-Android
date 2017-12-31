@@ -29,6 +29,7 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -37,7 +38,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -71,17 +71,9 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     }
 
     private GoogleSignInOptions getSignInOptions(@Nullable String email) {
-        String clientId = mActivity.getString(R.string.default_web_client_id);
-
-        GoogleSignInOptions.Builder builder =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .requestIdToken(clientId);
-
-        // Add additional scopes
-        for (String scopeString : mIdpConfig.getScopes()) {
-            builder.requestScopes(new Scope(scopeString));
-        }
+        GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(
+                mIdpConfig.getParams().<GoogleSignInOptions>getParcelable(
+                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS));
 
         if (!TextUtils.isEmpty(email)) {
             builder.setAccountName(email);

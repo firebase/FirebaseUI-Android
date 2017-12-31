@@ -33,7 +33,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -143,9 +142,9 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         String countryCode = null;
         String nationalNumber = null;
         if (params != null) {
-            phone = params.getString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER);
-            countryCode = params.getString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE);
-            nationalNumber = params.getString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER);
+            phone = params.getString(ExtraConstants.EXTRA_PHONE);
+            countryCode = params.getString(ExtraConstants.EXTRA_COUNTRY_CODE);
+            nationalNumber = params.getString(ExtraConstants.EXTRA_NATIONAL_NUMBER);
         }
         if (!TextUtils.isEmpty(countryCode) && !TextUtils.isEmpty(nationalNumber)) {
             // User supplied country code & national number

@@ -27,6 +27,7 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.StringDef;
 import android.support.annotation.StyleRes;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -42,6 +43,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -79,11 +81,11 @@ import java.util.Set;
  */
 public class AuthUI {
     @StringDef({
-                       EmailAuthProvider.PROVIDER_ID, EMAIL_PROVIDER,
-                       PhoneAuthProvider.PROVIDER_ID, PHONE_VERIFICATION_PROVIDER,
-                       GoogleAuthProvider.PROVIDER_ID, GOOGLE_PROVIDER,
-                       FacebookAuthProvider.PROVIDER_ID, FACEBOOK_PROVIDER,
-                       TwitterAuthProvider.PROVIDER_ID, TWITTER_PROVIDER
+                       EmailAuthProvider.PROVIDER_ID,
+                       PhoneAuthProvider.PROVIDER_ID,
+                       GoogleAuthProvider.PROVIDER_ID,
+                       FacebookAuthProvider.PROVIDER_ID,
+                       TwitterAuthProvider.PROVIDER_ID
                })
     @Retention(RetentionPolicy.SOURCE)
     public @interface SupportedProvider {}
@@ -92,41 +94,49 @@ public class AuthUI {
      * Provider identifier for email and password credentials, for use with {@link
      * SignInIntentBuilder#setAvailableProviders(List)}.
      */
+    @Deprecated
     public static final String EMAIL_PROVIDER = EmailAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Google, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
+    @Deprecated
     public static final String GOOGLE_PROVIDER = GoogleAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Facebook, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
+    @Deprecated
     public static final String FACEBOOK_PROVIDER = FacebookAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
+    @Deprecated
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
      */
+    @Deprecated
     public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
 
     /**
      * Bundle key for the default full phone number parameter.
      */
+    @Deprecated
     public static final String EXTRA_DEFAULT_PHONE_NUMBER = ExtraConstants.EXTRA_PHONE;
 
     /**
      * Bundle key for the default phone country code parameter.
      */
+    @Deprecated
     public static final String EXTRA_DEFAULT_COUNTRY_CODE = ExtraConstants.EXTRA_COUNTRY_CODE;
 
     /**
      * Bundle key for the default national phone number parameter.
      */
+    @Deprecated
     public static final String EXTRA_DEFAULT_NATIONAL_NUMBER = ExtraConstants.EXTRA_NATIONAL_NUMBER;
 
     /**
@@ -139,11 +149,11 @@ public class AuthUI {
      */
     public static final Set<String> SUPPORTED_PROVIDERS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-                    EMAIL_PROVIDER,
-                    GOOGLE_PROVIDER,
-                    FACEBOOK_PROVIDER,
-                    TWITTER_PROVIDER,
-                    PHONE_VERIFICATION_PROVIDER
+                    EmailAuthProvider.PROVIDER_ID,
+                    GoogleAuthProvider.PROVIDER_ID,
+                    FacebookAuthProvider.PROVIDER_ID,
+                    TwitterAuthProvider.PROVIDER_ID,
+                    PhoneAuthProvider.PROVIDER_ID
             )));
 
     /**
@@ -158,6 +168,8 @@ public class AuthUI {
 
     private static final IdentityHashMap<FirebaseApp, AuthUI> INSTANCES = new IdentityHashMap<>();
 
+    private static Context sApplicationContext;
+
     private final FirebaseApp mApp;
     private final FirebaseAuth mAuth;
 
@@ -166,6 +178,17 @@ public class AuthUI {
         mAuth = FirebaseAuth.getInstance(mApp);
 
         mAuth.useAppLanguage();
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static void setApplicationContext(@NonNull Context context) {
+        sApplicationContext = Preconditions.checkNotNull(context, "App context cannot be null.");
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    @NonNull
+    public static Context getApplicationContext() {
+        return sApplicationContext;
     }
 
     /**
@@ -304,7 +327,7 @@ public class AuthUI {
             TwitterProvider.signOut(context);
         } catch (NoClassDefFoundError e) {
             // See comment above
-            // Note: we need to have speperate try/catch statements since devs can include
+            // Note: we need to have separate try/catch statements since devs can include
             // _either_ one of the providers. If one crashes, we still need to sign out of
             // the other one.
         }
@@ -349,46 +372,8 @@ public class AuthUI {
 
     /**
      * Configuration for an identity provider.
-     * <p>
-     * In the simplest case, you can supply the provider ID and build the config like this: {@code
-     * new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()}
      */
     public static class IdpConfig implements Parcelable {
-        private final String mProviderId;
-        private final List<String> mScopes;
-        private final Bundle mParams;
-
-        private IdpConfig(
-                @SupportedProvider @NonNull String providerId,
-                @NonNull List<String> scopes,
-                @NonNull Bundle params) {
-            mProviderId = providerId;
-            mScopes = Collections.unmodifiableList(scopes);
-            mParams = params;
-        }
-
-        private IdpConfig(Parcel in) {
-            mProviderId = in.readString();
-            mScopes = Collections.unmodifiableList(in.createStringArrayList());
-            mParams = in.readBundle(getClass().getClassLoader());
-        }
-
-        @NonNull
-        @SupportedProvider
-        public String getProviderId() {
-            return mProviderId;
-        }
-
-        @NonNull
-        public List<String> getScopes() {
-            return mScopes;
-        }
-
-        @NonNull
-        public Bundle getParams() {
-            return mParams;
-        }
-
         public static final Creator<IdpConfig> CREATOR = new Creator<IdpConfig>() {
             @Override
             public IdpConfig createFromParcel(Parcel in) {
@@ -401,6 +386,38 @@ public class AuthUI {
             }
         };
 
+        private final String mProviderId;
+        private final Bundle mParams;
+
+        private IdpConfig(
+                @SupportedProvider @NonNull String providerId,
+                @NonNull Bundle params) {
+            mProviderId = providerId;
+            mParams = new Bundle(params);
+        }
+
+        private IdpConfig(Parcel in) {
+            mProviderId = in.readString();
+            mParams = in.readBundle(getClass().getClassLoader());
+        }
+
+        @NonNull
+        @SupportedProvider
+        public String getProviderId() {
+            return mProviderId;
+        }
+
+        @Deprecated
+        @NonNull
+        public List<String> getScopes() {
+            return Collections.emptyList();
+        }
+
+        @NonNull
+        public Bundle getParams() {
+            return new Bundle(mParams);
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -409,12 +426,11 @@ public class AuthUI {
         @Override
         public void writeToParcel(Parcel parcel, int i) {
             parcel.writeString(mProviderId);
-            parcel.writeStringList(mScopes);
             parcel.writeBundle(mParams);
         }
 
         @Override
-        public boolean equals(Object o) {
+        public final boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
@@ -424,7 +440,7 @@ public class AuthUI {
         }
 
         @Override
-        public int hashCode() {
+        public final int hashCode() {
             return mProviderId.hashCode();
         }
 
@@ -432,15 +448,13 @@ public class AuthUI {
         public String toString() {
             return "IdpConfig{" +
                     "mProviderId='" + mProviderId + '\'' +
-                    ", mScopes=" + mScopes +
                     ", mParams=" + mParams +
                     '}';
         }
 
         public static class Builder {
-            @SupportedProvider private String mProviderId;
-            private List<String> mScopes = new ArrayList<>();
-            private Bundle mParams = new Bundle();
+            @SupportedProvider private final String mProviderId;
+            private final Bundle mParams = new Bundle();
 
             /**
              * Builds the configuration parameters for an identity provider.
@@ -449,6 +463,7 @@ public class AuthUI {
              *                   AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for
              *                   the complete list of supported Identity providers
              */
+            @Deprecated
             public Builder(@SupportedProvider @NonNull String providerId) {
                 if (!SUPPORTED_PROVIDERS.contains(providerId)) {
                     throw new IllegalArgumentException("Unknown provider: " + providerId);
@@ -471,23 +486,187 @@ public class AuthUI {
              * <a href="https://apps.twitter.com/">Twitter developer console</a>.
              */
             @NonNull
+            @Deprecated
             public Builder setPermissions(@Nullable List<String> permissions) {
-                mScopes = permissions;
+                if (permissions == null) {
+                    mParams.clear();
+                    return this;
+                }
+
+                Bundle params;
+                if (mProviderId.equals(GOOGLE_PROVIDER)) {
+                    params = new GoogleBuilder().setScopes(permissions).build().getParams();
+                } else if (mProviderId.equals(FACEBOOK_PROVIDER)) {
+                    params = new FacebookBuilder().setPermissions(permissions).build().getParams();
+                } else {
+                    params = new Bundle();
+                }
+                setParams(params);
                 return this;
             }
 
             @NonNull
+            protected Bundle getParams() {
+                return mParams;
+            }
+
+            @NonNull
+            @Deprecated
             public Builder setParams(@Nullable Bundle params) {
-                mParams = params;
+                mParams.putAll(params);
                 return this;
             }
 
+            @CallSuper
             @NonNull
             public IdpConfig build() {
-                mScopes = mScopes == null ? Collections.<String>emptyList() : mScopes;
-                mParams = mParams == null ? new Bundle() : mParams;
+                return new IdpConfig(mProviderId, mParams);
+            }
+        }
 
-                return new IdpConfig(mProviderId, mScopes, mParams);
+        public static final class EmailBuilder extends Builder {
+            public EmailBuilder() {
+                //noinspection deprecation taking a hit for the backcompat team
+                super(EmailAuthProvider.PROVIDER_ID);
+            }
+
+            /**
+             * Enables or disables creating new accounts in the email sign in flow.
+             * <p>
+             * Account creation is enabled by default.
+             */
+            @NonNull
+            public EmailBuilder setAllowNewAccounts(boolean allow) {
+                getParams().putBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, allow);
+                return this;
+            }
+        }
+
+        public static final class PhoneBuilder extends Builder {
+            public PhoneBuilder() {
+                //noinspection deprecation taking a hit for the backcompat team
+                super(PhoneAuthProvider.PROVIDER_ID);
+            }
+
+            /**
+             * @param number the phone number in international format
+             * @see #setDefaultPhoneNumber(String, String)
+             */
+            @NonNull
+            public PhoneBuilder setDefaultPhoneNumber(String number) {
+                if (getParams().containsKey(ExtraConstants.EXTRA_COUNTRY_CODE)
+                        || getParams().containsKey(ExtraConstants.EXTRA_NATIONAL_NUMBER)) {
+                    throw new IllegalStateException("Cannot overwrite previously set phone number");
+                }
+
+                getParams().putString(ExtraConstants.EXTRA_PHONE, number);
+
+                return this;
+            }
+
+            /**
+             * Set the default phone number that will be used to populate the phone verification
+             * sign-in flow.
+             *
+             * @param code   the phone number's country code
+             * @param number the phone number in local format
+             */
+            @NonNull
+            public PhoneBuilder setDefaultPhoneNumber(String code, String number) {
+                if (getParams().containsKey(ExtraConstants.EXTRA_PHONE)) {
+                    throw new IllegalStateException("Cannot overwrite previously set phone number");
+                }
+
+                getParams().putString(ExtraConstants.EXTRA_COUNTRY_CODE, code);
+                getParams().putString(ExtraConstants.EXTRA_NATIONAL_NUMBER, number);
+
+                return this;
+            }
+        }
+
+        public static final class GoogleBuilder extends Builder {
+            public GoogleBuilder() {
+                //noinspection deprecation taking a hit for the backcompat team
+                super(GoogleAuthProvider.PROVIDER_ID);
+            }
+
+            @NonNull
+            public GoogleBuilder setScopes(@NonNull List<String> scopes) {
+                if (getParams().containsKey(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS)) {
+                    throw new IllegalStateException(
+                            "Cannot overwrite previously set sign-in options.");
+                }
+
+                GoogleSignInOptions.Builder builder =
+                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN);
+                applyRequiredSignInOptions(builder);
+                for (String scope : scopes) {
+                    builder.requestScopes(new Scope(scope));
+                }
+
+                getParams().putParcelable(
+                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS, builder.build());
+
+                return this;
+            }
+
+            @NonNull
+            public GoogleBuilder setSignInOptions(@NonNull GoogleSignInOptions options) {
+                if (getParams().containsKey(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS)) {
+                    throw new IllegalStateException(
+                            "Cannot overwrite previously set sign-in options.");
+                }
+
+                GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(options);
+                applyRequiredSignInOptions(builder);
+                getParams().putParcelable(
+                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS, builder.build());
+
+                return this;
+            }
+
+            private void applyRequiredSignInOptions(GoogleSignInOptions.Builder builder) {
+                builder.requestEmail().requestIdToken(getApplicationContext()
+                        .getString(R.string.default_web_client_id));
+            }
+
+            @NonNull
+            @Override
+            public IdpConfig build() {
+                if (!getParams().containsKey(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS)) {
+                    setScopes(Collections.<String>emptyList());
+                }
+
+                return super.build();
+            }
+        }
+
+        public static final class FacebookBuilder extends Builder {
+            public FacebookBuilder() {
+                //noinspection deprecation taking a hit for the backcompat team
+                super(FacebookAuthProvider.PROVIDER_ID);
+            }
+
+            /**
+             * Specifies the additional permissions that the application will request in the
+             * Facebook Login SDK. Available permissions can be found here:
+             * <p>
+             * https://developers.facebook.com/docs/facebook-login/android
+             * https://developers.facebook.com/docs/facebook-login/permissions
+             */
+            @SuppressWarnings("deprecation")
+            @NonNull
+            public FacebookBuilder setPermissions(@NonNull List<String> permissions) {
+                getParams().putStringArrayList(
+                        ExtraConstants.EXTRA_FACEBOOK_PERMISSIONS, new ArrayList<>(permissions));
+                return this;
+            }
+        }
+
+        @SuppressWarnings("deprecation") // Taking a hit for the backcompat team
+        public static final class TwitterBuilder extends Builder {
+            public TwitterBuilder() {
+                super(TwitterAuthProvider.PROVIDER_ID);
             }
         }
     }
@@ -499,7 +678,7 @@ public class AuthUI {
     private abstract class AuthIntentBuilder<T extends AuthIntentBuilder> {
         int mLogo = NO_LOGO;
         int mTheme = getDefaultTheme();
-        List<IdpConfig> mProviders = new ArrayList<>();
+        final List<IdpConfig> mProviders = new ArrayList<>();
         String mTosUrl;
         String mPrivacyPolicyUrl;
         boolean mEnableCredentials = true;
@@ -573,8 +752,9 @@ public class AuthUI {
                     mProviders.add(config);
                 }
 
-                if (config.getProviderId().equals(FACEBOOK_PROVIDER)) {
+                if (config.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID)) {
                     try {
+                        //noinspection unused to possibly throw
                         Class c = com.facebook.FacebookSdk.class;
                     } catch (NoClassDefFoundError e) {
                         throw new RuntimeException(
@@ -584,8 +764,9 @@ public class AuthUI {
                     }
                 }
 
-                if (config.getProviderId().equals(TWITTER_PROVIDER)) {
+                if (config.getProviderId().equals(TwitterAuthProvider.PROVIDER_ID)) {
                     try {
+                        //noinspection unused to possibly throw
                         Class c = com.twitter.sdk.android.core.TwitterCore.class;
                     } catch (NoClassDefFoundError e) {
                         throw new RuntimeException(
@@ -637,6 +818,7 @@ public class AuthUI {
          * @param enabled enables smartlock's credential selector and hint selector
          */
         @NonNull
+        @Deprecated
         public T setIsSmartLockEnabled(boolean enabled) {
             setIsSmartLockEnabled(enabled, enabled);
             return (T) this;
@@ -662,7 +844,7 @@ public class AuthUI {
         @NonNull
         public Intent build() {
             if (mProviders.isEmpty()) {
-                mProviders.add(new IdpConfig.Builder(EMAIL_PROVIDER).build());
+                mProviders.add(new IdpConfig.EmailBuilder().build());
             }
 
             return KickoffActivity.createIntent(mApp.getApplicationContext(), getFlowParams());
@@ -675,8 +857,6 @@ public class AuthUI {
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
-        private boolean mAllowNewEmailAccounts = true;
-
         private SignInIntentBuilder() {
             super();
         }
@@ -687,8 +867,18 @@ public class AuthUI {
          * <p>Account creation is enabled by default.
          */
         @NonNull
+        @Deprecated
         public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
-            mAllowNewEmailAccounts = enabled;
+            int emailIndex = mProviders.indexOf(new IdpConfig.EmailBuilder().build());
+            if (emailIndex == -1) {
+                Log.e("SignInIntentBuilder", "Move the allowNewEmailAccounts builder" +
+                        " option below the setAvailableProviders option to ensure backwards" +
+                        " compatibility.");
+            } else {
+                mProviders.set(emailIndex, new IdpConfig.EmailBuilder()
+                        .setAllowNewAccounts(enabled)
+                        .build());
+            }
             return this;
         }
 
@@ -702,8 +892,7 @@ public class AuthUI {
                     mTosUrl,
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
-                    mEnableHints,
-                    mAllowNewEmailAccounts);
+                    mEnableHints);
         }
     }
 }

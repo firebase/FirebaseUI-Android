@@ -10,6 +10,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 public class PhoneProvider implements Provider {
 
@@ -36,10 +37,9 @@ public class PhoneProvider implements Provider {
 
     @Override
     public void startLogin(Activity activity) {
-
         Bundle params = null;
         for (AuthUI.IdpConfig idpConfig : mFlowParameters.providerInfo) {
-            if (idpConfig.getProviderId().equals(AuthUI.PHONE_VERIFICATION_PROVIDER)) {
+            if (idpConfig.getProviderId().equals(PhoneAuthProvider.PROVIDER_ID)) {
                 params = idpConfig.getParams();
             }
         }

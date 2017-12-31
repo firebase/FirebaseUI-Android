@@ -74,6 +74,12 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:name=".data.client.AuthUiInitProvider"
+            android:authorities="${applicationId}.authuiinitprovider"
+            android:exported="false"
+            android:initOrder="90" />
+
     </application>
 
 </manifest>

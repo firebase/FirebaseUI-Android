@@ -22,7 +22,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.CountryInfo;
@@ -30,6 +29,7 @@ import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestHelper;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -95,7 +95,7 @@ public class PhoneActivityTest {
         Intent startIntent = PhoneActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)), null);
+                        Collections.singletonList(PhoneAuthProvider.PROVIDER_ID)), null);
         return Robolectric.buildActivity(PhoneActivity.class, startIntent)
                 .create(new Bundle()).start().visible().get();
     }
@@ -114,11 +114,11 @@ public class PhoneActivityTest {
     @Test
     public void testDefaultFullPhoneNumber_prePopulatesPhoneNumberInBundle() {
         Bundle fullPhoneParams = new Bundle();
-        fullPhoneParams.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, YE_RAW_PHONE);
+        fullPhoneParams.putString(ExtraConstants.EXTRA_PHONE, YE_RAW_PHONE);
         Intent startIntent = PhoneActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)),
+                        Collections.singletonList(PhoneAuthProvider.PROVIDER_ID)),
                 fullPhoneParams);
 
         mActivity = Robolectric.buildActivity(PhoneActivity.class, startIntent)
@@ -139,12 +139,12 @@ public class PhoneActivityTest {
     @Test
     public void testDefaultCountryCodeAndNationalNumber_prePopulatesPhoneNumberInBundle() {
         Bundle phoneParams = new Bundle();
-        phoneParams.putString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE, CA_ISO2);
-        phoneParams.putString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER, PHONE_NO_COUNTRY_CODE);
+        phoneParams.putString(ExtraConstants.EXTRA_COUNTRY_CODE, CA_ISO2);
+        phoneParams.putString(ExtraConstants.EXTRA_NATIONAL_NUMBER, PHONE_NO_COUNTRY_CODE);
         Intent startIntent = PhoneActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
-                        Collections.singletonList(AuthUI.PHONE_VERIFICATION_PROVIDER)),
+                        Collections.singletonList(PhoneAuthProvider.PROVIDER_ID)),
                 phoneParams);
 
         mActivity = Robolectric.buildActivity(PhoneActivity.class, startIntent)

@@ -204,7 +204,6 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
                                 mEnableHintSelector.isChecked())
-                        .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
                 RC_SIGN_IN);
     }
@@ -328,29 +327,27 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUseGoogleProvider.isChecked()) {
             selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-                            .setPermissions(getGooglePermissions())
-                            .build());
+                    new IdpConfig.GoogleBuilder().setScopes(getGoogleScopes()).build());
         }
 
         if (mUseFacebookProvider.isChecked()) {
-            selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
-                            .setPermissions(getFacebookPermissions())
-                            .build());
+            selectedProviders.add(new IdpConfig.FacebookBuilder()
+                    .setPermissions(getFacebookPermissions())
+                    .build());
         }
 
         if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+            selectedProviders.add(new IdpConfig.TwitterBuilder().build());
         }
 
         if (mUseEmailProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
+            selectedProviders.add(new IdpConfig.EmailBuilder()
+                    .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
+                    .build());
         }
 
         if (mUsePhoneProvider.isChecked()) {
-            selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
+            selectedProviders.add(new IdpConfig.PhoneBuilder().build());
         }
 
         return selectedProviders;
@@ -412,7 +409,7 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @MainThread
-    private List<String> getGooglePermissions() {
+    private List<String> getGoogleScopes() {
         List<String> result = new ArrayList<>();
         if (mGoogleScopeYoutubeData.isChecked()) {
             result.add("https://www.googleapis.com/auth/youtube.readonly");

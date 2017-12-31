@@ -21,6 +21,7 @@ import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.EmailAuthProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,26 +52,27 @@ public class AuthUITest {
                 .build()
                 .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
         assertEquals(1, flowParameters.providerInfo.size());
-        assertEquals(AuthUI.EMAIL_PROVIDER, flowParameters.providerInfo.get(0).getProviderId());
+        assertEquals(EmailAuthProvider.PROVIDER_ID,
+                flowParameters.providerInfo.get(0).getProviderId());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
         SignInIntentBuilder startIntent =
                 AuthUI.getTestInstance(mFirebaseApp).createSignInIntentBuilder();
-        startIntent.setAvailableProviders(
-                Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                              new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()));
+        startIntent.setAvailableProviders(Arrays.asList(
+                new IdpConfig.EmailBuilder().build(),
+                new IdpConfig.EmailBuilder().build()));
     }
 
     @Test
     public void testCreatingStartIntent() {
         FlowParameters flowParameters = AuthUI.getTestInstance(mFirebaseApp)
                 .createSignInIntentBuilder()
-                .setAvailableProviders(
-                        Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                      new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                      new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                .setAvailableProviders(Arrays.asList(
+                        new IdpConfig.EmailBuilder().build(),
+                        new IdpConfig.GoogleBuilder().build(),
+                        new IdpConfig.FacebookBuilder().build()))
                 .setTosUrl(TestConstants.TOS_URL)
                 .setPrivacyPolicyUrl(TestConstants.PRIVACY_URL)
                 .build()

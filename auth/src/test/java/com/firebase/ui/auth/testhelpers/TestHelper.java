@@ -22,7 +22,12 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import org.mockito.ArgumentCaptor;
 
@@ -42,6 +47,7 @@ public class TestHelper {
     private static final String FIREBASE_APP_NAME = "firebaseAppName";
 
     public static FirebaseApp initializeApp(Context context) {
+        AuthUI.setApplicationContext(context);
         try {
             return FirebaseApp.initializeApp(
                     context,
@@ -68,18 +74,35 @@ public class TestHelper {
     public static FlowParameters getFlowParameters(List<String> providerIds) {
         List<IdpConfig> idpConfigs = new ArrayList<>();
         for (String providerId : providerIds) {
-            idpConfigs.add(new IdpConfig.Builder(providerId).build());
+            switch (providerId) {
+                case GoogleAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.GoogleBuilder().build());
+                    break;
+                case FacebookAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.FacebookBuilder().build());
+                    break;
+                case TwitterAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.TwitterBuilder().build());
+                    break;
+                case EmailAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.EmailBuilder().build());
+                    break;
+                case PhoneAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.PhoneBuilder().build());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown provider: " + providerId);
+            }
         }
         return new FlowParameters(
                 FIREBASE_APP_NAME,
                 idpConfigs,
                 AuthUI.getDefaultTheme(),
                 AuthUI.NO_LOGO,
-                null  /* tosUrl */,
-                null  /* privacyPolicyUrl */,
-                true  /* credentialPickerEnabled */,
-                true  /* hintSelectorEnabled */,
-                true  /* allowNewEmailAccounts */);
+                null,
+                null,
+                true,
+                true);
     }
 
     public static void verifySmartLockSave(String providerId, String email, String password) {

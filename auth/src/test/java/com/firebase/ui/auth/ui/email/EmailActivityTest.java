@@ -19,7 +19,6 @@ import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
@@ -54,7 +53,7 @@ public class EmailActivityTest {
     private EmailActivity createActivity() {
         Intent startIntent = EmailActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)));
+                TestHelper.getFlowParameters(Collections.singletonList(EmailAuthProvider.PROVIDER_ID)));
 
         return Robolectric.buildActivity(EmailActivity.class, startIntent)
                 .create()

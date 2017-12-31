@@ -19,7 +19,6 @@ import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -61,7 +60,7 @@ public class WelcomeBackPasswordPromptTest {
     private WelcomeBackPasswordPrompt createActivity() {
         Intent startIntent = WelcomeBackPasswordPrompt.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)),
+                TestHelper.getFlowParameters(Collections.singletonList(EmailAuthProvider.PROVIDER_ID)),
                 new IdpResponse.Builder(
                         new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
                                 .build())

@@ -16,6 +16,8 @@ package com.firebase.ui.auth.util;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 
 /**
@@ -30,10 +32,11 @@ public final class Preconditions {
      * Ensures that the provided value is not null, and throws a {@link NullPointerException} if it
      * is null, with a message constructed from the provided error template and arguments.
      */
+    @NonNull
     public static <T> T checkNotNull(
-            T val,
-            String errorMessageTemplate,
-            Object... errorMessageArgs) {
+            @Nullable T val,
+            @NonNull String errorMessageTemplate,
+            @Nullable Object... errorMessageArgs) {
         if (val == null) {
             throw new NullPointerException(String.format(errorMessageTemplate, errorMessageArgs));
         }
@@ -47,10 +50,10 @@ public final class Preconditions {
      */
     @StyleRes
     public static int checkValidStyle(
-            Context context,
+            @NonNull Context context,
             int styleId,
-            String errorMessageTemplate,
-            Object... errorMessageArguments) {
+            @NonNull String errorMessageTemplate,
+            @Nullable Object... errorMessageArguments) {
         try {
             String resourceType = context.getResources().getResourceTypeName(styleId);
             if (!"style".equals(resourceType)) {
