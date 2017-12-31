@@ -1,14 +1,16 @@
 package com.firebaseui.lint
 
 import com.android.tools.lint.checks.infrastructure.TestFiles.xml
+import com.android.tools.lint.checks.infrastructure.TestLintTask
 import com.android.tools.lint.checks.infrastructure.TestLintTask.lint
 import com.firebaseui.lint.NonGlobalIdDetector.Companion.NON_GLOBAL_ID
 import org.junit.Test
+import java.io.File
 
 class NonGlobalIdDetectorTest {
     @Test
-    fun validId() {
-        lint()
+    fun `Passes on valid view id`() {
+        configuredLint()
                 .files(xml("res/layout/layout.xml", """
                         |<RelativeLayout
                         |    xmlns:android="http://schemas.android.com/apk/res/android"
@@ -19,8 +21,8 @@ class NonGlobalIdDetectorTest {
     }
 
     @Test
-    fun invalidId() {
-        lint()
+    fun `Fails on invalid view id`() {
+        configuredLint()
                 .files(xml("res/layout/layout.xml", """
                         |<ScrollView
                         |    xmlns:android="http://schemas.android.com/apk/res/android"
@@ -39,5 +41,16 @@ class NonGlobalIdDetectorTest {
                         |@@ -4 +3
                         |+     android:id="@+id/invalid"/>
                         |""".trimMargin())
+    }
+
+    companion object {
+        // Nasty hack to make lint tests pass on Windows
+        private val sdkPath = System.getProperty("java.library.path").split(';').find {
+            it.contains("SDK", true)
+        }
+
+        fun configuredLint(): TestLintTask = lint().apply {
+            sdkHome(File(sdkPath ?: return@apply))
+        }
     }
 }
