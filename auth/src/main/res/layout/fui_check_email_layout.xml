@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/fui_field_padding_vert"
             android:transitionGroup="true"
-            android:transitionName="@string/email_field_name"
+            android:transitionName="@string/fui_email_field_name"
             app:errorEnabled="true"
             tools:ignore="UnusedAttribute">
 
