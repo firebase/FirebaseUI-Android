@@ -102,7 +102,7 @@ public class PhoneActivityTest {
 
     @Before
     public void setUp() {
-        TestHelper.initializeApp(RuntimeEnvironment.application);
+        TestHelper.initialize();
         initMocks(this);
         mActivity = createActivity();
         mPhoneEditText = mActivity.findViewById(R.id.phone_number);

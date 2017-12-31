@@ -38,6 +38,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -66,8 +67,9 @@ import static org.mockito.Mockito.when;
                 LoginManagerShadow.class
         }, sdk = 25)
 public class AuthMethodPickerActivityTest {
-    static {
-        TestHelper.initializeApp(RuntimeEnvironment.application);
+    @Before
+    public void setUp() {
+        TestHelper.initialize();
     }
 
     @Test

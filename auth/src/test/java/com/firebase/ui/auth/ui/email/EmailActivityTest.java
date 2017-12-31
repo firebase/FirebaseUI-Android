@@ -64,7 +64,7 @@ public class EmailActivityTest {
 
     @Before
     public void setUp() {
-        TestHelper.initializeApp(RuntimeEnvironment.application);
+        TestHelper.initialize();
     }
 
     @Test
@@ -101,7 +101,6 @@ public class EmailActivityTest {
         // init mocks
         reset(AuthHelperShadow.getSaveSmartLockInstance(null));
 
-        TestHelper.initializeApp(RuntimeEnvironment.application);
         EmailActivity emailActivity = createActivity();
 
         // Trigger new user UI (bypassing check email)

@@ -27,7 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
@@ -37,17 +36,15 @@ import static junit.framework.Assert.assertEquals;
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 25)
 public class AuthUITest {
-    private FirebaseApp mFirebaseApp;
-
     @Before
     public void setUp() {
-        mFirebaseApp = TestHelper.initializeApp(RuntimeEnvironment.application);
+        TestHelper.initialize();
     }
 
     @Test
     public void testCreateStartIntent_shouldHaveEmailAsDefaultProvider() {
         FlowParameters flowParameters = AuthUI
-                .getTestInstance(mFirebaseApp)
+                .getInstance()
                 .createSignInIntentBuilder()
                 .build()
                 .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
@@ -58,8 +55,7 @@ public class AuthUITest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCreateStartIntent_shouldOnlyAllowOneInstanceOfAnIdp() {
-        SignInIntentBuilder startIntent =
-                AuthUI.getTestInstance(mFirebaseApp).createSignInIntentBuilder();
+        SignInIntentBuilder startIntent = AuthUI.getInstance().createSignInIntentBuilder();
         startIntent.setAvailableProviders(Arrays.asList(
                 new IdpConfig.EmailBuilder().build(),
                 new IdpConfig.EmailBuilder().build()));
@@ -67,7 +63,7 @@ public class AuthUITest {
 
     @Test
     public void testCreatingStartIntent() {
-        FlowParameters flowParameters = AuthUI.getTestInstance(mFirebaseApp)
+        FlowParameters flowParameters = AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(Arrays.asList(
                         new IdpConfig.EmailBuilder().build(),
@@ -79,7 +75,7 @@ public class AuthUITest {
                 .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
 
         assertEquals(3, flowParameters.providerInfo.size());
-        assertEquals(mFirebaseApp.getName(), flowParameters.appName);
+        assertEquals(FirebaseApp.getInstance().getName(), flowParameters.appName);
         assertEquals(TestConstants.TOS_URL, flowParameters.termsOfServiceUrl);
         assertEquals(TestConstants.PRIVACY_URL, flowParameters.privacyPolicyUrl);
         assertEquals(AuthUI.getDefaultTheme(), flowParameters.themeId);

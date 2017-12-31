@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
 public class WelcomeBackPasswordPromptTest {
     @Before
     public void setUp() {
-        TestHelper.initializeApp(RuntimeEnvironment.application);
+        TestHelper.initialize();
     }
 
     private WelcomeBackPasswordPrompt createActivity() {

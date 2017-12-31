@@ -180,6 +180,7 @@ public class AuthUI {
         mApp = app;
         mAuth = FirebaseAuth.getInstance(mApp);
 
+        mAuth.setFirebaseUIVersion(BuildConfig.VERSION_NAME);
         mAuth.useAppLanguage();
     }
 
@@ -214,22 +215,7 @@ public class AuthUI {
         synchronized (INSTANCES) {
             authUi = INSTANCES.get(app);
             if (authUi == null) {
-                authUi = new AuthUI(app);
-                authUi.mAuth.setFirebaseUIVersion(BuildConfig.VERSION_NAME);
-                INSTANCES.put(app, authUi);
-            }
-        }
-        return authUi;
-    }
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    static AuthUI getTestInstance(FirebaseApp app) {
-        AuthUI authUi;
-        synchronized (INSTANCES) {
-            authUi = INSTANCES.get(app);
-            if (authUi == null) {
-                authUi = new AuthUI(app);
-                INSTANCES.put(app, authUi);
+                INSTANCES.put(app, authUi = new AuthUI(app));
             }
         }
         return authUi;

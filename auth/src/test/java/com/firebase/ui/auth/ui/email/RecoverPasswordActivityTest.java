@@ -43,7 +43,7 @@ public class RecoverPasswordActivityTest {
 
     @Before
     public void setUp() {
-        TestHelper.initializeApp(RuntimeEnvironment.application);
+        TestHelper.initialize();
     }
 
     private RecoverPasswordActivity createActivity() {
