@@ -125,8 +125,9 @@ public class EmailActivity extends AppCompatBase implements
                     .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
 
             if (emailLayout != null) {
-                ViewCompat.setTransitionName(emailLayout, "email_field");
-                ft.addSharedElement(emailLayout, "email_field");
+                String emailFieldName = getString(R.string.email_field_name);
+                ViewCompat.setTransitionName(emailLayout, emailFieldName);
+                ft.addSharedElement(emailLayout, emailFieldName);
             }
 
             ft.disallowAddToBackStack().commit();
