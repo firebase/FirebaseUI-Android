@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
@@ -123,7 +124,10 @@ public class EmailActivity extends AppCompatBase implements
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
 
-            if (emailLayout != null) ft.addSharedElement(emailLayout, "email_field");
+            if (emailLayout != null) {
+                ViewCompat.setTransitionName(emailLayout, "email_field");
+                ft.addSharedElement(emailLayout, "email_field");
+            }
 
             ft.disallowAddToBackStack().commit();
         } else {
