@@ -4,17 +4,28 @@ FirebaseUI makes it simple to bind data from the Firebase Realtime Database to y
 
 Before using this library, you should be familiar with the following topics:
 
-  * [Working with lists of data in Firebase Realtime Database][firebase-lists].
-  * [Displaying lists of data using a RecyclerView][recyclerview].
+* [Working with lists of data in Firebase Realtime Database][firebase-lists].
+* [Displaying lists of data using a RecyclerView][recyclerview].
 
-## Using FirebaseUI to populate a `RecyclerView`
+## Table of contents
+
+1. [Data model](#data-model)
+1. [Querying](#querying)
+1. [Populating a RecyclerView](#using-firebaseui-to-populate-a-recyclerview)
+   1. [Using the adapter](#using-the-firebaserecycleradapter)
+   1. [Adapter lifecyle](#firebaserecycleradapter-lifecycle)
+   1. [Events](#data-and-error-events)
+1. [Populating a ListView](#using-firebaseui-to-populate-a-listview)
+1. [Handling indexed data](#using-firebaseui-with-indexed-data)
+   1. [Warnings](#a-note-on-ordering)
+
+## Data model
 
 Imagine you have a chat app where each chat message is an item in the `chats` node
-of your database.  In your app, you may represent a chat message like this:
+of your database. In your app, you may represent a chat message like this:
 
 ```java
 public class Chat {
-
     private String mName;
     private String mMessage;
     private String mUid;
@@ -43,12 +54,12 @@ public class Chat {
 
 A few things to note about this model class:
 
-  * The getters and setters follow the JavaBean naming pattern which allows Firebase to map
-    the data to field names (ex: `getName()` provides the `name` field).
-  * The class has an empty constructor, which is required for Firebase's automatic data mapping.
-  
+* The getters and setters follow the JavaBean naming pattern which allows Firebase to map
+  the data to field names (ex: `getName()` provides the `name` field).
+* The class has an empty constructor, which is required for Firebase's automatic data mapping.
+
 For a properly constructed model class like the `Chat` class above, Firebase can perform automatic
-serialization in `DatabaseReference#setValue()` and automatic deserialization in 
+serialization in `DatabaseReference#setValue()` and automatic deserialization in
 `DataSnapshot#getValue()`.
 
 ### Querying
@@ -96,6 +107,8 @@ ChildEventListener childEventListener = new ChildEventListener() {
 query.addChildEventListener(childEventListener);
 ```
 
+## Using FirebaseUI to populate a `RecyclerView`
+
 If you're displaying a list of data, you likely want to bind the `Chat` objects to a `RecyclerView`.
 This means implementing a custom `RecyclerView.Adapter` and coordinating updates with the
 `ChildEventListener`.
@@ -104,7 +117,7 @@ Fear not, FirebaseUI does all of this for you automatically!
 
 ### Using the FirebaseRecyclerAdapter
 
-The `FirebaseRecyclerAdapter` binds a `Query` to a `RecyclerView`.  When data is added, removed,
+The `FirebaseRecyclerAdapter` binds a `Query` to a `RecyclerView`. When data is added, removed,
 or changed these updates are automatically applied to your UI in real time.
 
 First, configure the adapter by building `FirebaseRecyclerOptions`. In this case we will continue
@@ -128,10 +141,10 @@ FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Chat, ChatHolder>(
         // layout called R.layout.message for each item
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.message, parent, false);
-        
+
         return new ChatHolder(view);
     }
-    
+
     @Override
     protected void onBindViewHolder(ChatHolder holder, int position, Chat model) {
         // Bind the Chat object to the ChatHolder
@@ -172,9 +185,11 @@ protected void onStop() {
 }
 ```
 
-If you don't want to manually start/stop listening you can use 
+#### Automatic listening
+
+If you don't want to manually start/stop listening you can use
 [Android Architecture Components][arch-components] to automatically manage the lifecycle of the
-`FirebaseRecyclerAdapter`.  Pass a `LifecycleOwner` to 
+`FirebaseRecyclerAdapter`. Pass a `LifecycleOwner` to
 `FirebaseRecyclerAdapter.Builder#setLifecycleOwner(...)` and FirebaseUI will automatically
 start and stop listening in `onStart()` and `onStop()`.
 
@@ -230,7 +245,7 @@ to use `setIndexedQuery()`:
 
 ```java
 // keyQuery - the Firebase location containing the list of keys to be found in dataRef
-// dataRef - the Firebase location to watch for data changes. Each key found at 
+// dataRef - the Firebase location to watch for data changes. Each key found at
 //           keyRef's location represents a list item.
 FirebaseRecyclerOptions<Chat> options = new FirebaseRecyclerOptions.Builder<Chat>()
         .setIndexedQuery(keyQuery, dataRef, Chat.class)
