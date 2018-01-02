@@ -519,6 +519,7 @@ public class AuthUI {
             @NonNull
             @Deprecated
             public Builder setParams(@Nullable Bundle params) {
+                mParams.clear();
                 mParams.putAll(params == null ? new Bundle() : params);
                 return this;
             }
@@ -526,6 +527,13 @@ public class AuthUI {
             @CallSuper
             @NonNull
             public IdpConfig build() {
+                // Ensures deprecated Google provider builder backcompat
+                if (mProviderId.equals(GoogleAuthProvider.PROVIDER_ID)
+                        && getClass() == Builder.class
+                        && mParams.isEmpty()) {
+                    return new GoogleBuilder().build();
+                }
+
                 return new IdpConfig(mProviderId, mParams);
             }
         }
