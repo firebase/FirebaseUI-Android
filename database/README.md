@@ -130,6 +130,18 @@ with our chat example:
                         .build();
 ```
 
+If you need to customize how your model class is parsed, you can use a custom `SnapshotParser`:
+
+```java
+...setQuery(..., new SnapshotParser<Chat>() {
+    @NonNull
+    @Override
+    public Chat parseSnapshot(@NonNull DataSnapshot snapshot) {
+        return ...;
+    }
+});
+```
+
 Next create the `FirebaseRecyclerAdapter` object. You should already have a `ViewHolder` subclass
 for displaying each item. In this case we will use a custom `ChatHolder` class:
 
