@@ -30,8 +30,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
-
-import java.util.List;
+import com.google.firebase.auth.EmailAuthProvider;
 
 /**
  * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment} and
@@ -119,10 +118,19 @@ public class EmailActivity extends AppCompatBase implements
 
         TextInputLayout emailLayout = findViewById(R.id.email_layout);
 
-        List<AuthUI.IdpConfig> providerConfig = getFlowParams().providerInfo;
-        int emailIndex = providerConfig.indexOf(new AuthUI.IdpConfig.EmailBuilder().build());
-        if (providerConfig.get(emailIndex).getParams()
-                .getBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, true)) {
+        AuthUI.IdpConfig emailConfig = null;
+        for (AuthUI.IdpConfig config : getFlowParams().providerInfo) {
+            if (config.getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
+                emailConfig = config;
+            }
+        }
+
+        if (emailConfig == null) {
+            throw new IllegalStateException(
+                    "Email provider not found even though we are in the email activity.");
+        }
+
+        if (emailConfig.getParams().getBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, true)) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(
                     getFlowParams(),
                     user);

@@ -215,7 +215,8 @@ public class AuthUI {
         synchronized (INSTANCES) {
             authUi = INSTANCES.get(app);
             if (authUi == null) {
-                INSTANCES.put(app, authUi = new AuthUI(app));
+                authUi = new AuthUI(app);
+                INSTANCES.put(app, authUi);
             }
         }
         return authUi;
@@ -399,7 +400,23 @@ public class AuthUI {
         @Deprecated
         @NonNull
         public List<String> getScopes() {
-            return Collections.emptyList();
+            List<String> permissions;
+            if (mProviderId.equals(GoogleAuthProvider.PROVIDER_ID)) {
+                Scope[] array = ((GoogleSignInOptions)
+                        mParams.getParcelable(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS))
+                        .getScopeArray();
+
+                List<String> scopes = new ArrayList<>();
+                for (Scope scope : array) {
+                    scopes.add(scope.toString());
+                }
+                permissions = scopes;
+            } else if (mProviderId.equals(FacebookAuthProvider.PROVIDER_ID)) {
+                permissions = mParams.getStringArrayList(ExtraConstants.EXTRA_FACEBOOK_PERMISSIONS);
+            } else {
+                permissions = null;
+            }
+            return permissions == null ? Collections.<String>emptyList() : permissions;
         }
 
         @NonNull
@@ -882,7 +899,7 @@ public class AuthUI {
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
-        private static final String TAG = "SignInIntentBuilder";
+        private Boolean mAllowNewEmailAccounts;
 
         private SignInIntentBuilder() {
             super();
@@ -896,16 +913,26 @@ public class AuthUI {
         @NonNull
         @Deprecated
         public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
-            int emailIndex = mProviders.indexOf(new IdpConfig.EmailBuilder().build());
-            if (emailIndex == -1) {
-                Log.e(TAG, "Move the allowNewEmailAccounts builder option below the" +
-                        " setAvailableProviders option to ensure backwards compatibility.");
-            } else {
-                mProviders.set(emailIndex, new IdpConfig.EmailBuilder()
-                        .setAllowNewAccounts(enabled)
-                        .build());
-            }
+            mAllowNewEmailAccounts = enabled;
             return this;
+        }
+
+        @NonNull
+        @Override
+        public Intent build() {
+            if (mAllowNewEmailAccounts != null) {
+                // To ensure setAllowNewEmailAccounts backcompat
+                for (IdpConfig provider : mProviders) {
+                    if (provider.getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
+                        mProviders.set(mProviders.indexOf(provider), new IdpConfig.EmailBuilder()
+                                .setAllowNewAccounts(mAllowNewEmailAccounts)
+                                .build());
+                        break;
+                    }
+                }
+            }
+
+            return super.build();
         }
 
         @Override
