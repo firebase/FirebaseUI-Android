@@ -624,22 +624,12 @@ public class AuthUI {
 
             @NonNull
             public GoogleBuilder setScopes(@NonNull List<String> scopes) {
-                if (getParams().containsKey(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS)) {
-                    throw new IllegalStateException(
-                            "Cannot overwrite previously set sign-in options.");
-                }
-
                 GoogleSignInOptions.Builder builder =
                         new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN);
-                applyRequiredSignInOptions(builder);
                 for (String scope : scopes) {
                     builder.requestScopes(new Scope(scope));
                 }
-
-                getParams().putParcelable(
-                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS, builder.build());
-
-                return this;
+                return setSignInOptions(builder.build());
             }
 
             @NonNull
@@ -650,16 +640,12 @@ public class AuthUI {
                 }
 
                 GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(options);
-                applyRequiredSignInOptions(builder);
+                builder.requestEmail().requestIdToken(getApplicationContext()
+                        .getString(R.string.default_web_client_id));
                 getParams().putParcelable(
                         ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS, builder.build());
 
                 return this;
-            }
-
-            private void applyRequiredSignInOptions(GoogleSignInOptions.Builder builder) {
-                builder.requestEmail().requestIdToken(getApplicationContext()
-                        .getString(R.string.default_web_client_id));
             }
 
             @NonNull
