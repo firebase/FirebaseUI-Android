@@ -101,20 +101,8 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
         User user = User.getUser(getArguments());
         String provider = user.getProviderId();
 
-        AuthUI.IdpConfig providerConfig = null;
-        for (AuthUI.IdpConfig config : getFlowParams().providerInfo) {
-            if (config.getProviderId().equalsIgnoreCase(provider)) {
-                providerConfig = config;
-                break;
-            }
-        }
-
-        if (providerConfig == null) {
-            // we don't have a provider to handle this
-            finish(Activity.RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-            return;
-        }
-
+        AuthUI.IdpConfig providerConfig = ProviderUtils.getConfigFromIdps(
+                getFlowParams().providerInfo, provider);
         if (provider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new GoogleProvider(
                     getActivity(),
