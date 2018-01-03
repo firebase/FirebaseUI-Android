@@ -20,7 +20,9 @@ import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -29,6 +31,8 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.google.firebase.auth.EmailAuthProvider;
 
 /**
  * Activity to control the entire email sign up flow. Plays host to {@link CheckEmailFragment} and
@@ -116,14 +120,20 @@ public class EmailActivity extends AppCompatBase implements
 
         TextInputLayout emailLayout = findViewById(R.id.email_layout);
 
-        if (getFlowParams().allowNewEmailAccounts) {
+        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
+                getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
+        if (emailConfig.getParams().getBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, true)) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(
                     getFlowParams(),
                     user);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
 
-            if (emailLayout != null) ft.addSharedElement(emailLayout, "email_field");
+            if (emailLayout != null) {
+                String emailFieldName = getString(R.string.fui_email_field_name);
+                ViewCompat.setTransitionName(emailLayout, emailFieldName);
+                ft.addSharedElement(emailLayout, emailFieldName);
+            }
 
             ft.disallowAddToBackStack().commit();
         } else {

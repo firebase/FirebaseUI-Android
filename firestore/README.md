@@ -4,19 +4,25 @@ FirebaseUI makes it simple to bind data from Cloud Firestore to your app's UI.
 
 Before using this library, you should be familiar with the following topics:
 
-  * [Structuring and querying data in Cloud Firestore][firestore-docs].
-  * [Displaying lists of data using a RecyclerView][recyclerview].
-  
-## Using FirebaseUI to populate a `RecyclerView`
+* [Structuring and querying data in Cloud Firestore][firestore-docs].
+* [Displaying lists of data using a RecyclerView][recyclerview].
 
-### Data Model
+## Table of contents
+
+1. [Data model](#data-model)
+1. [Querying](#querying)
+1. [Populating a RecyclerView](#using-firebaseui-to-populate-a-recyclerview)
+   1. [Using the adapter](#using-the-firestorerecycleradapter)
+   1. [Adapter lifecyle](#firestorerecycleradapter-lifecycle)
+   1. [Events](#data-and-error-events)
+
+## Data model
 
 Imagine you have a chat app where each chat message is a document in the `chats` collection
-of your database.  In your app, you may represent a chat message like this:
+of your database. In your app, you may represent a chat message like this:
 
 ```java
 public class Chat {
-    
     private String mName;
     private String mMessage;
     private String mUid;
@@ -24,9 +30,9 @@ public class Chat {
 
     public Chat() { } // Needed for Firebase
 
-    public Chat(String name, String message, String uid) { 
-        mName = name;    
-        mMessage = message;    
+    public Chat(String name, String message, String uid) {
+        mName = name;
+        mMessage = message;
         mUid = uid;
     }
 
@@ -45,22 +51,22 @@ public class Chat {
     @ServerTimestamp
     public Date getTimestamp() { return mTimestamp; }
 
-    public void setTimestamp(Date timestamp) { mTimestamp = timestamp; } 
+    public void setTimestamp(Date timestamp) { mTimestamp = timestamp; }
 }
 ```
 
 A few things to note about this model class:
 
-  * The getters and setters follow the JavaBean naming pattern which allows Firestore to map
-    the data to field names (ex: `getName()` provides the `name` field).
-  * The class has an empty constructor, which is required for Firestore's automatic data mapping.
-  
+* The getters and setters follow the JavaBean naming pattern which allows Firestore to map
+  the data to field names (ex: `getName()` provides the `name` field).
+* The class has an empty constructor, which is required for Firestore's automatic data mapping.
+
 For a properly constructed model class like the `Chat` class above, Firestore can perform automatic
-serialization in `DocumentReference#set()` and automatic deserialization in 
+serialization in `DocumentReference#set()` and automatic deserialization in
 `DocumentSnapshot#toObject()`. For more information on data mapping in Firestore, see the
 documentation on [custom objects][firestore-custom-objects].
 
-### Querying
+## Querying
 
 On the main screen of your app, you may want to show the 50 most recent chat messages.
 In Firestore, you would use the following query:
@@ -95,13 +101,15 @@ query.addSnapshotListener(new EventListener<QuerySnapshot>() {
 });
 ```
 
+## Using FirebaseUI to populate a `RecyclerView`
+
 If you're displaying a list of data, you likely want to bind the `Chat` objects to a
 `RecyclerView`. This means implementing a custom `RecyclerView.Adapter` and coordinating
 updates with the `EventListener` on the `Query`.
 
 Fear not, FirebaseUI does all of this for you automatically!
 
-### Using the FirestoreRecyclerAdapter
+### Using the `FirestoreRecyclerAdapter`
 
 The `FirestoreRecyclerAdapter` binds a `Query` to a `RecyclerView`. When documents are added,
 removed, or change these updates are automatically applied to your UI in real time.
@@ -118,8 +126,20 @@ FirestoreRecyclerOptions<Chat> options = new FirestoreRecyclerOptions.Builder<Ch
         .build();
 ```
 
-Next create the `FirestoreRecyclerAdapter` object.  You should already have a `ViewHolder` subclass
-for displaying each item.  In this case we will use a custom `ChatHolder` class:
+If you need to customize how your model class is parsed, you can use a custom `SnapshotParser`:
+
+```java
+...setQuery(..., new SnapshotParser<Chat>() {
+    @NonNull
+    @Override
+    public Chat parseSnapshot(@NonNull DocumentSnapshot snapshot) {
+        return ...;
+    }
+});
+```
+
+Next create the `FirestoreRecyclerAdapter` object. You should already have a `ViewHolder` subclass
+for displaying each item. In this case we will use a custom `ChatHolder` class:
 
 ```java
 FirestoreRecyclerAdapter adapter = new FirestoreRecyclerAdapter<Chat, ChatHolder>(options) {
@@ -144,12 +164,12 @@ FirestoreRecyclerAdapter adapter = new FirestoreRecyclerAdapter<Chat, ChatHolder
 Finally attach the adapter to your `RecyclerView` with the `RecyclerView#setAdapter()`.
 Don't forget to also set a `LayoutManager`!
 
-### FirestoreRecyclerAdapter lifecycle
+### `FirestoreRecyclerAdapter` lifecycle
 
 #### Start/stop listening
 
 The `FirestoreRecyclerAdapter` uses a snapshot listener to monitor changes to the Firestore query.
-To begin listening for data, call the `startListening()` method.  You may want to call this
+To begin listening for data, call the `startListening()` method. You may want to call this
 in your `onStart()` method. Make sure you have finished any authentication necessary to read the
 data before calling `startListening()` or your query will fail.
 
@@ -172,13 +192,15 @@ protected void onStop() {
 }
 ```
 
-If you don't want to manually start/stop listening you can use 
+#### Automatic listening
+
+If you don't want to manually start/stop listening you can use
 [Android Architecture Components][arch-components] to automatically manage the lifecycle of the
-`FirestoreRecyclerAdapter`.  Pass a `LifecycleOwner` to 
+`FirestoreRecyclerAdapter`. Pass a `LifecycleOwner` to
 `FirestoreRecyclerOptions.Builder#setLifecycleOwner(...)` and FirebaseUI will automatically
 start and stop listening in `onStart()` and `onStop()`.
 
-#### Data and error events
+### Data and error events
 
 When using the `FirestoreRecyclerAdapter` you may want to perform some action every time data
 changes or when there is an error. To do this, override the `onDataChanged()` and `onError()`
