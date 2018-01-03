@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 /**
@@ -106,7 +107,7 @@ public class IdpResponse implements Parcelable {
     }
 
     /**
-     * Get the type of provider. e.g. {@link AuthUI#GOOGLE_PROVIDER}
+     * Get the type of provider. e.g. {@link GoogleAuthProvider#PROVIDER_ID}
      */
     @NonNull
     @AuthUI.SupportedProvider
