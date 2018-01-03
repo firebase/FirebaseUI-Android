@@ -17,19 +17,16 @@
  */
 package com.firebase.ui.auth.ui.phone;
 
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
 public class PhoneNumberTest {
     @Test
     public void testIsValid_emptyPhone() {
