@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.app.Application;
+import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
@@ -10,12 +11,19 @@ import com.google.android.gms.tasks.Task;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class RecoverPasswordHandler extends AuthViewModelBase {
+    private final MutableLiveData<RecoverPasswordProgressState> mProgressLiveData =
+            new MutableLiveData<>();
+
     public RecoverPasswordHandler(Application application) {
         super(application);
     }
 
+    public MutableLiveData<RecoverPasswordProgressState> getProgressLiveData() {
+        return mProgressLiveData;
+    }
+
     public void startReset(final String email) {
-        getFlowHolder().getProgressLiveData().setValue(
+        mProgressLiveData.setValue(
                 new RecoverPasswordProgressState());
         getAuth().sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -24,7 +32,7 @@ public class RecoverPasswordHandler extends AuthViewModelBase {
                         RecoverPasswordProgressState state = task.isSuccessful() ?
                                 new RecoverPasswordProgressState(email)
                                 : new RecoverPasswordProgressState(task.getException());
-                        getFlowHolder().getProgressLiveData().setValue(state);
+                        mProgressLiveData.setValue(state);
                     }
                 });
     }

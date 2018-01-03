@@ -1,22 +1,17 @@
 package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.IntentRequest;
-import com.firebase.ui.auth.data.model.PendingIntentRequest;
 import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
@@ -51,42 +46,6 @@ public class HelperActivityBase extends AppCompatActivity {
         super.onCreate(savedInstance);
         mAuthHelper = new AuthHelper(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
-
-        getFlowHolder().getIntentStarter().observe(this, new Observer<IntentRequest>() {
-            @Override
-            public void onChanged(@Nullable IntentRequest request) {
-                if (request == null) {
-                    throw new IllegalStateException("Cannot start null request");
-                }
-
-                startActivityForResult(request.getIntent(), request.getRequestCode());
-            }
-        });
-        getFlowHolder().getPendingIntentStarter()
-                .observe(this, new Observer<PendingIntentRequest>() {
-                    @Override
-                    public void onChanged(@Nullable PendingIntentRequest request) {
-                        if (request == null) {
-                            throw new IllegalStateException("Cannot start null request");
-                        }
-
-                        try {
-                            startIntentSenderForResult(
-                                    request.getIntent().getIntentSender(), request.getRequestCode(),
-                                    null, 0, 0, 0);
-                        } catch (IntentSender.SendIntentException e) {
-                            Log.e("PendingIntentStarter", "Unable to start pending intent", e);
-                            onActivityResult(
-                                    request.getRequestCode(), Activity.RESULT_CANCELED, null);
-                        }
-                    }
-                });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        getFlowHolder().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

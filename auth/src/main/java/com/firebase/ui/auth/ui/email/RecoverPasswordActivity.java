@@ -29,7 +29,6 @@ import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.ProgressState;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -62,12 +61,9 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
         mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
         mHandler.init(getFlowHolder());
-        getFlowHolder().getProgressLiveData().observe(this, new Observer<ProgressState>() {
+        mHandler.getProgressLiveData().observe(this, new Observer<RecoverPasswordProgressState>() {
             @Override
-            public void onChanged(ProgressState flexibleState) {
-                if (!(flexibleState instanceof RecoverPasswordProgressState)) { return; }
-                RecoverPasswordProgressState state = (RecoverPasswordProgressState) flexibleState;
-
+            public void onChanged(RecoverPasswordProgressState state) {
                 if (state.isComplete()) {
                     getDialogHolder().dismissDialog();
                     if (state.isSuccessful()) {
