@@ -93,48 +93,72 @@ public class AuthUI {
     /**
      * Provider identifier for email and password credentials, for use with {@link
      * SignInIntentBuilder#setAvailableProviders(List)}.
+     *
+     * @deprecated this constant is no longer needed, use the {@link IdpConfig.EmailBuilder}
+     * directly or {@link EmailAuthProvider#PROVIDER_ID} if needed.
      */
     @Deprecated
     public static final String EMAIL_PROVIDER = EmailAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Google, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
+     *
+     * @deprecated this constant is no longer needed, use the {@link IdpConfig.GoogleBuilder}
+     * directly or {@link GoogleAuthProvider#PROVIDER_ID} if needed.
      */
     @Deprecated
     public static final String GOOGLE_PROVIDER = GoogleAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Facebook, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
+     *
+     * @deprecated this constant is no longer needed, use the {@link IdpConfig.FacebookBuilder}
+     * directly or {@link FacebookAuthProvider#PROVIDER_ID} if needed.
      */
     @Deprecated
     public static final String FACEBOOK_PROVIDER = FacebookAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Twitter, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
+     *
+     * @deprecated this constant is no longer needed, use the {@link IdpConfig.TwitterBuilder}
+     * directly or {@link TwitterAuthProvider#PROVIDER_ID} if needed.
      */
     @Deprecated
     public static final String TWITTER_PROVIDER = TwitterAuthProvider.PROVIDER_ID;
 
     /**
      * Provider identifier for Phone, for use with {@link SignInIntentBuilder#setAvailableProviders(List)}.
+     *
+     * @deprecated this constant is no longer needed, use the {@link IdpConfig.PhoneBuilder}
+     * directly or {@link PhoneAuthProvider#PROVIDER_ID} if needed.
      */
     @Deprecated
     public static final String PHONE_VERIFICATION_PROVIDER = PhoneAuthProvider.PROVIDER_ID;
 
     /**
      * Bundle key for the default full phone number parameter.
+     *
+     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultPhoneNumber(String)}
+     * instead.
      */
     @Deprecated
     public static final String EXTRA_DEFAULT_PHONE_NUMBER = ExtraConstants.EXTRA_PHONE;
 
     /**
      * Bundle key for the default phone country code parameter.
+     *
+     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultPhoneNumber(int,
+     * String)} instead.
      */
     @Deprecated
     public static final String EXTRA_DEFAULT_COUNTRY_CODE = ExtraConstants.EXTRA_COUNTRY_CODE;
 
     /**
      * Bundle key for the default national phone number parameter.
+     *
+     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultPhoneNumber(int,
+     * String)} instead.
      */
     @Deprecated
     public static final String EXTRA_DEFAULT_NATIONAL_NUMBER = ExtraConstants.EXTRA_NATIONAL_NUMBER;
@@ -186,7 +210,8 @@ public class AuthUI {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static void setApplicationContext(@NonNull Context context) {
-        sApplicationContext = Preconditions.checkNotNull(context, "App context cannot be null.");
+        sApplicationContext = Preconditions.checkNotNull(context, "App context cannot be null.")
+                .getApplicationContext();
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -397,6 +422,10 @@ public class AuthUI {
             return mProviderId;
         }
 
+        /**
+         * @deprecated use the lists of scopes you passed in directly, or get a provider-specific
+         * implementation from {@link #getParams()}.
+         */
         @Deprecated
         @NonNull
         public List<String> getScopes() {
@@ -419,6 +448,9 @@ public class AuthUI {
             return permissions == null ? Collections.<String>emptyList() : permissions;
         }
 
+        /**
+         * @return provider-specific options
+         */
         @NonNull
         public Bundle getParams() {
             return new Bundle(mParams);
@@ -458,6 +490,11 @@ public class AuthUI {
                     '}';
         }
 
+        /**
+         * Base builder for all authentication providers.
+         *
+         * @see SignInIntentBuilder#setAvailableProviders(List)
+         */
         public static class Builder {
             @SupportedProvider private final String mProviderId;
             private final Bundle mParams = new Bundle();
@@ -468,6 +505,7 @@ public class AuthUI {
              * @param providerId An ID of one of the supported identity providers. e.g. {@link
              *                   AuthUI#GOOGLE_PROVIDER}. See {@link AuthUI#SUPPORTED_PROVIDERS} for
              *                   the complete list of supported Identity providers
+             * @deprecated use the provider's specific builder, for example, {@link GoogleBuilder}
              */
             @Deprecated
             public Builder(@SupportedProvider @NonNull String providerId) {
@@ -475,6 +513,24 @@ public class AuthUI {
                     throw new IllegalArgumentException("Unknown provider: " + providerId);
                 }
                 mProviderId = providerId;
+            }
+
+            @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+            @NonNull
+            protected Bundle getParams() {
+                return mParams;
+            }
+
+            /**
+             * @deprecated additional phone verification options are now available on the phone
+             * builder: {@link PhoneBuilder#setDefaultPhoneNumber(int, String)}.
+             */
+            @NonNull
+            @Deprecated
+            public Builder setParams(@Nullable Bundle params) {
+                mParams.clear();
+                mParams.putAll(params == null ? new Bundle() : params);
+                return this;
             }
 
             /**
@@ -490,6 +546,9 @@ public class AuthUI {
              * <p>
              * Twitter permissions are only configurable through the
              * <a href="https://apps.twitter.com/">Twitter developer console</a>.
+             *
+             * @deprecated use the provider's specific builder. For Google, use {@link
+             * GoogleBuilder#setScopes(List)}. For Facebook, use {@link FacebookBuilder#setPermissions(List)}.
              */
             @NonNull
             @Deprecated
@@ -511,19 +570,6 @@ public class AuthUI {
                 return this;
             }
 
-            @NonNull
-            protected Bundle getParams() {
-                return mParams;
-            }
-
-            @NonNull
-            @Deprecated
-            public Builder setParams(@Nullable Bundle params) {
-                mParams.clear();
-                mParams.putAll(params == null ? new Bundle() : params);
-                return this;
-            }
-
             @CallSuper
             @NonNull
             public IdpConfig build() {
@@ -538,6 +584,9 @@ public class AuthUI {
             }
         }
 
+        /**
+         * {@link IdpConfig} builder for the email provider.
+         */
         public static final class EmailBuilder extends Builder {
             public EmailBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
@@ -556,6 +605,9 @@ public class AuthUI {
             }
         }
 
+        /**
+         * {@link IdpConfig} builder for the phone provider.
+         */
         public static final class PhoneBuilder extends Builder {
             public PhoneBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
@@ -597,6 +649,12 @@ public class AuthUI {
                 return this;
             }
 
+            /**
+             * Set the default country code that will be used in the phone verification sign-in
+             * flow.
+             *
+             * @param code country code
+             */
             @NonNull
             public PhoneBuilder setDefaultCountryCode(int code) {
                 if (getParams().containsKey(ExtraConstants.EXTRA_PHONE)
@@ -611,6 +669,9 @@ public class AuthUI {
             }
         }
 
+        /**
+         * {@link IdpConfig} builder for the Google provider.
+         */
         public static final class GoogleBuilder extends Builder {
             public GoogleBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
@@ -622,6 +683,13 @@ public class AuthUI {
                 }
             }
 
+            /**
+             * Set the scopes that your app will request when using Google sign-in. See all <a
+             * href="https://developers.google.com/identity/protocols/googlescopes">available
+             * scopes</a>.
+             *
+             * @param scopes additional scopes to be requested
+             */
             @NonNull
             public GoogleBuilder setScopes(@NonNull List<String> scopes) {
                 GoogleSignInOptions.Builder builder =
@@ -632,6 +700,12 @@ public class AuthUI {
                 return setSignInOptions(builder.build());
             }
 
+            /**
+             * Set the {@link GoogleSignInOptions} to be used for Google sign-in. Standard options
+             * like requesting the user's email will automatically be added.
+             *
+             * @param options sign-in options
+             */
             @NonNull
             public GoogleBuilder setSignInOptions(@NonNull GoogleSignInOptions options) {
                 if (getParams().containsKey(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS)) {
@@ -659,6 +733,9 @@ public class AuthUI {
             }
         }
 
+        /**
+         * {@link IdpConfig} builder for the Facebook provider.
+         */
         public static final class FacebookBuilder extends Builder {
             private static final String TAG = "FacebookBuilder";
 
@@ -690,12 +767,10 @@ public class AuthUI {
 
             /**
              * Specifies the additional permissions that the application will request in the
-             * Facebook Login SDK. Available permissions can be found here:
-             * <p>
-             * https://developers.facebook.com/docs/facebook-login/android
-             * https://developers.facebook.com/docs/facebook-login/permissions
+             * Facebook Login SDK. Available permissions can be found <a
+             * href="https://developers.facebook.com/docs/facebook-login/permissions">here</a>.
              */
-            @SuppressWarnings("deprecation")
+            @SuppressWarnings({"deprecation", "NullableProblems"}) // For backcompat
             @NonNull
             public FacebookBuilder setPermissions(@NonNull List<String> permissions) {
                 getParams().putStringArrayList(
@@ -704,9 +779,12 @@ public class AuthUI {
             }
         }
 
-        @SuppressWarnings("deprecation") // Taking a hit for the backcompat team
+        /**
+         * {@link IdpConfig} builder for the Twitter provider.
+         */
         public static final class TwitterBuilder extends Builder {
             public TwitterBuilder() {
+                //noinspection deprecation taking a hit for the backcompat team
                 super(TwitterAuthProvider.PROVIDER_ID);
 
                 try {
@@ -852,6 +930,7 @@ public class AuthUI {
          * <p>SmartLock is enabled by default.
          *
          * @param enabled enables smartlock's credential selector and hint selector
+         * @deprecated use the more customizable {@link #setIsSmartLockEnabled(boolean, boolean)}
          */
         @NonNull
         @Deprecated
@@ -903,6 +982,9 @@ public class AuthUI {
          * Enables or disables creating new accounts in the email sign in flow.
          * <p>
          * <p>Account creation is enabled by default.
+         *
+         * @deprecated set this option directly on the email builder: {@link
+         * IdpConfig.EmailBuilder#setAllowNewAccounts(boolean)}.
          */
         @NonNull
         @Deprecated
