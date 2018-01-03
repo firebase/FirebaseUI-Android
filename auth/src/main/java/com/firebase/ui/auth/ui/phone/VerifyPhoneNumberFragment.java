@@ -152,7 +152,6 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
             setPhoneNumber(phoneNumber);
             setCountryCode(phoneNumber);
         } else if (!TextUtils.isEmpty(countryIso)) {
-            // User supplied full phone number
             setCountryCode(new PhoneNumber(
                     "",
                     countryIso,

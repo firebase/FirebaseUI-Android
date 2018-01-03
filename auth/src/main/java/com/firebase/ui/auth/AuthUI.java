@@ -36,6 +36,7 @@ import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.Preconditions;
+import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
@@ -620,9 +621,12 @@ public class AuthUI {
              */
             @NonNull
             public PhoneBuilder setDefaultNumber(@NonNull String number) {
-                if (getParams().containsKey(ExtraConstants.EXTRA_COUNTRY_ISO)
-                        || getParams().containsKey(ExtraConstants.EXTRA_NATIONAL_NUMBER)) {
-                    throw new IllegalStateException("Cannot overwrite previously set phone number");
+                Preconditions.checkUnset(getParams(),
+                        "Cannot overwrite previously set phone number",
+                        ExtraConstants.EXTRA_COUNTRY_ISO,
+                        ExtraConstants.EXTRA_NATIONAL_NUMBER);
+                if (!PhoneNumberUtils.isValid(number)) {
+                    throw new IllegalStateException("Invalid phone number: " + number);
                 }
 
                 getParams().putString(ExtraConstants.EXTRA_PHONE, number);
@@ -639,8 +643,11 @@ public class AuthUI {
              */
             @NonNull
             public PhoneBuilder setDefaultNumber(@NonNull String iso, @NonNull String number) {
-                if (getParams().containsKey(ExtraConstants.EXTRA_PHONE)) {
-                    throw new IllegalStateException("Cannot overwrite previously set phone number");
+                Preconditions.checkUnset(getParams(),
+                        "Cannot overwrite previously set phone number",
+                        ExtraConstants.EXTRA_PHONE);
+                if (!PhoneNumberUtils.isValidIso(iso)) {
+                    throw new IllegalStateException("Invalid country iso: " + iso);
                 }
 
                 getParams().putString(ExtraConstants.EXTRA_COUNTRY_ISO, iso);
@@ -657,10 +664,13 @@ public class AuthUI {
              */
             @NonNull
             public PhoneBuilder setDefaultCountryIso(@NonNull String iso) {
-                if (getParams().containsKey(ExtraConstants.EXTRA_PHONE)
-                        || getParams().containsKey(ExtraConstants.EXTRA_COUNTRY_ISO)
-                        || getParams().containsKey(ExtraConstants.EXTRA_NATIONAL_NUMBER)) {
-                    throw new IllegalStateException("Cannot overwrite previously set phone number");
+                Preconditions.checkUnset(getParams(),
+                        "Cannot overwrite previously set phone number",
+                        ExtraConstants.EXTRA_PHONE,
+                        ExtraConstants.EXTRA_COUNTRY_ISO,
+                        ExtraConstants.EXTRA_NATIONAL_NUMBER);
+                if (!PhoneNumberUtils.isValidIso(iso)) {
+                    throw new IllegalStateException("Invalid country iso: " + iso);
                 }
 
                 getParams().putString(ExtraConstants.EXTRA_COUNTRY_ISO, iso);
@@ -676,11 +686,10 @@ public class AuthUI {
             public GoogleBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
                 super(GoogleAuthProvider.PROVIDER_ID);
-                if (getApplicationContext().getString(R.string.default_web_client_id)
-                        .equals(UNCONFIGURED_CONFIG_VALUE)) {
-                    throw new RuntimeException("Check your google-services plugin configuration," +
-                            " the client id string wasn't populated.");
-                }
+                Preconditions.checkConfigured(getApplicationContext(),
+                        "Check your google-services plugin configuration, the" +
+                                " default_web_client_id string wasn't populated.",
+                        R.string.default_web_client_id);
             }
 
             /**
@@ -708,10 +717,9 @@ public class AuthUI {
              */
             @NonNull
             public GoogleBuilder setSignInOptions(@NonNull GoogleSignInOptions options) {
-                if (getParams().containsKey(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS)) {
-                    throw new IllegalStateException(
-                            "Cannot overwrite previously set sign-in options.");
-                }
+                Preconditions.checkUnset(getParams(),
+                        "Cannot overwrite previously set sign-in options.",
+                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS);
 
                 GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(options);
                 builder.requestEmail().requestIdToken(getApplicationContext()
@@ -753,12 +761,11 @@ public class AuthUI {
                                     "'com.facebook.android:facebook-login:VERSION' dependency?");
                 }
 
-                if (getApplicationContext().getString(R.string.facebook_application_id)
-                        .equals(UNCONFIGURED_CONFIG_VALUE)) {
-                    throw new RuntimeException("Facebook provider unconfigured. Make sure to add" +
-                            " a `facebook_application_id` string. See the docs for more info:" +
-                            " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#facebook");
-                }
+                Preconditions.checkConfigured(getApplicationContext(),
+                        "Facebook provider unconfigured. Make sure to add a" +
+                                " `facebook_application_id` string. See the docs for more info:" +
+                                " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#facebook",
+                        R.string.facebook_application_id);
                 if (getApplicationContext().getString(R.string.facebook_login_protocol_scheme)
                         .equals("fbYOUR_APP_ID")) {
                     Log.w(TAG, "Facebook provider unconfigured for Chrome Custom Tabs.");
@@ -797,14 +804,12 @@ public class AuthUI {
                                     "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
                 }
 
-                if (getApplicationContext().getString(R.string.twitter_consumer_key)
-                        .equals(UNCONFIGURED_CONFIG_VALUE)
-                        || getApplicationContext().getString(R.string.twitter_consumer_secret)
-                        .equals(UNCONFIGURED_CONFIG_VALUE)) {
-                    throw new RuntimeException("Twitter provider unconfigured. Make sure to add" +
-                            " your key and secret. See the docs for more info:" +
-                            " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#twitter");
-                }
+                Preconditions.checkConfigured(getApplicationContext(),
+                        "Twitter provider unconfigured. Make sure to add your key and secret." +
+                                " See the docs for more info:" +
+                                " https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#twitter",
+                        R.string.twitter_consumer_key,
+                        R.string.twitter_consumer_secret);
             }
         }
     }
@@ -830,11 +835,10 @@ public class AuthUI {
          */
         @NonNull
         public T setTheme(@StyleRes int theme) {
-            Preconditions.checkValidStyle(
+            mTheme = Preconditions.checkValidStyle(
                     mApp.getApplicationContext(),
                     theme,
                     "theme identifier is unknown or not a style definition");
-            mTheme = theme;
             return (T) this;
         }
 
@@ -930,13 +934,10 @@ public class AuthUI {
          * <p>SmartLock is enabled by default.
          *
          * @param enabled enables smartlock's credential selector and hint selector
-         * @deprecated use the more customizable {@link #setIsSmartLockEnabled(boolean, boolean)}
          */
         @NonNull
-        @Deprecated
         public T setIsSmartLockEnabled(boolean enabled) {
-            setIsSmartLockEnabled(enabled, enabled);
-            return (T) this;
+            return setIsSmartLockEnabled(enabled, enabled);
         }
 
         /**
@@ -998,9 +999,9 @@ public class AuthUI {
         public Intent build() {
             if (mAllowNewEmailAccounts != null) {
                 // To ensure setAllowNewEmailAccounts backcompat
-                for (IdpConfig provider : mProviders) {
-                    if (provider.getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
-                        mProviders.set(mProviders.indexOf(provider), new IdpConfig.EmailBuilder()
+                for (int i = 0; i < mProviders.size(); i++) {
+                    if (mProviders.get(i).getProviderId().equals(EmailAuthProvider.PROVIDER_ID)) {
+                        mProviders.set(i, new IdpConfig.EmailBuilder()
                                 .setAllowNewAccounts(mAllowNewEmailAccounts)
                                 .build());
                         break;

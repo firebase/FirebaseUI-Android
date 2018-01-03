@@ -57,10 +57,19 @@ public class TestHelper {
     private static final String API_KEY = "fakeKey";
 
     public static void initialize() {
-        initializeProviders();
+        spyContextAndResources();
         AuthUI.setApplicationContext(RuntimeEnvironment.application);
         FirebaseApp app = initializeApp(RuntimeEnvironment.application);
         injectMockFirebaseAuth(app);
+        initializeProviders();
+    }
+
+    private static void spyContextAndResources() {
+        RuntimeEnvironment.application = spy(RuntimeEnvironment.application);
+        when(RuntimeEnvironment.application.getApplicationContext())
+                .thenReturn(RuntimeEnvironment.application);
+        Resources spiedResources = spy(RuntimeEnvironment.application.getResources());
+        when(RuntimeEnvironment.application.getResources()).thenReturn(spiedResources);
     }
 
     private static FirebaseApp initializeApp(Context context) {
@@ -119,16 +128,11 @@ public class TestHelper {
     }
 
     private static void initializeProviders() {
-        RuntimeEnvironment.application = spy(RuntimeEnvironment.application);
-        when(RuntimeEnvironment.application.getApplicationContext())
-                .thenReturn(RuntimeEnvironment.application);
-        Resources spiedResources = spy(RuntimeEnvironment.application.getResources());
-        when(RuntimeEnvironment.application.getResources()).thenReturn(spiedResources);
-
-        when(spiedResources.getString(R.string.default_web_client_id)).thenReturn("abc");
-        when(spiedResources.getString(R.string.facebook_application_id)).thenReturn("abc");
-        when(spiedResources.getString(R.string.twitter_consumer_key)).thenReturn("abc");
-        when(spiedResources.getString(R.string.twitter_consumer_secret)).thenReturn("abc");
+        Context context = RuntimeEnvironment.application;
+        when(context.getString(R.string.default_web_client_id)).thenReturn("abc");
+        when(context.getString(R.string.facebook_application_id)).thenReturn("abc");
+        when(context.getString(R.string.twitter_consumer_key)).thenReturn("abc");
+        when(context.getString(R.string.twitter_consumer_secret)).thenReturn("abc");
     }
 
     public static FirebaseUser getMockFirebaseUser() {

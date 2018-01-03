@@ -255,10 +255,26 @@ to disable Smart Lock for testing or development. To disable Smart Lock, you can
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setIsSmartLockEnabled(false /* credentials */, false /* hints */)
+        .setIsSmartLockEnabled(false)
         .build(),
     RC_SIGN_IN);
 ```
+
+###### Smart Lock hints
+
+If you'd like to keep Smart Lock's "hints" but disable the saving/retrieving of credentials, then
+you can use the two-argument version of `setIsSmartLockEnabled`:
+
+```java
+startActivityForResult(
+    AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setIsSmartLockEnabled(false, true)
+        .build(),
+    RC_SIGN_IN);
+```
+
+###### Smart Lock in dev builds
 
 It is often desirable to disable Smart Lock in development but enable it in production. To achieve
 this, you can use the `BuildConfig.DEBUG` flag to control Smart Lock:
@@ -267,7 +283,7 @@ this, you can use the `BuildConfig.DEBUG` flag to control Smart Lock:
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
+        .setIsSmartLockEnabled(!BuildConfig.DEBUG /* credentials */, true /* hints */)
         .build(),
     RC_SIGN_IN);
 ```

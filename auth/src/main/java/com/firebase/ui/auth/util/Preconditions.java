@@ -16,9 +16,14 @@ package com.firebase.ui.auth.util;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
+
+import com.firebase.ui.auth.AuthUI;
 
 /**
  * Precondition checking utility methods.
@@ -64,6 +69,26 @@ public final class Preconditions {
         } catch (Resources.NotFoundException ex) {
             throw new IllegalArgumentException(
                     String.format(errorMessageTemplate, errorMessageArguments));
+        }
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static void checkUnset(@NonNull Bundle b,
+                                  @Nullable String message,
+                                  @NonNull String... keys) {
+        for (String key : keys) {
+            if (b.containsKey(key)) { throw new IllegalStateException(message); }
+        }
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static void checkConfigured(@NonNull Context context,
+                                       @Nullable String message,
+                                       @StringRes int... ids) {
+        for (int id : ids) {
+            if (context.getString(id).equals(AuthUI.UNCONFIGURED_CONFIG_VALUE)) {
+                throw new IllegalStateException(message);
+            }
         }
     }
 }

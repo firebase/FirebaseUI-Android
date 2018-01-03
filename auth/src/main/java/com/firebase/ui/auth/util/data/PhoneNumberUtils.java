@@ -114,12 +114,20 @@ public final class PhoneNumberUtils {
 
         String phoneNumber = providedPhoneNumber;
         if (providedPhoneNumber.startsWith("+")) {
-            countryCode = getCountryCodeForPhoneNumber(providedPhoneNumber);
+            countryCode = getCountryCodeForPhoneNumberOrDefault(providedPhoneNumber);
             countryIso = getCountryIsoForCountryCode(countryCode);
             phoneNumber = stripCountryCode(providedPhoneNumber, countryCode);
         }
 
         return new PhoneNumber(phoneNumber, countryIso, countryCode);
+    }
+
+    public static boolean isValid(@NonNull String number) {
+        return number.startsWith("+") && getCountryCodeForPhoneNumber(number) != null;
+    }
+
+    public static boolean isValidIso(@Nullable String iso) {
+        return getCountryCode(iso) != null;
     }
 
     /**
@@ -160,6 +168,7 @@ public final class PhoneNumberUtils {
      * https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com
      * /google/i18n/phonenumbers/PhoneNumberUtil.java#L2395
      */
+    @Nullable
     private static String getCountryCodeForPhoneNumber(String normalizedPhoneNumber) {
         String phoneWithoutPlusPrefix = normalizedPhoneNumber.replaceFirst("^\\+", "");
         int numberLength = phoneWithoutPlusPrefix.length();
@@ -173,7 +182,13 @@ public final class PhoneNumberUtils {
             }
         }
 
-        return DEFAULT_COUNTRY_CODE;
+        return null;
+    }
+
+    @NonNull
+    private static String getCountryCodeForPhoneNumberOrDefault(String normalizedPhoneNumber) {
+        String code = getCountryCodeForPhoneNumber(normalizedPhoneNumber);
+        return code == null ? DEFAULT_COUNTRY_CODE : code;
     }
 
     private static String stripCountryCode(String phoneNumber, String countryCode) {
