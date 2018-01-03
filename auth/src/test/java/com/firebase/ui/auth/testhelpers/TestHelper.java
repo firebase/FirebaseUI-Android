@@ -22,6 +22,7 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -36,6 +37,8 @@ import org.mockito.ArgumentCaptor;
 import org.robolectric.RuntimeEnvironment;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +60,7 @@ public class TestHelper {
         initializeProviders();
         AuthUI.setApplicationContext(RuntimeEnvironment.application);
         FirebaseApp app = initializeApp(RuntimeEnvironment.application);
-        mockFirebaseAuth(app);
+        injectMockFirebaseAuth(app);
     }
 
     private static FirebaseApp initializeApp(Context context) {
@@ -74,7 +77,11 @@ public class TestHelper {
         }
     }
 
-    private static void mockFirebaseAuth(FirebaseApp app) {
+    /**
+     * This method finds the map of FirebaseAuth instances and injects of a mock instance associated
+     * with the given FirebaseApp for testing purposes.
+     */
+    private static void injectMockFirebaseAuth(FirebaseApp app) {
         for (Field field : FirebaseAuth.class.getDeclaredFields()) {
             field.setAccessible(true);
 
@@ -87,7 +94,14 @@ public class TestHelper {
                 continue;
             }
 
-            if (o instanceof Map) {
+            Type genericType = field.getGenericType();
+            if (o instanceof Map && genericType instanceof ParameterizedType) {
+                Type[] parameterTypes = ((ParameterizedType) genericType).getActualTypeArguments();
+                if (parameterTypes.length != 2 || parameterTypes[0] != String.class
+                        || parameterTypes[1] != FirebaseAuth.class) {
+                    continue;
+                }
+
                 //noinspection unchecked
                 Map<String, FirebaseAuth> instances = (Map<String, FirebaseAuth>) o;
 
@@ -100,7 +114,8 @@ public class TestHelper {
             }
         }
 
-        when(FirebaseAuth.getInstance().setFirebaseUIVersion(anyString())).thenReturn(null);
+        when(FirebaseAuth.getInstance(app).setFirebaseUIVersion(anyString()))
+                .thenReturn(Tasks.<Void>forResult(null));
     }
 
     private static void initializeProviders() {
