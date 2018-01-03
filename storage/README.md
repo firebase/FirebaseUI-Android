@@ -1,16 +1,28 @@
-# FirebaseUI for Android — Storage
+# FirebaseUI for Storage
 
-## Using FirebaseUI to download and display images
+## Table of contents
+
+1. [Intro](#intro)
+1. [Displaying images](#using-firebaseui-to-download-and-display-images)
+   1. [Setup](#setup)
+   1. [Usage](#usage)
+   1. [Troubleshooting](#troubleshooting)
+
+## Intro
 
 [Cloud Storage for Firebase][firebase-storage] provides secure file uploads and downloads for your Firebase apps,
 regardless of network quality. You can use it to store images, audio, video, or other
 user-generated content. Cloud Storage is a powerful, simple,
 and cost-effective object storage service.
 
+## Using FirebaseUI to download and display images
+
 FirebaseUI provides bindings to download an image file stored in Cloud Storage
 from a [`StorageReference`][storage-reference] and display it using the popular
 [Glide][glide] library. This technique allows you to get all of Glide's performance
 benefits while leveraging Cloud Storage's authenticated storage capabilities.
+
+### Setup
 
 If you're not already using Glide in your application, add the following dependencies
 to your `app/build.gradle` file:
@@ -40,6 +52,8 @@ The class `MyAppGlideModule` can live anywhere in your source directory and is
 processed by the Glide annotation processor at compile time in order to create
 the `GlideApp` class.
 
+### Usage
+
 Once you have created an `AppGlideModule` class and done a clean build,
 you can use `GlideApp` to load a `StorageReference` into an `ImageView`:
 
@@ -57,7 +71,10 @@ GlideApp.with(this /* context */)
         .into(imageView);
 ```
 
-If GlideApp is not an importable class, build your application first before trying to use. For more information, see Glide v4 ['Generated API'][generated-api] documentation.
+### Troubleshooting
+
+If GlideApp is not an importable class, build your application first before trying to use.
+For more information, see Glide v4 [Generated API][generated-api] documentation.
 
 Images displayed using `FirebaseImageLoader` are cached by their path in Cloud Storage, so
 repeated loads will be fast and conserve bandwidth. For more information on caching in Glide,
@@ -66,5 +83,5 @@ see [this guide][glide-caching].
 [firebase-storage]: https://firebase.google.com/docs/storage/
 [glide]: https://github.com/bumptech/glide
 [storage-reference]: https://firebase.google.com/docs/reference/android/com/google/firebase/storage/StorageReference
-[glide-caching]: https://github.com/bumptech/glide/wiki/Caching-and-Cache-Invalidation
+[glide-caching]: http://bumptech.github.io/glide/doc/caching.html
 [generated-api]: https://bumptech.github.io/glide/doc/generatedapi.html
