@@ -137,7 +137,7 @@ public class PhoneActivityTest {
     @Test
     public void testDefaultCountryCodeAndNationalNumber_prePopulatesPhoneNumberInBundle() {
         Bundle phoneParams = new Bundle();
-        phoneParams.putString(ExtraConstants.EXTRA_COUNTRY_CODE, CA_ISO2);
+        phoneParams.putString(ExtraConstants.EXTRA_COUNTRY_ISO, CA_ISO2);
         phoneParams.putString(ExtraConstants.EXTRA_NATIONAL_NUMBER, PHONE_NO_COUNTRY_CODE);
         Intent startIntent = PhoneActivity.createIntent(
                 RuntimeEnvironment.application,

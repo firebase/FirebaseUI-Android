@@ -139,24 +139,24 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         // are e164 since we store it.
         Bundle params = getArguments().getBundle(ExtraConstants.EXTRA_PARAMS);
         String phone = null;
-        String countryCode = null;
+        String countryIso = null;
         String nationalNumber = null;
         if (params != null) {
             phone = params.getString(ExtraConstants.EXTRA_PHONE);
-            countryCode = params.getString(ExtraConstants.EXTRA_COUNTRY_CODE);
+            countryIso = params.getString(ExtraConstants.EXTRA_COUNTRY_ISO);
             nationalNumber = params.getString(ExtraConstants.EXTRA_NATIONAL_NUMBER);
         }
-        if (!TextUtils.isEmpty(countryCode) && !TextUtils.isEmpty(nationalNumber)) {
+        if (!TextUtils.isEmpty(countryIso) && !TextUtils.isEmpty(nationalNumber)) {
             // User supplied country code & national number
-            PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(countryCode, nationalNumber);
+            PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(countryIso, nationalNumber);
             setPhoneNumber(phoneNumber);
             setCountryCode(phoneNumber);
-        } else if (!TextUtils.isEmpty(countryCode)) {
+        } else if (!TextUtils.isEmpty(countryIso)) {
             // User supplied full phone number
             setCountryCode(new PhoneNumber(
                     "",
-                    PhoneNumberUtils.getCountryIsoForCountryCode(countryCode),
-                    countryCode));
+                    countryIso,
+                    String.valueOf(PhoneNumberUtils.getCountryCode(countryIso))));
         } else if (!TextUtils.isEmpty(phone)) {
             // User supplied full phone number
             PhoneNumber phoneNumber = PhoneNumberUtils.getPhoneNumber(phone);

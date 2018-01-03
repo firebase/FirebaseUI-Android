@@ -139,7 +139,7 @@ public class AuthUI {
     /**
      * Bundle key for the default full phone number parameter.
      *
-     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultPhoneNumber(String)}
+     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultNumber(String)}
      * instead.
      */
     @Deprecated
@@ -148,16 +148,16 @@ public class AuthUI {
     /**
      * Bundle key for the default phone country code parameter.
      *
-     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultPhoneNumber(int,
+     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultNumber(String,
      * String)} instead.
      */
     @Deprecated
-    public static final String EXTRA_DEFAULT_COUNTRY_CODE = ExtraConstants.EXTRA_COUNTRY_CODE;
+    public static final String EXTRA_DEFAULT_COUNTRY_CODE = ExtraConstants.EXTRA_COUNTRY_ISO;
 
     /**
      * Bundle key for the default national phone number parameter.
      *
-     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultPhoneNumber(int,
+     * @deprecated this constant is no longer needed, use {@link IdpConfig.PhoneBuilder#setDefaultNumber(String,
      * String)} instead.
      */
     @Deprecated
@@ -523,7 +523,7 @@ public class AuthUI {
 
             /**
              * @deprecated additional phone verification options are now available on the phone
-             * builder: {@link PhoneBuilder#setDefaultPhoneNumber(int, String)}.
+             * builder: {@link PhoneBuilder#setDefaultNumber(String, String)}.
              */
             @NonNull
             @Deprecated
@@ -616,11 +616,11 @@ public class AuthUI {
 
             /**
              * @param number the phone number in international format
-             * @see #setDefaultPhoneNumber(int, String)
+             * @see #setDefaultNumber(String, String)
              */
             @NonNull
-            public PhoneBuilder setDefaultPhoneNumber(@NonNull String number) {
-                if (getParams().containsKey(ExtraConstants.EXTRA_COUNTRY_CODE)
+            public PhoneBuilder setDefaultNumber(@NonNull String number) {
+                if (getParams().containsKey(ExtraConstants.EXTRA_COUNTRY_ISO)
                         || getParams().containsKey(ExtraConstants.EXTRA_NATIONAL_NUMBER)) {
                     throw new IllegalStateException("Cannot overwrite previously set phone number");
                 }
@@ -634,16 +634,16 @@ public class AuthUI {
              * Set the default phone number that will be used to populate the phone verification
              * sign-in flow.
              *
-             * @param code   the phone number's country code
+             * @param iso    the phone number's country code
              * @param number the phone number in local format
              */
             @NonNull
-            public PhoneBuilder setDefaultPhoneNumber(int code, @NonNull String number) {
+            public PhoneBuilder setDefaultNumber(@NonNull String iso, @NonNull String number) {
                 if (getParams().containsKey(ExtraConstants.EXTRA_PHONE)) {
                     throw new IllegalStateException("Cannot overwrite previously set phone number");
                 }
 
-                getParams().putString(ExtraConstants.EXTRA_COUNTRY_CODE, String.valueOf(code));
+                getParams().putString(ExtraConstants.EXTRA_COUNTRY_ISO, iso);
                 getParams().putString(ExtraConstants.EXTRA_NATIONAL_NUMBER, number);
 
                 return this;
@@ -653,17 +653,17 @@ public class AuthUI {
              * Set the default country code that will be used in the phone verification sign-in
              * flow.
              *
-             * @param code country code
+             * @param iso country iso
              */
             @NonNull
-            public PhoneBuilder setDefaultCountryCode(int code) {
+            public PhoneBuilder setDefaultCountryIso(@NonNull String iso) {
                 if (getParams().containsKey(ExtraConstants.EXTRA_PHONE)
-                        || getParams().containsKey(ExtraConstants.EXTRA_COUNTRY_CODE)
+                        || getParams().containsKey(ExtraConstants.EXTRA_COUNTRY_ISO)
                         || getParams().containsKey(ExtraConstants.EXTRA_NATIONAL_NUMBER)) {
                     throw new IllegalStateException("Cannot overwrite previously set phone number");
                 }
 
-                getParams().putString(ExtraConstants.EXTRA_COUNTRY_CODE, String.valueOf(code));
+                getParams().putString(ExtraConstants.EXTRA_COUNTRY_ISO, iso);
 
                 return this;
             }

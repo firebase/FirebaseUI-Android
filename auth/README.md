@@ -216,16 +216,16 @@ You can enable sign-in providers like Google Sign-In or Facebook Log In by calli
 
 ```java
 startActivityForResult(
-    AuthUI.getInstance()
-        .createSignInIntentBuilder()
-        .setAvailableProviders(
-                Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                              new AuthUI.IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build(),
-                              new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                              new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                              new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
-        .build(),
-    RC_SIGN_IN);
+        AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(Arrays.asList(
+                        new AuthUI.IdpConfig.EmailBuilder().build(),
+                        new AuthUI.IdpConfig.PhoneBuilder().build(),
+                        new AuthUI.IdpConfig.GoogleBuilder().build(),
+                        new AuthUI.IdpConfig.FacebookBuilder().build(),
+                        new AuthUI.IdpConfig.TwitterBuilder().build()))
+                .build(),
+        RC_SIGN_IN);
 ```
 
 ##### Adding a ToS and privacy policy
@@ -255,7 +255,7 @@ to disable Smart Lock for testing or development. To disable Smart Lock, you can
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setIsSmartLockEnabled(false)
+        .setIsSmartLockEnabled(false /* credentials */, false /* hints */)
         .build(),
     RC_SIGN_IN);
 ```
@@ -267,21 +267,7 @@ this, you can use the `BuildConfig.DEBUG` flag to control Smart Lock:
 startActivityForResult(
     AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-        .build(),
-    RC_SIGN_IN);
-```
-
-###### Smart Lock hints
-
-If you'd like to keep Smart Lock's "hints" but disable the saving/retrieving of credentials, then
-you can use the two-argument version of `setIsSmartLockEnabled`:
-
-```java
-startActivityForResult(
-    AuthUI.getInstance()
-        .createSignInIntentBuilder()
-        .setIsSmartLockEnabled(false, true)
+        .setIsSmartLockEnabled(!BuildConfig.DEBUG, true)
         .build(),
     RC_SIGN_IN);
 ```
@@ -293,13 +279,17 @@ provide a default phone number (in international format) that will be used to pr
 country code and phone number input fields. The user is still able to edit the number if desired.
 
 ```java
-// Use a Bundle to hold the default number, and pass it to the Builder via setParams:
-Bundle params = new Bundle();
-params.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, "+123456789");
-IdpConfig phoneConfigWithDefaultNumber =
-        new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
-                .setParams(params)
-                .build();
+IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
+        .setDefaultNumber("+123456789")
+        .build();
+```
+
+Alternatively, you can set only the default phone number country.
+
+```java
+IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
+        .setDefaultCountryIso("ca")
+        .build();
 ```
 
 It is also possible to set a default country code along with a national number if a specific country
@@ -307,13 +297,9 @@ is your app's target audience. This will take precedence over the full default p
 are provided.
 
 ```java
-Bundle params = new Bundle();
-params.putString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE, "ca");
-params.putString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER, "23456789");
-IdpConfig phoneConfigWithDefaultCountryAndNationalNumber =
-        new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER)
-                .setParams(params)
-                .build();
+IdpConfig phoneConfigWithDefaultNumber = new IdpConfig.PhoneBuilder()
+        .setDefaultNumber("ca", "23456789")
+        .build();
 ```
 
 ### Handling the sign-in response
@@ -560,25 +546,23 @@ at a diff of the `strings.xml` file before updating FirebaseUI.
 
 ### Google
 By default, FirebaseUI requests the `email` and `profile` scopes when using Google Sign-In. If you
-would like to request additional scopes from the user, call `setPermissions` on the
-`AuthUI.IdpConfig.Builder` when initializing FirebaseUI.
+would like to request additional scopes from the user, call `setScopes` on the
+`AuthUI.IdpConfig.GoogleBuilder` when initializing FirebaseUI.
 
 
 ```java
 // For a list of all scopes, see:
 // https://developers.google.com/identity/protocols/googlescopes
-AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-          .setPermissions(Arrays.asList(Scopes.GAMES))
-          .build();
+AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.GoogleBuilder()
+        .setScopes(Arrays.asList(Scopes.GAMES))
+        .build();
 
 startActivityForResult(
-    AuthUI.getInstance()
-        .createSignInIntentBuilder()
-        .setAvailableProviders(Arrays.asList(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                             googleIdp,
-                                             new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
-        .build(),
-    RC_SIGN_IN);
+        AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(Arrays.asList(googleIdp, ...))
+                .build(),
+        RC_SIGN_IN);
 ```
 
 
@@ -586,24 +570,22 @@ startActivityForResult(
 
 By default, FirebaseUI requests the `email` and `public_profile` permissions when initiating
 Facebook Login. If you would like to request additional permissions from the user, call
-`setPermissions` on the `AuthUI.IdpConfig.Builder` when initializing FirebaseUI.
+`setPermissions` on the `AuthUI.IdpConfig.FacebookBuilder` when initializing FirebaseUI.
 
 ```java
 // For a list of permissions see:
-// https://developers.facebook.com/docs/facebook-login/android
 // https://developers.facebook.com/docs/facebook-login/permissions
 
-AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
-          .setPermissions(Arrays.asList("user_friends"))
-          .build();
+AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.FacebookBuilder()
+        .setPermissions(Arrays.asList("user_friends"))
+        .build();
 
 startActivityForResult(
-    AuthUI.getInstance()
-        .createSignInIntentBuilder()
-        .setAvailableProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                             facebookIdp))
-        .build(),
-    RC_SIGN_IN);
+        AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(Arrays.asList(facebookIdp, ...))
+                .build(),
+        RC_SIGN_IN);
 ```
 
 ### Twitter

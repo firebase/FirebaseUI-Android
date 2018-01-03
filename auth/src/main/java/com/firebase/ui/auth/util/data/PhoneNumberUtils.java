@@ -147,7 +147,7 @@ public final class PhoneNumberUtils {
                 ? null : COUNTRY_TO_ISO_CODES.get(countryIso.toUpperCase(Locale.getDefault()));
     }
 
-    public static String getCountryIsoForCountryCode(String countryCode) {
+    private static String getCountryIsoForCountryCode(String countryCode) {
         List<String> countries = COUNTRY_TO_REGION_CODES.get(Integer.parseInt(countryCode));
         if (countries != null) {
             return countries.get(0);
