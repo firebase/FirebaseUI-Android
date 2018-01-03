@@ -205,7 +205,7 @@ If you don't want to manually start/stop listening you can use
 `FirebaseRecyclerAdapter.Builder#setLifecycleOwner(...)` and FirebaseUI will automatically
 start and stop listening in `onStart()` and `onStop()`.
 
-#### Data and error events
+### Data and error events
 
 When using the `FirebaseRecyclerAdapter` you may want to perform some action every time data
 changes or when there is an error. To do this, override the `onDataChanged()` and `onError()`
