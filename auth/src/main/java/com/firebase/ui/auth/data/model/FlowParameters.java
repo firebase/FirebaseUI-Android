@@ -58,7 +58,6 @@ public class FlowParameters implements Parcelable {
     public final boolean accountLinkingEnabled;
     @Nullable
     public final Class<? extends ManualMergeService> accountLinkingListener;
-    public final boolean allowNewEmailAccounts;
 
     public final boolean enableCredentials;
     public final boolean enableHints;
@@ -73,8 +72,7 @@ public class FlowParameters implements Parcelable {
             boolean enableCredentials,
             boolean enableHints,
             boolean accountLinkingEnabled,
-            @Nullable Class<? extends ManualMergeService> accountLinkingListener,
-            boolean allowNewEmailAccounts) {
+            @Nullable Class<? extends ManualMergeService> accountLinkingListener) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Collections.unmodifiableList(
                 Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null"));
@@ -86,7 +84,6 @@ public class FlowParameters implements Parcelable {
         this.enableHints = enableHints;
         this.accountLinkingEnabled = accountLinkingEnabled;
         this.accountLinkingListener = accountLinkingListener;
-        this.allowNewEmailAccounts = allowNewEmailAccounts;
     }
 
     /**
@@ -125,7 +122,6 @@ public class FlowParameters implements Parcelable {
         dest.writeInt(enableHints ? 1 : 0);
         dest.writeInt(accountLinkingEnabled ? 1 : 0);
         dest.writeSerializable(accountLinkingListener);
-        dest.writeInt(allowNewEmailAccounts ? 1 : 0);
     }
 
     @Override
@@ -147,7 +143,7 @@ public class FlowParameters implements Parcelable {
             boolean accountLinkingEnabled = in.readInt() != 0;
             Class<? extends ManualMergeService> accountLinkingListener =
                     (Class<? extends ManualMergeService>) in.readSerializable();
-            boolean allowNewEmailAccounts = in.readInt() != 0;
+
 
             return new FlowParameters(
                     appName,
@@ -159,8 +155,7 @@ public class FlowParameters implements Parcelable {
                     enableCredentials,
                     enableHints,
                     accountLinkingEnabled,
-                    accountLinkingListener,
-                    allowNewEmailAccounts);
+                    accountLinkingListener);
         }
 
         @Override

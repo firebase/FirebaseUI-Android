@@ -19,8 +19,6 @@ import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
@@ -49,13 +47,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 25)
 public class EmailActivityTest {
 
     private EmailActivity createActivity() {
         Intent startIntent = EmailActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)));
+                TestHelper.getFlowParameters(Collections.singletonList(EmailAuthProvider.PROVIDER_ID)));
 
         return Robolectric.buildActivity(EmailActivity.class, startIntent)
                 .create()
@@ -66,7 +63,7 @@ public class EmailActivityTest {
 
     @Before
     public void setUp() {
-        TestHelper.initializeApp(RuntimeEnvironment.application);
+        TestHelper.initialize();
     }
 
     @Test
@@ -103,7 +100,6 @@ public class EmailActivityTest {
         // init mocks
         reset(AuthHelperShadow.getSaveSmartLockInstance(null));
 
-        TestHelper.initializeApp(RuntimeEnvironment.application);
         EmailActivity emailActivity = createActivity();
 
         // Trigger new user UI (bypassing check email)

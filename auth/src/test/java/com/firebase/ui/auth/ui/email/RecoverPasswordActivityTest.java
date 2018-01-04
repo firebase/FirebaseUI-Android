@@ -17,7 +17,6 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Intent;
 import android.widget.Button;
 
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
@@ -38,12 +37,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 25)
 public class RecoverPasswordActivityTest {
 
     @Before
     public void setUp() {
-        TestHelper.initializeApp(RuntimeEnvironment.application);
+        TestHelper.initialize();
     }
 
     private RecoverPasswordActivity createActivity() {

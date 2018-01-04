@@ -16,7 +16,6 @@ package com.firebase.ui.auth.ui.idp;
 
 import android.content.Intent;
 
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
@@ -47,7 +46,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
@@ -59,7 +57,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 25)
 public class CredentialSignInHandlerTest {
     private static final int RC_ACCOUNT_LINK = 3;
     private static final String LINKING_ERROR = "ERROR_TEST_LINKING";
@@ -68,7 +65,7 @@ public class CredentialSignInHandlerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        TestHelper.initializeApp(RuntimeEnvironment.application);
+        TestHelper.initialize();
     }
 
     @Test

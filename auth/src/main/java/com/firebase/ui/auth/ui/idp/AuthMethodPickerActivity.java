@@ -50,6 +50,11 @@ import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,20 +111,20 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providers) {
             switch (idpConfig.getProviderId()) {
-                case AuthUI.GOOGLE_PROVIDER:
+                case GoogleAuthProvider.PROVIDER_ID:
                     mProviders.add(new GoogleProvider(this, idpConfig));
                     break;
-                case AuthUI.FACEBOOK_PROVIDER:
+                case FacebookAuthProvider.PROVIDER_ID:
                     mProviders.add(new FacebookProvider(
                             idpConfig, getFlowParams().themeId));
                     break;
-                case AuthUI.TWITTER_PROVIDER:
+                case TwitterAuthProvider.PROVIDER_ID:
                     mProviders.add(new TwitterProvider(this));
                     break;
-                case AuthUI.EMAIL_PROVIDER:
+                case EmailAuthProvider.PROVIDER_ID:
                     mProviders.add(new EmailProvider(this, getFlowParams()));
                     break;
-                case AuthUI.PHONE_VERIFICATION_PROVIDER:
+                case PhoneAuthProvider.PROVIDER_ID:
                     mProviders.add(new PhoneProvider(this, getFlowParams()));
                     break;
                 default:

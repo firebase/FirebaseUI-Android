@@ -16,7 +16,14 @@ package com.firebase.ui.auth.util;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
+
+import com.firebase.ui.auth.AuthUI;
 
 /**
  * Precondition checking utility methods.
@@ -30,10 +37,11 @@ public final class Preconditions {
      * Ensures that the provided value is not null, and throws a {@link NullPointerException} if it
      * is null, with a message constructed from the provided error template and arguments.
      */
+    @NonNull
     public static <T> T checkNotNull(
-            T val,
-            String errorMessageTemplate,
-            Object... errorMessageArgs) {
+            @Nullable T val,
+            @NonNull String errorMessageTemplate,
+            @Nullable Object... errorMessageArgs) {
         if (val == null) {
             throw new NullPointerException(String.format(errorMessageTemplate, errorMessageArgs));
         }
@@ -47,10 +55,10 @@ public final class Preconditions {
      */
     @StyleRes
     public static int checkValidStyle(
-            Context context,
+            @NonNull Context context,
             int styleId,
-            String errorMessageTemplate,
-            Object... errorMessageArguments) {
+            @NonNull String errorMessageTemplate,
+            @Nullable Object... errorMessageArguments) {
         try {
             String resourceType = context.getResources().getResourceTypeName(styleId);
             if (!"style".equals(resourceType)) {
@@ -61,6 +69,26 @@ public final class Preconditions {
         } catch (Resources.NotFoundException ex) {
             throw new IllegalArgumentException(
                     String.format(errorMessageTemplate, errorMessageArguments));
+        }
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static void checkUnset(@NonNull Bundle b,
+                                  @Nullable String message,
+                                  @NonNull String... keys) {
+        for (String key : keys) {
+            if (b.containsKey(key)) { throw new IllegalStateException(message); }
+        }
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static void checkConfigured(@NonNull Context context,
+                                       @Nullable String message,
+                                       @StringRes int... ids) {
+        for (int id : ids) {
+            if (context.getString(id).equals(AuthUI.UNCONFIGURED_CONFIG_VALUE)) {
+                throw new IllegalStateException(message);
+            }
         }
     }
 }

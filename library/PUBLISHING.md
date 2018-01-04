@@ -9,7 +9,7 @@ In order to publish to your local maven repository, run the following command:
 ```
 
 If you would like to specify a custom local maven repo location, run the following command, changing
-the value of the `custom_local` property to your desired location.  The default value for
+the value of the `custom_local` property to your desired location. The default value for
 `custom_local` is `/tmp/`.
 
 ```

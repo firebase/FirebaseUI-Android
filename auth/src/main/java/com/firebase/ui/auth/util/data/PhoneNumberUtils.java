@@ -114,12 +114,20 @@ public final class PhoneNumberUtils {
 
         String phoneNumber = providedPhoneNumber;
         if (providedPhoneNumber.startsWith("+")) {
-            countryCode = countryCodeForPhoneNumber(providedPhoneNumber);
-            countryIso = countryIsoForCountryCode(countryCode);
+            countryCode = getCountryCodeForPhoneNumberOrDefault(providedPhoneNumber);
+            countryIso = getCountryIsoForCountryCode(countryCode);
             phoneNumber = stripCountryCode(providedPhoneNumber, countryCode);
         }
 
         return new PhoneNumber(phoneNumber, countryIso, countryCode);
+    }
+
+    public static boolean isValid(@NonNull String number) {
+        return number.startsWith("+") && getCountryCodeForPhoneNumber(number) != null;
+    }
+
+    public static boolean isValidIso(@Nullable String iso) {
+        return getCountryCode(iso) != null;
     }
 
     /**
@@ -147,7 +155,7 @@ public final class PhoneNumberUtils {
                 ? null : COUNTRY_TO_ISO_CODES.get(countryIso.toUpperCase(Locale.getDefault()));
     }
 
-    private static String countryIsoForCountryCode(String countryCode) {
+    private static String getCountryIsoForCountryCode(String countryCode) {
         List<String> countries = COUNTRY_TO_REGION_CODES.get(Integer.parseInt(countryCode));
         if (countries != null) {
             return countries.get(0);
@@ -160,7 +168,8 @@ public final class PhoneNumberUtils {
      * https://github.com/googlei18n/libphonenumber/blob/master/java/libphonenumber/src/com
      * /google/i18n/phonenumbers/PhoneNumberUtil.java#L2395
      */
-    private static String countryCodeForPhoneNumber(String normalizedPhoneNumber) {
+    @Nullable
+    private static String getCountryCodeForPhoneNumber(String normalizedPhoneNumber) {
         String phoneWithoutPlusPrefix = normalizedPhoneNumber.replaceFirst("^\\+", "");
         int numberLength = phoneWithoutPlusPrefix.length();
 
@@ -173,7 +182,13 @@ public final class PhoneNumberUtils {
             }
         }
 
-        return DEFAULT_COUNTRY_CODE;
+        return null;
+    }
+
+    @NonNull
+    private static String getCountryCodeForPhoneNumberOrDefault(String normalizedPhoneNumber) {
+        String code = getCountryCodeForPhoneNumber(normalizedPhoneNumber);
+        return code == null ? DEFAULT_COUNTRY_CODE : code;
     }
 
     private static String stripCountryCode(String phoneNumber, String countryCode) {
