@@ -177,8 +177,8 @@ public class TestHelper {
                 null,
                 true,
                 true,
-                null,
-                true);
+                true,
+                null);
     }
 
     public static void verifySmartLockSave(String providerId,
