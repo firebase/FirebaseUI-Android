@@ -13,14 +13,14 @@
             android:id="@+id/country_list"
             style="@style/FirebaseUI.CountrySpinner"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBaseline_toBaselineOf="@id/phone_layout" />
+            app:layout_constraintBaseline_toBaselineOf="@+id/phone_layout" />
 
         <com.firebase.ui.auth.util.ui.BaselineTextInputLayout
             android:id="@+id/phone_layout"
             style="@style/FirebaseUI.TextInputLayout.PhoneField"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/country_list"
+            app:layout_constraintStart_toEndOf="@+id/country_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -36,7 +36,7 @@
             style="@style/FirebaseUI.VerifyPhoneButton"
             android:layout_marginTop="@dimen/fui_field_padding_vert"
             android:text="@string/fui_verify_phone_number"
-            app:layout_constraintTop_toBottomOf="@id/phone_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/phone_layout" />
 
         <TextView
             android:id="@+id/send_sms_tos"
@@ -46,7 +46,7 @@
             android:layout_marginTop="@dimen/fui_field_padding_vert"
             android:textColor="?android:textColorTertiary"
             android:textIsSelectable="false"
-            app:layout_constraintTop_toBottomOf="@id/send_code" />
+            app:layout_constraintTop_toBottomOf="@+id/send_code" />
 
     </android.support.constraint.ConstraintLayout>
 

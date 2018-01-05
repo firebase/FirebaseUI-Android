@@ -9,7 +9,7 @@ android {
         minSdkVersion 16
         targetSdkVersion targetSdk
         versionCode 1
-        versionName "1.0"
+        versionName version
 
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -45,19 +45,19 @@ dependencies {
     implementation project(path: ':database')
     implementation project(path: ':storage')
 
-    implementation 'com.facebook.android:facebook-login:4.28.0'
+    implementation 'com.facebook.android:facebook-login:4.29.0'
     // Needed to override Facebook
     implementation "com.android.support:cardview-v7:$supportLibraryVersion"
     implementation "com.android.support:customtabs:$supportLibraryVersion"
     implementation("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }
 
-    implementation 'com.github.bumptech.glide:glide:4.3.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
+    implementation 'com.github.bumptech.glide:glide:4.4.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
 
     // The following dependencies are not required to use the Firebase UI library.
     // They are used to make some aspects of the demo app implementation simpler for
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
-    implementation 'pub.devrel:easypermissions:1.0.1'
+    implementation 'pub.devrel:easypermissions:1.1.1'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'

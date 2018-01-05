@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
@@ -58,12 +57,11 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class,
-        shadows = {
-                GoogleProviderShadow.class,
-                FacebookProviderShadow.class,
-                LoginManagerShadow.class
-        }, sdk = 25)
+@Config(shadows = {
+        GoogleProviderShadow.class,
+        FacebookProviderShadow.class,
+        LoginManagerShadow.class
+})
 public class AuthMethodPickerActivityTest {
     @Test
     public void testAllProvidersArePopulated() {

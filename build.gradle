@@ -1,6 +1,6 @@
-apply from: 'constants.gradle'
-
 buildscript {
+    apply from: 'constants.gradle'
+
     repositories {
         google()
         jcenter()
@@ -8,7 +8,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.google.gms:google-services:3.1.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
