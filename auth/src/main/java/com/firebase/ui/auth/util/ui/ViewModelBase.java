@@ -6,7 +6,9 @@ import android.arch.lifecycle.AndroidViewModel;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ViewModelBase<T> extends AndroidViewModel {
-    private AtomicBoolean mIsInitialized = new AtomicBoolean();
+    private final AtomicBoolean mIsInitialized = new AtomicBoolean();
+
+    private T mArguments;
 
     protected ViewModelBase(Application application) {
         super(application);
@@ -14,14 +16,20 @@ public abstract class ViewModelBase<T> extends AndroidViewModel {
 
     public void init(T args) {
         if (mIsInitialized.compareAndSet(false, true)) {
-            onCreate(args);
+            mArguments = args;
+            onCreate();
         }
     }
 
-    protected abstract void onCreate(T args);
+    protected void onCreate() {}
+
+    protected T getArguments() {
+        return mArguments;
+    }
 
     @Override
     protected void onCleared() {
         mIsInitialized.set(false);
+        mArguments = null;
     }
 }

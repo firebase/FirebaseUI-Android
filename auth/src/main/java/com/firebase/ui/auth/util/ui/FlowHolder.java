@@ -7,18 +7,12 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FlowHolder extends ViewModelBase<FlowParameters> {
-    private FlowParameters mFlowParams;
-
     public FlowHolder(Application application) {
         super(application);
     }
 
     @Override
-    protected void onCreate(FlowParameters args) {
-        mFlowParams = args;
-    }
-
-    public FlowParameters getParams() {
-        return mFlowParams;
+    public FlowParameters getArguments() {
+        return super.getArguments();
     }
 }

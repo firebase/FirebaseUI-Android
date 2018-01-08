@@ -29,6 +29,8 @@ import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -60,24 +62,25 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         setContentView(R.layout.fui_forgot_password_layout);
 
         mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
-        mHandler.init(getFlowHolder());
-        mHandler.getProgressLiveData().observe(this, new Observer<RecoverPasswordProgressState>() {
+        mHandler.init(getFlowHolder().getArguments());
+        mHandler.getProgressLiveData().observe(this, new Observer<Resource<String>>() {
             @Override
-            public void onChanged(RecoverPasswordProgressState state) {
-                if (state.isComplete()) {
-                    getDialogHolder().dismissDialog();
-                    if (state.isSuccessful()) {
-                        mEmailInputLayout.setError(null);
-                        showEmailSentDialog(state.getEmail());
-                    } else if (state.getException() instanceof FirebaseAuthInvalidUserException
-                            || state.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                        // No FirebaseUser exists with this email address, show error.
-                        mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
-                    } else {
-                        mEmailInputLayout.setError(state.getException().getLocalizedMessage());
-                    }
-                } else {
+            public void onChanged(Resource<String> resource) {
+                if (resource.getState() == State.LOADING) {
                     getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_sending);
+                    return;
+                }
+
+                getDialogHolder().dismissDialog();
+                if (resource.getState() == State.SUCCESS) {
+                    mEmailInputLayout.setError(null);
+                    showEmailSentDialog(resource.getValue());
+                } else if (resource.getException() instanceof FirebaseAuthInvalidUserException
+                        || resource.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                    // No FirebaseUser exists with this email address, show error.
+                    mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
+                } else {
+                    mEmailInputLayout.setError(resource.getException().getLocalizedMessage());
                 }
             }
         });
