@@ -2,22 +2,14 @@ package com.firebase.ui.auth.util.signincontainer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
 
-public abstract class SmartLockBase<R extends Result> extends FragmentBase implements
-        GoogleApiClient.ConnectionCallbacks,
-        ResultCallback<R>,
-        GoogleApiClient.OnConnectionFailedListener {
-    protected GoogleApiClient mGoogleApiClient;
+public abstract class SmartLockBase<R> extends FragmentBase implements
+        OnCompleteListener<R> {
 
     private boolean mWasProgressDialogShowing;
     private Pair<Integer, Intent> mActivityResultPair;
@@ -47,14 +39,6 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
     public void finish(int resultCode, Intent resultIntent) {
         if (getActivity() == null) {
             // Because this fragment lives beyond the activity lifecycle, Fragment#getActivity()
@@ -64,17 +48,5 @@ public abstract class SmartLockBase<R extends Result> extends FragmentBase imple
         } else {
             super.finish(resultCode, resultIntent);
         }
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getContext(),
-                com.firebase.ui.auth.R.string.fui_general_error,
-                Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        // Just wait
     }
 }

@@ -138,6 +138,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } else {
             mPasswordLayout.setError(null);
         }
+
+        // TODO: Cut it off here
         getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
 
         final AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);

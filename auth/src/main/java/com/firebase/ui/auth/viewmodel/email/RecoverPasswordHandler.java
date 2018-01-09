@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.ui.email;
+package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
