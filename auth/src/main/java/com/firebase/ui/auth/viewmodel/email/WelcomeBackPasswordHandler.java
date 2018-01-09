@@ -2,6 +2,7 @@ package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
@@ -14,8 +15,9 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
+import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.util.data.AuthViewModelBase;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.firebase.ui.auth.viewmodel.PendingFinish;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -30,9 +32,9 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
- * TODO(samstern): Document
- *
- * TODO(samstern): Use TaskFailureLogger everywhere
+ * Handles the logic for {@link com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt} including
+ * signing in with email and password, linking other credentials, and saving credentials to
+ * SmartLock.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackPasswordHandler extends AuthViewModelBase {
@@ -45,7 +47,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
     // https://github.com/googlesamples/android-architecture/blob/dev-todo-mvvm-live/todoapp/app/src/main/java/com/example/android/architecture/blueprints/todoapp/SingleLiveEvent.java
     private MutableLiveData<PendingResolution> mPendingResolutionLiveData = new MutableLiveData<>();
     private MutableLiveData<PendingFinish> mPendingFinishLiveData = new MutableLiveData<>();
-    private MutableLiveData<Resource<AuthResult>> mSignInLiveData = new MutableLiveData<>();
+    private MutableLiveData<Resource<IdpResponse>> mSignInLiveData = new MutableLiveData<>();
 
     public WelcomeBackPasswordHandler(Application application) {
         super(application);
@@ -69,11 +71,11 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                             @NonNull final String password,
                             @NonNull final IdpResponse inputResponse,
                             @Nullable final AuthCredential credential) {
-        mSignInLiveData.setValue(new Resource<AuthResult>());
+        mSignInLiveData.setValue(new Resource<IdpResponse>());
 
         // Build appropriate IDP response based on inputs
         final IdpResponse outputResponse;
-        if (credential== null) {
+        if (credential == null) {
             outputResponse = new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
                     .build();
@@ -86,6 +88,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
 
         // Kick off the flow including signing in, linking accounts, and saving with SmartLock
         getAuth().signInWithEmailAndPassword(email, password)
+                .addOnFailureListener(new TaskFailureLogger(TAG, "signInWithEmailAndPassword failed."))
                 .continueWithTask(new Continuation<AuthResult, Task<AuthResult>>() {
                     @Override
                     public Task<AuthResult> then(@NonNull Task<AuthResult> task) throws Exception {
@@ -100,7 +103,8 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                         } else {
                             return task.getResult().getUser()
                                     .linkWithCredential(credential)
-                                    .continueWithTask(new ProfileMerger(outputResponse));
+                                    .continueWithTask(new ProfileMerger(outputResponse))
+                                    .addOnFailureListener(new TaskFailureLogger(TAG, "linkWithCredential+merge failed."));
                         }
                     }
                 })
@@ -108,7 +112,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            mSignInLiveData.setValue(new Resource<AuthResult>(task.getException()));
+                            mSignInLiveData.setValue(new Resource<IdpResponse>(task.getException()));
                             return;
                         }
 
@@ -118,33 +122,41 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                 });
     }
 
-    public LiveData<Resource<AuthResult>> getSignInResult() {
+    /**
+     * Get the observable state of the sign in operation.
+     */
+    public LiveData<Resource<IdpResponse>> getSignInResult() {
         return mSignInLiveData;
     }
 
+    /**
+     * Get an observable stream of <code>finish()</code> operations requested by the ViewModel.
+     */
     public LiveData<PendingFinish> getPendingFinish() {
         return mPendingFinishLiveData;
     }
 
+    /**
+     * Get an observable stream of {@link PendingIntent} resolutions requested by the ViewModel.
+     */
     public LiveData<PendingResolution> getPendingResolution() {
         return mPendingResolutionLiveData;
     }
 
     private void finish(IdpResponse idpResponse) {
-        PendingFinish pendingFinish = new PendingFinish(Activity.RESULT_OK, idpResponse.toIntent());
-        mPendingFinishLiveData.setValue(pendingFinish);
+        mSignInLiveData.setValue(new Resource<>(idpResponse));
+        mPendingFinishLiveData.setValue(new PendingFinish(Activity.RESULT_OK, idpResponse.toIntent()));
     }
 
     private void saveCredentialsOrFinish(FirebaseUser user,
                                          @Nullable String password,
                                          final IdpResponse idpResponse) {
-
         if (!getArguments().enableCredentials) {
             finish(idpResponse);
             return;
         }
 
-        Credential credential = SaveSmartLock.buildCredential(user, password, idpResponse);
+        Credential credential = CredentialsUtil.buildCredential(user, password, idpResponse);
         if (credential == null) {
             finish(idpResponse);
             return;
@@ -161,7 +173,8 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
 
                         if (task.getException() instanceof ResolvableApiException) {
                             ResolvableApiException rae = (ResolvableApiException) task.getException();
-                            PendingResolution pendingResolution = new PendingResolution(rae.getResolution(), RC_SAVE);
+                            PendingResolution pendingResolution = new PendingResolution(rae.getResolution(),
+                                    RC_SAVE);
                             mPendingResolutionLiveData.setValue(pendingResolution);
                         } else {
                             finish(idpResponse);

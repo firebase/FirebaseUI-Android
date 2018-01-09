@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.annotation.RestrictTo;
 
 /**
- * TODO(samstern): Document
+ * POJO holding information for the Activity to finish with.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PendingFinish {

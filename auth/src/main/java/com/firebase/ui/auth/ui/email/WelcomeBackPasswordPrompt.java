@@ -48,7 +48,6 @@ import com.firebase.ui.auth.viewmodel.PendingFinish;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 
 /**
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
@@ -79,10 +78,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_password_prompt_layout);
 
-        // TODO: Do we use the initialization args at all?
-        mHandler = ViewModelProviders.of(this).get(WelcomeBackPasswordHandler.class);
-        mHandler.init(getFlowHolder().getArguments());
-
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
@@ -111,6 +106,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         findViewById(R.id.button_done).setOnClickListener(this);
         findViewById(R.id.trouble_signing_in).setOnClickListener(this);
 
+        // Initialize ViewModel with arguments
+        mHandler = ViewModelProviders.of(this).get(WelcomeBackPasswordHandler.class);
+        mHandler.init(getFlowHolder().getArguments());
+
         // Fire resolutions when asked
         mHandler.getPendingResolution().observe(this,
                 new Observer<PendingResolution>() {
@@ -129,9 +128,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         });
 
         // Observe the state of the main auth operation
-        mHandler.getSignInResult().observe(this, new Observer<Resource<AuthResult>>() {
+        mHandler.getSignInResult().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
-            public void onChanged(@Nullable Resource<AuthResult> resource) {
+            public void onChanged(@Nullable Resource<IdpResponse> resource) {
                 onAuthResult(resource);
             }
         });
@@ -145,7 +144,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
     }
 
-    private void onAuthResult(@Nullable Resource<AuthResult> resource) {
+    private void onAuthResult(@Nullable Resource<IdpResponse> resource) {
         if (resource == null) {
             Log.w(TAG, "Got null resource, ignoring.");
             return;
@@ -157,6 +156,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
         if (resource.getState() == State.SUCCESS) {
             getDialogHolder().dismissDialog();
+            Log.d(TAG, "onAuthResult:SUCCESS:" + resource.getValue());
 
             // TODO: Should we have a finish() call here rather than waiting for PendingFinish?
         }

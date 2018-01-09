@@ -17,18 +17,16 @@ package com.firebase.ui.auth.util.signincontainer;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.util.CredentialsUtil;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
@@ -110,8 +108,6 @@ public class SaveSmartLock extends SmartLockBase<Void> {
     }
 
     /**
-     * TODO: Remove
-     *
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise, finish the calling Activity with {@link Activity#RESULT_OK}.
      * <p>
@@ -143,87 +139,19 @@ public class SaveSmartLock extends SmartLockBase<Void> {
             throw new IllegalStateException("Can't save credentials in null Activity");
         }
 
+        // Build credentials client and kick off the save
         mCredentialsClient = Credentials.getClient(getActivity());
-        saveCredential();
-    }
-
-    /**
-     * TODO: remove
-     * @param credential
-     * @return
-     */
-    public Task<Void> startSaveCredential(@NonNull Credential credential) {
-       return mCredentialsClient.save(credential);
-    }
-
-    /**
-     * TODO: Document
-     * @param user
-     * @param password
-     * @param idpResponse
-     * @return
-     */
-    public static Credential buildCredential(@NonNull FirebaseUser user,
-                                             @Nullable String password,
-                                             @Nullable IdpResponse idpResponse) {
-        String name = user.getDisplayName();
-        String email = user.getEmail();
-        String profilePicturUri = user.getPhotoUrl() != null
-                ? user.getPhotoUrl().toString()
-                : null;
-
-        return buildCredential(email, password, name, profilePicturUri, idpResponse);
-    }
-
-    /**
-     * TODO
-     * @return
-     */
-    @Nullable
-    public static Credential buildCredential(@Nullable String email,
-                                             @Nullable String password,
-                                             @Nullable String name,
-                                             @Nullable String profilePictureUri,
-                                             @Nullable IdpResponse idpResponse) {
-
-        if (TextUtils.isEmpty(email)) {
-            return null;
-        }
-
-        Credential.Builder builder = new Credential.Builder(email);
-        builder.setPassword(password);
-        if (password == null && idpResponse != null) {
-            String translatedProvider =
-                    ProviderUtils.providerIdToAccountType(idpResponse.getProviderType());
-            if (translatedProvider != null) {
-                builder.setAccountType(translatedProvider);
-            } else {
-
-                return null;
-            }
-        }
-
-        if (name != null) {
-            builder.setName(name);
-        }
-
-        if (profilePictureUri != null) {
-            builder.setProfilePictureUri(Uri.parse(profilePictureUri));
-        }
-
-        return builder.build();
-    }
-
-    private void saveCredential() {
-        Credential credential = buildCredential(
+        Credential credential = CredentialsUtil.buildCredential(
                 mEmail, mName, mPassword, mProfilePictureUri, mResponse);
 
         if (credential == null) {
             Log.e(TAG, "Unable to save null credential!");
             finish();
+            return;
         }
 
-        startSaveCredential(credential)
+        mCredentialsClient.save(credential)
                 .addOnCompleteListener(this);
     }
+
 }

@@ -4,7 +4,7 @@ import android.app.PendingIntent;
 import android.support.annotation.RestrictTo;
 
 /**
- * TODO(samstern): Document
+ * POJO holding the data for a resolution that some Activity needs to fire.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PendingResolution {
