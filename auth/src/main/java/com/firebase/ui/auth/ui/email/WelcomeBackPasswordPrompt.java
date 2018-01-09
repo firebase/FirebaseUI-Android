@@ -14,11 +14,13 @@
 
 package com.firebase.ui.auth.ui.email;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
@@ -26,6 +28,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -34,20 +37,18 @@ import android.widget.TextView;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.data.remote.ProfileMerger;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.firebase.ui.auth.viewmodel.PendingFinish;
+import com.firebase.ui.auth.viewmodel.PendingResolution;
+import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
 
 /**
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
@@ -62,8 +63,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
     private IdpResponse mIdpResponse;
-    @Nullable
-    private SaveSmartLock mSaveSmartLock;
+
+    private WelcomeBackPasswordHandler mHandler;
 
     public static Intent createIntent(
             Context context,
@@ -78,10 +79,13 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_password_prompt_layout);
 
+        // TODO: Do we use the initialization args at all?
+        mHandler = ViewModelProviders.of(this).get(WelcomeBackPasswordHandler.class);
+        mHandler.init(getFlowHolder().getArguments());
+
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(this);
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
         mEmail = mIdpResponse.getEmail();
 
@@ -106,19 +110,99 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         // Click listeners
         findViewById(R.id.button_done).setOnClickListener(this);
         findViewById(R.id.trouble_signing_in).setOnClickListener(this);
+
+        // Fire resolutions when asked
+        mHandler.getPendingResolution().observe(this,
+                new Observer<PendingResolution>() {
+                    @Override
+                    public void onChanged(@Nullable PendingResolution resolution) {
+                        onPendingResolution(resolution);
+                    }
+                });
+
+        // Finish the activity when asked
+        mHandler.getPendingFinish().observe(this, new Observer<PendingFinish>() {
+            @Override
+            public void onChanged(@Nullable PendingFinish finish) {
+                onPendingFinish(finish);
+            }
+        });
+
+        // Observe the state of the main auth operation
+        mHandler.getSignInResult().observe(this, new Observer<Resource<AuthResult>>() {
+            @Override
+            public void onChanged(@Nullable Resource<AuthResult> resource) {
+                onAuthResult(resource);
+            }
+        });
     }
 
     @Override
-    public void onClick(View view) {
-        final int id = view.getId();
-        if (id == R.id.button_done) {
-            validateAndSignIn();
-        } else if (id == R.id.trouble_signing_in) {
-            startActivity(RecoverPasswordActivity.createIntent(
-                    this,
-                    getFlowParams(),
-                    mEmail));
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Forward activity results to the ViewModel
+        if (!mHandler.onActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void onAuthResult(@Nullable Resource<AuthResult> resource) {
+        if (resource == null) {
+            Log.w(TAG, "Got null resource, ignoring.");
+            return;
+        }
+
+        if (resource.getState() == State.LOADING) {
+            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
+        }
+
+        if (resource.getState() == State.SUCCESS) {
+            getDialogHolder().dismissDialog();
+
+            // TODO: Should we have a finish() call here rather than waiting for PendingFinish?
+        }
+
+        if (resource.getState() == State.FAILURE) {
+            getDialogHolder().dismissDialog();
+
+            // TODO: Is this message what we want?
+            String message = resource.getException().getLocalizedMessage();
+            mPasswordLayout.setError(message);
+        }
+    }
+
+    private void onPendingResolution(@Nullable PendingResolution resolution) {
+        if (resolution == null) {
+            Log.e(TAG, "Got null resolution, can't do anything");
+            return;
+        }
+
+        // TODO: Loading dialogs?
+
+        try {
+            startIntentSenderForResult(resolution.getPendingIntent().getIntentSender(),
+                    resolution.getRequestCode(), null, 0, 0, 0);
+        } catch (IntentSender.SendIntentException e) {
+            Log.e(TAG, "Failed to send resolution.", e);
+
+            // TODO: I should probably forward this to the viewmodel?
+            finish();
+        }
+    }
+
+    private void onPendingFinish(@Nullable PendingFinish finish) {
+        if (finish == null) {
+            Log.e(TAG, "Got null pending finish, can't do anything.");
+            return;
+        }
+
+        finish(finish.getCode(), finish.getData());
+    }
+
+    public void onForgotPasswordClicked() {
+        startActivity(RecoverPasswordActivity.createIntent(
+                this,
+                getFlowParams(),
+                mEmail));
     }
 
     @Override
@@ -139,65 +223,17 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             mPasswordLayout.setError(null);
         }
 
-        // TODO: Cut it off here
-        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
+        AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
+        mHandler.startSignIn(email, password, mIdpResponse, authCredential);
+    }
 
-        final AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
-
-        final IdpResponse response;
-        if (authCredential == null) {
-            response = new IdpResponse.Builder(
-                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
-                    .build();
-        } else {
-            response = new IdpResponse.Builder(mIdpResponse.getUser())
-                    .setToken(mIdpResponse.getIdpToken())
-                    .setSecret(mIdpResponse.getIdpSecret())
-                    .build();
+    @Override
+    public void onClick(View view) {
+        final int id = view.getId();
+        if (id == R.id.button_done) {
+            validateAndSignIn();
+        } else if (id == R.id.trouble_signing_in) {
+            onForgotPasswordClicked();
         }
-
-        // Sign in with known email and the password provided
-        getAuthHelper().getFirebaseAuth()
-                .signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        // If authCredential is null, the user only has an email account.
-                        // Otherwise, the user has an email account that we need to link to an idp.
-                        if (authCredential == null) {
-                            saveCredentialsOrFinish(
-                                    mSaveSmartLock,
-                                    authResult.getUser(),
-                                    password,
-                                    response);
-                        } else {
-                            authResult.getUser()
-                                    .linkWithCredential(authCredential)
-                                    .continueWithTask(new ProfileMerger(response))
-                                    .addOnFailureListener(new TaskFailureLogger(
-                                            TAG, "Error signing in with credential " +
-                                            authCredential.getProvider()))
-                                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                                        @Override
-                                        public void onSuccess(AuthResult authResult) {
-                                            saveCredentialsOrFinish(
-                                                    mSaveSmartLock,
-                                                    authResult.getUser(),
-                                                    response);
-                                        }
-                                    });
-                        }
-                    }
-                })
-                .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Error signing in with email and password"))
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        getDialogHolder().dismissDialog();
-                        String error = e.getLocalizedMessage();
-                        mPasswordLayout.setError(error);
-                    }
-                });
     }
 }

@@ -40,7 +40,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class SaveSmartLock extends SmartLockBase<Void> {
     private static final String TAG = "SaveSmartLock";
     private static final int RC_SAVE = 100;
-    private static final int RC_UPDATE_SERVICE = 28;
 
     private CredentialsClient mCredentialsClient;
 
@@ -103,16 +102,6 @@ public class SaveSmartLock extends SmartLockBase<Void> {
                 Log.e(TAG, "SAVE: Canceled by user");
             }
             finish();
-        } else if (requestCode == RC_UPDATE_SERVICE) {
-            if (resultCode == Activity.RESULT_OK) {
-                Credential credential = new Credential.Builder(mEmail).setPassword(mPassword)
-                        .build();
-
-                mCredentialsClient.save(credential).addOnCompleteListener(this);
-            } else {
-                Log.e(TAG, "SAVE: Canceled by user");
-                finish();
-            }
         }
     }
 
@@ -121,6 +110,8 @@ public class SaveSmartLock extends SmartLockBase<Void> {
     }
 
     /**
+     * TODO: Remove
+     *
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise, finish the calling Activity with {@link Activity#RESULT_OK}.
      * <p>
@@ -144,8 +135,9 @@ public class SaveSmartLock extends SmartLockBase<Void> {
         mName = firebaseUser.getDisplayName();
         mEmail = firebaseUser.getEmail();
         mPassword = password;
-        mProfilePictureUri = firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl()
-                .toString() : null;
+        mProfilePictureUri = firebaseUser.getPhotoUrl() != null
+                ? firebaseUser.getPhotoUrl().toString()
+                : null;
 
         if (getActivity() == null) {
             throw new IllegalStateException("Can't save credentials in null Activity");
@@ -155,36 +147,83 @@ public class SaveSmartLock extends SmartLockBase<Void> {
         saveCredential();
     }
 
-    private void saveCredential() {
-        if (TextUtils.isEmpty(mEmail)) {
-            Log.e(TAG, "Unable to save null credential!");
-            finish();
-            return;
+    /**
+     * TODO: remove
+     * @param credential
+     * @return
+     */
+    public Task<Void> startSaveCredential(@NonNull Credential credential) {
+       return mCredentialsClient.save(credential);
+    }
+
+    /**
+     * TODO: Document
+     * @param user
+     * @param password
+     * @param idpResponse
+     * @return
+     */
+    public static Credential buildCredential(@NonNull FirebaseUser user,
+                                             @Nullable String password,
+                                             @Nullable IdpResponse idpResponse) {
+        String name = user.getDisplayName();
+        String email = user.getEmail();
+        String profilePicturUri = user.getPhotoUrl() != null
+                ? user.getPhotoUrl().toString()
+                : null;
+
+        return buildCredential(email, password, name, profilePicturUri, idpResponse);
+    }
+
+    /**
+     * TODO
+     * @return
+     */
+    @Nullable
+    public static Credential buildCredential(@Nullable String email,
+                                             @Nullable String password,
+                                             @Nullable String name,
+                                             @Nullable String profilePictureUri,
+                                             @Nullable IdpResponse idpResponse) {
+
+        if (TextUtils.isEmpty(email)) {
+            return null;
         }
 
-        Credential.Builder builder = new Credential.Builder(mEmail);
-        builder.setPassword(mPassword);
-        if (mPassword == null && mResponse != null) {
+        Credential.Builder builder = new Credential.Builder(email);
+        builder.setPassword(password);
+        if (password == null && idpResponse != null) {
             String translatedProvider =
-                    ProviderUtils.providerIdToAccountType(mResponse.getProviderType());
+                    ProviderUtils.providerIdToAccountType(idpResponse.getProviderType());
             if (translatedProvider != null) {
                 builder.setAccountType(translatedProvider);
             } else {
-                Log.e(TAG, "Unable to save null credential!");
-                finish();
-                return;
+
+                return null;
             }
         }
 
-        if (mName != null) {
-            builder.setName(mName);
+        if (name != null) {
+            builder.setName(name);
         }
 
-        if (mProfilePictureUri != null) {
-            builder.setProfilePictureUri(Uri.parse(mProfilePictureUri));
+        if (profilePictureUri != null) {
+            builder.setProfilePictureUri(Uri.parse(profilePictureUri));
         }
 
-        mCredentialsClient.save(builder.build())
+        return builder.build();
+    }
+
+    private void saveCredential() {
+        Credential credential = buildCredential(
+                mEmail, mName, mPassword, mProfilePictureUri, mResponse);
+
+        if (credential == null) {
+            Log.e(TAG, "Unable to save null credential!");
+            finish();
+        }
+
+        startSaveCredential(credential)
                 .addOnCompleteListener(this);
     }
 }
