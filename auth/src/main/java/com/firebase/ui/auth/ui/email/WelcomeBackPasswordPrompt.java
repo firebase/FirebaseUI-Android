@@ -44,7 +44,6 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.firebase.ui.auth.viewmodel.PendingFinish;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
@@ -119,14 +118,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                     }
                 });
 
-        // Finish the activity when asked
-        mHandler.getPendingFinish().observe(this, new Observer<PendingFinish>() {
-            @Override
-            public void onChanged(@Nullable PendingFinish finish) {
-                onPendingFinish(finish);
-            }
-        });
-
         // Observe the state of the main auth operation
         mHandler.getSignInResult().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
@@ -158,7 +149,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             getDialogHolder().dismissDialog();
             Log.d(TAG, "onAuthResult:SUCCESS:" + resource.getValue());
 
-            // TODO: Should we have a finish() call here rather than waiting for PendingFinish?
+            finish(RESULT_OK, resource.getValue().toIntent());
         }
 
         if (resource.getState() == State.FAILURE) {
@@ -176,26 +167,15 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             return;
         }
 
-        // TODO: Loading dialogs?
-
         try {
             startIntentSenderForResult(resolution.getPendingIntent().getIntentSender(),
                     resolution.getRequestCode(), null, 0, 0, 0);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Failed to send resolution.", e);
 
-            // TODO: I should probably forward this to the viewmodel?
+            // TODO: Should this include the code and data?
             finish();
         }
-    }
-
-    private void onPendingFinish(@Nullable PendingFinish finish) {
-        if (finish == null) {
-            Log.e(TAG, "Got null pending finish, can't do anything.");
-            return;
-        }
-
-        finish(finish.getCode(), finish.getData());
     }
 
     public void onForgotPasswordClicked() {

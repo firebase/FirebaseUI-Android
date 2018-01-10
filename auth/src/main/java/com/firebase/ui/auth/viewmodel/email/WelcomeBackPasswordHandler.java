@@ -18,7 +18,6 @@ import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.util.data.AuthViewModelBase;
-import com.firebase.ui.auth.viewmodel.PendingFinish;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -46,8 +45,9 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
     // TODO: Should this be a SingleLiveEvent?
     // https://github.com/googlesamples/android-architecture/blob/dev-todo-mvvm-live/todoapp/app/src/main/java/com/example/android/architecture/blueprints/todoapp/SingleLiveEvent.java
     private MutableLiveData<PendingResolution> mPendingResolutionLiveData = new MutableLiveData<>();
-    private MutableLiveData<PendingFinish> mPendingFinishLiveData = new MutableLiveData<>();
     private MutableLiveData<Resource<IdpResponse>> mSignInLiveData = new MutableLiveData<>();
+
+    private IdpResponse mPendingIdpResponse;
 
     public WelcomeBackPasswordHandler(Application application) {
         super(application);
@@ -59,8 +59,9 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                 Log.e(TAG, "SAVE: Canceled by user");
             }
 
-            // TODO: finish
             mPendingResolutionLiveData.setValue(null);
+            setSuccess(mPendingIdpResponse);
+
             return true;
         }
 
@@ -130,35 +131,27 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
     }
 
     /**
-     * Get an observable stream of <code>finish()</code> operations requested by the ViewModel.
-     */
-    public LiveData<PendingFinish> getPendingFinish() {
-        return mPendingFinishLiveData;
-    }
-
-    /**
      * Get an observable stream of {@link PendingIntent} resolutions requested by the ViewModel.
      */
     public LiveData<PendingResolution> getPendingResolution() {
         return mPendingResolutionLiveData;
     }
 
-    private void finish(IdpResponse idpResponse) {
+    private void setSuccess(IdpResponse idpResponse) {
         mSignInLiveData.setValue(new Resource<>(idpResponse));
-        mPendingFinishLiveData.setValue(new PendingFinish(Activity.RESULT_OK, idpResponse.toIntent()));
     }
 
     private void saveCredentialsOrFinish(FirebaseUser user,
                                          @Nullable String password,
                                          final IdpResponse idpResponse) {
         if (!getArguments().enableCredentials) {
-            finish(idpResponse);
+            setSuccess(idpResponse);
             return;
         }
 
         Credential credential = CredentialsUtil.buildCredential(user, password, idpResponse);
         if (credential == null) {
-            finish(idpResponse);
+            setSuccess(idpResponse);
             return;
         }
 
@@ -167,7 +160,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            finish(idpResponse);
+                            setSuccess(idpResponse);
                             return;
                         }
 
@@ -175,9 +168,14 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                             ResolvableApiException rae = (ResolvableApiException) task.getException();
                             PendingResolution pendingResolution = new PendingResolution(rae.getResolution(),
                                     RC_SAVE);
+
+                            mPendingIdpResponse = idpResponse;
                             mPendingResolutionLiveData.setValue(pendingResolution);
                         } else {
-                            finish(idpResponse);
+                            // TODO(samstern): Does this mean we consider a smartlock failure to
+                            //                 not matter?
+                            Log.w(TAG, "Unexpected smartlock exception.", task.getException());
+                            setSuccess(idpResponse);
                         }
                     }
                 });
