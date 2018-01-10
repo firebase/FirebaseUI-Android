@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.util.ui;
+package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;

@@ -17,7 +17,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.CredentialsUtil;
-import com.firebase.ui.auth.util.data.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.ResolvableApiException;

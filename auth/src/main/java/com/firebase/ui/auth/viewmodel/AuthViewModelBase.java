@@ -1,10 +1,9 @@
-package com.firebase.ui.auth.util.data;
+package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
 import android.support.annotation.VisibleForTesting;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.util.ui.ViewModelBase;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.firebase.FirebaseApp;
