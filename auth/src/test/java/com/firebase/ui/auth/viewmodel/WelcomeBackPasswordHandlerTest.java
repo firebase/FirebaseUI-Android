@@ -1,11 +1,15 @@
 package com.firebase.ui.auth.viewmodel;
 
+import android.arch.lifecycle.Observer;
+
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.AutoContinueTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
+import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
@@ -29,17 +33,20 @@ import java.util.Collections;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Test for {@link WelcomeBackPasswordHandler}.
+ * Unit tests for {@link WelcomeBackPasswordHandler}.
  */
 @RunWith(RobolectricTestRunner.class)
 public class WelcomeBackPasswordHandlerTest {
 
     @Mock FirebaseAuth mMockAuth;
     @Mock CredentialsClient mMockCredentials;
+
+    @Mock Observer<Resource<IdpResponse>> mResponseObserver;
 
     private WelcomeBackPasswordHandler mHandler;
 
@@ -57,6 +64,8 @@ public class WelcomeBackPasswordHandlerTest {
 
     @Test
     public void testSignIn_signsInAndSavesCredentials() {
+        mHandler.getSignInResult().observeForever(mResponseObserver);
+
         // Mock sign in to always succeed
         when(mMockAuth.signInWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
@@ -67,6 +76,9 @@ public class WelcomeBackPasswordHandlerTest {
 
         // Kick off the sign in flow
         mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null);
+
+        // Verify that we get a loading event
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
 
         // Verify that sign in is called with the right arguments
         verify(mMockAuth).signInWithEmailAndPassword(
@@ -79,10 +91,15 @@ public class WelcomeBackPasswordHandlerTest {
         Credential captured = credentialCaptor.getValue();
         assertEquals(captured.getId(), TestConstants.EMAIL);
         assertEquals(captured.getPassword(), TestConstants.PASSWORD);
+
+        // Verify that we get a success event
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
     }
 
     @Test
     public void testSignIn_linksIdpCredential() {
+        mHandler.getSignInResult().observeForever(mResponseObserver);
+
         // Fake social response from Facebook
         User user = new User.Builder(FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
                 .build();
@@ -112,11 +129,17 @@ public class WelcomeBackPasswordHandlerTest {
         // Kick off the sign in flow
         mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential);
 
+        // Verify that we get a loading event
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+
         // Verify that sign in is called with the right arguments
         verify(mMockAuth).signInWithEmailAndPassword(
                 TestConstants.EMAIL, TestConstants.PASSWORD);
 
         // Verify that account linking is attempted
         verify(FakeAuthResult.INSTANCE.getUser()).linkWithCredential(credential);
+
+        // Verify that we get a success event
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
     }
 }
