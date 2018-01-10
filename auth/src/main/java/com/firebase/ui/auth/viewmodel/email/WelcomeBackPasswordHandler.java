@@ -53,21 +53,9 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
         super(application);
     }
 
-    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_SAVE) {
-            if (resultCode != Activity.RESULT_OK) {
-                Log.e(TAG, "SAVE: Canceled by user");
-            }
-
-            mPendingResolutionLiveData.setValue(null);
-            setSuccess(mPendingIdpResponse);
-
-            return true;
-        }
-
-        return false;
-    }
-
+    /**
+     * Kick off the sign-in process.
+     */
     public void startSignIn(@NonNull final String email,
                             @NonNull final String password,
                             @NonNull final IdpResponse inputResponse,
@@ -93,16 +81,14 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                 .continueWithTask(new Continuation<AuthResult, Task<AuthResult>>() {
                     @Override
                     public Task<AuthResult> then(@NonNull Task<AuthResult> task) throws Exception {
-                        // Forward task failure
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }
+                        // Forward task failure by asking for result
+                        AuthResult result = task.getResult();
 
                         // Task succeeded, link user if necessary
                         if (credential == null) {
-                            return Tasks.forResult(task.getResult());
+                            return Tasks.forResult(result);
                         } else {
-                            return task.getResult().getUser()
+                            return result.getUser()
                                     .linkWithCredential(credential)
                                     .continueWithTask(new ProfileMerger(outputResponse))
                                     .addOnFailureListener(new TaskFailureLogger(TAG, "linkWithCredential+merge failed."));
@@ -124,6 +110,25 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
     }
 
     /**
+     * Delegate activity result handling to the ViewModel. Returns {@code true} if the result was
+     * handled.
+     */
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_SAVE) {
+            if (resultCode != Activity.RESULT_OK) {
+                Log.e(TAG, "SAVE: Canceled by user");
+            }
+
+            mPendingResolutionLiveData.setValue(null);
+            setSuccess(mPendingIdpResponse);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Get the observable state of the sign in operation.
      */
     public LiveData<Resource<IdpResponse>> getSignInResult() {
@@ -132,6 +137,9 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
 
     /**
      * Get an observable stream of {@link PendingIntent} resolutions requested by the ViewModel.
+     *
+     * Make sure to call {@link #onActivityResult(int, int, Intent)} for all activity results
+     * after firing these pending intents.
      */
     public LiveData<PendingResolution> getPendingResolution() {
         return mPendingResolutionLiveData;
