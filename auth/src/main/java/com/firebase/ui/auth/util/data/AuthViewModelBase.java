@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.util.data;
 
 import android.app.Application;
+import android.support.annotation.VisibleForTesting;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.ui.ViewModelBase;
@@ -38,5 +39,16 @@ public class AuthViewModelBase extends ViewModelBase<FlowParameters> {
 
     protected CredentialsClient getCredentialsClient() {
         return mCredentialsClient;
+    }
+
+    @VisibleForTesting
+    public void initializeForTesting(FlowParameters parameters,
+                                     FirebaseAuth auth,
+                                     CredentialsClient client,
+                                     PhoneAuthProvider phoneAuth) {
+        setArguments(parameters);
+        mAuth = auth;
+        mCredentialsClient = client;
+        mPhoneAuth = phoneAuth;
     }
 }

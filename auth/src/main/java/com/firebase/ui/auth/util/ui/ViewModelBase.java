@@ -27,6 +27,10 @@ public abstract class ViewModelBase<T> extends AndroidViewModel {
         return mArguments;
     }
 
+    protected void setArguments(T arguments) {
+        mArguments = arguments;
+    }
+
     @Override
     protected void onCleared() {
         mIsInitialized.set(false);
