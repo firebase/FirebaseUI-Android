@@ -11,16 +11,15 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
- * TODO(samstern): Document
+ * Utility class for working with {@link Credential} objects.
  */
 public class CredentialsUtil {
 
     /**
-     * TODO: Document
-     * @param user
-     * @param password
-     * @param idpResponse
-     * @return
+     * Build a credential for the specified {@link FirebaseUser} with optional
+     * password and {@link IdpResponse}.
+     *
+     * See {@link #buildCredential(String, String, String, String, IdpResponse)}.
      */
     public static Credential buildCredential(@NonNull FirebaseUser user,
                                              @Nullable String password,
@@ -35,8 +34,10 @@ public class CredentialsUtil {
     }
 
     /**
-     * TODO: Document
-     * @return
+     * Build the appropriate credential for the user information passed.
+     *
+     * If the credential cannot be built (for example, empty email) then
+     * will return {@code null}.
      */
     @Nullable
     public static Credential buildCredential(@Nullable String email,

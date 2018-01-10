@@ -91,6 +91,8 @@ public class WelcomeBackPasswordPromptTest {
     @Test
     @Config(shadows = {AuthHelperShadow.class})
     public void testSignInButton_signsInAndSavesCredentials() {
+        // TODO: This test fails
+
         // initialize mocks
         reset(AuthHelperShadow.getSaveSmartLockInstance(null));
 
