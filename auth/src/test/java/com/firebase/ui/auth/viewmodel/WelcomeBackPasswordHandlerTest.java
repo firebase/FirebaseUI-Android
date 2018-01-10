@@ -16,6 +16,7 @@ import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -113,7 +114,7 @@ public class WelcomeBackPasswordHandlerTest {
 
         // Mock sign in to always succeed
         when(mMockAuth.signInWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD))
-                .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
+                .thenReturn(AutoCompleteTask.forSuccess(FakeAuthResult.INSTANCE));
 
         // Mock linking to always succeed
         when(FakeAuthResult.INSTANCE.getUser().linkWithCredential(credential))
@@ -124,7 +125,7 @@ public class WelcomeBackPasswordHandlerTest {
 
         // Mock smartlock save to always succeed
         when(mMockCredentials.save(any(Credential.class)))
-                .thenReturn(new AutoCompleteTask<Void>(null, true, null));
+                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
 
         // Kick off the sign in flow
         mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential);
@@ -141,5 +142,27 @@ public class WelcomeBackPasswordHandlerTest {
 
         // Verify that we get a success event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
+    }
+
+    @Test
+    public void testSignIn_propagatesFailure() {
+        mHandler.getSignInResult().observeForever(mResponseObserver);
+
+        // Mock sign in to always fail
+        when(mMockAuth.signInWithEmailAndPassword(any(String.class), any(String.class)))
+                .thenReturn(AutoContinueTask.<AuthResult>forFailure(new Exception("FAILED")));
+
+        // Kick off the sign in flow
+        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null);
+
+        // Verify that we get a loading event
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
+
+        // Verify that sign in is called with the right arguments
+        verify(mMockAuth).signInWithEmailAndPassword(
+                TestConstants.EMAIL, TestConstants.PASSWORD);
+
+        // Verify that we get a failure event
+        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isFailure()));
     }
 }

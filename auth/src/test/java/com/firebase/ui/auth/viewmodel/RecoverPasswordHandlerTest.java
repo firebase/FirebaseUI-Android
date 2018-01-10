@@ -13,6 +13,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -48,10 +49,11 @@ public class RecoverPasswordHandlerTest {
         mHandler.initializeForTesting(testParams, mMockAuth, null, null);
     }
 
+    @Test
     public void testReset_sendsRecoverEmail() {
         // Send password email succeeds
         when(mMockAuth.sendPasswordResetEmail(TestConstants.EMAIL))
-                .thenReturn(new AutoCompleteTask<Void>(null, true, null));
+                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
 
         // Begin observation, then send the email
         mHandler.getProgressLiveData().observeForever(mObserver);
@@ -65,6 +67,26 @@ public class RecoverPasswordHandlerTest {
 
         // Should get the success resource
         verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isSuccess()));
+    }
+
+    @Test
+    public void testReset_propagatesFailure() {
+        // Send password email fails
+        when(mMockAuth.sendPasswordResetEmail(TestConstants.EMAIL))
+                .thenReturn(AutoCompleteTask.<Void>forFailure(new Exception("FAILED")));
+
+        // Begin observation, then send the email
+        mHandler.getProgressLiveData().observeForever(mObserver);
+        mHandler.startReset(TestConstants.EMAIL);
+
+        // Should get in-progress resource
+        verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isLoading()));
+
+        // Firebase auth should be called
+        verify(mMockAuth).sendPasswordResetEmail(TestConstants.EMAIL);
+
+        // Should get the success resource
+        verify(mObserver).onChanged(argThat(ResourceMatchers.<String>isFailure()));
     }
 
 }

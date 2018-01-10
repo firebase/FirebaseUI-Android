@@ -82,7 +82,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                     @Override
                     public Task<AuthResult> then(@NonNull Task<AuthResult> task) throws Exception {
                         // Forward task failure by asking for result
-                        AuthResult result = task.getResult();
+                        AuthResult result = task.getResult(Exception.class);
 
                         // Task succeeded, link user if necessary
                         if (credential == null) {
