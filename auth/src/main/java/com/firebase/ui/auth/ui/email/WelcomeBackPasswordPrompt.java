@@ -34,8 +34,10 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
@@ -173,12 +175,13 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "Failed to send resolution.", e);
 
-            // TODO: Should this include the code and data?
-            finish();
+            IdpResponse errorResponse = IdpResponse.fromError(
+                    new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, getString(R.string.fui_general_error), e));
+            finish(RESULT_OK, errorResponse.toIntent());
         }
     }
 
-    public void onForgotPasswordClicked() {
+    private void onForgotPasswordClicked() {
         startActivity(RecoverPasswordActivity.createIntent(
                 this,
                 getFlowParams(),

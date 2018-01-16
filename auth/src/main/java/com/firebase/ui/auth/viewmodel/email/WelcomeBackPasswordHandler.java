@@ -19,6 +19,7 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
+import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.Continuation;
@@ -42,9 +43,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
 
     private static final int RC_SAVE = 100;
 
-    // TODO: Should this be a SingleLiveEvent?
-    // https://github.com/googlesamples/android-architecture/blob/dev-todo-mvvm-live/todoapp/app/src/main/java/com/example/android/architecture/blueprints/todoapp/SingleLiveEvent.java
-    private MutableLiveData<PendingResolution> mPendingResolutionLiveData = new MutableLiveData<>();
+    private SingleLiveEvent<PendingResolution> mPendingResolutionLiveData = new SingleLiveEvent<>();
     private MutableLiveData<Resource<IdpResponse>> mSignInLiveData = new MutableLiveData<>();
 
     private IdpResponse mPendingIdpResponse;
@@ -119,7 +118,6 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                 Log.e(TAG, "SAVE: Canceled by user");
             }
 
-            mPendingResolutionLiveData.setValue(null);
             setSuccess(mPendingIdpResponse);
 
             return true;
@@ -180,8 +178,8 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                             mPendingIdpResponse = idpResponse;
                             mPendingResolutionLiveData.setValue(pendingResolution);
                         } else {
-                            // TODO(samstern): Does this mean we consider a smartlock failure to
-                            //                 not matter?
+                            // We don't consider SmartLock errors to be a problem, SmartLock is
+                            // "best effort" and we will continue this sign in a success.
                             Log.w(TAG, "Unexpected smartlock exception.", task.getException());
                             setSuccess(idpResponse);
                         }

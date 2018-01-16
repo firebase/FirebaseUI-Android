@@ -25,7 +25,7 @@ public class AuthViewModelBase extends ViewModelBase<FlowParameters> {
         FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
         mAuth = FirebaseAuth.getInstance(app);
         mPhoneAuth = PhoneAuthProvider.getInstance(mAuth);
-        mCredentialsClient = Credentials.getClient(this.getApplication());
+        mCredentialsClient = Credentials.getClient(getApplication());
     }
 
     protected FirebaseAuth getAuth() {

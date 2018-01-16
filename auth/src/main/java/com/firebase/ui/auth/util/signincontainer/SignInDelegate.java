@@ -117,7 +117,6 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
         super.onSaveInstanceState(outState);
     }
 
-
     @Override
     public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
 

@@ -3,6 +3,7 @@ package com.firebase.ui.auth.util;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -13,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 /**
  * Utility class for working with {@link Credential} objects.
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class CredentialsUtil {
 
     /**
@@ -45,7 +47,6 @@ public class CredentialsUtil {
                                              @Nullable String name,
                                              @Nullable String profilePictureUri,
                                              @Nullable IdpResponse idpResponse) {
-
         if (TextUtils.isEmpty(email)) {
             return null;
         }
@@ -58,7 +59,6 @@ public class CredentialsUtil {
             if (translatedProvider != null) {
                 builder.setAccountType(translatedProvider);
             } else {
-
                 return null;
             }
         }
