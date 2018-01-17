@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
+import com.firebase.ui.auth.util.ui.FlowHolder;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
@@ -21,6 +23,8 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 @SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class HelperActivityBase extends AppCompatActivity {
+
+    private FlowHolder mFlowHolder;
 
     private FlowParameters mFlowParameters;
     private AuthHelper mAuthHelper;
@@ -48,6 +52,15 @@ public class HelperActivityBase extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mProgressDialogHolder.dismissDialog();
+    }
+
+    public FlowHolder getFlowHolder() {
+        if (mFlowHolder == null) {
+            mFlowHolder = ViewModelProviders.of(this).get(FlowHolder.class);
+            mFlowHolder.init(FlowParameters.fromIntent(getIntent()));
+        }
+
+        return mFlowHolder;
     }
 
     public FlowParameters getFlowParams() {

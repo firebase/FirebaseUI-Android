@@ -31,7 +31,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -123,7 +122,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                     this,
                     getFlowParams(),
                     mEmail));
-            finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
         }
     }
 
