@@ -142,7 +142,7 @@ public class SaveSmartLock extends SmartLockBase<Void> {
         // Build credentials client and kick off the save
         mCredentialsClient = Credentials.getClient(getActivity());
         Credential credential = CredentialsUtil.buildCredential(
-                mEmail, mName, mPassword, mProfilePictureUri, mResponse);
+                mEmail, mPassword, mName, mProfilePictureUri, mResponse);
 
         if (credential == null) {
             Log.e(TAG, "Unable to save null credential!");

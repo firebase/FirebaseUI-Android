@@ -119,6 +119,9 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.allow_new_email_accounts)
     CheckBox mAllowNewEmailAccounts;
 
+    @BindView(R.id.require_name)
+    CheckBox mRequireName;
+
     @BindView(R.id.facebook_scopes_label)
     TextView mFacebookScopesLabel;
 
@@ -341,6 +344,7 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUseEmailProvider.isChecked()) {
             selectedProviders.add(new IdpConfig.EmailBuilder()
+                    .setRequireName(mRequireName.isChecked())
                     .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
                     .build());
         }

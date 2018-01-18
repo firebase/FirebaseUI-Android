@@ -604,6 +604,18 @@ public class AuthUI {
                 getParams().putBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, allow);
                 return this;
             }
+
+            /**
+             * Configures the requirement for the user to enter first and last name
+             * in the email sign up flow.
+             * <p>
+             * Name is required by default.
+             */
+            @NonNull
+            public EmailBuilder setRequireName(boolean requireName) {
+                getParams().putBoolean(ExtraConstants.EXTRA_REQUIRE_NAME, requireName);
+                return this;
+            }
         }
 
         /**
