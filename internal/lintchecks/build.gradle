@@ -1,0 +1,14 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion compileSdk
+
+    defaultConfig {
+        minSdkVersion minSdk
+        targetSdkVersion targetSdk
+    }
+}
+
+dependencies {
+    lintChecks project(':internal:lint')
+}

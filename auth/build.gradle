@@ -57,7 +57,7 @@ dependencies {
     testImplementation 'com.facebook.android:facebook-login:4.29.0'
     testImplementation("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }
 
-    lintChecks project(':lint')
+    implementation project(':internal:lintchecks')
 }
 
 javadoc.include([
