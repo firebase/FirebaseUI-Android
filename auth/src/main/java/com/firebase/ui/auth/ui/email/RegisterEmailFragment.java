@@ -70,7 +70,6 @@ public class RegisterEmailFragment extends FragmentBase implements
     private SaveSmartLock mSaveSmartLock;
 
     private User mUser;
-    private boolean mRequireName = true;
 
     public static RegisterEmailFragment newInstance(FlowParameters flowParameters, User user) {
         RegisterEmailFragment fragment = new RegisterEmailFragment();
@@ -104,7 +103,8 @@ public class RegisterEmailFragment extends FragmentBase implements
         // Get configuration
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
-        mRequireName = emailConfig.getParams().getBoolean(ExtraConstants.EXTRA_REQUIRE_NAME, true);
+        boolean requireName = emailConfig.getParams()
+                .getBoolean(ExtraConstants.EXTRA_REQUIRE_NAME, true);
 
         mEmailEditText = v.findViewById(R.id.email);
         mNameEditText = v.findViewById(R.id.name);
@@ -117,7 +117,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         mPasswordFieldValidator = new PasswordFieldValidator(
                 mPasswordInput,
                 getResources().getInteger(R.integer.fui_min_password_length));
-        mNameValidator = mRequireName
+        mNameValidator = requireName
                 ? new RequiredFieldValidator(mNameInput)
                 : new NoOpValidator(mNameInput);
         mEmailFieldValidator = new EmailFieldValidator(mEmailInput);
@@ -130,7 +130,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         v.findViewById(R.id.button_create).setOnClickListener(this);
 
         // Only show the name field if required
-        if (mRequireName) {
+        if (requireName) {
             mNameInput.setVisibility(View.VISIBLE);
         } else {
             mNameInput.setVisibility(View.GONE);
@@ -157,7 +157,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
 
         // See http://stackoverflow.com/questions/11082341/android-requestfocus-ineffective#comment51774752_11082523
-        if (!mRequireName || !TextUtils.isEmpty(mNameEditText.getText())) {
+        if (!requireName || !TextUtils.isEmpty(mNameEditText.getText())) {
             safeRequestFocus(mPasswordEditText);
         } else if (!TextUtils.isEmpty(mEmailEditText.getText())) {
             safeRequestFocus(mNameEditText);

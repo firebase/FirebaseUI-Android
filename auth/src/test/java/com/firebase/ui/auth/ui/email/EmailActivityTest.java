@@ -90,8 +90,6 @@ public class EmailActivityTest {
                                 .getInteger(R.integer.fui_min_password_length)
                 ),
                 passwordLayout.getError().toString());
-
-
     }
 
     @Test
