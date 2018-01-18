@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -23,16 +22,15 @@ import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
+import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
+import com.google.android.gms.auth.api.credentials.Credentials;
+import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -57,8 +55,9 @@ import java.util.List;
  * email is supported, in which case the {@link EmailActivity} is started.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
+public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
     private static final String TAG = "SignInDelegate";
+
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
@@ -66,6 +65,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     private static final int RC_PHONE_FLOW = 6;
 
     private Credential mCredential;
+    private CredentialsClient mCredentialsClient;
 
     public static void delegate(FragmentActivity activity, FlowParameters params) {
         FragmentManager fm = activity.getSupportFragmentManager();
@@ -98,20 +98,13 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
         if (flowParams.enableCredentials) {
             getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
 
-            mGoogleApiClient = new GoogleApiClient.Builder(getContext().getApplicationContext())
-                    .addConnectionCallbacks(this)
-                    .addApi(Auth.CREDENTIALS_API)
-                    .enableAutoManage(getActivity(), GoogleApiHelper.getSafeAutoManageId(), this)
-                    .build();
-            mGoogleApiClient.connect();
+            mCredentialsClient = Credentials.getClient(getActivity());
 
-            getAuthHelper().getCredentialsApi()
-                    .request(mGoogleApiClient,
-                            new CredentialRequest.Builder()
-                                    .setPasswordLoginSupported(true)
-                                    .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
-                                    .build())
-                    .setResultCallback(this);
+            mCredentialsClient.request(new CredentialRequest.Builder()
+                    .setPasswordLoginSupported(true)
+                    .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
+                    .build())
+                    .addOnCompleteListener(this);
         } else {
             startAuthMethodChoice();
         }
@@ -125,35 +118,27 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResult> {
     }
 
     @Override
-    public void onResult(@NonNull CredentialRequestResult result) {
-        Status status = result.getStatus();
+    public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
 
-        if (status.isSuccess()) {
+        if (task.isSuccessful()) {
             // Auto sign-in success
-            handleCredential(result.getCredential());
+            handleCredential(task.getResult().getCredential());
             return;
         } else {
-            if (status.hasResolution()) {
+            if (task.getException() instanceof ResolvableApiException) {
+                ResolvableApiException rae = (ResolvableApiException) task.getException();
                 try {
-                    if (status.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-                        startIntentSenderForResult(
-                                status.getResolution().getIntentSender(),
-                                RC_CREDENTIALS_READ);
-                        return;
-                    }
+                    startIntentSenderForResult(rae.getResolution().getIntentSender(),
+                            RC_CREDENTIALS_READ);
+                    return;
                 } catch (IntentSender.SendIntentException e) {
                     Log.e(TAG, "Failed to send Credentials intent.", e);
                 }
             } else {
-                Log.e(TAG, "Status message:\n" + status.getStatusMessage());
+                Log.e(TAG, "Non-resolvable exception:\n" + task.getException());
             }
         }
         startAuthMethodChoice();
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        // We only care about onResult
     }
 
     @Override

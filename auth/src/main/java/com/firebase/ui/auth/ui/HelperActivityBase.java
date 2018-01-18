@@ -15,7 +15,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
-import com.firebase.ui.auth.util.ui.FlowHolder;
+import com.firebase.ui.auth.viewmodel.FlowHolder;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
