@@ -20,6 +20,7 @@ import android.content.IntentSender;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -112,7 +113,7 @@ public class SaveSmartLock extends SmartLockBase<Void> {
         mCredentialsClient = client;
     }
 
-    @RestrictTo(RestrictTo.Scope.TESTS)
+    @VisibleForTesting
     public CredentialsClient getCredentialsClient() {
         if (mCredentialsClient == null) {
             mCredentialsClient = Credentials.getClient(getActivity());
