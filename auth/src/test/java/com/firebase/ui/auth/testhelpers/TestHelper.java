@@ -16,12 +16,17 @@ package com.firebase.ui.auth.testhelpers;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
+import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -44,8 +49,7 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -179,38 +183,44 @@ public class TestHelper {
                 true);
     }
 
-    public static void verifySmartLockSave(String providerId, String email, String password) {
-        verifySmartLockSave(providerId, email, password, null);
+    public static void mockCredentialsClient(HelperActivityBase activity) {
+        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(activity);
+        CredentialsClient mockCredentials = mock(CredentialsClient.class);
+        saveSmartLock.setCredentialsClient(mockCredentials);
+
+        when(mockCredentials.save(any(Credential.class)))
+                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
     }
 
-    public static void verifySmartLockSave(String providerId, String email,
+    public static void verifySmartLockSave(HelperActivityBase activity,
+                                           String providerId, String email, String password) {
+        verifySmartLockSave(activity, providerId, email, password, null);
+    }
+
+    public static void verifySmartLockSave(HelperActivityBase activity,
+                                           String providerId, String email,
                                            String password, String phoneNumber) {
 
-        ArgumentCaptor<FirebaseUser> userCaptor = ArgumentCaptor.forClass(FirebaseUser.class);
-        ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
+        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(activity);
+        CredentialsClient mockCredentials = saveSmartLock.getCredentialsClient();
 
-        verify(AuthHelperShadow.getSaveSmartLockInstance(null)).saveCredentialsOrFinish(
-                userCaptor.capture(),
-                passwordCaptor.capture(),
-                idpResponseCaptor.capture());
+        ArgumentCaptor<Credential> credentialCaptor = ArgumentCaptor.forClass(Credential.class);
+        verify(mockCredentials).save(credentialCaptor.capture());
 
-        // Check email and password
-        assertNotNull(userCaptor.getValue());
-        assertEquals(email, userCaptor.getValue().getEmail());
-        assertEquals(password, passwordCaptor.getValue());
-        assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
+        Credential credential = credentialCaptor.getValue();
+        assertEquals(credential.getPassword(), password);
 
-        // Check phone number (if necessary)
-        if (phoneNumber != null) {
-            assertEquals(phoneNumber, userCaptor.getValue().getPhoneNumber());
+        // Non-password credentials have a provider ID
+        if (TextUtils.isEmpty(password)) {
+            assertEquals(credential.getAccountType(),
+                    ProviderUtils.providerIdToAccountType(providerId));
         }
 
-        // Check provider id
-        if (providerId == null) {
-            assertNull(idpResponseCaptor.getValue());
+        // ID can either be email or phone number
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            assertEquals(credential.getId(), phoneNumber);
         } else {
-            assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
+            assertEquals(credential.getId(), email);
         }
     }
 }

@@ -55,7 +55,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
@@ -123,9 +122,6 @@ public class AuthMethodPickerActivityTest {
     @Test
     @Config(shadows = {AuthHelperShadow.class, AuthHelperShadow.class})
     public void testFacebookLoginFlow() {
-        // initialize mocks
-        reset(AuthHelperShadow.getSaveSmartLockInstance(null));
-
         when(AuthHelperShadow.getCurrentUser().getProviders())
                 .thenReturn(Arrays.asList(FacebookAuthProvider.PROVIDER_ID));
         when(AuthHelperShadow.getFirebaseAuth().signInWithCredential((AuthCredential) any()))
@@ -135,19 +131,19 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
+        TestHelper.mockCredentialsClient(authMethodPickerActivity);
+
         Button facebookButton = authMethodPickerActivity.findViewById(R.id.facebook_button);
         assertNotNull(facebookButton);
         facebookButton.performClick();
 
-        verifySmartLockSave(FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null);
+        verifySmartLockSave(authMethodPickerActivity,
+                FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null);
     }
 
     @Test
     @Config(shadows = {GoogleProviderShadow.class, AuthHelperShadow.class, AuthHelperShadow.class})
     public void testGoogleLoginFlow() {
-        // initialize mocks
-        reset(AuthHelperShadow.getSaveSmartLockInstance(null));
-
         List<String> providers = Arrays.asList(GoogleAuthProvider.PROVIDER_ID);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
@@ -158,12 +154,14 @@ public class AuthMethodPickerActivityTest {
         when(AuthHelperShadow.getFirebaseAuth().signInWithCredential((AuthCredential) any()))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
 
-        Button googleButton = authMethodPickerActivity.findViewById(R.id.google_button);
+        TestHelper.mockCredentialsClient(authMethodPickerActivity);
 
+        Button googleButton = authMethodPickerActivity.findViewById(R.id.google_button);
         assertNotNull(googleButton);
         googleButton.performClick();
 
-        verifySmartLockSave(GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null);
+        verifySmartLockSave(authMethodPickerActivity,
+                GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null);
     }
 
     @Test

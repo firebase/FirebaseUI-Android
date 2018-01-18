@@ -188,7 +188,6 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
 
         mActivity = (HelperActivityBase) getActivity();
-        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(mActivity);
         PreambleHandler.setup(getContext(),
                 getFlowParams(),
                 R.string.fui_button_text_save,
@@ -245,6 +244,14 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
     }
 
+    private SaveSmartLock getSaveSmartLock() {
+        if (mSaveSmartLock == null) {
+            mSaveSmartLock = SaveSmartLock.getInstance(mActivity);
+        }
+
+        return mSaveSmartLock;
+    }
+
     private void registerUser(final String email, final String name, final String password) {
         final IdpResponse response = new IdpResponse.Builder(
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
@@ -260,8 +267,9 @@ public class RegisterEmailFragment extends FragmentBase implements
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
+                        SaveSmartLock saveSmartLock = getSaveSmartLock();
                         mActivity.saveCredentialsOrFinish(
-                                mSaveSmartLock,
+                                saveSmartLock,
                                 authResult.getUser(),
                                 password,
                                 response);

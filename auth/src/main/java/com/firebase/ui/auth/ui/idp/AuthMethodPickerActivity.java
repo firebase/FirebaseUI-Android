@@ -82,7 +82,6 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_auth_method_picker_layout);
-        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(this);
 
         populateIdpList(getFlowParams().providerInfo);
 
@@ -100,6 +99,14 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
             ImageView logo = findViewById(R.id.logo);
             logo.setImageResource(logoId);
         }
+    }
+
+    private SaveSmartLock getSaveSmartLock() {
+        if (mSaveSmartLock == null) {
+            mSaveSmartLock = SaveSmartLock.getInstance(this);
+        }
+
+        return mSaveSmartLock;
     }
 
     private void populateIdpList(List<IdpConfig> providers) {
@@ -168,7 +175,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                 .signInWithCredential(credential)
                 .addOnCompleteListener(new CredentialSignInHandler(
                         this,
-                        mSaveSmartLock,
+                        getSaveSmartLock(),
                         RC_ACCOUNT_LINK,
                         response))
                 .addOnFailureListener(
