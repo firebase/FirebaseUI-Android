@@ -20,6 +20,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>
  * Note that only one observer is going to be notified of changes.
  *
+ * <b>This class only supports observing via lifecycle. May not be manually observed.</b>
+ *
  * Modified from:
  * googlesamples/android-architecture
  */
@@ -47,19 +49,22 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
         });
     }
 
-    @Override
-    public void observeForever(@NonNull Observer<T> observer) {
-        throw new UnsupportedOperationException("obseveForever not supported.");
-    }
-
+    @Deprecated
     @Override
     public void removeObserver(@NonNull Observer<T> observer) {
-        throw new UnsupportedOperationException("removeObserver not supported.");
+        super.removeObserver(observer);
     }
 
+    @Deprecated
+    @Override
+    public void observeForever(@NonNull Observer<T> observer) {
+        super.observeForever(observer);
+    }
+
+    @Deprecated
     @Override
     public void removeObservers(@NonNull LifecycleOwner owner) {
-        throw new UnsupportedOperationException("removeObservers not supported.");
+        super.removeObservers(owner);
     }
 
     @MainThread
