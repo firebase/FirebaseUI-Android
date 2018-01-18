@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
+import android.support.annotation.RestrictTo;
 import android.support.annotation.VisibleForTesting;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -10,6 +11,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthViewModelBase extends ViewModelBase<FlowParameters> {
 
     private CredentialsClient mCredentialsClient;

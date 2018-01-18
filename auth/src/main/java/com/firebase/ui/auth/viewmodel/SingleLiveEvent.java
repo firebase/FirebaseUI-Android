@@ -4,6 +4,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -19,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>
  * Note that only one observer is going to be notified of changes.
  *
- * Source:
+ * Modified from:
  * googlesamples/android-architecture
  */
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
@@ -44,6 +45,21 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
                 }
             }
         });
+    }
+
+    @Override
+    public void observeForever(@NonNull Observer<T> observer) {
+        throw new UnsupportedOperationException("obseveForever not supported.");
+    }
+
+    @Override
+    public void removeObserver(@NonNull Observer<T> observer) {
+        throw new UnsupportedOperationException("removeObserver not supported.");
+    }
+
+    @Override
+    public void removeObservers(@NonNull LifecycleOwner owner) {
+        throw new UnsupportedOperationException("removeObservers not supported.");
     }
 
     @MainThread

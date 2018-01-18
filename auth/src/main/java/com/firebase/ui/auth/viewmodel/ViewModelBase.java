@@ -2,10 +2,11 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.support.annotation.VisibleForTesting;
+import android.support.annotation.RestrictTo;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class ViewModelBase<T> extends AndroidViewModel {
     private final AtomicBoolean mIsInitialized = new AtomicBoolean();
 
@@ -28,7 +29,7 @@ public abstract class ViewModelBase<T> extends AndroidViewModel {
         return mArguments;
     }
 
-    @VisibleForTesting
+    @RestrictTo(RestrictTo.Scope.TESTS)
     protected void setArguments(T arguments) {
         mArguments = arguments;
     }

@@ -1,10 +1,9 @@
-package com.firebase.ui.auth.util.ui;
+package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.viewmodel.ViewModelBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FlowHolder extends ViewModelBase<FlowParameters> {
