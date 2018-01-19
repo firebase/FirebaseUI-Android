@@ -18,7 +18,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -30,23 +29,22 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnectionFailedListener {
+public class GoogleProvider implements IdpProvider {
     private static final String TAG = "GoogleProvider";
     private static final int RC_SIGN_IN = 20;
 
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleSignInClient mSignInClient;
     private FragmentActivity mActivity;
     private IdpConfig mIdpConfig;
     private IdpCallback mIdpCallback;
@@ -60,10 +58,8 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
         mActivity = activity;
         mIdpConfig = idpConfig;
         mSpecificAccount = !TextUtils.isEmpty(email);
-        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
-                .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(email))
-                .build();
+
+        mSignInClient = GoogleSignIn.getClient(mActivity, getSignInOptions(email));
     }
 
     public static AuthCredential createAuthCredential(IdpResponse response) {
@@ -96,13 +92,6 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     @Override
     public void setAuthenticationCallback(IdpCallback callback) {
         mIdpCallback = callback;
-    }
-
-    public void disconnect() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-            mGoogleApiClient = null;
-        }
     }
 
     private IdpResponse createIdpResponse(GoogleSignInAccount account) {
@@ -141,7 +130,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
 
     @Override
     public void startLogin(Activity activity) {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        Intent signInIntent = mSignInClient.getSignInIntent();
         activity.startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -149,12 +138,7 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
         Status status = result.getStatus();
 
         if (status.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
-            mGoogleApiClient.stopAutoManage(mActivity);
-            mGoogleApiClient.disconnect();
-            mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
-                    .enableAutoManage(mActivity, GoogleApiHelper.getSafeAutoManageId(), this)
-                    .addApi(Auth.GOOGLE_SIGN_IN_API, getSignInOptions(null))
-                    .build();
+            mSignInClient = GoogleSignIn.getClient(mActivity, getSignInOptions(null));
             startLogin(mActivity);
         } else {
             if (status.getStatusCode() == CommonStatusCodes.DEVELOPER_ERROR) {
@@ -169,11 +153,6 @@ public class GoogleProvider implements IdpProvider, GoogleApiClient.OnConnection
     private void onError(String errorMessage) {
         Log.e(TAG, "Error logging in with Google. " + errorMessage);
         mIdpCallback.onFailure();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.w(TAG, "onConnectionFailed:" + connectionResult);
     }
 }
 

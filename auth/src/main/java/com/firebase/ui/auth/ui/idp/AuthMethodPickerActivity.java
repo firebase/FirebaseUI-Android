@@ -189,16 +189,4 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
         // stay on this screen
         getDialogHolder().dismissDialog();
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mProviders != null) {
-            for (Provider provider : mProviders) {
-                if (provider instanceof GoogleProvider) {
-                    ((GoogleProvider) provider).disconnect();
-                }
-            }
-        }
-    }
 }

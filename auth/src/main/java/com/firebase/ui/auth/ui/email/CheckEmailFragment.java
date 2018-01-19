@@ -22,16 +22,14 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.GoogleApiHelper;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
+import com.google.android.gms.auth.api.credentials.Credentials;
+import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.HintRequest;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -234,16 +232,7 @@ public class CheckEmailFragment extends FragmentBase implements
     }
 
     private PendingIntent getEmailHintIntent() {
-        GoogleApiClient client = new GoogleApiClient.Builder(getContext())
-                .addApi(Auth.CREDENTIALS_API)
-                .enableAutoManage(getActivity(), GoogleApiHelper.getSafeAutoManageId(),
-                        new GoogleApiClient.OnConnectionFailedListener() {
-                            @Override
-                            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                                Log.e(TAG, "Client connection failed: " + connectionResult.getErrorMessage());
-                            }
-                        })
-                .build();
+        CredentialsClient client = Credentials.getClient(getContext());
 
         HintRequest hintRequest = new HintRequest.Builder()
                 .setHintPickerConfig(new CredentialPickerConfig.Builder()
@@ -252,7 +241,7 @@ public class CheckEmailFragment extends FragmentBase implements
                 .setEmailAddressIdentifierSupported(true)
                 .build();
 
-        return Auth.CredentialsApi.getHintPickerIntent(client, hintRequest);
+        return client.getHintPickerIntent(hintRequest);
     }
 
     @Override
