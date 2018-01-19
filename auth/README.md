@@ -62,7 +62,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:3.1.2'
+    implementation 'com.firebaseui:firebase-ui-auth:3.1.3'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
@@ -371,6 +371,7 @@ see the Firebase Auth documentation to
 and [register an AuthStateListener](https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.html#addAuthStateListener(com.google.firebase.auth.FirebaseAuth.AuthStateListener)).
 
 #### ID tokens
+
 To retrieve the ID token that the IDP returned, you can extract an `IdpResponse` from the result
 Intent.
 
