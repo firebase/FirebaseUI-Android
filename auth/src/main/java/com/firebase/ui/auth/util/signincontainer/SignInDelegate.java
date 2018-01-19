@@ -22,7 +22,6 @@ import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.GoogleSignInHelper;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
@@ -31,7 +30,6 @@ import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -304,11 +302,11 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
             return;
         }
 
-        GoogleSignInHelper.getInstance(getActivity())
-                .delete(mCredential)
-                .addOnCompleteListener(new OnCompleteListener<Status>() {
+        CredentialsClient client = Credentials.getClient(getActivity());
+        client.delete(mCredential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<Status> task) {
+                    public void onComplete(@NonNull Task<Void> task) {
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "deleteCredential:failure", task.getException());
                         }
