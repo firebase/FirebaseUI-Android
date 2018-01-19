@@ -297,7 +297,6 @@ public class PhoneActivityTest {
     @Config(shadows = {AuthHelperShadow.class})
     public void testAutoVerify() {
         reset(AuthHelperShadow.getPhoneAuthProvider());
-        reset(AuthHelperShadow.getSaveSmartLockInstance(null));
         reset(AuthHelperShadow.getFirebaseAuth());
 
         when(AuthHelperShadow.getCurrentUser().getPhoneNumber()).thenReturn(PHONE);
@@ -324,7 +323,6 @@ public class PhoneActivityTest {
     @Config(shadows = {AuthHelperShadow.class})
     public void testSMSAutoRetrieval() {
         reset(AuthHelperShadow.getPhoneAuthProvider());
-        reset(AuthHelperShadow.getSaveSmartLockInstance(null));
         when(credential.getSmsCode()).thenReturn("123456");
 
         when(AuthHelperShadow.getCurrentUser().getPhoneNumber()).thenReturn(PHONE);

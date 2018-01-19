@@ -96,8 +96,6 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(mActivity);
-
         User user = User.getUser(getArguments());
         String provider = user.getProviderId();
 
@@ -134,7 +132,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                 .signInWithCredential(credential)
                 .addOnCompleteListener(new CredentialSignInHandler(
                         mActivity,
-                        mSaveSmartLock,
+                        getSaveSmartLock(),
                         RC_WELCOME_BACK_IDP,
                         response))
                 .addOnFailureListener(
@@ -155,5 +153,13 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
         } else {
             mIdpProvider.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private SaveSmartLock getSaveSmartLock() {
+        if (mSaveSmartLock == null) {
+            mSaveSmartLock = SaveSmartLock.getInstance(mActivity);
+        }
+
+        return mSaveSmartLock;
     }
 }

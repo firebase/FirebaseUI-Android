@@ -52,7 +52,9 @@ public class CredentialsUtil {
         }
 
         Credential.Builder builder = new Credential.Builder(email);
-        builder.setPassword(password);
+        if (!TextUtils.isEmpty(password)) {
+            builder.setPassword(password);
+        }
         if (password == null && idpResponse != null) {
             String translatedProvider =
                     ProviderUtils.providerIdToAccountType(idpResponse.getProviderType());

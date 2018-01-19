@@ -59,6 +59,7 @@
     <string name="enable_credential_selector">Enable Smart Lock\'s credential selector</string>
     <string name="enable_hint_selector">Enable Smart Lock\'s hint selector</string>
     <string name="allow_new_email_acccount">Allow account creation if email does not exist.</string>
+    <string name="require_name">Require first/last name with email accounts.</string>
 
     <string name="unknown_response">Unexpected onActivityResult response code</string>
     <string name="unknown_sign_in_response">Unknown response from AuthUI sign-in</string>

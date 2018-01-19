@@ -20,6 +20,7 @@ import android.content.IntentSender;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -107,6 +108,20 @@ public class SaveSmartLock extends SmartLockBase<Void> {
         finish(Activity.RESULT_OK, mResponse.toIntent());
     }
 
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setCredentialsClient(CredentialsClient client) {
+        mCredentialsClient = client;
+    }
+
+    @VisibleForTesting
+    public CredentialsClient getCredentialsClient() {
+        if (mCredentialsClient == null) {
+            mCredentialsClient = Credentials.getClient(getActivity());
+        }
+
+        return mCredentialsClient;
+    }
+
     /**
      * If SmartLock is enabled and Google Play Services is available, save the credentials.
      * Otherwise, finish the calling Activity with {@link Activity#RESULT_OK}.
@@ -140,9 +155,8 @@ public class SaveSmartLock extends SmartLockBase<Void> {
         }
 
         // Build credentials client and kick off the save
-        mCredentialsClient = Credentials.getClient(getActivity());
         Credential credential = CredentialsUtil.buildCredential(
-                mEmail, mName, mPassword, mProfilePictureUri, mResponse);
+                mEmail, mPassword, mName, mProfilePictureUri, mResponse);
 
         if (credential == null) {
             Log.e(TAG, "Unable to save null credential!");
@@ -150,7 +164,7 @@ public class SaveSmartLock extends SmartLockBase<Void> {
             return;
         }
 
-        mCredentialsClient.save(credential)
+        getCredentialsClient().save(credential)
                 .addOnCompleteListener(this);
     }
 
