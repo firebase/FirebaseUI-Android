@@ -45,10 +45,6 @@ public class SaveSmartLock extends SmartLockBase<Void> {
 
     private CredentialsClient mCredentialsClient;
 
-    private String mName;
-    private String mEmail;
-    private String mPassword;
-    private String mProfilePictureUri;
     private IdpResponse mResponse;
 
     @Nullable
@@ -146,16 +142,13 @@ public class SaveSmartLock extends SmartLockBase<Void> {
             return;
         }
 
-        mName = firebaseUser.getDisplayName();
-        mEmail = firebaseUser.getEmail();
-        mPassword = password;
-        mProfilePictureUri = firebaseUser.getPhotoUrl() != null
-                ? firebaseUser.getPhotoUrl().toString()
-                : null;
-
         // Build credentials client and kick off the save
         final Credential credential = CredentialsUtil.buildCredential(
-                mEmail, mPassword, mName, mProfilePictureUri, mResponse);
+                firebaseUser.getEmail(),
+                password,
+                firebaseUser.getDisplayName(),
+                firebaseUser.getPhotoUrl() == null ? null : firebaseUser.getPhotoUrl().toString(),
+                mResponse);
 
         if (credential == null) {
             Log.e(TAG, "Unable to save null credential!");
