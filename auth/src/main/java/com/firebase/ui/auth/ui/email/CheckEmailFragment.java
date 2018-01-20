@@ -22,13 +22,12 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
-import com.google.android.gms.auth.api.credentials.Credentials;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.HintRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -232,8 +231,6 @@ public class CheckEmailFragment extends FragmentBase implements
     }
 
     private PendingIntent getEmailHintIntent() {
-        CredentialsClient client = Credentials.getClient(getContext());
-
         HintRequest hintRequest = new HintRequest.Builder()
                 .setHintPickerConfig(new CredentialPickerConfig.Builder()
                         .setShowCancelButton(true)
@@ -241,7 +238,7 @@ public class CheckEmailFragment extends FragmentBase implements
                 .setEmailAddressIdentifierSupported(true)
                 .build();
 
-        return client.getHintPickerIntent(hintRequest);
+        return GoogleApiUtils.getCredentialsClient(getContext()).getHintPickerIntent(hintRequest);
     }
 
     @Override

@@ -38,12 +38,11 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialPickerConfig;
-import com.google.android.gms.auth.api.credentials.Credentials;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.HintRequest;
 
 import java.util.Locale;
@@ -241,8 +240,6 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
     }
 
     private PendingIntent getPhoneHintIntent() {
-        CredentialsClient client = Credentials.getClient(getContext());
-
         HintRequest hintRequest = new HintRequest.Builder()
                 .setHintPickerConfig(
                         new CredentialPickerConfig.Builder().setShowCancelButton(true).build())
@@ -250,7 +247,7 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
                 .setEmailAddressIdentifierSupported(false)
                 .build();
 
-        return client.getHintPickerIntent(hintRequest);
+        return GoogleApiUtils.getCredentialsClient(getContext()).getHintPickerIntent(hintRequest);
     }
 
     private void setPhoneNumber(PhoneNumber phoneNumber) {

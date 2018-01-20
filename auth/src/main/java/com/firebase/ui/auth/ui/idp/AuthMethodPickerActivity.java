@@ -17,7 +17,6 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -45,7 +44,6 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -70,8 +68,6 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     private static final int RC_ACCOUNT_LINK = 3;
 
     private List<Provider> mProviders;
-    @Nullable
-    private SaveSmartLock mSaveSmartLock;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return HelperActivityBase.createBaseIntent(
@@ -99,14 +95,6 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
             ImageView logo = findViewById(R.id.logo);
             logo.setImageResource(logoId);
         }
-    }
-
-    private SaveSmartLock getSaveSmartLock() {
-        if (mSaveSmartLock == null) {
-            mSaveSmartLock = SaveSmartLock.getInstance(this);
-        }
-
-        return mSaveSmartLock;
     }
 
     private void populateIdpList(List<IdpConfig> providers) {
@@ -175,7 +163,6 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                 .signInWithCredential(credential)
                 .addOnCompleteListener(new CredentialSignInHandler(
                         this,
-                        getSaveSmartLock(),
                         RC_ACCOUNT_LINK,
                         response))
                 .addOnFailureListener(

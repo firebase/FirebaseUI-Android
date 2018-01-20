@@ -26,7 +26,6 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.util.ui.fieldvalidators.BaseValidator;
@@ -67,7 +66,6 @@ public class RegisterEmailFragment extends FragmentBase implements
     private EmailFieldValidator mEmailFieldValidator;
     private PasswordFieldValidator mPasswordFieldValidator;
     private BaseValidator mNameValidator;
-    private SaveSmartLock mSaveSmartLock;
 
     private User mUser;
 
@@ -244,14 +242,6 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
     }
 
-    private SaveSmartLock getSaveSmartLock() {
-        if (mSaveSmartLock == null) {
-            mSaveSmartLock = SaveSmartLock.getInstance(mActivity);
-        }
-
-        return mSaveSmartLock;
-    }
-
     private void registerUser(final String email, final String name, final String password) {
         final IdpResponse response = new IdpResponse.Builder(
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
@@ -267,9 +257,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        SaveSmartLock saveSmartLock = getSaveSmartLock();
                         mActivity.saveCredentialsOrFinish(
-                                saveSmartLock,
                                 authResult.getUser(),
                                 password,
                                 response);

@@ -5,7 +5,7 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.VisibleForTesting;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.google.android.gms.auth.api.credentials.Credentials;
+import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,7 +27,7 @@ public class AuthViewModelBase extends ViewModelBase<FlowParameters> {
         FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
         mAuth = FirebaseAuth.getInstance(app);
         mPhoneAuth = PhoneAuthProvider.getInstance(mAuth);
-        mCredentialsClient = Credentials.getClient(getApplication());
+        mCredentialsClient = GoogleApiUtils.getCredentialsClient(getApplication());
     }
 
     protected FirebaseAuth getAuth() {

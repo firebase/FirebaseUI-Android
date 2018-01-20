@@ -53,8 +53,6 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
 
     private HelperActivityBase mActivity;
     private IdpProvider mIdpProvider;
-    @Nullable
-    private SaveSmartLock mSaveSmartLock;
 
     public static void signIn(FragmentActivity activity, FlowParameters parameters, User user) {
         FragmentManager fm = activity.getSupportFragmentManager();
@@ -132,7 +130,6 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                 .signInWithCredential(credential)
                 .addOnCompleteListener(new CredentialSignInHandler(
                         mActivity,
-                        getSaveSmartLock(),
                         RC_WELCOME_BACK_IDP,
                         response))
                 .addOnFailureListener(
@@ -153,13 +150,5 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
         } else {
             mIdpProvider.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    private SaveSmartLock getSaveSmartLock() {
-        if (mSaveSmartLock == null) {
-            mSaveSmartLock = SaveSmartLock.getInstance(mActivity);
-        }
-
-        return mSaveSmartLock;
     }
 }
