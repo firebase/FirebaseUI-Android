@@ -19,7 +19,6 @@ import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.testhelpers.AuthHelperShadow;
@@ -42,7 +41,6 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,7 +50,7 @@ public class EmailActivityTest {
     private EmailActivity createActivity() {
         Intent startIntent = EmailActivity.createIntent(
                 RuntimeEnvironment.application,
-                TestHelper.getFlowParameters(Collections.singletonList(AuthUI.EMAIL_PROVIDER)));
+                TestHelper.getFlowParameters(Collections.singletonList(EmailAuthProvider.PROVIDER_ID)));
 
         return Robolectric.buildActivity(EmailActivity.class, startIntent)
                 .create()
@@ -63,7 +61,7 @@ public class EmailActivityTest {
 
     @Before
     public void setUp() {
-        TestHelper.initializeApp(RuntimeEnvironment.application);
+        TestHelper.initialize();
     }
 
     @Test
@@ -98,9 +96,9 @@ public class EmailActivityTest {
     @Config(shadows = {AuthHelperShadow.class})
     public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
         // init mocks
-        reset(AuthHelperShadow.getSaveSmartLockInstance(null));
+        // TODO
+        // reset(AuthHelperShadow.getSaveSmartLockInstance(null));
 
-        TestHelper.initializeApp(RuntimeEnvironment.application);
         EmailActivity emailActivity = createActivity();
 
         // Trigger new user UI (bypassing check email)
@@ -124,6 +122,8 @@ public class EmailActivityTest {
         when(AuthHelperShadow.getCurrentUser().updateProfile(any(UserProfileChangeRequest.class)))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
+        TestHelper.mockCredentialsClient(emailActivity);
+
         Button button = emailActivity.findViewById(R.id.button_create);
         button.performClick();
 
@@ -132,7 +132,7 @@ public class EmailActivityTest {
                 .createUserWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD);
 
         // Finally, the new credential should be saved to SmartLock
-        TestHelper.verifySmartLockSave(
+        TestHelper.verifySmartLockSave(emailActivity,
                 EmailAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
                 TestConstants.PASSWORD);

@@ -24,12 +24,19 @@ public final class ExtraConstants {
     public static final String EXTRA_FLOW_PARAMS = "extra_flow_params";
     public static final String EXTRA_IDP_RESPONSE = "extra_idp_response";
     public static final String EXTRA_USER = "extra_user";
+
     public static final String EXTRA_EMAIL = "extra_email";
-    public static final String EXTRA_PHONE = "extra_phone_number";
-    public static final String EXTRA_COUNTRY_CODE = "extra_country_code";
-    public static final String EXTRA_NATIONAL_NUMBER = "extra_national_number";
-    public static final String HAS_EXISTING_INSTANCE = "has_existing_instance";
+    public static final String EXTRA_ALLOW_NEW_EMAILS = "extra_allow_new_emails";
+    public static final String EXTRA_REQUIRE_NAME = "extra_require_name";
+    public static final String EXTRA_GOOGLE_SIGN_IN_OPTIONS = "extra_google_sign_in_options";
+    public static final String EXTRA_FACEBOOK_PERMISSIONS = "extra_facebook_permissions";
+
     public static final String EXTRA_PARAMS = "extra_params";
+    public static final String EXTRA_PHONE = "extra_phone_number";
+    public static final String EXTRA_COUNTRY_ISO = "extra_country_iso";
+    public static final String EXTRA_NATIONAL_NUMBER = "extra_national_number";
+
+    public static final String HAS_EXISTING_INSTANCE = "has_existing_instance";
 
     private ExtraConstants() {
         throw new AssertionError("No instance for you!");

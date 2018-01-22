@@ -14,34 +14,71 @@
 
 package com.firebase.ui.auth.testhelpers;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.content.Context;
+import android.content.res.Resources;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
-import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
+import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialsClient;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import org.mockito.ArgumentCaptor;
+import org.robolectric.RuntimeEnvironment;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TestHelper {
     private static final String APPLICATION_ID = "testAppId";
     private static final String API_KEY = "fakeKey";
-    private static final String FIREBASE_APP_NAME = "firebaseAppName";
 
-    public static FirebaseApp initializeApp(Context context) {
+    public static void initialize() {
+        spyContextAndResources();
+        AuthUI.setApplicationContext(RuntimeEnvironment.application);
+        FirebaseApp app = initializeApp(RuntimeEnvironment.application);
+        injectMockFirebaseAuth(app);
+        initializeProviders();
+    }
+
+    private static void spyContextAndResources() {
+        RuntimeEnvironment.application = spy(RuntimeEnvironment.application);
+        when(RuntimeEnvironment.application.getApplicationContext())
+                .thenReturn(RuntimeEnvironment.application);
+        Resources spiedResources = spy(RuntimeEnvironment.application.getResources());
+        when(RuntimeEnvironment.application.getResources()).thenReturn(spiedResources);
+    }
+
+    private static FirebaseApp initializeApp(Context context) {
         try {
             return FirebaseApp.initializeApp(
                     context,
@@ -49,10 +86,59 @@ public class TestHelper {
                             .setApiKey(API_KEY)
                             .setApplicationId(APPLICATION_ID)
                             .build(),
-                    FIREBASE_APP_NAME);
+                    FirebaseApp.DEFAULT_APP_NAME);
         } catch (IllegalStateException e) {
-            return FirebaseApp.getInstance(FIREBASE_APP_NAME);
+            return FirebaseApp.getInstance(FirebaseApp.DEFAULT_APP_NAME);
         }
+    }
+
+    /**
+     * This method finds the map of FirebaseAuth instances and injects of a mock instance associated
+     * with the given FirebaseApp for testing purposes.
+     */
+    private static void injectMockFirebaseAuth(FirebaseApp app) {
+        for (Field field : FirebaseAuth.class.getDeclaredFields()) {
+            field.setAccessible(true);
+
+            Object o;
+            try {
+                o = field.get(null);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            } catch (NullPointerException e) {
+                continue;
+            }
+
+            Type genericType = field.getGenericType();
+            if (o instanceof Map && genericType instanceof ParameterizedType) {
+                Type[] parameterTypes = ((ParameterizedType) genericType).getActualTypeArguments();
+                if (parameterTypes.length != 2 || parameterTypes[0] != String.class
+                        || parameterTypes[1] != FirebaseAuth.class) {
+                    continue;
+                }
+
+                //noinspection unchecked
+                Map<String, FirebaseAuth> instances = (Map<String, FirebaseAuth>) o;
+
+                FirebaseAuth.getInstance(app);
+                for (String id : instances.keySet()) {
+                    instances.put(id, mock(FirebaseAuth.class));
+                }
+
+                break;
+            }
+        }
+
+        when(FirebaseAuth.getInstance(app).setFirebaseUIVersion(anyString()))
+                .thenReturn(Tasks.<Void>forResult(null));
+    }
+
+    private static void initializeProviders() {
+        Context context = RuntimeEnvironment.application;
+        when(context.getString(R.string.default_web_client_id)).thenReturn("abc");
+        when(context.getString(R.string.facebook_application_id)).thenReturn("abc");
+        when(context.getString(R.string.twitter_consumer_key)).thenReturn("abc");
+        when(context.getString(R.string.twitter_consumer_secret)).thenReturn("abc");
     }
 
     public static FirebaseUser getMockFirebaseUser() {
@@ -68,52 +154,76 @@ public class TestHelper {
     public static FlowParameters getFlowParameters(List<String> providerIds) {
         List<IdpConfig> idpConfigs = new ArrayList<>();
         for (String providerId : providerIds) {
-            idpConfigs.add(new IdpConfig.Builder(providerId).build());
+            switch (providerId) {
+                case GoogleAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.GoogleBuilder().build());
+                    break;
+                case FacebookAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.FacebookBuilder().build());
+                    break;
+                case TwitterAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.TwitterBuilder().build());
+                    break;
+                case EmailAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.EmailBuilder().build());
+                    break;
+                case PhoneAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.PhoneBuilder().build());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown provider: " + providerId);
+            }
         }
         return new FlowParameters(
-                FIREBASE_APP_NAME,
+                FirebaseApp.DEFAULT_APP_NAME,
                 idpConfigs,
                 AuthUI.getDefaultTheme(),
                 AuthUI.NO_LOGO,
-                null  /* tosUrl */,
-                null  /* privacyPolicyUrl */,
-                true  /* credentialPickerEnabled */,
-                true  /* hintSelectorEnabled */,
-                true  /* allowNewEmailAccounts */);
+                null,
+                null,
+                true,
+                true);
     }
 
-    public static void verifySmartLockSave(String providerId, String email, String password) {
-        verifySmartLockSave(providerId, email, password, null);
+    public static void mockCredentialsClient(HelperActivityBase activity) {
+        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(activity);
+        CredentialsClient mockCredentials = mock(CredentialsClient.class);
+        saveSmartLock.setCredentialsClient(mockCredentials);
+        ((LifecycleRegistry) saveSmartLock.getLifecycle()).markState(Lifecycle.State.RESUMED);
+
+        when(mockCredentials.save(any(Credential.class)))
+                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
     }
 
-    public static void verifySmartLockSave(String providerId, String email,
+    public static void verifySmartLockSave(HelperActivityBase activity,
+                                           String providerId, String email, String password) {
+        verifySmartLockSave(activity, providerId, email, password, null);
+    }
+
+    public static void verifySmartLockSave(HelperActivityBase activity,
+                                           String providerId, String email,
                                            String password, String phoneNumber) {
 
-        ArgumentCaptor<FirebaseUser> userCaptor = ArgumentCaptor.forClass(FirebaseUser.class);
-        ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
+        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(activity);
+        CredentialsClient mockCredentials = saveSmartLock.getCredentialsClient();
 
-        verify(AuthHelperShadow.getSaveSmartLockInstance(null)).saveCredentialsOrFinish(
-                userCaptor.capture(),
-                passwordCaptor.capture(),
-                idpResponseCaptor.capture());
+        ArgumentCaptor<Credential> credentialCaptor = ArgumentCaptor.forClass(Credential.class);
+        verify(mockCredentials).save(credentialCaptor.capture());
 
-        // Check email and password
-        assertNotNull(userCaptor.getValue());
-        assertEquals(email, userCaptor.getValue().getEmail());
-        assertEquals(password, passwordCaptor.getValue());
-        assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
+        Credential credential = credentialCaptor.getValue();
+        assertEquals(credential.getPassword(), password);
 
-        // Check phone number (if necessary)
-        if (phoneNumber != null) {
-            assertEquals(phoneNumber, userCaptor.getValue().getPhoneNumber());
+        // Non-password credentials have a provider ID
+        if (TextUtils.isEmpty(password)) {
+            assertEquals(credential.getAccountType(),
+                    ProviderUtils.providerIdToAccountType(providerId));
         }
 
-        // Check provider id
-        if (providerId == null) {
-            assertNull(idpResponseCaptor.getValue());
+        // ID can either be email or phone number
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            assertEquals(credential.getId(), phoneNumber);
         } else {
-            assertEquals(providerId, idpResponseCaptor.getValue().getProviderType());
+            assertEquals(credential.getId(), email);
         }
     }
 }

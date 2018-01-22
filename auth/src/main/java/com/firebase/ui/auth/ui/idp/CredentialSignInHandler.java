@@ -17,7 +17,6 @@ package com.firebase.ui.auth.ui.idp;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
@@ -27,7 +26,6 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,18 +41,14 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     private static final String TAG = "CredentialSignInHandler";
 
     private HelperActivityBase mActivity;
-    @Nullable
-    private SaveSmartLock mSmartLock;
     private IdpResponse mResponse;
     private int mAccountLinkRequestCode;
 
     public CredentialSignInHandler(
             HelperActivityBase activity,
-            @Nullable SaveSmartLock smartLock,
             int accountLinkRequestCode,
             IdpResponse response) {
         mActivity = activity;
-        mSmartLock = smartLock;
         mResponse = response;
         mAccountLinkRequestCode = accountLinkRequestCode;
     }
@@ -63,7 +57,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
             FirebaseUser firebaseUser = task.getResult().getUser();
-            mActivity.saveCredentialsOrFinish(mSmartLock, firebaseUser, mResponse);
+            mActivity.saveCredentialsOrFinish(firebaseUser, mResponse);
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 String email = mResponse.getEmail();

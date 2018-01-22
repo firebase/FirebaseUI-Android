@@ -22,16 +22,10 @@ import com.firebase.ui.auth.R;
 @SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AppCompatBase extends HelperActivityBase {
-
     @Override
-    protected void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
-        configureTheme();
-    }
-
-    private void configureTheme() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setTheme(R.style.FirebaseUI); // Provides default values
-        setTheme(getFlowParams().themeId);
+        setTheme(getFlowHolder().getArguments().themeId);
     }
-
 }

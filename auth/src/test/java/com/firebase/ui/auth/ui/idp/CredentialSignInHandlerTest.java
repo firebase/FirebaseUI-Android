@@ -29,7 +29,6 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.ProgressDialogHolder;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.AuthHelper;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
@@ -46,11 +45,9 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -66,7 +63,7 @@ public class CredentialSignInHandlerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        TestHelper.initializeApp(RuntimeEnvironment.application);
+        TestHelper.initialize();
     }
 
     @Test
@@ -79,27 +76,19 @@ public class CredentialSignInHandlerTest {
                                 .build())
                         .setToken(TestConstants.TOKEN)
                         .build();
-        SaveSmartLock smartLock = mock(SaveSmartLock.class);
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
-                smartLock,
                 RC_ACCOUNT_LINK,
                 idpResponse);
 
-        when(mockActivity.getFlowParams()).thenReturn(
-                TestHelper.getFlowParameters(Collections.<String>emptyList()));
         credentialSignInHandler.onComplete(Tasks.forResult(FakeAuthResult.INSTANCE));
 
-        ArgumentCaptor<SaveSmartLock> smartLockCaptor = ArgumentCaptor.forClass(SaveSmartLock.class);
         ArgumentCaptor<FirebaseUser> firebaseUserCaptor = ArgumentCaptor.forClass(FirebaseUser.class);
         ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
 
         verify(mockActivity).saveCredentialsOrFinish(
-                smartLockCaptor.capture(),
-                firebaseUserCaptor.capture(),
-                idpResponseCaptor.capture());
+                firebaseUserCaptor.capture(), idpResponseCaptor.capture());
 
-        assertEquals(smartLock, smartLockCaptor.getValue());
         assertEquals(TestConstants.EMAIL,
                 firebaseUserCaptor.getValue().getEmail());
 
@@ -122,7 +111,6 @@ public class CredentialSignInHandlerTest {
                         .build();
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
-                null,
                 RC_ACCOUNT_LINK,
                 idpResponse);
 
@@ -177,7 +165,6 @@ public class CredentialSignInHandlerTest {
                         .build();
         CredentialSignInHandler credentialSignInHandler = new CredentialSignInHandler(
                 mockActivity,
-                null,
                 RC_ACCOUNT_LINK,
                 idpResponse);
 

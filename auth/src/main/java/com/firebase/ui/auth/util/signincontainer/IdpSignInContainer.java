@@ -53,8 +53,6 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
 
     private HelperActivityBase mActivity;
     private IdpProvider mIdpProvider;
-    @Nullable
-    private SaveSmartLock mSaveSmartLock;
 
     public static void signIn(FragmentActivity activity, FlowParameters parameters, User user) {
         FragmentManager fm = activity.getSupportFragmentManager();
@@ -96,25 +94,11 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(mActivity);
-
         User user = User.getUser(getArguments());
         String provider = user.getProviderId();
 
-        AuthUI.IdpConfig providerConfig = null;
-        for (AuthUI.IdpConfig config : getFlowParams().providerInfo) {
-            if (config.getProviderId().equalsIgnoreCase(provider)) {
-                providerConfig = config;
-                break;
-            }
-        }
-
-        if (providerConfig == null) {
-            // we don't have a provider to handle this
-            finish(Activity.RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-            return;
-        }
-
+        AuthUI.IdpConfig providerConfig = ProviderUtils.getConfigFromIdps(
+                getFlowParams().providerInfo, provider);
         if (provider.equalsIgnoreCase(GoogleAuthProvider.PROVIDER_ID)) {
             mIdpProvider = new GoogleProvider(
                     getActivity(),
@@ -146,7 +130,6 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                 .signInWithCredential(credential)
                 .addOnCompleteListener(new CredentialSignInHandler(
                         mActivity,
-                        mSaveSmartLock,
                         RC_WELCOME_BACK_IDP,
                         response))
                 .addOnFailureListener(
