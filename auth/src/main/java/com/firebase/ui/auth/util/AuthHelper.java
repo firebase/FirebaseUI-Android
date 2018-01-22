@@ -4,8 +4,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.FirebaseApp;
@@ -45,10 +43,6 @@ public class AuthHelper {
     @Nullable
     public String getUidForAccountLinking() {
         return canLinkAccounts() ? getCurrentUser().getUid() : null;
-    }
-
-    public SaveSmartLock getSaveSmartLockInstance(HelperActivityBase activity) {
-        return SaveSmartLock.getInstance(activity);
     }
 
     public PhoneAuthProvider getPhoneAuthProvider() {

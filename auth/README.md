@@ -62,7 +62,7 @@ Gradle, add the dependency:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.firebaseui:firebase-ui-auth:3.1.2'
+    implementation 'com.firebaseui:firebase-ui-auth:3.2.0'
 
     // Required only if Facebook login support is required
     // Find the latest Facebook SDK releases here: https://goo.gl/Ce5L94
@@ -462,7 +462,7 @@ You'll also need to add the service to your `AndroidManifest.xml`:
 <service android:name=".MyManualMergeService" />
 ```
 
-##### ID tokens
+#### ID tokens
 
 To retrieve the ID token that the IDP returned, you can extract an `IdpResponse` from the result
 Intent.

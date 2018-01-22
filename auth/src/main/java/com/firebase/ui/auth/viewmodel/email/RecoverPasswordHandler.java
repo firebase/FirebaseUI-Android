@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.ui.email;
+package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.util.data.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 

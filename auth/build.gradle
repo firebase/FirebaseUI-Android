@@ -36,7 +36,7 @@ android {
 dependencies {
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.android.support:customtabs:$supportLibraryVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta4'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta3'
 
     implementation "android.arch.lifecycle:extensions:$architectureVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
@@ -57,7 +57,7 @@ dependencies {
     testImplementation 'com.facebook.android:facebook-login:4.29.0'
     testImplementation("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }
 
-    lintChecks project(':lint')
+    implementation project(':internal:lintchecks')
 }
 
 javadoc.include([

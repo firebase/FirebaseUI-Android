@@ -17,7 +17,6 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -46,7 +45,6 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -73,8 +71,6 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     private static final int RC_ACCOUNT_LINK = 3;
 
     private List<Provider> mProviders;
-    @Nullable
-    private SaveSmartLock mSaveSmartLock;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return HelperActivityBase.createBaseIntent(
@@ -87,7 +83,6 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_auth_method_picker_layout);
-        mSaveSmartLock = getAuthHelper().getSaveSmartLockInstance(this);
 
         populateIdpList(getFlowParams().providerInfo);
 
@@ -182,7 +177,6 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
         signInTask
                 .addOnCompleteListener(new CredentialSignInHandler(
                         this,
-                        mSaveSmartLock,
                         RC_ACCOUNT_LINK,
                         response))
                 .addOnFailureListener(
@@ -195,17 +189,5 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     public void onFailure() {
         // stay on this screen
         getDialogHolder().dismissDialog();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mProviders != null) {
-            for (Provider provider : mProviders) {
-                if (provider instanceof GoogleProvider) {
-                    ((GoogleProvider) provider).disconnect();
-                }
-            }
-        }
     }
 }

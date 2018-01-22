@@ -15,7 +15,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
-import com.firebase.ui.auth.util.ui.FlowHolder;
+import com.firebase.ui.auth.viewmodel.FlowHolder;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
@@ -84,19 +84,15 @@ public class HelperActivityBase extends AppCompatActivity {
         finish();
     }
 
-    public void saveCredentialsOrFinish(
-            @Nullable SaveSmartLock saveSmartLock,
-            FirebaseUser firebaseUser,
-            IdpResponse response) {
-        saveCredentialsOrFinish(saveSmartLock, firebaseUser, null, response);
+    public void saveCredentialsOrFinish(FirebaseUser firebaseUser, IdpResponse response) {
+        saveCredentialsOrFinish(firebaseUser, null, response);
     }
 
     public void saveCredentialsOrFinish(
-            @Nullable SaveSmartLock saveSmartLock,
             FirebaseUser firebaseUser,
             @Nullable String password,
             IdpResponse response) {
-
+        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(this);
         if (saveSmartLock == null) {
             finish(Activity.RESULT_OK, response.toIntent());
         } else {
