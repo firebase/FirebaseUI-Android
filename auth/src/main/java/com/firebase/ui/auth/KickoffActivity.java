@@ -93,8 +93,8 @@ public class KickoffActivity extends HelperActivityBase {
      * @return true if there is no network connection, false otherwise.
      */
     private boolean isOffline() {
-        ConnectivityManager manager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager manager = (ConnectivityManager) getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
 
         return !(manager != null
                 && manager.getActiveNetworkInfo() != null
