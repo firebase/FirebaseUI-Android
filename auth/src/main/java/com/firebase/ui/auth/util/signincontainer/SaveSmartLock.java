@@ -157,7 +157,7 @@ public class SaveSmartLock extends SmartLockBase<Void> {
         }
 
         getLifecycle().addObserver(new LifecycleObserver() {
-            @OnLifecycleEvent(Lifecycle.Event.ON_START)
+            @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
             public void save() {
                 getCredentialsClient().save(credential)
                         .addOnCompleteListener(SaveSmartLock.this);
