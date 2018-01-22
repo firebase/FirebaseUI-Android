@@ -22,11 +22,11 @@ import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
-import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -96,7 +96,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
         if (flowParams.enableCredentials) {
             getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
 
-            mCredentialsClient = Credentials.getClient(getActivity());
+            mCredentialsClient = GoogleApiUtils.getCredentialsClient(getActivity());
 
             mCredentialsClient.request(new CredentialRequest.Builder()
                     .setPasswordLoginSupported(true)
@@ -302,8 +302,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
             return;
         }
 
-        CredentialsClient client = Credentials.getClient(getActivity());
-        client.delete(mCredential)
+        GoogleApiUtils.getCredentialsClient(getActivity()).delete(mCredential)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

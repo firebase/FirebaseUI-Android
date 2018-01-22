@@ -84,19 +84,15 @@ public class HelperActivityBase extends AppCompatActivity {
         finish();
     }
 
-    public void saveCredentialsOrFinish(
-            @Nullable SaveSmartLock saveSmartLock,
-            FirebaseUser firebaseUser,
-            IdpResponse response) {
-        saveCredentialsOrFinish(saveSmartLock, firebaseUser, null, response);
+    public void saveCredentialsOrFinish(FirebaseUser firebaseUser, IdpResponse response) {
+        saveCredentialsOrFinish(firebaseUser, null, response);
     }
 
     public void saveCredentialsOrFinish(
-            @Nullable SaveSmartLock saveSmartLock,
             FirebaseUser firebaseUser,
             @Nullable String password,
             IdpResponse response) {
-
+        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(this);
         if (saveSmartLock == null) {
             finish(Activity.RESULT_OK, response.toIntent());
         } else {

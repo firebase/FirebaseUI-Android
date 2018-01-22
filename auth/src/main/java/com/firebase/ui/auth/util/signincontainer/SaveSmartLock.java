@@ -15,6 +15,9 @@
 package com.firebase.ui.auth.util.signincontainer;
 
 import android.app.Activity;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.support.annotation.NonNull;
@@ -28,8 +31,8 @@ import android.util.Log;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.CredentialsUtil;
+import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.Task;
@@ -42,10 +45,6 @@ public class SaveSmartLock extends SmartLockBase<Void> {
 
     private CredentialsClient mCredentialsClient;
 
-    private String mName;
-    private String mEmail;
-    private String mPassword;
-    private String mProfilePictureUri;
     private IdpResponse mResponse;
 
     @Nullable
@@ -54,7 +53,9 @@ public class SaveSmartLock extends SmartLockBase<Void> {
 
         FragmentManager fm = activity.getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(TAG);
-        if (!(fragment instanceof SaveSmartLock)) {
+        if (fragment instanceof SaveSmartLock) {
+            result = (SaveSmartLock) fragment;
+        } else {
             result = new SaveSmartLock();
             result.setArguments(activity.getFlowParams().toBundle());
             try {
@@ -63,8 +64,6 @@ public class SaveSmartLock extends SmartLockBase<Void> {
                 Log.e(TAG, "Cannot add fragment", e);
                 return null;
             }
-        } else {
-            result = (SaveSmartLock) fragment;
         }
 
         return result;
@@ -116,7 +115,7 @@ public class SaveSmartLock extends SmartLockBase<Void> {
     @VisibleForTesting
     public CredentialsClient getCredentialsClient() {
         if (mCredentialsClient == null) {
-            mCredentialsClient = Credentials.getClient(getActivity());
+            mCredentialsClient = GoogleApiUtils.getCredentialsClient(getActivity());
         }
 
         return mCredentialsClient;
@@ -143,20 +142,13 @@ public class SaveSmartLock extends SmartLockBase<Void> {
             return;
         }
 
-        mName = firebaseUser.getDisplayName();
-        mEmail = firebaseUser.getEmail();
-        mPassword = password;
-        mProfilePictureUri = firebaseUser.getPhotoUrl() != null
-                ? firebaseUser.getPhotoUrl().toString()
-                : null;
-
-        if (getActivity() == null) {
-            throw new IllegalStateException("Can't save credentials in null Activity");
-        }
-
         // Build credentials client and kick off the save
-        Credential credential = CredentialsUtil.buildCredential(
-                mEmail, mPassword, mName, mProfilePictureUri, mResponse);
+        final Credential credential = CredentialsUtil.buildCredential(
+                firebaseUser.getEmail(),
+                password,
+                firebaseUser.getDisplayName(),
+                firebaseUser.getPhotoUrl() == null ? null : firebaseUser.getPhotoUrl().toString(),
+                mResponse);
 
         if (credential == null) {
             Log.e(TAG, "Unable to save null credential!");
@@ -164,8 +156,13 @@ public class SaveSmartLock extends SmartLockBase<Void> {
             return;
         }
 
-        getCredentialsClient().save(credential)
-                .addOnCompleteListener(this);
+        getLifecycle().addObserver(new LifecycleObserver() {
+            @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+            public void save() {
+                getCredentialsClient().save(credential)
+                        .addOnCompleteListener(SaveSmartLock.this);
+            }
+        });
     }
 
 }

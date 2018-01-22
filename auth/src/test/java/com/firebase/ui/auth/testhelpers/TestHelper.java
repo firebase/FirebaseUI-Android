@@ -14,6 +14,8 @@
 
 package com.firebase.ui.auth.testhelpers;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
@@ -187,6 +189,7 @@ public class TestHelper {
         SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(activity);
         CredentialsClient mockCredentials = mock(CredentialsClient.class);
         saveSmartLock.setCredentialsClient(mockCredentials);
+        ((LifecycleRegistry) saveSmartLock.getLifecycle()).markState(Lifecycle.State.RESUMED);
 
         when(mockCredentials.save(any(Credential.class)))
                 .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
