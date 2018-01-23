@@ -20,6 +20,7 @@ import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -35,17 +36,26 @@ import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class SaveSmartLock extends SmartLockBase<Void> {
+public class SaveSmartLock extends SmartLockBase implements OnCompleteListener<Void> {
+
     private static final String TAG = "SaveSmartLock";
     private static final int RC_SAVE = 100;
 
     private CredentialsClient mCredentialsClient;
 
     private IdpResponse mResponse;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
 
     @Nullable
     public static SaveSmartLock getInstance(HelperActivityBase activity) {

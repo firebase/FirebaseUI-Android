@@ -1,24 +1,14 @@
 package com.firebase.ui.auth.util.signincontainer;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.google.android.gms.tasks.OnCompleteListener;
 
-public abstract class SmartLockBase<R> extends FragmentBase implements
-        OnCompleteListener<R> {
+public abstract class SmartLockBase extends FragmentBase {
 
     private boolean mWasProgressDialogShowing;
     private Pair<Integer, Intent> mActivityResultPair;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
 
     @Override
     public void onStart() {

@@ -28,6 +28,13 @@ public final class Resource<T> {
     }
 
     /**
+     * Creates a successful Resource&lt;Void&gt;.
+     */
+    public static Resource<Void> forVoidSuccess() {
+        return new Resource<>(State.SUCCESS, null, null);
+    }
+
+    /**
      * Creates a finished success state.
      *
      * @param value result of the operation
@@ -47,6 +54,12 @@ public final class Resource<T> {
         mState = State.FAILURE;
         mValue = null;
         mException = Preconditions.checkNotNull(exception, "Failure state cannot have null error.");
+    }
+
+    private Resource(State state, T value, Exception exception) {
+        mState = state;
+        mValue = value;
+        mException = exception;
     }
 
     @NonNull

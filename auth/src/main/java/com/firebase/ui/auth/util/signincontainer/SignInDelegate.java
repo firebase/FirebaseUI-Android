@@ -54,7 +54,9 @@ import java.util.List;
  * email is supported, in which case the {@link EmailActivity} is started.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
+public class SignInDelegate extends SmartLockBase
+        implements OnCompleteListener<CredentialRequestResponse> {
+
     private static final String TAG = "SignInDelegate";
 
     private static final int RC_CREDENTIALS_READ = 2;
@@ -88,6 +90,8 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        setRetainInstance(true);
+
         if (savedInstance != null) {
             // We already have a running instance of this fragment
             return;
@@ -120,6 +124,7 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
             startAuthMethodChoice();
         }
     }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
