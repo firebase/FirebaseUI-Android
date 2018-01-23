@@ -105,8 +105,10 @@ public class SmartLockViewModel extends AuthViewModelBase {
                 });
     }
 
+    /**
+     * TODO: This stinks
+     */
     public IdpResponse getIdpResponse() {
         return mIdpResponse;
     }
-
 }

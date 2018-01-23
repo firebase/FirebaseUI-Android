@@ -1,7 +1,6 @@
 package com.firebase.ui.auth.testhelpers;
 
 import com.firebase.ui.auth.util.AuthHelper;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
 import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,7 +18,6 @@ public class AuthHelperShadow {
     private static FirebaseAuth sFirebaseAuth;
     private static FirebaseUser sFirebaseUser;
     private static CredentialsApi sCredentialsApi;
-    private static SaveSmartLock sSaveSmartLock;
     private static PhoneAuthProvider sPhoneAuthProvider;
 
     public AuthHelperShadow() {}

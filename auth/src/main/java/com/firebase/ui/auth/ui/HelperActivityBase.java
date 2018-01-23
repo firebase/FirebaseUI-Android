@@ -129,6 +129,11 @@ public class HelperActivityBase extends AppCompatActivity {
         mSmartLockViewModel.saveCredentials(firebaseUser, password, response);
     }
 
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public SmartLockViewModel getSmartLockViewModel() {
+        return mSmartLockViewModel;
+    }
+
     private void onPendingResolution(@NonNull PendingResolution resolution) {
         try {
             startIntentSenderForResult(

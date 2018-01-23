@@ -14,8 +14,6 @@
 
 package com.firebase.ui.auth.testhelpers;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleRegistry;
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
@@ -26,7 +24,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.signincontainer.SaveSmartLock;
+import com.firebase.ui.auth.viewmodel.smartlock.SmartLockViewModel;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.tasks.Tasks;
@@ -47,6 +45,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -185,27 +184,26 @@ public class TestHelper {
                 true);
     }
 
-    public static void mockCredentialsClient(HelperActivityBase activity) {
-        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(activity);
-        CredentialsClient mockCredentials = mock(CredentialsClient.class);
-        saveSmartLock.setCredentialsClient(mockCredentials);
-        ((LifecycleRegistry) saveSmartLock.getLifecycle()).markState(Lifecycle.State.RESUMED);
+    public static void mockCredentialsClient(HelperActivityBase activity,
+                                             CredentialsClient mockCredentials) {
+        SmartLockViewModel viewModel = activity.getSmartLockViewModel();
+
+        FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
+                EmailAuthProvider.PROVIDER_ID));
+        viewModel.initializeForTesting(testParams, null, mockCredentials, null);
 
         when(mockCredentials.save(any(Credential.class)))
                 .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
     }
 
-    public static void verifySmartLockSave(HelperActivityBase activity,
+    public static void verifySmartLockSave(CredentialsClient mockCredentials,
                                            String providerId, String email, String password) {
-        verifySmartLockSave(activity, providerId, email, password, null);
+        verifySmartLockSave(mockCredentials, providerId, email, password, null);
     }
 
-    public static void verifySmartLockSave(HelperActivityBase activity,
+    public static void verifySmartLockSave(CredentialsClient mockCredentials,
                                            String providerId, String email,
                                            String password, String phoneNumber) {
-
-        SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(activity);
-        CredentialsClient mockCredentials = saveSmartLock.getCredentialsClient();
 
         ArgumentCaptor<Credential> credentialCaptor = ArgumentCaptor.forClass(Credential.class);
         verify(mockCredentials).save(credentialCaptor.capture());
