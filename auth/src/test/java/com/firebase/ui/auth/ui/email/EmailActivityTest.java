@@ -136,7 +136,6 @@ public class EmailActivityTest {
         TestHelper.verifySmartLockSave(emailActivity,
                 EmailAuthProvider.PROVIDER_ID,
                 TestConstants.EMAIL,
-                TestConstants.PASSWORD,
-                null);
+                TestConstants.PASSWORD);
     }
 }

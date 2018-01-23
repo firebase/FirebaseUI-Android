@@ -141,7 +141,7 @@ public class AuthMethodPickerActivityTest {
         facebookButton.performClick();
 
         verifySmartLockSave(authMethodPickerActivity,
-                FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null, null);
+                FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null);
     }
 
     @Test
@@ -165,7 +165,7 @@ public class AuthMethodPickerActivityTest {
         googleButton.performClick();
 
         verifySmartLockSave(authMethodPickerActivity,
-                GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null, null);
+                GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null);
     }
 
     @Test

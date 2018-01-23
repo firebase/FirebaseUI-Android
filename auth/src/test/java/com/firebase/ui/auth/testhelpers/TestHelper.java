@@ -198,15 +198,13 @@ public class TestHelper {
     }
 
     public static void verifySmartLockSave(HelperActivityBase activity,
-                                           String providerId, String email, String password,
-                                           String accountLinkingUid) {
-        verifySmartLockSave(activity, providerId, email, password, null, accountLinkingUid);
+                                           String providerId, String email, String password) {
+        verifySmartLockSave(activity, providerId, email, password, null);
     }
 
     public static void verifySmartLockSave(HelperActivityBase activity,
                                            String providerId, String email,
-                                           String password, String phoneNumber,
-                                           String accountLinkingUid) {
+                                           String password, String phoneNumber) {
 
         SaveSmartLock saveSmartLock = SaveSmartLock.getInstance(activity);
         CredentialsClient mockCredentials = saveSmartLock.getCredentialsClient();
@@ -222,7 +220,6 @@ public class TestHelper {
             assertEquals(credential.getAccountType(),
                     ProviderUtils.providerIdToAccountType(providerId));
         }
-        assertEquals(accountLinkingUid, idpResponseCaptor.getValue().getPrevUid());
 
         // ID can either be email or phone number
         if (!TextUtils.isEmpty(phoneNumber)) {
