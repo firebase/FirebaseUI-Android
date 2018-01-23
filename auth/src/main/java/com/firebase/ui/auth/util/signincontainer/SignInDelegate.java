@@ -93,14 +93,26 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
         }
 
         FlowParameters flowParams = getFlowParams();
-        if (flowParams.enableCredentials) {
+
+        // Only support password credentials if email auth is enabled
+        boolean supportPasswords = false;
+        for (AuthUI.IdpConfig config : flowParams.providerInfo) {
+            if (EmailAuthProvider.PROVIDER_ID.equals(config.getProviderId())) {
+                supportPasswords = true;
+            }
+        }
+        List<String> accountTypes = getSupportedAccountTypes();
+
+        // If the request will be empty, avoid the step entirely
+        boolean willRequestCredentials = supportPasswords || accountTypes.size() > 0;
+
+        if (flowParams.enableCredentials && willRequestCredentials) {
             getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
 
             mCredentialsClient = GoogleApiUtils.getCredentialsClient(getActivity());
-
             mCredentialsClient.request(new CredentialRequest.Builder()
-                    .setPasswordLoginSupported(true)
-                    .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
+                    .setPasswordLoginSupported(supportPasswords)
+                    .setAccountTypes(accountTypes.toArray(new String[accountTypes.size()]))
                     .build())
                     .addOnCompleteListener(this);
         } else {
