@@ -80,7 +80,7 @@ public class WelcomeBackPasswordHandlerTest {
                 .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
 
         // Kick off the sign in flow
-        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null);
+        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null, null);
 
         // Verify that we get a loading event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
@@ -132,7 +132,8 @@ public class WelcomeBackPasswordHandlerTest {
                 .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
 
         // Kick off the sign in flow
-        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential);
+        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential,
+                null);
 
         // Verify that we get a loading event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
@@ -157,7 +158,7 @@ public class WelcomeBackPasswordHandlerTest {
                 .thenReturn(AutoContinueTask.<AuthResult>forFailure(new Exception("FAILED")));
 
         // Kick off the sign in flow
-        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null);
+        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null, null);
 
         // Verify that we get a loading event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
@@ -186,7 +187,7 @@ public class WelcomeBackPasswordHandlerTest {
                 .thenReturn(AutoCompleteTask.<Void>forFailure(mockRae));
 
         // Kick off the sign in flow
-        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null);
+        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null, null);
 
         // Make sure we get a resolution
         ArgumentCaptor<PendingResolution> resolveCaptor = ArgumentCaptor.forClass(PendingResolution.class);

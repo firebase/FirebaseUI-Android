@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.data.model.FlowParameters;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -24,11 +24,11 @@ public final class ManualMergeUtils {
     }
 
     public static <T> Task<T> injectSignInTaskBetweenDataTransfer(
-            final HelperActivityBase activity,
+            final Context context,
             final IdpResponse response,
+            final FlowParameters params,
             final Callable<Task<T>> insertTask) {
-        if (response.getUser().getPrevUid() == null
-                || activity.getFlowParams().accountLinkingListener == null) try {
+        if (response.getUser().getPrevUid() == null || params.accountLinkingListener == null) try {
             return insertTask.call();
         } catch (Exception e) {
             throw new IllegalStateException(e);
@@ -41,9 +41,9 @@ public final class ManualMergeUtils {
             @Override
             public void onServiceDisconnected(ComponentName name) {}
         };
-        bindService(activity, keepServiceAliveConnection);
+        bindService(context, params, keepServiceAliveConnection);
 
-        return getLoadDataTask(activity)
+        return getLoadDataTask(context, params)
                 .continueWithTask(new Continuation<Void, Task<T>>() {
                     @Override
                     public Task<T> then(@NonNull Task<Void> task) throws Exception {
@@ -55,20 +55,20 @@ public final class ManualMergeUtils {
                     @Override
                     public Task<T> then(@NonNull Task<T> task) {
                         task.getResult();
-                        return getTransferDataTask(activity, response, task);
+                        return getTransferDataTask(context, response, params, task);
                     }
                 })
                 .continueWith(new Continuation<T, T>() {
                     @Override
                     public T then(@NonNull Task<T> task) {
-                        unbindService(activity, keepServiceAliveConnection);
+                        unbindService(context, keepServiceAliveConnection);
                         return task.getResult();
                     }
                 });
     }
 
-    private static Task<Void> getLoadDataTask(HelperActivityBase activity) {
-        return getDataTask(activity, new MergeServiceConnection() {
+    private static Task<Void> getLoadDataTask(Context context, FlowParameters params) {
+        return getDataTask(context, params, new MergeServiceConnection() {
             @Override
             protected Task<Void> getDataTask(ManualMergeService service) {
                 return service.onLoadData();
@@ -76,10 +76,11 @@ public final class ManualMergeUtils {
         });
     }
 
-    private static <T> Task<T> getTransferDataTask(HelperActivityBase activity,
+    private static <T> Task<T> getTransferDataTask(Context context,
                                                    final IdpResponse response,
+                                                   final FlowParameters params,
                                                    final Task<T> originalTask) {
-        return getDataTask(activity, new MergeServiceConnection() {
+        return getDataTask(context, params, new MergeServiceConnection() {
             @Override
             protected Task<Void> getDataTask(ManualMergeService service) {
                 return service.onTransferData(response);
@@ -92,30 +93,32 @@ public final class ManualMergeUtils {
         });
     }
 
-    private static Task<Void> getDataTask(final HelperActivityBase activity,
+    private static Task<Void> getDataTask(final Context context,
+                                          final FlowParameters params,
                                           final MergeServiceConnection connection) {
         TaskCompletionSource<Void> task = new TaskCompletionSource<>();
-        bindService(activity, connection.setTask(task));
+        bindService(context, params, connection.setTask(task));
         return task.getTask().continueWith(new Continuation<Void, Void>() {
             @Override
             public Void then(@NonNull Task<Void> task) {
-                unbindService(activity, connection);
+                unbindService(context, connection);
                 return task.getResult();
             }
         });
     }
 
-    private static void bindService(HelperActivityBase activity,
+    private static void bindService(Context context,
+                                    FlowParameters params,
                                     ServiceConnection connection) {
-        Context appContext = activity.getApplicationContext();
+        Context appContext = context.getApplicationContext();
         appContext.bindService(
-                new Intent(appContext, activity.getFlowParams().accountLinkingListener),
+                new Intent(appContext, params.accountLinkingListener),
                 connection,
                 Context.BIND_AUTO_CREATE);
     }
 
-    private static void unbindService(HelperActivityBase activity, ServiceConnection connection) {
-        activity.getApplicationContext().unbindService(connection);
+    private static void unbindService(Context context, ServiceConnection connection) {
+        context.getApplicationContext().unbindService(connection);
     }
 
     public static final class MergeBinder extends Binder {

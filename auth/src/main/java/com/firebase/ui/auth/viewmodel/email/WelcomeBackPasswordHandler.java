@@ -17,6 +17,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.CredentialsUtil;
+import com.firebase.ui.auth.util.accountlink.ManualMergeUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
@@ -30,6 +31,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.concurrent.Callable;
 
 /**
  * Handles the logic for {@link com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt} including
@@ -58,25 +61,35 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
     public void startSignIn(@NonNull final String email,
                             @NonNull final String password,
                             @NonNull final IdpResponse inputResponse,
-                            @Nullable final AuthCredential credential) {
+                            @Nullable final AuthCredential credential,
+                            @Nullable final String prevUid) {
         mSignInLiveData.setValue(new Resource<IdpResponse>());
 
         // Build appropriate IDP response based on inputs
         final IdpResponse outputResponse;
         if (credential == null) {
             outputResponse = new IdpResponse.Builder(
-                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
+                    new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
+                            .setPrevUid(prevUid).build())
                     .build();
         } else {
             outputResponse = new IdpResponse.Builder(inputResponse.getUser())
                     .setToken(inputResponse.getIdpToken())
                     .setSecret(inputResponse.getIdpSecret())
                     .build();
+            outputResponse.getUser().setPrevUid(prevUid);
         }
 
-        // Kick off the flow including signing in, linking accounts, and saving with SmartLock
-        getAuth().signInWithEmailAndPassword(email, password)
-                .addOnFailureListener(new TaskFailureLogger(TAG, "signInWithEmailAndPassword failed."))
+        ManualMergeUtils.injectSignInTaskBetweenDataTransfer(getApplication(),
+                outputResponse,
+                getArguments(),
+                new Callable<Task<AuthResult>>() {
+                    @Override
+                    public Task<AuthResult> call() {
+                        // Sign in with known email and the password provided
+                        return getAuth().signInWithEmailAndPassword(email, password);
+                    }
+                })
                 .continueWithTask(new Continuation<AuthResult, Task<AuthResult>>() {
                     @Override
                     public Task<AuthResult> then(@NonNull Task<AuthResult> task) throws Exception {
@@ -90,7 +103,9 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                             return result.getUser()
                                     .linkWithCredential(credential)
                                     .continueWithTask(new ProfileMerger(outputResponse))
-                                    .addOnFailureListener(new TaskFailureLogger(TAG, "linkWithCredential+merge failed."));
+                                    .addOnFailureListener(new TaskFailureLogger(
+                                            TAG, "Error signing in with credential " +
+                                            credential.getProvider()));
                         }
                     }
                 })

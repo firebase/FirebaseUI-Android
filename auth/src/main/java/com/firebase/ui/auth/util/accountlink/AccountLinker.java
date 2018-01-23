@@ -123,6 +123,7 @@ public class AccountLinker implements OnSuccessListener<AuthResult>, OnFailureLi
             // current user, log them out, and then sign in with the new credential.
             Task<AuthResult> signInTask = ManualMergeUtils.injectSignInTaskBetweenDataTransfer(mActivity,
                     mIdpResponse,
+                    mActivity.getFlowParams(),
                     new Callable<Task<AuthResult>>() {
                         @Override
                         public Task<AuthResult> call() {
