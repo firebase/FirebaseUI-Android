@@ -30,6 +30,7 @@ import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.IdentityProviders;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -95,14 +96,26 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
         }
 
         FlowParameters flowParams = getFlowParams();
-        if (flowParams.enableCredentials) {
+
+        // Only support password credentials if email auth is enabled
+        boolean supportPasswords = false;
+        for (AuthUI.IdpConfig config : flowParams.providerInfo) {
+            if (EmailAuthProvider.PROVIDER_ID.equals(config.getProviderId())) {
+                supportPasswords = true;
+            }
+        }
+        List<String> accountTypes = getSupportedAccountTypes();
+
+        // If the request will be empty, avoid the step entirely
+        boolean willRequestCredentials = supportPasswords || accountTypes.size() > 0;
+
+        if (flowParams.enableCredentials && willRequestCredentials) {
             getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
 
             mCredentialsClient = GoogleApiUtils.getCredentialsClient(getActivity());
-
             mCredentialsClient.request(new CredentialRequest.Builder()
-                    .setPasswordLoginSupported(true)
-                    .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
+                    .setPasswordLoginSupported(supportPasswords)
+                    .setAccountTypes(accountTypes.toArray(new String[accountTypes.size()]))
                     .build())
                     .addOnCompleteListener(this);
         } else {
@@ -124,9 +137,9 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
             // Auto sign-in success
             handleCredential(task.getResult().getCredential());
             return;
-        } else {
-            if (task.getException() instanceof ResolvableApiException) {
-                ResolvableApiException rae = (ResolvableApiException) task.getException();
+        } else if (task.getException() instanceof ResolvableApiException) {
+            ResolvableApiException rae = (ResolvableApiException) task.getException();
+            if (rae.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
                 try {
                     startIntentSenderForResult(rae.getResolution().getIntentSender(),
                             RC_CREDENTIALS_READ);
@@ -134,9 +147,9 @@ public class SignInDelegate extends SmartLockBase<CredentialRequestResponse> {
                 } catch (IntentSender.SendIntentException e) {
                     Log.e(TAG, "Failed to send Credentials intent.", e);
                 }
-            } else {
-                Log.e(TAG, "Non-resolvable exception:\n" + task.getException());
             }
+        } else {
+            Log.e(TAG, "Non-resolvable exception:\n" + task.getException());
         }
         startAuthMethodChoice();
     }
