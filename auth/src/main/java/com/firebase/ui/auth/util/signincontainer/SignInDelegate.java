@@ -11,12 +11,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
@@ -54,7 +56,7 @@ import java.util.List;
  * email is supported, in which case the {@link EmailActivity} is started.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class SignInDelegate extends SmartLockBase
+public class SignInDelegate extends FragmentBase
         implements OnCompleteListener<CredentialRequestResponse> {
 
     private static final String TAG = "SignInDelegate";
@@ -64,6 +66,9 @@ public class SignInDelegate extends SmartLockBase
     private static final int RC_AUTH_METHOD_PICKER = 4;
     private static final int RC_EMAIL_FLOW = 5;
     private static final int RC_PHONE_FLOW = 6;
+
+    private boolean mWasProgressDialogShowing;
+    private Pair<Integer, Intent> mActivityResultPair;
 
     private Credential mCredential;
     private CredentialsClient mCredentialsClient;
@@ -127,6 +132,24 @@ public class SignInDelegate extends SmartLockBase
 
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (mActivityResultPair != null) {
+            finish(mActivityResultPair.first, mActivityResultPair.second);
+        } else if (mWasProgressDialogShowing) {
+            getDialogHolder().showLoadingDialog(com.firebase.ui.auth.R.string.fui_progress_dialog_loading);
+            mWasProgressDialogShowing = false;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mWasProgressDialogShowing = getDialogHolder().isProgressDialogShowing();
+        getDialogHolder().dismissDialog();
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         // It doesn't matter what we put here, we just don't want outState to be empty
         outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
@@ -182,6 +205,18 @@ public class SignInDelegate extends SmartLockBase
                 if (signInContainer != null) {
                     signInContainer.onActivityResult(requestCode, resultCode, data);
                 }
+        }
+    }
+
+    @Override
+    public void finish(int resultCode, Intent resultIntent) {
+        if (getActivity() == null) {
+            // Because this fragment lives beyond the activity lifecycle, Fragment#getActivity()
+            // might return null and we'll throw a NPE. To get around this, we wait until the
+            // activity comes back to life in onStart and we finish it there.
+            mActivityResultPair = new Pair<>(resultCode, resultIntent);
+        } else {
+            super.finish(resultCode, resultIntent);
         }
     }
 
