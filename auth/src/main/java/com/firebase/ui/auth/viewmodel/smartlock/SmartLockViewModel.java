@@ -35,7 +35,7 @@ public class SmartLockViewModel extends AuthViewModelBase {
 
     private IdpResponse mIdpResponse;
 
-    protected SmartLockViewModel(Application application) {
+    public SmartLockViewModel(Application application) {
         super(application);
     }
 
