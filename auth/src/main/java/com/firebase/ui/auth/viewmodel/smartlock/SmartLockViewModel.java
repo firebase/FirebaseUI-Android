@@ -71,6 +71,8 @@ public class SmartLockViewModel extends AuthViewModelBase {
                                 @Nullable String password,
                                 @Nullable IdpResponse response) {
 
+        // TODO: This needs to be unified with the logic in WelcomeBackPasswordHandler ...
+
         mIdpResponse = response;
 
         if (!getArguments().enableCredentials) {
@@ -80,12 +82,11 @@ public class SmartLockViewModel extends AuthViewModelBase {
 
         mResultLiveData.setValue(new Resource<IdpResponse>());
 
-        final Credential credential = CredentialsUtil.buildCredential(
-                firebaseUser.getEmail(),
-                password,
-                firebaseUser.getDisplayName(),
-                firebaseUser.getPhotoUrl() == null ? null : firebaseUser.getPhotoUrl().toString(),
-                response);
+        Credential credential = CredentialsUtil.buildCredential(firebaseUser, password, response);
+        if (credential == null) {
+            setException(new Exception("Failed to build credential"));
+            return;
+        }
 
         getCredentialsClient().save(credential)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
