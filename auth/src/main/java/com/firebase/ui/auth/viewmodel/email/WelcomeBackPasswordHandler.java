@@ -2,7 +2,6 @@ package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
@@ -19,7 +18,6 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
-import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.Continuation;
@@ -43,7 +41,6 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
 
     private static final int RC_SAVE = 100;
 
-    private SingleLiveEvent<PendingResolution> mPendingResolutionLiveData = new SingleLiveEvent<>();
     private MutableLiveData<Resource<IdpResponse>> mSignInLiveData = new MutableLiveData<>();
 
     private IdpResponse mPendingIdpResponse;
@@ -108,10 +105,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                 });
     }
 
-    /**
-     * Delegate activity result handling to the ViewModel. Returns {@code true} if the result was
-     * handled.
-     */
+    @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SAVE) {
             if (resultCode != Activity.RESULT_OK) {
@@ -123,7 +117,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
             return true;
         }
 
-        return false;
+        return super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
@@ -131,16 +125,6 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
      */
     public LiveData<Resource<IdpResponse>> getSignInResult() {
         return mSignInLiveData;
-    }
-
-    /**
-     * Get an observable stream of {@link PendingIntent} resolutions requested by the ViewModel.
-     *
-     * Make sure to call {@link #onActivityResult(int, int, Intent)} for all activity results
-     * after firing these pending intents.
-     */
-    public LiveData<PendingResolution> getPendingResolution() {
-        return mPendingResolutionLiveData;
     }
 
     private void setSuccess(IdpResponse idpResponse) {
@@ -176,7 +160,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                                     RC_SAVE);
 
                             mPendingIdpResponse = idpResponse;
-                            mPendingResolutionLiveData.setValue(pendingResolution);
+                            setPendingResolution(pendingResolution);;
                         } else {
                             // We don't consider SmartLock errors to be a problem, SmartLock is
                             // "best effort" and we will continue this sign in a success.

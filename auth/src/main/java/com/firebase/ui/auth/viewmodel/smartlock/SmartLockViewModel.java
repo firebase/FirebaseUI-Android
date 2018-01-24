@@ -14,7 +14,6 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
-import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,15 +21,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
- * TODO(samstern): Document
- * TODO(samstern): Test
+ * ViewModel for initiating saves to the Credentials API (SmartLock).
  */
 public class SmartLockViewModel extends AuthViewModelBase {
 
     private static final String TAG = "SmartLockViewModel";
     private static final int RC_SAVE = 100;
 
-    private SingleLiveEvent<PendingResolution> mResolutionLiveData = new SingleLiveEvent<>();
     private MutableLiveData<Resource<IdpResponse>> mResultLiveData = new MutableLiveData<>();
 
     private IdpResponse mIdpResponse;
@@ -39,34 +36,36 @@ public class SmartLockViewModel extends AuthViewModelBase {
         super(application);
     }
 
+    /**
+     * Observe the status of the save operation initiated by
+     * {@link #saveCredentials(FirebaseUser, String, IdpResponse)}.
+     */
     public LiveData<Resource<IdpResponse>> getSaveOperation() {
         return mResultLiveData;
     }
 
-    public LiveData<PendingResolution> getPendingResolution() {
-        return mResolutionLiveData;
-    }
-
     /**
-     * TODO(samstern): Document
+     * Forward the result of a resolution from the Activity to the ViewModel.
      */
+    @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
-                mResultLiveData.setValue(new Resource<>(mIdpResponse));
+                setSuccessValue();
             } else {
                 Log.e(TAG, "SAVE: Canceled by user.");
-                mResultLiveData.setValue(new Resource<IdpResponse>(new Exception("Save canceled by user.")));
+                setException(new Exception("Save canceled by user."));
             }
 
             return true;
         }
 
-        return false;
+        return super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
-     * TODO(samstern): Document
+     * Initialize saving a credential. Progress of the operation can be observed in
+     * {@link #getSaveOperation()}.
      */
     public void saveCredentials(FirebaseUser firebaseUser,
                                 @Nullable String password,
@@ -75,7 +74,7 @@ public class SmartLockViewModel extends AuthViewModelBase {
         mIdpResponse = response;
 
         if (!getArguments().enableCredentials) {
-            mResultLiveData.setValue(new Resource<>(mIdpResponse));
+            setSuccessValue();
             return;
         }
 
@@ -93,16 +92,24 @@ public class SmartLockViewModel extends AuthViewModelBase {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            mResultLiveData.setValue(new Resource<>(mIdpResponse));
+                            setSuccessValue();
                         } else if (task.getException() instanceof ResolvableApiException) {
                             ResolvableApiException rae = (ResolvableApiException) task.getException();
-                            mResolutionLiveData.setValue(new PendingResolution(rae.getResolution(), RC_SAVE));
+                            setPendingResolution(new PendingResolution(rae.getResolution(), RC_SAVE));
                         } else {
                             Log.w(TAG, "Non-resolvable exception: " + task.getException());
-                            mResultLiveData.setValue(new Resource<IdpResponse>(task.getException()));
+                            setException(task.getException());
                         }
                     }
                 });
+    }
+
+    private void setSuccessValue() {
+        mResultLiveData.setValue(new Resource<>(mIdpResponse));
+    }
+
+    private void setException(Exception e) {
+        mResultLiveData.setValue(new Resource<IdpResponse>(e));
     }
 
     /**
