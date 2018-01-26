@@ -65,6 +65,11 @@ public final class SpacedEditText extends TextInputEditText {
      */
     @Override
     public void setSelection(int index) {
+        // Prevent index from ever exceeding the bounds of the text (See #779)
+        if (index >= mOriginalText.length()) {
+            index = mOriginalText.length() - 1;
+        }
+
         // If the index is the leading edge, there are no spaces before it.
         // For all other cases, the index is preceded by index - 1 spaces.
         int spacesUpToIndex;
