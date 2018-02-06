@@ -57,7 +57,7 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     public void onComplete(@NonNull Task<AuthResult> task) {
         if (task.isSuccessful()) {
             FirebaseUser firebaseUser = task.getResult().getUser();
-            mActivity.saveCredentialsOrFinish(firebaseUser, mResponse);
+            mActivity.saveCredentialsOrFinish(firebaseUser, null, mResponse);
         } else {
             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                 String email = mResponse.getEmail();

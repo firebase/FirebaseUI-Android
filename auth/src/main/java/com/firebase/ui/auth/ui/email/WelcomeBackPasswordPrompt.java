@@ -40,7 +40,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -143,23 +142,22 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             return;
         }
 
-        if (resource.getState() == State.LOADING) {
-            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
-        }
+        switch (resource.getState()) {
+            case LOADING:
+                getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
+                break;
+            case SUCCESS:
+                Log.d(TAG, "onAuthResult:SUCCESS:" + resource.getValue());
+                getDialogHolder().dismissDialog();
+                finish(RESULT_OK, resource.getValue().toIntent());
+                break;
+            case FAILURE:
+                // TODO: Is this message what we want?
+                getDialogHolder().dismissDialog();
+                String message = resource.getException().getLocalizedMessage();
+                mPasswordLayout.setError(message);
+                break;
 
-        if (resource.getState() == State.SUCCESS) {
-            getDialogHolder().dismissDialog();
-            Log.d(TAG, "onAuthResult:SUCCESS:" + resource.getValue());
-
-            finish(RESULT_OK, resource.getValue().toIntent());
-        }
-
-        if (resource.getState() == State.FAILURE) {
-            getDialogHolder().dismissDialog();
-
-            // TODO: Is this message what we want?
-            String message = resource.getException().getLocalizedMessage();
-            mPasswordLayout.setError(message);
         }
     }
 

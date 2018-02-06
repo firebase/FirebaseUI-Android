@@ -18,6 +18,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.FlowHolder;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.smartlock.SmartLockViewModel;
@@ -37,6 +38,7 @@ public class HelperActivityBase extends AppCompatActivity {
     private AuthHelper mAuthHelper;
     private ProgressDialogHolder mProgressDialogHolder;
 
+    private IdpResponse mPendingIdpResponse;
     private SmartLockViewModel mSmartLockViewModel;
 
     public static Intent createBaseIntent(
@@ -53,6 +55,11 @@ public class HelperActivityBase extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+
+        if (savedInstance != null) {
+            mPendingIdpResponse = savedInstance.getParcelable(ExtraConstants.EXTRA_IDP_RESPONSE);
+        }
+
         mAuthHelper = new AuthHelper(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
 
@@ -70,9 +77,9 @@ public class HelperActivityBase extends AppCompatActivity {
                 });
 
         mSmartLockViewModel.getSaveOperation().observe(this,
-                new Observer<Resource<IdpResponse>>() {
+                new Observer<Resource<Void>>() {
                     @Override
-                    public void onChanged(@Nullable Resource<IdpResponse> resource) {
+                    public void onChanged(@Nullable Resource<Void> resource) {
                         if (resource == null) {
                             return;
                         }
@@ -80,6 +87,12 @@ public class HelperActivityBase extends AppCompatActivity {
                         onSaveOperation(resource);
                     }
                 });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ExtraConstants.EXTRA_IDP_RESPONSE, mPendingIdpResponse);
     }
 
     @Override
@@ -118,15 +131,14 @@ public class HelperActivityBase extends AppCompatActivity {
         finish();
     }
 
-    public void saveCredentialsOrFinish(FirebaseUser firebaseUser, IdpResponse response) {
-        saveCredentialsOrFinish(firebaseUser, null, response);
-    }
-
     public void saveCredentialsOrFinish(
             FirebaseUser firebaseUser,
             @Nullable String password,
             IdpResponse response) {
-        mSmartLockViewModel.saveCredentials(firebaseUser, password, response);
+        mPendingIdpResponse = response;
+
+        String accountType = ProviderUtils.idpResponseToAccountType(response);
+        mSmartLockViewModel.saveCredentials(firebaseUser, password, accountType);
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -142,22 +154,18 @@ public class HelperActivityBase extends AppCompatActivity {
                     null, 0, 0, 0);
         } catch (IntentSender.SendIntentException e) {
             Log.e(TAG, "STATUS: Failed to send resolution.", e);
-
-            // TODO(samstern): Passing the IdpResponse around like this is really ugly
-            finish(RESULT_OK, mSmartLockViewModel.getIdpResponse().toIntent());
+            finish(RESULT_OK, mPendingIdpResponse.toIntent());
         };
     }
 
-    private void onSaveOperation(@NonNull Resource<IdpResponse> resource) {
+    private void onSaveOperation(@NonNull Resource<Void> resource) {
         switch (resource.getState()) {
             case LOADING:
                 // No-op?
                 break;
             case SUCCESS:
-                finish(RESULT_OK, resource.getValue().toIntent());
-                break;
             case FAILURE:
-                finish(RESULT_OK, mSmartLockViewModel.getIdpResponse().toIntent());
+                finish(RESULT_OK, mPendingIdpResponse.toIntent());
                 break;
         }
     }

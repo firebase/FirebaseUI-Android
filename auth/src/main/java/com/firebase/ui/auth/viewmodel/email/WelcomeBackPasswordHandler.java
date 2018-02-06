@@ -16,6 +16,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.CredentialsUtil;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -56,15 +57,17 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                             @NonNull final String password,
                             @NonNull final IdpResponse inputResponse,
                             @Nullable final AuthCredential credential) {
-        mSignInLiveData.setValue(new Resource<IdpResponse>());
+        mSignInLiveData.setValue(Resource.<IdpResponse>forLoading());
 
         // Build appropriate IDP response based on inputs
         final IdpResponse outputResponse;
         if (credential == null) {
+            // New credential for the email provider
             outputResponse = new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, email).build())
                     .build();
         } else {
+            // New credential for an IDP (Phone or Social)
             outputResponse = new IdpResponse.Builder(inputResponse.getUser())
                     .setToken(inputResponse.getIdpToken())
                     .setSecret(inputResponse.getIdpSecret())
@@ -95,7 +98,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            mSignInLiveData.setValue(new Resource<IdpResponse>(task.getException()));
+                            mSignInLiveData.setValue(Resource.<IdpResponse>forFailure(task.getException()));
                             return;
                         }
 
@@ -128,7 +131,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
     }
 
     private void setSuccess(IdpResponse idpResponse) {
-        mSignInLiveData.setValue(new Resource<>(idpResponse));
+        mSignInLiveData.setValue(Resource.forSuccess(idpResponse));
     }
 
     private void saveCredentialsOrFinish(FirebaseUser user,
@@ -139,7 +142,8 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
             return;
         }
 
-        Credential credential = CredentialsUtil.buildCredential(user, password, idpResponse);
+        String accountType = ProviderUtils.idpResponseToAccountType(idpResponse);
+        Credential credential = CredentialsUtil.buildCredential(user, password, accountType);
         if (credential == null) {
             setSuccess(idpResponse);
             return;
@@ -151,16 +155,10 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             setSuccess(idpResponse);
-                            return;
-                        }
-
-                        if (task.getException() instanceof ResolvableApiException) {
-                            ResolvableApiException rae = (ResolvableApiException) task.getException();
-                            PendingResolution pendingResolution = new PendingResolution(rae.getResolution(),
-                                    RC_SAVE);
-
+                        } else if (task.getException() instanceof ResolvableApiException) {
                             mPendingIdpResponse = idpResponse;
-                            setPendingResolution(pendingResolution);;
+                            ResolvableApiException rae = (ResolvableApiException) task.getException();
+                            setPendingResolution(new PendingResolution(rae.getResolution(), RC_SAVE));
                         } else {
                             // We don't consider SmartLock errors to be a problem, SmartLock is
                             // "best effort" and we will continue this sign in a success.

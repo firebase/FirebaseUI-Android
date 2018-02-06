@@ -19,19 +19,31 @@ public final class Resource<T> {
     private final Exception mException;
 
     /**
-     * Creates a default, unfinished, state.
-     */
-    public Resource() {
-        mState = State.LOADING;
-        mValue = null;
-        mException = null;
-    }
-
-    /**
      * Creates a successful Resource&lt;Void&gt;.
      */
     public static Resource<Void> forVoidSuccess() {
         return new Resource<>(State.SUCCESS, null, null);
+    }
+
+    public static <T> Resource<T> forSuccess(@NonNull T value) {
+        return new Resource<>(State.SUCCESS, value, null);
+    }
+
+    public static <T> Resource<T> forFailure(@NonNull Exception e) {
+        return new Resource<>(State.FAILURE, null, e);
+    }
+
+    public static <T> Resource<T> forLoading() {
+        return new Resource<>(State.LOADING, null, null);
+    }
+
+    /**
+     * Creates a default, unfinished, state.
+     */
+    Resource() {
+        mState = State.LOADING;
+        mValue = null;
+        mException = null;
     }
 
     /**
@@ -39,7 +51,7 @@ public final class Resource<T> {
      *
      * @param value result of the operation
      */
-    public Resource(@NonNull T value) {
+    Resource(@NonNull T value) {
         mState = State.SUCCESS;
         mValue = Preconditions.checkNotNull(value, "Success state cannot have null result.");
         mException = null;
@@ -50,13 +62,13 @@ public final class Resource<T> {
      *
      * @param exception error in computing the result
      */
-    public Resource(@NonNull Exception exception) {
+    Resource(@NonNull Exception exception) {
         mState = State.FAILURE;
         mValue = null;
         mException = Preconditions.checkNotNull(exception, "Failure state cannot have null error.");
     }
 
-    private Resource(State state, T value, Exception exception) {
+    Resource(State state, T value, Exception exception) {
         mState = state;
         mValue = value;
         mException = exception;

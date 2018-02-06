@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
@@ -28,9 +27,7 @@ public class SmartLockViewModel extends AuthViewModelBase {
     private static final String TAG = "SmartLockViewModel";
     private static final int RC_SAVE = 100;
 
-    private MutableLiveData<Resource<IdpResponse>> mResultLiveData = new MutableLiveData<>();
-
-    private IdpResponse mIdpResponse;
+    private MutableLiveData<Resource<Void>> mResultLiveData = new MutableLiveData<>();
 
     public SmartLockViewModel(Application application) {
         super(application);
@@ -38,9 +35,9 @@ public class SmartLockViewModel extends AuthViewModelBase {
 
     /**
      * Observe the status of the save operation initiated by
-     * {@link #saveCredentials(FirebaseUser, String, IdpResponse)}.
+     * {@link #saveCredentials(FirebaseUser, String, String)}.
      */
-    public LiveData<Resource<IdpResponse>> getSaveOperation() {
+    public LiveData<Resource<Void>> getSaveOperation() {
         return mResultLiveData;
     }
 
@@ -51,10 +48,10 @@ public class SmartLockViewModel extends AuthViewModelBase {
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RC_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
-                setSuccessValue();
+                mResultLiveData.setValue(Resource.forVoidSuccess());
             } else {
                 Log.e(TAG, "SAVE: Canceled by user.");
-                setException(new Exception("Save canceled by user."));
+                mResultLiveData.setValue(Resource.<Void>forFailure(new Exception("Save canceled by user.")));
             }
 
             return true;
@@ -69,22 +66,20 @@ public class SmartLockViewModel extends AuthViewModelBase {
      */
     public void saveCredentials(FirebaseUser firebaseUser,
                                 @Nullable String password,
-                                @Nullable IdpResponse response) {
+                                @Nullable String accountType) {
 
         // TODO: This needs to be unified with the logic in WelcomeBackPasswordHandler ...
 
-        mIdpResponse = response;
-
         if (!getArguments().enableCredentials) {
-            setSuccessValue();
+            mResultLiveData.setValue(Resource.forVoidSuccess());
             return;
         }
 
-        mResultLiveData.setValue(new Resource<IdpResponse>());
+        mResultLiveData.setValue(Resource.<Void>forLoading());
 
-        Credential credential = CredentialsUtil.buildCredential(firebaseUser, password, response);
+        Credential credential = CredentialsUtil.buildCredential(firebaseUser, password, accountType);
         if (credential == null) {
-            setException(new Exception("Failed to build credential"));
+            mResultLiveData.setValue(Resource.<Void>forFailure(new Exception("Failed to build credential")));
             return;
         }
 
@@ -93,30 +88,16 @@ public class SmartLockViewModel extends AuthViewModelBase {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            setSuccessValue();
+                            mResultLiveData.setValue(Resource.forVoidSuccess());
                         } else if (task.getException() instanceof ResolvableApiException) {
                             ResolvableApiException rae = (ResolvableApiException) task.getException();
                             setPendingResolution(new PendingResolution(rae.getResolution(), RC_SAVE));
                         } else {
                             Log.w(TAG, "Non-resolvable exception: " + task.getException());
-                            setException(task.getException());
+                            mResultLiveData.setValue(Resource.<Void>forFailure(task.getException()));
                         }
                     }
                 });
     }
 
-    private void setSuccessValue() {
-        mResultLiveData.setValue(new Resource<>(mIdpResponse));
-    }
-
-    private void setException(Exception e) {
-        mResultLiveData.setValue(new Resource<IdpResponse>(e));
-    }
-
-    /**
-     * TODO: This stinks
-     */
-    public IdpResponse getIdpResponse() {
-        return mIdpResponse;
-    }
 }

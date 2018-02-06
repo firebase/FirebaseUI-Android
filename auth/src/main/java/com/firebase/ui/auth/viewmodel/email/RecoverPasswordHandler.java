@@ -25,13 +25,14 @@ public class RecoverPasswordHandler extends AuthViewModelBase {
     }
 
     public void startReset(final String email) {
-        mProgressLiveData.setValue(new Resource<String>());
+        mProgressLiveData.setValue(Resource.<String>forLoading());
         getAuth().sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Resource<String> state = task.isSuccessful() ? new Resource<>(email)
-                                : new Resource<String>(task.getException());
+                        Resource<String> state = task.isSuccessful()
+                                ? Resource.forSuccess(email)
+                                : Resource.<String>forFailure(task.getException());
                         mProgressLiveData.setValue(state);
                     }
                 });

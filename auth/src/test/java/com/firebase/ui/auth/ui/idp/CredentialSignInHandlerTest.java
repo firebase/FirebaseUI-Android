@@ -87,7 +87,7 @@ public class CredentialSignInHandlerTest {
         ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
 
         verify(mockActivity).saveCredentialsOrFinish(
-                firebaseUserCaptor.capture(), idpResponseCaptor.capture());
+                firebaseUserCaptor.capture(), null, idpResponseCaptor.capture());
 
         assertEquals(TestConstants.EMAIL,
                 firebaseUserCaptor.getValue().getEmail());
