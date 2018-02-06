@@ -64,6 +64,8 @@ public class HelperActivityBase extends AppCompatActivity {
         mProgressDialogHolder = new ProgressDialogHolder(this);
 
         mSmartLockHandler = ViewModelProviders.of(this).get(SmartLockHandler.class);
+        mSmartLockHandler.init(getFlowParams());
+
         mSmartLockHandler.getPendingResolution().observe(this,
                 new Observer<PendingResolution>() {
                     @Override
