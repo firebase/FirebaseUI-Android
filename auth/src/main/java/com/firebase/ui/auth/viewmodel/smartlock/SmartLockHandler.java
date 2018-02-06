@@ -22,14 +22,14 @@ import com.google.firebase.auth.FirebaseUser;
 /**
  * ViewModel for initiating saves to the Credentials API (SmartLock).
  */
-public class SmartLockViewModel extends AuthViewModelBase {
+public class SmartLockHandler extends AuthViewModelBase {
 
     private static final String TAG = "SmartLockViewModel";
     private static final int RC_SAVE = 100;
 
     private MutableLiveData<Resource<Void>> mResultLiveData = new MutableLiveData<>();
 
-    public SmartLockViewModel(Application application) {
+    public SmartLockHandler(Application application) {
         super(application);
     }
 

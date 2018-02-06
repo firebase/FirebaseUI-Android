@@ -21,7 +21,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.FlowHolder;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
-import com.firebase.ui.auth.viewmodel.smartlock.SmartLockViewModel;
+import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
@@ -39,7 +39,7 @@ public class HelperActivityBase extends AppCompatActivity {
     private ProgressDialogHolder mProgressDialogHolder;
 
     private IdpResponse mPendingIdpResponse;
-    private SmartLockViewModel mSmartLockViewModel;
+    private SmartLockHandler mSmartLockHandler;
 
     public static Intent createBaseIntent(
             @NonNull Context context,
@@ -63,8 +63,8 @@ public class HelperActivityBase extends AppCompatActivity {
         mAuthHelper = new AuthHelper(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
 
-        mSmartLockViewModel = ViewModelProviders.of(this).get(SmartLockViewModel.class);
-        mSmartLockViewModel.getPendingResolution().observe(this,
+        mSmartLockHandler = ViewModelProviders.of(this).get(SmartLockHandler.class);
+        mSmartLockHandler.getPendingResolution().observe(this,
                 new Observer<PendingResolution>() {
                     @Override
                     public void onChanged(@Nullable PendingResolution resolution) {
@@ -76,7 +76,7 @@ public class HelperActivityBase extends AppCompatActivity {
                     }
                 });
 
-        mSmartLockViewModel.getSaveOperation().observe(this,
+        mSmartLockHandler.getSaveOperation().observe(this,
                 new Observer<Resource<Void>>() {
                     @Override
                     public void onChanged(@Nullable Resource<Void> resource) {
@@ -105,7 +105,7 @@ public class HelperActivityBase extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Forward activity results to the ViewModel
-        if (!mSmartLockViewModel.onActivityResult(requestCode, resultCode, data)) {
+        if (!mSmartLockHandler.onActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -147,12 +147,12 @@ public class HelperActivityBase extends AppCompatActivity {
         mPendingIdpResponse = response;
 
         String accountType = ProviderUtils.idpResponseToAccountType(response);
-        mSmartLockViewModel.saveCredentials(firebaseUser, password, accountType);
+        mSmartLockHandler.saveCredentials(firebaseUser, password, accountType);
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public SmartLockViewModel getSmartLockViewModel() {
-        return mSmartLockViewModel;
+    public SmartLockHandler getSmartLockHandler() {
+        return mSmartLockHandler;
     }
 
     private void onPendingResolution(@NonNull PendingResolution resolution) {

@@ -24,7 +24,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.smartlock.SmartLockViewModel;
+import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.tasks.Tasks;
@@ -186,7 +186,7 @@ public class TestHelper {
 
     public static void mockCredentialsClient(HelperActivityBase activity,
                                              CredentialsClient mockCredentials) {
-        SmartLockViewModel viewModel = activity.getSmartLockViewModel();
+        SmartLockHandler viewModel = activity.getSmartLockHandler();
 
         FlowParameters testParams = TestHelper.getFlowParameters(Collections.singletonList(
                 EmailAuthProvider.PROVIDER_ID));
