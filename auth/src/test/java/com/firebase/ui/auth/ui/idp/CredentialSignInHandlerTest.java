@@ -84,10 +84,11 @@ public class CredentialSignInHandlerTest {
         credentialSignInHandler.onComplete(Tasks.forResult(FakeAuthResult.INSTANCE));
 
         ArgumentCaptor<FirebaseUser> firebaseUserCaptor = ArgumentCaptor.forClass(FirebaseUser.class);
+        ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<IdpResponse> idpResponseCaptor = ArgumentCaptor.forClass(IdpResponse.class);
 
         verify(mockActivity).saveCredentialsOrFinish(
-                firebaseUserCaptor.capture(), null, idpResponseCaptor.capture());
+                firebaseUserCaptor.capture(), passwordCaptor.capture(), idpResponseCaptor.capture());
 
         assertEquals(TestConstants.EMAIL,
                 firebaseUserCaptor.getValue().getEmail());
