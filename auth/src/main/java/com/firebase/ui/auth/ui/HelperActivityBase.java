@@ -101,6 +101,15 @@ public class HelperActivityBase extends AppCompatActivity {
         mProgressDialogHolder.dismissDialog();
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Forward activity results to the ViewModel
+        if (!mSmartLockViewModel.onActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     public FlowHolder getFlowHolder() {
         if (mFlowHolder == null) {
             mFlowHolder = ViewModelProviders.of(this).get(FlowHolder.class);

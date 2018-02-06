@@ -69,7 +69,7 @@ public class WelcomeBackPasswordHandlerTest {
 
     @Test
     public void testSignIn_signsInAndSavesCredentials() {
-        mHandler.getSignInResult().observeForever(mResponseObserver);
+        mHandler.getSignInOperation().observeForever(mResponseObserver);
 
         // Mock sign in to always succeed
         when(mMockAuth.signInWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD))
@@ -103,7 +103,7 @@ public class WelcomeBackPasswordHandlerTest {
 
     @Test
     public void testSignIn_linksIdpCredential() {
-        mHandler.getSignInResult().observeForever(mResponseObserver);
+        mHandler.getSignInOperation().observeForever(mResponseObserver);
 
         // Fake social response from Facebook
         User user = new User.Builder(FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
@@ -150,7 +150,7 @@ public class WelcomeBackPasswordHandlerTest {
 
     @Test
     public void testSignIn_propagatesFailure() {
-        mHandler.getSignInResult().observeForever(mResponseObserver);
+        mHandler.getSignInOperation().observeForever(mResponseObserver);
 
         // Mock sign in to always fail
         when(mMockAuth.signInWithEmailAndPassword(any(String.class), any(String.class)))
@@ -172,7 +172,7 @@ public class WelcomeBackPasswordHandlerTest {
 
     @Test
     public void testSignIn_handlesResolution() {
-        mHandler.getSignInResult().observeForever(mResponseObserver);
+        mHandler.getSignInOperation().observeForever(mResponseObserver);
         mHandler.getPendingResolution().observeForever(mResolutionObserver);
 
         // Mock sign in to always succeed

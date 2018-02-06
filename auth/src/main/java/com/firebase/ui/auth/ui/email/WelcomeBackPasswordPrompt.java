@@ -48,6 +48,7 @@ import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
@@ -62,6 +63,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
     private IdpResponse mIdpResponse;
+    private String mPendingPassword;
 
     private WelcomeBackPasswordHandler mHandler;
 
@@ -77,6 +79,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_password_prompt_layout);
+
+        if (savedInstanceState != null) {
+            mPendingPassword = savedInstanceState.getString(ExtraConstants.EXTRA_PASSWORD, null);
+        }
 
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -120,23 +126,21 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 });
 
         // Observe the state of the main auth operation
-        mHandler.getSignInResult().observe(this, new Observer<Resource<IdpResponse>>() {
+        mHandler.getSignInOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(@Nullable Resource<IdpResponse> resource) {
-                onAuthResult(resource);
+                onSignInOperation(resource);
             }
         });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Forward activity results to the ViewModel
-        if (!mHandler.onActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ExtraConstants.EXTRA_PASSWORD, mPendingPassword);
     }
 
-    private void onAuthResult(@Nullable Resource<IdpResponse> resource) {
+    private void onSignInOperation(@Nullable Resource<IdpResponse> resource) {
         if (resource == null) {
             Log.w(TAG, "Got null resource, ignoring.");
             return;
@@ -147,9 +151,11 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
                 break;
             case SUCCESS:
-                Log.d(TAG, "onAuthResult:SUCCESS:" + resource.getValue());
                 getDialogHolder().dismissDialog();
-                finish(RESULT_OK, resource.getValue().toIntent());
+
+                // TODO: Should this logic be in the View?  If not how do we link the view models?
+                FirebaseUser user = getAuthHelper().getCurrentUser();
+                saveCredentialsOrFinish(user, mPendingPassword, resource.getValue());
                 break;
             case FAILURE:
                 // TODO: Is this message what we want?
@@ -203,6 +209,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } else {
             mPasswordLayout.setError(null);
         }
+
+        mPendingPassword = password;
 
         AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
         mHandler.startSignIn(email, password, mIdpResponse, authCredential);

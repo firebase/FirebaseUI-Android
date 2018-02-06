@@ -68,8 +68,6 @@ public class SmartLockViewModel extends AuthViewModelBase {
                                 @Nullable String password,
                                 @Nullable String accountType) {
 
-        // TODO: This needs to be unified with the logic in WelcomeBackPasswordHandler ...
-
         if (!getArguments().enableCredentials) {
             mResultLiveData.setValue(Resource.forVoidSuccess());
             return;
