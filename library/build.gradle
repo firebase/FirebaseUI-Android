@@ -56,15 +56,6 @@ def bintrayUploadTasks() {
     }.toArray()
 }
 
-/**
- * Returns a list of task names to publish modules on Artifactory
- */
-def artifactoryPublishTasks() {
-    return submodules.collect { name ->
-        ":${name}:artifactoryPublish"
-    }.toArray()
-}
-
 
 /**
  * Returns a list of tasks names to test submodules.
