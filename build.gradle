@@ -117,16 +117,13 @@ allprojects { project ->
         def publicationName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
         def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
 
-        def groupName = project.ext.group
-        def versionName = project.ext.version
-
         publishing {
             publications {
                 "${publicationName}"(MavenPublication) {
 
-                    groupId groupName
+                    groupId group
                     artifactId archivesBaseName
-                    version versionName
+                    version version
 
                     artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
                     artifact javadocJar
@@ -238,6 +235,11 @@ allprojects { project ->
         project.apply plugin: 'com.jfrog.bintray'
 
         def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"
+
+        group = project.ext.group
+        version = project.ext.version
+
+        def versionName = project.ext.version
 
         bintray {
             user = bintrayUsername
