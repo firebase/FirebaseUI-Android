@@ -1,7 +1,7 @@
 project.ext {
     submodules = ['database', 'auth', 'storage', 'firestore', 'common']
     group = 'com.firebaseui'
-    version = '3.2.1'
+    version = '3.2.2-SNAPSHOT'
     pomdesc = 'Firebase UI Android'
 
     compileSdk = 27
@@ -10,6 +10,6 @@ project.ext {
 
     firebaseVersion = '11.8.0'
     supportLibraryVersion = '27.0.2'
-    architectureVersion = '1.0.0'
-    kotlinVersion = '1.2.20'
+    architectureVersion = '1.1.0'
+    kotlinVersion = '1.2.21'
 }
