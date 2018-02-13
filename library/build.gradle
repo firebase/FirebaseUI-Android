@@ -56,7 +56,6 @@ def bintrayUploadTasks() {
     }.toArray()
 }
 
-
 /**
  * Returns a list of tasks names to test submodules.
  */
