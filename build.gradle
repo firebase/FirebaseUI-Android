@@ -215,14 +215,17 @@ allprojects { project ->
             }
         }
 
+        def bintrayUsername = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
+        def bintrayKey = hasProperty('BINTRAY_KEY') ? getProperty('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
+
         artifactory {
-            contextUrl = 'http://localhost:8081/artifactory'
+            contextUrl = 'https://oss.jfrog.org'
             publish {
                 repository {
-                    repoKey = 'libs-snapshot-local'
+                    repoKey = 'oss-snapshot-local'
 
-                    username = "admin"
-                    password = "password"
+                    username = bintrayUsername
+                    password = bintrayKey
                 }
             }
         }
@@ -237,8 +240,8 @@ allprojects { project ->
         def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"
 
         bintray {
-            user = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
-            key = hasProperty('BINTRAY_KEY') ? getProperty('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
+            user = bintrayUsername
+            key = bintrayKey
             publications = [publicationName]
 
             filesSpec {
