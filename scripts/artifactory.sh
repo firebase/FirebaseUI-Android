@@ -3,8 +3,8 @@
 set -e
 
 ./gradlew :library:prepareArtifacts
-./gradlew :common:artifactoryPublish
-./gradlew :auth:artifactoryPublish
-./gradlew :database:artifactoryPublish
-./gradlew :firestore:artifactoryPublish
-./gradlew :storage:artifactoryPublish
+./gradlew :common:assembleRelease :common:prepareArtifacts :common:artifactoryPublish
+./gradlew :auth:assembleRelease :auth:prepareArtifacts :auth:artifactoryPublish
+./gradlew :database:assembleRelease :database:prepareArtifacts :database:artifactoryPublish
+./gradlew :firestore:assembleRelease :firestore:prepareArtifacts :firestore:artifactoryPublish
+./gradlew :storage:assembleRelease :storage:prepareArtifacts :storage:artifactoryPublish

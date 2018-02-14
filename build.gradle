@@ -12,7 +12,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.google.gms:google-services:3.2.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.5.4'
     }
 }
 
@@ -117,15 +117,18 @@ allprojects { project ->
         def publicationName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
         def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
 
+        def groupName = project.ext.group
+        def versionName = project.ext.version;
+
         publishing {
             publications {
                 "${publicationName}"(MavenPublication) {
 
-                    groupId group
+                    groupId groupName
                     artifactId archivesBaseName
-                    version version
+                    version versionName
 
-                    artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
+                    artifact "$buildDir/outputs/aar/${archivesBaseName}-release.aar"
                     artifact javadocJar
                     artifact sourcesJar
 
@@ -140,7 +143,7 @@ allprojects { project ->
                             def dependencyNode = dependenciesNode.appendNode('dependency')
 
                             if (submodules.contains(it.name)) {
-                                dependencyNode.appendNode('groupId', 'com.firebaseui')
+                                dependencyNode.appendNode('groupId', groupName)
                                 dependencyNode.appendNode('artifactId', "firebase-ui-${it.name}")
                                 dependencyNode.appendNode('version', versionName)
                             } else {
@@ -155,7 +158,7 @@ allprojects { project ->
                             def dependencyNode = dependenciesNode.appendNode('dependency')
 
                             if (submodules.contains(it.name)) {
-                                dependencyNode.appendNode('groupId', 'com.firebaseui')
+                                dependencyNode.appendNode('groupId', groupName)
                                 dependencyNode.appendNode('artifactId', "firebase-ui-${it.name}")
                                 dependencyNode.appendNode('version', versionName)
                             } else {
@@ -236,11 +239,6 @@ allprojects { project ->
 
         def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"
 
-        group = project.ext.group
-        version = project.ext.version
-
-        def versionName = project.ext.version
-
         bintray {
             user = bintrayUsername
             key = bintrayKey
@@ -250,7 +248,7 @@ allprojects { project ->
                 from pomLoc
                 into "com/firebaseui/$archivesBaseName/$versionName/"
                 rename { String fileName ->
-                    "${archivesBaseName}-${version}.pom"
+                    "${archivesBaseName}-${versionName}.pom"
                 }
             }
 

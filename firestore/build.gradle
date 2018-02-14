@@ -15,7 +15,7 @@ android {
 }
 
 dependencies {
-    api project(path: ':common', configuration: 'default')
+    api project(path: ':common')
     api "com.google.firebase:firebase-firestore:$firebaseVersion"
 
     api "com.android.support:support-v4:$supportLibraryVersion"
