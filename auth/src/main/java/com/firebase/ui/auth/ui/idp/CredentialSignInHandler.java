@@ -115,7 +115,20 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
                 // We don't want to show the welcome back dialog since the user selected
                 // an existing account and we can just link the two accounts without knowing
                 // prevCredential.
-                AccountLinker.linkWithCurrentUser(mActivity, mResponse, credential);
+                AccountLinker.linkWithCurrentUser(mActivity, mResponse, credential)
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult result) {
+                                mActivity.finish(Activity.RESULT_OK, mResponse.toIntent());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                mActivity.finish(Activity.RESULT_CANCELED,
+                                        IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+                            }
+                        });
                 return;
             }
             mActivity.getDialogHolder().dismissDialog();

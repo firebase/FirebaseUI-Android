@@ -26,15 +26,20 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
+import com.firebase.ui.auth.util.accountlink.AccountLinker;
+import com.firebase.ui.auth.util.accountlink.ManualMergeUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -42,10 +47,11 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -74,6 +80,8 @@ public class PhoneActivity extends AppCompatBase {
     private Boolean mIsDestroyed = false;
     private PhoneAuthProvider.ForceResendingToken mForceResendingToken;
     private VerificationState mVerificationState;
+
+    private boolean mIsWaitingForAnonymousLink;
 
     public static Intent createIntent(Context context, FlowParameters flowParams, Bundle params) {
         return HelperActivityBase.createBaseIntent(
@@ -121,7 +129,12 @@ public class PhoneActivity extends AppCompatBase {
             sendCode(mPhoneNumber, false);
         } else if (mVerificationState == VerificationState.VERIFIED) {
             // activity was recreated when verified dialog was displayed
-            finish(getAuthHelper().getCurrentUser());
+            IdpResponse response = new IdpResponse.Builder(
+                    new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
+                            .setPhoneNumber(getAuthHelper().getCurrentUser().getPhoneNumber())
+                            .build())
+                    .build();
+            finish(RESULT_OK, response.toIntent());
         }
     }
 
@@ -159,7 +172,7 @@ public class PhoneActivity extends AppCompatBase {
         }
     }
 
-    public void submitConfirmationCode(@NonNull String confirmationCode) {
+    public void submitConfirmationCode(String phoneNumber, @NonNull String confirmationCode) {
         if (TextUtils.isEmpty(mVerificationId) || TextUtils.isEmpty(confirmationCode)) {
             // This situation should never happen except in the case of an extreme race
             // condition, so we will just ignore the submission.
@@ -172,12 +185,13 @@ public class PhoneActivity extends AppCompatBase {
         }
 
         showLoadingDialog(getString(R.string.fui_verifying));
-        signIn(PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
+        signIn(phoneNumber, PhoneAuthProvider.getCredential(mVerificationId, confirmationCode));
     }
 
-    private void onVerificationSuccess(@NonNull final PhoneAuthCredential phoneAuthCredential) {
+    private void onVerificationSuccess(String phoneNumber,
+                                       @NonNull final PhoneAuthCredential phoneAuthCredential) {
         if (TextUtils.isEmpty(phoneAuthCredential.getSmsCode())) {
-            signIn(phoneAuthCredential);
+            signIn(phoneNumber, phoneAuthCredential);
         } else {
             //Show Fragment if it is not already visible
             showSubmitCodeFragment();
@@ -190,7 +204,7 @@ public class PhoneActivity extends AppCompatBase {
                 submitConfirmationCodeFragment.setConfirmationCode(String.valueOf
                         (phoneAuthCredential.getSmsCode()));
             }
-            signIn(phoneAuthCredential);
+            signIn(phoneNumber, phoneAuthCredential);
         }
     }
 
@@ -237,7 +251,7 @@ public class PhoneActivity extends AppCompatBase {
         }
     }
 
-    private void sendCode(String phoneNumber, boolean forceResend) {
+    private void sendCode(final String phoneNumber, boolean forceResend) {
         mPhoneNumber = phoneNumber;
         mVerificationState = VerificationState.VERIFICATION_STARTED;
 
@@ -250,7 +264,8 @@ public class PhoneActivity extends AppCompatBase {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                         if (!mIsDestroyed) {
-                            PhoneActivity.this.onVerificationSuccess(phoneAuthCredential);
+                            PhoneActivity.this.onVerificationSuccess(phoneNumber,
+                                    phoneAuthCredential);
                         }
                     }
 
@@ -297,15 +312,6 @@ public class PhoneActivity extends AppCompatBase {
         }
     }
 
-    private void finish(FirebaseUser user) {
-        IdpResponse response = new IdpResponse.Builder(
-                new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
-                        .setPhoneNumber(user.getPhoneNumber())
-                        .build())
-                .build();
-        finish(RESULT_OK, response.toIntent());
-    }
-
     private void showAlertDialog(@NonNull String s, DialogInterface.OnClickListener
             onClickListener) {
         mAlertDialog = new AlertDialog.Builder(this)
@@ -314,10 +320,46 @@ public class PhoneActivity extends AppCompatBase {
                 .show();
     }
 
-    private void signIn(@NonNull PhoneAuthCredential credential) {
+    private void signIn(final String phoneNumber, @NonNull final PhoneAuthCredential credential) {
+        final IdpResponse response = new IdpResponse.Builder(
+                new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
+                        .setPhoneNumber(phoneNumber)
+                        .build())
+                .build();
+
+        if (mIsWaitingForAnonymousLink) {
+            response.getUser().setPrevUid(getAuthHelper().getUidForAccountLinking());
+            ManualMergeUtils.injectSignInTaskBetweenDataTransfer(
+                    this,
+                    response,
+                    getFlowParams(),
+                    new Callable<Task<AuthResult>>() {
+                        @Override
+                        public Task<AuthResult> call() {
+                            return getAuthHelper().getFirebaseAuth()
+                                    .signInWithCredential(credential)
+                                    .continueWithTask(new ProfileMerger(response))
+                                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                                        @Override
+                                        public void onSuccess(AuthResult result) {
+                                            finish(RESULT_OK, response.toIntent());
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(
+                                                    ErrorCodes.UNKNOWN_ERROR));
+                                        }
+                                    });
+                        }
+                    });
+            return;
+        }
+
         Task<AuthResult> signInTask;
         if (getAuthHelper().canLinkAccounts()) {
-            signInTask = getAuthHelper().getCurrentUser().linkWithCredential(credential);
+            signInTask = AccountLinker.linkWithCurrentUser(this, response, credential);
         } else {
             signInTask = getAuthHelper().getFirebaseAuth().signInWithCredential(credential);
         }
@@ -334,7 +376,7 @@ public class PhoneActivity extends AppCompatBase {
                     public void run() {
                         if (!mIsDestroyed) {
                             dismissLoadingDialog();
-                            finish(authResult.getUser());
+                            finish(RESULT_OK, response.toIntent());
                         }
                     }
                 }, SHORT_DELAY_MILLIS);
@@ -344,7 +386,19 @@ public class PhoneActivity extends AppCompatBase {
             public void onFailure(@NonNull Exception e) {
                 dismissLoadingDialog();
                 //incorrect confirmation code
-                if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                if (e.getCause() instanceof FirebaseAuthUserCollisionException
+                        && getAuthHelper().canLinkAccounts()) {
+                    mIsWaitingForAnonymousLink = true;
+                    // Apparently, you can't use the same phone credential twice so we need to copy
+                    // this from AccountLinker.linkWithCurrentUser.
+                    sendCode(phoneNumber, true);
+                    getSubmitConfirmationCodeFragment().setConfirmationCode("");
+                    Toast.makeText(
+                            PhoneActivity.this,
+                            FirebaseAuthError.ERROR_SESSION_EXPIRED.getDescription(),
+                            Toast.LENGTH_LONG
+                    ).show();
+                } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     FirebaseAuthError error = FirebaseAuthError.fromException(
                             (FirebaseAuthInvalidCredentialsException) e);
 

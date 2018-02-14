@@ -48,6 +48,8 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private static final long RESEND_WAIT_MILLIS = 15000;
     private static final String EXTRA_MILLIS_UNTIL_FINISHED = "EXTRA_MILLIS_UNTIL_FINISHED";
 
+    private String mPhoneNumber;
+
     private TextView mEditPhoneTextView;
     private TextView mResendCodeTextView;
     private TextView mCountDownTextView;
@@ -84,14 +86,14 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mSubmitConfirmationButton = v.findViewById(R.id.submit_confirmation_code);
         mAgreementText = v.findViewById(R.id.create_account_tos);
 
-        final String phoneNumber = getArguments().getString(ExtraConstants.EXTRA_PHONE);
+        mPhoneNumber = getArguments().getString(ExtraConstants.EXTRA_PHONE);
 
         parentActivity.setTitle(getString(R.string.fui_verify_your_phone_title));
         setupConfirmationCodeEditText();
-        setupEditPhoneNumberTextView(phoneNumber);
+        setupEditPhoneNumberTextView(mPhoneNumber);
         setupCountDown(RESEND_WAIT_MILLIS);
         setupSubmitConfirmationCodeButton();
-        setupResendConfirmationCodeTextView(phoneNumber);
+        setupResendConfirmationCodeTextView(mPhoneNumber);
         setUpTermsOfService();
         return v;
     }
@@ -174,7 +176,8 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void submitConfirmationCode() {
-        mVerifier.submitConfirmationCode(mConfirmationCodeEditText.getUnspacedText().toString());
+        mVerifier.submitConfirmationCode(
+                mPhoneNumber, mConfirmationCodeEditText.getUnspacedText().toString());
     }
 
     private void setupEditPhoneNumberTextView(@Nullable String phoneNumber) {

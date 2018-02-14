@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
@@ -40,7 +41,10 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.accountlink.AccountLinker;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -129,14 +133,25 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     @Override
-    public void onSuccess(IdpResponse idpResponse) {
+    public void onSuccess(final IdpResponse idpResponse) {
         AuthCredential newCredential = ProviderUtils.getAuthCredential(idpResponse);
         if (newCredential == null) {
             Log.e(TAG, "No credential returned");
             finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
         } else {
-            AccountLinker.linkToNewUser(
-                    this, idpResponse, newCredential, mPrevCredential);
+            AccountLinker.linkToNewUser(this, idpResponse, newCredential, mPrevCredential)
+                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult result) {
+                            finish(RESULT_OK, idpResponse.toIntent());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            WelcomeBackIdpPrompt.this.onFailure();
+                        }
+                    });
         }
     }
 
