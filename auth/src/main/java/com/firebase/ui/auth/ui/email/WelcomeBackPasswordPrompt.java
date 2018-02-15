@@ -63,7 +63,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
     private IdpResponse mIdpResponse;
-    private String mPendingPassword;
 
     private WelcomeBackPasswordHandler mHandler;
 
@@ -79,10 +78,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_password_prompt_layout);
-
-        if (savedInstanceState != null) {
-            mPendingPassword = savedInstanceState.getString(ExtraConstants.EXTRA_PASSWORD, null);
-        }
 
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -134,12 +129,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         });
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(ExtraConstants.EXTRA_PASSWORD, mPendingPassword);
-    }
-
     private void onSignInOperation(@Nullable Resource<IdpResponse> resource) {
         if (resource == null) {
             Log.w(TAG, "Got null resource, ignoring.");
@@ -153,9 +142,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             case SUCCESS:
                 getDialogHolder().dismissDialog();
 
-                // TODO: Should this logic be in the View?  If not how do we link the view models?
+                // This logic remains in the view since SmartLock is effectively a different
+                // 'screen' after the sign-in process.
                 FirebaseUser user = getAuthHelper().getCurrentUser();
-                saveCredentialsOrFinish(user, mPendingPassword, resource.getValue());
+                saveCredentialsOrFinish(user, mHandler.getPendingPassword(), resource.getValue());
                 break;
             case FAILURE:
                 // TODO: Is this message what we want?
@@ -209,8 +199,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         } else {
             mPasswordLayout.setError(null);
         }
-
-        mPendingPassword = password;
 
         AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
         mHandler.startSignIn(email, password, mIdpResponse, authCredential);

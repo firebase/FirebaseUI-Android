@@ -26,7 +26,6 @@ public final class ExtraConstants {
     public static final String EXTRA_USER = "extra_user";
 
     public static final String EXTRA_EMAIL = "extra_email";
-    public static final String EXTRA_PASSWORD = "extra_password";
     public static final String EXTRA_ALLOW_NEW_EMAILS = "extra_allow_new_emails";
     public static final String EXTRA_REQUIRE_NAME = "extra_require_name";
     public static final String EXTRA_GOOGLE_SIGN_IN_OPTIONS = "extra_google_sign_in_options";

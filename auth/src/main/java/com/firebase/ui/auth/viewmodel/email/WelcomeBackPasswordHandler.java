@@ -35,6 +35,8 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
 
     private MutableLiveData<Resource<IdpResponse>> mSignInLiveData = new MutableLiveData<>();
 
+    private String mPendingPassword;
+
     public WelcomeBackPasswordHandler(Application application) {
         super(application);
     }
@@ -47,6 +49,9 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                             @NonNull final IdpResponse inputResponse,
                             @Nullable final AuthCredential credential) {
         mSignInLiveData.setValue(Resource.<IdpResponse>forLoading());
+
+        // Store the password before signing in so it can be used for later credential building
+        mPendingPassword = password;
 
         // Build appropriate IDP response based on inputs
         final IdpResponse outputResponse;
@@ -101,6 +106,13 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
      */
     public LiveData<Resource<IdpResponse>> getSignInOperation() {
         return mSignInLiveData;
+    }
+
+    /**
+     * Get the most recent pending password.
+     */
+    public String getPendingPassword() {
+        return mPendingPassword;
     }
 
     private void setSuccess(IdpResponse idpResponse) {

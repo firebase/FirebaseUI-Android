@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
@@ -77,7 +79,9 @@ public class SmartLockHandler extends AuthViewModelBase {
 
         Credential credential = CredentialsUtil.buildCredential(firebaseUser, password, accountType);
         if (credential == null) {
-            mResultLiveData.setValue(Resource.<Void>forFailure(new Exception("Failed to build credential")));
+            Exception exception = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR,
+                    "Failed to build credential.");
+            mResultLiveData.setValue(Resource.<Void>forFailure(exception));
             return;
         }
 

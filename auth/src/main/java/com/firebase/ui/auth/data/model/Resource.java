@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
-import com.firebase.ui.auth.util.Preconditions;
-
 /**
  * Base state model object.
  * <p>
@@ -14,61 +12,44 @@ import com.firebase.ui.auth.util.Preconditions;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class Resource<T> {
+
     private final State mState;
     private final T mValue;
     private final Exception mException;
 
     /**
-     * Creates a successful Resource&lt;Void&gt;.
+     * Creates a successful, empty Resource.
      */
+    @NonNull
     public static Resource<Void> forVoidSuccess() {
         return new Resource<>(State.SUCCESS, null, null);
     }
 
+    /**
+     * Creates a successful resource containing a value.
+     */
+    @NonNull
     public static <T> Resource<T> forSuccess(@NonNull T value) {
         return new Resource<>(State.SUCCESS, value, null);
     }
 
+    /**
+     * Creates a failed resource with an exception.
+     */
+    @NonNull
     public static <T> Resource<T> forFailure(@NonNull Exception e) {
         return new Resource<>(State.FAILURE, null, e);
     }
 
+    /**
+     * Creates a resource in the loading state, without a value or an exception.
+     */
+    @NonNull
     public static <T> Resource<T> forLoading() {
         return new Resource<>(State.LOADING, null, null);
     }
 
-    /**
-     * Creates a default, unfinished, state.
-     */
-    Resource() {
-        mState = State.LOADING;
-        mValue = null;
-        mException = null;
-    }
-
-    /**
-     * Creates a finished success state.
-     *
-     * @param value result of the operation
-     */
-    Resource(@NonNull T value) {
-        mState = State.SUCCESS;
-        mValue = Preconditions.checkNotNull(value, "Success state cannot have null result.");
-        mException = null;
-    }
-
-    /**
-     * Creates a finished failure state.
-     *
-     * @param exception error in computing the result
-     */
-    Resource(@NonNull Exception exception) {
-        mState = State.FAILURE;
-        mValue = null;
-        mException = Preconditions.checkNotNull(exception, "Failure state cannot have null error.");
-    }
-
-    Resource(State state, T value, Exception exception) {
+    private Resource(State state, T value, Exception exception) {
         mState = state;
         mValue = value;
         mException = exception;
