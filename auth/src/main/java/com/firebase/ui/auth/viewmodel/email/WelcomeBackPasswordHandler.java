@@ -31,8 +31,6 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
 
     private static final String TAG = "WBPasswordHandler";
 
-    private static final int RC_SAVE = 100;
-
     private MutableLiveData<Resource<IdpResponse>> mSignInLiveData = new MutableLiveData<>();
 
     private String mPendingPassword;

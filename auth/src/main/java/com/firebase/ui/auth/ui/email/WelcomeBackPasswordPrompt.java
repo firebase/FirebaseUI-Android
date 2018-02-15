@@ -18,7 +18,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,10 +33,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.ui.AppCompatBase;
@@ -45,7 +42,6 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
@@ -111,15 +107,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         mHandler = ViewModelProviders.of(this).get(WelcomeBackPasswordHandler.class);
         mHandler.init(getFlowHolder().getArguments());
 
-        // Fire resolutions when asked
-        mHandler.getPendingResolution().observe(this,
-                new Observer<PendingResolution>() {
-                    @Override
-                    public void onChanged(@Nullable PendingResolution resolution) {
-                        onPendingResolution(resolution);
-                    }
-                });
-
         // Observe the state of the main auth operation
         mHandler.getSignInOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
@@ -153,25 +140,6 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 String message = resource.getException().getLocalizedMessage();
                 mPasswordLayout.setError(message);
                 break;
-
-        }
-    }
-
-    private void onPendingResolution(@Nullable PendingResolution resolution) {
-        if (resolution == null) {
-            Log.e(TAG, "Got null resolution, can't do anything");
-            return;
-        }
-
-        try {
-            startIntentSenderForResult(resolution.getPendingIntent().getIntentSender(),
-                    resolution.getRequestCode(), null, 0, 0, 0);
-        } catch (IntentSender.SendIntentException e) {
-            Log.e(TAG, "Failed to send resolution.", e);
-
-            IdpResponse errorResponse = IdpResponse.fromError(
-                    new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, getString(R.string.fui_general_error), e));
-            finish(RESULT_OK, errorResponse.toIntent());
         }
     }
 

@@ -21,6 +21,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.FlowHolder;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
+import com.firebase.ui.auth.viewmodel.ResolutionCodes;
 import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -157,19 +158,22 @@ public class HelperActivityBase extends AppCompatActivity {
         return mSmartLockHandler;
     }
 
-    private void onPendingResolution(@NonNull PendingResolution resolution) {
-        try {
-            startIntentSenderForResult(
-                    resolution.getPendingIntent().getIntentSender(),
-                    resolution.getRequestCode(),
-                    null, 0, 0, 0);
-        } catch (IntentSender.SendIntentException e) {
-            Log.e(TAG, "STATUS: Failed to send resolution.", e);
-            finish(RESULT_OK, mPendingIdpResponse.toIntent());
-        };
+    // TODO: This should not be in the base class, Smartlock should be elsewhere,
+    protected void onPendingResolution(@NonNull PendingResolution resolution) {
+        if (resolution.getRequestCode() == ResolutionCodes.RC_CRED_SAVE) {
+            try {
+                startIntentSenderForResult(
+                        resolution.getPendingIntent().getIntentSender(),
+                        resolution.getRequestCode(),
+                        null, 0, 0, 0);
+            } catch (IntentSender.SendIntentException e) {
+                Log.e(TAG, "Failed to send resolution.", e);
+                finish(RESULT_OK, mPendingIdpResponse.toIntent());
+            };
+        }
     }
 
-    private void onSaveOperation(@NonNull Resource<Void> resource) {
+    protected void onSaveOperation(@NonNull Resource<Void> resource) {
         switch (resource.getState()) {
             case LOADING:
                 // No-op?

@@ -44,9 +44,12 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -157,14 +160,19 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     }
 
     @Override
-    public void onSuccess(IdpResponse response) {
+    public void onSuccess(final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
         getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(credential)
-                .addOnCompleteListener(new CredentialSignInHandler(
-                        this,
-                        RC_ACCOUNT_LINK,
-                        response))
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        FirebaseUser firebaseUser = authResult.getUser();
+                        saveCredentialsOrFinish(firebaseUser, null, response);
+                    }
+                })
+                .addOnFailureListener(new CredentialSignInHandler(
+                        this, RC_ACCOUNT_LINK, response))
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Firebase sign in with credential " +
                                 credential.getProvider() + " unsuccessful. " +

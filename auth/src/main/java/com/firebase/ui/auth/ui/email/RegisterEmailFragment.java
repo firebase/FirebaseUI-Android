@@ -21,7 +21,6 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -53,7 +52,7 @@ public class RegisterEmailFragment extends FragmentBase implements
 
     public static final String TAG = "RegisterEmailFragment";
 
-    private HelperActivityBase mActivity;
+    private RegistrationListener mListener;
 
     private EditText mEmailEditText;
     private EditText mNameEditText;
@@ -68,6 +67,12 @@ public class RegisterEmailFragment extends FragmentBase implements
     private BaseValidator mNameValidator;
 
     private User mUser;
+
+    public interface RegistrationListener {
+
+        void onRegistrationSuccess(AuthResult authResult, String password, IdpResponse response);
+
+    }
 
     public static RegisterEmailFragment newInstance(FlowParameters flowParameters, User user) {
         RegisterEmailFragment fragment = new RegisterEmailFragment();
@@ -181,11 +186,11 @@ public class RegisterEmailFragment extends FragmentBase implements
         super.onActivityCreated(savedInstanceState);
         getActivity().setTitle(R.string.fui_title_register_email);
 
-        if (!(getActivity() instanceof HelperActivityBase)) {
-            throw new RuntimeException("Must be attached to a HelperActivityBase.");
+        if (!(getActivity() instanceof RegistrationListener)) {
+            throw new RuntimeException("Must be attached to a RegistrationListener.");
         }
 
-        mActivity = (HelperActivityBase) getActivity();
+        mListener = (RegistrationListener) getActivity();
         PreambleHandler.setup(getContext(),
                 getFlowParams(),
                 R.string.fui_button_text_save,
@@ -257,10 +262,7 @@ public class RegisterEmailFragment extends FragmentBase implements
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        mActivity.saveCredentialsOrFinish(
-                                authResult.getUser(),
-                                password,
-                                response);
+                        mListener.onRegistrationSuccess(authResult, password, response);
                     }
                 })
                 .addOnFailureListener(getActivity(), new OnFailureListener() {

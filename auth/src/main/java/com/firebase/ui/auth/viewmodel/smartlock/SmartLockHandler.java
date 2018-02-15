@@ -15,6 +15,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
+import com.firebase.ui.auth.viewmodel.ResolutionCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,7 +28,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class SmartLockHandler extends AuthViewModelBase {
 
     private static final String TAG = "SmartLockViewModel";
-    private static final int RC_SAVE = 100;
 
     private MutableLiveData<Resource<Void>> mResultLiveData = new MutableLiveData<>();
 
@@ -48,7 +48,7 @@ public class SmartLockHandler extends AuthViewModelBase {
      */
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_SAVE) {
+        if (requestCode == ResolutionCodes.RC_CRED_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
                 mResultLiveData.setValue(Resource.forVoidSuccess());
             } else {
@@ -93,7 +93,7 @@ public class SmartLockHandler extends AuthViewModelBase {
                             mResultLiveData.setValue(Resource.forVoidSuccess());
                         } else if (task.getException() instanceof ResolvableApiException) {
                             ResolvableApiException rae = (ResolvableApiException) task.getException();
-                            setPendingResolution(new PendingResolution(rae.getResolution(), RC_SAVE));
+                            setPendingResolution(new PendingResolution(rae.getResolution(), ResolutionCodes.RC_CRED_SAVE));
                         } else {
                             Log.w(TAG, "Non-resolvable exception: " + task.getException());
                             mResultLiveData.setValue(Resource.<Void>forFailure(task.getException()));
