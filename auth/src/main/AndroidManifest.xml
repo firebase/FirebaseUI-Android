@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,10 +8,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_application_id" />
@@ -61,6 +62,13 @@
             tools:ignore="MissingRegistered" />
 
         <activity
+            android:name=".ui.credentials.CredentialSaveActivity"
+            android:label=""
+            android:exported="false"
+            android:theme="@style/FirebaseUI.Transparent">
+        </activity>
+
+        <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true"
             tools:ignore="MissingRegistered">
@@ -79,7 +87,6 @@
             android:authorities="${applicationId}.authuiinitprovider"
             android:exported="false"
             android:initOrder="90" />
-
     </application>
 
 </manifest>
