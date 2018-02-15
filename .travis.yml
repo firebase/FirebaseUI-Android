@@ -1,36 +1,39 @@
 language: android
 jdk: oraclejdk8
-# See https://github.com/travis-ci/travis-ci/issues/5582
 sudo: required
+# See https://github.com/travis-ci/travis-ci/issues/5582
 before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
 before_install:
-  - mkdir "$ANDROID_HOME/licenses" || true
-  - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
-  - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de7af1a06de9f4b1727b84351f2910" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+- mkdir "$ANDROID_HOME/licenses" || true
+- echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
+- echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd\n504667f4c0de7af1a06de9f4b1727b84351f2910" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
 android:
   components:
-    # https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943
-    - tools
-    - tools
+  # https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943
+  - tools
+  - tools
 before_script: mv library/google-services.json app/google-services.json
-script: ./gradlew clean assembleDebug check
+script: "./gradlew clean assembleDebug check"
 after_failure:
-  # tests
-  - cat app/build/reports/tests/testDebugUnitTest/index.html
-  - cat auth/build/reports/tests/testDebugUnitTest/index.html
-  - cat database/build/reports/tests/testDebugUnitTest/index.html
-  - cat storage/build/reports/tests/testDebugUnitTest/index.html
-
-  # app
-  - cat app/build/reports/checkstyle.html
-  - cat app/build/reports/lint-results.xml
-  - cat app/build/reports/lint-results.html
-  - cat app/build/reports/findbugs.html
-  - cat app/build/reports/pmd.html
+- cat app/build/reports/tests/testDebugUnitTest/index.html
+- cat auth/build/reports/tests/testDebugUnitTest/index.html
+- cat database/build/reports/tests/testDebugUnitTest/index.html
+- cat storage/build/reports/tests/testDebugUnitTest/index.html
+- cat app/build/reports/checkstyle.html
+- cat app/build/reports/lint-results.xml
+- cat app/build/reports/lint-results.html
+- cat app/build/reports/findbugs.html
+- cat app/build/reports/pmd.html
+after_success:
+- ./scripts/artifactory.sh
+env:
+  global:
+  - secure: AeYETdNH/qdqvc3QScrZYJgV4Gupkj0LKeCpUP96I8DJBGmxZQeRWMI+mjtJzksTddnYnRQCU189UCJJJk8MH79cZQsvLAc9M8/f7nnX2s54NG2KZZV08t8xvlCS/XUmkwY6fCQsIoDAGA/+35pHp+pRU3j3gq/qxHtWWIJglt+Oew+fz5aHAO711EtnjuHwwFcc0WTPFDhOlo7goe0myAPG0I09g1yaW2odj1lQrej9bLOCvs6SJ6RRD/+4ZNLMw+r8Q662SGztOh//uCAZU67KD6FCst9AEgfECB6GPyN/UCr0rV/7HTU0rcjthr4QbNaCFPZ3hNCy13Wh7gPUM5quh481bgvx5YTtZCfKhAz0m53mkYseUlemlB7R54tOkcIezsByMhF8In2bOwVUD8JZmkhFb3bBDeao6g63defta0WIMlyYAWNxIdz//JDs40MCkOEj8s/VehvdOOnYUjwcXFsmSfqZP0Vf3Dpin51lxz1h+tSOMI5RmWEg5WICsIo/W7nvV85zgtd6/dWxunhDgKrhBpwrJsIrsOz2fDNIA9DB6BCAjYFK5rd/E4Ycww0Y8/Lxlqht39IJTSCApT17fNtFbF357z9fiKBeNXoaRIULPKXXPMMkHHPRai9RFYdCf8sCZ75aVkBJ4PsWexgBU+cTjHuw0saao68eS5s=
+  - secure: bPFo+6ADLN/iAZmhHBYIexE0zuiXQT5M4RA20/t0QSh6EZ8DCtbrLy8jT3L3YU1rge1Qxv8J258GxN3N6UelI/dg96e15dHUX1+8dZCx/txxPBe/q4YamaKwwJForXje/5bqMz2YqdT1e50ScxKVXo/YRWF26hynNGsq916ATKjwM9GRUep7A6aa7EKrCvuXwELzUZqV/gfA8KMD+s03T+9vpgsxfGv6tnp5lpHeR5dDtI4wFcTPLkoRfhbuIoUTBBRaHbNJpHm8fBhTQTpGTG5pxC7QVkIbArdgIwptv3XeTn/7iPdv0zcMXnof4C8hJ3tguitR3q4ae5wS/QZGi8wxpL7L/tLkeswLpkjflbIBj4/U+nUS2DayVisu4zSTSKR1A6ARvlWFhSEYxhjp9i8z45uytCod22PeXg939OUK2IosNpwychWGCab7fVECOqlwruFIwi7Tu25bng6IWtD7zipFtMrBK2JY9ykLjJx5InXN3T2OJsq3V/g6dNRCF3isIUhxWMkYqK+bMTRbcQRA55Tb3kvZ9x1GEOVLUhwtzYdFWDtRN6MlJkhrEvznL9hawa6AKYVf38wws65/K/scjtNpbkFlW0py1EBD1VSAJSl7nThZJPRIH64Uv3FbYztNR3a6rk54L3WBc53svpNcesPU/M2I/BzwUsjfvIM=
