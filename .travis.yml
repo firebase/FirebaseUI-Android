@@ -24,6 +24,7 @@ android:
     - tools
 before_script: mv library/google-services.json app/google-services.json
 script: ./gradlew clean assembleDebug check
+after_success: ./scripts/artifactory.sh
 after_failure:
   # tests
   - cat app/build/reports/tests/testDebugUnitTest/index.html
@@ -37,4 +38,3 @@ after_failure:
   - cat app/build/reports/lint-results.html
   - cat app/build/reports/findbugs.html
   - cat app/build/reports/pmd.html
-after_success: ./scripts/artifactory.sh
