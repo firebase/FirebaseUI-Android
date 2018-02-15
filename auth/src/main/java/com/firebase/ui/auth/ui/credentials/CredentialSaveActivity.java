@@ -58,8 +58,6 @@ public class CredentialSaveActivity extends HelperActivityBase {
         Credential credential = getIntent().getParcelableExtra(ExtraConstants.EXTRA_CREDENTIAL);
         mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
 
-        mHandler.saveCredentials(credential);
-
         mHandler.getSaveOperation().observe(this, new Observer<Resource<Void>>() {
             @Override
             public void onChanged(@Nullable Resource<Void> resource) {
@@ -83,6 +81,12 @@ public class CredentialSaveActivity extends HelperActivityBase {
                 onPendingResolution(resolution);
             }
         });
+
+        // Avoid double-saving
+        Resource<Void> currentOp = mHandler.getSaveOperation().getValue();
+        if (currentOp == null) {
+            mHandler.saveCredentials(credential);
+        }
     }
 
     @Override
