@@ -70,6 +70,14 @@ public class SmartLockHandler extends AuthViewModelBase {
                                 @Nullable String password,
                                 @Nullable String accountType) {
 
+        Credential credential = CredentialsUtil.buildCredential(firebaseUser, password, accountType);
+        saveCredentials(credential);
+    }
+
+    /**
+     * Initialize saving a credential.
+     */
+    public void saveCredentials(Credential credential) {
         if (!getArguments().enableCredentials) {
             mResultLiveData.setValue(Resource.forVoidSuccess());
             return;
@@ -77,7 +85,7 @@ public class SmartLockHandler extends AuthViewModelBase {
 
         mResultLiveData.setValue(Resource.<Void>forLoading());
 
-        Credential credential = CredentialsUtil.buildCredential(firebaseUser, password, accountType);
+
         if (credential == null) {
             Exception exception = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR,
                     "Failed to build credential.");

@@ -1,27 +1,21 @@
 package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
 import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.FlowHolder;
-import com.firebase.ui.auth.viewmodel.PendingResolution;
-import com.firebase.ui.auth.viewmodel.ResolutionCodes;
 import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -33,14 +27,13 @@ public class HelperActivityBase extends AppCompatActivity {
 
     private static final String TAG = "HelperActivityBase";
 
+    private static final int RC_SAVE_CREDENTIAL = 101;
+
     private FlowHolder mFlowHolder;
 
     private FlowParameters mFlowParameters;
     private AuthHelper mAuthHelper;
     private ProgressDialogHolder mProgressDialogHolder;
-
-    private IdpResponse mPendingIdpResponse;
-    private SmartLockHandler mSmartLockHandler;
 
     public static Intent createBaseIntent(
             @NonNull Context context,
@@ -56,46 +49,8 @@ public class HelperActivityBase extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-
-        if (savedInstance != null) {
-            mPendingIdpResponse = savedInstance.getParcelable(ExtraConstants.EXTRA_IDP_RESPONSE);
-        }
-
         mAuthHelper = new AuthHelper(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
-
-        mSmartLockHandler = ViewModelProviders.of(this).get(SmartLockHandler.class);
-        mSmartLockHandler.init(getFlowParams());
-
-        mSmartLockHandler.getPendingResolution().observe(this,
-                new Observer<PendingResolution>() {
-                    @Override
-                    public void onChanged(@Nullable PendingResolution resolution) {
-                        if (resolution == null) {
-                            return;
-                        }
-
-                        onPendingResolution(resolution);
-                    }
-                });
-
-        mSmartLockHandler.getSaveOperation().observe(this,
-                new Observer<Resource<Void>>() {
-                    @Override
-                    public void onChanged(@Nullable Resource<Void> resource) {
-                        if (resource == null) {
-                            return;
-                        }
-
-                        onSaveOperation(resource);
-                    }
-                });
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(ExtraConstants.EXTRA_IDP_RESPONSE, mPendingIdpResponse);
     }
 
     @Override
@@ -107,9 +62,11 @@ public class HelperActivityBase extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Forward activity results to the ViewModel
-        if (!mSmartLockHandler.onActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Forward the results of Smartlock Saving
+        if (requestCode == RC_SAVE_CREDENTIAL) {
+            finish(RESULT_OK, data);
         }
     }
 
@@ -147,42 +104,16 @@ public class HelperActivityBase extends AppCompatActivity {
             FirebaseUser firebaseUser,
             @Nullable String password,
             IdpResponse response) {
-        mPendingIdpResponse = response;
 
-        String accountType = ProviderUtils.idpResponseToAccountType(response);
-        mSmartLockHandler.saveCredentials(firebaseUser, password, accountType);
+        // Start the dedicated SmartLock Activity
+        Intent intent = CredentialSaveActivity.createIntent(this, getFlowParams(),
+                firebaseUser, password, response);
+        startActivityForResult(intent, RC_SAVE_CREDENTIAL);
     }
 
+    // TODO: Remove
     @RestrictTo(RestrictTo.Scope.TESTS)
     public SmartLockHandler getSmartLockHandler() {
-        return mSmartLockHandler;
+        return null;
     }
-
-    // TODO: This should not be in the base class, Smartlock should be elsewhere,
-    protected void onPendingResolution(@NonNull PendingResolution resolution) {
-        if (resolution.getRequestCode() == ResolutionCodes.RC_CRED_SAVE) {
-            try {
-                startIntentSenderForResult(
-                        resolution.getPendingIntent().getIntentSender(),
-                        resolution.getRequestCode(),
-                        null, 0, 0, 0);
-            } catch (IntentSender.SendIntentException e) {
-                Log.e(TAG, "Failed to send resolution.", e);
-                finish(RESULT_OK, mPendingIdpResponse.toIntent());
-            };
-        }
-    }
-
-    protected void onSaveOperation(@NonNull Resource<Void> resource) {
-        switch (resource.getState()) {
-            case LOADING:
-                // No-op?
-                break;
-            case SUCCESS:
-            case FAILURE:
-                finish(RESULT_OK, mPendingIdpResponse.toIntent());
-                break;
-        }
-    }
-
 }

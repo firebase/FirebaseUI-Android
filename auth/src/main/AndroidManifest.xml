@@ -1,13 +1,12 @@
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.firebase.ui.auth">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.firebase.ui.auth">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -20,45 +19,44 @@
             android:label=""
             android:exported="false"
             android:theme="@style/FirebaseUI.Transparent" />
-
         <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/fui_title_recover_password_activity"
             android:exported="false" />
-
         <activity
             android:name=".ui.email.EmailActivity"
             android:label="@string/fui_sign_in_default"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".ui.phone.PhoneActivity"
             android:label="@string/fui_sign_in_with_phone_number"
             android:exported="false"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
-
         <activity
             android:name=".ui.idp.WelcomeBackIdpPrompt"
             android:label="@string/fui_title_welcome_back_idp_prompt"
             android:exported="false" />
-
         <activity
             android:name=".ui.email.WelcomeBackPasswordPrompt"
             android:label="@string/fui_title_welcome_back_password_prompt"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".ui.idp.AuthMethodPickerActivity"
             android:label="@string/fui_default_toolbar_title"
             android:exported="false" />
-
         <activity
             android:name="com.facebook.FacebookActivity"
             android:label="@string/app_name"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             tools:ignore="MissingRegistered" />
+        <activity
+            android:name=".ui.credentials.CredentialSaveActivity"
+            android:label=""
+            android:exported="false"
+            android:theme="@style/FirebaseUI.Transparent">
+        </activity>
 
         <activity
             android:name="com.facebook.CustomTabActivity"
@@ -79,7 +77,6 @@
             android:authorities="${applicationId}.authuiinitprovider"
             android:exported="false"
             android:initOrder="90" />
-
     </application>
 
 </manifest>
