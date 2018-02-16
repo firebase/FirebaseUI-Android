@@ -85,7 +85,10 @@ public class CredentialSaveActivity extends HelperActivityBase {
         // Avoid double-saving
         Resource<Void> currentOp = mHandler.getSaveOperation().getValue();
         if (currentOp == null) {
+            Log.d(TAG, "Launching save operation.");
             mHandler.saveCredentials(credential);
+        } else {
+            Log.d(TAG, "Save operation in progress, doing nothing.");
         }
     }
 
