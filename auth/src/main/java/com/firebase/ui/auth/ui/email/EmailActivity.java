@@ -146,7 +146,7 @@ public class EmailActivity extends AppCompatBase implements
     @Override
     public void onRegistrationSuccess(AuthResult authResult, String password,
                                       IdpResponse response) {
-        saveCredentialsOrFinish(authResult.getUser(), password, response);
+        startSaveCredentials(authResult.getUser(), password, response);
     }
 
     private void setSlideAnimation() {

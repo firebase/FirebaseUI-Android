@@ -98,7 +98,7 @@ public class HelperActivityBase extends AppCompatActivity {
         finish();
     }
 
-    public void saveCredentialsOrFinish(
+    public void startSaveCredentials(
             FirebaseUser firebaseUser,
             @Nullable String password,
             IdpResponse response) {

@@ -168,7 +168,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         FirebaseUser firebaseUser = authResult.getUser();
-                        saveCredentialsOrFinish(firebaseUser, null, response);
+                        startSaveCredentials(firebaseUser, null, response);
                     }
                 })
                 .addOnFailureListener(new CredentialSignInHandler(

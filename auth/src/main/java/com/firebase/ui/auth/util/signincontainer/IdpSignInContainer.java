@@ -135,7 +135,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         FirebaseUser firebaseUser = authResult.getUser();
-                        mActivity.saveCredentialsOrFinish(firebaseUser, null, response);
+                        mActivity.startSaveCredentials(firebaseUser, null, response);
                     }
                 })
                 .addOnFailureListener(new CredentialSignInHandler(

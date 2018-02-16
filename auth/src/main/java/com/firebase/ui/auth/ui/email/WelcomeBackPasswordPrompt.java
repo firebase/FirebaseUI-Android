@@ -132,7 +132,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 // This logic remains in the view since SmartLock is effectively a different
                 // 'screen' after the sign-in process.
                 FirebaseUser user = getAuthHelper().getCurrentUser();
-                saveCredentialsOrFinish(user, mHandler.getPendingPassword(), resource.getValue());
+                startSaveCredentials(user, mHandler.getPendingPassword(), resource.getValue());
                 break;
             case FAILURE:
                 // TODO: Is this message what we want?
