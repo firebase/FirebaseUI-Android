@@ -16,7 +16,6 @@ import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
 import com.firebase.ui.auth.util.AuthHelper;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.FlowHolder;
-import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
@@ -58,7 +57,6 @@ public class HelperActivityBase extends AppCompatActivity {
         super.onDestroy();
         mProgressDialogHolder.dismissDialog();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -109,11 +107,5 @@ public class HelperActivityBase extends AppCompatActivity {
         Intent intent = CredentialSaveActivity.createIntent(this, getFlowParams(),
                 firebaseUser, password, response);
         startActivityForResult(intent, RC_SAVE_CREDENTIAL);
-    }
-
-    // TODO: Remove
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public SmartLockHandler getSmartLockHandler() {
-        return null;
     }
 }

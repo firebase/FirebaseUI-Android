@@ -26,7 +26,6 @@ import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
@@ -42,7 +41,6 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -97,10 +95,6 @@ public class EmailActivityTest {
     @Test
     @Config(shadows = {AuthHelperShadow.class})
     public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
-        // init mocks
-        // TODO
-        // reset(AuthHelperShadow.getSaveSmartLockInstance(null));
-
         EmailActivity emailActivity = createActivity();
 
         // Trigger new user UI (bypassing check email)
@@ -124,9 +118,6 @@ public class EmailActivityTest {
         when(AuthHelperShadow.getCurrentUser().updateProfile(any(UserProfileChangeRequest.class)))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
-        CredentialsClient mockCredentials = mock(CredentialsClient.class);
-        TestHelper.mockCredentialsClient(emailActivity, mockCredentials);
-
         Button button = emailActivity.findViewById(R.id.button_create);
         button.performClick();
 
@@ -134,10 +125,8 @@ public class EmailActivityTest {
         verify(AuthHelperShadow.getFirebaseAuth())
                 .createUserWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD);
 
-        // Finally, the new credential should be saved to SmartLock
-        TestHelper.verifySmartLockSave(mockCredentials,
-                EmailAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL,
-                TestConstants.PASSWORD);
+        // Check that Smart Lock is kicked off
+        TestHelper.verifyCredentialSaveStarted(emailActivity,
+                null, TestConstants.EMAIL, TestConstants.PASSWORD, null);
     }
 }
