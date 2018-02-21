@@ -41,8 +41,11 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -124,14 +127,19 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     }
 
     @Override
-    public void onSuccess(IdpResponse response) {
+    public void onSuccess(final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
         getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(credential)
-                .addOnCompleteListener(new CredentialSignInHandler(
-                        mActivity,
-                        RC_WELCOME_BACK_IDP,
-                        response))
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        FirebaseUser firebaseUser = authResult.getUser();
+                        mActivity.startSaveCredentials(firebaseUser, null, response);
+                    }
+                })
+                .addOnFailureListener(new CredentialSignInHandler(
+                        mActivity, RC_WELCOME_BACK_IDP, response))
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Failure authenticating with credential " +
                                 credential.getProvider()));

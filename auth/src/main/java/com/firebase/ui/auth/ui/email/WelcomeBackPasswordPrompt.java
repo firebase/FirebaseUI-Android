@@ -18,7 +18,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,21 +33,19 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
@@ -111,74 +108,48 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         mHandler = ViewModelProviders.of(this).get(WelcomeBackPasswordHandler.class);
         mHandler.init(getFlowHolder().getArguments());
 
-        // Fire resolutions when asked
-        mHandler.getPendingResolution().observe(this,
-                new Observer<PendingResolution>() {
-                    @Override
-                    public void onChanged(@Nullable PendingResolution resolution) {
-                        onPendingResolution(resolution);
-                    }
-                });
-
         // Observe the state of the main auth operation
-        mHandler.getSignInResult().observe(this, new Observer<Resource<IdpResponse>>() {
+        mHandler.getSignInOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(@Nullable Resource<IdpResponse> resource) {
-                onAuthResult(resource);
+                onSignInOperation(resource);
             }
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Forward activity results to the ViewModel
-        if (!mHandler.onActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    private void onAuthResult(@Nullable Resource<IdpResponse> resource) {
+    private void onSignInOperation(@Nullable Resource<IdpResponse> resource) {
         if (resource == null) {
             Log.w(TAG, "Got null resource, ignoring.");
             return;
         }
 
-        if (resource.getState() == State.LOADING) {
-            getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
-        }
+        switch (resource.getState()) {
+            case LOADING:
+                getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
+                break;
+            case SUCCESS:
+                getDialogHolder().dismissDialog();
 
-        if (resource.getState() == State.SUCCESS) {
-            getDialogHolder().dismissDialog();
-            Log.d(TAG, "onAuthResult:SUCCESS:" + resource.getValue());
-
-            finish(RESULT_OK, resource.getValue().toIntent());
-        }
-
-        if (resource.getState() == State.FAILURE) {
-            getDialogHolder().dismissDialog();
-
-            // TODO: Is this message what we want?
-            String message = resource.getException().getLocalizedMessage();
-            mPasswordLayout.setError(message);
+                // This logic remains in the view since SmartLock is effectively a different
+                // 'screen' after the sign-in process.
+                FirebaseUser user = getAuthHelper().getCurrentUser();
+                startSaveCredentials(user, mHandler.getPendingPassword(), resource.getValue());
+                break;
+            case FAILURE:
+                getDialogHolder().dismissDialog();
+                String message = getErrorMessage(resource.getException());
+                mPasswordLayout.setError(message);
+                break;
         }
     }
 
-    private void onPendingResolution(@Nullable PendingResolution resolution) {
-        if (resolution == null) {
-            Log.e(TAG, "Got null resolution, can't do anything");
-            return;
+    private String getErrorMessage(Exception exception) {
+        if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+            // TODO: Add translated "wrong password" message
+            return exception.getLocalizedMessage();
         }
 
-        try {
-            startIntentSenderForResult(resolution.getPendingIntent().getIntentSender(),
-                    resolution.getRequestCode(), null, 0, 0, 0);
-        } catch (IntentSender.SendIntentException e) {
-            Log.e(TAG, "Failed to send resolution.", e);
-
-            IdpResponse errorResponse = IdpResponse.fromError(
-                    new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, getString(R.string.fui_general_error), e));
-            finish(RESULT_OK, errorResponse.toIntent());
-        }
+        return exception.getLocalizedMessage();
     }
 
     private void onForgotPasswordClicked() {

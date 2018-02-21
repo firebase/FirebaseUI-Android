@@ -26,18 +26,20 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Failure listener passed to calls to {@link FirebaseAuth#signInWithCredential(AuthCredential)}.
+ *
+ * On collisions, starts the "Welcome Back" flow for the appropriate IDP.
+ */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
+public class CredentialSignInHandler implements OnFailureListener {
     private static final String TAG = "CredentialSignInHandler";
 
     private HelperActivityBase mActivity;
@@ -54,36 +56,31 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     }
 
     @Override
-    public void onComplete(@NonNull Task<AuthResult> task) {
-        if (task.isSuccessful()) {
-            FirebaseUser firebaseUser = task.getResult().getUser();
-            mActivity.saveCredentialsOrFinish(firebaseUser, mResponse);
-        } else {
-            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                String email = mResponse.getEmail();
-                if (email != null) {
-                    FirebaseAuth auth = mActivity.getAuthHelper().getFirebaseAuth();
-                    ProviderUtils.fetchTopProvider(auth, email)
-                            .addOnSuccessListener(new StartWelcomeBackFlow())
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Intent intent = IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR);
-                                    mActivity.finish(Activity.RESULT_CANCELED, intent);
-                                }
-                            });
-                    return;
-                }
-            } else {
-                Log.e(TAG,
-                      "Unexpected exception when signing in with credential "
-                              + mResponse.getProviderType()
-                              + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
-                      task.getException());
+    public void onFailure(@NonNull Exception e) {
+        if (e instanceof FirebaseAuthUserCollisionException) {
+            String email = mResponse.getEmail();
+            if (email != null) {
+                FirebaseAuth auth = mActivity.getAuthHelper().getFirebaseAuth();
+                ProviderUtils.fetchTopProvider(auth, email)
+                        .addOnSuccessListener(new StartWelcomeBackFlow())
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Intent intent = IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR);
+                                mActivity.finish(Activity.RESULT_CANCELED, intent);
+                            }
+                        });
+                return;
             }
-
-            mActivity.getDialogHolder().dismissDialog();
+        } else {
+            Log.e(TAG,
+                    "Unexpected exception when signing in with credential "
+                            + mResponse.getProviderType()
+                            + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
+                    e);
         }
+
+        mActivity.getDialogHolder().dismissDialog();
     }
 
     private class StartWelcomeBackFlow implements OnSuccessListener<String> {
