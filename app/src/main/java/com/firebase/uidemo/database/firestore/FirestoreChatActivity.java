@@ -15,6 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.firestore.ClassSnapshotParser;
+import com.firebase.ui.firestore.FirestoreInfiniteArray;
+import com.firebase.ui.firestore.FirestoreInfiniteScrollListener;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.uidemo.R;
@@ -47,6 +50,9 @@ public class FirestoreChatActivity extends AppCompatActivity
     /** Get the last 50 chat messages ordered by timestamp . */
     private static final Query sChatQuery = sChatCollection.orderBy("timestamp").limit(50);
 
+    private LinearLayoutManager mManager;
+    private FirestoreInfiniteArray<Chat> mArray;
+
     static {
         FirebaseFirestore.setLoggingEnabled(true);
     }
@@ -69,8 +75,14 @@ public class FirestoreChatActivity extends AppCompatActivity
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
+        mArray = new FirestoreInfiniteArray<>(
+                sChatCollection.orderBy("timestamp", Query.Direction.ASCENDING),
+                sChatCollection.orderBy("timestamp", Query.Direction.DESCENDING),
+                new ClassSnapshotParser<>(Chat.class));
+
+        mManager = new LinearLayoutManager(this);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(mManager);
 
         ImeHelper.setImeOnDoneListener(mMessageEdit, new ImeHelper.DonePressedListener() {
             @Override
@@ -114,12 +126,16 @@ public class FirestoreChatActivity extends AppCompatActivity
         final RecyclerView.Adapter adapter = newAdapter();
 
         // Scroll to bottom on new messages
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                mRecyclerView.smoothScrollToPosition(adapter.getItemCount());
-            }
-        });
+        // TODO
+//        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+//            @Override
+//            public void onItemRangeInserted(int positionStart, int itemCount) {
+//                mRecyclerView.smoothScrollToPosition(adapter.getItemCount());
+//            }
+//        });
+
+        // Scroll listener for infinite
+        mRecyclerView.addOnScrollListener(new FirestoreInfiniteScrollListener(mManager, mArray));
 
         mRecyclerView.setAdapter(adapter);
     }
@@ -137,7 +153,7 @@ public class FirestoreChatActivity extends AppCompatActivity
     protected RecyclerView.Adapter newAdapter() {
         FirestoreRecyclerOptions<Chat> options =
                 new FirestoreRecyclerOptions.Builder<Chat>()
-                        .setQuery(sChatQuery, Chat.class)
+                        .setSnapshotArray(mArray)
                         .setLifecycleOwner(this)
                         .build();
 
