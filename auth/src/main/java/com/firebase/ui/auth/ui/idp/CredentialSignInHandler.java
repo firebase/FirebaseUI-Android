@@ -55,10 +55,6 @@ public class CredentialSignInHandler implements OnFailureListener {
         mAccountLinkRequestCode = accountLinkRequestCode;
     }
 
-    // TODO:
-    // FirebaseUser firebaseUser = task.getResult().getUser();
-    // mActivity.saveCredentialsOrFinish(firebaseUser, null, mResponse);
-
     @Override
     public void onFailure(@NonNull Exception e) {
         if (e instanceof FirebaseAuthUserCollisionException) {

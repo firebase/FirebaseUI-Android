@@ -17,6 +17,12 @@ public final class Resource<T> {
     private final T mValue;
     private final Exception mException;
 
+    private Resource(State state, T value, Exception exception) {
+        mState = state;
+        mValue = value;
+        mException = exception;
+    }
+
     /**
      * Creates a successful, empty Resource.
      */
@@ -47,12 +53,6 @@ public final class Resource<T> {
     @NonNull
     public static <T> Resource<T> forLoading() {
         return new Resource<>(State.LOADING, null, null);
-    }
-
-    private Resource(State state, T value, Exception exception) {
-        mState = state;
-        mValue = value;
-        mException = exception;
     }
 
     @NonNull

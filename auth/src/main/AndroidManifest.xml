@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -65,8 +66,7 @@
             android:name=".ui.credentials.CredentialSaveActivity"
             android:label=""
             android:exported="false"
-            android:theme="@style/FirebaseUI.Transparent">
-        </activity>
+            android:theme="@style/FirebaseUI.Transparent" />
 
         <activity
             android:name="com.facebook.CustomTabActivity"
@@ -87,6 +87,7 @@
             android:authorities="${applicationId}.authuiinitprovider"
             android:exported="false"
             android:initOrder="90" />
+
     </application>
 
 </manifest>

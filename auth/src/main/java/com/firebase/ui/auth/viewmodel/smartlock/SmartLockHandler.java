@@ -53,7 +53,9 @@ public class SmartLockHandler extends AuthViewModelBase {
                 mResultLiveData.setValue(Resource.forVoidSuccess());
             } else {
                 Log.e(TAG, "SAVE: Canceled by user.");
-                mResultLiveData.setValue(Resource.<Void>forFailure(new Exception("Save canceled by user.")));
+                FirebaseUiException exception = new FirebaseUiException(
+                        ErrorCodes.UNKNOWN_ERROR, "Save canceled by user.");
+                mResultLiveData.setValue(Resource.<Void>forFailure(exception));
             }
 
             return true;
@@ -104,7 +106,12 @@ public class SmartLockHandler extends AuthViewModelBase {
                             setPendingResolution(new PendingResolution(rae.getResolution(), ResolutionCodes.RC_CRED_SAVE));
                         } else {
                             Log.w(TAG, "Non-resolvable exception: " + task.getException());
-                            mResultLiveData.setValue(Resource.<Void>forFailure(task.getException()));
+
+                            FirebaseUiException exception = new FirebaseUiException(
+                                    ErrorCodes.UNKNOWN_ERROR,
+                                    "Error when saving credential.",
+                                    task.getException());
+                            mResultLiveData.setValue(Resource.<Void>forFailure(exception));
                         }
                     }
                 });

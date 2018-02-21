@@ -44,6 +44,7 @@ import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
@@ -135,12 +136,20 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 startSaveCredentials(user, mHandler.getPendingPassword(), resource.getValue());
                 break;
             case FAILURE:
-                // TODO: Is this message what we want?
                 getDialogHolder().dismissDialog();
-                String message = resource.getException().getLocalizedMessage();
+                String message = getErrorMessage(resource.getException());
                 mPasswordLayout.setError(message);
                 break;
         }
+    }
+
+    private String getErrorMessage(Exception exception) {
+        if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+            // TODO: Add translated "wrong password" message
+            return exception.getLocalizedMessage();
+        }
+
+        return exception.getLocalizedMessage();
     }
 
     private void onForgotPasswordClicked() {

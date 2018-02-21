@@ -14,8 +14,11 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
 import com.firebase.ui.auth.util.AuthHelper;
+import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.FlowHolder;
+import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
@@ -103,9 +106,14 @@ public class HelperActivityBase extends AppCompatActivity {
             @Nullable String password,
             IdpResponse response) {
 
+        // Build credential
+        String accountType = ProviderUtils.idpResponseToAccountType(response);
+        Credential credential = CredentialsUtil.buildCredential(
+                firebaseUser, password, accountType);
+
         // Start the dedicated SmartLock Activity
         Intent intent = CredentialSaveActivity.createIntent(this, getFlowParams(),
-                firebaseUser, password, response);
+                credential, response);
         startActivityForResult(intent, RC_SAVE_CREDENTIAL);
     }
 }
