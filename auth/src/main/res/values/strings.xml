@@ -5,7 +5,6 @@
     <string name="fui_default_toolbar_title" translatable="false">@string/app_name</string>
     <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
     <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
-    <string name="fui_general_error" translation_description="Toast text flashing general error">An error has occurred.</string>
 
     <!-- Provider -->
     <string name="fui_idp_name_google">Google</string>

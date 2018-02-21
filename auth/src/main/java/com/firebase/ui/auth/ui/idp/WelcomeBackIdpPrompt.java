@@ -189,7 +189,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     private void finishWithError() {
-        Toast.makeText(this, R.string.fui_general_error, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.fui_error_unknown, Toast.LENGTH_LONG).show();
         finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
     }
 
