@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.idp;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -160,7 +161,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     }
 
     @Override
-    public void onSuccess(final IdpResponse response) {
+    public void onSuccess(@NonNull final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
         getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(credential)
@@ -180,7 +181,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
     }
 
     @Override
-    public void onFailure() {
+    public void onFailure(@NonNull Exception e) {
         // stay on this screen
         getDialogHolder().dismissDialog();
     }

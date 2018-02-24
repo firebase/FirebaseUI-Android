@@ -239,7 +239,6 @@ public class AuthUiActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             startSignedInActivity(response);
             finish();
-            return;
         } else {
             // Sign in failed
             if (response == null) {
@@ -248,18 +247,13 @@ public class AuthUiActivity extends AppCompatActivity {
                 return;
             }
 
-            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+            if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
             }
 
-            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                showSnackbar(R.string.unknown_error);
-                return;
-            }
+            showSnackbar(R.string.unknown_error);
         }
-
-        showSnackbar(R.string.unknown_sign_in_response);
     }
 
     private void startSignedInActivity(IdpResponse response) {

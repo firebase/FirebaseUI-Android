@@ -25,8 +25,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.android.gms.auth.api.Auth;
@@ -152,7 +154,7 @@ public class GoogleProvider implements IdpProvider {
 
     private void onError(String errorMessage) {
         Log.e(TAG, "Error logging in with Google. " + errorMessage);
-        mIdpCallback.onFailure();
+        mIdpCallback.onFailure(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, errorMessage));
     }
 }
 

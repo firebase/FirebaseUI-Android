@@ -78,17 +78,17 @@ public class IdpResponse implements Parcelable {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static IdpResponse fromError(@NonNull FirebaseUiException e) {
-        return new IdpResponse(e);
+    public static Intent getErrorIntent(@NonNull Exception e) {
+        return fromError(e).toIntent();
     }
 
-    /**
-     * @deprecated migrate internals to {@link #fromError(FirebaseUiException)}
-     */
-    @Deprecated
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static Intent getErrorCodeIntent(int errorCode) {
-        return new IdpResponse(new FirebaseUiException(errorCode)).toIntent();
+    public static IdpResponse fromError(@NonNull Exception e) {
+        if (e instanceof FirebaseUiException) {
+            return new IdpResponse((FirebaseUiException) e);
+        } else {
+            return new IdpResponse(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, e));
+        }
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -149,7 +149,10 @@ public class IdpResponse implements Parcelable {
 
     /**
      * Get the error code for a failed sign in
+     *
+     * @deprecated use {@link #getError()} instead
      */
+    @Deprecated
     public int getErrorCode() {
         if (isSuccessful()) {
             return Activity.RESULT_OK;
@@ -158,9 +161,11 @@ public class IdpResponse implements Parcelable {
         }
     }
 
+    /**
+     * Get the error for a failed sign in.
+     */
     @Nullable
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public FirebaseUiException getException() {
+    public FirebaseUiException getError() {
         return mException;
     }
 

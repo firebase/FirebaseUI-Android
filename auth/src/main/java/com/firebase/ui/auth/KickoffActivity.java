@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
+import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -33,8 +34,8 @@ public class KickoffActivity extends HelperActivityBase {
         if (savedInstance == null || savedInstance.getBoolean(IS_WAITING_FOR_PLAY_SERVICES)) {
             if (isOffline()) {
                 Log.d(TAG, "No network connection");
-                finish(RESULT_CANCELED,
-                       IdpResponse.getErrorCodeIntent(ErrorCodes.NO_NETWORK));
+                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                        new FirebaseUiException(ErrorCodes.NO_NETWORK)));
                 return;
             }
 
@@ -44,9 +45,8 @@ public class KickoffActivity extends HelperActivityBase {
                     new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
-                            finish(RESULT_CANCELED,
-                                   IdpResponse.getErrorCodeIntent(
-                                           ErrorCodes.UNKNOWN_ERROR));
+                            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                                    new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED)));
                         }
                     });
 
@@ -73,8 +73,8 @@ public class KickoffActivity extends HelperActivityBase {
             if (resultCode == RESULT_OK) {
                 start();
             } else {
-                finish(RESULT_CANCELED,
-                       IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                        new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED)));
             }
         } else {
             SignInDelegate delegate = SignInDelegate.getInstance(this);
