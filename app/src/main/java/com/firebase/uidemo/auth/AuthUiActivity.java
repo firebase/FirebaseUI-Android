@@ -24,6 +24,7 @@ import android.support.annotation.StyleRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -49,6 +50,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AuthUiActivity extends AppCompatActivity {
+    private static final String TAG = "AuthUiActivity";
+
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
     private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google.com/policies/privacy/";
@@ -253,6 +256,7 @@ public class AuthUiActivity extends AppCompatActivity {
             }
 
             showSnackbar(R.string.unknown_error);
+            Log.e(TAG, "Sign-in error: ", response.getError());
         }
     }
 
