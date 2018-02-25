@@ -14,23 +14,23 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.ProviderDisabledException;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
@@ -39,12 +39,15 @@ import com.firebase.ui.auth.ui.provider.GoogleProvider;
 import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase {
+    private Provider mProvider;
+
     public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
         return HelperActivityBase.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_USER, user);
@@ -54,41 +57,27 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_idp_prompt_layout);
-
-        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
-            @Override
-            public void onChanged(@Nullable IdpResponse response) {
-                finish(response.isSuccessful() ? Activity.RESULT_OK : Activity.RESULT_CANCELED,
-                       response.toIntent());
-            }
-        });
-        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isDone) {
-                Toast.makeText(WelcomeBackIdpPrompt.this,
-                        "TODO isDone:  " + isDone,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
         setupProvider();
     }
 
     private void setupProvider() {
+        final ProvidersHandler handler = ViewModelProviders.of(this).get(ProvidersHandler.class);
+        handler.init(getFlowParams());
+
         User oldUser = User.getUser(getIntent());
-        Provider idpProvider = null;
 
         String providerId = oldUser.getProviderId();
-        for (IdpConfig idpConfig : getFlowHolder().getArguments().providerInfo) {
+        for (IdpConfig idpConfig : getFlowParams().providerInfo) {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        idpProvider = new GoogleProvider(this, idpConfig, oldUser.getEmail());
+                        mProvider = new GoogleProvider(handler, this, oldUser.getEmail());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        idpProvider = new FacebookProvider(this, idpConfig);
+                        mProvider = new FacebookProvider(handler, this);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
-                        idpProvider = new TwitterProvider(this);
+                        mProvider = new TwitterProvider(handler, this);
                         break;
                     default:
                         throw new IllegalStateException("Unknown provider: " + providerId);
@@ -96,23 +85,46 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             }
         }
 
-        if (idpProvider == null) {
+        if (mProvider == null) {
             finish(RESULT_CANCELED,
-                   IdpResponse.fromError(new ProviderDisabledException(providerId)).toIntent());
+                    IdpResponse.fromError(new ProviderDisabledException(providerId)).toIntent());
             return;
         }
 
         ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
                 R.string.fui_welcome_back_idp_prompt,
                 oldUser.getEmail(),
-                idpProvider.getName()));
+                mProvider.getName()));
 
-        final Provider finalIdpProvider = idpProvider;
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                finalIdpProvider.startLogin(WelcomeBackIdpPrompt.this);
+                mProvider.startLogin(WelcomeBackIdpPrompt.this);
             }
         });
+
+        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+            @Override
+            public void onChanged(Resource<IdpResponse> resource) {
+                if (resource.getState() == State.LOADING) {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
+                    return;
+                }
+                getDialogHolder().dismissDialog();
+
+                if (resource.getState() == State.SUCCESS) {
+                    finish(RESULT_OK, resource.getValue().toIntent());
+                } else {
+                    finish(RESULT_CANCELED,
+                            IdpResponse.fromError(resource.getException()).toIntent());
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mProvider.onActivityResult(requestCode, resultCode, data);
     }
 }

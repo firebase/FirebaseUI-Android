@@ -22,7 +22,7 @@ public class FacebookProvider extends ProviderBase {
 
     public FacebookProvider(ProvidersHandler handler, HelperActivityBase activity) {
         super(handler);
-        WebDialog.setWebDialogTheme(activity.getFlowHolder().getArguments().themeId);
+        WebDialog.setWebDialogTheme(activity.getFlowParams().themeId);
         mHandler = ViewModelProviders.of(activity).get(FacebookSignInHandler.class);
         mHandler.init(new FacebookParams(
                 handler,

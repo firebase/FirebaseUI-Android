@@ -61,7 +61,7 @@ public class SmartLockHandlerTest {
 
     @Test
     public void testSaveCredentials_success() {
-        mHandler.getSaveOperation().observeForever(mResultObserver);
+        mHandler.getOperation().observeForever(mResultObserver);
 
         when(mMockCredentials.save(any(Credential.class)))
                 .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
@@ -74,7 +74,7 @@ public class SmartLockHandlerTest {
 
     @Test
     public void testSaveCredentials_resolution() {
-        mHandler.getSaveOperation().observeForever(mResultObserver);
+        mHandler.getOperation().observeForever(mResultObserver);
         mHandler.getPendingResolution().observeForever(mResolutionObserver);
 
         // Mock credentials to throw an RAE
@@ -99,7 +99,7 @@ public class SmartLockHandlerTest {
 
     @Test
     public void testSaveCredentials_failure() {
-        mHandler.getSaveOperation().observeForever(mResultObserver);
+        mHandler.getOperation().observeForever(mResultObserver);
 
         when(mMockCredentials.save(any(Credential.class)))
                 .thenReturn(AutoCompleteTask.<Void>forFailure(new Exception("FAILED")));

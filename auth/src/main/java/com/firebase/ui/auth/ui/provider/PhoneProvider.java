@@ -39,7 +39,7 @@ public class PhoneProvider extends ProviderBase {
     public void startLogin(@NonNull HelperActivityBase activity) {
         activity.startActivityForResult(
                 PhoneActivity.createIntent(
-                        activity, activity.getFlowHolder().getArguments(), mConfig.getParams()),
+                        activity, activity.getFlowParams(), mConfig.getParams()),
                 RC_PHONE_FLOW);
     }
 

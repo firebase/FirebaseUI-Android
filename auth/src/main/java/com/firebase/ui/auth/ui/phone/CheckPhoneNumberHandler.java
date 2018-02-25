@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -12,9 +12,11 @@ import android.util.Pair;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
+import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.data.remote.SignInHandler;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
+import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.HintRequest;
@@ -25,13 +27,12 @@ import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.concurrent.TimeUnit;
 
-public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observer<ActivityResult> {
+public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
     private static final long AUTO_RETRIEVAL_TIMEOUT_SECONDS = 120;
     private static final int RC_HINT = 14;
 
     private MutableLiveData<PhoneNumber> mPhoneNumberListener = new SingleLiveEvent<>();
     private MutableLiveData<Exception> mVerificationErrorListener = new SingleLiveEvent<>();
-    private SignInHandler mHandler;
 
     private String mPhoneNumber;
     private String mVerificationId;
@@ -39,16 +40,6 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
 
     public CheckPhoneNumberHandler(Application application) {
         super(application);
-    }
-
-    @Override
-    protected void onCreate(FlowHolder args) {
-        super.onCreate(args);
-        mFlowHolder.getActivityResultListener().observeForever(this);
-    }
-
-    public void setSignInHandler(SignInHandler handler) {
-        mHandler = handler;
     }
 
     public LiveData<PhoneNumber> getPhoneNumberListener() {
@@ -60,7 +51,7 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
     }
 
     public void fetchCredential() {
-        mFlowHolder.getProgressListener().setValue(false);
+        setResult(Resource.<IdpResponse>forLoading());
 
         if (mPhoneNumber == null) {
             mFlowHolder.getPendingIntentStarter().setValue(Pair.create(
@@ -71,33 +62,20 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
         }
     }
 
-    @Override
-    public void onChanged(@Nullable ActivityResult result) {
-        if (result.getRequestCode() == RC_HINT) {
-            mFlowHolder.getProgressListener().setValue(true);
-            if (result.getResultCode() != Activity.RESULT_OK) { return; }
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode != RC_HINT || resultCode != Activity.RESULT_OK) { return; }
 
-            final Credential credential = result.getData().getParcelableExtra(Credential.EXTRA_KEY);
-
-            String formattedPhone = PhoneNumberUtils.formatUsingCurrentCountry(
-                    credential.getId(), getApplication());
-            if (formattedPhone != null) {
-                mPhoneNumberListener.setValue(PhoneNumberUtils.getPhoneNumber(formattedPhone));
-            }
+        Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
+        String formattedPhone = PhoneNumberUtils.formatUsingCurrentCountry(
+                credential.getId(), getApplication());
+        if (formattedPhone != null) {
+            mPhoneNumberListener.setValue(PhoneNumberUtils.getPhoneNumber(formattedPhone));
         }
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        mFlowHolder.getActivityResultListener().removeObserver(this);
-    }
-
     public void verifyPhoneNumber(final String number, boolean force) {
-        mFlowHolder.getProgressListener().setValue(false);
-
         mPhoneNumber = number;
-        mPhoneAuth.verifyPhoneNumber(
+        getPhoneAuth().verifyPhoneNumber(
                 number,
                 AUTO_RETRIEVAL_TIMEOUT_SECONDS,
                 TimeUnit.SECONDS,
@@ -110,15 +88,12 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase implements Observ
 
                     @Override
                     public void onVerificationFailed(FirebaseException e) {
-                        mFlowHolder.getProgressListener().setValue(true);
                         mVerificationErrorListener.setValue(e);
                     }
 
                     @Override
                     public void onCodeSent(@NonNull String verificationId,
                                            @NonNull PhoneAuthProvider.ForceResendingToken token) {
-                        mFlowHolder.getProgressListener().setValue(true);
-
                         mVerificationId = verificationId;
                         mForceResendingToken = token;
                         mVerificationErrorListener.setValue(

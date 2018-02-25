@@ -58,6 +58,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                 start(number);
             }
         });
+        mHandler.getOperation()
         getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean isDone) {
@@ -83,8 +84,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         mPhoneEditText = view.findViewById(R.id.phone_number);
         mSmsTermsText = view.findViewById(R.id.send_sms_tos);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                && getFlowHolder().getParams().enableHints) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
             mPhoneEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
@@ -143,7 +143,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
             start(PhoneNumberUtils.getPhoneNumber(countryCode, nationalNumber));
         } else if (!TextUtils.isEmpty(phone)) {
             start(PhoneNumberUtils.getPhoneNumber(phone));
-        } else if (getFlowHolder().getParams().enableHints) {
+        } else if (getFlowParams().enableHints) {
             mHandler.fetchCredential();
         }
     }

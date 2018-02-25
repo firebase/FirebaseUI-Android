@@ -8,18 +8,13 @@ import com.firebase.ui.auth.data.model.CyclicAccountLinkingException;
 public final class ErrorCodes {
     /**
      * Sign in failed due to lack of network connection
-     **/
+     */
     public static final int NO_NETWORK = 10;
 
     /**
      * An unknown error has occurred
-     **/
+     */
     public static final int UNKNOWN_ERROR = 20;
-
-    /**
-     * The user cancelled the sign-in.
-     **/
-    public static final int CANCELLED = 30;
 
     /**
      * An error occurred link the user's accounts.
@@ -30,17 +25,17 @@ public final class ErrorCodes {
 
     /**
      * An error occurred connecting to Google Play Services.
-     **/
+     */
     public static final int PLAY_SERVICES_ERROR = 50;
 
     /**
      * An external sign-in provider error occurred.
-     **/
+     */
     public static final int PROVIDER_ERROR = 50;
 
     /**
      * An error occurred due to a developer misconfiguration.
-     **/
+     */
     public static final int DEVELOPER_ERROR = 60;
 
     private ErrorCodes() {

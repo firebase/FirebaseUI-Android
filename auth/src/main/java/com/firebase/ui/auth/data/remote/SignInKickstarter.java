@@ -8,6 +8,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -15,6 +16,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
@@ -31,9 +33,14 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -66,12 +73,8 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
 
     public void start() {
         // Only support password credentials if email auth is enabled
-        boolean supportPasswords = false;
-        for (AuthUI.IdpConfig config : getArguments().providerInfo) {
-            if (EmailAuthProvider.PROVIDER_ID.equals(config.getProviderId())) {
-                supportPasswords = true;
-            }
-        }
+        boolean supportPasswords = ProviderUtils.getConfigFromIdps(
+                getArguments().providerInfo, EmailAuthProvider.PROVIDER_ID) != null;
         List<String> accountTypes = getSupportedAccountTypes();
 
         // If the request will be empty, avoid the step entirely
@@ -173,8 +176,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
         return accounts;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
             case RC_CREDENTIALS_READ:
                 if (resultCode == Activity.RESULT_OK) {
@@ -189,14 +191,16 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             case RC_PHONE_FLOW:
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 if (response == null) {
-                    setResult(Resource.<IdpResponse>forFailure(response.getException()));
-                } else {
+                    setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
+                } else if (response.isSuccessful()) {
                     setResult(Resource.forSuccess(response));
+                } else {
+                    setResult(Resource.<IdpResponse>forFailure(response.getException()));
                 }
         }
     }
 
-    private void handleCredential(Credential credential) {
+    private void handleCredential(final Credential credential) {
         String id = credential.getId();
         String password = credential.getPassword();
         if (TextUtils.isEmpty(password)) {
@@ -215,11 +219,39 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                 redirectToIdpSignIn(provider, id);
             }
         } else {
-
-            mHandler.signIn(new IdpResponse.Builder(
+            final IdpResponse response = new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build())
                     .setPassword(password)
-                    .build());
+                    .build();
+
+            getAuth().signInWithEmailAndPassword(id, password)
+                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult result) {
+                            setResult(Resource.forSuccess(response));
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            if (e instanceof FirebaseAuthInvalidUserException
+                                    || e instanceof FirebaseAuthInvalidCredentialsException) {
+                                // In this case the credential saved in SmartLock was not
+                                // a valid credential, we should delete it from SmartLock
+                                // before continuing.
+                                GoogleApiUtils.getCredentialsClient(getApplication())
+                                        .delete(credential)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                startAuthMethodChoice();
+                                            }
+                                        });
+                            } else {
+                                startAuthMethodChoice();
+                            }
+                        }
+                    });
         }
     }
 }

@@ -2,16 +2,18 @@ package com.firebase.ui.auth.ui.idp;
 
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.ProviderDisabledException;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
@@ -19,11 +21,15 @@ import com.firebase.ui.auth.ui.provider.GoogleProvider;
 import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 public class SingleSignInActivity extends HelperActivityBase {
+    private Provider mProvider;
+
     public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
         return HelperActivityBase.createBaseIntent(context, SingleSignInActivity.class, flowParams)
                 .putExtra(ExtraConstants.EXTRA_USER, user);
@@ -32,22 +38,6 @@ public class SingleSignInActivity extends HelperActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
-            @Override
-            public void onChanged(@Nullable IdpResponse response) {
-                finish(response.isSuccessful() ? Activity.RESULT_OK : Activity.RESULT_CANCELED,
-                       response.toIntent());
-            }
-        });
-        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isDone) {
-                Toast.makeText(SingleSignInActivity.this,
-                        "TODO isDone:  " + isDone,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
         if (savedInstanceState == null) {
             startLogin();
         }
@@ -57,14 +47,8 @@ public class SingleSignInActivity extends HelperActivityBase {
         User user = User.getUser(getIntent());
         String provider = user.getProviderId();
 
-        AuthUI.IdpConfig providerConfig = null;
-        for (AuthUI.IdpConfig config : getFlowHolder().getParams().providerInfo) {
-            if (config.getProviderId().equals(provider)) {
-                providerConfig = config;
-                break;
-            }
-        }
-
+        AuthUI.IdpConfig providerConfig =
+                ProviderUtils.getConfigFromIdps(getFlowParams().providerInfo, provider);
         if (providerConfig == null) {
             // we don't have a provider to handle this
             finish(Activity.RESULT_CANCELED,
@@ -72,22 +56,47 @@ public class SingleSignInActivity extends HelperActivityBase {
             return;
         }
 
-        Provider uiProvider;
+        final ProvidersHandler handler = ViewModelProviders.of(this).get(ProvidersHandler.class);
+        handler.init(getFlowParams());
+
         switch (provider) {
             case GoogleAuthProvider.PROVIDER_ID:
-                uiProvider = new GoogleProvider(this, providerConfig, user.getEmail());
+                mProvider = new GoogleProvider(handler, this, user.getEmail());
                 break;
             case FacebookAuthProvider.PROVIDER_ID:
-                uiProvider = new FacebookProvider(this, providerConfig);
+                mProvider = new FacebookProvider(handler, this);
                 break;
             case TwitterAuthProvider.PROVIDER_ID:
-                uiProvider = new TwitterProvider(this);
+                mProvider = new TwitterProvider(handler, this);
                 break;
             default:
                 throw new IllegalStateException(
                         "Provider config id does not equal Firebase auth one");
         }
 
-        uiProvider.startLogin(this);
+        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+            @Override
+            public void onChanged(Resource<IdpResponse> resource) {
+                if (resource.getState() == State.LOADING) {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
+                    return;
+                }
+                getDialogHolder().dismissDialog();
+
+                if (resource.getState() == State.SUCCESS) {
+                    startSaveCredentials(handler.getCurrentUser(), null, resource.getValue());
+                } else {
+                    finish(RESULT_CANCELED,
+                            IdpResponse.fromError(resource.getException()).toIntent());
+                }
+            }
+        });
+        mProvider.startLogin(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mProvider.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -24,7 +24,7 @@ import com.google.android.gms.auth.api.credentials.Credential;
  * Invisible Activity used for saving credentials to SmartLock.
  */
 public class CredentialSaveActivity extends HelperActivityBase {
-    private static final String TAG = "SmartlockSave";
+    private static final String TAG = "CredentialSaveActivity";
 
     private SmartLockHandler mHandler;
     private IdpResponse mIdpResponse;
@@ -49,7 +49,7 @@ public class CredentialSaveActivity extends HelperActivityBase {
         Credential credential = getIntent().getParcelableExtra(ExtraConstants.EXTRA_CREDENTIAL);
         mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
 
-        mHandler.getSaveOperation().observe(this, new Observer<Resource<Void>>() {
+        mHandler.getOperation().observe(this, new Observer<Resource<Void>>() {
             @Override
             public void onChanged(@Nullable Resource<Void> resource) {
                 if (resource == null) {
@@ -74,7 +74,7 @@ public class CredentialSaveActivity extends HelperActivityBase {
         });
 
         // Avoid double-saving
-        Resource<Void> currentOp = mHandler.getSaveOperation().getValue();
+        Resource<Void> currentOp = mHandler.getOperation().getValue();
         if (currentOp == null) {
             Log.d(TAG, "Launching save operation.");
             mHandler.saveCredentials(credential);

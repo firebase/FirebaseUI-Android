@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.phone;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -28,6 +27,8 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -39,7 +40,7 @@ import com.google.firebase.auth.FirebaseAuthException;
  * CheckPhoneNumberFragment} and {@link SubmitConfirmationCodeFragment}
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class PhoneActivity extends AppCompatBase implements Observer<IdpResponse> {
+public class PhoneActivity extends AppCompatBase {
     public static Intent createIntent(Context context, FlowParameters params, Bundle args) {
         return HelperActivityBase.createBaseIntent(context, PhoneActivity.class, params)
                 .putExtra(ExtraConstants.EXTRA_PARAMS, args);
@@ -49,10 +50,10 @@ public class PhoneActivity extends AppCompatBase implements Observer<IdpResponse
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_phone);
-        CheckPhoneNumberHandler handler =
+
+        final CheckPhoneNumberHandler handler =
                 ViewModelProviders.of(this).get(CheckPhoneNumberHandler.class);
-        handler.init(getFlowHolder());
-        handler.setSignInHandler(getSignInHandler());
+        handler.init(getFlowParams());
         handler.getVerificationErrorListener().observe(this, new Observer<Exception>() {
             @Override
             public void onChanged(@Nullable Exception e) {
@@ -67,8 +68,22 @@ public class PhoneActivity extends AppCompatBase implements Observer<IdpResponse
                 }
             }
         });
+        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+            @Override
+            public void onChanged(@Nullable Resource<IdpResponse> resource) {
+                if (resource.getState() == State.LOADING) {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
+                    return;
+                }
+                getDialogHolder().dismissDialog();
 
-        getSignInHandler().getSignInLiveData().observe(this, this);
+                if (resource.getState() == State.SUCCESS) {
+                    startSaveCredentials(handler.getCurrentUser(), null, resource.getValue());
+                } else {
+                    handleError(resource.getException());
+                }
+            }
+        });
 
         if (savedInstanceState != null) { return; }
 
@@ -78,16 +93,6 @@ public class PhoneActivity extends AppCompatBase implements Observer<IdpResponse
                 .replace(R.id.fragment_verify_phone, fragment, CheckPhoneNumberFragment.TAG)
                 .disallowAddToBackStack()
                 .commit();
-    }
-
-    @Override
-    public void onChanged(@Nullable IdpResponse response) {
-        if (response.isSuccessful()) {
-            finish(Activity.RESULT_OK, response.toIntent());
-        } else {
-            Exception e = response.getException();
-            handleError(e);
-        }
     }
 
     @Override

@@ -35,7 +35,7 @@ public class EmailProvider extends ProviderBase {
     @Override
     public void startLogin(@NonNull HelperActivityBase activity) {
         activity.startActivityForResult(
-                EmailActivity.createIntent(activity, activity.getFlowHolder().getArguments()),
+                EmailActivity.createIntent(activity, activity.getFlowParams()),
                 RC_EMAIL_FLOW);
     }
 

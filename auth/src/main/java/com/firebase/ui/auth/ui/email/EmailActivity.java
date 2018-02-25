@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
@@ -69,7 +68,7 @@ public class EmailActivity extends AppCompatBase implements
             @Override
             public void onChanged(@Nullable IdpResponse response) {
                 if (response.isSuccessful()) {
-                    finish(Activity.RESULT_OK, response.toIntent());
+                    finish(RESULT_OK, response.toIntent());
                 }
             }
         });
@@ -109,7 +108,7 @@ public class EmailActivity extends AppCompatBase implements
     public void onExistingEmailUser(User user) {
         // Existing email user, direct them to sign in with their password.
         startActivityForResult(
-                WelcomeBackPasswordPrompt.createIntent(this, getFlowHolder().getParams(), user),
+                WelcomeBackPasswordPrompt.createIntent(this, getFlowParams(), user),
                 RC_SIGN_IN);
 
         setSlideAnimation();
@@ -119,7 +118,7 @@ public class EmailActivity extends AppCompatBase implements
     public void onExistingIdpUser(User user) {
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
-                WelcomeBackIdpPrompt.createIntent(this, getFlowHolder().getParams(), user),
+                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
                 RC_WELCOME_BACK_IDP);
         setSlideAnimation();
     }
@@ -134,9 +133,7 @@ public class EmailActivity extends AppCompatBase implements
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
         if (emailConfig.getParams().getBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, true)) {
-            RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(
-                    getFlowParams(),
-                    user);
+            RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(user);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);
 

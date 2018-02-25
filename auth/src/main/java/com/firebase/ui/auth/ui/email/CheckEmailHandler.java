@@ -12,7 +12,8 @@ import android.util.Pair;
 
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.FlowHolder;
+import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.HintRequest;
@@ -28,12 +29,6 @@ public class CheckEmailHandler extends AuthViewModelBase implements Observer<Act
 
     public CheckEmailHandler(Application application) {
         super(application);
-    }
-
-    @Override
-    protected void onCreate(FlowHolder args) {
-        super.onCreate(args);
-        mFlowHolder.getActivityResultListener().observeForever(this);
     }
 
     /**
@@ -96,11 +91,5 @@ public class CheckEmailHandler extends AuthViewModelBase implements Observer<Act
                 }
             });
         }
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        mFlowHolder.getActivityResultListener().removeObserver(this);
     }
 }

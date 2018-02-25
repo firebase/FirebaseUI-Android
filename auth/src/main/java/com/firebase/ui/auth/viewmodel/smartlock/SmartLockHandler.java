@@ -48,8 +48,7 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
     /**
      * Forward the result of a resolution from the Activity to the ViewModel.
      */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == ResolutionCodes.RC_CRED_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
                 setResult(Resource.forVoidSuccess());

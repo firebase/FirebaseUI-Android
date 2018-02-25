@@ -3,7 +3,6 @@ package com.firebase.ui.auth.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.VisibleForTesting;
@@ -60,12 +59,6 @@ public abstract class AuthViewModelBase<T> extends ViewModelBase<FlowParameters>
     public LiveData<Resource<T>> getOperation() {
         return mOperation;
     }
-
-    /**
-     * Delegate activity result handling to the ViewModel. Returns {@code true} if the result was
-     * handled.
-     */
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {}
 
     protected void setResult(Resource<T> result) {
         mOperation.setValue(result);

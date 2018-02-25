@@ -25,8 +25,6 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 @SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class HelperActivityBase extends AppCompatActivity {
-    private static final String TAG = "HelperActivityBase";
-
     private static final int RC_SAVE_CREDENTIAL = 101;
 
     private FlowHolder mFlowHolder;

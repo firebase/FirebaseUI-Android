@@ -1,6 +1,5 @@
 package com.firebase.ui.auth;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -17,6 +16,7 @@ import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -38,7 +38,7 @@ public class KickoffActivity extends HelperActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
-        mKickstarter.init(getFlowHolder().getArguments());
+        mKickstarter.init(getFlowParams());
         mKickstarter.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(Resource<IdpResponse> resource) {
@@ -49,21 +49,21 @@ public class KickoffActivity extends HelperActivityBase {
                 getDialogHolder().dismissDialog();
 
                 if (resource.getState() == State.SUCCESS) {
-                    IdpResponse response = resource.getValue();
-                    if (response.isSuccessful()) {
-                        finish(Activity.RESULT_OK, response.toIntent());
-                    } else {
-                        finish(Activity.RESULT_CANCELED, response.toIntent());
-                    }
+                    finish(RESULT_OK, resource.getValue().toIntent());
                 } else {
-                    finish(Activity.RESULT_CANCELED, IdpResponse.fromError(
-                            resource.getException()).toIntent());
+                    if (resource.getException() instanceof UserCancellationException) {
+                        finish(RESULT_CANCELED, null);
+                    } else {
+                        finish(RESULT_CANCELED,
+                                IdpResponse.fromError(resource.getException()).toIntent());
+                    }
                 }
             }
         });
         mKickstarter.getIntentReqester().observe(this, new Observer<Pair<Intent, Integer>>() {
             @Override
             public void onChanged(Pair<Intent, Integer> pair) {
+                getDialogHolder().dismissDialog();
                 startActivityForResult(pair.first, pair.second);
             }
         });
@@ -71,11 +71,12 @@ public class KickoffActivity extends HelperActivityBase {
                 .observe(this, new Observer<Pair<PendingIntent, Integer>>() {
                     @Override
                     public void onChanged(Pair<PendingIntent, Integer> pair) {
+                        getDialogHolder().dismissDialog();
                         try {
                             startIntentSenderForResult(
                                     pair.first.getIntentSender(), pair.second, null, 0, 0, 0);
                         } catch (IntentSender.SendIntentException e) {
-                            finish(Activity.RESULT_CANCELED, IdpResponse.fromError(e).toIntent());
+                            finish(RESULT_CANCELED, IdpResponse.fromError(e).toIntent());
                         }
             }
         });
@@ -130,6 +131,8 @@ public class KickoffActivity extends HelperActivityBase {
                 finish(RESULT_CANCELED, IdpResponse.fromError(new FirebaseUiException(
                         ErrorCodes.PLAY_SERVICES_ERROR)).toIntent());
             }
+        } else {
+            mKickstarter.onActivityResult(requestCode, resultCode, data);
         }
     }
 

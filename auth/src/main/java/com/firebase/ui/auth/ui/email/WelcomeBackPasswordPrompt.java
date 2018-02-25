@@ -46,7 +46,6 @@ import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
@@ -102,7 +101,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
         // Initialize ViewModel with arguments
         mHandler = ViewModelProviders.of(this).get(WelcomeBackPasswordHandler.class);
-        mHandler.init(getFlowHolder().getArguments());
+        mHandler.init(getFlowParams());
 
         // Observe the state of the main auth operation
         mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
@@ -128,8 +127,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
                 // This logic remains in the view since SmartLock is effectively a different
                 // 'screen' after the sign-in process.
-                FirebaseUser user = getAuthHelper().getCurrentUser();
-                startSaveCredentials(user, mHandler.getPendingPassword(), resource.getValue());
+                startSaveCredentials(
+                        mHandler.getCurrentUser(),
+                        mHandler.getPendingPassword(),
+                        resource.getValue());
                 break;
             case FAILURE:
                 getDialogHolder().dismissDialog();
@@ -152,7 +153,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         startActivity(RecoverPasswordActivity.createIntent(
                 this,
                 getFlowParams(),
-                mEmail));
+                mUser.getEmail()));
     }
 
     @Override
@@ -174,7 +175,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
 
         AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
-        mHandler.startSignIn(email, password, mIdpResponse, authCredential);
+        mHandler.startSignIn(mUser.getEmail(), password, mIdpResponse, authCredential);
     }
 
     @Override
