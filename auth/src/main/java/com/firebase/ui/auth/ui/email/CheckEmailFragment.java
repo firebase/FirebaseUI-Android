@@ -119,7 +119,7 @@ public class CheckEmailFragment extends FragmentBase implements
         }
         mListener = (CheckEmailListener) getActivity();
 
-        mHandler.getProviderListener().observe(this, new Observer<User>() {
+        mHandler.getUserListener().observe(this, new Observer<User>() {
             @Override
             public void onChanged(@Nullable User user) {
                 if (user == null) { return; }

@@ -10,12 +10,9 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.firebase.ui.auth.data.model.ActivityResult;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.util.data.AuthViewModelBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.data.SingleLiveEvent;
-import com.firebase.ui.auth.util.ui.FlowHolder;
+import com.firebase.ui.auth.viewmodel.FlowHolder;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.HintRequest;
@@ -42,7 +39,7 @@ public class CheckEmailHandler extends AuthViewModelBase implements Observer<Act
     /**
      * This user can have a null provider in which case it's a new user.
      */
-    public LiveData<User> getProviderListener() {
+    public LiveData<User> getUserListener() {
         return mProviderListener;
     }
 

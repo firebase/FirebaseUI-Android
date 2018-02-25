@@ -24,7 +24,6 @@ import com.google.android.gms.auth.api.credentials.Credential;
  * Invisible Activity used for saving credentials to SmartLock.
  */
 public class CredentialSaveActivity extends HelperActivityBase {
-
     private static final String TAG = "SmartlockSave";
 
     private SmartLockHandler mHandler;
@@ -114,8 +113,7 @@ public class CredentialSaveActivity extends HelperActivityBase {
             } catch (IntentSender.SendIntentException e) {
                 Log.e(TAG, "Failed to send resolution.", e);
                 finish(RESULT_OK, mIdpResponse.toIntent());
-            };
+            }
         }
     }
-
 }

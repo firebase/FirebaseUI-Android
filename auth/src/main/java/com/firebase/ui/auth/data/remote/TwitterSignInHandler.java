@@ -1,17 +1,15 @@
 package com.firebase.ui.auth.data.remote;
 
 import android.app.Application;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.ActivityResult;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.util.ui.FlowHolder;
-import com.firebase.ui.auth.util.ui.ViewModelBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderHandler;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -22,11 +20,7 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
-public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Params>
-        implements Observer<ActivityResult> {
-    private SignInHandler mHandler;
-    private FlowHolder mFlowHolder;
-
+public class TwitterSignInHandler extends ProviderHandler<TwitterParams> {
     private final TwitterAuthClient mClient;
     private final Callback mCallback = new Callback();
 
@@ -80,22 +74,8 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
     }
 
     @Override
-    protected void onCreate(Params params) {
-        mHandler = params.signInHandler;
-        mFlowHolder = params.flowHolder;
-
-        mFlowHolder.getActivityResultListener().observeForever(this);
-    }
-
-    @Override
-    public void onChanged(@Nullable ActivityResult result) {
-        mClient.onActivityResult(result.getRequestCode(), result.getResultCode(), result.getData());
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        mFlowHolder.getActivityResultListener().removeObserver(this);
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        mClient.onActivityResult(requestCode, resultCode, data);
     }
 
     private class Callback extends com.twitter.sdk.android.core.Callback<TwitterSession> {
@@ -109,7 +89,7 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
                         @Override
                         public void success(Result<com.twitter.sdk.android.core.models.User> result) {
                             com.twitter.sdk.android.core.models.User user = result.data;
-                            mHandler.signIn(createIdpResponse(
+                            setResult(createIdpResponse(
                                     sessionResult.data,
                                     user.email,
                                     user.name,
@@ -118,24 +98,15 @@ public class TwitterSignInHandler extends ViewModelBase<TwitterSignInHandler.Par
 
                         @Override
                         public void failure(TwitterException e) {
-                            mHandler.signIn(IdpResponse.fromError(e));
+                            setResult(IdpResponse.fromError(e));
                         }
                     });
         }
 
         @Override
         public void failure(TwitterException e) {
-            mHandler.signIn(IdpResponse.fromError(e));
+            setResult(IdpResponse.fromError(e));
         }
     }
 
-    public static final class Params {
-        public final SignInHandler signInHandler;
-        public final FlowHolder flowHolder;
-
-        public Params(SignInHandler handler, FlowHolder holder) {
-            signInHandler = handler;
-            flowHolder = holder;
-        }
-    }
 }

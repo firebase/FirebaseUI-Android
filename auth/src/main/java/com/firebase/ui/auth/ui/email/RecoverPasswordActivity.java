@@ -64,7 +64,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
         mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
         mHandler.init(getFlowHolder().getArguments());
-        mHandler.getProgressLiveData().observe(this, new Observer<Resource<String>>() {
+        mHandler.getOperation().observe(this, new Observer<Resource<String>>() {
             @Override
             public void onChanged(Resource<String> resource) {
                 if (resource.getState() == State.LOADING) {

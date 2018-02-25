@@ -78,7 +78,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         Provider idpProvider = null;
 
         String providerId = oldUser.getProviderId();
-        for (IdpConfig idpConfig : getFlowHolder().getParams().providerInfo) {
+        for (IdpConfig idpConfig : getFlowHolder().getArguments().providerInfo) {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
@@ -105,7 +105,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
                 R.string.fui_welcome_back_idp_prompt,
                 oldUser.getEmail(),
-                idpProvider.getName(this)));
+                idpProvider.getName()));
 
         final Provider finalIdpProvider = idpProvider;
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {

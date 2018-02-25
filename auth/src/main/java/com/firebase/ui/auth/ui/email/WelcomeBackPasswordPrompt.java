@@ -14,8 +14,8 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -32,16 +32,21 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Activity to link a pre-existing email/password account to a new IDP sign-in by confirming the
@@ -50,7 +55,10 @@ import com.firebase.ui.auth.util.ui.ImeHelper;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackPasswordPrompt extends AppCompatBase
         implements View.OnClickListener, ImeHelper.DonePressedListener {
+    private static final String TAG = "WelcomeBackPassword";
+
     private User mUser;
+    private WelcomeBackPasswordHandler mHandler;
 
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
@@ -97,7 +105,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         mHandler.init(getFlowHolder().getArguments());
 
         // Observe the state of the main auth operation
-        mHandler.getSignInOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(@Nullable Resource<IdpResponse> resource) {
                 onSignInOperation(resource);

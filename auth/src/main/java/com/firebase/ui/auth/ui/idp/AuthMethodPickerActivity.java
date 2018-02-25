@@ -14,8 +14,8 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +33,8 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.EmailProvider;
@@ -41,6 +43,12 @@ import com.firebase.ui.auth.ui.provider.GoogleProvider;
 import com.firebase.ui.auth.ui.provider.PhoneProvider;
 import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +68,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_auth_method_picker_layout);
 
-        FlowParameters params = getFlowHolder().getParams();
-        populateIdpList(params.providerInfo);
+        FlowParameters params = getFlowHolder().getArguments();
+        final ProvidersHandler handler = ViewModelProviders.of(this).get(ProvidersHandler.class);
+        handler.init(params);
+
+        populateIdpList(params.providerInfo, handler);
 
         int logoId = params.logoId;
         if (logoId == AuthUI.NO_LOGO) {
@@ -78,30 +89,32 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             logo.setImageResource(logoId);
         }
 
-        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
+        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
-            public void onChanged(@Nullable IdpResponse response) {
-                if (response.isSuccessful()) {
-                    finish(Activity.RESULT_OK, response.toIntent());
+            public void onChanged(Resource<IdpResponse> resource) {
+                if (resource.getState() == State.LOADING) {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
+                    return;
                 }
-            }
-        });
-        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isDone) {
-                Toast.makeText(AuthMethodPickerActivity.this,
-                        "TODO isDone:  " + isDone,
-                        Toast.LENGTH_SHORT).show();
+                getDialogHolder().dismissDialog();
+
+                if (resource.getState() == State.SUCCESS) {
+                    startSaveCredentials(handler.getCurrentUser(), null, resource.getValue());
+                } else {
+                    Toast.makeText(AuthMethodPickerActivity.this,
+                            resource.getException().getLocalizedMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
-    private void populateIdpList(List<IdpConfig> providerConfigs) {
+    private void populateIdpList(List<IdpConfig> providerConfigs, ProvidersHandler handler) {
         List<Provider> providers = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
             switch (idpConfig.getProviderId()) {
                 case GoogleAuthProvider.PROVIDER_ID:
-                    providers.add(new GoogleProvider(this, idpConfig));
+                    providers.add(new GoogleProvider(handler, this));
                     break;
                 case FacebookAuthProvider.PROVIDER_ID:
                     providers.add(new FacebookProvider(this, idpConfig));
@@ -110,10 +123,10 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     providers.add(new TwitterProvider(this));
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
-                    providers.add(new EmailProvider(this));
+                    providers.add(new EmailProvider(handler));
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    providers.add(new PhoneProvider(this, idpConfig));
+                    providers.add(new PhoneProvider(handler, idpConfig));
                     break;
                 default:
                     Log.e(TAG, "Encountered unknown provider parcel with type: "

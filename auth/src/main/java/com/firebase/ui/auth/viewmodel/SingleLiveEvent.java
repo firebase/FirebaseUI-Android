@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A lifecycle-aware observable that sends only new updates after subscription, used for events like
- * navigation and Snackbar messages.
+ * navigation and SnackBar messages.
  * <p>
  * This avoids a common problem with events: on configuration change (like rotation) an update
  * can be emitted if the observer is active. This LiveData only calls the observable if there's an
@@ -26,14 +26,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * googlesamples/android-architecture
  */
 public class SingleLiveEvent<T> extends MutableLiveData<T> {
-
     private static final String TAG = "SingleLiveEvent";
 
     private final AtomicBoolean mPending = new AtomicBoolean(false);
 
     @MainThread
-    public void observe(LifecycleOwner owner, final Observer<T> observer) {
-
+    public void observe(@NonNull LifecycleOwner owner, @NonNull final Observer<T> observer) {
         if (hasActiveObservers()) {
             Log.w(TAG, "Multiple observers registered but only one will be notified of changes.");
         }
@@ -49,10 +47,10 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
         });
     }
 
-    @Deprecated
-    @Override
-    public void removeObserver(@NonNull Observer<T> observer) {
-        super.removeObserver(observer);
+    @MainThread
+    public void setValue(@Nullable T t) {
+        mPending.set(true);
+        super.setValue(t);
     }
 
     @Deprecated
@@ -63,21 +61,13 @@ public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
     @Deprecated
     @Override
+    public void removeObserver(@NonNull Observer<T> observer) {
+        super.removeObserver(observer);
+    }
+
+    @Deprecated
+    @Override
     public void removeObservers(@NonNull LifecycleOwner owner) {
         super.removeObservers(owner);
-    }
-
-    @MainThread
-    public void setValue(@Nullable T t) {
-        mPending.set(true);
-        super.setValue(t);
-    }
-
-    /**
-     * Used for cases where T is Void, to make calls cleaner.
-     */
-    @MainThread
-    public void call() {
-        setValue(null);
     }
 }

@@ -2,8 +2,8 @@ package com.firebase.ui.auth.viewmodel.smartlock;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +16,7 @@ import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.ResolutionCodes;
+import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,22 +26,23 @@ import com.google.firebase.auth.FirebaseUser;
 /**
  * ViewModel for initiating saves to the Credentials API (SmartLock).
  */
-public class SmartLockHandler extends AuthViewModelBase {
-
+public class SmartLockHandler extends AuthViewModelBase<Void> {
     private static final String TAG = "SmartLockViewModel";
 
-    private MutableLiveData<Resource<Void>> mResultLiveData = new MutableLiveData<>();
+    private SingleLiveEvent<PendingResolution> mPendingResolution = new SingleLiveEvent<>();
 
     public SmartLockHandler(Application application) {
         super(application);
     }
 
     /**
-     * Observe the status of the save operation initiated by
-     * {@link #saveCredentials(FirebaseUser, String, String)}.
+     * Get an observable stream of {@link PendingIntent} resolutions requested by the ViewModel.
+     * <p>
+     * Make sure to call {@link #onActivityResult(int, int, Intent)} for all activity results after
+     * firing these pending intents.
      */
-    public LiveData<Resource<Void>> getSaveOperation() {
-        return mResultLiveData;
+    public LiveData<PendingResolution> getPendingResolution() {
+        return mPendingResolution;
     }
 
     /**
@@ -50,12 +52,12 @@ public class SmartLockHandler extends AuthViewModelBase {
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ResolutionCodes.RC_CRED_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
-                mResultLiveData.setValue(Resource.forVoidSuccess());
+                setResult(Resource.forVoidSuccess());
             } else {
                 Log.e(TAG, "SAVE: Canceled by user.");
                 FirebaseUiException exception = new FirebaseUiException(
                         ErrorCodes.UNKNOWN_ERROR, "Save canceled by user.");
-                mResultLiveData.setValue(Resource.<Void>forFailure(exception));
+                setResult(Resource.<Void>forFailure(exception));
             }
 
             return true;
@@ -64,34 +66,27 @@ public class SmartLockHandler extends AuthViewModelBase {
         return super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * Initialize saving a credential. Progress of the operation can be observed in
-     * {@link #getSaveOperation()}.
-     */
+    /** @see #saveCredentials(Credential) */
     public void saveCredentials(FirebaseUser firebaseUser,
                                 @Nullable String password,
                                 @Nullable String accountType) {
-
-        Credential credential = CredentialsUtil.buildCredential(firebaseUser, password, accountType);
-        saveCredentials(credential);
+        saveCredentials(CredentialsUtil.buildCredential(firebaseUser, password, accountType));
     }
 
-    /**
-     * Initialize saving a credential.
-     */
+    /** Initialize saving a credential. */
     public void saveCredentials(Credential credential) {
         if (!getArguments().enableCredentials) {
-            mResultLiveData.setValue(Resource.forVoidSuccess());
+            setResult(Resource.forVoidSuccess());
             return;
         }
 
-        mResultLiveData.setValue(Resource.<Void>forLoading());
+        setResult(Resource.<Void>forLoading());
 
 
         if (credential == null) {
             Exception exception = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR,
                     "Failed to build credential.");
-            mResultLiveData.setValue(Resource.<Void>forFailure(exception));
+            setResult(Resource.<Void>forFailure(exception));
             return;
         }
 
@@ -100,10 +95,11 @@ public class SmartLockHandler extends AuthViewModelBase {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            mResultLiveData.setValue(Resource.forVoidSuccess());
+                            setResult(Resource.forVoidSuccess());
                         } else if (task.getException() instanceof ResolvableApiException) {
                             ResolvableApiException rae = (ResolvableApiException) task.getException();
-                            setPendingResolution(new PendingResolution(rae.getResolution(), ResolutionCodes.RC_CRED_SAVE));
+                            mPendingResolution.setValue(new PendingResolution(
+                                    rae.getResolution(), ResolutionCodes.RC_CRED_SAVE));
                         } else {
                             Log.w(TAG, "Non-resolvable exception: " + task.getException());
 
@@ -111,10 +107,9 @@ public class SmartLockHandler extends AuthViewModelBase {
                                     ErrorCodes.UNKNOWN_ERROR,
                                     "Error when saving credential.",
                                     task.getException());
-                            mResultLiveData.setValue(Resource.<Void>forFailure(exception));
+                            setResult(Resource.<Void>forFailure(exception));
                         }
                     }
                 });
     }
-
 }

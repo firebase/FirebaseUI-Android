@@ -1,25 +1,24 @@
 package com.firebase.ui.auth.ui;
 
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.util.Pair;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.remote.SignInHandler;
+import com.firebase.ui.auth.ui.credentials.CredentialSaveActivity;
+import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.ui.FlowHolder;
+import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.viewmodel.FlowHolder;
+import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 
@@ -30,9 +29,9 @@ public class HelperActivityBase extends AppCompatActivity {
 
     private static final int RC_SAVE_CREDENTIAL = 101;
 
-    private FlowParameters mFlowParameters;
     private FlowHolder mFlowHolder;
-    private SignInHandler mSignInHandler;
+
+    private ProgressDialogHolder mProgressDialogHolder;
 
     public static Intent createBaseIntent(
             @NonNull Context context,
@@ -46,55 +45,21 @@ public class HelperActivityBase extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
-            @Override
-            public void onChanged(@Nullable IdpResponse response) {
-                if (!response.isSuccessful()) {
-                    try {
-                        if (Class.forName(getPackageName() + ".BuildConfig")
-                                .getDeclaredField("DEBUG").getBoolean(null)) {
-                            Log.d("AuthUI", "Sign in error occurred.", response.getException());
-                        }
-                    } catch (Exception ignored) {}
-                }
-            }
-        });
-        getFlowHolder().getIntentStarter().observe(this, new Observer<Pair<Intent, Integer>>() {
-            @Override
-            public void onChanged(@Nullable Pair<Intent, Integer> request) {
-                if (request == null) {
-                    throw new IllegalStateException("Cannot start null request");
-                }
+        mProgressDialogHolder = new ProgressDialogHolder(this);
+    }
 
-                startActivityForResult(request.first, request.second);
-            }
-        });
-        getFlowHolder().getPendingIntentStarter()
-                .observe(this, new Observer<Pair<PendingIntent, Integer>>() {
-                    @Override
-                    public void onChanged(@Nullable Pair<PendingIntent, Integer> request) {
-                        if (request == null) {
-                            throw new IllegalStateException("Cannot start null request");
-                        }
-
-                        try {
-                            startIntentSenderForResult(
-                                    request.first.getIntentSender(), request.second, null, 0, 0, 0);
-                        } catch (IntentSender.SendIntentException e) {
-                            Log.e("PendingIntentStarter", "Unable to start pending intent", e);
-                            onActivityResult(request.second, Activity.RESULT_CANCELED, null);
-                        }
-                    }
-                });
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mProgressDialogHolder.dismissDialog();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        getFlowHolder().onActivityResult(requestCode, resultCode, data);
-        // Forward the results of Smartlock Saving
+        // Forward the results of Smart Lock saving
         if (requestCode == RC_SAVE_CREDENTIAL) {
             finish(RESULT_OK, data);
         }
@@ -109,13 +74,12 @@ public class HelperActivityBase extends AppCompatActivity {
         return mFlowHolder;
     }
 
-    public SignInHandler getSignInHandler() {
-        if (mSignInHandler == null) {
-            mSignInHandler = ViewModelProviders.of(this).get(SignInHandler.class);
-            mSignInHandler.init(getFlowHolder());
-        }
+    public FlowParameters getFlowParams() {
+        return getFlowHolder().getArguments();
+    }
 
-        return mSignInHandler;
+    public ProgressDialogHolder getDialogHolder() {
+        return mProgressDialogHolder;
     }
 
     public void finish(int resultCode, Intent intent) {
@@ -127,7 +91,6 @@ public class HelperActivityBase extends AppCompatActivity {
             FirebaseUser firebaseUser,
             @Nullable String password,
             IdpResponse response) {
-
         // Build credential
         String accountType = ProviderUtils.idpResponseToAccountType(response);
         Credential credential = CredentialsUtil.buildCredential(

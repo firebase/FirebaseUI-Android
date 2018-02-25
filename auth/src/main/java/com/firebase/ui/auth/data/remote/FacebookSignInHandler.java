@@ -1,7 +1,7 @@
 package com.firebase.ui.auth.data.remote;
 
 import android.app.Application;
-import android.arch.lifecycle.Observer;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,13 +14,11 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.data.model.ActivityResult;
 import com.firebase.ui.auth.data.model.ProviderErrorException;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.util.ui.FlowHolder;
-import com.firebase.ui.auth.util.ui.ViewModelBase;
+import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.viewmodel.idp.ProviderHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.json.JSONException;
@@ -29,14 +27,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.Params>
-        implements Observer<ActivityResult>, FacebookCallback<LoginResult> {
+public class FacebookSignInHandler extends ProviderHandler<FacebookParams>
+        implements FacebookCallback<LoginResult> {
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
 
-    private AuthUI.IdpConfig mConfig;
-    private SignInHandler mHandler;
-    private FlowHolder mFlowHolder;
+    private List<String> mPermissions;
 
     private final CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
@@ -55,8 +51,20 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
                 .build();
     }
 
-    public List<String> getPermissions() {
-        List<String> permissionsList = new ArrayList<>(mConfig.getScopes());
+    @Override
+    protected void onCreate() {
+        initPermissionList();
+        LoginManager.getInstance().registerCallback(mCallbackManager, this);
+    }
+
+    private void initPermissionList() {
+        List<String> scopes = getArguments().getConfig().getParams()
+                .getStringArrayList(ExtraConstants.EXTRA_FACEBOOK_PERMISSIONS);
+        if (scopes == null) {
+            scopes = new ArrayList<>();
+        }
+
+        List<String> permissionsList = new ArrayList<>(scopes);
 
         // Ensure we have email and public_profile scopes
         if (!permissionsList.contains(EMAIL)) {
@@ -66,23 +74,16 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
             permissionsList.add(PUBLIC_PROFILE);
         }
 
-        return permissionsList;
+        mPermissions = permissionsList;
+    }
+
+    public List<String> getPermissions() {
+        return mPermissions;
     }
 
     @Override
-    protected void onCreate(Params params) {
-        mConfig = params.providerConfig;
-        mHandler = params.signInHandler;
-        mFlowHolder = params.flowHolder;
-
-        mFlowHolder.getActivityResultListener().observeForever(this);
-        LoginManager.getInstance().registerCallback(mCallbackManager, this);
-    }
-
-    @Override
-    public void onChanged(@Nullable ActivityResult result) {
-        mCallbackManager.onActivityResult(
-                result.getRequestCode(), result.getResultCode(), result.getData());
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -103,26 +104,13 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
 
     @Override
     public void onError(FacebookException e) {
-        mHandler.signIn(IdpResponse.fromError(e));
+        setResult(IdpResponse.fromError(e));
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        mFlowHolder.getActivityResultListener().removeObserver(this);
         LoginManager.getInstance().unregisterCallback(mCallbackManager);
-    }
-
-    public static final class Params {
-        public final AuthUI.IdpConfig providerConfig;
-        public final SignInHandler signInHandler;
-        public final FlowHolder flowHolder;
-
-        public Params(AuthUI.IdpConfig config, SignInHandler handler, FlowHolder holder) {
-            providerConfig = config;
-            signInHandler = handler;
-            flowHolder = holder;
-        }
     }
 
     private class ProfileRequest implements GraphRequest.GraphJSONObjectCallback {
@@ -136,7 +124,7 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
         public void onCompleted(JSONObject object, GraphResponse response) {
             FacebookRequestError error = response.getError();
             if (error != null || object == null) {
-                mHandler.signIn(IdpResponse.fromError(error == null ?
+                setResult(IdpResponse.fromError(error == null ?
                         new ProviderErrorException("Facebook graph request failed")
                         : error.getException()));
                 return;
@@ -158,7 +146,7 @@ public class FacebookSignInHandler extends ViewModelBase<FacebookSignInHandler.P
                         .getString("url"));
             } catch (JSONException ignored) {}
 
-            mHandler.signIn(createIdpResponse(mResult, email, name, photoUri));
+            setResult(createIdpResponse(mResult, email, name, photoUri));
         }
     }
 }

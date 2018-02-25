@@ -7,7 +7,6 @@ import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 
 import com.firebase.ui.auth.data.remote.SignInHandler;
-import com.firebase.ui.auth.util.ui.FlowHolder;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FragmentBase extends Fragment {
