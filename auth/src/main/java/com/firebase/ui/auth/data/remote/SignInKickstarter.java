@@ -2,30 +2,33 @@ package com.firebase.ui.auth.data.remote;
 
 import android.app.Activity;
 import android.app.Application;
-import android.arch.lifecycle.Observer;
+import android.app.PendingIntent;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
+import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
-import com.firebase.ui.auth.viewmodel.FlowHolder;
+import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
-import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,49 +41,74 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignInKickstarter extends AuthViewModelBase {
+public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
     private static final int RC_CREDENTIALS_READ = 2;
     private static final int RC_IDP_SIGNIN = 3;
     private static final int RC_AUTH_METHOD_PICKER = 4;
     private static final int RC_EMAIL_FLOW = 5;
     private static final int RC_PHONE_FLOW = 6;
 
-    private SignInHandler mHandler;
+    private MutableLiveData<Pair<Intent, Integer>> mIntentReqester = new SingleLiveEvent<>();
+    private MutableLiveData<Pair<PendingIntent, Integer>> mPendingIntentReqester =
+            new SingleLiveEvent<>();
 
     public SignInKickstarter(Application application) {
         super(application);
     }
 
-    @Override
-    protected void onCreate(FlowHolder args) {
-        super.onCreate(args);
-        mFlowHolder.getActivityResultListener().observeForever(this);
+    public LiveData<Pair<Intent, Integer>> getIntentReqester() {
+        return mIntentReqester;
     }
 
-    public void setSignInHandler(SignInHandler handler) {
-        mHandler = handler;
+    public LiveData<Pair<PendingIntent, Integer>> getPendingIntentReqester() {
+        return mPendingIntentReqester;
     }
 
     public void start() {
-        if (mFlowHolder.getParams().enableCredentials) {
-            mFlowHolder.getProgressListener().setValue(false);
+        // Only support password credentials if email auth is enabled
+        boolean supportPasswords = false;
+        for (AuthUI.IdpConfig config : getArguments().providerInfo) {
+            if (EmailAuthProvider.PROVIDER_ID.equals(config.getProviderId())) {
+                supportPasswords = true;
+            }
+        }
+        List<String> accountTypes = getSupportedAccountTypes();
 
-            Credentials.getClient(getApplication()).request(
-                    new CredentialRequest.Builder()
-                            .setPasswordLoginSupported(true)
-                            .setAccountTypes(getSupportedAccountTypes().toArray(new String[0]))
+        // If the request will be empty, avoid the step entirely
+        boolean willRequestCredentials = supportPasswords || accountTypes.size() > 0;
+
+        if (getArguments().enableCredentials && willRequestCredentials) {
+            setResult(Resource.<IdpResponse>forLoading());
+
+            GoogleApiUtils.getCredentialsClient(getApplication())
+                    .request(new CredentialRequest.Builder()
+                            .setPasswordLoginSupported(supportPasswords)
+                            .setAccountTypes(accountTypes.toArray(new String[accountTypes.size()]))
                             .build())
-                    .addOnCompleteListener(new CredentialRequestFlow());
+                    .addOnCompleteListener(new OnCompleteListener<CredentialRequestResponse>() {
+                        @Override
+                        public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
+                            try {
+                                handleCredential(
+                                        task.getResult(ApiException.class).getCredential());
+                            } catch (ResolvableApiException e) {
+                                if (e.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
+                                    mPendingIntentReqester.setValue(Pair.create(
+                                            e.getResolution(),
+                                            RC_CREDENTIALS_READ));
+                                }
+                            } catch (ApiException e) {
+                                startAuthMethodChoice();
+                            }
+                        }
+                    });
         } else {
             startAuthMethodChoice();
         }
     }
 
     private void startAuthMethodChoice() {
-        mFlowHolder.getProgressListener().setValue(true);
-
-        FlowParameters flowParams = mFlowHolder.getParams();
-        List<AuthUI.IdpConfig> idpConfigs = flowParams.providerInfo;
+        List<AuthUI.IdpConfig> idpConfigs = getArguments().providerInfo;
 
         // If there is only one provider selected, launch the flow directly
         if (idpConfigs.size() == 1) {
@@ -88,14 +116,14 @@ public class SignInKickstarter extends AuthViewModelBase {
             String firstProvider = firstIdpConfig.getProviderId();
             switch (firstProvider) {
                 case EmailAuthProvider.PROVIDER_ID:
-                    mFlowHolder.getIntentStarter().setValue(Pair.create(
-                            EmailActivity.createIntent(getApplication(), flowParams),
+                    mIntentReqester.setValue(Pair.create(
+                            EmailActivity.createIntent(getApplication(), getArguments()),
                             RC_EMAIL_FLOW));
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    mFlowHolder.getIntentStarter().setValue(Pair.create(
+                    mIntentReqester.setValue(Pair.create(
                             PhoneActivity.createIntent(
-                                    getApplication(), flowParams, firstIdpConfig.getParams()),
+                                    getApplication(), getArguments(), firstIdpConfig.getParams()),
                             RC_PHONE_FLOW));
                     break;
                 default:
@@ -103,20 +131,16 @@ public class SignInKickstarter extends AuthViewModelBase {
                     break;
             }
         } else {
-            mFlowHolder.getIntentStarter().setValue(Pair.create(
-                    AuthMethodPickerActivity.createIntent(getApplication(), flowParams),
+            mIntentReqester.setValue(Pair.create(
+                    AuthMethodPickerActivity.createIntent(getApplication(), getArguments()),
                     RC_AUTH_METHOD_PICKER));
         }
     }
 
     private void redirectToIdpSignIn(String provider, String email) {
-        mFlowHolder.getProgressListener().setValue(true);
-
-        FlowParameters flowParams = mFlowHolder.getParams();
-
         if (TextUtils.isEmpty(provider)) {
-            mFlowHolder.getIntentStarter().setValue(Pair.create(
-                    EmailActivity.createIntent(getApplication(), flowParams, email),
+            mIntentReqester.setValue(Pair.create(
+                    EmailActivity.createIntent(getApplication(), getArguments(), email),
                     RC_EMAIL_FLOW));
             return;
         }
@@ -124,10 +148,10 @@ public class SignInKickstarter extends AuthViewModelBase {
         if (provider.equals(GoogleAuthProvider.PROVIDER_ID)
                 || provider.equals(FacebookAuthProvider.PROVIDER_ID)
                 || provider.equals(TwitterAuthProvider.PROVIDER_ID)) {
-            mFlowHolder.getIntentStarter().setValue(Pair.create(
+            mIntentReqester.setValue(Pair.create(
                     SingleSignInActivity.createIntent(
                             getApplication(),
-                            flowParams,
+                            getArguments(),
                             new User.Builder(provider, email).build()),
                     RC_IDP_SIGNIN));
         } else {
@@ -137,7 +161,7 @@ public class SignInKickstarter extends AuthViewModelBase {
 
     private List<String> getSupportedAccountTypes() {
         List<String> accounts = new ArrayList<>();
-        for (AuthUI.IdpConfig idpConfig : mFlowHolder.getParams().providerInfo) {
+        for (AuthUI.IdpConfig idpConfig : getArguments().providerInfo) {
             @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
             if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
                     || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
@@ -150,87 +174,52 @@ public class SignInKickstarter extends AuthViewModelBase {
     }
 
     @Override
-    public void onChanged(@Nullable ActivityResult result) {
-        switch (result.getRequestCode()) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case RC_CREDENTIALS_READ:
+                if (resultCode == Activity.RESULT_OK) {
+                    handleCredential((Credential) data.getParcelableExtra(Credential.EXTRA_KEY));
+                } else {
+                    startAuthMethodChoice();
+                }
+                break;
             case RC_AUTH_METHOD_PICKER:
             case RC_IDP_SIGNIN:
             case RC_EMAIL_FLOW:
             case RC_PHONE_FLOW:
-                @Nullable IdpResponse response = IdpResponse.fromResultIntent(result.getData());
-                SIGN_IN_LISTENER.setValue(response == null ?
-                        IdpResponse.fromError(new UserCancellationException("User pressed back"))
-                        : response);
-        }
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        mFlowHolder.getActivityResultListener().removeObserver(this);
-    }
-
-    private class CredentialRequestFlow implements OnCompleteListener<CredentialRequestResponse>,
-            Observer<ActivityResult> {
-        public CredentialRequestFlow() {
-            mFlowHolder.getActivityResultListener().observeForever(this);
-        }
-
-        @Override
-        public void onComplete(@NonNull Task<CredentialRequestResponse> task) {
-            try {
-                handleCredential(task.getResult(ApiException.class).getCredential());
-            } catch (ResolvableApiException e) {
-                mFlowHolder.getPendingIntentStarter().setValue(Pair.create(
-                        e.getResolution(),
-                        RC_CREDENTIALS_READ));
-                return;
-            } catch (ApiException e) {
-                startAuthMethodChoice();
-            }
-
-            mFlowHolder.getActivityResultListener().removeObserver(this);
-        }
-
-        private void handleCredential(Credential credential) {
-            String id = credential.getId();
-            String password = credential.getPassword();
-            if (TextUtils.isEmpty(password)) {
-                String provider = ProviderUtils.accountTypeToProviderId(
-                        String.valueOf(credential.getAccountType()));
-                if (TextUtils.equals(provider, PhoneAuthProvider.PROVIDER_ID)) {
-                    mFlowHolder.getProgressListener().setValue(true);
-
-                    Bundle args = new Bundle();
-                    args.putString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER, id);
-                    mFlowHolder.getIntentStarter().setValue(Pair.create(
-                            PhoneActivity.createIntent(
-                                    getApplication(),
-                                    mFlowHolder.getParams(),
-                                    args),
-                            RC_PHONE_FLOW));
+                IdpResponse response = IdpResponse.fromResultIntent(data);
+                if (response == null) {
+                    setResult(Resource.<IdpResponse>forFailure(response.getException()));
                 } else {
-                    redirectToIdpSignIn(provider, id);
+                    setResult(Resource.forSuccess(response));
                 }
+        }
+    }
+
+    private void handleCredential(Credential credential) {
+        String id = credential.getId();
+        String password = credential.getPassword();
+        if (TextUtils.isEmpty(password)) {
+            String provider = ProviderUtils.accountTypeToProviderId(
+                    String.valueOf(credential.getAccountType()));
+            if (TextUtils.equals(provider, PhoneAuthProvider.PROVIDER_ID)) {
+                Bundle args = new Bundle();
+                args.putString(ExtraConstants.EXTRA_PHONE, id);
+                mIntentReqester.setValue(Pair.create(
+                        PhoneActivity.createIntent(
+                                getApplication(),
+                                getArguments(),
+                                args),
+                        RC_PHONE_FLOW));
             } else {
-                mHandler.signIn(new IdpResponse.Builder(
-                        new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build())
-                        .setPassword(password)
-                        .build());
+                redirectToIdpSignIn(provider, id);
             }
-        }
+        } else {
 
-        @Override
-        public void onChanged(@Nullable ActivityResult result) {
-            if (result.getRequestCode() == RC_CREDENTIALS_READ) {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    handleCredential(
-                            (Credential) result.getData().getParcelableExtra(Credential.EXTRA_KEY));
-                } else {
-                    startAuthMethodChoice();
-                }
-
-                mFlowHolder.getActivityResultListener().removeObserver(this);
-            }
+            mHandler.signIn(new IdpResponse.Builder(
+                    new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build())
+                    .setPassword(password)
+                    .build());
         }
     }
 }

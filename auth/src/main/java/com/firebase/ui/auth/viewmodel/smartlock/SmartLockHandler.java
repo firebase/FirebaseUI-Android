@@ -49,7 +49,7 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
      * Forward the result of a resolution from the Activity to the ViewModel.
      */
     @Override
-    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ResolutionCodes.RC_CRED_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
                 setResult(Resource.forVoidSuccess());
@@ -59,11 +59,7 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
                         ErrorCodes.UNKNOWN_ERROR, "Save canceled by user.");
                 setResult(Resource.<Void>forFailure(exception));
             }
-
-            return true;
         }
-
-        return super.onActivityResult(requestCode, resultCode, data);
     }
 
     /** @see #saveCredentials(Credential) */

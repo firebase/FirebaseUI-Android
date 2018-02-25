@@ -1,21 +1,22 @@
 package com.firebase.ui.auth;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.util.Pair;
 
+import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.GoogleApiConnectionException;
-import com.firebase.ui.auth.data.model.NetworkException;
-import com.firebase.ui.auth.data.model.UserCancellationException;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -37,13 +38,45 @@ public class KickoffActivity extends HelperActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
-        mKickstarter.init(getFlowHolder());
-        mKickstarter.setSignInHandler(getSignInHandler());
-        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
+        mKickstarter.init(getFlowHolder().getArguments());
+        mKickstarter.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
-            public void onChanged(@Nullable IdpResponse response) {
-                finish(response.isSuccessful() ? Activity.RESULT_OK : Activity.RESULT_CANCELED,
-                       response.toIntent());
+            public void onChanged(Resource<IdpResponse> resource) {
+                if (resource.getState() == State.LOADING) {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
+                    return;
+                }
+                getDialogHolder().dismissDialog();
+
+                if (resource.getState() == State.SUCCESS) {
+                    IdpResponse response = resource.getValue();
+                    if (response.isSuccessful()) {
+                        finish(Activity.RESULT_OK, response.toIntent());
+                    } else {
+                        finish(Activity.RESULT_CANCELED, response.toIntent());
+                    }
+                } else {
+                    finish(Activity.RESULT_CANCELED, IdpResponse.fromError(
+                            resource.getException()).toIntent());
+                }
+            }
+        });
+        mKickstarter.getIntentReqester().observe(this, new Observer<Pair<Intent, Integer>>() {
+            @Override
+            public void onChanged(Pair<Intent, Integer> pair) {
+                startActivityForResult(pair.first, pair.second);
+            }
+        });
+        mKickstarter.getPendingIntentReqester()
+                .observe(this, new Observer<Pair<PendingIntent, Integer>>() {
+                    @Override
+                    public void onChanged(Pair<PendingIntent, Integer> pair) {
+                        try {
+                            startIntentSenderForResult(
+                                    pair.first.getIntentSender(), pair.second, null, 0, 0, 0);
+                        } catch (IntentSender.SendIntentException e) {
+                            finish(Activity.RESULT_CANCELED, IdpResponse.fromError(e).toIntent());
+                        }
             }
         });
 
@@ -55,7 +88,8 @@ public class KickoffActivity extends HelperActivityBase {
     private void init() {
         if (isOffline()) {
             finish(RESULT_CANCELED,
-                   IdpResponse.fromError(new NetworkException("No network on boot")).toIntent());
+                    IdpResponse.fromError(new FirebaseUiException(ErrorCodes.NO_NETWORK))
+                            .toIntent());
             return;
         }
 
@@ -66,8 +100,7 @@ public class KickoffActivity extends HelperActivityBase {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         finish(RESULT_CANCELED, IdpResponse.fromError(
-                                new GoogleApiConnectionException(
-                                        "User cancelled Play Services availability request on boot"))
+                                new FirebaseUiException(ErrorCodes.PLAY_SERVICES_ERROR))
                                 .toIntent());
                     }
                 });
@@ -94,21 +127,10 @@ public class KickoffActivity extends HelperActivityBase {
             if (resultCode == RESULT_OK) {
                 mKickstarter.start();
             } else {
-                finish(RESULT_CANCELED, IdpResponse.fromError(new GoogleApiConnectionException(
-                        "Couldn't make Play Services available on boot")).toIntent());
+                finish(RESULT_CANCELED, IdpResponse.fromError(new FirebaseUiException(
+                        ErrorCodes.PLAY_SERVICES_ERROR)).toIntent());
             }
         }
-    }
-
-    @Override
-    public void finish(int resultCode, Intent intent) {
-        @NonNull IdpResponse response = IdpResponse.fromResultIntent(intent);
-        // TODO return the full response when we decide to break backwards compatibility.
-        // For now, if the user cancelled the request, we return a null response.
-
-        super.finish(resultCode,
-                response.isSuccessful() || !(response.getException() instanceof UserCancellationException) ?
-                        intent : null);
     }
 
     /**

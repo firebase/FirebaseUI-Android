@@ -85,10 +85,8 @@ public class CredentialSaveActivity extends HelperActivityBase {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Forward activity results to the ViewModel
-        if (!mHandler.onActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+        super.onActivityResult(requestCode, resultCode, data);
+        mHandler.onActivityResult(requestCode, resultCode, data);
     }
 
     private void onSaveOperation(@NonNull Resource<Void> resource) {

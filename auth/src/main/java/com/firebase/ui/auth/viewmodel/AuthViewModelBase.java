@@ -65,9 +65,7 @@ public abstract class AuthViewModelBase<T> extends ViewModelBase<FlowParameters>
      * Delegate activity result handling to the ViewModel. Returns {@code true} if the result was
      * handled.
      */
-    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        return false;
-    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {}
 
     protected void setResult(Resource<T> result) {
         mOperation.setValue(result);
