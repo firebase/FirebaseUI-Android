@@ -27,6 +27,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -91,37 +92,59 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         findViewById(R.id.button_done).setOnClickListener(this);
         findViewById(R.id.trouble_signing_in).setOnClickListener(this);
 
-        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
+        // Initialize ViewModel with arguments
+        mHandler = ViewModelProviders.of(this).get(WelcomeBackPasswordHandler.class);
+        mHandler.init(getFlowHolder().getArguments());
+
+        // Observe the state of the main auth operation
+        mHandler.getSignInOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
-            public void onChanged(@Nullable IdpResponse response) {
-                if (response.isSuccessful()) {
-                    finish(Activity.RESULT_OK, response.toIntent());
-                } else {
-                    mPasswordLayout.setError(response.getException().getLocalizedMessage());
-                }
-            }
-        });
-        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isDone) {
-                Toast.makeText(WelcomeBackPasswordPrompt.this,
-                        "TODO isDone:  " + isDone,
-                        Toast.LENGTH_SHORT).show();
+            public void onChanged(@Nullable Resource<IdpResponse> resource) {
+                onSignInOperation(resource);
             }
         });
     }
 
-    @Override
-    public void onClick(View view) {
-        final int id = view.getId();
-        if (id == R.id.button_done) {
-            validateAndSignIn();
-        } else if (id == R.id.trouble_signing_in) {
-            startActivity(RecoverPasswordActivity.createIntent(
-                    this,
-                    getFlowHolder().getParams(),
-                    mUser.getEmail()));
+    private void onSignInOperation(@Nullable Resource<IdpResponse> resource) {
+        if (resource == null) {
+            Log.w(TAG, "Got null resource, ignoring.");
+            return;
         }
+
+        switch (resource.getState()) {
+            case LOADING:
+                getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
+                break;
+            case SUCCESS:
+                getDialogHolder().dismissDialog();
+
+                // This logic remains in the view since SmartLock is effectively a different
+                // 'screen' after the sign-in process.
+                FirebaseUser user = getAuthHelper().getCurrentUser();
+                startSaveCredentials(user, mHandler.getPendingPassword(), resource.getValue());
+                break;
+            case FAILURE:
+                getDialogHolder().dismissDialog();
+                String message = getErrorMessage(resource.getException());
+                mPasswordLayout.setError(message);
+                break;
+        }
+    }
+
+    private String getErrorMessage(Exception exception) {
+        if (exception instanceof FirebaseAuthInvalidCredentialsException) {
+            // TODO: Add translated "wrong password" message
+            return exception.getLocalizedMessage();
+        }
+
+        return exception.getLocalizedMessage();
+    }
+
+    private void onForgotPasswordClicked() {
+        startActivity(RecoverPasswordActivity.createIntent(
+                this,
+                getFlowParams(),
+                mEmail));
     }
 
     @Override
@@ -142,6 +165,17 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
             mPasswordLayout.setError(null);
         }
 
-        getSignInHandler().signIn(new IdpResponse.Builder(mUser).setPassword(password).build());
+        AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
+        mHandler.startSignIn(email, password, mIdpResponse, authCredential);
+    }
+
+    @Override
+    public void onClick(View view) {
+        final int id = view.getId();
+        if (id == R.id.button_done) {
+            validateAndSignIn();
+        } else if (id == R.id.trouble_signing_in) {
+            onForgotPasswordClicked();
+        }
     }
 }

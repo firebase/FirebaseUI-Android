@@ -1,0 +1,15 @@
+apply plugin: 'kotlin'
+
+dependencies {
+    compileOnly 'com.android.tools.lint:lint-api:26.0.1'
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+
+    testImplementation 'com.android.tools.lint:lint-api:26.0.1'
+    testImplementation 'com.android.tools.lint:lint-tests:26.0.1'
+}
+
+jar {
+    manifest {
+        attributes('Lint-Registry-v2': 'com.firebaseui.lint.LintIssueRegistry')
+    }
+}

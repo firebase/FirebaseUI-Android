@@ -1,1 +1,2 @@
-include ':app', ':library', ':database', ':auth', ':storage', ':firestore', ':common'
+include ':app', ':library', ':database', ':auth', ':storage', ':firestore', ':common',
+        ':internal:lint', ':internal:lintchecks'

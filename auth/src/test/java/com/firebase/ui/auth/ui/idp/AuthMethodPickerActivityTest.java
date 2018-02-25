@@ -19,13 +19,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.TwitterAuthProvider;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -38,20 +41,31 @@ import org.robolectric.shadows.ShadowActivity;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.firebase.ui.auth.testhelpers.TestHelper.verifySmartLockSave;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 25)
 public class AuthMethodPickerActivityTest {
+    @Before
+    public void setUp() {
+        TestHelper.initialize();
+    }
+
     @Test
     public void testAllProvidersArePopulated() {
         // Exclude Facebook until the `NoClassDefFoundError: com/facebook/common/R$style` exception
         // is fixed.
         List<String> providers = Arrays.asList(
-                AuthUI.GOOGLE_PROVIDER,
-                AuthUI.TWITTER_PROVIDER,
-                AuthUI.EMAIL_PROVIDER,
-                AuthUI.PHONE_VERIFICATION_PROVIDER);
+                FacebookAuthProvider.PROVIDER_ID,
+                GoogleAuthProvider.PROVIDER_ID,
+                TwitterAuthProvider.PROVIDER_ID,
+                EmailAuthProvider.PROVIDER_ID,
+                PhoneAuthProvider.PROVIDER_ID);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
@@ -64,7 +78,7 @@ public class AuthMethodPickerActivityTest {
 
     @Test
     public void testEmailLoginFlow() {
-        List<String> providers = Arrays.asList(AuthUI.EMAIL_PROVIDER);
+        List<String> providers = Arrays.asList(EmailAuthProvider.PROVIDER_ID);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
@@ -80,7 +94,7 @@ public class AuthMethodPickerActivityTest {
 
     @Test
     public void testPhoneLoginFlow() {
-        List<String> providers = Arrays.asList(AuthUI.PHONE_VERIFICATION_PROVIDER);
+        List<String> providers = Arrays.asList(PhoneAuthProvider.PROVIDER_ID);
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 

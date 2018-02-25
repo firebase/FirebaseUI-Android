@@ -18,7 +18,6 @@
 
 package com.firebase.ui.auth.ui.phone;
 
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.data.client.CountryListLoadTask;
 import com.firebase.ui.auth.data.model.CountryInfo;
 
@@ -26,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +38,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 25)
 public class CountryListLoadTaskTests {
     private static final ArrayList<CountryInfo> COUNTRY_LIST = new ArrayList<>();
 

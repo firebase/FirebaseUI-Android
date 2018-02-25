@@ -46,8 +46,8 @@ public class PreambleHandler {
                              @StringRes int buttonText,
                              TextView textView) {
         PreambleHandler handler = new PreambleHandler(context, parameters, buttonText);
-        handler.setPreamble(textView);
         handler.setupCreateAccountPreamble();
+        handler.setPreamble(textView);
     }
 
     private void setPreamble(TextView textView) {

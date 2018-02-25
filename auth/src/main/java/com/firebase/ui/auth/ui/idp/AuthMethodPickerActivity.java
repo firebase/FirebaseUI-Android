@@ -19,7 +19,6 @@ import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -101,19 +100,19 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         List<Provider> providers = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
             switch (idpConfig.getProviderId()) {
-                case AuthUI.GOOGLE_PROVIDER:
+                case GoogleAuthProvider.PROVIDER_ID:
                     providers.add(new GoogleProvider(this, idpConfig));
                     break;
-                case AuthUI.FACEBOOK_PROVIDER:
+                case FacebookAuthProvider.PROVIDER_ID:
                     providers.add(new FacebookProvider(this, idpConfig));
                     break;
-                case AuthUI.TWITTER_PROVIDER:
+                case TwitterAuthProvider.PROVIDER_ID:
                     providers.add(new TwitterProvider(this));
                     break;
-                case AuthUI.EMAIL_PROVIDER:
+                case EmailAuthProvider.PROVIDER_ID:
                     providers.add(new EmailProvider(this));
                     break;
-                case AuthUI.PHONE_VERIFICATION_PROVIDER:
+                case PhoneAuthProvider.PROVIDER_ID:
                     providers.add(new PhoneProvider(this, idpConfig));
                     break;
                 default:

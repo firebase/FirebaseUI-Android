@@ -49,7 +49,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AuthUiActivity extends AppCompatActivity {
-    private static final String UNCHANGED_CONFIG_VALUE = "CHANGE-ME";
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
     private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google.com/policies/privacy/";
@@ -119,6 +118,9 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @BindView(R.id.allow_new_email_accounts)
     CheckBox mAllowNewEmailAccounts;
+
+    @BindView(R.id.require_name)
+    CheckBox mRequireName;
 
     @BindView(R.id.facebook_scopes_label)
     TextView mFacebookScopesLabel;
@@ -204,7 +206,6 @@ public class AuthUiActivity extends AppCompatActivity {
                         .setPrivacyPolicyUrl(getSelectedPrivacyPolicyUrl())
                         .setIsSmartLockEnabled(mEnableCredentialSelector.isChecked(),
                                 mEnableHintSelector.isChecked())
-                        .setAllowNewEmailAccounts(mAllowNewEmailAccounts.isChecked())
                         .build(),
                 RC_SIGN_IN);
     }
@@ -328,29 +329,28 @@ public class AuthUiActivity extends AppCompatActivity {
 
         if (mUseGoogleProvider.isChecked()) {
             selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
-                            .setPermissions(getGooglePermissions())
-                            .build());
+                    new IdpConfig.GoogleBuilder().setScopes(getGoogleScopes()).build());
         }
 
         if (mUseFacebookProvider.isChecked()) {
-            selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER)
-                            .setPermissions(getFacebookPermissions())
-                            .build());
+            selectedProviders.add(new IdpConfig.FacebookBuilder()
+                    .setPermissions(getFacebookPermissions())
+                    .build());
         }
 
         if (mUseTwitterProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+            selectedProviders.add(new IdpConfig.TwitterBuilder().build());
         }
 
         if (mUseEmailProvider.isChecked()) {
-            selectedProviders.add(new IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build());
+            selectedProviders.add(new IdpConfig.EmailBuilder()
+                    .setRequireName(mRequireName.isChecked())
+                    .setAllowNewAccounts(mAllowNewEmailAccounts.isChecked())
+                    .build());
         }
 
         if (mUsePhoneProvider.isChecked()) {
-            selectedProviders.add(
-                    new IdpConfig.Builder(AuthUI.PHONE_VERIFICATION_PROVIDER).build());
+            selectedProviders.add(new IdpConfig.PhoneBuilder().build());
         }
 
         return selectedProviders;
@@ -376,12 +376,12 @@ public class AuthUiActivity extends AppCompatActivity {
 
     @MainThread
     private boolean isGoogleMisconfigured() {
-        return UNCHANGED_CONFIG_VALUE.equals(getString(R.string.default_web_client_id));
+        return AuthUI.UNCONFIGURED_CONFIG_VALUE.equals(getString(R.string.default_web_client_id));
     }
 
     @MainThread
     private boolean isFacebookMisconfigured() {
-        return UNCHANGED_CONFIG_VALUE.equals(getString(R.string.facebook_application_id));
+        return AuthUI.UNCONFIGURED_CONFIG_VALUE.equals(getString(R.string.facebook_application_id));
     }
 
     @MainThread
@@ -391,7 +391,7 @@ public class AuthUiActivity extends AppCompatActivity {
                 getString(R.string.twitter_consumer_secret)
         );
 
-        return twitterConfigs.contains(UNCHANGED_CONFIG_VALUE);
+        return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
     @MainThread
@@ -412,7 +412,7 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     @MainThread
-    private List<String> getGooglePermissions() {
+    private List<String> getGoogleScopes() {
         List<String> result = new ArrayList<>();
         if (mGoogleScopeYoutubeData.isChecked()) {
             result.add("https://www.googleapis.com/auth/youtube.readonly");

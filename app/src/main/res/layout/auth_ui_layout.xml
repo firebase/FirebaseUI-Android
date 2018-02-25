@@ -284,6 +284,13 @@
                 android:checked="true"
                 android:text="@string/allow_new_email_acccount" />
 
+            <CheckBox
+                android:id="@+id/require_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/require_name" />
+
         </LinearLayout>
 
     </ScrollView>

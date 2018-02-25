@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -22,7 +23,9 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.PreambleHandler;
+import com.firebase.ui.auth.util.ui.fieldvalidators.BaseValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
+import com.firebase.ui.auth.util.ui.fieldvalidators.NoOpValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -111,12 +114,25 @@ public class RegisterEmailFragment extends FragmentBase implements
         mEmailInput = view.findViewById(R.id.email_layout);
         mPasswordInput = view.findViewById(R.id.password_layout);
 
-        mEmailFieldValidator = new EmailFieldValidator(mEmailInput);
-        mNameValidator = new RequiredFieldValidator(
-                view.<TextInputLayout>findViewById(R.id.name_layout));
+        mEmailEditText = v.findViewById(R.id.email);
+        mNameEditText = v.findViewById(R.id.name);
+        mPasswordEditText = v.findViewById(R.id.password);
+        mAgreementText = v.findViewById(R.id.create_account_text);
+        mEmailInput = v.findViewById(R.id.email_layout);
+        mPasswordInput = v.findViewById(R.id.password_layout);
+
+        // Get configuration
+        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
+                getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
+        boolean requireName = emailConfig.getParams()
+                .getBoolean(ExtraConstants.EXTRA_REQUIRE_NAME, true);
         mPasswordFieldValidator = new PasswordFieldValidator(
                 mPasswordInput,
                 getResources().getInteger(R.integer.fui_min_password_length));
+        mNameValidator = requireName
+                ? new RequiredFieldValidator(mNameInput)
+                : new NoOpValidator(mNameInput);
+        mEmailFieldValidator = new EmailFieldValidator(mEmailInput);
 
         ImeHelper.setImeOnDoneListener(mPasswordEditText, this);
 
@@ -150,7 +166,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         }
 
         // See http://stackoverflow.com/questions/11082341/android-requestfocus-ineffective#comment51774752_11082523
-        if (!TextUtils.isEmpty(mNameEditText.getText())) {
+        if (!requireName || !TextUtils.isEmpty(mNameEditText.getText())) {
             safeRequestFocus(mPasswordEditText);
         } else if (!TextUtils.isEmpty(mEmailEditText.getText())) {
             safeRequestFocus(mNameEditText);

@@ -43,6 +43,7 @@
     <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">By tapping <xliff:g example="SAVE" id="btn" translation_description="">%1$s</xliff:g> you are indicating that you agree to the <xliff:g example="https://google.com/privacy" id="pp" translation_description="">%2$s</xliff:g>.</string>
     <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">Terms of Service</string>
     <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Privacy Policy</string>
+    <string name="fui_email_field_name" translatable="false">email_field</string>
 
     <!-- Idp/Email welcome back -->
     <string name="fui_title_welcome_back_idp_prompt" translatable="false">@string/fui_sign_in_default</string>

@@ -7,6 +7,7 @@ import android.support.annotation.RestrictTo;
 
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
+import com.google.android.gms.auth.api.credentials.CredentialsOptions;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class GoogleApiUtils {
@@ -16,12 +17,13 @@ public final class GoogleApiUtils {
 
     @NonNull
     public static CredentialsClient getCredentialsClient(@NonNull Context context) {
-        CredentialsClient client;
+        CredentialsOptions options = new CredentialsOptions.Builder()
+                .forceEnableSaveDialog()
+                .build();
         if (context instanceof Activity) {
-            client = Credentials.getClient((Activity) context);
+            return Credentials.getClient((Activity) context, options);
         } else {
-            client = Credentials.getClient(context);
+            return Credentials.getClient(context, options);
         }
-        return client;
     }
 }

@@ -26,6 +26,6 @@ public class AppCompatBase extends HelperActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.FirebaseUI); // Provides default values
-        setTheme(getFlowHolder().getParams().themeId);
+        setTheme(getFlowHolder().getArguments().themeId);
     }
 }

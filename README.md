@@ -7,24 +7,31 @@ quickly connect common UI elements to [Firebase](https://firebase.google.com) AP
 
 A compatible FirebaseUI client is also available for [iOS](https://github.com/firebase/firebaseui-ios).
 
-## Table of Contents
+## Table of contents
 
-  1. [Usage](#usage)
-  1. [Installation](#installation)
-  1. [Upgrading](#upgrading)
-  1. [Dependencies](#dependencies)
-  1. [Sample App](#sample-app)
-  1. [Contributing](#contributing)
+1. [Usage](#usage)
+1. [Installation](#installation)
+   1. [Upgrading](#upgrading)
+1. [Dependencies](#dependencies)
+   1. [Compatability](#compatibility-with-firebase--google-play-services-libraries)
+   1. [Upgrading dependencies](#upgrading-dependencies)
+1. [Sample App](#sample-app)
+1. [Contributing](#contributing)
+   1. [Installing](#installing-locally)
+   1. [Deploying](#deployment)
+   1. [Tagging](#tag-a-release-on-github)
+   1. [License agreements](#contributor-license-agreements)
+   1. [Process](#contribution-process)
 
 ## Usage
 
 FirebaseUI has separate modules for using Firebase Realtime Database, Cloud Firestore,
 Firebase Auth, and Cloud Storage. To get started, see the individual instructions for each module:
 
-  * [firebase-ui-database](database/README.md)
-  * [firebase-ui-firestore](firestore/README.md)
-  * [firebase-ui-auth](auth/README.md)
-  * [firebase-ui-storage](storage/README.md)
+* [FirebaseUI Auth](auth/README.md)
+* [FirebaseUI Firestore](firestore/README.md)
+* [FirebaseUI Database](database/README.md)
+* [FirebaseUI Storage](storage/README.md)
 
 ## Installation
 
@@ -39,36 +46,35 @@ libraries.
 ```groovy
 dependencies {
 // FirebaseUI for Firebase Realtime Database
-implementation 'com.firebaseui:firebase-ui-database:3.1.1'
+implementation 'com.firebaseui:firebase-ui-database:3.2.1'
 
 // FirebaseUI for Cloud Firestore
-implementation 'com.firebaseui:firebase-ui-firestore:3.1.1'
+implementation 'com.firebaseui:firebase-ui-firestore:3.2.1'
 
 // FirebaseUI for Firebase Auth
-implementation 'com.firebaseui:firebase-ui-auth:3.1.1'
+implementation 'com.firebaseui:firebase-ui-auth:3.2.1'
 
 // FirebaseUI for Cloud Storage
-implementation 'com.firebaseui:firebase-ui-storage:3.1.1'
+implementation 'com.firebaseui:firebase-ui-storage:3.2.1'
 }
 ```
 
 If you're including the `firebase-ui-auth` dependency, there's a little
-[more setup](https://github.com/firebase/FirebaseUI-Android/tree/master/auth#configuration)
-required.
+[more setup](auth/README.md#configuration) required.
 
 After the project is synchronized, we're ready to start using Firebase functionality in our app.
 
-## Upgrading
+### Upgrading
 
 If you are using an old version of FirebaseUI and upgrading, please see the appropriate
 migration guide:
 
-  * [Upgrade from 2.3.0 to 3.x.x](./docs/upgrade-to-3.0.md)
-  * [Upgrade from 1.2.0 to 2.x.x](./docs/upgrade-to-2.0.md)
+* [Upgrade from 2.3.0 to 3.x.x](./docs/upgrade-to-3.0.md)
+* [Upgrade from 1.2.0 to 2.x.x](./docs/upgrade-to-2.0.md)
 
 ## Dependencies
 
-### Compatibility with Firebase / Google Play Services Libraries
+### Compatibility with Firebase / Google Play Services libraries
 
 FirebaseUI libraries have the following transitive dependencies on the Firebase SDK:
 ```
@@ -87,7 +93,7 @@ firebase-ui-storage
 ```
 
 Each version of FirebaseUI has dependency on a fixed version of these libraries, defined as the variable `firebase_version`
-in `common/constants.gradle`.  If you are using any dependencies in your app of the form
+in `common/constants.gradle`. If you are using any dependencies in your app of the form
 `implementation 'com.google.firebase:firebase-*:x.y.z'` or
 `implementation 'com.google.android.gms:play-services-*:x.y.z'`
 you need to make sure that you use the same version that your chosen version of FirebaseUI requires.
@@ -96,7 +102,9 @@ For convenience, here are some recent examples:
 
 | FirebaseUI Version | Firebase/Play Services Version |
 |--------------------|--------------------------------|
-| 3.1.1              | 11.6.2                         |
+| 3.2.1              | 11.8.0                         |
+| 3.1.3              | 11.8.0                         |
+| 3.1.2              | 11.6.2                         |
 | 3.1.0              | 11.4.2                         |
 | 3.0.0              | 11.4.2                         |
 | 2.4.0              | 11.4.0                         |
@@ -110,7 +118,7 @@ For convenience, here are some recent examples:
 | 1.0.0              | 9.8.0                          |
 
 
-## Upgrading dependencies
+### Upgrading dependencies
 
 If you would like to use a newer version of one of FirebaseUI's transitive dependencies, such
 as Firebase, Play services, or the Android support libraries, you need to add explicit
@@ -118,7 +126,7 @@ as Firebase, Play services, or the Android support libraries, you need to add ex
 you want to use. For example if you want to use Play services/Firebase version `FOO` and support
 libraries version `BAR` add the following extra lines for each FirebaseUI module you're using:
 
-Auth:
+#### Auth
 
 ```groovy
 implementation "com.google.firebase:firebase-auth:$FOO"
@@ -129,16 +137,7 @@ implementation "com.android.support:customtabs:$BAR"
 implementation "com.android.support:cardview-v7:$BAR"
 ```
 
-Realtime Database:
-
-```groovy
-implementation "com.google.firebase:firebase-database:$FOO"
-
-implementation "com.android.support:recyclerview-v7:$BAR"
-implementation "com.android.support:support-v4:$BAR"
-```
-
-Firestore:
+#### Firestore
 
 ```groovy
 implementation "com.google.firebase:firebase-firestore:$FOO"
@@ -147,7 +146,16 @@ implementation "com.android.support:recyclerview-v7:$BAR"
 implementation "com.android.support:support-v4:$BAR"
 ```
 
-Storage:
+#### Realtime Database
+
+```groovy
+implementation "com.google.firebase:firebase-database:$FOO"
+
+implementation "com.android.support:recyclerview-v7:$BAR"
+implementation "com.android.support:support-v4:$BAR"
+```
+
+#### Storage
 
 ```groovy
 implementation "com.google.firebase:firebase-storage:$FOO"
@@ -156,7 +164,8 @@ implementation "com.android.support:appcompat-v7:$BAR"
 implementation "com.android.support:palette-v7:$BAR"
 ```
 
-NOTE :
+#### Note
+
 Starting version 25.4.0, support libraries are now available through
 [Google's Maven repository](https://developer.android.com/studio/build/dependencies.html#google-maven),
 so ensure that you have that added to your project's repositories.
@@ -172,9 +181,9 @@ allprojects {
 }
 ```
 
-## Sample App
+## Sample app
 
-There is a sample app in the `app/` directory that demonstrates most
+There is a sample app in the [`app/`](app) directory that demonstrates most
 of the features of FirebaseUI. Load the project in Android Studio and
 run it on your Android device to see a demonstration.
 
@@ -197,17 +206,19 @@ Gradle to their latest versions.
 You can download FirebaseUI and install it locally by cloning this
 repository and running:
 
-    ./gradlew :library:prepareArtifacts :library:publishAllToMavenLocal
+```sh
+./gradlew :library:prepareArtifacts :library:publishAllToMavenLocal
+```
 
 ###  Deployment
 
 To deploy FirebaseUI to Bintray
 
-  1. Set `BINTRAY_USER` and `BINTRAY_KEY` in your environment. You must
-     be a member of the firebaseui Bintray organization.
-  1. Run `./gradlew clean :library:prepareArtifacts :library:bintrayUploadAll`
-  1. Go to the Bintray dashboard and click 'Publish'.
-    1. In Bintray click the 'Maven Central' tab and publish the release.
+1. Set `BINTRAY_USER` and `BINTRAY_KEY` in your environment. You must
+   be a member of the firebaseui Bintray organization.
+1. Run `./gradlew clean :library:prepareArtifacts :library:bintrayUploadAll`
+1. Go to the Bintray dashboard and click 'Publish'.
+   1. In Bintray click the 'Maven Central' tab and publish the release.
 
 ### Tag a release on GitHub
 
@@ -222,25 +233,25 @@ have to jump a couple of legal hurdles.
 Please fill out either the individual or corporate Contributor License Agreement
 (CLA).
 
-  * If you are an individual writing original source code and you're sure you
-    own the intellectual property, then you'll need to sign an
-    [individual CLA](https://developers.google.com/open-source/cla/individual).
-  * If you work for a company that wants to allow you to contribute your work,
-    then you'll need to sign a
-    [corporate CLA](https://developers.google.com/open-source/cla/corporate).
+* If you are an individual writing original source code and you're sure you
+  own the intellectual property, then you'll need to sign an
+  [individual CLA](https://developers.google.com/open-source/cla/individual).
+* If you work for a company that wants to allow you to contribute your work,
+  then you'll need to sign a
+  [corporate CLA](https://developers.google.com/open-source/cla/corporate).
 
 Follow either of the two links above to access the appropriate CLA and
 instructions for how to sign and return it. Once we receive it, we'll be able to
 accept your pull requests.
 
-### Contribution Process
+### Contribution process
 
 1. Submit an issue describing your proposed change to the repo in question.
 1. The repo owner will respond to your issue promptly.
 1. If your proposed change is accepted, and you haven't already done so, sign a
    Contributor License Agreement (see details above).
-1. Fork the desired repo, develop and test your code changes.
+1. Fork the desired repo, develop, and then test your code changes **on the latest dev branch**.
 1. Ensure that your code adheres to the existing style of the library to which
    you are contributing.
 1. Ensure that your code has an appropriate set of unit tests which all pass.
-1. Submit a pull request and cc @puf or @samtstern
+1. Submit a pull request targeting the latest dev branch.

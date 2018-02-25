@@ -53,8 +53,6 @@ public class FlowParameters implements Parcelable {
     @Nullable
     public final String privacyPolicyUrl;
 
-    public final boolean allowNewEmailAccounts;
-
     public final boolean enableCredentials;
     public final boolean enableHints;
 
@@ -66,8 +64,7 @@ public class FlowParameters implements Parcelable {
             @Nullable String termsOfServiceUrl,
             @Nullable String privacyPolicyUrl,
             boolean enableCredentials,
-            boolean enableHints,
-            boolean allowNewEmailAccounts) {
+            boolean enableHints) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Collections.unmodifiableList(
                 Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null"));
@@ -77,7 +74,6 @@ public class FlowParameters implements Parcelable {
         this.privacyPolicyUrl = privacyPolicyUrl;
         this.enableCredentials = enableCredentials;
         this.enableHints = enableHints;
-        this.allowNewEmailAccounts = allowNewEmailAccounts;
     }
 
     /**
@@ -97,7 +93,6 @@ public class FlowParameters implements Parcelable {
         dest.writeString(privacyPolicyUrl);
         dest.writeInt(enableCredentials ? 1 : 0);
         dest.writeInt(enableHints ? 1 : 0);
-        dest.writeInt(allowNewEmailAccounts ? 1 : 0);
     }
 
     @Override
@@ -116,7 +111,6 @@ public class FlowParameters implements Parcelable {
             String privacyPolicyUrl = in.readString();
             boolean enableCredentials = in.readInt() != 0;
             boolean enableHints = in.readInt() != 0;
-            boolean allowNewEmailAccounts = in.readInt() != 0;
 
             return new FlowParameters(
                     appName,
@@ -126,8 +120,7 @@ public class FlowParameters implements Parcelable {
                     termsOfServiceUrl,
                     privacyPolicyUrl,
                     enableCredentials,
-                    enableHints,
-                    allowNewEmailAccounts);
+                    enableHints);
         }
 
         @Override

@@ -59,6 +59,15 @@ public final class ProviderUtils {
         }
     }
 
+    @Nullable
+    public static String idpResponseToAccountType(@Nullable IdpResponse response) {
+        if (response == null) {
+            return null;
+        }
+
+        return providerIdToAccountType(response.getProviderType());
+    }
+
     /**
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to a
      * Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
@@ -94,6 +103,14 @@ public final class ProviderUtils {
             default:
                 return null;
         }
+    }
+
+    public static AuthUI.IdpConfig getConfigFromIdps(List<AuthUI.IdpConfig> idps, String id) {
+        for (AuthUI.IdpConfig idp : idps) {
+            if (idp.getProviderId().equals(id)) { return idp; }
+        }
+
+        throw new IllegalStateException("Provider " + id + " couldn't not be found in " + idps);
     }
 
     public static Task<String> fetchTopProvider(FirebaseAuth auth, @NonNull String email) {

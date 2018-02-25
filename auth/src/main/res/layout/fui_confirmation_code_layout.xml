@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/fui_linkColor"
-            app:layout_constraintTop_toBottomOf="@id/header"
+            app:layout_constraintTop_toBottomOf="@+id/header"
             tools:ignore="SelectableText" />
 
         <android.support.design.widget.TextInputLayout
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/fui_field_padding_vert"
-            app:layout_constraintTop_toBottomOf="@id/edit_phone_number">
+            app:layout_constraintTop_toBottomOf="@+id/edit_phone_number">
 
             <com.firebase.ui.auth.ui.phone.SpacedEditText
                 android:id="@+id/confirmation_code"
@@ -57,7 +57,7 @@
             style="@style/FirebaseUI.VerifyPhoneButton"
             android:layout_gravity="end"
             android:text="@string/fui_continue_phone_login"
-            app:layout_constraintTop_toBottomOf="@id/confirmation_code_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/confirmation_code_layout" />
 
         <TextView
             android:id="@+id/ticker"
@@ -71,7 +71,7 @@
             android:textIsSelectable="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/submit_confirmation_code"
+            app:layout_constraintTop_toBottomOf="@+id/submit_confirmation_code"
             tools:text="Resend in 0:01" />
 
         <TextView
@@ -86,7 +86,7 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ticker"
+            app:layout_constraintTop_toTopOf="@+id/ticker"
             tools:text="Resend code" />
 
         <android.support.constraint.Barrier
@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/fui_field_padding_vert"
             android:textIsSelectable="false"
-            app:layout_constraintTop_toBottomOf="@id/tos_barrier"
+            app:layout_constraintTop_toBottomOf="@+id/tos_barrier"
             tools:text="@string/fui_create_account_preamble_tos_and_pp" />
 
     </android.support.constraint.ConstraintLayout>

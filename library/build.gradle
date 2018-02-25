@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         targetSdkVersion targetSdk
         versionCode 1
-        versionName "0.0.0"
+        versionName version
 
         consumerProguardFiles 'consumer-proguard-rules.pro'
         vectorDrawables.useSupportLibrary = true

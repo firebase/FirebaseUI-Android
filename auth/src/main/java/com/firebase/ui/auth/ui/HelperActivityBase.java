@@ -26,6 +26,11 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 @SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class HelperActivityBase extends AppCompatActivity {
+    private static final String TAG = "HelperActivityBase";
+
+    private static final int RC_SAVE_CREDENTIAL = 101;
+
+    private FlowParameters mFlowParameters;
     private FlowHolder mFlowHolder;
     private SignInHandler mSignInHandler;
 
@@ -89,6 +94,10 @@ public class HelperActivityBase extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         getFlowHolder().onActivityResult(requestCode, resultCode, data);
+        // Forward the results of Smartlock Saving
+        if (requestCode == RC_SAVE_CREDENTIAL) {
+            finish(RESULT_OK, data);
+        }
     }
 
     public FlowHolder getFlowHolder() {
@@ -112,5 +121,21 @@ public class HelperActivityBase extends AppCompatActivity {
     public void finish(int resultCode, Intent intent) {
         setResult(resultCode, intent);
         finish();
+    }
+
+    public void startSaveCredentials(
+            FirebaseUser firebaseUser,
+            @Nullable String password,
+            IdpResponse response) {
+
+        // Build credential
+        String accountType = ProviderUtils.idpResponseToAccountType(response);
+        Credential credential = CredentialsUtil.buildCredential(
+                firebaseUser, password, accountType);
+
+        // Start the dedicated SmartLock Activity
+        Intent intent = CredentialSaveActivity.createIntent(this, getFlowParams(),
+                credential, response);
+        startActivityForResult(intent, RC_SAVE_CREDENTIAL);
     }
 }
