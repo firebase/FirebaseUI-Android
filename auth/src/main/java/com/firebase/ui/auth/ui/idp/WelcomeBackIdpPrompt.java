@@ -87,7 +87,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
 
         if (mProvider == null) {
             finish(RESULT_CANCELED,
-                    IdpResponse.fromError(new ProviderDisabledException(providerId)).toIntent());
+                    IdpResponse.getErrorIntent(new ProviderDisabledException(providerId)));
             return;
         }
 
@@ -115,8 +115,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 if (resource.getState() == State.SUCCESS) {
                     finish(RESULT_OK, resource.getValue().toIntent());
                 } else {
-                    finish(RESULT_CANCELED,
-                            IdpResponse.fromError(resource.getException()).toIntent());
+                    finish(RESULT_CANCELED, IdpResponse.getErrorIntent(resource.getException()));
                 }
             }
         });

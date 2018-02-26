@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.data.model;
 
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 
 /**
  * Represents an error in which the phone number couldn't be automatically verified and must

@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.util.Pair;
 
-import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
@@ -55,7 +54,7 @@ public class KickoffActivity extends HelperActivityBase {
                         finish(RESULT_CANCELED, null);
                     } else {
                         finish(RESULT_CANCELED,
-                                IdpResponse.fromError(resource.getException()).toIntent());
+                                IdpResponse.getErrorIntent(resource.getException()));
                     }
                 }
             }
@@ -76,7 +75,7 @@ public class KickoffActivity extends HelperActivityBase {
                             startIntentSenderForResult(
                                     pair.first.getIntentSender(), pair.second, null, 0, 0, 0);
                         } catch (IntentSender.SendIntentException e) {
-                            finish(RESULT_CANCELED, IdpResponse.fromError(e).toIntent());
+                            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
                         }
             }
         });

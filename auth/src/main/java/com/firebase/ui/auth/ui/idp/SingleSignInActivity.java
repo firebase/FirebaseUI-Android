@@ -52,7 +52,7 @@ public class SingleSignInActivity extends HelperActivityBase {
         if (providerConfig == null) {
             // we don't have a provider to handle this
             finish(Activity.RESULT_CANCELED,
-                   IdpResponse.fromError(new ProviderDisabledException(provider)).toIntent());
+                    IdpResponse.getErrorIntent(new ProviderDisabledException(provider)));
             return;
         }
 
@@ -86,8 +86,7 @@ public class SingleSignInActivity extends HelperActivityBase {
                 if (resource.getState() == State.SUCCESS) {
                     startSaveCredentials(handler.getCurrentUser(), null, resource.getValue());
                 } else {
-                    finish(RESULT_CANCELED,
-                            IdpResponse.fromError(resource.getException()).toIntent());
+                    finish(RESULT_CANCELED, IdpResponse.getErrorIntent(resource.getException()));
                 }
             }
         });

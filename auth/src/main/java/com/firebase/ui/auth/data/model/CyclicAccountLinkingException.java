@@ -3,6 +3,7 @@ package com.firebase.ui.auth.data.model;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 
 /**
  * Represents a sign-in failure that requires manual data transfer on the client's part.
