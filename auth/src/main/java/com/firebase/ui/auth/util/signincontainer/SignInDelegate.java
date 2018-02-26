@@ -109,7 +109,7 @@ public class SignInDelegate extends FragmentBase
                 supportPasswords = true;
             }
         }
-        List<String> accountTypes = getSupportedAccountTypes();
+        List<String> accountTypes = getCredentialAccountTypes();
 
         // If the request will be empty, avoid the step entirely
         boolean willRequestCredentials = supportPasswords || accountTypes.size() > 0;
@@ -218,7 +218,7 @@ public class SignInDelegate extends FragmentBase
         }
     }
 
-    private List<String> getSupportedAccountTypes() {
+    private List<String> getCredentialAccountTypes() {
         List<String> accounts = new ArrayList<>();
         for (AuthUI.IdpConfig idpConfig : getFlowParams().providerInfo) {
             @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
