@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.MainThread;
 import android.support.annotation.StringRes;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.Snackbar;
@@ -231,7 +230,6 @@ public class AuthUiActivity extends AppCompatActivity {
         }
     }
 
-    @MainThread
     private void handleSignInResponse(int resultCode, Intent data) {
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
@@ -276,14 +274,12 @@ public class AuthUiActivity extends AppCompatActivity {
                                 mEnableHintSelector.isChecked())));
     }
 
-    @MainThread
     private void setGoogleScopesEnabled(boolean enabled) {
         mGoogleScopesLabel.setEnabled(enabled);
         mGoogleScopeDriveFile.setEnabled(enabled);
         mGoogleScopeYoutubeData.setEnabled(enabled);
     }
 
-    @MainThread
     private void setFacebookScopesEnabled(boolean enabled) {
         mFacebookScopesLabel.setEnabled(enabled);
         mFacebookScopeFriends.setEnabled(enabled);
@@ -298,7 +294,6 @@ public class AuthUiActivity extends AppCompatActivity {
         getDelegate().setLocalNightMode(mode);
     }
 
-    @MainThread
     @StyleRes
     private int getSelectedTheme() {
         if (mUseGreenTheme.isChecked()) {
@@ -312,7 +307,6 @@ public class AuthUiActivity extends AppCompatActivity {
         return AuthUI.getDefaultTheme();
     }
 
-    @MainThread
     @DrawableRes
     private int getSelectedLogo() {
         if (mFirebaseLogo.isChecked()) {
@@ -323,7 +317,6 @@ public class AuthUiActivity extends AppCompatActivity {
         return AuthUI.NO_LOGO;
     }
 
-    @MainThread
     private List<IdpConfig> getSelectedProviders() {
         List<IdpConfig> selectedProviders = new ArrayList<>();
 
@@ -356,7 +349,6 @@ public class AuthUiActivity extends AppCompatActivity {
         return selectedProviders;
     }
 
-    @MainThread
     private String getSelectedTosUrl() {
         if (mUseGoogleTos.isChecked()) {
             return GOOGLE_TOS_URL;
@@ -365,7 +357,6 @@ public class AuthUiActivity extends AppCompatActivity {
         return FIREBASE_TOS_URL;
     }
 
-    @MainThread
     private String getSelectedPrivacyPolicyUrl() {
         if (mUseGooglePrivacyPolicy.isChecked()) {
             return GOOGLE_PRIVACY_POLICY_URL;
@@ -374,17 +365,14 @@ public class AuthUiActivity extends AppCompatActivity {
         return FIREBASE_PRIVACY_POLICY_URL;
     }
 
-    @MainThread
     private boolean isGoogleMisconfigured() {
         return AuthUI.UNCONFIGURED_CONFIG_VALUE.equals(getString(R.string.default_web_client_id));
     }
 
-    @MainThread
     private boolean isFacebookMisconfigured() {
         return AuthUI.UNCONFIGURED_CONFIG_VALUE.equals(getString(R.string.facebook_application_id));
     }
 
-    @MainThread
     private boolean isTwitterMisconfigured() {
         List<String> twitterConfigs = Arrays.asList(
                 getString(R.string.twitter_consumer_key),
@@ -394,12 +382,10 @@ public class AuthUiActivity extends AppCompatActivity {
         return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
-    @MainThread
     private void showSnackbar(@StringRes int errorMessageRes) {
         Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
     }
 
-    @MainThread
     private List<String> getFacebookPermissions() {
         List<String> result = new ArrayList<>();
         if (mFacebookScopeFriends.isChecked()) {
@@ -411,7 +397,6 @@ public class AuthUiActivity extends AppCompatActivity {
         return result;
     }
 
-    @MainThread
     private List<String> getGoogleScopes() {
         List<String> result = new ArrayList<>();
         if (mGoogleScopeYoutubeData.isChecked()) {

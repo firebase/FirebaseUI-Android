@@ -2,13 +2,18 @@
 -dontwarn com.twitter.**
 -dontwarn com.facebook.**
 
+# Don't note a bunch of dynamically referenced classes
+-dontnote com.google.**
+-dontnote com.facebook.**
+-dontnote com.twitter.**
+-dontnote com.squareup.okhttp.**
+-dontnote okhttp3.internal.**
+
 # Recommended flags for Firebase Auth
 -keepattributes Signature
 -keepattributes *Annotation*
 
-# Don't warn about retrofit or okio classes
--dontwarn okio.**
--dontwarn retrofit2.Call
+# Retrofit config
 -dontnote retrofit2.Platform
--dontnote retrofit2.Platform$IOS$MainThreadExecutor
 -dontwarn retrofit2.Platform$Java8
+-keepattributes Exceptions
