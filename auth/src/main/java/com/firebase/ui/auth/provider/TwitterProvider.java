@@ -108,16 +108,16 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
                     }
 
                     @Override
-                    public void failure(TwitterException exception) {
-                        mCallbackObject.onFailure();
+                    public void failure(TwitterException e) {
+                        mCallbackObject.onFailure(e);
                     }
                 });
     }
 
     @Override
-    public void failure(TwitterException exception) {
-        Log.e(TAG, "Failure logging in to Twitter. " + exception.getMessage());
-        mCallbackObject.onFailure();
+    public void failure(TwitterException e) {
+        Log.e(TAG, "Failure logging in to Twitter. " + e.getMessage());
+        mCallbackObject.onFailure(e);
     }
 
     private IdpResponse createIdpResponse(TwitterSession session,

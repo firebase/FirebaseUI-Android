@@ -23,6 +23,7 @@ import android.support.annotation.StyleRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -48,6 +49,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AuthUiActivity extends AppCompatActivity {
+    private static final String TAG = "AuthUiActivity";
+
     private static final String GOOGLE_TOS_URL = "https://www.google.com/policies/terms/";
     private static final String FIREBASE_TOS_URL = "https://firebase.google.com/terms/";
     private static final String GOOGLE_PRIVACY_POLICY_URL = "https://www.google.com/policies/privacy/";
@@ -237,7 +240,6 @@ public class AuthUiActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             startSignedInActivity(response);
             finish();
-            return;
         } else {
             // Sign in failed
             if (response == null) {
@@ -246,18 +248,14 @@ public class AuthUiActivity extends AppCompatActivity {
                 return;
             }
 
-            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+            if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
             }
 
-            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                showSnackbar(R.string.unknown_error);
-                return;
-            }
+            showSnackbar(R.string.unknown_error);
+            Log.e(TAG, "Sign-in error: ", response.getError());
         }
-
-        showSnackbar(R.string.unknown_sign_in_response);
     }
 
     private void startSignedInActivity(IdpResponse response) {

@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -28,6 +27,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -97,19 +97,17 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                         mIdpProvider = new TwitterProvider(this);
                         break;
                     default:
-                        Log.w(TAG, "Unknown provider: " + providerId);
-                        finish(RESULT_CANCELED,
-                               IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-                        return;
+                        throw new IllegalStateException("Unknown provider: " + providerId);
                 }
             }
         }
 
         if (mIdpProvider == null) {
-            Log.w(TAG, "Firebase login unsuccessful."
-                    + " Account linking failed due to provider not enabled by application: "
-                    + providerId);
-            finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
+                    ErrorCodes.DEVELOPER_ERROR,
+                    "Firebase login unsuccessful."
+                            + " Account linking failed due to provider not enabled by application: "
+                            + providerId)));
             return;
         }
 
@@ -137,12 +135,10 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     @Override
-    public void onSuccess(final IdpResponse idpResponse) {
+    public void onSuccess(@NonNull final IdpResponse idpResponse) {
         AuthCredential newCredential = ProviderUtils.getAuthCredential(idpResponse);
         if (newCredential == null) {
-            Log.e(TAG, "No credential returned");
-            finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
-            return;
+            throw new IllegalStateException("Unknown provider: " + idpResponse.getProviderType());
         }
 
         FirebaseUser currentUser = getAuthHelper().getCurrentUser();
@@ -167,7 +163,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            finishWithError();
+                            finishWithError(e);
                         }
                     })
                     .addOnFailureListener(
@@ -184,13 +180,13 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
     }
 
     @Override
-    public void onFailure() {
-        finishWithError();
+    public void onFailure(@NonNull Exception e) {
+        finishWithError(e);
     }
 
-    private void finishWithError() {
+    private void finishWithError(Exception e) {
         Toast.makeText(this, R.string.fui_general_error, Toast.LENGTH_LONG).show();
-        finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
     }
 
     private class FinishListener implements OnCompleteListener<AuthResult> {

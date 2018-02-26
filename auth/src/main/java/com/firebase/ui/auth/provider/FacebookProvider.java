@@ -34,6 +34,8 @@ import com.facebook.WebDialog;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
@@ -130,12 +132,12 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                         FacebookRequestError requestError = response.getError();
                         if (requestError != null) {
                             Log.e(TAG, "Received Facebook error: " + requestError.getErrorMessage());
-                            onFailure();
+                            onFailure(requestError.getException());
                             return;
                         }
                         if (object == null) {
                             Log.w(TAG, "Received null response from Facebook GraphRequest");
-                            onFailure();
+                            onFailure(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR));
                         } else {
                             String email = null;
                             String name = null;
@@ -168,13 +170,13 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
 
     @Override
     public void onCancel() {
-        onFailure();
+        onFailure(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR));
     }
 
     @Override
-    public void onError(FacebookException error) {
-        Log.e(TAG, "Error logging in with Facebook. " + error.getMessage());
-        onFailure();
+    public void onError(FacebookException e) {
+        Log.e(TAG, "Error logging in with Facebook. " + e.getMessage());
+        onFailure(e);
     }
 
     private void onSuccess(LoginResult loginResult,
@@ -191,9 +193,9 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
                 .build());
     }
 
-    private void onFailure() {
+    private void onFailure(Exception e) {
         gcCallbackManager();
-        mCallbackObject.onFailure();
+        mCallbackObject.onFailure(e);
     }
 
     private void gcCallbackManager() {
