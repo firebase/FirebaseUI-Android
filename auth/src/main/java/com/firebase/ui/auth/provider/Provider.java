@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.RestrictTo;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public interface Provider {
     /** Retrieves the name of the IDP, for display on-screen. */
     String getName(Context context);

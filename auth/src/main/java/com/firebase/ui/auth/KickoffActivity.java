@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
-import com.firebase.ui.auth.data.model.FirebaseUiException;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;

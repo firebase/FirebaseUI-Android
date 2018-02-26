@@ -1,9 +1,7 @@
-package com.firebase.ui.auth.data.model;
+package com.firebase.ui.auth;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
-
-import com.firebase.ui.auth.ErrorCodes;
 
 /**
  * Base class for all FirebaseUI exceptions.
@@ -12,18 +10,18 @@ public class FirebaseUiException extends Exception {
     private final int mErrorCode;
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public FirebaseUiException(@ErrorCodes.All int code) {
+    public FirebaseUiException(@ErrorCodes.Code int code) {
         mErrorCode = code;
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public FirebaseUiException(@ErrorCodes.All int code, @NonNull String message) {
+    public FirebaseUiException(@ErrorCodes.Code int code, @NonNull String message) {
         super(message);
         mErrorCode = code;
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public FirebaseUiException(@ErrorCodes.All int code,
+    public FirebaseUiException(@ErrorCodes.Code int code,
                                @NonNull String message,
                                @NonNull Throwable cause) {
         super(message, cause);
@@ -31,7 +29,7 @@ public class FirebaseUiException extends Exception {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public FirebaseUiException(@ErrorCodes.All int code, @NonNull Throwable cause) {
+    public FirebaseUiException(@ErrorCodes.Code int code, @NonNull Throwable cause) {
         super(cause);
         mErrorCode = code;
     }
@@ -40,7 +38,7 @@ public class FirebaseUiException extends Exception {
      * @return error code associated with this exception
      * @see com.firebase.ui.auth.ErrorCodes
      */
-    @ErrorCodes.All
+    @ErrorCodes.Code
     public final int getErrorCode() {
         return mErrorCode;
     }

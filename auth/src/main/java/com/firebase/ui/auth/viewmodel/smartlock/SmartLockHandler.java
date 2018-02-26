@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.data.model.FirebaseUiException;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;

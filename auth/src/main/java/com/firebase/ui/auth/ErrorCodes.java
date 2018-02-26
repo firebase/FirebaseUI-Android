@@ -2,8 +2,6 @@ package com.firebase.ui.auth;
 
 import android.support.annotation.IntDef;
 
-import com.firebase.ui.auth.data.model.FirebaseUiException;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -21,7 +19,7 @@ public final class ErrorCodes {
                     DEVELOPER_ERROR
             })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface All {}
+    public @interface Code {}
 
     /**
      * An unknown error has occurred.
