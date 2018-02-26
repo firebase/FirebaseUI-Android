@@ -88,9 +88,8 @@ public class KickoffActivity extends HelperActivityBase {
 
     private void init() {
         if (isOffline()) {
-            finish(RESULT_CANCELED,
-                    IdpResponse.fromError(new FirebaseUiException(ErrorCodes.NO_NETWORK))
-                            .toIntent());
+            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                    new FirebaseUiException(ErrorCodes.NO_NETWORK)));
             return;
         }
 
@@ -100,9 +99,8 @@ public class KickoffActivity extends HelperActivityBase {
                 new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
-                        finish(RESULT_CANCELED, IdpResponse.fromError(
-                                new FirebaseUiException(ErrorCodes.PLAY_SERVICES_ERROR))
-                                .toIntent());
+                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                                new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED)));
                     }
                 });
 
@@ -128,8 +126,8 @@ public class KickoffActivity extends HelperActivityBase {
             if (resultCode == RESULT_OK) {
                 mKickstarter.start();
             } else {
-                finish(RESULT_CANCELED, IdpResponse.fromError(new FirebaseUiException(
-                        ErrorCodes.PLAY_SERVICES_ERROR)).toIntent());
+                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                        new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED)));
             }
         } else {
             mKickstarter.onActivityResult(requestCode, resultCode, data);

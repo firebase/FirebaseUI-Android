@@ -1,44 +1,59 @@
 package com.firebase.ui.auth;
 
-import com.firebase.ui.auth.data.model.CyclicAccountLinkingException;
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Error codes retrieved from {@link IdpResponse#getErrorCode()}.
+ * Error codes for failed sign-in attempts.
  */
 public final class ErrorCodes {
     /**
-     * Sign in failed due to lack of network connection
+     * Valid codes that can be returned from {@link FirebaseUiException#getErrorCode()}.
      */
-    public static final int NO_NETWORK = 10;
+    @IntDef({
+                    UNKNOWN_ERROR,
+                    NO_NETWORK,
+                    PLAY_SERVICES_UPDATE_CANCELLED,
+                    DEVELOPER_ERROR
+            })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Code {}
 
     /**
-     * An unknown error has occurred
+     * An unknown error has occurred.
      */
-    public static final int UNKNOWN_ERROR = 20;
+    public static final int UNKNOWN_ERROR = 0;
+
+    /**
+     * Sign in failed due to lack of network connection.
+     */
+    public static final int NO_NETWORK = 1;
+
+    /**
+     * A required update to Play Services was cancelled by the user.
+     */
+    public static final int PLAY_SERVICES_UPDATE_CANCELLED = 2;
+
+    /**
+     * A sign-in operation couldn't be completed due to a developer error.
+     */
+    public static final int DEVELOPER_ERROR = 3;
+
+    /**
+     * An external sign-in provider error occurred.
+     */
+    public static final int PROVIDER_ERROR = 4;
 
     /**
      * An error occurred link the user's accounts.
      *
      * @see CyclicAccountLinkingException
-     **/
-    public static final int LINK_FAILURE = 40;
-
-    /**
-     * An error occurred connecting to Google Play Services.
      */
-    public static final int PLAY_SERVICES_ERROR = 50;
-
-    /**
-     * An external sign-in provider error occurred.
-     */
-    public static final int PROVIDER_ERROR = 50;
-
-    /**
-     * An error occurred due to a developer misconfiguration.
-     */
-    public static final int DEVELOPER_ERROR = 60;
+    public static final int LINK_FAILURE = 5;
 
     private ErrorCodes() {
-        // no instance
+        throw new AssertionError("No instance for you!");
     }
 }
