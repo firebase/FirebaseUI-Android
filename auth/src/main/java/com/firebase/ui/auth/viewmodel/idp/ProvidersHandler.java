@@ -3,10 +3,14 @@ package com.firebase.ui.auth.viewmodel.idp;
 import android.app.Application;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.util.Pair;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
+import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
+import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -21,6 +25,8 @@ import com.google.firebase.auth.PhoneAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
+    private static final int RC_ACCOUNT_LINK = 11;
+
     public ProvidersHandler(Application application) {
         super(application);
     }
@@ -60,10 +66,51 @@ public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (e instanceof FirebaseAuthUserCollisionException) {
-                            // TODO return the auth credential for phase 1
+                        if (inputResponse.getEmail() != null) {
+                            if (e instanceof FirebaseAuthUserCollisionException) {
+                                ProviderUtils.fetchTopProvider(getAuth(), inputResponse.getEmail())
+                                        .addOnSuccessListener(new OnSuccessListener<String>() {
+                                            @Override
+                                            public void onSuccess(String provider) {
+                                                if (provider == null) {
+                                                    throw new IllegalStateException(
+                                                            "No provider even though we received a FirebaseAuthUserCollisionException");
+                                                }
+
+                                                User newUser = new User.Builder(provider,
+                                                        mResponse.getEmail()).build();
+                                                if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
+                                                    // Start email welcome back flow
+                                                    mFlowHolder.getIntentStarter()
+                                                            .setValue(Pair.create(
+                                                                    WelcomeBackPasswordPrompt.createIntent(
+                                                                            getApplication(),
+                                                                            mFlowHolder.getParams(),
+                                                                            newUser),
+                                                                    RC_ACCOUNT_LINK));
+                                                } else {
+                                                    // Start Idp welcome back flow
+                                                    mFlowHolder.getIntentStarter()
+                                                            .setValue(Pair.create(
+                                                                    WelcomeBackIdpPrompt.createIntent(
+                                                                            getApplication(),
+                                                                            mFlowHolder.getParams(),
+                                                                            newUser),
+                                                                    RC_ACCOUNT_LINK));
+                                                }
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                setResult(Resource.<IdpResponse>forFailure(e));
+                                            }
+                                        });
+                                // TODO return the auth credential for phase 1
+                            }
+                        } else {
+                            setResult(Resource.<IdpResponse>forFailure(e));
                         }
-                        setResult(Resource.<IdpResponse>forFailure(e));
                     }
                 });
     }
