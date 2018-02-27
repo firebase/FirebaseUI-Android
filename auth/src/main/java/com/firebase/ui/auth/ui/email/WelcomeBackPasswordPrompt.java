@@ -22,6 +22,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -137,19 +138,19 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 break;
             case FAILURE:
                 getDialogHolder().dismissDialog();
-                String message = getErrorMessage(resource.getException());
+                String message = getString(getErrorMessage(resource.getException()));
                 mPasswordLayout.setError(message);
                 break;
         }
     }
 
-    private String getErrorMessage(Exception exception) {
+    @StringRes
+    private int getErrorMessage(Exception exception) {
         if (exception instanceof FirebaseAuthInvalidCredentialsException) {
-            // TODO: Add translated "wrong password" message
-            return exception.getLocalizedMessage();
+            return R.string.fui_error_invalid_password;
         }
 
-        return exception.getLocalizedMessage();
+        return R.string.fui_error_unknown;
     }
 
     private void onForgotPasswordClicked() {

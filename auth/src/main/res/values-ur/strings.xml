@@ -1,71 +1,72 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">لوڈ ہو رہا ہے…</string>
-    <string name="fui_sign_in_default" translation_description="Button text to sign in">سائن ان کریں</string>
-    <string name="fui_general_error" translation_description="Toast text flashing general error">ایک خرابی آ گئی ہے۔</string>
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="fui_progress_dialog_loading">لوڈ ہو رہا ہے…</string>
+    <string name="fui_sign_in_default">سائن ان کریں</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_provider_name_email">ای میل</string>
     <string name="fui_provider_name_phone">فون</string>
-    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Google کے ساتھ سائن ان کریں</string>
-    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Facebook کے ساتھ سائن ان کریں</string>
-    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Twitter کے ساتھ سائن ان کریں</string>
-    <string name="fui_sign_in_with_email" translation_description="Sign in button text">ای میل کے ساتھ سائن ان کریں</string>
-    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">فون کے ساتھ سائں ان کریں</string>
-    <string name="fui_next_default" translation_description="Button text to continue">اگلا</string>
-    <string name="fui_email_hint" translation_description="Hint in email input field">ای میل</string>
-    <string name="fui_phone_hint" translation_description="Hint for phone input field">فون نمبر</string>
-    <string name="fui_password_hint" translation_description="Hint for password input field">پاس ورڈ</string>
-    <string name="fui_required_field" translation_description="Inline error for required field">آپ اسے خالی نہیں چھوڑ سکتے۔</string>
-    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">یہ ای میل پتہ غلط ہے</string>
-    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">جاری رکھنے کے لیے اپنا ای میل پتہ درج کریں</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">موجودہ اکاؤنٹس چیک ہو رہے ہیں…</string>
-    <string name="fui_title_register_email" translation_description="Title for signup form">سائن اپ کریں</string>
-    <string name="fui_name_hint" translation_description="Hint for last name input field">پہلا اور آخری نام</string>
-    <string name="fui_button_text_save" translation_description="Button text to save input form">محفوظ کریں</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">سائن اپ ہو رہا ہے…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹر اور حروف و اعداد کا مرکب استعمال کریں</item> <item quantity="other">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹرز اور حروف و اعداد کا مرکب استعمال کریں</item> </plurals>
-    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">ای میل اکاؤنٹ کی رجسٹریشن نا کام رہی</string>
-    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">اس ای میل پتہ کے ساتھ ایک اکاؤنٹ پہلے سے ہی موجود ہے۔</string>
-    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s اور %3$s سے اتفاق کرتے ہیں۔</string>
-    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s سے اتفاق کرتے ہیں۔</string>
-    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s سے اتفاق کرتے ہیں۔</string>
-    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">سروس کی شرائط</string>
-    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">رازداری کی پالیسی</string>
-    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">آپ کے پاس پہلے سے ہی ایک اکاؤنٹ موجود ہے</string>
-    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">واپسی پر خوش آمدید!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">آپ نے پہلے ہی %1$s استعمال کر لیا ہے۔ جاری رکھنے کے لیے %2$s کے ساتھ سائن ان کریں۔</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">آپ نے پہلے ہی %1$s استعمال کر لیا ہے سائن کرنے کے لیے۔ اس کاؤنٹ کے لیے اپنا پاس ورڈ درج کریں۔</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">سائن ان ہو رہا ہے…</string>
-    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">سائن ان کرنے میں دشواری؟</string>
-    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">پاس ورڈ بازیافت کریں</string>
-    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">اپنا ای میل چیک کریں</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">اس ای میل پر بھیجی گئی وہ ہدایات حاصل کریں جن میں اس بات کی وضاحت ہے کہ کیسے اپنا پاس ورڈ دوبارہ ترتیب دیں۔</string>
-    <string name="fui_button_text_send" translation_description="Button text to send recovery email">بھیجیں</string>
-    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">اپنے پاس ورڈ کو بازیافت کرنے کے لیے %1$s پر بھیجی گئی ہدایات کی پیروی کریں۔</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">بھیجا جا رہا ہے…</string>
-    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">یہ ای میل پتہ کسی موجودہ اکاؤنٹ کے مماثل نہیں ہے</string>
-    <string name="fui_accessibility_logo" translation_description="Content description for app logo">ایپ لوگو</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">%1$s کے بطور سائن ان ہوا</string>
-    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">اپنا فون نمبر درج کریں</string>
-    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">براہ کرم ایک درست فون نمبر درج کریں</string>
-    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">ہماری جانب سے حسبِ ذیل کو بھیجا گیا 6 عدد کا کوڈ درج کریں</string>
-    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">0:%02d میں دوبارہ کوڈ بھیجیں</string>
-    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">اپنے فون نمبر کی توثیق کریں</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">توثیق ہو رہی ہے…</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">sms بازیافت کیا جا رہا ہے…</string>
-    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">غلط کوڈ۔ دوبارہ کوشش کریں۔</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">ٹھیک ہے</string>
-    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">یہ فون نمبر پہلے ہی کافی مرتبہ استعمال ہو چکا ہے</string>
-    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">آپ کے فون نمبر کی توثیق کرنے میں ایک مسئلہ تھا</string>
-    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">یہ کوڈ اب جائز نہیں رہا</string>
-    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">فون نمبر کے ساتھ سائن ان کریں</string>
-    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">ہو گیا</string>
-    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">توثیق مکمل!</string>
-    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">کوڈ بھیج دیا گیا!</string>
-    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">دوبارہ بھیجا جا رہا ہے…</string>
-    <string name="fui_resend_code" translation_description="Link text to resend verification sms">کوڈ دوبارہ بھیجیں</string>
-    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">فون نمبر کی توثیق کریں</string>
-    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">جاری رکھیں</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">“%1$s” کو تھپتھپانے پر ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا نرخ لاگو ہو سکتے ہیں۔</string>
+    <string name="fui_sign_in_with_google">Google کے ساتھ سائن ان کریں</string>
+    <string name="fui_sign_in_with_facebook">Facebook کے ساتھ سائن ان کریں</string>
+    <string name="fui_sign_in_with_twitter">Twitter کے ساتھ سائن ان کریں</string>
+    <string name="fui_sign_in_with_email">ای میل کے ساتھ سائن ان کریں</string>
+    <string name="fui_sign_in_with_phone">فون کے ساتھ سائں ان کریں</string>
+    <string name="fui_next_default">اگلا</string>
+    <string name="fui_email_hint">ای میل</string>
+    <string name="fui_phone_hint">فون نمبر</string>
+    <string name="fui_password_hint">پاس ورڈ</string>
+    <string name="fui_required_field">آپ اسے خالی نہیں چھوڑ سکتے۔</string>
+    <string name="fui_invalid_email_address">یہ ای میل پتہ غلط ہے</string>
+    <string name="fui_missing_email_address">جاری رکھنے کے لیے اپنا ای میل پتہ درج کریں</string>
+    <string name="fui_progress_dialog_checking_accounts">موجودہ اکاؤنٹس چیک ہو رہے ہیں…</string>
+    <string name="fui_title_register_email">سائن اپ کریں</string>
+    <string name="fui_name_hint">پہلا اور آخری نام</string>
+    <string name="fui_button_text_save">محفوظ کریں</string>
+    <string name="fui_progress_dialog_signing_up">سائن اپ ہو رہا ہے…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹر اور حروف و اعداد کا مرکب استعمال کریں</item> <item quantity="other">پاس ورڈ کافی مضبوط نہیں ہے۔ کم از کم %1$d کریکٹرز اور حروف و اعداد کا مرکب استعمال کریں</item> </plurals>
+    <string name="fui_email_account_creation_error">ای میل اکاؤنٹ کی رجسٹریشن نا کام رہی</string>
+    <string name="fui_error_user_collision">اس ای میل پتہ کے ساتھ ایک اکاؤنٹ پہلے سے ہی موجود ہے۔</string>
+    <string name="fui_create_account_preamble_tos_and_pp">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s اور %3$s سے اتفاق کرتے ہیں۔</string>
+    <string name="fui_create_account_preamble_tos_only">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s سے اتفاق کرتے ہیں۔</string>
+    <string name="fui_create_account_preamble_pp_only">%1$s کو تھپتھپا کر آپ نشاندہی کر رہے ہیں کہ آپ %2$s سے اتفاق کرتے ہیں۔</string>
+    <string name="fui_terms_of_service">سروس کی شرائط</string>
+    <string name="fui_privacy_policy">رازداری کی پالیسی</string>
+    <string name="fui_welcome_back_idp_header">آپ کے پاس پہلے سے ہی ایک اکاؤنٹ موجود ہے</string>
+    <string name="fui_welcome_back_email_header">واپسی پر خوش آمدید!</string>
+    <string name="fui_welcome_back_idp_prompt">آپ نے پہلے ہی %1$s استعمال کر لیا ہے۔ جاری رکھنے کے لیے %2$s کے ساتھ سائن ان کریں۔</string>
+    <string name="fui_welcome_back_password_prompt_body">آپ نے پہلے ہی %1$s استعمال کر لیا ہے سائن کرنے کے لیے۔ اس کاؤنٹ کے لیے اپنا پاس ورڈ درج کریں۔</string>
+    <string name="fui_progress_dialog_signing_in">سائن ان ہو رہا ہے…</string>
+    <string name="fui_trouble_signing_in">سائن ان کرنے میں دشواری؟</string>
+    <string name="fui_title_recover_password_activity">پاس ورڈ بازیافت کریں</string>
+    <string name="fui_title_confirm_recover_password">اپنا ای میل چیک کریں</string>
+    <string name="fui_password_recovery_body">اس ای میل پر بھیجی گئی وہ ہدایات حاصل کریں جن میں اس بات کی وضاحت ہے کہ کیسے اپنا پاس ورڈ دوبارہ ترتیب دیں۔</string>
+    <string name="fui_button_text_send">بھیجیں</string>
+    <string name="fui_confirm_recovery_body">اپنے پاس ورڈ کو بازیافت کرنے کے لیے %1$s پر بھیجی گئی ہدایات کی پیروی کریں۔</string>
+    <string name="fui_progress_dialog_sending">بھیجا جا رہا ہے…</string>
+    <string name="fui_error_email_does_not_exist">یہ ای میل پتہ کسی موجودہ اکاؤنٹ کے مماثل نہیں ہے</string>
+    <string name="fui_error_unknown">ایک نامعلوم خرابی پیش آ گئی۔</string>
+    <string name="fui_error_invalid_password">غلط پاس ورڈ۔</string>
+    <string name="fui_accessibility_logo">ایپ لوگو</string>
+    <string name="fui_signed_in_with_specific_account">%1$s کے بطور سائن ان ہوا</string>
+    <string name="fui_verify_phone_number_title">اپنا فون نمبر درج کریں</string>
+    <string name="fui_invalid_phone_number">براہ کرم ایک درست فون نمبر درج کریں</string>
+    <string name="fui_enter_confirmation_code">ہماری جانب سے حسبِ ذیل کو بھیجا گیا 6 عدد کا کوڈ درج کریں</string>
+    <string name="fui_resend_code_in">0:%02d میں دوبارہ کوڈ بھیجیں</string>
+    <string name="fui_verify_your_phone_title">اپنے فون نمبر کی توثیق کریں</string>
+    <string name="fui_verifying">توثیق ہو رہی ہے…</string>
+    <string name="fui_retrieving_sms">sms بازیافت کیا جا رہا ہے…</string>
+    <string name="fui_incorrect_code_dialog_body">غلط کوڈ۔ دوبارہ کوشش کریں۔</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text">ٹھیک ہے</string>
+    <string name="fui_error_too_many_attempts">یہ فون نمبر پہلے ہی کافی مرتبہ استعمال ہو چکا ہے</string>
+    <string name="fui_error_quota_exceeded">آپ کے فون نمبر کی توثیق کرنے میں ایک مسئلہ تھا</string>
+    <string name="fui_error_session_expired">یہ کوڈ اب جائز نہیں رہا</string>
+    <string name="fui_sign_in_with_phone_number">فون نمبر کے ساتھ سائن ان کریں</string>
+    <string name="fui_done">ہو گیا</string>
+    <string name="fui_verified">توثیق مکمل!</string>
+    <string name="fui_code_sent">کوڈ بھیج دیا گیا!</string>
+    <string name="fui_resending">دوبارہ بھیجا جا رہا ہے…</string>
+    <string name="fui_resend_code">کوڈ دوبارہ بھیجیں</string>
+    <string name="fui_verify_phone_number">فون نمبر کی توثیق کریں</string>
+    <string name="fui_continue_phone_login">جاری رکھیں</string>
+    <string name="fui_sms_terms_of_service">%1$s پر تھپتھپانے سے، ایک SMS بھیجا جا سکتا ہے۔ پیغام اور ڈیٹا کی شرحوں کا اطلاق ہو سکتا ہے۔</string>
 </resources>
