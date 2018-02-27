@@ -1,71 +1,72 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Chargement…</string>
-    <string name="fui_sign_in_default" translation_description="Button text to sign in">Se connecter</string>
-    <string name="fui_general_error" translation_description="Toast text flashing general error">Une erreur s\'est produite.</string>
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="fui_progress_dialog_loading">Chargement…</string>
+    <string name="fui_sign_in_default">Se connecter</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_provider_name_email">E-mail</string>
     <string name="fui_provider_name_phone">Téléphone</string>
-    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Se connecter avec Google</string>
-    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Se connecter avec Facebook</string>
-    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Se connecter avec Twitter</string>
-    <string name="fui_sign_in_with_email" translation_description="Sign in button text">Se connecter avec une adresse e-mail</string>
-    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Se connecter avec un téléphone</string>
-    <string name="fui_next_default" translation_description="Button text to continue">Suivant</string>
-    <string name="fui_email_hint" translation_description="Hint in email input field">E-mail</string>
-    <string name="fui_phone_hint" translation_description="Hint for phone input field">Numéro de téléphone</string>
-    <string name="fui_password_hint" translation_description="Hint for password input field">Mot de passe</string>
-    <string name="fui_required_field" translation_description="Inline error for required field">Ce champ est obligatoire.</string>
-    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">Cette adresse e-mail n\'est pas valide</string>
-    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Saisissez votre adresse e-mail pour continuer</string>
-    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Vérification des comptes existants…</string>
-    <string name="fui_title_register_email" translation_description="Title for signup form">S\'inscrire</string>
-    <string name="fui_name_hint" translation_description="Hint for last name input field">Nom et prénom</string>
-    <string name="fui_button_text_save" translation_description="Button text to save input form">Enregistrer</string>
-    <string name="fui_progress_dialog_signing_up" translation_description="Dialog text while waiting for server's signup response">Inscription…</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractère et une combinaison de chiffres et de lettres.</item> <item quantity="other">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractères et une combinaison de chiffres et de lettres.</item> </plurals>
-    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Échec de la création du compte avec une adresse e-mail</string>
-    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Il existe déjà un compte associé à cette adresse e-mail.</string>
-    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">En appuyant sur %1$s, vous acceptez les %2$s et les %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">En appuyant sur %1$s, vous acceptez les %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">En appuyant sur %1$s, vous acceptez les %2$s.</string>
-    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">Conditions d\'utilisation</string>
-    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Règles de confidentialité</string>
-    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Vous avez déjà un compte</string>
-    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Bienvenue !</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Vous avez déjà utilisé l\'adresse e-mail %1$s. Connectez-vous avec %2$s pour continuer.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Vous avez déjà utilisé l\'adresse e-mail %1$s pour vous connecter. Saisissez le mot de passe du compte.</string>
-    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Connexion…</string>
-    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Vous ne parvenez pas à vous connecter ?</string>
-    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">Récupérer votre mot de passe</string>
-    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Consultez votre boîte de réception</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Les instructions relatives à la réinitialisation de votre mot de passe seront envoyées à cette adresse e-mail.</string>
-    <string name="fui_button_text_send" translation_description="Button text to send recovery email">Envoyer</string>
-    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Suivez les instructions envoyées à l\'adresse %1$s pour récupérer votre mot de passe.</string>
-    <string name="fui_progress_dialog_sending" translation_description="Progress dialog while password recovery email is being sent">Envoi…</string>
-    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Cette adresse e-mail ne correspond à aucun compte existant</string>
-    <string name="fui_accessibility_logo" translation_description="Content description for app logo">Logo de l\'application</string>
-    <string name="fui_signed_in_with_specific_account" translation_description="Post signin message showing method of authentication">Connecté avec l\'adresse %1$s</string>
-    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Saisissez votre numéro de téléphone</string>
-    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Saisissez un numéro de téléphone valide</string>
-    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Saisissez le code à six chiffres envoyé au</string>
-    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Renvoyer le code dans 0:%02d</string>
-    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Valider votre numéro de téléphone</string>
-    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Validation…</string>
-    <string name="fui_retrieving_sms" translation_description="Progress dialog text when sms is being retrieved before auto-submit">Récupération du SMS…</string>
-    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Code erroné. Veuillez réessayer.</string>
-    <string name="fui_incorrect_code_dialog_positive_button_text" translation_description="Text to dismiss error alert dialog">OK</string>
-    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Ce numéro de téléphone a été utilisé un trop grand nombre de fois</string>
-    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Un problème est survenu lors de la validation de votre numéro de téléphone</string>
-    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Ce code n\'est plus valide</string>
-    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Connectez-vous avec votre numéro de téléphone</string>
-    <string name="fui_done" translation_description="Progress dialog success transition once sms is sent">OK</string>
-    <string name="fui_verified" translation_description="Progress dialog success transition when phone number was verified">Le code a bien été validé.</string>
-    <string name="fui_code_sent" translation_description="Progress dialog success transition once sms is sent">Le code a bien été envoyé.</string>
-    <string name="fui_resending" translation_description="Progress dialog text when user clicks on resend sms">Nouvel envoi du code…</string>
-    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Renvoyer le code</string>
-    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Valider le numéro de téléphone</string>
-    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Continuer</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">En appuyant sur “%1$s”, vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
+    <string name="fui_sign_in_with_google">Se connecter avec Google</string>
+    <string name="fui_sign_in_with_facebook">Se connecter avec Facebook</string>
+    <string name="fui_sign_in_with_twitter">Se connecter avec Twitter</string>
+    <string name="fui_sign_in_with_email">Se connecter avec une adresse e-mail</string>
+    <string name="fui_sign_in_with_phone">Se connecter avec un téléphone</string>
+    <string name="fui_next_default">Suivant</string>
+    <string name="fui_email_hint">E-mail</string>
+    <string name="fui_phone_hint">Numéro de téléphone</string>
+    <string name="fui_password_hint">Mot de passe</string>
+    <string name="fui_required_field">Ce champ est obligatoire.</string>
+    <string name="fui_invalid_email_address">Cette adresse e-mail n\'est pas valide</string>
+    <string name="fui_missing_email_address">Saisissez votre adresse e-mail pour continuer</string>
+    <string name="fui_progress_dialog_checking_accounts">Vérification des comptes existants…</string>
+    <string name="fui_title_register_email">S\'inscrire</string>
+    <string name="fui_name_hint">Nom et prénom</string>
+    <string name="fui_button_text_save">Enregistrer</string>
+    <string name="fui_progress_dialog_signing_up">Inscription…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractère et une combinaison de chiffres et de lettres.</item> <item quantity="other">Le mot de passe n\'est pas assez sécurisé. Utilisez au moins %1$d caractères et une combinaison de chiffres et de lettres.</item> </plurals>
+    <string name="fui_email_account_creation_error">Échec de la création du compte avec une adresse e-mail</string>
+    <string name="fui_error_user_collision">Il existe déjà un compte associé à cette adresse e-mail.</string>
+    <string name="fui_create_account_preamble_tos_and_pp">En appuyant sur %1$s, vous acceptez les %2$s et les %3$s.</string>
+    <string name="fui_create_account_preamble_tos_only">En appuyant sur %1$s, vous acceptez les %2$s.</string>
+    <string name="fui_create_account_preamble_pp_only">En appuyant sur %1$s, vous acceptez les %2$s.</string>
+    <string name="fui_terms_of_service">Conditions d\'utilisation</string>
+    <string name="fui_privacy_policy">Règles de confidentialité</string>
+    <string name="fui_welcome_back_idp_header">Vous avez déjà un compte</string>
+    <string name="fui_welcome_back_email_header">Bienvenue !</string>
+    <string name="fui_welcome_back_idp_prompt">Vous avez déjà utilisé l\'adresse e-mail %1$s. Connectez-vous avec %2$s pour continuer.</string>
+    <string name="fui_welcome_back_password_prompt_body">Vous avez déjà utilisé l\'adresse e-mail %1$s pour vous connecter. Saisissez le mot de passe du compte.</string>
+    <string name="fui_progress_dialog_signing_in">Connexion…</string>
+    <string name="fui_trouble_signing_in">Vous ne parvenez pas à vous connecter ?</string>
+    <string name="fui_title_recover_password_activity">Récupérer votre mot de passe</string>
+    <string name="fui_title_confirm_recover_password">Consultez votre boîte de réception</string>
+    <string name="fui_password_recovery_body">Les instructions relatives à la réinitialisation de votre mot de passe seront envoyées à cette adresse e-mail.</string>
+    <string name="fui_button_text_send">Envoyer</string>
+    <string name="fui_confirm_recovery_body">Suivez les instructions envoyées à l\'adresse %1$s pour récupérer votre mot de passe.</string>
+    <string name="fui_progress_dialog_sending">Envoi…</string>
+    <string name="fui_error_email_does_not_exist">Cette adresse e-mail ne correspond à aucun compte existant</string>
+    <string name="fui_error_unknown">Une erreur inconnue s\'est produite.</string>
+    <string name="fui_error_invalid_password">Mot de passe incorrect.</string>
+    <string name="fui_accessibility_logo">Logo de l\'application</string>
+    <string name="fui_signed_in_with_specific_account">Connecté avec l\'adresse %1$s</string>
+    <string name="fui_verify_phone_number_title">Saisissez votre numéro de téléphone</string>
+    <string name="fui_invalid_phone_number">Saisissez un numéro de téléphone valide</string>
+    <string name="fui_enter_confirmation_code">Saisissez le code à six chiffres envoyé au</string>
+    <string name="fui_resend_code_in">Renvoyer le code dans 0:%02d</string>
+    <string name="fui_verify_your_phone_title">Valider votre numéro de téléphone</string>
+    <string name="fui_verifying">Validation…</string>
+    <string name="fui_retrieving_sms">Récupération du SMS…</string>
+    <string name="fui_incorrect_code_dialog_body">Code erroné. Veuillez réessayer.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text">OK</string>
+    <string name="fui_error_too_many_attempts">Ce numéro de téléphone a été utilisé un trop grand nombre de fois</string>
+    <string name="fui_error_quota_exceeded">Un problème est survenu lors de la validation de votre numéro de téléphone</string>
+    <string name="fui_error_session_expired">Ce code n\'est plus valide</string>
+    <string name="fui_sign_in_with_phone_number">Connectez-vous avec votre numéro de téléphone</string>
+    <string name="fui_done">OK</string>
+    <string name="fui_verified">Le code a bien été validé.</string>
+    <string name="fui_code_sent">Le code a bien été envoyé.</string>
+    <string name="fui_resending">Nouvel envoi du code…</string>
+    <string name="fui_resend_code">Renvoyer le code</string>
+    <string name="fui_verify_phone_number">Valider le numéro de téléphone</string>
+    <string name="fui_continue_phone_login">Continuer</string>
+    <string name="fui_sms_terms_of_service">En appuyant sur “%1$s”, vous déclencherez peut-être l\'envoi d\'un SMS. Des frais de messages et de données peuvent être facturés.</string>
 </resources>

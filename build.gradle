@@ -10,8 +10,9 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.google.gms:google-services:3.1.1'
+        classpath 'com.google.gms:google-services:3.2.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:4.5.4'
     }
 }
 
@@ -87,6 +88,9 @@ allprojects { project ->
             archives sourcesJar
         }
 
+        // JFrog Artifactory integration
+        project.apply plugin: 'com.jfrog.artifactory'
+
         // So that we can define publication
         project.apply plugin: 'maven-publish'
 
@@ -113,15 +117,18 @@ allprojects { project ->
         def publicationName = isLibrary ? 'monolithLibrary' : "${project.name}Library"
         def archivesBaseName = isLibrary ? 'firebase-ui' : "firebase-ui-${project.name}"
 
+        def groupName = project.ext.group
+        def versionName = project.ext.version;
+
         publishing {
             publications {
                 "${publicationName}"(MavenPublication) {
 
-                    groupId group
+                    groupId groupName
                     artifactId archivesBaseName
-                    version version
+                    version versionName
 
-                    artifact "$buildDir/outputs/aar/$archivesBaseName-release.aar"
+                    artifact "$buildDir/outputs/aar/${archivesBaseName}-release.aar"
                     artifact javadocJar
                     artifact sourcesJar
 
@@ -134,29 +141,31 @@ allprojects { project ->
 
                         configurations.api.dependencies.each {
                             def dependencyNode = dependenciesNode.appendNode('dependency')
-                            dependencyNode.appendNode('groupId', it.group)
 
                             if (submodules.contains(it.name)) {
+                                dependencyNode.appendNode('groupId', groupName)
                                 dependencyNode.appendNode('artifactId', "firebase-ui-${it.name}")
+                                dependencyNode.appendNode('version', versionName)
                             } else {
+                                dependencyNode.appendNode('groupId', it.group)
                                 dependencyNode.appendNode('artifactId', it.name)
+                                dependencyNode.appendNode('version', it.version)
                             }
-
-                            dependencyNode.appendNode('version', it.version)
 
                             dependencyNode.appendNode('scope', 'compile')
                         }
                         configurations.implementation.dependencies.each {
                             def dependencyNode = dependenciesNode.appendNode('dependency')
-                            dependencyNode.appendNode('groupId', it.group)
 
                             if (submodules.contains(it.name)) {
+                                dependencyNode.appendNode('groupId', groupName)
                                 dependencyNode.appendNode('artifactId', "firebase-ui-${it.name}")
+                                dependencyNode.appendNode('version', versionName)
                             } else {
+                                dependencyNode.appendNode('groupId', it.group)
                                 dependencyNode.appendNode('artifactId', it.name)
+                                dependencyNode.appendNode('version', it.version)
                             }
-
-                            dependencyNode.appendNode('version', it.version)
 
                             dependencyNode.appendNode('scope', 'runtime')
                         }
@@ -206,26 +215,40 @@ allprojects { project ->
             }
         }
 
+        def bintrayUsername = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
+        def bintrayKey = hasProperty('BINTRAY_KEY') ? getProperty('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
+
+        artifactory {
+            contextUrl = 'https://oss.jfrog.org'
+            publish {
+                repository {
+                    repoKey = 'oss-snapshot-local'
+
+                    username = bintrayUsername
+                    password = bintrayKey
+                }
+            }
+        }
+
+        artifactoryPublish {
+            publications(publishing.publications."$publicationName")
+        }
+
         // Bintray Configuration (applies to submodule and the monolith)
         project.apply plugin: 'com.jfrog.bintray'
 
         def pomLoc = isLibrary ? "$buildDir/publications/monolithLibrary/pom-default.xml" : "$buildDir/publications/${project.name}Library/pom-default.xml"
 
-        group = project.ext.group
-        version = project.ext.version
-
-        def versionName = project.ext.version
-
         bintray {
-            user = hasProperty('BINTRAY_USER') ? getProperty('BINTRAY_USER') : System.getenv('BINTRAY_USER')
-            key = hasProperty('BINTRAY_KEY') ? getProperty('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
+            user = bintrayUsername
+            key = bintrayKey
             publications = [publicationName]
 
             filesSpec {
                 from pomLoc
                 into "com/firebaseui/$archivesBaseName/$versionName/"
                 rename { String fileName ->
-                    "${archivesBaseName}-${version}.pom"
+                    "${archivesBaseName}-${versionName}.pom"
                 }
             }
 

@@ -50,7 +50,7 @@ import org.robolectric.shadows.ShadowActivity;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.firebase.ui.auth.testhelpers.TestHelper.verifySmartLockSave;
+import static com.firebase.ui.auth.testhelpers.TestHelper.verifyCredentialSaveStarted;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
@@ -131,14 +131,12 @@ public class AuthMethodPickerActivityTest {
 
         AuthMethodPickerActivity authMethodPickerActivity = createActivity(providers);
 
-        TestHelper.mockCredentialsClient(authMethodPickerActivity);
-
         Button facebookButton = authMethodPickerActivity.findViewById(R.id.facebook_button);
         assertNotNull(facebookButton);
         facebookButton.performClick();
 
-        verifySmartLockSave(authMethodPickerActivity,
-                FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null);
+        verifyCredentialSaveStarted(authMethodPickerActivity,
+                FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null, null);
     }
 
     @Test
@@ -154,14 +152,12 @@ public class AuthMethodPickerActivityTest {
         when(AuthHelperShadow.getFirebaseAuth().signInWithCredential((AuthCredential) any()))
                 .thenReturn(new AutoCompleteTask<>(FakeAuthResult.INSTANCE, true, null));
 
-        TestHelper.mockCredentialsClient(authMethodPickerActivity);
-
         Button googleButton = authMethodPickerActivity.findViewById(R.id.google_button);
         assertNotNull(googleButton);
         googleButton.performClick();
 
-        verifySmartLockSave(authMethodPickerActivity,
-                GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null);
+        verifyCredentialSaveStarted(authMethodPickerActivity,
+                GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL, null, null);
     }
 
     @Test

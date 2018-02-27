@@ -32,6 +32,7 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 
 /**
@@ -41,7 +42,8 @@ import com.google.firebase.auth.EmailAuthProvider;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailActivity extends AppCompatBase implements
-        CheckEmailFragment.CheckEmailListener {
+        CheckEmailFragment.CheckEmailListener,
+        RegisterEmailFragment.RegistrationListener {
 
     public static final int RC_WELCOME_BACK_IDP = 18;
     private static final int RC_SIGN_IN = 17;
@@ -139,6 +141,12 @@ public class EmailActivity extends AppCompatBase implements
         } else {
             emailLayout.setError(getString(R.string.fui_error_email_does_not_exist));
         }
+    }
+
+    @Override
+    public void onRegistrationSuccess(AuthResult authResult, String password,
+                                      IdpResponse response) {
+        startSaveCredentials(authResult.getUser(), password, response);
     }
 
     private void setSlideAnimation() {

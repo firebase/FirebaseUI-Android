@@ -13,7 +13,8 @@ android {
 }
 
 dependencies {
+    api "android.arch.lifecycle:runtime:$architectureVersion"
+    api "android.arch.lifecycle:viewmodel:$architectureVersion"
     implementation "com.android.support:support-annotations:$supportLibraryVersion"
-    implementation "android.arch.lifecycle:extensions:$architectureVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
 }

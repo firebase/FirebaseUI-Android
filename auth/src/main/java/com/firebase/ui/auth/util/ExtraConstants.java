@@ -24,6 +24,7 @@ public final class ExtraConstants {
     public static final String EXTRA_FLOW_PARAMS = "extra_flow_params";
     public static final String EXTRA_IDP_RESPONSE = "extra_idp_response";
     public static final String EXTRA_USER = "extra_user";
+    public static final String EXTRA_CREDENTIAL = "extra_credential";
 
     public static final String EXTRA_EMAIL = "extra_email";
     public static final String EXTRA_ALLOW_NEW_EMAILS = "extra_allow_new_emails";

@@ -65,22 +65,31 @@ public final class SpacedEditText extends TextInputEditText {
      */
     @Override
     public void setSelection(int index) {
-        // If the index is the leading edge, there are no spaces before it.
-        // For all other cases, the index is preceded by index - 1 spaces.
-        int spacesUpToIndex;
-        if (index == 0) {
-            spacesUpToIndex = 0;
-        } else {
-            spacesUpToIndex = index - 1;
-        }
+        // Desired mapping:
+        // 0 --> 0
+        // 1 --> 1
+        // 2 --> 3
+        // 3 --> 5
+        // 4 --> 7
+        // 5 --> 9
+        // 6 --> 11
+
+        // Naive transformation
+        int newIndex = (index * 2) - 1;
+
+        // Lower bound is 0
+        newIndex = Math.max(newIndex, 0);
+
+        // Upper bound is original length * 2 - 1
+        newIndex = Math.min(newIndex, (mOriginalText.length() * 2) - 1);
 
         try {
-            super.setSelection(index + spacesUpToIndex);
+            super.setSelection(newIndex);
         } catch (IndexOutOfBoundsException e) {
-            // TODO remove once we figure out the bug.
+            // For debug purposes only
             throw new IndexOutOfBoundsException(e.getMessage() +
                     ", requestedIndex=" + index +
-                    ", spacesUpToIndex=" + spacesUpToIndex +
+                    ", newIndex= " + newIndex +
                     ", originalText=" + mOriginalText);
         }
     }
