@@ -195,7 +195,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                 } else if (response.isSuccessful()) {
                     setResult(Resource.forSuccess(response));
                 } else {
-                    setResult(Resource.<IdpResponse>forFailure(response.getException()));
+                    setResult(Resource.<IdpResponse>forFailure(response.getError()));
                 }
         }
     }

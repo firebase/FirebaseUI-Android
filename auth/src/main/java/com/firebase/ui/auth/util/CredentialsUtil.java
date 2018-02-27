@@ -20,18 +20,19 @@ public class CredentialsUtil {
      * Build a credential for the specified {@link FirebaseUser} with optional
      * password and {@link IdpResponse}.
      *
-     * See {@link #buildCredential(String, String, String, String, String)}.
+     * See {@link #buildCredential(String, String, String, String, String, String)}.
      */
+    @Nullable
     public static Credential buildCredential(@NonNull FirebaseUser user,
                                              @Nullable String password,
                                              @Nullable String accountType) {
-        String name = user.getDisplayName();
-        String email = user.getEmail();
-        String profilePicturUri = user.getPhotoUrl() != null
-                ? user.getPhotoUrl().toString()
-                : null;
-
-        return buildCredential(email, password, name, profilePicturUri, accountType);
+        return buildCredential(
+                user.getEmail(),
+                password,
+                user.getPhoneNumber(),
+                user.getDisplayName(),
+                user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null,
+                accountType);
     }
 
     /**
@@ -41,34 +42,29 @@ public class CredentialsUtil {
      * will return {@code null}.
      */
     @Nullable
-    public static Credential buildCredential(@Nullable String email,
-                                             @Nullable String password,
-                                             @Nullable String name,
-                                             @Nullable String profilePictureUri,
-                                             @Nullable String accountType) {
-        if (TextUtils.isEmpty(email)) {
+    private static Credential buildCredential(@Nullable String email,
+                                              @Nullable String password,
+                                              @Nullable String phone,
+                                              @Nullable String name,
+                                              @Nullable String profilePictureUri,
+                                              @Nullable String accountType) {
+        if (TextUtils.isEmpty(email) && TextUtils.isEmpty(phone)) {
             return null;
         }
 
-        Credential.Builder builder = new Credential.Builder(email);
-        if (!TextUtils.isEmpty(password)) {
-            builder.setPassword(password);
-        }
+        Credential.Builder builder =
+                new Credential.Builder(TextUtils.isEmpty(email) ? phone : email);
 
+        builder.setName(name);
+        builder.setProfilePictureUri(Uri.parse(profilePictureUri));
+
+        builder.setPassword(password);
         if (password == null) {
             if (accountType != null) {
                 builder.setAccountType(accountType);
             } else {
                 return null;
             }
-        }
-
-        if (name != null) {
-            builder.setName(name);
-        }
-
-        if (profilePictureUri != null) {
-            builder.setProfilePictureUri(Uri.parse(profilePictureUri));
         }
 
         return builder.build();

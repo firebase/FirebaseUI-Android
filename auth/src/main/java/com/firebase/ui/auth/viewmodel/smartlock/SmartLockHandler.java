@@ -7,6 +7,7 @@ import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.util.Log;
 
 import com.firebase.ui.auth.ErrorCodes;
@@ -18,10 +19,16 @@ import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.ResolutionCodes;
 import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthProvider;
+
+import java.util.List;
 
 /**
  * ViewModel for initiating saves to the Credentials API (SmartLock).
@@ -62,6 +69,7 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
     }
 
     /** @see #saveCredentials(Credential) */
+    @RestrictTo(RestrictTo.Scope.TESTS)
     public void saveCredentials(FirebaseUser firebaseUser,
                                 @Nullable String password,
                                 @Nullable String accountType) {
@@ -79,13 +87,28 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
 
 
         if (credential == null) {
-            Exception exception = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR,
-                    "Failed to build credential.");
-            setResult(Resource.<Void>forFailure(exception));
+            setResult(Resource.<Void>forFailure(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR,
+                    "Failed to build credential.")));
             return;
         }
 
         getCredentialsClient().save(credential)
+                .continueWithTask(new Continuation<Void, Task<Void>>() {
+                    @Override
+                    public Task<Void> then(@NonNull Task<Void> task) {
+                        FirebaseUser user = getCurrentUser();
+                        if (user == null) { return task; }
+
+                        List<String> providers = user.getProviders();
+                        if (providers.contains(EmailAuthProvider.PROVIDER_ID)
+                                && providers.contains(PhoneAuthProvider.PROVIDER_ID)) {
+                            return Credentials.getClient(getApplication())
+                                    .delete(new Credential.Builder(user.getPhoneNumber()).build());
+                        } else {
+                            return task;
+                        }
+                    }
+                })
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
