@@ -20,7 +20,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.util.Log;
 
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.HelperActivityBase;
@@ -66,7 +65,7 @@ public class CredentialSignInHandler implements OnFailureListener {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Intent intent = IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR);
+                                Intent intent = IdpResponse.getErrorIntent(e);
                                 mActivity.finish(Activity.RESULT_CANCELED, intent);
                             }
                         });

@@ -20,7 +20,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -166,7 +165,6 @@ public class SignedInActivity extends AppCompatActivity {
                 });
     }
 
-    @MainThread
     private void populateProfile() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user.getPhotoUrl() != null) {
@@ -245,7 +243,6 @@ public class SignedInActivity extends AppCompatActivity {
         }
     }
 
-    @MainThread
     private void showSnackbar(@StringRes int errorMessageRes) {
         Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
     }
