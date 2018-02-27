@@ -1,57 +1,72 @@
-<resources>
-    <string name="fui_sign_in_default" translation_description="Button text to sign in">Mag-sign in</string>
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="fui_progress_dialog_loading">Naglo-load…</string>
+    <string name="fui_sign_in_default">Mag-sign in</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Fecebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_provider_name_email">Email</string>
     <string name="fui_provider_name_phone">Telepono</string>
-    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Mag-sign in sa Google</string>
-    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Mag-sign in sa Facebook</string>
-    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Mag-sign in sa Twitter</string>
-    <string name="fui_sign_in_with_email" translation_description="Sign in button text">Mag-sign in gamit ang email</string>
-    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Mag-sign in gamit ang telepono</string>
-    <string name="fui_next_default" translation_description="Button text to continue">Susunod</string>
-    <string name="fui_email_hint" translation_description="Hint in email input field">Mag-email</string>
-    <string name="fui_phone_hint" translation_description="Hint for phone input field">Numero ng Telepono</string>
-    <string name="fui_password_hint" translation_description="Hint for password input field">Password</string>
-    <string name="fui_required_field" translation_description="Inline error for required field">Hindi mo ito maaaring iwanan na walang laman.</string>
-    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">Mali ang email address na iyon</string>
-    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Ilagay ang iyong email address upang magpatuloy</string>
-    <string name="fui_title_register_email" translation_description="Title for signup form">Mag-sign up</string>
-    <string name="fui_name_hint" translation_description="Hint for last name input field">Pangalan at apelyido</string>
-    <string name="fui_button_text_save" translation_description="Button text to save input form">I-save</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">Hindi masyadong malakas ang password. Gumamit ng %1$d character man lang at kumbinasyon ng mga titik at mga numero</item> <item quantity="other">Hindi masyadong malakas ang password. Gumamit ng %1$d na character man lang at kumbinasyon ng mga titik at mga numero</item> </plurals>
-    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">Hindi nagtagumpay ang pagpaparehistro ng email account</string>
-    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">Mayroon nang account gamit ang email address na iyon.</string>
-    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">Sa pag-tap sa %1$s, ipinababatid mo na sang-ayon ka sa %2$s at sa %3$s.</string>
-    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">Sa pag-tap sa %1$s, ipinababatid mo na sang-ayon ka sa %2$s.</string>
-    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">Sa pag-tap sa %1$s, ipinababatid mo na sang-ayon ka sa %2$s.</string>
-    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">Mga Tuntunin ng Serbisyo</string>
-    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">Patakaran sa Privacy</string>
-    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">Mayroon ka nang account</string>
-    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Maligayang pagbabalik!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">Nagamit mo na ang %1$s.        Mag-sign in gamit ang %2$s upang magpatuloy.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">Nagamit mo na ang %1$s        upang mag-sign in. Ilagay ang iyong password para sa account na iyon.</string>
-    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Nagkaproblema sa pag-sign in?</string>
-    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">I-recover ang password</string>
-    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">Suriin ang iyong email</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">Kumuha ng mga tagubilin na ipadala sa email na ito na magpapaliwanag kung paano  i-reset ang iyong password.</string>
-    <string name="fui_button_text_send" translation_description="Button text to send recovery email">Ipadala</string>
-    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">Sundin ang mga tagubilin na ipinadala sa %1$s upang ma-recover ang iyong password.</string>
-    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">Hindi tumutugma ang email address na iyon sa isang kasalukuyang account</string>
-    <string name="fui_accessibility_logo" translation_description="Content description for app logo">Logo ng app</string>
-    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Ilagay ang numero ng iyong telepono</string>
-    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Maglagay ng wastong numero ng telepono</string>
-    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Ilagay ang 6-digit na code na ipinadala namin sa</string>
-    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Ipadala muli ang code sa loob ng 0:%02d</string>
-    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">I-verify ang numero ng iyong telepono</string>
-    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Maling code. Subukang muli.</string>
-    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">Masyadong maraming beses nang nagamit ang numero ng teleponong ito</string>
-    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">Nagkaproblema sa pag-verify ng numero ng iyong telepono</string>
-    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">Wala nang bisa ang code na ito</string>
-    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Mag-sign in gamit ang numero ng telepono</string>
-    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Ipadala Muli ang Code</string>
-    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">I-verify ang Numero ng Telepono</string>
-    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">Magpatuloy</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">Sa pag-tap sa “%1$s,“ maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
+    <string name="fui_sign_in_with_google">Mag-sign in sa Google</string>
+    <string name="fui_sign_in_with_facebook">Mag-sign in sa Facebook</string>
+    <string name="fui_sign_in_with_twitter">Mag-sign in sa Twitter</string>
+    <string name="fui_sign_in_with_email">Mag-sign in gamit ang email</string>
+    <string name="fui_sign_in_with_phone">Mag-sign in gamit ang telepono</string>
+    <string name="fui_next_default">Susunod</string>
+    <string name="fui_email_hint">Mag-email</string>
+    <string name="fui_phone_hint">Numero ng Telepono</string>
+    <string name="fui_password_hint">Password</string>
+    <string name="fui_required_field">Hindi mo ito maaaring iwanan na walang laman.</string>
+    <string name="fui_invalid_email_address">Mali ang email address na iyon</string>
+    <string name="fui_missing_email_address">Ilagay ang iyong email address upang magpatuloy</string>
+    <string name="fui_progress_dialog_checking_accounts">Tinitingnan ang mga umiiral nang account…</string>
+    <string name="fui_title_register_email">Mag-sign up</string>
+    <string name="fui_name_hint">Pangalan at apelyido</string>
+    <string name="fui_button_text_save">I-save</string>
+    <string name="fui_progress_dialog_signing_up">Nagsa-sign up…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">Hindi masyadong malakas ang password. Gumamit ng %1$d character man lang at kumbinasyon ng mga titik at mga numero</item> <item quantity="other">Hindi masyadong malakas ang password. Gumamit ng %1$d na character man lang at kumbinasyon ng mga titik at mga numero</item> </plurals>
+    <string name="fui_email_account_creation_error">Hindi nagtagumpay ang pagpaparehistro ng email account</string>
+    <string name="fui_error_user_collision">Mayroon nang account gamit ang email address na iyon.</string>
+    <string name="fui_create_account_preamble_tos_and_pp">Sa pag-tap sa %1$s, ipinababatid mo na sang-ayon ka sa %2$s at sa %3$s.</string>
+    <string name="fui_create_account_preamble_tos_only">Sa pag-tap sa %1$s, ipinababatid mo na sang-ayon ka sa %2$s.</string>
+    <string name="fui_create_account_preamble_pp_only">Sa pag-tap sa %1$s, ipinababatid mo na sang-ayon ka sa %2$s.</string>
+    <string name="fui_terms_of_service">Mga Tuntunin ng Serbisyo</string>
+    <string name="fui_privacy_policy">Patakaran sa Privacy</string>
+    <string name="fui_welcome_back_idp_header">Mayroon ka nang account</string>
+    <string name="fui_welcome_back_email_header">Maligayang pagbabalik!</string>
+    <string name="fui_welcome_back_idp_prompt">Nagamit mo na ang %1$s.        Mag-sign in gamit ang %2$s upang magpatuloy.</string>
+    <string name="fui_welcome_back_password_prompt_body">Nagamit mo na ang %1$s        upang mag-sign in. Ilagay ang iyong password para sa account na iyon.</string>
+    <string name="fui_progress_dialog_signing_in">Nagsa-sign in…</string>
+    <string name="fui_trouble_signing_in">Nagkaproblema sa pag-sign in?</string>
+    <string name="fui_title_recover_password_activity">I-recover ang password</string>
+    <string name="fui_title_confirm_recover_password">Suriin ang iyong email</string>
+    <string name="fui_password_recovery_body">Kumuha ng mga tagubilin na ipadala sa email na ito na magpapaliwanag kung paano  i-reset ang iyong password.</string>
+    <string name="fui_button_text_send">Ipadala</string>
+    <string name="fui_confirm_recovery_body">Sundin ang mga tagubilin na ipinadala sa %1$s upang ma-recover ang iyong password.</string>
+    <string name="fui_progress_dialog_sending">Ipinapadala…</string>
+    <string name="fui_error_email_does_not_exist">Hindi tumutugma ang email address na iyon sa isang kasalukuyang account</string>
+    <string name="fui_error_unknown">Nagkaroon ng hindi malamang error.</string>
+    <string name="fui_error_invalid_password">Maling password.</string>
+    <string name="fui_accessibility_logo">Logo ng app</string>
+    <string name="fui_signed_in_with_specific_account">Naka-sign in bilang %1$s</string>
+    <string name="fui_verify_phone_number_title">Ilagay ang numero ng iyong telepono</string>
+    <string name="fui_invalid_phone_number">Maglagay ng wastong numero ng telepono</string>
+    <string name="fui_enter_confirmation_code">Ilagay ang 6-digit na code na ipinadala namin sa</string>
+    <string name="fui_resend_code_in">Ipadala muli ang code sa loob ng 0:%02d</string>
+    <string name="fui_verify_your_phone_title">I-verify ang numero ng iyong telepono</string>
+    <string name="fui_verifying">Bine-verify…</string>
+    <string name="fui_retrieving_sms">Kinukuha ang sms…</string>
+    <string name="fui_incorrect_code_dialog_body">Maling code. Subukang muli.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text">OK</string>
+    <string name="fui_error_too_many_attempts">Masyadong maraming beses nang nagamit ang numero ng teleponong ito</string>
+    <string name="fui_error_quota_exceeded">Nagkaproblema sa pag-verify ng numero ng iyong telepono</string>
+    <string name="fui_error_session_expired">Wala nang bisa ang code na ito</string>
+    <string name="fui_sign_in_with_phone_number">Mag-sign in gamit ang numero ng telepono</string>
+    <string name="fui_done">Tapos Na</string>
+    <string name="fui_verified">Na-verify!</string>
+    <string name="fui_code_sent">Naipadala ang code!</string>
+    <string name="fui_resending">Ipinapadalang muli…</string>
+    <string name="fui_resend_code">Ipadala Muli ang Code</string>
+    <string name="fui_verify_phone_number">I-verify ang Numero ng Telepono</string>
+    <string name="fui_continue_phone_login">Magpatuloy</string>
+    <string name="fui_sms_terms_of_service">Sa pag-tap sa “%1$s,“ maaaring magpadala ng SMS. Maaaring ipatupad ang mga rate ng pagmemensahe at data.</string>
 </resources>

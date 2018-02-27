@@ -1,57 +1,72 @@
-<resources>
-    <string name="fui_sign_in_default" translation_description="Button text to sign in">प्रवेश करें</string>
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="fui_progress_dialog_loading">लोड हो रहा है…</string>
+    <string name="fui_sign_in_default">प्रवेश करें</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
     <string name="fui_provider_name_email">ईमेल</string>
     <string name="fui_provider_name_phone">फ़ोन</string>
-    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Google से प्रवेश करें</string>
-    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Facebook से प्रवेश करें</string>
-    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Twitter से प्रवेश करें</string>
-    <string name="fui_sign_in_with_email" translation_description="Sign in button text">ईमेल से प्रवेश करें</string>
-    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">फ़ोन से प्रवेश करें</string>
-    <string name="fui_next_default" translation_description="Button text to continue">अगला</string>
-    <string name="fui_email_hint" translation_description="Hint in email input field">ईमेल</string>
-    <string name="fui_phone_hint" translation_description="Hint for phone input field">फ़ोन नंबर</string>
-    <string name="fui_password_hint" translation_description="Hint for password input field">पासवर्ड</string>
-    <string name="fui_required_field" translation_description="Inline error for required field">आप इसे खाली नहीं छोड़ सकते.</string>
-    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">वह ईमेल पता सही नहीं है</string>
-    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">जारी रखने के लिए अपना ईमेल पता डालें</string>
-    <string name="fui_title_register_email" translation_description="Title for signup form">साइन अप करें</string>
-    <string name="fui_name_hint" translation_description="Hint for last name input field">नाम और उपनाम</string>
-    <string name="fui_button_text_save" translation_description="Button text to save input form">सहेजें</string>
-    <plurals name="fui_error_weak_password" translation_description="Inline error for weak password"> <item quantity="one">पासवर्ड पर्याप्त रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> <item quantity="other">पासवर्ड पर्याप्त रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> </plurals>
-    <string name="fui_email_account_creation_error" translation_description="Inline error for signup failure">ईमेल खाता पंजीकरण असफल रहा</string>
-    <string name="fui_error_user_collision" translation_description="Inline error when user signs up using an existing email account">उस ईमेल पते के साथ एक खाता पहले से मौजूद है.</string>
-    <string name="fui_create_account_preamble_tos_and_pp" translation_description="Text shown when creating an account with both terms of service and privacy policy.">%1$s पर टैप करके आप बताते हैं कि आप %2$s और %3$s से सहमत हैं.</string>
-    <string name="fui_create_account_preamble_tos_only" translation_description="Text shown when creating an account with only terms of service">%1$s पर टैप करके आप बताते हैं कि आप %2$s से सहमत हैं.</string>
-    <string name="fui_create_account_preamble_pp_only" translation_description="Text shown when creating an account with only privacy policy">%1$s पर टैप करके आप बताते हैं कि आप %2$s से सहमत हैं.</string>
-    <string name="fui_terms_of_service" translation_description="Link text to web url containing the app's terms of service">सेवा की शर्तें</string>
-    <string name="fui_privacy_policy" translation_description="Link text to web url containing the app's privacy policy">निजता नीति</string>
-    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">आपके पास पहले से ही एक खाता है</string>
-    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">आपका फिर से स्वागत है!</string>
-    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">आपने पहले ही %1$s का उपयोग कर लिया है. जारी रखने के लिए %2$s से प्रवेश करें.</string>
-    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">आपने पहले ही प्रवेश करने के लिए %1$s का उपयोग कर लिया है. उस खाते के लिए अपना पासवर्ड डालें.</string>
-    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">प्रवेश करने में समस्या?</string>
-    <string name="fui_title_recover_password_activity" translation_description="Recover password screen title">पासवर्ड फिर से पाएं</string>
-    <string name="fui_title_confirm_recover_password" translation_description="Password recovery confirmation message">अपना ईमेल जांचें</string>
-    <string name="fui_password_recovery_body" translation_description="Password recovery message body">इस ईमेल पर भेजे गए निर्देश पाएं जो आपको अपना पासवर्ड रीसेट करना बताएंगे.</string>
-    <string name="fui_button_text_send" translation_description="Button text to send recovery email">भेजें</string>
-    <string name="fui_confirm_recovery_body" translation_description="Alert dialog displayed after password recovery email is sent">अपना पासवर्ड फिर से पाने के लिए %1$s पर भेजे गए निर्देशों का पालन करें.</string>
-    <string name="fui_error_email_does_not_exist" translation_description="Inline error when user attempt signin with invalid account">वह ईमेल पता किसी मौजूदा खाते से मेल नहीं खाता है</string>
-    <string name="fui_accessibility_logo" translation_description="Content description for app logo">ऐप्लिकेशन लोगो</string>
-    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">अपना फ़ोन नंबर डालें</string>
-    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">कोई मान्य फ़ोन नंबर डालें</string>
-    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">हमारी ओर से भेजा गया 6-अंकों वाला कोड डालें</string>
-    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">0:%02d में कोड फिर से भेजें</string>
-    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">अपने फ़ोन नंबर की पुष्टि करें</string>
-    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">गलत कोड. फिर से कोशिश करें.</string>
-    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">इस फ़ोन नंबर का उपयोग कई बार किया गया है</string>
-    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">आपके फ़ोन नंबर की पुष्टि करने में कोई समस्या हुई</string>
-    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">यह कोड अब मान्य नहीं है</string>
-    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">फ़ोन नंबर के साथ प्रवेश करें</string>
-    <string name="fui_resend_code" translation_description="Link text to resend verification sms">कोड फिर से भेजें</string>
-    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">फ़ोन नंबर की पुष्टि करें</string>
-    <string name="fui_continue_phone_login" translation_description="Button text to submit phone number and send sms">जारी रखें</string>
-    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">“%1$s“ पर टैप करने पर, एक SMS भेजा जा सकता है. संदेश और डेटा दरें लागू हो सकती हैं.</string>
+    <string name="fui_sign_in_with_google">Google से प्रवेश करें</string>
+    <string name="fui_sign_in_with_facebook">Facebook से प्रवेश करें</string>
+    <string name="fui_sign_in_with_twitter">Twitter से प्रवेश करें</string>
+    <string name="fui_sign_in_with_email">ईमेल से प्रवेश करें</string>
+    <string name="fui_sign_in_with_phone">फ़ोन से प्रवेश करें</string>
+    <string name="fui_next_default">अगला</string>
+    <string name="fui_email_hint">ईमेल</string>
+    <string name="fui_phone_hint">फ़ोन नंबर</string>
+    <string name="fui_password_hint">पासवर्ड</string>
+    <string name="fui_required_field">आप इसे खाली नहीं छोड़ सकते.</string>
+    <string name="fui_invalid_email_address">वह ईमेल पता सही नहीं है</string>
+    <string name="fui_missing_email_address">जारी रखने के लिए अपना ईमेल पता डालें</string>
+    <string name="fui_progress_dialog_checking_accounts">मौजूदा खातों की जाँच की जा रही है…</string>
+    <string name="fui_title_register_email">साइन अप करें</string>
+    <string name="fui_name_hint">नाम और उपनाम</string>
+    <string name="fui_button_text_save">सहेजें</string>
+    <string name="fui_progress_dialog_signing_up">साइन अप करना…</string>
+    <plurals name="fui_error_weak_password"> <item quantity="one">पासवर्ड पर्याप्त रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> <item quantity="other">पासवर्ड पर्याप्त रूप से मजबूत नहीं है. कम से कम %1$d वर्णों का उपयोग करें जो अक्षरों और नंबरों दोनों को मिलाकर बना हो</item> </plurals>
+    <string name="fui_email_account_creation_error">ईमेल खाता पंजीकरण असफल रहा</string>
+    <string name="fui_error_user_collision">उस ईमेल पते के साथ एक खाता पहले से मौजूद है.</string>
+    <string name="fui_create_account_preamble_tos_and_pp">%1$s पर टैप करके आप बताते हैं कि आप %2$s और %3$s से सहमत हैं.</string>
+    <string name="fui_create_account_preamble_tos_only">%1$s पर टैप करके आप बताते हैं कि आप %2$s से सहमत हैं.</string>
+    <string name="fui_create_account_preamble_pp_only">%1$s पर टैप करके आप बताते हैं कि आप %2$s से सहमत हैं.</string>
+    <string name="fui_terms_of_service">सेवा की शर्तें</string>
+    <string name="fui_privacy_policy">निजता नीति</string>
+    <string name="fui_welcome_back_idp_header">आपके पास पहले से ही एक खाता है</string>
+    <string name="fui_welcome_back_email_header">आपका फिर से स्वागत है!</string>
+    <string name="fui_welcome_back_idp_prompt">आपने पहले ही %1$s का उपयोग कर लिया है. जारी रखने के लिए %2$s से प्रवेश करें.</string>
+    <string name="fui_welcome_back_password_prompt_body">आपने पहले ही प्रवेश करने के लिए %1$s का उपयोग कर लिया है. उस खाते के लिए अपना पासवर्ड डालें.</string>
+    <string name="fui_progress_dialog_signing_in">प्रवेश हो रहा है…</string>
+    <string name="fui_trouble_signing_in">प्रवेश करने में समस्या?</string>
+    <string name="fui_title_recover_password_activity">पासवर्ड फिर से पाएं</string>
+    <string name="fui_title_confirm_recover_password">अपना ईमेल जाँचें</string>
+    <string name="fui_password_recovery_body">इस ईमेल पर भेजे गए निर्देश पाएं जो आपको अपना पासवर्ड रीसेट करना बताएंगे.</string>
+    <string name="fui_button_text_send">भेजें</string>
+    <string name="fui_confirm_recovery_body">अपना पासवर्ड फिर से पाने के लिए %1$s पर भेजे गए निर्देशों का पालन करें.</string>
+    <string name="fui_progress_dialog_sending">भेज रहा है…</string>
+    <string name="fui_error_email_does_not_exist">वह ईमेल पता किसी मौजूदा खाते से मेल नहीं खाता है</string>
+    <string name="fui_error_unknown">कोई अज्ञात गड़बड़ी हुई है.</string>
+    <string name="fui_error_invalid_password">गलत पासवर्ड.</string>
+    <string name="fui_accessibility_logo">ऐप्लिकेशन लोगो</string>
+    <string name="fui_signed_in_with_specific_account">%1$s के रूप में प्रवेश किया</string>
+    <string name="fui_verify_phone_number_title">अपना फ़ोन नंबर डालें</string>
+    <string name="fui_invalid_phone_number">कोई मान्य फ़ोन नंबर डालें</string>
+    <string name="fui_enter_confirmation_code">हमारी ओर से भेजा गया 6-अंकों वाला कोड डालें</string>
+    <string name="fui_resend_code_in">0:%02d में कोड फिर से भेजें</string>
+    <string name="fui_verify_your_phone_title">अपने फ़ोन नंबर की पुष्टि करें</string>
+    <string name="fui_verifying">पुष्टि की जा रही है…</string>
+    <string name="fui_retrieving_sms">sms फिर से लाया जा रहा है…</string>
+    <string name="fui_incorrect_code_dialog_body">गलत कोड. फिर से कोशिश करें.</string>
+    <string name="fui_incorrect_code_dialog_positive_button_text">ठीक</string>
+    <string name="fui_error_too_many_attempts">इस फ़ोन नंबर का उपयोग कई बार किया गया है</string>
+    <string name="fui_error_quota_exceeded">आपके फ़ोन नंबर की पुष्टि करने में कोई समस्या हुई</string>
+    <string name="fui_error_session_expired">यह कोड अब मान्य नहीं है</string>
+    <string name="fui_sign_in_with_phone_number">फ़ोन नंबर के साथ प्रवेश करें</string>
+    <string name="fui_done">हो गया</string>
+    <string name="fui_verified">पुष्टि हो चुकी है!</string>
+    <string name="fui_code_sent">कोड भेज दिया गया!</string>
+    <string name="fui_resending">फिर से भेजा जा रहा है…</string>
+    <string name="fui_resend_code">कोड फिर से भेजें</string>
+    <string name="fui_verify_phone_number">फ़ोन नंबर की पुष्टि करें</string>
+    <string name="fui_continue_phone_login">जारी रखें</string>
+    <string name="fui_sms_terms_of_service">“%1$s” पर टैप करने पर, एक SMS भेजा जा सकता है. मैसेज और डेटा दरें लागू हो सकती हैं.</string>
 </resources>

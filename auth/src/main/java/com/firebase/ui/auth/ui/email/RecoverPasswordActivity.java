@@ -80,7 +80,8 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                     // No FirebaseUser exists with this email address, show error.
                     mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
                 } else {
-                    mEmailInputLayout.setError(resource.getException().getLocalizedMessage());
+                    // Unknown error
+                    mEmailInputLayout.setError(getString(R.string.fui_error_unknown));
                 }
             }
         });
