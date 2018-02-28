@@ -340,7 +340,6 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             startActivity(SignedInActivity.createIntent(this, response));
             finish();
-            return;
         } else {
             // Sign in failed
             if (response == null) {
@@ -349,20 +348,16 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 return;
             }
 
-            if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+            if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
             }
-
-            if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                showSnackbar(R.string.unknown_error);
-                return;
-            }
+        
+            showSnackbar(R.string.unknown_error);
+            Log.e(TAG, "Sign-in error: ", response.getError());
         }
-
-        showSnackbar(R.string.unknown_sign_in_response);
     }
- }
+}
 ```
 
 Alternatively, you can register a listener for authentication state changes;

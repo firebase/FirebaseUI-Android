@@ -1,6 +1,7 @@
 # Twitter and Facebook are optional
 -dontwarn com.twitter.**
 -dontwarn com.facebook.**
+-dontwarn com.firebase.ui.auth.provider.**
 
 # Don't note a bunch of dynamically referenced classes
 -dontnote com.google.**
