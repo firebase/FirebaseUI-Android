@@ -16,7 +16,8 @@ public final class ErrorCodes {
                     UNKNOWN_ERROR,
                     NO_NETWORK,
                     PLAY_SERVICES_UPDATE_CANCELLED,
-                    DEVELOPER_ERROR
+                    DEVELOPER_ERROR,
+                    PROVIDER_ERROR
             })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {}
@@ -45,13 +46,6 @@ public final class ErrorCodes {
      * An external sign-in provider error occurred.
      */
     public static final int PROVIDER_ERROR = 4;
-
-    /**
-     * An error occurred link the user's accounts.
-     *
-     * @see CyclicAccountLinkingException
-     */
-    public static final int LINK_FAILURE = 5;
 
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");

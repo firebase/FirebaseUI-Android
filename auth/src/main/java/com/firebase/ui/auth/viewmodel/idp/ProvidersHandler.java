@@ -66,53 +66,60 @@ public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (inputResponse.getEmail() != null) {
+                        String email = inputResponse.getEmail();
+                        if (email != null) {
                             if (e instanceof FirebaseAuthUserCollisionException) {
-                                ProviderUtils.fetchTopProvider(getAuth(), inputResponse.getEmail())
-                                        .addOnSuccessListener(new OnSuccessListener<String>() {
-                                            @Override
-                                            public void onSuccess(String provider) {
-                                                if (provider == null) {
-                                                    throw new IllegalStateException(
-                                                            "No provider even though we received a FirebaseAuthUserCollisionException");
-                                                }
-
-                                                User newUser = new User.Builder(provider,
-                                                        mResponse.getEmail()).build();
-                                                if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
-                                                    // Start email welcome back flow
-                                                    mFlowHolder.getIntentStarter()
-                                                            .setValue(Pair.create(
-                                                                    WelcomeBackPasswordPrompt.createIntent(
-                                                                            getApplication(),
-                                                                            mFlowHolder.getParams(),
-                                                                            newUser),
-                                                                    RC_ACCOUNT_LINK));
-                                                } else {
-                                                    // Start Idp welcome back flow
-                                                    mFlowHolder.getIntentStarter()
-                                                            .setValue(Pair.create(
-                                                                    WelcomeBackIdpPrompt.createIntent(
-                                                                            getApplication(),
-                                                                            mFlowHolder.getParams(),
-                                                                            newUser),
-                                                                    RC_ACCOUNT_LINK));
-                                                }
-                                            }
-                                        })
+                                ProviderUtils.fetchTopProvider(getAuth(), email)
+                                        .addOnSuccessListener(new StartWelcomeBackFlow(email))
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 setResult(Resource.<IdpResponse>forFailure(e));
                                             }
                                         });
-                                // TODO return the auth credential for phase 1
                             }
                         } else {
                             setResult(Resource.<IdpResponse>forFailure(e));
                         }
                     }
                 });
+    }
+
+    private class StartWelcomeBackFlow implements OnSuccessListener<String> {
+        private final String mEmail;
+
+        public StartWelcomeBackFlow(String email) {
+            mEmail = email;
+        }
+
+        @Override
+        public void onSuccess(String provider) {
+            if (provider == null) {
+                throw new IllegalStateException(
+                        "No provider even though we received a FirebaseAuthUserCollisionException");
+            }
+
+            User newUser = new User.Builder(provider, mEmail).build();
+            if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
+                // Start email welcome back flow
+                mFlowHolder.getIntentStarter()
+                        .setValue(Pair.create(
+                                WelcomeBackPasswordPrompt.createIntent(
+                                        getApplication(),
+                                        getArguments(),
+                                        newUser),
+                                RC_ACCOUNT_LINK));
+            } else {
+                // Start Idp welcome back flow
+                mFlowHolder.getIntentStarter()
+                        .setValue(Pair.create(
+                                WelcomeBackIdpPrompt.createIntent(
+                                        getApplication(),
+                                        getArguments(),
+                                        newUser),
+                                RC_ACCOUNT_LINK));
+            }
+        }
     }
 }
 
