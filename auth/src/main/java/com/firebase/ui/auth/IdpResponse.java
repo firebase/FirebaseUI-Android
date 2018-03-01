@@ -32,6 +32,23 @@ import com.google.firebase.auth.TwitterAuthProvider;
  * A container that encapsulates the result of authenticating with an Identity Provider.
  */
 public class IdpResponse implements Parcelable {
+    public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
+        @Override
+        public IdpResponse createFromParcel(Parcel in) {
+            return new IdpResponse(
+                    in.<User>readParcelable(User.class.getClassLoader()),
+                    in.readString(),
+                    in.readString(),
+                    (FirebaseUiException) in.readSerializable()
+            );
+        }
+
+        @Override
+        public IdpResponse[] newArray(int size) {
+            return new IdpResponse[size];
+        }
+    };
+
     private final User mUser;
 
     private final String mToken;
@@ -181,22 +198,37 @@ public class IdpResponse implements Parcelable {
         dest.writeSerializable(mException);
     }
 
-    public static final Creator<IdpResponse> CREATOR = new Creator<IdpResponse>() {
-        @Override
-        public IdpResponse createFromParcel(Parcel in) {
-            return new IdpResponse(
-                    in.<User>readParcelable(User.class.getClassLoader()),
-                    in.readString(),
-                    in.readString(),
-                    (FirebaseUiException) in.readSerializable()
-            );
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        @Override
-        public IdpResponse[] newArray(int size) {
-            return new IdpResponse[size];
-        }
-    };
+        IdpResponse response = (IdpResponse) o;
+
+        return (mUser == null ? response.mUser == null : mUser.equals(response.mUser))
+                && (mToken == null ? response.mToken == null : mToken.equals(response.mToken))
+                && (mSecret == null ? response.mSecret == null : mSecret.equals(response.mSecret))
+                && (mException == null ? response.mException == null : mException.equals(response.mException));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mUser == null ? 0 : mUser.hashCode();
+        result = 31 * result + (mToken == null ? 0 : mToken.hashCode());
+        result = 31 * result + (mSecret == null ? 0 : mSecret.hashCode());
+        result = 31 * result + (mException == null ? 0 : mException.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "IdpResponse{" +
+                "mUser=" + mUser +
+                ", mToken='" + mToken + '\'' +
+                ", mSecret='" + mSecret + '\'' +
+                ", mException=" + mException +
+                '}';
+    }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static class Builder {
