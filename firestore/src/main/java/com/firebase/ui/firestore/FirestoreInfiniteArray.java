@@ -2,23 +2,27 @@ package com.firebase.ui.firestore;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.firebase.ui.common.ChangeEventType;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+// TODO: There is no reason for this to be an OSA
 public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
 
     private static final String TAG = "FirestoreInfiniteArray";
 
     private SnapshotParser<T> mParser;
 
+    private RecyclerView.Adapter mAdapter;
     private Query mForwardQuery;
     private Query mReverseQuery;
 
@@ -34,18 +38,58 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
         mReverseQuery = reverseQuery;
 
         Page page = new Page(0, queryAfter(null));
+        page.load();
+
         mPages.add(page);
     }
 
-    public void loadNextPage() {
-        Page lastPage = getLastPage();
+    public void setAdapter(RecyclerView.Adapter adapter) {
+        // TODO: yikes
+        mAdapter = adapter;
+    }
 
-        if (lastPage.getState() == PageState.LOADING) {
-            Log.d(TAG, "Skipping double-load.");
+    public int getPagesLoaded() {
+        int count = 0;
+        for (Page page : mPages) {
+            if (page.getState() == PageState.LOADED) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public void unloadPage() {
+        // Find first loaded page
+        int firstLoaded = findFirstOfState(PageState.LOADED);
+        if (firstLoaded != -1) {
+            mPages.get(firstLoaded).unload();
+            Log.d(TAG, "unloadPage: unloading page " + firstLoaded);
+            Log.d(TAG, "unloadPage: new size = " + size());
+        }
+    }
+
+    public void loadPrevPage() {
+        if (countState(PageState.LOADING) > 0) {
             return;
         }
 
-        int size = size();
+        // Find first unloaded page
+        int lastUnloaded = findLastOfState(PageState.UNLOADED);
+        if (lastUnloaded != -1) {
+            Log.d(TAG, "loadPrevPage: loading " + lastUnloaded);
+            mPages.get(lastUnloaded).load();
+        }
+
+        // TODO: What if we have to change the starting position of the next page
+    }
+
+    public void loadNextPage() {
+        if (countState(PageState.LOADING) > 0) {
+            return;
+        }
+
+        Page lastPage = getLastPage();
         DocumentSnapshot lastSnapshot = lastPage.getLast();
 
         if (lastSnapshot == null) {
@@ -54,11 +98,65 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
         }
 
         Query nextQuery = queryAfter(lastSnapshot);
-        Log.d(TAG, "loadNextPage: sizeBefore=" + size + ", lastId=" + lastSnapshot.getId());
-        Page nextPage = new Page(size, nextQuery);
+        Log.d(TAG, "loadNextPage: loading page " + mPages.size());
+
+        // Add and start loading
+        int nextPageIndex = mPages.size();
+        Page nextPage = new Page(nextPageIndex, nextQuery);
         mPages.add(nextPage);
+        nextPage.load();
     }
 
+    private void onPageLoaded(int index, int size) {
+        int itemsBefore = 0;
+        for (int i = 0; i < index; i++) {
+            itemsBefore += mPages.get(i).size();
+        }
+
+        mAdapter.notifyItemRangeInserted(itemsBefore, size);
+    }
+
+    private void onPageUnloaded(int index, int size) {
+        int itemsBefore = 0;
+        for (int i = 0; i < index; i++) {
+            itemsBefore += mPages.get(i).size();
+        }
+
+        mAdapter.notifyItemRangeRemoved(itemsBefore, size);
+    }
+
+    private int findFirstOfState(PageState state) {
+        for (int i = 0; i < mPages.size(); i++) {
+            Page page = mPages.get(i);
+            if (page.getState() == state) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private int findLastOfState(PageState state) {
+        for (int i = mPages.size() - 1; i >= 0; i--) {
+            Page page = mPages.get(i);
+            if (page.getState() == state) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private int countState(PageState state) {
+        int count = 0;
+        for (Page page : mPages) {
+            if (page.getState() == state) {
+                count++;
+            }
+        }
+
+        return count;
+    }
 
     @NonNull
     @Override
@@ -118,66 +216,60 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
 
     private enum PageState {
         LOADING,
-        LOADED
+        LOADED,
+        UNLOADED
     }
 
-    private class Page implements ChangeEventListener {
+    private class Page implements OnCompleteListener<QuerySnapshot> {
 
         // TODO: state
 
-        private PageState mState = PageState.LOADING;
-
-        public final int mStartingPosition;
+        private PageState mState;
+        public final int mIndex;
         public final Query mQuery;
-        public final FirestoreArray<T> mItems;
+
+        private DocumentSnapshot mFirstInPage;
 
         private List<DocumentSnapshot> mSnapshots = new ArrayList<>();
 
-        public Page(int startingPosition, Query query) {
-            mStartingPosition = startingPosition;
+        public Page(int index, Query query) {
+            mIndex = index;
             mQuery = query;
 
-            mItems = new FirestoreArray<>(query, mParser);
-            mItems.addChangeEventListener(this);
+            mState = PageState.UNLOADED;
+        }
+
+        public void load() {
+            // TODO: start and end
+            mState = PageState.LOADING;
+            mQuery.get().addOnCompleteListener(this);
+        }
+
+        public void unload() {
+            int size = mSnapshots.size();
+            mSnapshots.clear();
+
+            onPageUnloaded(mIndex, size);
+            mState = PageState.UNLOADED;
         }
 
         @Override
-        public void onChildChanged(@NonNull ChangeEventType type,
-                                   @NonNull DocumentSnapshot snapshot,
-                                   int newIndex,
-                                   int oldIndex) {
-            switch (type) {
-                // TODO: Implement all types
-                case ADDED:
-                    int newIndexAdjusted = newIndex + mStartingPosition;
-                    int oldIndexAdjusted = oldIndex == -1
-                            ? -1
-                            : oldIndex + mStartingPosition;
+        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            // TODO: Better error handling
+            mState = PageState.LOADED;
 
-                    Log.d(TAG, "onChildAdded, old=" + oldIndexAdjusted + ", new=" + newIndexAdjusted);
-                    notifyOnChildChanged(type, snapshot, newIndexAdjusted, oldIndexAdjusted);
-                    mSnapshots.add(snapshot);
-                    break;
-                case MOVED:
-                    break;
-                case CHANGED:
-                    break;
-                case REMOVED:
-                    break;
+            if (!task.isSuccessful()) {
+                Log.w(TAG, "Failed to get page", task.getException());
             }
-        }
 
-        @Override
-        public void onDataChanged() {
-            // TODO
-            Log.d(TAG, "onDataChanged");
-            mState = PageState.LOADED;
-        }
+            Log.d(TAG, "pageLoaded: " + mIndex);
 
-        @Override
-        public void onError(@NonNull FirebaseFirestoreException e) {
+            // Add all snapshots
+            mSnapshots.addAll(task.getResult().getDocuments());
+
             // TODO
-            mState = PageState.LOADED;
+            // Range insert
+            onPageLoaded(mIndex, mSnapshots.size());
         }
 
         public PageState getState() {

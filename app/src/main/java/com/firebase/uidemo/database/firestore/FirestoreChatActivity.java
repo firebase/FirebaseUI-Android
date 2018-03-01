@@ -134,6 +134,9 @@ public class FirestoreChatActivity extends AppCompatActivity
 //            }
 //        });
 
+        // TODO
+        mArray.setAdapter(adapter);
+
         // Scroll listener for infinite
         mRecyclerView.addOnScrollListener(new FirestoreInfiniteScrollListener(mManager, mArray));
 
