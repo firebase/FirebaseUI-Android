@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,10 +15,10 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.firestore.ClassSnapshotParser;
-import com.firebase.ui.firestore.FirestoreInfiniteArray;
 import com.firebase.ui.firestore.FirestoreInfiniteScrollListener;
+import com.firebase.ui.firestore.FirestorePagingAdapter;
+import com.firebase.ui.firestore.FirestorePagingOptions;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.firebase.uidemo.R;
 import com.firebase.uidemo.database.ChatHolder;
 import com.firebase.uidemo.util.SignInResultNotifier;
@@ -51,7 +50,6 @@ public class FirestoreChatActivity extends AppCompatActivity
     private static final Query sChatQuery = sChatCollection.orderBy("timestamp").limit(50);
 
     private LinearLayoutManager mManager;
-    private FirestoreInfiniteArray<Chat> mArray;
 
     static {
         FirebaseFirestore.setLoggingEnabled(true);
@@ -75,11 +73,6 @@ public class FirestoreChatActivity extends AppCompatActivity
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        mArray = new FirestoreInfiniteArray<>(
-                sChatCollection.orderBy("timestamp", Query.Direction.ASCENDING),
-                sChatCollection.orderBy("timestamp", Query.Direction.DESCENDING),
-                new ClassSnapshotParser<>(Chat.class));
-
         mManager = new LinearLayoutManager(this);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mManager);
@@ -95,7 +88,6 @@ public class FirestoreChatActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        if (isSignedIn()) { attachRecyclerViewAdapter(); }
         FirebaseAuth.getInstance().addAuthStateListener(this);
     }
 
@@ -123,7 +115,7 @@ public class FirestoreChatActivity extends AppCompatActivity
     }
 
     private void attachRecyclerViewAdapter() {
-        final RecyclerView.Adapter adapter = newAdapter();
+        final FirestorePagingAdapter adapter = newAdapter();
 
         // Scroll to bottom on new messages
         // TODO
@@ -134,11 +126,9 @@ public class FirestoreChatActivity extends AppCompatActivity
 //            }
 //        });
 
-        // TODO
-        mArray.setAdapter(adapter);
-
         // Scroll listener for infinite
-        mRecyclerView.addOnScrollListener(new FirestoreInfiniteScrollListener(mManager, mArray));
+        mRecyclerView.addOnScrollListener(
+                new FirestoreInfiniteScrollListener(mManager, adapter));
 
         mRecyclerView.setAdapter(adapter);
     }
@@ -153,14 +143,17 @@ public class FirestoreChatActivity extends AppCompatActivity
         mMessageEdit.setText("");
     }
 
-    protected RecyclerView.Adapter newAdapter() {
-        FirestoreRecyclerOptions<Chat> options =
-                new FirestoreRecyclerOptions.Builder<Chat>()
-                        .setSnapshotArray(mArray)
-                        .setLifecycleOwner(this)
-                        .build();
+    protected FirestorePagingAdapter newAdapter() {
+        FirestorePagingOptions options = new FirestorePagingOptions.Builder()
+                .setLoadTriggerDistance(7)
+                .setMaxPages(3)
+                .build();
 
-        return new FirestoreRecyclerAdapter<Chat, ChatHolder>(options) {
+        return new FirestorePagingAdapter<Chat, ChatHolder>(
+                new ClassSnapshotParser<>(Chat.class),
+                sChatCollection.orderBy("timestamp", Query.Direction.ASCENDING),
+                options) {
+
             @Override
             public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 return new ChatHolder(LayoutInflater.from(parent.getContext())
@@ -170,12 +163,6 @@ public class FirestoreChatActivity extends AppCompatActivity
             @Override
             protected void onBindViewHolder(@NonNull ChatHolder holder, int position, @NonNull Chat model) {
                 holder.bind(model);
-            }
-
-            @Override
-            public void onDataChanged() {
-                // If there are no chat messages, show a view that invites the user to add a message.
-                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         };
     }

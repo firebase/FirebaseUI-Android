@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -12,41 +13,47 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-// TODO: There is no reason for this to be an OSA
-public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
+/**
+ * Created by samstern on 3/1/18.
+ */
+public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter<VH> {
 
-    private static final String TAG = "FirestoreInfiniteArray";
+    private static final String TAG = "FirestorePagingAdapter";
 
-    private SnapshotParser<T> mParser;
-
-    private RecyclerView.Adapter mAdapter;
-    private Query mForwardQuery;
-    private Query mReverseQuery;
-
-    private int mPageSize = 10;
+    private final SnapshotParser<T> mParser;
+    private final Query mForwardQuery;
+    private final FirestorePagingOptions mOptions;
 
     private List<Page> mPages = new ArrayList<>();
 
-    // TODO: I am not using reverse query at all
-    public FirestoreInfiniteArray(Query forwardQuery, Query reverseQuery, SnapshotParser<T> parser) {
-        super(parser);
-
+    public FirestorePagingAdapter(SnapshotParser<T> parser,
+                                  Query forwardQuery,
+                                  FirestorePagingOptions options) {
         mParser = parser;
         mForwardQuery = forwardQuery;
-        mReverseQuery = reverseQuery;
+        mOptions = options;
 
-        Page page = new Page(0, queryAfter(null));
-        page.load();
+        Page page = new Page(0);
+        page.load(queryAfter(null));
 
         mPages.add(page);
     }
 
-    public void setAdapter(RecyclerView.Adapter adapter) {
-        // TODO: yikes
-        mAdapter = adapter;
+    public FirestorePagingOptions getOptions() {
+        return mOptions;
+    }
+
+    @Override
+    public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
+
+    protected abstract void onBindViewHolder(VH holder, int position, T model);
+
+    @Override
+    public void onBindViewHolder(VH holder, int position) {
+        onBindViewHolder(holder, position, get(position));
     }
 
     public int getPagesLoaded() {
@@ -88,7 +95,12 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
 
         if (lastUnloadedBefore != -1) {
             Log.d(TAG, "RELOADING " + lastUnloadedBefore);
-            mPages.get(lastUnloadedBefore).load();
+
+            Page page = mPages.get(lastUnloadedBefore);
+            DocumentSnapshot endBefore = getFirstOfPage(lastUnloadedBefore + 1);
+
+            Query query = queryBetween(page.getFirst(), endBefore);
+            page.load(query);
         }
     }
 
@@ -109,25 +121,30 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
             DocumentSnapshot lastSnapshot = lastPage.getLast();
 
             // Reached the end, no more items to show
+            // Note: if items are added to the end this is not detected properly.
             if (lastSnapshot == null) {
                 return;
             }
 
-            Query nextQuery = queryAfter(lastSnapshot);
-            Log.d(TAG, "LOADING " + mPages.size());
-
             // Add and start loading
             int nextPageIndex = mPages.size();
-            Page nextPage = new Page(nextPageIndex, nextQuery);
+            Page nextPage = new Page(nextPageIndex);
             mPages.add(nextPage);
-            nextPage.load();
+
+            Log.d(TAG, "LOADING " + nextPageIndex);
+            Query nextQuery = queryAfter(lastSnapshot);
+            nextPage.load(nextQuery);
         } else {
             // Case 2: Need to load a previously unloaded page
             // Find the first UNLOADED page after the middle "core" of loaded pages
             int firstUnloadedAfter = findFirstOfState(PageState.UNLOADED, lastLoaded);
 
             Log.d(TAG, "RELOADING " + firstUnloadedAfter);
-            mPages.get(firstUnloadedAfter).load();
+            Page page = mPages.get(firstUnloadedAfter);
+            DocumentSnapshot endBefore = getFirstOfPage(firstUnloadedAfter + 1);
+            Query query = queryBetween(page.getFirst(), endBefore);
+
+            page.load(query);
         }
 
     }
@@ -138,7 +155,7 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
             itemsBefore += mPages.get(i).size();
         }
 
-        mAdapter.notifyItemRangeInserted(itemsBefore, size);
+        notifyItemRangeInserted(itemsBefore, size);
     }
 
     private void onPageUnloaded(int index, int size) {
@@ -147,7 +164,7 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
             itemsBefore += mPages.get(i).size();
         }
 
-        mAdapter.notifyItemRangeRemoved(itemsBefore, size);
+        notifyItemRangeRemoved(itemsBefore, size);
     }
 
     private int findFirstOfState(PageState state) {
@@ -191,16 +208,18 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
         return count;
     }
 
-    @NonNull
     @Override
-    protected List<DocumentSnapshot> getSnapshots() {
-        // TODO: How to allow outside clearing?
-        Log.w(TAG, "Called getSnapshots() on an infinite array.");
-        return Collections.emptyList();
+    public int getItemCount() {
+        int size = 0;
+
+        for (Page page : mPages) {
+            size += page.size();
+        }
+
+        return size;
     }
 
     @NonNull
-    @Override
     public DocumentSnapshot getSnapshot(int index) {
         int remaining = index;
         for (Page page : mPages) {
@@ -212,38 +231,59 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
         }
 
         throw new IllegalArgumentException(
-                "Requested non-existent index: " + index + ", size=" + size());
+                "Requested non-existent index: " + index + ", size=" + getItemCount());
     }
 
     @NonNull
-    @Override
     public T get(int index) {
         return mParser.parseSnapshot(getSnapshot(index));
     }
 
-    @Override
-    public int size() {
-        int size = 0;
-
-        for (Page page : mPages) {
-            size += page.size();
+    @Nullable
+    private DocumentSnapshot getFirstOfPage(int i) {
+        if (i < 0 || i >= mPages.size()) {
+            return null;
         }
 
-        return size;
+        Page page = mPages.get(i);
+        if (page == null) {
+            return null;
+        }
+
+        return page.getFirst();
     }
 
+    @NonNull
     private Page getLastPage() {
         return mPages.get(mPages.size() - 1);
     }
 
-    private Query queryAfter(@Nullable DocumentSnapshot snapshot) {
-        if (snapshot == null) {
-            return mForwardQuery.limit(mPageSize);
+    private Query queryBetween(@Nullable DocumentSnapshot startAt,
+                               @Nullable DocumentSnapshot endBefore) {
+
+        Query query = mForwardQuery;
+        if (startAt != null) {
+            query = query.startAt(startAt);
         }
 
-        return mForwardQuery
-                .startAfter(snapshot)
-                .limit(mPageSize);
+        if (endBefore != null) {
+            query = query.endBefore(endBefore);
+        } else {
+            query = query.limit(mOptions.getPageSize());
+        }
+
+        return query;
+    }
+
+    private Query queryAfter(@Nullable DocumentSnapshot startAfter) {
+        Query query = mForwardQuery;
+        if (startAfter != null) {
+            query = query.startAfter(startAfter);
+        }
+
+        query = query.limit(mOptions.getPageSize());
+
+        return query;
     }
 
     private enum PageState {
@@ -257,23 +297,23 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
         // TODO: Does the Page really need to track its own index?
         private PageState mState;
         private final int mIndex;
-        private final Query mQuery;
 
-        private DocumentSnapshot mFirstInPage;
+        private DocumentSnapshot mFirstSnapshot;
 
         private List<DocumentSnapshot> mSnapshots = new ArrayList<>();
 
-        public Page(int index, Query query) {
+        public Page(int index) {
             mIndex = index;
-            mQuery = query;
-
             mState = PageState.UNLOADED;
         }
 
-        public void load() {
-            // TODO: start and end
+        public void load(Query query) {
+            if (mState == PageState.LOADING) {
+                return;
+            }
+
             mState = PageState.LOADING;
-            mQuery.get().addOnCompleteListener(this);
+            query.get().addOnCompleteListener(this);
         }
 
         public void unload() {
@@ -298,6 +338,13 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
             // Add all snapshots
             mSnapshots.addAll(task.getResult().getDocuments());
 
+            // Set first in page
+            if (mSnapshots.isEmpty()) {
+                mFirstSnapshot = null;
+            } else {
+                mFirstSnapshot = mSnapshots.get(0);
+            }
+
             // Range insert
             onPageLoaded(mIndex, mSnapshots.size());
         }
@@ -312,6 +359,11 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
 
         public int size() {
             return mSnapshots.size();
+        }
+
+        @Nullable
+        public DocumentSnapshot getFirst() {
+            return mFirstSnapshot;
         }
 
         @Nullable

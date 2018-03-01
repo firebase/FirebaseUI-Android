@@ -6,16 +6,15 @@ import android.support.v7.widget.RecyclerView;
 
 public class FirestoreInfiniteScrollListener extends RecyclerView.OnScrollListener {
 
-    private LinearLayoutManager mManager;
-    private FirestoreInfiniteArray mArray;
+    private final LinearLayoutManager mManager;
+    private final FirestorePagingAdapter mAdapter;
 
     private Handler mHandler = new Handler();
 
-    // TODO: This could take the same options as the Array
     public FirestoreInfiniteScrollListener(LinearLayoutManager manager,
-                                           FirestoreInfiniteArray array) {
+                                           FirestorePagingAdapter adapter) {
         mManager = manager;
-        mArray = array;
+        mAdapter = adapter;
     }
 
     @Override
@@ -30,44 +29,41 @@ public class FirestoreInfiniteScrollListener extends RecyclerView.OnScrollListen
         int firstVisible = mManager.findFirstVisibleItemPosition();
         int lastVisible = mManager.findLastVisibleItemPosition();
 
-        int totalSize = mArray.size();
+        int totalSize = mAdapter.getItemCount();
 
-        // TODO: configurable "closeness" and number of pages to keep
         boolean movingDown = dy > 0;
         boolean movingUp = !movingDown;
-        boolean closeToTop = (firstVisible <= 5);
-        boolean closeToBottom = (totalSize - lastVisible) <= 5;
+        boolean closeToTop = (firstVisible <= mAdapter.getOptions().getLoadTriggerDistance());
+        boolean closeToBottom = (totalSize - lastVisible) <= mAdapter.getOptions().getLoadTriggerDistance();
 
         if (closeToBottom && movingDown) {
-
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     // Load one page down
-                    mArray.loadNextPage();
+                    mAdapter.loadNextPage();
 
                     // Unload top page.
-                    if (mArray.getPagesLoaded() >= 3 ) {
-                        mArray.unloadTopPage();
+                    // TODO: This should probably be inside the paging adapter
+                    if (mAdapter.getPagesLoaded() > mAdapter.getOptions().getMaxPages() ) {
+                        mAdapter.unloadTopPage();
                     }
                 }
             });
 
         } else if (closeToTop && movingUp) {
-
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     // Load one page up
-                    mArray.loadPrevPage();
+                    mAdapter.loadPrevPage();
 
                     // Unload bottom page
-                    if (mArray.getPagesLoaded() >= 3) {
-                        mArray.unloadBottomPage();
+                    if (mAdapter.getPagesLoaded() > mAdapter.getOptions().getMaxPages()) {
+                        mAdapter.unloadBottomPage();
                     }
                 }
             });
-
         }
     }
 
