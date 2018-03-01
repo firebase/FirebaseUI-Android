@@ -16,10 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by samstern on 3/1/18.
- *
- * TODO: Document
- * TODO: Expose loading status
+ * Adapter to paginate a Cloud Firestore query and bind it to a RecyclerView.
  */
 public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {
@@ -39,19 +36,23 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         mForwardQuery = options.getQuery();
 
         Page page = new Page(0);
-        page.load(queryAfter(null));
-
         mPages.add(page);
-    }
 
-    public FirestorePagingOptions getOptions() {
-        return mOptions;
+        onLoadingStateChanged(true);
+        page.load(queryAfter(null));
     }
 
     @Override
     public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
 
     protected abstract void onBindViewHolder(VH holder, int position, T model);
+
+    /**
+     * Get the options used to configure the adapter.
+     */
+    public FirestorePagingOptions getOptions() {
+        return mOptions;
+    }
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
@@ -67,23 +68,6 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         }
 
         return count;
-    }
-
-    public void unloadTopPage() {
-        // Find first loaded page
-        int firstLoaded = findFirstOfState(PageState.LOADED);
-        if (firstLoaded != -1) {
-            mPages.get(firstLoaded).unload();
-            Log.d(TAG, "UNLOADING " + firstLoaded);
-        }
-    }
-
-    public void unloadBottomPage() {
-        int lastLoaded = findLastOfState(PageState.LOADED);
-        if (lastLoaded != -1) {
-            mPages.get(lastLoaded).unload();
-            Log.d(TAG, "UNLOADING " + lastLoaded);
-        }
     }
 
     public void loadPrevPage() {
@@ -104,6 +88,11 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
             Query query = queryBetween(page.getFirst(), endBefore);
             page.load(query);
         }
+
+        // Unload the bottom page if too many are loaded
+        if (getPagesLoaded() > mOptions.getMaxPages()) {
+            unloadBottomPage();
+        }
     }
 
     public void loadNextPage() {
@@ -119,7 +108,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
         if (lastLoaded == mPages.size() - 1) {
             // Case 1: Load a new page at the bottom
-            Page lastPage = getLastPage();
+            Page lastPage = mPages.get(mPages.size() - 1);
             DocumentSnapshot lastSnapshot = lastPage.getLast();
 
             // Reached the end, no more items to show
@@ -149,6 +138,10 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
             page.load(query);
         }
 
+        // Unload the top-most loaded page if we have too many pages loaded.
+        if (getPagesLoaded() > mOptions.getMaxPages()) {
+            unloadTopPage();
+        }
     }
 
     @Override
@@ -182,6 +175,28 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         return mParser.parseSnapshot(getSnapshot(index));
     }
 
+    // TODO: Better interface
+    protected void onLoadingStateChanged(boolean isLoading) {
+        // No-op, this is for overriding.
+    }
+
+    private void unloadTopPage() {
+        // Find first loaded page
+        int firstLoaded = findFirstOfState(PageState.LOADED);
+        if (firstLoaded != -1) {
+            mPages.get(firstLoaded).unload();
+            Log.d(TAG, "UNLOADING " + firstLoaded);
+        }
+    }
+
+    private void unloadBottomPage() {
+        int lastLoaded = findLastOfState(PageState.LOADED);
+        if (lastLoaded != -1) {
+            mPages.get(lastLoaded).unload();
+            Log.d(TAG, "UNLOADING " + lastLoaded);
+        }
+    }
+
     private void onPageLoaded(int index, int size) {
         int itemsBefore = 0;
         for (int i = 0; i < index; i++) {
@@ -189,6 +204,12 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         }
 
         notifyItemRangeInserted(itemsBefore, size);
+
+        if (countState(PageState.LOADING) > 0) {
+            onLoadingStateChanged(true);
+        } else {
+            onLoadingStateChanged(false);
+        }
     }
 
     private void onPageUnloaded(int index, int size) {
@@ -255,11 +276,6 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         return page.getFirst();
     }
 
-    @NonNull
-    private Page getLastPage() {
-        return mPages.get(mPages.size() - 1);
-    }
-
     private Query queryBetween(@Nullable DocumentSnapshot startAt,
                                @Nullable DocumentSnapshot endBefore) {
 
@@ -296,10 +312,8 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
     private class Page implements OnCompleteListener<QuerySnapshot> {
 
-        // TODO: Does the Page really need to track its own index?
-        private PageState mState;
         private final int mIndex;
-
+        private PageState mState;
         private DocumentSnapshot mFirstSnapshot;
 
         private List<DocumentSnapshot> mSnapshots = new ArrayList<>();
@@ -315,6 +329,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
             }
 
             mState = PageState.LOADING;
+            onLoadingStateChanged(true);
             query.get().addOnCompleteListener(this);
         }
 
@@ -329,13 +344,9 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         @Override
         public void onComplete(@NonNull Task<QuerySnapshot> task) {
             // TODO: Better error handling
-            mState = PageState.LOADED;
-
             if (!task.isSuccessful()) {
                 Log.w(TAG, "Failed to get page", task.getException());
             }
-
-            Log.d(TAG, "LOADED " + mIndex);
 
             // Add all snapshots
             mSnapshots.addAll(task.getResult().getDocuments());
@@ -347,7 +358,9 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                 mFirstSnapshot = mSnapshots.get(0);
             }
 
-            // Range insert
+            // Mark page as loaded
+            Log.d(TAG, "LOADED " + mIndex);
+            mState = PageState.LOADED;
             onPageLoaded(mIndex, mSnapshots.size());
         }
 

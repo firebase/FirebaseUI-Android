@@ -4,6 +4,9 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+/**
+ * TODO(samstern): Document
+ */
 public class FirestoreInfiniteScrollListener extends RecyclerView.OnScrollListener {
 
     private final LinearLayoutManager mManager;
@@ -42,12 +45,6 @@ public class FirestoreInfiniteScrollListener extends RecyclerView.OnScrollListen
                 public void run() {
                     // Load one page down
                     mAdapter.loadNextPage();
-
-                    // Unload top page.
-                    // TODO: This should probably be inside the paging adapter
-                    if (mAdapter.getPagesLoaded() > mAdapter.getOptions().getMaxPages() ) {
-                        mAdapter.unloadTopPage();
-                    }
                 }
             });
 
@@ -57,11 +54,6 @@ public class FirestoreInfiniteScrollListener extends RecyclerView.OnScrollListen
                 public void run() {
                     // Load one page up
                     mAdapter.loadPrevPage();
-
-                    // Unload bottom page
-                    if (mAdapter.getPagesLoaded() > mAdapter.getOptions().getMaxPages()) {
-                        mAdapter.unloadBottomPage();
-                    }
                 }
             });
         }
