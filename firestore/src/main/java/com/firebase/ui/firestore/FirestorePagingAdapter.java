@@ -17,6 +17,9 @@ import java.util.List;
 
 /**
  * Created by samstern on 3/1/18.
+ *
+ * TODO: Document
+ * TODO: Expose loading status
  */
 public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {
@@ -29,12 +32,11 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
     private List<Page> mPages = new ArrayList<>();
 
-    public FirestorePagingAdapter(SnapshotParser<T> parser,
-                                  Query forwardQuery,
-                                  FirestorePagingOptions options) {
-        mParser = parser;
-        mForwardQuery = forwardQuery;
+    public FirestorePagingAdapter(FirestorePagingOptions<T> options) {
         mOptions = options;
+
+        mParser = options.getParser();
+        mForwardQuery = options.getQuery();
 
         Page page = new Page(0);
         page.load(queryAfter(null));
@@ -149,6 +151,37 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
     }
 
+    @Override
+    public int getItemCount() {
+        int size = 0;
+
+        for (Page page : mPages) {
+            size += page.size();
+        }
+
+        return size;
+    }
+
+    @NonNull
+    public DocumentSnapshot getSnapshot(int index) {
+        int remaining = index;
+        for (Page page : mPages) {
+            if (remaining < page.size()) {
+                return page.get(remaining);
+            }
+
+            remaining -= page.size();
+        }
+
+        throw new IllegalArgumentException(
+                "Requested non-existent index: " + index + ", size=" + getItemCount());
+    }
+
+    @NonNull
+    public T get(int index) {
+        return mParser.parseSnapshot(getSnapshot(index));
+    }
+
     private void onPageLoaded(int index, int size) {
         int itemsBefore = 0;
         for (int i = 0; i < index; i++) {
@@ -206,37 +239,6 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         }
 
         return count;
-    }
-
-    @Override
-    public int getItemCount() {
-        int size = 0;
-
-        for (Page page : mPages) {
-            size += page.size();
-        }
-
-        return size;
-    }
-
-    @NonNull
-    public DocumentSnapshot getSnapshot(int index) {
-        int remaining = index;
-        for (Page page : mPages) {
-            if (remaining < page.size()) {
-                return page.get(remaining);
-            }
-
-            remaining -= page.size();
-        }
-
-        throw new IllegalArgumentException(
-                "Requested non-existent index: " + index + ", size=" + getItemCount());
-    }
-
-    @NonNull
-    public T get(int index) {
-        return mParser.parseSnapshot(getSnapshot(index));
     }
 
     @Nullable

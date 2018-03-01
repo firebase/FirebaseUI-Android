@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.firebase.uidemo">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.firebase.uidemo">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -17,7 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-
         <activity android:name=".ChooserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,6 +41,11 @@
             android:name=".database.firestore.FirestoreChatActivity"
             android:label="@string/title_firestore_activity" />
 
+        <!-- Firestore paging demo -->
+        <activity
+            android:name=".database.firestore.FirestorePagingActivity"
+            android:label="@string/title_firestore_paging_activity" />
+
         <!-- Realtime database demo -->
         <activity
             android:name=".database.realtime.RealtimeDbChatActivity"
@@ -55,7 +58,6 @@
         <activity
             android:name=".storage.ImageActivity"
             android:label="@string/title_storage_activity" />
-
     </application>
 
 </manifest>
