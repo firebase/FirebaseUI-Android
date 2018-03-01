@@ -30,6 +30,7 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
 
     private List<Page> mPages = new ArrayList<>();
 
+    // TODO: I am not using reverse query at all
     public FirestoreInfiniteArray(Query forwardQuery, Query reverseQuery, SnapshotParser<T> parser) {
         super(parser);
 
@@ -59,13 +60,20 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
         return count;
     }
 
-    public void unloadPage() {
+    public void unloadTopPage() {
         // Find first loaded page
         int firstLoaded = findFirstOfState(PageState.LOADED);
         if (firstLoaded != -1) {
             mPages.get(firstLoaded).unload();
-            Log.d(TAG, "unloadPage: unloading page " + firstLoaded);
-            Log.d(TAG, "unloadPage: new size = " + size());
+            Log.d(TAG, "UNLOADING " + firstLoaded);
+        }
+    }
+
+    public void unloadBottomPage() {
+        int lastLoaded = findLastOfState(PageState.LOADED);
+        if (lastLoaded != -1) {
+            mPages.get(lastLoaded).unload();
+            Log.d(TAG, "UNLOADING " + lastLoaded);
         }
     }
 
@@ -74,14 +82,14 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
             return;
         }
 
-        // Find first unloaded page
-        int lastUnloaded = findLastOfState(PageState.UNLOADED);
-        if (lastUnloaded != -1) {
-            Log.d(TAG, "loadPrevPage: loading " + lastUnloaded);
-            mPages.get(lastUnloaded).load();
-        }
+        // Load the last UNLOADED page before the middle "core" of LOADED pages
+        int firstLoaded = findFirstOfState(PageState.LOADED);
+        int lastUnloadedBefore = findLastOfState(PageState.UNLOADED, firstLoaded);
 
-        // TODO: What if we have to change the starting position of the next page
+        if (lastUnloadedBefore != -1) {
+            Log.d(TAG, "RELOADING " + lastUnloadedBefore);
+            mPages.get(lastUnloadedBefore).load();
+        }
     }
 
     public void loadNextPage() {
@@ -89,22 +97,39 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
             return;
         }
 
-        Page lastPage = getLastPage();
-        DocumentSnapshot lastSnapshot = lastPage.getLast();
+        // There are two cases here
+        //  1. Need to load a whole new page
+        //  2. Need to load an UNLOADED bottom page
 
-        if (lastSnapshot == null) {
-            Log.w(TAG, "Skipping load because last snapshot is null!");
-            return;
+        int lastLoaded = findLastOfState(PageState.LOADED);
+
+        if (lastLoaded == mPages.size() - 1) {
+            // Case 1: Load a new page at the bottom
+            Page lastPage = getLastPage();
+            DocumentSnapshot lastSnapshot = lastPage.getLast();
+
+            // Reached the end, no more items to show
+            if (lastSnapshot == null) {
+                return;
+            }
+
+            Query nextQuery = queryAfter(lastSnapshot);
+            Log.d(TAG, "LOADING " + mPages.size());
+
+            // Add and start loading
+            int nextPageIndex = mPages.size();
+            Page nextPage = new Page(nextPageIndex, nextQuery);
+            mPages.add(nextPage);
+            nextPage.load();
+        } else {
+            // Case 2: Need to load a previously unloaded page
+            // Find the first UNLOADED page after the middle "core" of loaded pages
+            int firstUnloadedAfter = findFirstOfState(PageState.UNLOADED, lastLoaded);
+
+            Log.d(TAG, "RELOADING " + firstUnloadedAfter);
+            mPages.get(firstUnloadedAfter).load();
         }
 
-        Query nextQuery = queryAfter(lastSnapshot);
-        Log.d(TAG, "loadNextPage: loading page " + mPages.size());
-
-        // Add and start loading
-        int nextPageIndex = mPages.size();
-        Page nextPage = new Page(nextPageIndex, nextQuery);
-        mPages.add(nextPage);
-        nextPage.load();
     }
 
     private void onPageLoaded(int index, int size) {
@@ -126,7 +151,11 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
     }
 
     private int findFirstOfState(PageState state) {
-        for (int i = 0; i < mPages.size(); i++) {
+        return findFirstOfState(state, 0);
+    }
+
+    private int findFirstOfState(PageState state, int startingAt) {
+        for (int i = startingAt; i < mPages.size(); i++) {
             Page page = mPages.get(i);
             if (page.getState() == state) {
                 return i;
@@ -137,7 +166,11 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
     }
 
     private int findLastOfState(PageState state) {
-        for (int i = mPages.size() - 1; i >= 0; i--) {
+        return findLastOfState(state, mPages.size() - 1);
+    }
+
+    private int findLastOfState(PageState state, int endingAt) {
+        for (int i = endingAt; i >= 0; i--) {
             Page page = mPages.get(i);
             if (page.getState() == state) {
                 return i;
@@ -178,9 +211,8 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
             remaining -= page.size();
         }
 
-        // TODO
-        Log.e(TAG, "Requested bad index: " + index);
-        return null;
+        throw new IllegalArgumentException(
+                "Requested non-existent index: " + index + ", size=" + size());
     }
 
     @NonNull
@@ -222,11 +254,10 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
 
     private class Page implements OnCompleteListener<QuerySnapshot> {
 
-        // TODO: state
-
+        // TODO: Does the Page really need to track its own index?
         private PageState mState;
-        public final int mIndex;
-        public final Query mQuery;
+        private final int mIndex;
+        private final Query mQuery;
 
         private DocumentSnapshot mFirstInPage;
 
@@ -262,12 +293,11 @@ public class FirestoreInfiniteArray<T> extends ObservableSnapshotArray<T> {
                 Log.w(TAG, "Failed to get page", task.getException());
             }
 
-            Log.d(TAG, "pageLoaded: " + mIndex);
+            Log.d(TAG, "LOADED " + mIndex);
 
             // Add all snapshots
             mSnapshots.addAll(task.getResult().getDocuments());
 
-            // TODO
             // Range insert
             onPageLoaded(mIndex, mSnapshots.size());
         }

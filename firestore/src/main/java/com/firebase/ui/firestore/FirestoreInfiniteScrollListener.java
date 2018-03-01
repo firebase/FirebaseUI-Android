@@ -11,6 +11,7 @@ public class FirestoreInfiniteScrollListener extends RecyclerView.OnScrollListen
 
     private Handler mHandler = new Handler();
 
+    // TODO: This could take the same options as the Array
     public FirestoreInfiniteScrollListener(LinearLayoutManager manager,
                                            FirestoreInfiniteArray array) {
         mManager = manager;
@@ -31,8 +32,9 @@ public class FirestoreInfiniteScrollListener extends RecyclerView.OnScrollListen
 
         int totalSize = mArray.size();
 
-        // TODO: configurable "closeness"
+        // TODO: configurable "closeness" and number of pages to keep
         boolean movingDown = dy > 0;
+        boolean movingUp = !movingDown;
         boolean closeToTop = (firstVisible <= 5);
         boolean closeToBottom = (totalSize - lastVisible) <= 5;
 
@@ -41,22 +43,28 @@ public class FirestoreInfiniteScrollListener extends RecyclerView.OnScrollListen
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    // Load one page down
                     mArray.loadNextPage();
 
                     // Unload top page.
                     if (mArray.getPagesLoaded() >= 3 ) {
-                        mArray.unloadPage();
+                        mArray.unloadTopPage();
                     }
                 }
             });
 
-        } else if (closeToTop && !movingDown) {
+        } else if (closeToTop && movingUp) {
 
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     // Load one page up
                     mArray.loadPrevPage();
+
+                    // Unload bottom page
+                    if (mArray.getPagesLoaded() >= 3) {
+                        mArray.unloadBottomPage();
+                    }
                 }
             });
 
