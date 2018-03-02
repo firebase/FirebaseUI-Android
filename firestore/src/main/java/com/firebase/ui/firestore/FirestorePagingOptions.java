@@ -14,7 +14,7 @@ public class FirestorePagingOptions<T> {
     private final SnapshotParser<T> mParser;
 
     private final int mPageSize;
-    private final int mLoadTriggerDistance ;
+    private final int mLoadTriggerDistance;
     private final int mMaxPages;
 
     FirestorePagingOptions(Query query,
