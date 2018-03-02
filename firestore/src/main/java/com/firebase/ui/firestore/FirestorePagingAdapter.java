@@ -2,6 +2,7 @@ package com.firebase.ui.firestore;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import java.util.List;
 
 /**
  * Adapter to paginate a Cloud Firestore query and bind it to a RecyclerView.
+ *
+ * See also {@link FirestorePagingOptions}.
+ * See also {@link FirestoreInfiniteScrollListener}.
  */
 public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {
@@ -29,6 +33,9 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
     private List<Page> mPages = new ArrayList<>();
 
+    /**
+     * Create a new paging adapter from the given options.
+     */
     public FirestorePagingAdapter(FirestorePagingOptions<T> options) {
         mOptions = options;
 
@@ -59,6 +66,11 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         onBindViewHolder(holder, position, get(position));
     }
 
+    /**
+     * Get the number of pages currently loaded in memory. This is <b>not</b> the same
+     * as the number of pages ever loaded by the adapter as the adapter dynamically unloads
+     * pages that are not used.
+     */
     public int getPagesLoaded() {
         int count = 0;
         for (Page page : mPages) {
@@ -70,7 +82,13 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         return count;
     }
 
-    public void loadPrevPage() {
+    /**
+     * When scrolling up through the list, load the next not-yet-loaded page.
+     *
+     * If this page load results in the number of loaded pages exceeding the maximum
+     * specified in the options, unload the bottom-most page.
+     */
+    public void loadPageUp() {
         if (countState(PageState.LOADING) > 0) {
             return;
         }
@@ -95,6 +113,12 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         }
     }
 
+    /**
+     * When scrolling down through the list, load the next not-yet-loaded page.
+     *
+     * If this page load results in the number of loaded pages exceeding the maximum
+     * specified in the options, unload the top-most page.
+     */
     public void loadNextPage() {
         if (countState(PageState.LOADING) > 0) {
             return;
@@ -144,6 +168,11 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         }
     }
 
+    /**
+     * Get the total number of loaded items among all loaded pages.
+     *
+     * Note that this operation is O(n) in the number of pages.
+     */
     @Override
     public int getItemCount() {
         int size = 0;
@@ -155,6 +184,12 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         return size;
     }
 
+    /**
+     * Get the snapshot at the specified index, where 0 is the first loaded snapshot. These
+     * indexes are relative to the snapshots loaded at any given time and are not absolute.
+     *
+     * This operation is O(n) in the number of pages.
+     */
     @NonNull
     public DocumentSnapshot getSnapshot(int index) {
         int remaining = index;
@@ -170,11 +205,22 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
                 "Requested non-existent index: " + index + ", size=" + getItemCount());
     }
 
+    /**
+     * Get the model at the specified index by converting a snapfrot from
+     * {@link #getSnapshot(int)}.
+     */
     @NonNull
     public T get(int index) {
         return mParser.parseSnapshot(getSnapshot(index));
     }
 
+    /**
+     * Called when a page begins or finishes loading, to indicate if there are any current loading
+     * operations going on.
+     *
+     * Useful to override and control UI elements such as a progress bar or loading spinner.
+     * @param isLoading
+     */
     // TODO: Better interface
     protected void onLoadingStateChanged(boolean isLoading) {
         // No-op, this is for overriding.
@@ -310,12 +356,14 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         }
     }
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     private enum PageState {
         LOADING,
         LOADED,
         UNLOADED
     }
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     private class Page implements OnCompleteListener<QuerySnapshot> {
 
         private final int mIndex;

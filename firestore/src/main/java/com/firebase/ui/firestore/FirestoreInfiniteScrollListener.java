@@ -5,7 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /**
- * TODO(samstern): Document
+ * RecyclerView scroll listener that triggers loading/unloading in a
+ * {@link FirestorePagingAdapter} so that the adapter can appear to be infinite sroll.
  */
 public class FirestoreInfiniteScrollListener extends RecyclerView.OnScrollListener {
 
@@ -53,7 +54,7 @@ public class FirestoreInfiniteScrollListener extends RecyclerView.OnScrollListen
                 @Override
                 public void run() {
                     // Load one page up
-                    mAdapter.loadPrevPage();
+                    mAdapter.loadPageUp();
                 }
             });
         }
