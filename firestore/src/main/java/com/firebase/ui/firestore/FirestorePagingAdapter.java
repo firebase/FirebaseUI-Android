@@ -2,16 +2,12 @@ package com.firebase.ui.firestore;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +19,8 @@ import java.util.List;
  * See also {@link FirestoreInfiniteScrollListener}.
  */
 public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<VH> {
+        extends RecyclerView.Adapter<VH>
+        implements Page.Listener {
 
     private static final String TAG = "FirestorePagingAdapter";
 
@@ -42,7 +39,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         mParser = options.getParser();
         mForwardQuery = options.getQuery();
 
-        Page page = new Page(0);
+        Page page = new Page(0, this);
         mPages.add(page);
 
         onLoadingStateChanged(true);
@@ -74,7 +71,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     public int getPagesLoaded() {
         int count = 0;
         for (Page page : mPages) {
-            if (page.getState() == PageState.LOADED) {
+            if (page.getState() == Page.State.LOADED) {
                 count++;
             }
         }
@@ -89,13 +86,13 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
      * specified in the options, unload the bottom-most page.
      */
     public void loadPageUp() {
-        if (countState(PageState.LOADING) > 0) {
+        if (hasAny(Page.State.LOADING)) {
             return;
         }
 
         // Load the last UNLOADED page before the middle "core" of LOADED pages
-        int firstLoaded = findFirstOfState(PageState.LOADED);
-        int lastUnloadedBefore = findLastOfState(PageState.UNLOADED, firstLoaded);
+        int firstLoaded = findFirstOfState(Page.State.LOADED);
+        int lastUnloadedBefore = findLastOfState(Page.State.UNLOADED, firstLoaded);
 
         if (lastUnloadedBefore != -1) {
             logd("RELOADING " + lastUnloadedBefore);
@@ -120,7 +117,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
      * specified in the options, unload the top-most page.
      */
     public void loadNextPage() {
-        if (countState(PageState.LOADING) > 0) {
+        if (hasAny(Page.State.LOADING)) {
             return;
         }
 
@@ -128,7 +125,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         //  1. Need to load a whole new page
         //  2. Need to load an UNLOADED bottom page
 
-        int lastLoaded = findLastOfState(PageState.LOADED);
+        int lastLoaded = findLastOfState(Page.State.LOADED);
 
         if (lastLoaded == mPages.size() - 1) {
             // Case 1: Load a new page at the bottom
@@ -143,7 +140,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
             // Add and start loading
             int nextPageIndex = mPages.size();
-            Page nextPage = new Page(nextPageIndex);
+            Page nextPage = new Page(nextPageIndex, this);
             mPages.add(nextPage);
 
             logd("LOADING " + nextPageIndex);
@@ -152,7 +149,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         } else {
             // Case 2: Need to load a previously unloaded page
             // Find the first UNLOADED page after the middle "core" of loaded pages
-            int firstUnloadedAfter = findFirstOfState(PageState.UNLOADED, lastLoaded);
+            int firstUnloadedAfter = findFirstOfState(Page.State.UNLOADED, lastLoaded);
 
             logd("RELOADING " + firstUnloadedAfter);
             Page page = mPages.get(firstUnloadedAfter);
@@ -214,21 +211,42 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         return mParser.parseSnapshot(getSnapshot(index));
     }
 
+    @Override
+    public void onPageStateChanged(Page page, Page.State state) {
+        if (state == Page.State.LOADING) {
+            onLoadingStateChanged(true);
+        } else {
+            onLoadingStateChanged(hasAny(Page.State.LOADING));
+        }
+
+        if (state == Page.State.LOADED) {
+            onPageLoaded(page.getIndex(), page.size());
+        }
+
+        if (state == Page.State.UNLOADED) {
+            onPageUnloaded(page.getIndex(), page.size());
+        }
+    }
+
+    @Override
+    public void onPageError(Page page, Exception ex) {
+        Log.w(TAG, "Failed to get page", ex);
+        // TODO: Remove page?
+    }
+
     /**
      * Called when a page begins or finishes loading, to indicate if there are any current loading
      * operations going on.
      *
      * Useful to override and control UI elements such as a progress bar or loading spinner.
-     * @param isLoading
      */
-    // TODO: Better interface
     protected void onLoadingStateChanged(boolean isLoading) {
         // No-op, this is for overriding.
     }
 
     private void unloadTopPage() {
         // Find first loaded page
-        int firstLoaded = findFirstOfState(PageState.LOADED);
+        int firstLoaded = findFirstOfState(Page.State.LOADED);
         if (firstLoaded != -1) {
             mPages.get(firstLoaded).unload();
             logd("UNLOADING " + firstLoaded);
@@ -236,7 +254,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     }
 
     private void unloadBottomPage() {
-        int lastLoaded = findLastOfState(PageState.LOADED);
+        int lastLoaded = findLastOfState(Page.State.LOADED);
         if (lastLoaded != -1) {
             mPages.get(lastLoaded).unload();
             logd("UNLOADING " + lastLoaded);
@@ -251,7 +269,7 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
         notifyItemRangeInserted(itemsBefore, size);
 
-        if (countState(PageState.LOADING) > 0) {
+        if (hasAny(Page.State.LOADING)) {
             onLoadingStateChanged(true);
         } else {
             onLoadingStateChanged(false);
@@ -267,11 +285,11 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         notifyItemRangeRemoved(itemsBefore, size);
     }
 
-    private int findFirstOfState(PageState state) {
+    private int findFirstOfState(Page.State state) {
         return findFirstOfState(state, 0);
     }
 
-    private int findFirstOfState(PageState state, int startingAt) {
+    private int findFirstOfState(Page.State state, int startingAt) {
         for (int i = startingAt; i < mPages.size(); i++) {
             Page page = mPages.get(i);
             if (page.getState() == state) {
@@ -282,11 +300,11 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         return -1;
     }
 
-    private int findLastOfState(PageState state) {
+    private int findLastOfState(Page.State state) {
         return findLastOfState(state, mPages.size() - 1);
     }
 
-    private int findLastOfState(PageState state, int endingAt) {
+    private int findLastOfState(Page.State state, int endingAt) {
         for (int i = endingAt; i >= 0; i--) {
             Page page = mPages.get(i);
             if (page.getState() == state) {
@@ -297,15 +315,14 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         return -1;
     }
 
-    private int countState(PageState state) {
-        int count = 0;
+    private boolean hasAny(Page.State state) {
         for (Page page : mPages) {
             if (page.getState() == state) {
-                count++;
+                return true;
             }
         }
 
-        return count;
+        return false;
     }
 
     @Nullable
@@ -350,97 +367,9 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         return query;
     }
 
-    private void logd(String message) {
+    private static void logd(String message) {
         if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, message);
-        }
-    }
-
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    private enum PageState {
-        LOADING,
-        LOADED,
-        UNLOADED
-    }
-
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    private class Page implements OnCompleteListener<QuerySnapshot> {
-
-        private final int mIndex;
-        private PageState mState;
-        private DocumentSnapshot mFirstSnapshot;
-
-        private List<DocumentSnapshot> mSnapshots = new ArrayList<>();
-
-        public Page(int index) {
-            mIndex = index;
-            mState = PageState.UNLOADED;
-        }
-
-        public void load(Query query) {
-            if (mState == PageState.LOADING) {
-                return;
-            }
-
-            mState = PageState.LOADING;
-            onLoadingStateChanged(true);
-            query.get().addOnCompleteListener(this);
-        }
-
-        public void unload() {
-            int size = mSnapshots.size();
-            mSnapshots.clear();
-
-            onPageUnloaded(mIndex, size);
-            mState = PageState.UNLOADED;
-        }
-
-        @Override
-        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-            // TODO: Better error handling
-            if (!task.isSuccessful()) {
-                Log.w(TAG, "Failed to get page", task.getException());
-            }
-
-            // Add all snapshots
-            mSnapshots.addAll(task.getResult().getDocuments());
-
-            // Set first in page
-            if (mSnapshots.isEmpty()) {
-                mFirstSnapshot = null;
-            } else {
-                mFirstSnapshot = mSnapshots.get(0);
-            }
-
-            // Mark page as loaded
-            logd("LOADED " + mIndex);
-            mState = PageState.LOADED;
-            onPageLoaded(mIndex, mSnapshots.size());
-        }
-
-        public PageState getState() {
-            return mState;
-        }
-
-        public DocumentSnapshot get(int index) {
-            return mSnapshots.get(index);
-        }
-
-        public int size() {
-            return mSnapshots.size();
-        }
-
-        @Nullable
-        public DocumentSnapshot getFirst() {
-            return mFirstSnapshot;
-        }
-
-        @Nullable
-        public DocumentSnapshot getLast() {
-            if (mSnapshots == null || mSnapshots.isEmpty()) {
-                return null;
-            }
-            return mSnapshots.get(mSnapshots.size() - 1);
         }
     }
 }
