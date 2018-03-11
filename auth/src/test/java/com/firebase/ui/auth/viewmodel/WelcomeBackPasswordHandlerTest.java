@@ -62,40 +62,6 @@ public class WelcomeBackPasswordHandlerTest {
     }
 
     @Test
-    public void testSignIn_signsInAndSavesCredentials() {
-        mHandler.getSignInResult().observeForever(mResponseObserver);
-
-        // Mock sign in to always succeed
-        when(mMockAuth.signInWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD))
-                .thenReturn(AutoCompleteTask.forSuccess(FakeAuthResult.INSTANCE));
-
-        // Mock smartlock save to always succeed
-        when(mMockCredentials.save(any(Credential.class)))
-                .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
-
-        // Kick off the sign in flow
-        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null, null);
-
-        // Verify that we get a loading event
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
-
-        // Verify that sign in is called with the right arguments
-        verify(mMockAuth).signInWithEmailAndPassword(
-                TestConstants.EMAIL, TestConstants.PASSWORD);
-
-        // Verify that a matching credential is saved in SmartLock
-        ArgumentCaptor<Credential> credentialCaptor = ArgumentCaptor.forClass(Credential.class);
-        verify(mMockCredentials).save(credentialCaptor.capture());
-
-        Credential captured = credentialCaptor.getValue();
-        assertEquals(captured.getId(), TestConstants.EMAIL);
-        assertEquals(captured.getPassword(), TestConstants.PASSWORD);
-
-        // Verify that we get a success event
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
-    }
-
-    @Test
     public void testSignIn_linksIdpCredential() {
         mHandler.getSignInOperation().observeForever(mResponseObserver);
 
@@ -117,9 +83,9 @@ public class WelcomeBackPasswordHandlerTest {
         // Mock linking to always succeed
         when(FakeAuthResult.INSTANCE.getUser().linkWithCredential(credential))
                 .thenReturn(new AutoContinueTask<>(FakeAuthResult.INSTANCE,
-                        FakeAuthResult.INSTANCE,
-                        true,
-                        null));
+                                                   FakeAuthResult.INSTANCE,
+                                                   true,
+                                                   null));
 
         // Mock smartlock save to always succeed
         when(mMockCredentials.save(any(Credential.class)))
@@ -127,7 +93,7 @@ public class WelcomeBackPasswordHandlerTest {
 
         // Kick off the sign in flow
         mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, response, credential,
-                null);
+                             null);
 
         // Verify that we get a loading event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
@@ -163,35 +129,5 @@ public class WelcomeBackPasswordHandlerTest {
 
         // Verify that we get a failure event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isFailure()));
-    }
-
-    @Test
-    public void testSignIn_handlesResolution() {
-        mHandler.getSignInResult().observeForever(mResponseObserver);
-        mHandler.getPendingResolution().observeForever(mResolutionObserver);
-
-        // Mock sign in to always succeed
-        when(mMockAuth.signInWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD))
-                .thenReturn(new AutoContinueTask<>(FakeAuthResult.INSTANCE,
-                        FakeAuthResult.INSTANCE, true, null));
-
-        // Mock credentials to throw an RAE
-        ResolvableApiException mockRae = mock(ResolvableApiException.class);
-        when(mMockCredentials.save(any(Credential.class)))
-                .thenReturn(AutoCompleteTask.<Void>forFailure(mockRae));
-
-        // Kick off the sign in flow
-        mHandler.startSignIn(TestConstants.EMAIL, TestConstants.PASSWORD, null, null, null);
-
-        // Make sure we get a resolution
-        ArgumentCaptor<PendingResolution> resolveCaptor = ArgumentCaptor.forClass(PendingResolution.class);
-        verify(mResolutionObserver).onChanged(resolveCaptor.capture());
-
-        // Call activity result
-        PendingResolution pr = resolveCaptor.getValue();
-        mHandler.onActivityResult(pr.getRequestCode(), Activity.RESULT_OK, null);
-
-        // Make sure we get success
-        verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isSuccess()));
     }
 }
