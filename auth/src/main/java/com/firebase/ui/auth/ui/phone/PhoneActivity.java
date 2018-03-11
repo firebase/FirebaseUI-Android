@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -350,8 +349,7 @@ public class PhoneActivity extends AppCompatBase {
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            finish(RESULT_CANCELED, IdpResponse.getErrorCodeIntent(
-                                                    ErrorCodes.UNKNOWN_ERROR));
+                                            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
                                         }
                                     });
                         }

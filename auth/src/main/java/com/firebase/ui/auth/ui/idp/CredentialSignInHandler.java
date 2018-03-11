@@ -22,7 +22,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.HelperActivityBase;
@@ -32,14 +31,13 @@ import com.firebase.ui.auth.util.accountlink.AccountLinker;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthCredential;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.ProviderQueryResult;
 
 import java.util.List;
@@ -123,7 +121,7 @@ public class CredentialSignInHandler implements OnFailureListener {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 mActivity.finish(Activity.RESULT_CANCELED,
-                                        IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR));
+                                        IdpResponse.getErrorIntent(e));
                             }
                         });
                 return;
