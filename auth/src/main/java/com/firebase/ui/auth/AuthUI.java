@@ -82,6 +82,9 @@ import java.util.Set;
  * for examples on how to get started with FirebaseUI Auth.
  */
 public class AuthUI {
+
+    private static final String TAG = "AuthUI";
+
     @StringDef({
                        EmailAuthProvider.PROVIDER_ID,
                        PhoneAuthProvider.PROVIDER_ID,
@@ -269,9 +272,31 @@ public class AuthUI {
     @NonNull
     public Task<Void> signOut(@NonNull Context context) {
         mAuth.signOut();
+
+        Task<Void> maybeDisableAutoSignIn = GoogleApiUtils.getCredentialsClient(context)
+                .disableAutoSignIn()
+                .continueWithTask(new Continuation<Void, Task<Void>>() {
+                    @Override
+                    public Task<Void> then(@NonNull Task<Void> task) throws Exception {
+                        // We want to ignore a specific exception, since it's not a good reason
+                        // to fail (see Issue 1156).
+                        if (!task.isSuccessful() && (task.getException() instanceof ApiException)) {
+                            ApiException ae = (ApiException) task.getException();
+                            if (ae.getStatusCode() == CommonStatusCodes.CANCELED) {
+                                Log.w(TAG, "Could not disable auto-sign in, maybe there are no " +
+                                    "SmartLock accounts available?", ae);
+
+                                return Tasks.forResult(null);
+                            }
+                        }
+
+                        return task;
+                    }
+                });
+
         return Tasks.whenAll(
                 signOutIdps(context),
-                GoogleApiUtils.getCredentialsClient(context).disableAutoSignIn());
+                maybeDisableAutoSignIn);
     }
 
     /**

@@ -1,6 +1,9 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
+import android.app.PendingIntent;
+import android.arch.lifecycle.LiveData;
+import android.content.Intent;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.VisibleForTesting;
 
@@ -17,6 +20,8 @@ public class AuthViewModelBase extends ViewModelBase<FlowParameters> {
     private CredentialsClient mCredentialsClient;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider mPhoneAuth;
+
+    private SingleLiveEvent<PendingResolution> mPendingResolution = new SingleLiveEvent<>();
 
     protected AuthViewModelBase(Application application) {
         super(application);
@@ -40,6 +45,28 @@ public class AuthViewModelBase extends ViewModelBase<FlowParameters> {
 
     protected CredentialsClient getCredentialsClient() {
         return mCredentialsClient;
+    }
+
+    /**
+     * Get an observable stream of {@link PendingIntent} resolutions requested by the ViewModel.
+     *
+     * Make sure to call {@link #onActivityResult(int, int, Intent)} for all activity results
+     * after firing these pending intents.
+     */
+    public LiveData<PendingResolution> getPendingResolution() {
+        return mPendingResolution;
+    }
+
+    protected void setPendingResolution(PendingResolution resolution) {
+        mPendingResolution.setValue(resolution);
+    }
+
+    /**
+     * Delegate activity result handling to the ViewModel. Returns {@code true} if the result was
+     * handled.
+     */
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+        return false;
     }
 
     @VisibleForTesting

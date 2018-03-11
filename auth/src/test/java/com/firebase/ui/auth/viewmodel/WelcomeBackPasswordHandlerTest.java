@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.viewmodel;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -16,7 +15,6 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -26,7 +24,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
@@ -34,10 +31,8 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.Collections;
 
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,7 +46,6 @@ public class WelcomeBackPasswordHandlerTest {
     @Mock CredentialsClient mMockCredentials;
 
     @Mock Observer<Resource<IdpResponse>> mResponseObserver;
-    @Mock Observer<PendingResolution> mResolutionObserver;
 
     private WelcomeBackPasswordHandler mHandler;
 
@@ -103,7 +97,7 @@ public class WelcomeBackPasswordHandlerTest {
 
     @Test
     public void testSignIn_linksIdpCredential() {
-        mHandler.getSignInResult().observeForever(mResponseObserver);
+        mHandler.getSignInOperation().observeForever(mResponseObserver);
 
         // Fake social response from Facebook
         User user = new User.Builder(FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
@@ -151,7 +145,7 @@ public class WelcomeBackPasswordHandlerTest {
 
     @Test
     public void testSignIn_propagatesFailure() {
-        mHandler.getSignInResult().observeForever(mResponseObserver);
+        mHandler.getSignInOperation().observeForever(mResponseObserver);
 
         // Mock sign in to always fail
         when(mMockAuth.signInWithEmailAndPassword(any(String.class), any(String.class)))

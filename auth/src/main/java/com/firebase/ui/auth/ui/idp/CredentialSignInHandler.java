@@ -30,9 +30,9 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.util.accountlink.AccountLinker;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
@@ -44,8 +44,13 @@ import com.google.firebase.auth.ProviderQueryResult;
 
 import java.util.List;
 
+/**
+ * Failure listener passed to calls to {@link FirebaseAuth#signInWithCredential(AuthCredential)}.
+ *
+ * On collisions, starts the "Welcome Back" flow for the appropriate IDP.
+ */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
+public class CredentialSignInHandler implements OnFailureListener {
     private static final String TAG = "CredentialSignInHandler";
 
     private HelperActivityBase mActivity;
@@ -62,46 +67,38 @@ public class CredentialSignInHandler implements OnCompleteListener<AuthResult> {
     }
 
     @Override
-    public void onComplete(@NonNull Task<AuthResult> task) {
-        if (task.isSuccessful()) {
-            FirebaseUser firebaseUser = task.getResult().getUser();
-            mActivity.saveCredentialsOrFinish(firebaseUser, mResponse);
-        } else {
-            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                Task<ProviderQueryResult> fetchTask;
-                String email = mResponse.getEmail();
-
-                if (TextUtils.isEmpty(email)) {
-                    fetchTask = Tasks.forException(new NullPointerException("Email cannot be empty"));
-                } else {
-                    fetchTask = mActivity.getAuthHelper()
-                            .getFirebaseAuth()
-                            .fetchProvidersForEmail(email);
-                }
-
-                fetchTask
-                        .addOnSuccessListener(new StartWelcomeBackFlow())
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Intent intent = IdpResponse.getErrorCodeIntent(ErrorCodes.UNKNOWN_ERROR);
-                                mActivity.finish(Activity.RESULT_CANCELED, intent);
-                            }
-                        })
-                        .addOnFailureListener(new TaskFailureLogger(TAG,
-                                "Error fetching providers for email"));
-
-                return;
+    public void onFailure(@NonNull Exception e) {
+        if (e instanceof FirebaseAuthUserCollisionException) {
+            Task<ProviderQueryResult> fetchTask;
+            String email = mResponse.getEmail();
+            if (TextUtils.isEmpty(email)) {
+                fetchTask = Tasks.forException(new NullPointerException("Email cannot be empty"));
             } else {
-                Log.e(TAG,
-                      "Unexpected exception when signing in with credential "
-                              + mResponse.getProviderType()
-                              + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
-                      task.getException());
+                fetchTask = mActivity.getAuthHelper().getFirebaseAuth()
+                        .fetchProvidersForEmail(email);
             }
 
-            mActivity.getDialogHolder().dismissDialog();
+            fetchTask
+                    .addOnSuccessListener(new StartWelcomeBackFlow())
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Intent intent = IdpResponse.getErrorIntent(e);
+                            mActivity.finish(Activity.RESULT_CANCELED, intent);
+                        }
+                    })
+                    .addOnFailureListener(new TaskFailureLogger(TAG,
+                                                                "Error fetching providers for email"));
+            return;
+        } else {
+            Log.e(TAG,
+                  "Unexpected exception when signing in with credential "
+                          + mResponse.getProviderType()
+                          + " unsuccessful. Visit https://console.firebase.google.com to enable it.",
+                  e);
         }
+
+        mActivity.getDialogHolder().dismissDialog();
     }
 
     private class StartWelcomeBackFlow implements OnSuccessListener<ProviderQueryResult> {

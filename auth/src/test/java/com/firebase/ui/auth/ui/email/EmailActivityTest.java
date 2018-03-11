@@ -96,10 +96,6 @@ public class EmailActivityTest {
     @Test
     @Config(shadows = {AuthHelperShadow.class})
     public void testSignUpButton_successfulRegistrationShouldContinueToSaveCredentials() {
-        // init mocks
-        // TODO
-        // reset(AuthHelperShadow.getSaveSmartLockInstance(null));
-
         EmailActivity emailActivity = createActivity();
 
         // Trigger new user UI (bypassing check email)
@@ -123,8 +119,6 @@ public class EmailActivityTest {
         when(AuthHelperShadow.getCurrentUser().updateProfile(any(UserProfileChangeRequest.class)))
                 .thenReturn(new AutoCompleteTask<Void>(null, true, null));
 
-        TestHelper.mockCredentialsClient(emailActivity);
-
         Button button = emailActivity.findViewById(R.id.button_create);
         button.performClick();
 
@@ -132,10 +126,8 @@ public class EmailActivityTest {
         verify(AuthHelperShadow.getCurrentUser())
                 .linkWithCredential(any(EmailAuthCredential.class));
 
-        // Finally, the new credential should be saved to SmartLock
-        TestHelper.verifySmartLockSave(emailActivity,
-                EmailAuthProvider.PROVIDER_ID,
-                TestConstants.EMAIL,
-                TestConstants.PASSWORD);
+        // Check that Smart Lock is kicked off
+        TestHelper.verifyCredentialSaveStarted(emailActivity,
+                null, TestConstants.EMAIL, TestConstants.PASSWORD, null);
     }
 }

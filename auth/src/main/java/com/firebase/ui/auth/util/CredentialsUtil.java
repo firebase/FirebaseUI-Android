@@ -7,7 +7,6 @@ import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -21,18 +20,18 @@ public class CredentialsUtil {
      * Build a credential for the specified {@link FirebaseUser} with optional
      * password and {@link IdpResponse}.
      *
-     * See {@link #buildCredential(String, String, String, String, IdpResponse)}.
+     * See {@link #buildCredential(String, String, String, String, String)}.
      */
     public static Credential buildCredential(@NonNull FirebaseUser user,
                                              @Nullable String password,
-                                             @Nullable IdpResponse idpResponse) {
+                                             @Nullable String accountType) {
         String name = user.getDisplayName();
         String email = user.getEmail();
         String profilePicturUri = user.getPhotoUrl() != null
                 ? user.getPhotoUrl().toString()
                 : null;
 
-        return buildCredential(email, password, name, profilePicturUri, idpResponse);
+        return buildCredential(email, password, name, profilePicturUri, accountType);
     }
 
     /**
@@ -46,7 +45,7 @@ public class CredentialsUtil {
                                              @Nullable String password,
                                              @Nullable String name,
                                              @Nullable String profilePictureUri,
-                                             @Nullable IdpResponse idpResponse) {
+                                             @Nullable String accountType) {
         if (TextUtils.isEmpty(email)) {
             return null;
         }
@@ -55,11 +54,10 @@ public class CredentialsUtil {
         if (!TextUtils.isEmpty(password)) {
             builder.setPassword(password);
         }
-        if (password == null && idpResponse != null) {
-            String translatedProvider =
-                    ProviderUtils.providerIdToAccountType(idpResponse.getProviderType());
-            if (translatedProvider != null) {
-                builder.setAccountType(translatedProvider);
+
+        if (password == null) {
+            if (accountType != null) {
+                builder.setAccountType(accountType);
             } else {
                 return null;
             }

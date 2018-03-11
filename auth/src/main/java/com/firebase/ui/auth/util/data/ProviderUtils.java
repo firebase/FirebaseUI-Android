@@ -59,6 +59,15 @@ public final class ProviderUtils {
         }
     }
 
+    @Nullable
+    public static String idpResponseToAccountType(@Nullable IdpResponse response) {
+        if (response == null) {
+            return null;
+        }
+
+        return providerIdToAccountType(response.getProviderType());
+    }
+
     /**
      * Translate a Firebase Auth provider ID (such as {@link GoogleAuthProvider#PROVIDER_ID}) to a
      * Credentials API account type (such as {@link IdentityProviders#GOOGLE}).
