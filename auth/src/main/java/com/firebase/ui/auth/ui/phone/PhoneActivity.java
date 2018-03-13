@@ -34,6 +34,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -316,9 +317,9 @@ public class PhoneActivity extends AppCompatBase {
                 .show();
     }
 
-    private void signIn(@NonNull PhoneAuthCredential credential) {
-        getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(credential)
+    private void signIn(@NonNull final PhoneAuthCredential credential) {
+        AnonymousUpgradeUtils
+                .signInOrLink(getFlowParams(), getFirebaseAuth(), credential)
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(final AuthResult authResult) {
@@ -341,8 +342,14 @@ public class PhoneActivity extends AppCompatBase {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         dismissLoadingDialog();
-                        //incorrect confirmation code
-                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+
+                        if (AnonymousUpgradeUtils.isUpgradeFailure(getFlowParams(), getFirebaseAuth(), e)) {
+                            // Anonymous upgrade failed
+                            // TODO: Do we need to create a new PhoneAuthCredential after failure?
+                            IdpResponse response = new IdpResponse.Builder(credential).build();
+                            finish(RESULT_CANCELED, response.toIntent());
+                        } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                            // Invalid phone verification code
                             FirebaseAuthError error = FirebaseAuthError.fromException(
                                     (FirebaseAuthInvalidCredentialsException) e);
 

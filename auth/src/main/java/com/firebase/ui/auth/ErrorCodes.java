@@ -16,7 +16,8 @@ public final class ErrorCodes {
                     UNKNOWN_ERROR,
                     NO_NETWORK,
                     PLAY_SERVICES_UPDATE_CANCELLED,
-                    DEVELOPER_ERROR
+                    DEVELOPER_ERROR,
+                    ANONYMOUS_UPGRADE_MERGE_CONFLICT
             })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {}
@@ -40,6 +41,11 @@ public final class ErrorCodes {
      * A sign-in operation couldn't be completed due to a developer error.
      */
     public static final int DEVELOPER_ERROR = 3;
+
+    /**
+     * Anonymous account linking failed.
+     */
+    public static final int ANONYMOUS_UPGRADE_MERGE_CONFLICT = 4;
 
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");

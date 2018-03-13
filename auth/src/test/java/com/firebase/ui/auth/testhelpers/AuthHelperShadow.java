@@ -33,15 +33,6 @@ public class AuthHelperShadow {
     }
 
     @Implementation
-    public static CredentialsApi getCredentialsApi() {
-        if (sCredentialsApi == null) {
-            sCredentialsApi = Mockito.mock(CredentialsApi.class);
-        }
-
-        return sCredentialsApi;
-    }
-
-    @Implementation
     public static FirebaseUser getCurrentUser() {
         if (sFirebaseUser == null) {
             sFirebaseUser = TestHelper.getMockFirebaseUser();

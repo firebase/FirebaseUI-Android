@@ -25,6 +25,7 @@ import android.text.TextUtils;
 
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -39,6 +40,7 @@ public class IdpResponse implements Parcelable {
                     in.<User>readParcelable(User.class.getClassLoader()),
                     in.readString(),
                     in.readString(),
+                    (AuthCredential) in.readParcelable(AuthCredential.class.getClassLoader()),
                     (FirebaseUiException) in.readSerializable()
             );
         }
@@ -56,25 +58,36 @@ public class IdpResponse implements Parcelable {
 
     private final FirebaseUiException mException;
 
+    private final AuthCredential mPendingCredential;
+
     private IdpResponse(@NonNull FirebaseUiException e) {
-        this(null, null, null, e);
+        this(null, null, null, null, e);
+    }
+
+    private IdpResponse(@NonNull AuthCredential pendingCredential) {
+        this(
+                null, null, null, /* user, token, and secret */
+                pendingCredential,
+                new FirebaseUiException(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT));
     }
 
     private IdpResponse(
             @NonNull User user,
             @Nullable String token,
             @Nullable String secret) {
-        this(user, token, secret, null);
+        this(user, token, secret, null, null);
     }
 
     private IdpResponse(
-            User user,
-            String token,
-            String secret,
-            FirebaseUiException e) {
+            @Nullable User user,
+            @Nullable String token,
+            @Nullable String secret,
+            @Nullable AuthCredential pendingCredential,
+            @Nullable FirebaseUiException e) {
         mUser = user;
         mToken = token;
         mSecret = secret;
+        mPendingCredential = pendingCredential;
         mException = e;
     }
 
@@ -164,6 +177,14 @@ public class IdpResponse implements Parcelable {
     }
 
     /**
+     * TODO: Docs and return type
+     */
+    @Nullable
+    public AuthCredential getPendingCredential() {
+        return mPendingCredential;
+    }
+
+    /**
      * Get the error code for a failed sign in
      *
      * @deprecated use {@link #getError()} instead
@@ -195,6 +216,7 @@ public class IdpResponse implements Parcelable {
         dest.writeParcelable(mUser, flags);
         dest.writeString(mToken);
         dest.writeString(mSecret);
+        dest.writeParcelable(mPendingCredential, 0);
         dest.writeSerializable(mException);
     }
 
@@ -232,13 +254,21 @@ public class IdpResponse implements Parcelable {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public static class Builder {
+
         private final User mUser;
+        private final AuthCredential mCredential;
 
         private String mToken;
         private String mSecret;
 
         public Builder(@NonNull User user) {
             mUser = user;
+            mCredential = null;
+        }
+
+        public Builder(@NonNull AuthCredential pendingCredential) {
+            mUser = null;
+            mCredential = pendingCredential;
         }
 
         public Builder setToken(String token) {
@@ -252,21 +282,28 @@ public class IdpResponse implements Parcelable {
         }
 
         public IdpResponse build() {
-            String providerId = mUser.getProviderId();
-            if (!AuthUI.SUPPORTED_PROVIDERS.contains(providerId)) {
-                throw new IllegalStateException("Unknown provider: " + providerId);
-            }
-            if (AuthUI.SOCIAL_PROVIDERS.contains(providerId) && TextUtils.isEmpty(mToken)) {
-                throw new IllegalStateException(
-                        "Token cannot be null when using a non-email provider.");
-            }
-            if (providerId.equals(TwitterAuthProvider.PROVIDER_ID)
-                    && TextUtils.isEmpty(mSecret)) {
-                throw new IllegalStateException(
-                        "Secret cannot be null when using the Twitter provider.");
-            }
+            if (mUser != null) {
+                String providerId = mUser.getProviderId();
+                if (!AuthUI.SUPPORTED_PROVIDERS.contains(providerId)) {
+                    throw new IllegalStateException("Unknown provider: " + providerId);
+                }
+                if (AuthUI.SOCIAL_PROVIDERS.contains(providerId) && TextUtils.isEmpty(mToken)) {
+                    throw new IllegalStateException(
+                            "Token cannot be null when using a non-email provider.");
+                }
+                if (providerId.equals(TwitterAuthProvider.PROVIDER_ID)
+                        && TextUtils.isEmpty(mSecret)) {
+                    throw new IllegalStateException(
+                            "Secret cannot be null when using the Twitter provider.");
+                }
 
-            return new IdpResponse(mUser, mToken, mSecret);
+                return new IdpResponse(mUser, mToken, mSecret);
+            } else if (mCredential != null) {
+                return new IdpResponse(mCredential);
+            } else {
+                throw new IllegalStateException(
+                        "IdpResponse requires either a User or an AuthCredential.");
+            }
         }
     }
 }

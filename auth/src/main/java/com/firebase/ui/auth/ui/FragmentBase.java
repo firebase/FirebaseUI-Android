@@ -10,6 +10,7 @@ import android.view.ContextThemeWrapper;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.util.AuthHelper;
+import com.google.firebase.auth.FirebaseAuth;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FragmentBase extends Fragment {
@@ -44,6 +45,10 @@ public class FragmentBase extends Fragment {
 
     public AuthHelper getAuthHelper() {
         return mAuthHelper;
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return mAuthHelper.getFirebaseAuth();
     }
 
     public ProgressDialogHolder getDialogHolder() {

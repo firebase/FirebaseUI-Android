@@ -56,6 +56,7 @@ public class FlowParameters implements Parcelable {
 
     public final boolean enableCredentials;
     public final boolean enableHints;
+    public final boolean enableAnonymousUpgrade;
 
     public FlowParameters(
             @NonNull String appName,
@@ -65,7 +66,8 @@ public class FlowParameters implements Parcelable {
             @Nullable String termsOfServiceUrl,
             @Nullable String privacyPolicyUrl,
             boolean enableCredentials,
-            boolean enableHints) {
+            boolean enableHints,
+            boolean enableAnonymousUpgrade) {
         this.appName = Preconditions.checkNotNull(appName, "appName cannot be null");
         this.providerInfo = Collections.unmodifiableList(
                 Preconditions.checkNotNull(providerInfo, "providerInfo cannot be null"));
@@ -75,6 +77,7 @@ public class FlowParameters implements Parcelable {
         this.privacyPolicyUrl = privacyPolicyUrl;
         this.enableCredentials = enableCredentials;
         this.enableHints = enableHints;
+        this.enableAnonymousUpgrade = enableAnonymousUpgrade;
     }
 
     /**
@@ -111,6 +114,7 @@ public class FlowParameters implements Parcelable {
         dest.writeString(privacyPolicyUrl);
         dest.writeInt(enableCredentials ? 1 : 0);
         dest.writeInt(enableHints ? 1 : 0);
+        dest.writeInt(enableAnonymousUpgrade ? 1 : 0);
     }
 
     @Override
@@ -129,6 +133,7 @@ public class FlowParameters implements Parcelable {
             String privacyPolicyUrl = in.readString();
             boolean enableCredentials = in.readInt() != 0;
             boolean enableHints = in.readInt() != 0;
+            boolean enableAnonymousUpgrade = in.readInt() != 0;
 
             return new FlowParameters(
                     appName,
@@ -138,7 +143,8 @@ public class FlowParameters implements Parcelable {
                     termsOfServiceUrl,
                     privacyPolicyUrl,
                     enableCredentials,
-                    enableHints);
+                    enableHints,
+                    enableAnonymousUpgrade);
         }
 
         @Override

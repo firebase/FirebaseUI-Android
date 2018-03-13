@@ -44,7 +44,9 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
+import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -162,9 +164,10 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
 
     @Override
     public void onSuccess(@NonNull final IdpResponse response) {
-        AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(credential)
+        final AuthCredential credential = ProviderUtils.getAuthCredential(response);
+
+        AnonymousUpgradeUtils
+                .signInOrLink(getFlowParams(), getFirebaseAuth(), credential)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
@@ -172,8 +175,19 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                         startSaveCredentials(firebaseUser, null, response);
                     }
                 })
-                .addOnFailureListener(new CredentialSignInHandler(
-                        this, RC_ACCOUNT_LINK, response))
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (AnonymousUpgradeUtils.isUpgradeFailure(getFlowParams(), getFirebaseAuth(), e)) {
+                            IdpResponse res = new IdpResponse.Builder(credential).build();
+                            finish(RESULT_CANCELED, res.toIntent());
+                        } else {
+                            new CredentialSignInHandler(AuthMethodPickerActivity.this,
+                                    RC_ACCOUNT_LINK,
+                                    response).onFailure(e);
+                        }
+                    }
+                })
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Firebase sign in with credential " +
                                 credential.getProvider() + " unsuccessful. " +

@@ -23,6 +23,7 @@ import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
@@ -42,6 +43,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+
+import static android.app.Activity.RESULT_CANCELED;
 
 /**
  * Fragment to display an email/name/password sign up form for new users.
@@ -255,8 +258,8 @@ public class RegisterEmailFragment extends FragmentBase implements
                         .build())
                 .build();
 
-        getAuthHelper().getFirebaseAuth()
-                .createUserWithEmailAndPassword(email, password)
+        AnonymousUpgradeUtils
+                .signUpOrLink(getFlowParams(), getAuthHelper().getFirebaseAuth(), email, password)
                 .continueWithTask(new ProfileMerger(response))
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<AuthResult>() {
@@ -268,7 +271,12 @@ public class RegisterEmailFragment extends FragmentBase implements
                 .addOnFailureListener(getActivity(), new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (e instanceof FirebaseAuthWeakPasswordException) {
+                        if (AnonymousUpgradeUtils.isUpgradeFailure(getFlowParams(), getFirebaseAuth(), e)) {
+                            // Anonymous collision
+                            IdpResponse res = new IdpResponse.Builder(EmailAuthProvider.getCredential(email, password))
+                                    .build();
+                            finish(RESULT_CANCELED, res.toIntent());
+                        } else if (e instanceof FirebaseAuthWeakPasswordException) {
                             // Password too weak
                             mPasswordInput.setError(getResources().getQuantityString(
                                     R.plurals.fui_error_weak_password, R.integer.fui_min_password_length));
@@ -323,6 +331,9 @@ public class RegisterEmailFragment extends FragmentBase implements
                                             getDialogHolder().dismissDialog();
                                         }
                                     });
+
+                            // This return statement prevents the dialog from being dismissed in
+                            // this case ... we should refactor.
                             return;
                         } else {
                             // General error message, this branch should not be invoked but
