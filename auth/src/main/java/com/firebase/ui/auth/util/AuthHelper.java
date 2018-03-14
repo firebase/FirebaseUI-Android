@@ -21,8 +21,12 @@ public class AuthHelper {
         mFlowParams = params;
     }
 
+    public FirebaseApp getFirebaseApp() {
+        return FirebaseApp.getInstance(mFlowParams.appName);
+    }
+
     public FirebaseAuth getFirebaseAuth() {
-        return FirebaseAuth.getInstance(FirebaseApp.getInstance(mFlowParams.appName));
+        return FirebaseAuth.getInstance(getFirebaseApp());
     }
 
     @Nullable

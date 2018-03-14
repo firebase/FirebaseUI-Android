@@ -18,6 +18,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 public class AuthViewModelBase extends ViewModelBase<FlowParameters> {
 
     private CredentialsClient mCredentialsClient;
+    private FirebaseApp mApp;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider mPhoneAuth;
 
@@ -29,14 +30,18 @@ public class AuthViewModelBase extends ViewModelBase<FlowParameters> {
 
     @Override
     protected void onCreate() {
-        FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
-        mAuth = FirebaseAuth.getInstance(app);
+        mApp = FirebaseApp.getInstance(getArguments().appName);
+        mAuth = FirebaseAuth.getInstance(mApp);
         mPhoneAuth = PhoneAuthProvider.getInstance(mAuth);
         mCredentialsClient = GoogleApiUtils.getCredentialsClient(getApplication());
     }
 
     protected FirebaseAuth getAuth() {
         return mAuth;
+    }
+
+    protected FirebaseApp getApp() {
+        return mApp;
     }
 
     protected PhoneAuthProvider getPhoneAuth() {

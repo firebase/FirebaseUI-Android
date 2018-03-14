@@ -6,12 +6,16 @@ import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
+import java.util.UUID;
 
 /**
  * Utilities to help with Anonymous user upgrade.
@@ -74,7 +78,25 @@ public class AnonymousUpgradeUtils {
                 && canUpgradeAnonymous(parameters, auth);
     }
 
-    private static boolean canUpgradeAnonymous(FlowParameters parameters, FirebaseAuth auth) {
+    @NonNull
+    public static Task<Boolean> validateCredential(FirebaseApp app, AuthCredential credential) {
+        // Create a new FirebaseApp for us to do this operation.
+        // TODO: is this expensive?
+        String randomName = UUID.randomUUID().toString();
+        FirebaseApp scratchApp = FirebaseApp.initializeApp(
+                app.getApplicationContext(), app.getOptions(), randomName);
+        FirebaseAuth scratchAuth = FirebaseAuth.getInstance(scratchApp);
+
+        return scratchAuth.signInWithCredential(credential)
+                .continueWith(new Continuation<AuthResult, Boolean>() {
+                    @Override
+                    public Boolean then(@NonNull Task<AuthResult> task) throws Exception {
+                        return task.isSuccessful();
+                    }
+                });
+    }
+
+    public static boolean canUpgradeAnonymous(FlowParameters parameters, FirebaseAuth auth) {
         return parameters.enableAnonymousUpgrade
                 && auth.getCurrentUser() != null
                 && auth.getCurrentUser().isAnonymous();

@@ -34,6 +34,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -45,6 +47,7 @@ import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -138,10 +141,27 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 break;
             case FAILURE:
                 getDialogHolder().dismissDialog();
-                String message = getString(getErrorMessage(resource.getException()));
-                mPasswordLayout.setError(message);
+                onSignInError(resource.getException());
                 break;
         }
+    }
+
+    private void onSignInError(Exception e) {
+        if (e instanceof FirebaseUiException) {
+            FirebaseUiException fue = (FirebaseUiException) e;
+            if (fue.getErrorCode() == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+                // TODO: Are we sure password will be here
+                String password = mPasswordField.getText().toString();
+                AuthCredential credential = EmailAuthProvider.getCredential(mEmail, password);
+
+                IdpResponse response = new IdpResponse.Builder(credential).build();
+                finish(RESULT_CANCELED, response.toIntent());
+                return;
+            }
+        }
+
+        String message = getString(getErrorMessage(e));
+        mPasswordLayout.setError(message);
     }
 
     @StringRes

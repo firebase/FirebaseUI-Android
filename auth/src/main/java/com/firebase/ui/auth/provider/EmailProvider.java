@@ -40,8 +40,9 @@ public class EmailProvider implements Provider {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_EMAIL_FLOW && resultCode == Activity.RESULT_OK) {
-            mActivity.setResult(Activity.RESULT_OK, data);
+        if (requestCode == RC_EMAIL_FLOW
+                && (resultCode == Activity.RESULT_OK || resultCode == Activity.RESULT_CANCELED)) {
+            mActivity.setResult(resultCode, data);
             mActivity.finish();
         }
     }
