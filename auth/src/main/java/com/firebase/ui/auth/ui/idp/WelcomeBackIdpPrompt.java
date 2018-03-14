@@ -40,7 +40,9 @@ import com.firebase.ui.auth.provider.TwitterProvider;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.UpgradeFailureListener;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -143,8 +145,13 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
 
         FirebaseUser currentUser = getAuthHelper().getCurrentUser();
         if (currentUser == null) {
-            getAuthHelper().getFirebaseAuth()
-                    .signInWithCredential(newCredential)
+            AnonymousUpgradeUtils.signInOrLink(this, newCredential)
+                    .addOnFailureListener(this, new UpgradeFailureListener(this, newCredential) {
+                        @Override
+                        public void onNonUpgradeFailure(@NonNull Exception e) {
+                            finishWithError(e);
+                        }
+                    })
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult result) {
@@ -158,12 +165,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
                             } else {
                                 finish(RESULT_OK, idpResponse.toIntent());
                             }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            finishWithError(e);
                         }
                     })
                     .addOnFailureListener(

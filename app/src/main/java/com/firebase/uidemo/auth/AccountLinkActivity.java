@@ -124,6 +124,7 @@ public class AccountLinkActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
+                        setStatus(null);
                         updateUI();
                     }
                 });

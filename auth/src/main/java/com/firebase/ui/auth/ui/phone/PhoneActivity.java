@@ -37,6 +37,7 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
+import com.firebase.ui.auth.util.UpgradeFailureListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
@@ -319,36 +320,11 @@ public class PhoneActivity extends AppCompatBase {
 
     private void signIn(@NonNull final PhoneAuthCredential credential) {
         AnonymousUpgradeUtils
-                .signInOrLink(getFlowParams(), getFirebaseAuth(), credential)
-                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
+                .signInOrLink(this, credential)
+                .addOnFailureListener(this, new UpgradeFailureListener(this, credential) {
                     @Override
-                    public void onSuccess(final AuthResult authResult) {
-                        mVerificationState = VerificationState.VERIFIED;
-                        completeLoadingDialog(getString(R.string.fui_verified));
-
-                        // Activity can be recreated before this message is handled
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!mIsDestroyed) {
-                                    dismissLoadingDialog();
-                                    finish(authResult.getUser());
-                                }
-                            }
-                        }, SHORT_DELAY_MILLIS);
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        dismissLoadingDialog();
-
-                        if (AnonymousUpgradeUtils.isUpgradeFailure(getFlowParams(), getFirebaseAuth(), e)) {
-                            // Anonymous upgrade failed
-                            // TODO: Do we need to create a new PhoneAuthCredential after failure?
-                            IdpResponse response = new IdpResponse.Builder(credential).build();
-                            finish(RESULT_CANCELED, response.toIntent());
-                        } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                    public void onNonUpgradeFailure(@NonNull Exception e) {
+                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             // Invalid phone verification code
                             FirebaseAuthError error = FirebaseAuthError.fromException(
                                     (FirebaseAuthInvalidCredentialsException) e);
@@ -383,6 +359,31 @@ public class PhoneActivity extends AppCompatBase {
                         } else {
                             showAlertDialog(R.string.fui_error_unknown, null);
                         }
+                    }
+                })
+                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(final AuthResult authResult) {
+                        mVerificationState = VerificationState.VERIFIED;
+                        completeLoadingDialog(getString(R.string.fui_verified));
+
+                        // Activity can be recreated before this message is handled
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!mIsDestroyed) {
+                                    dismissLoadingDialog();
+                                    finish(authResult.getUser());
+                                }
+                            }
+                        }, SHORT_DELAY_MILLIS);
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Dismiss loading dialog for any failure
+                        dismissLoadingDialog();
                     }
                 });
     }

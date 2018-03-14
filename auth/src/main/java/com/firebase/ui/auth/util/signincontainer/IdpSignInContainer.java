@@ -129,6 +129,7 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onSuccess(@NonNull final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
+        // TODO: Probably need to allow linking here
         getAuthHelper().getFirebaseAuth()
                 .signInWithCredential(credential)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {

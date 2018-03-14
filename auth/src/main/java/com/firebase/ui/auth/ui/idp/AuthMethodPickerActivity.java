@@ -45,6 +45,7 @@ import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
+import com.firebase.ui.auth.util.UpgradeFailureListener;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -167,25 +168,20 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
         final AuthCredential credential = ProviderUtils.getAuthCredential(response);
 
         AnonymousUpgradeUtils
-                .signInOrLink(getFlowParams(), getFirebaseAuth(), credential)
+                .signInOrLink(this, credential)
+                .addOnFailureListener(this, new UpgradeFailureListener(this, credential) {
+                    @Override
+                    public void onNonUpgradeFailure(@NonNull Exception e) {
+                        new CredentialSignInHandler(AuthMethodPickerActivity.this,
+                                RC_ACCOUNT_LINK,
+                                response).onFailure(e);
+                    }
+                })
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         FirebaseUser firebaseUser = authResult.getUser();
                         startSaveCredentials(firebaseUser, null, response);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        if (AnonymousUpgradeUtils.isUpgradeFailure(getFlowParams(), getFirebaseAuth(), e)) {
-                            IdpResponse res = new IdpResponse.Builder(credential).build();
-                            finish(RESULT_CANCELED, res.toIntent());
-                        } else {
-                            new CredentialSignInHandler(AuthMethodPickerActivity.this,
-                                    RC_ACCOUNT_LINK,
-                                    response).onFailure(e);
-                        }
                     }
                 })
                 .addOnFailureListener(
