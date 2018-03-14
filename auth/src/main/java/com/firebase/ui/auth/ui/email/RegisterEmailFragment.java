@@ -44,8 +44,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
-import static android.app.Activity.RESULT_CANCELED;
-
 /**
  * Fragment to display an email/name/password sign up form for new users.
  */
@@ -271,12 +269,11 @@ public class RegisterEmailFragment extends FragmentBase implements
                 .addOnFailureListener(getActivity(), new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        if (AnonymousUpgradeUtils.isUpgradeFailure(getFlowParams(), getFirebaseAuth(), e)) {
-                            // Anonymous collision
-                            IdpResponse res = new IdpResponse.Builder(EmailAuthProvider.getCredential(email, password))
-                                    .build();
-                            finish(RESULT_CANCELED, res.toIntent());
-                        } else if (e instanceof FirebaseAuthWeakPasswordException) {
+                        // NOTE: there is no need to check for a linking failure here because
+                        //       this Fragment only handles new email registrations, the check
+                        //       to ensure that the email is unique happens before this screen.
+
+                        if (e instanceof FirebaseAuthWeakPasswordException) {
                             // Password too weak
                             mPasswordInput.setError(getResources().getQuantityString(
                                     R.plurals.fui_error_weak_password, R.integer.fui_min_password_length));
