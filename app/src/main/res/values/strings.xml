@@ -68,6 +68,11 @@
     <string name="no_internet_connection">No internet connection</string>
     <string name="unknown_error">An unknown error occurred</string>
 
+    <string name="title_account_linking">FirebaseUI Account Linking</string>
+    <string name="anonymous_sign_in">Anonymous Sign In</string>
+    <string name="launch_auth_ui">Launch Auth UI</string>
+    <string name="resolve_merge_conflict">Resolve Merge Conflict</string>
+
     <!-- Auth UI - Signed in -->
     <string name="signed_in_header">You are signed in!</string>
     <string name="sign_out">Sign out</string>

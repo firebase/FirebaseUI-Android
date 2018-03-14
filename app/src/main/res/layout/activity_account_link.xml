@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:drawableTop="@drawable/firebase_auth_120dp"
-        android:text="FirebaseUI Account Linking" />
+        android:text="@string/title_account_linking" />
 
     <TextView
         android:id="@+id/status_text"
@@ -27,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:gravity="center"
+        android:textIsSelectable="true"
         tools:text="This is the status view, sometimes it will have a very long status and other..." />
 
     <Button
@@ -35,7 +36,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Anonymous Sign In" />
+        android:text="@string/anonymous_sign_in" />
 
     <Button
         android:id="@+id/begin_flow"
@@ -43,7 +44,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Launch Auth UI"
+        android:text="@string/launch_auth_ui"
         android:enabled="false" />
 
     <Button
@@ -52,7 +53,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Resolve Merge Conflict"
+        android:text="@string/resolve_merge_conflict"
         android:enabled="false" />
 
     <Button
@@ -61,7 +62,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Sign Out"
+        android:text="@string/sign_out"
         android:enabled="false" />
 
 </LinearLayout>
