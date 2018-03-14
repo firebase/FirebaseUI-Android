@@ -130,27 +130,4 @@ public final class ProviderUtils {
                     }
                 });
     }
-
-    public static Task<Boolean> hasProvider(FirebaseAuth auth,
-                                            String email,
-                                            final String provider) {
-
-        return auth.fetchProvidersForEmail(email)
-                .continueWith(new Continuation<ProviderQueryResult, Boolean>() {
-                    @Override
-                    public Boolean then(@NonNull Task<ProviderQueryResult> task) throws Exception {
-                        if (task.isSuccessful()) {
-                            // TODO?
-                            return false;
-                        }
-
-                        List<String> providers = task.getResult().getProviders();
-                        if (providers == null || providers.isEmpty()) {
-                            return false;
-                        }
-
-                        return providers.contains(provider);
-                    }
-                });
-    }
 }

@@ -79,7 +79,7 @@ public class AnonymousUpgradeUtils {
     }
 
     @NonNull
-    public static Task<Boolean> validateCredential(FirebaseApp app, AuthCredential credential) {
+    public static Task<Void> validateCredential(FirebaseApp app, AuthCredential credential) {
         // Create a new FirebaseApp for us to do this operation.
         // TODO: is this expensive?
         String randomName = UUID.randomUUID().toString();
@@ -88,10 +88,14 @@ public class AnonymousUpgradeUtils {
         FirebaseAuth scratchAuth = FirebaseAuth.getInstance(scratchApp);
 
         return scratchAuth.signInWithCredential(credential)
-                .continueWith(new Continuation<AuthResult, Boolean>() {
+                .continueWith(new Continuation<AuthResult, Void>() {
                     @Override
-                    public Boolean then(@NonNull Task<AuthResult> task) throws Exception {
-                        return task.isSuccessful();
+                    public Void then(@NonNull Task<AuthResult> task) throws Exception {
+                        if (task.isSuccessful()) {
+                            return null;
+                        } else {
+                            throw task.getException();
+                        }
                     }
                 });
     }

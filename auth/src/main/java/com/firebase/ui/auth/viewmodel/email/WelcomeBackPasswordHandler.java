@@ -71,19 +71,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
 
         // Before signing in, check to see if this is an anonymous upgrade and, if so, if we will
         // produce a conflict.
-        checkAnonymousConflict(email, password)
-                .continueWithTask(new Continuation<Void, Task<AuthResult>>() {
-                    @Override
-                    public Task<AuthResult> then(@NonNull Task<Void> task) throws Exception {
-                        // If validation failed, re-throw the exception
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }
-
-                        // Kick off the flow including signing in, linking accounts, and saving with SmartLock
-                        return getAuth().signInWithEmailAndPassword(email, password);
-                    }
-                })
+        checkConflictAndSignIn(email, password)
                 .addOnFailureListener(new TaskFailureLogger(TAG, "signInWithEmailAndPassword failed."))
                 .continueWithTask(new Continuation<AuthResult, Task<AuthResult>>() {
                     @Override
@@ -115,25 +103,27 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                 });
     }
 
-    private Task<Void> checkAnonymousConflict(String email, String password) {
+    private Task<AuthResult> checkConflictAndSignIn(String email, String password) {
+        final AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+
+        // If we're not in an upgrade situation, this is just a regular sign in
         if (!AnonymousUpgradeUtils.canUpgradeAnonymous(getArguments(), getAuth())) {
-            return Tasks.forResult(null);
+            return getAuth().signInWithCredential(credential);
         }
 
-        final AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+        // If we are in an upgrade situation, there are only failures ahead. If it's valid,
+        // that's a merge conflict. If it's not, that's just a regular sign-in failure.
         return AnonymousUpgradeUtils.validateCredential(getApp(), credential)
-                .continueWith(new Continuation<Boolean, Void>() {
+                .continueWith(new Continuation<Void, AuthResult>() {
                     @Override
-                    public Void then(@NonNull Task<Boolean> task) throws Exception {
-                        if (task.isSuccessful() && task.getResult()) {
-                            // Definitely conflict
+                    public AuthResult then(@NonNull Task<Void> task) throws Exception {
+                        if (task.isSuccessful()) {
+                            // Credential is valid, so there's gonna be a conflict (valid
+                            // email credential means already used).
                             throw new FirebaseUiException(ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT);
-                        } else if (!task.isSuccessful()) {
-                            // Unknown error
-                            throw new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR);
                         } else {
-                            // No conflict
-                            return null;
+                            // Credential is not valid so sign-in will fail, re throw the error.
+                            throw task.getException();
                         }
                     }
                 });
