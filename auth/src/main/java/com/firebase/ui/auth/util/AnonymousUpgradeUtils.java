@@ -21,8 +21,6 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AnonymousUpgradeUtils {
 
-    private static FirebaseApp sSandboxApp;
-
     /**
      * Uses type system to enforce the proper failure listener.
      */
@@ -97,14 +95,17 @@ public class AnonymousUpgradeUtils {
     }
 
     private static FirebaseApp getAppSandbox(FirebaseApp baseApp) {
-        if (sSandboxApp == null) {
-            // This is meant to take about ~50ms, so we use a singleton.
-            String sandboxName = baseApp.getName() + "_sandbox";
-            sSandboxApp = FirebaseApp.initializeApp(
-                    baseApp.getApplicationContext(), baseApp.getOptions(), sandboxName);
-        }
+        String sandboxName = baseApp.getName() + "_sandbox";
 
-        return sSandboxApp;
+        // Get or initialize the sandbox app
+        try {
+            return FirebaseApp.getInstance(sandboxName);
+        } catch (IllegalStateException e) {
+            return FirebaseApp.initializeApp(
+                    baseApp.getApplicationContext(),
+                    baseApp.getOptions(),
+                    sandboxName);
+        }
     }
 
     public static boolean canUpgradeAnonymous(FlowParameters parameters, FirebaseAuth auth) {
