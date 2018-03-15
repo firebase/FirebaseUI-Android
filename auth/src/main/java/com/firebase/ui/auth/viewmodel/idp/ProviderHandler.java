@@ -20,7 +20,7 @@ public abstract class ProviderHandler<T extends ProviderHandler.ParamsBase> exte
 
     public abstract void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
 
-    public static abstract class ParamsBase {
+    public abstract static class ParamsBase {
         private final ProvidersHandler mHandler;
 
         protected ParamsBase(ProvidersHandler handler) {
