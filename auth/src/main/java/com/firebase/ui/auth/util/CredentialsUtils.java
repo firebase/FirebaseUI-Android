@@ -14,7 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
  * Utility class for working with {@link Credential} objects.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class CredentialsUtil {
+public class CredentialsUtils {
 
     /**
      * Build a credential for the specified {@link FirebaseUser} with optional

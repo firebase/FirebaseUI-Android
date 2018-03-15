@@ -33,6 +33,8 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
+import com.firebase.ui.auth.util.ui.FlowUtils;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 import com.google.firebase.auth.FirebaseAuthException;
 
 /**
@@ -54,6 +56,8 @@ public class PhoneActivity extends AppCompatBase {
         final CheckPhoneNumberHandler handler =
                 ViewModelProviders.of(this).get(CheckPhoneNumberHandler.class);
         handler.init(getFlowParams());
+        handler.setProvidersHandler(
+                ViewModelProviders.of(this).get(ProvidersHandler.class));
         handler.getVerificationErrorListener().observe(this, new Observer<Exception>() {
             @Override
             public void onChanged(@Nullable Exception e) {
@@ -70,7 +74,7 @@ public class PhoneActivity extends AppCompatBase {
         });
         handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
-            public void onChanged(@Nullable Resource<IdpResponse> resource) {
+            public void onChanged(Resource<IdpResponse> resource) {
                 if (resource.getState() == State.LOADING) {
                     getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
                     return;
@@ -80,7 +84,10 @@ public class PhoneActivity extends AppCompatBase {
                 if (resource.getState() == State.SUCCESS) {
                     startSaveCredentials(handler.getCurrentUser(), null, resource.getValue());
                 } else {
-                    handleError(resource.getException());
+                    Exception e = resource.getException();
+                    if (!FlowUtils.handleError(PhoneActivity.this, e)) {
+                        handleError(e);
+                    }
                 }
             }
         });

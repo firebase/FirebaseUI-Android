@@ -14,8 +14,9 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.data.model.ProviderErrorException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandler;
@@ -124,8 +125,8 @@ public class FacebookSignInHandler extends ProviderHandler<FacebookParams>
         public void onCompleted(JSONObject object, GraphResponse response) {
             FacebookRequestError error = response.getError();
             if (error != null || object == null) {
-                setResult(IdpResponse.fromError(error == null ?
-                        new ProviderErrorException("Facebook graph request failed")
+                setResult(IdpResponse.fromError(error == null ? new FirebaseUiException(
+                        ErrorCodes.PROVIDER_ERROR, "Facebook graph request failed")
                         : error.getException()));
                 return;
             }

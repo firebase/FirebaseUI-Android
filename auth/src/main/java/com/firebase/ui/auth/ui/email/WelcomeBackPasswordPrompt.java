@@ -38,7 +38,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -57,15 +56,16 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         implements View.OnClickListener, ImeHelper.DonePressedListener {
     private static final String TAG = "WelcomeBackPassword";
 
-    private User mUser;
+    private IdpResponse mIdpResponse;
     private WelcomeBackPasswordHandler mHandler;
 
     private TextInputLayout mPasswordLayout;
     private EditText mPasswordField;
 
-    public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
+    public static Intent createIntent(
+            Context context, FlowParameters flowParams, IdpResponse response) {
         return HelperActivityBase.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_USER, user);
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }
 
     @Override
@@ -76,7 +76,9 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         // Show keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        mUser = User.getUser(getIntent());
+        mIdpResponse = IdpResponse.fromResultIntent(getIntent());
+        String email = mIdpResponse.getEmail();
+
         mPasswordLayout = findViewById(R.id.password_layout);
         mPasswordField = findViewById(R.id.password);
 
@@ -84,13 +86,13 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
         // Create welcome back text with email bolded.
         String bodyText =
-                getString(R.string.fui_welcome_back_password_prompt_body, mUser.getEmail());
+                getString(R.string.fui_welcome_back_password_prompt_body, email);
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
-        int emailStart = bodyText.indexOf(mUser.getEmail());
+        int emailStart = bodyText.indexOf(email);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
                 emailStart,
-                emailStart + mUser.getEmail().length(),
+                emailStart + email.length(),
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         TextView bodyTextView = findViewById(R.id.welcome_back_password_body);
@@ -154,7 +156,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         startActivity(RecoverPasswordActivity.createIntent(
                 this,
                 getFlowParams(),
-                mUser.getEmail()));
+                mIdpResponse.getEmail()));
     }
 
     @Override
@@ -176,7 +178,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
 
         AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
-        mHandler.startSignIn(mUser.getEmail(), password, mIdpResponse, authCredential);
+        mHandler.startSignIn(mIdpResponse.getEmail(), password, mIdpResponse, authCredential);
     }
 
     @Override

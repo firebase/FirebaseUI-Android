@@ -2,6 +2,7 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.support.annotation.CallSuper;
 import android.support.annotation.RestrictTo;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,6 +35,7 @@ public abstract class ViewModelBase<T> extends AndroidViewModel {
         mArguments = arguments;
     }
 
+    @CallSuper
     @Override
     protected void onCleared() {
         mIsInitialized.set(false);

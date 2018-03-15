@@ -3,9 +3,9 @@ package com.firebase.ui.auth.viewmodel.idp;
 import android.app.Application;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
-import android.util.Pair;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
@@ -31,12 +31,13 @@ public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
         super(application);
     }
 
-    public void loading() {
-        setResult(Resource.<IdpResponse>forLoading());
+    public void startSignIn(@NonNull IdpResponse inputResponse) {
+        startSignIn(ProviderUtils.getAuthCredential(inputResponse), inputResponse);
     }
 
     /** Kick off the sign-in process. */
-    public void startSignIn(@NonNull final IdpResponse inputResponse) {
+    public void startSignIn(@NonNull AuthCredential credential,
+                            @NonNull final IdpResponse inputResponse) {
         if (!inputResponse.isSuccessful()) {
             setResult(Resource.<IdpResponse>forFailure(inputResponse.getError()));
             return;
@@ -46,9 +47,8 @@ public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
             setResult(Resource.forSuccess(inputResponse));
             return;
         }
-        loading();
+        setResult(Resource.<IdpResponse>forLoading());
 
-        AuthCredential credential = ProviderUtils.getAuthCredential(inputResponse);
         Task<AuthResult> signIn;
         FirebaseUser currentUser = getCurrentUser();
         if (currentUser == null) {
@@ -70,7 +70,8 @@ public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
                         if (email != null) {
                             if (e instanceof FirebaseAuthUserCollisionException) {
                                 ProviderUtils.fetchTopProvider(getAuth(), email)
-                                        .addOnSuccessListener(new StartWelcomeBackFlow(email))
+                                        .addOnSuccessListener(
+                                                new StartWelcomeBackFlow(inputResponse))
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
@@ -86,10 +87,10 @@ public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
     }
 
     private class StartWelcomeBackFlow implements OnSuccessListener<String> {
-        private final String mEmail;
+        private final IdpResponse mResponse;
 
-        public StartWelcomeBackFlow(String email) {
-            mEmail = email;
+        public StartWelcomeBackFlow(IdpResponse response) {
+            mResponse = response;
         }
 
         @Override
@@ -99,25 +100,24 @@ public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
                         "No provider even though we received a FirebaseAuthUserCollisionException");
             }
 
-            User newUser = new User.Builder(provider, mEmail).build();
             if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
                 // Start email welcome back flow
-                mFlowHolder.getIntentStarter()
-                        .setValue(Pair.create(
-                                WelcomeBackPasswordPrompt.createIntent(
-                                        getApplication(),
-                                        getArguments(),
-                                        newUser),
-                                RC_ACCOUNT_LINK));
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                        WelcomeBackPasswordPrompt.createIntent(
+                                getApplication(),
+                                getArguments(),
+                                mResponse),
+                        RC_ACCOUNT_LINK
+                )));
             } else {
                 // Start Idp welcome back flow
-                mFlowHolder.getIntentStarter()
-                        .setValue(Pair.create(
-                                WelcomeBackIdpPrompt.createIntent(
-                                        getApplication(),
-                                        getArguments(),
-                                        newUser),
-                                RC_ACCOUNT_LINK));
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                        WelcomeBackIdpPrompt.createIntent(
+                                getApplication(),
+                                getArguments(),
+                                new User.Builder(provider, mResponse.getEmail()).build()),
+                        RC_ACCOUNT_LINK
+                )));
             }
         }
     }

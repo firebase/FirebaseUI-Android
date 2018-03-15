@@ -6,8 +6,10 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.v4.app.Fragment;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.viewmodel.FlowHolder;
+import com.google.firebase.auth.FirebaseUser;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FragmentBase extends Fragment {
@@ -21,5 +23,16 @@ public class FragmentBase extends Fragment {
 
     public FlowParameters getFlowParams() {
         return mFlowHolder.getArguments();
+    }
+
+    public ProgressDialogHolder getDialogHolder() {
+        return ((HelperActivityBase) getActivity()).getDialogHolder();
+    }
+
+    public void startSaveCredentials(
+            FirebaseUser firebaseUser,
+            @Nullable String password,
+            IdpResponse response) {
+        ((HelperActivityBase) getActivity()).startSaveCredentials(firebaseUser, password, response);
     }
 }

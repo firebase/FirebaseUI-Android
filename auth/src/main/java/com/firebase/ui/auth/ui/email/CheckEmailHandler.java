@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Pair;
 
+import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
+import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
@@ -21,11 +22,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 @SuppressWarnings("WrongConstant")
-public class CheckEmailHandler extends AuthViewModelBase implements Observer<ActivityResult> {
+public class CheckEmailHandler extends AuthViewModelBase<IdpResponse> {
     private static final int RC_HINT = 17;
 
     private MutableLiveData<User> mProviderListener = new SingleLiveEvent<>();
-    private Pair<String, Task<String>> mCachedProviderFetch;
 
     public CheckEmailHandler(Application application) {
         super(application);
@@ -39,57 +39,43 @@ public class CheckEmailHandler extends AuthViewModelBase implements Observer<Act
     }
 
     public void fetchCredential() {
-        mFlowHolder.getProgressListener().setValue(false);
-        mFlowHolder.getPendingIntentStarter().setValue(Pair.create(
+        setResult(Resource.<IdpResponse>forFailure(new PendingIntentRequiredException(
                 Credentials.getClient(getApplication()).getHintPickerIntent(
                         new HintRequest.Builder().setEmailAddressIdentifierSupported(true).build()),
-                RC_HINT));
+                RC_HINT
+        )));
     }
 
     public void fetchProvider(final String email) {
-        mFlowHolder.getProgressListener().setValue(false);
-        updateFetchProviderCache(email);
-        mCachedProviderFetch.second.addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                mFlowHolder.getProgressListener().setValue(true);
-                mProviderListener.setValue(task.isSuccessful() ?
-                        new User.Builder(task.getResult(), email).build()
-                        : null);
-            }
-        });
+        setResult(Resource.<IdpResponse>forLoading());
+        ProviderUtils.fetchTopProvider(getAuth(), email)
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        mProviderListener.setValue(task.isSuccessful() ?
+                                new User.Builder(task.getResult(), email).build()
+                                : null);
+                    }
+                });
     }
 
-    private void updateFetchProviderCache(String email) {
-        if (mCachedProviderFetch == null || !TextUtils.equals(email, mCachedProviderFetch.first)) {
-            mCachedProviderFetch = Pair.create(email, ProviderUtils.fetchTopProvider(mAuth, email));
-        }
-    }
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode != RC_HINT || resultCode != Activity.RESULT_OK) { return; }
 
-    @Override
-    public void onChanged(@Nullable ActivityResult result) {
-        if (result.getRequestCode() == RC_HINT) {
-            if (result.getResultCode() != Activity.RESULT_OK) {
-                mFlowHolder.getProgressListener().setValue(true);
-                return;
-            }
-
-            final Credential credential = result.getData().getParcelableExtra(Credential.EXTRA_KEY);
-
-            final String email = credential.getId();
-            updateFetchProviderCache(email);
-            mCachedProviderFetch.second.addOnCompleteListener(new OnCompleteListener<String>() {
-                @Override
-                public void onComplete(@NonNull Task<String> task) {
-                    mFlowHolder.getProgressListener().setValue(true);
-                    mProviderListener.setValue(task.isSuccessful() ?
-                            new User.Builder(task.getResult(), email)
-                                    .setName(credential.getName())
-                                    .setPhotoUri(credential.getProfilePictureUri())
-                                    .build()
-                            : null);
-                }
-            });
-        }
+        setResult(Resource.<IdpResponse>forLoading());
+        final Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
+        final String email = credential.getId();
+        ProviderUtils.fetchTopProvider(getAuth(), email)
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        mProviderListener.setValue(task.isSuccessful() ?
+                                new User.Builder(task.getResult(), email)
+                                        .setName(credential.getName())
+                                        .setPhotoUri(credential.getProfilePictureUri())
+                                        .build()
+                                : null);
+                    }
+                });
     }
 }

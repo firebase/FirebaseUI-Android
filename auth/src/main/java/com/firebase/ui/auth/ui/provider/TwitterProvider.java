@@ -36,7 +36,6 @@ public class TwitterProvider extends ProviderBase {
 
     @Override
     public void startLogin(@NonNull HelperActivityBase activity) {
-        getProvidersHandler().loading();
         mHandler.getClient().authorize(activity, mHandler.getCallback());
     }
 

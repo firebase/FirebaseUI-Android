@@ -7,9 +7,10 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
@@ -17,6 +18,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.HintRequest;
@@ -31,6 +33,8 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
     private static final long AUTO_RETRIEVAL_TIMEOUT_SECONDS = 120;
     private static final int RC_HINT = 14;
 
+    private ProvidersHandler mSignInHandler;
+
     private MutableLiveData<PhoneNumber> mPhoneNumberListener = new SingleLiveEvent<>();
     private MutableLiveData<Exception> mVerificationErrorListener = new SingleLiveEvent<>();
 
@@ -42,6 +46,10 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
         super(application);
     }
 
+    public void setProvidersHandler(ProvidersHandler handler) {
+        mSignInHandler = handler;
+    }
+
     public LiveData<PhoneNumber> getPhoneNumberListener() {
         return mPhoneNumberListener;
     }
@@ -51,14 +59,15 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
     }
 
     public void fetchCredential() {
-        setResult(Resource.<IdpResponse>forLoading());
-
-        if (mPhoneNumber == null) {
-            mFlowHolder.getPendingIntentStarter().setValue(Pair.create(
+        if (TextUtils.isEmpty(mPhoneNumber)) {
+            setResult(Resource.<IdpResponse>forFailure(new PendingIntentRequiredException(
                     Credentials.getClient(getApplication()).getHintPickerIntent(
                             new HintRequest.Builder().setPhoneNumberIdentifierSupported(true)
                                     .build()),
-                    RC_HINT));
+                    RC_HINT
+            )));
+        } else {
+            mPhoneNumberListener.setValue(PhoneNumberUtils.getPhoneNumber(mPhoneNumber));
         }
     }
 
@@ -108,12 +117,10 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
     }
 
     private void start(PhoneAuthCredential credential, String number) {
-        mHandler.signIn(
-                new IdpResponse.Builder(
-                        new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
-                                .setPhoneNumber(number)
-                                .build())
-                        .build(),
-                credential);
+        mSignInHandler.startSignIn(credential, new IdpResponse.Builder(
+                new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
+                        .setPhoneNumber(number)
+                        .build())
+                .build());
     }
 }

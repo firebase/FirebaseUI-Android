@@ -57,7 +57,6 @@ public class GoogleProvider extends ProviderBase {
 
     @Override
     public void startLogin(@NonNull HelperActivityBase activity) {
-        getProvidersHandler().loading();
         mHandler.start();
     }
 

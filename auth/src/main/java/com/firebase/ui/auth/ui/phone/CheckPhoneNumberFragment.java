@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
@@ -58,27 +58,18 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
                 start(number);
             }
         });
-        mHandler.getOperation()
-        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isDone) {
-                Toast.makeText(getContext(),
-                        "TODO isDone:  " + isDone,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fui_phone_layout, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mCountryListSpinner = view.findViewById(R.id.country_list);
         mPhoneInputLayout = view.findViewById(R.id.phone_layout);
         mPhoneEditText = view.findViewById(R.id.phone_number);

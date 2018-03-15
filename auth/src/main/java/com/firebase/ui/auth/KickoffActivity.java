@@ -1,25 +1,22 @@
 package com.firebase.ui.auth;
 
-import android.app.PendingIntent;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.RestrictTo;
-import android.util.Pair;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
-import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.PlayServicesHelper;
+import com.firebase.ui.auth.util.ui.FlowUtils;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends HelperActivityBase {
@@ -50,33 +47,11 @@ public class KickoffActivity extends HelperActivityBase {
                 if (resource.getState() == State.SUCCESS) {
                     finish(RESULT_OK, resource.getValue().toIntent());
                 } else {
-                    if (resource.getException() instanceof UserCancellationException) {
-                        finish(RESULT_CANCELED, null);
-                    } else {
-                        finish(RESULT_CANCELED,
-                                IdpResponse.getErrorIntent(resource.getException()));
+                    Exception e = resource.getException();
+                    if (!FlowUtils.handleError(KickoffActivity.this, e)) {
+                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
                     }
                 }
-            }
-        });
-        mKickstarter.getIntentReqester().observe(this, new Observer<Pair<Intent, Integer>>() {
-            @Override
-            public void onChanged(Pair<Intent, Integer> pair) {
-                getDialogHolder().dismissDialog();
-                startActivityForResult(pair.first, pair.second);
-            }
-        });
-        mKickstarter.getPendingIntentReqester()
-                .observe(this, new Observer<Pair<PendingIntent, Integer>>() {
-                    @Override
-                    public void onChanged(Pair<PendingIntent, Integer> pair) {
-                        getDialogHolder().dismissDialog();
-                        try {
-                            startIntentSenderForResult(
-                                    pair.first.getIntentSender(), pair.second, null, 0, 0, 0);
-                        } catch (IntentSender.SendIntentException e) {
-                            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
-                        }
             }
         });
 

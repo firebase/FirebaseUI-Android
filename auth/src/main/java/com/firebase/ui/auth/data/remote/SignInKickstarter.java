@@ -2,18 +2,16 @@ package com.firebase.ui.auth.data.remote;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.PendingIntent;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Pair;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.IntentRequiredException;
+import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.model.UserCancellationException;
@@ -25,7 +23,6 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
-import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
@@ -55,20 +52,8 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
     private static final int RC_EMAIL_FLOW = 5;
     private static final int RC_PHONE_FLOW = 6;
 
-    private MutableLiveData<Pair<Intent, Integer>> mIntentReqester = new SingleLiveEvent<>();
-    private MutableLiveData<Pair<PendingIntent, Integer>> mPendingIntentReqester =
-            new SingleLiveEvent<>();
-
     public SignInKickstarter(Application application) {
         super(application);
-    }
-
-    public LiveData<Pair<Intent, Integer>> getIntentReqester() {
-        return mIntentReqester;
-    }
-
-    public LiveData<Pair<PendingIntent, Integer>> getPendingIntentReqester() {
-        return mPendingIntentReqester;
     }
 
     public void start() {
@@ -96,9 +81,9 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                                         task.getResult(ApiException.class).getCredential());
                             } catch (ResolvableApiException e) {
                                 if (e.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-                                    mPendingIntentReqester.setValue(Pair.create(
-                                            e.getResolution(),
-                                            RC_CREDENTIALS_READ));
+                                    setResult(Resource.<IdpResponse>forFailure(
+                                            new PendingIntentRequiredException(
+                                                    e.getResolution(), RC_CREDENTIALS_READ)));
                                 }
                             } catch (ApiException e) {
                                 startAuthMethodChoice();
@@ -119,44 +104,44 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             String firstProvider = firstIdpConfig.getProviderId();
             switch (firstProvider) {
                 case EmailAuthProvider.PROVIDER_ID:
-                    mIntentReqester.setValue(Pair.create(
+                    setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                             EmailActivity.createIntent(getApplication(), getArguments()),
-                            RC_EMAIL_FLOW));
+                            RC_EMAIL_FLOW)));
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    mIntentReqester.setValue(Pair.create(
+                    setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                             PhoneActivity.createIntent(
                                     getApplication(), getArguments(), firstIdpConfig.getParams()),
-                            RC_PHONE_FLOW));
+                            RC_PHONE_FLOW)));
                     break;
                 default:
                     redirectToIdpSignIn(firstProvider, null);
                     break;
             }
         } else {
-            mIntentReqester.setValue(Pair.create(
+            setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                     AuthMethodPickerActivity.createIntent(getApplication(), getArguments()),
-                    RC_AUTH_METHOD_PICKER));
+                    RC_AUTH_METHOD_PICKER)));
         }
     }
 
     private void redirectToIdpSignIn(String provider, String email) {
         if (TextUtils.isEmpty(provider)) {
-            mIntentReqester.setValue(Pair.create(
+            setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                     EmailActivity.createIntent(getApplication(), getArguments(), email),
-                    RC_EMAIL_FLOW));
+                    RC_EMAIL_FLOW)));
             return;
         }
 
         if (provider.equals(GoogleAuthProvider.PROVIDER_ID)
                 || provider.equals(FacebookAuthProvider.PROVIDER_ID)
                 || provider.equals(TwitterAuthProvider.PROVIDER_ID)) {
-            mIntentReqester.setValue(Pair.create(
+            setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                     SingleSignInActivity.createIntent(
                             getApplication(),
                             getArguments(),
                             new User.Builder(provider, email).build()),
-                    RC_IDP_SIGNIN));
+                    RC_IDP_SIGNIN)));
         } else {
             startAuthMethodChoice();
         }
@@ -209,12 +194,12 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             if (TextUtils.equals(provider, PhoneAuthProvider.PROVIDER_ID)) {
                 Bundle args = new Bundle();
                 args.putString(ExtraConstants.EXTRA_PHONE, id);
-                mIntentReqester.setValue(Pair.create(
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         PhoneActivity.createIntent(
                                 getApplication(),
                                 getArguments(),
                                 args),
-                        RC_PHONE_FLOW));
+                        RC_PHONE_FLOW)));
             } else {
                 redirectToIdpSignIn(provider, id);
             }

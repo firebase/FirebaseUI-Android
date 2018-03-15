@@ -13,7 +13,7 @@ import android.util.Log;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.util.CredentialsUtil;
+import com.firebase.ui.auth.util.CredentialsUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.ResolutionCodes;
@@ -73,7 +73,7 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
     public void saveCredentials(FirebaseUser firebaseUser,
                                 @Nullable String password,
                                 @Nullable String accountType) {
-        saveCredentials(CredentialsUtil.buildCredential(firebaseUser, password, accountType));
+        saveCredentials(CredentialsUtils.buildCredential(firebaseUser, password, accountType));
     }
 
     /** Initialize saving a credential. */

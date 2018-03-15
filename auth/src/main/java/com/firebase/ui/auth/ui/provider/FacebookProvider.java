@@ -44,7 +44,6 @@ public class FacebookProvider extends ProviderBase {
 
     @Override
     public void startLogin(@NonNull HelperActivityBase activity) {
-        getProvidersHandler().loading();
         LoginManager.getInstance().logInWithReadPermissions(activity, mHandler.getPermissions());
     }
 

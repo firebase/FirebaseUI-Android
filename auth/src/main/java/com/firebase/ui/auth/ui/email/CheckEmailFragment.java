@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
@@ -12,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
@@ -74,14 +74,14 @@ public class CheckEmailFragment extends FragmentBase implements
 
     @Override
     @Nullable
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fui_check_email_layout, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         // Email field and validator
         mEmailLayout = view.findViewById(R.id.email_layout);
         mEmailEditText = view.findViewById(R.id.email);
@@ -91,28 +91,18 @@ public class CheckEmailFragment extends FragmentBase implements
 
         ImeHelper.setImeOnDoneListener(mEmailEditText, this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                && getFlowHolder().getParams().enableHints) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableHints) {
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
         view.findViewById(R.id.button_next).setOnClickListener(this);
-
-        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isDone) {
-                Toast.makeText(getContext(),
-                        "TODO isDone:  " + isDone,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mHandler = ViewModelProviders.of(this).get(CheckEmailHandler.class);
-        mHandler.init(getFlowHolder());
+        mHandler.init(getFlowParams());
 
         if (!(getActivity() instanceof CheckEmailListener)) {
             throw new IllegalStateException("Activity must implement CheckEmailListener");
@@ -149,15 +139,14 @@ public class CheckEmailFragment extends FragmentBase implements
         if (!TextUtils.isEmpty(email)) {
             mEmailEditText.setText(email);
             validateAndProceed();
-        } else if (getFlowHolder().getParams().enableHints) {
+        } else if (getFlowParams().enableHints) {
             mHandler.fetchCredential();
         }
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
-        super.onSaveInstanceState(outState);
     }
 
     private void validateAndProceed() {

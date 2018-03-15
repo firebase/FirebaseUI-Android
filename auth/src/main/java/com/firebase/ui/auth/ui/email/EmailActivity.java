@@ -14,11 +14,9 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
@@ -34,7 +32,6 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 
 /**
@@ -43,10 +40,7 @@ import com.google.firebase.auth.EmailAuthProvider;
  * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailActivity extends AppCompatBase implements
-        CheckEmailFragment.CheckEmailListener,
-        RegisterEmailFragment.RegistrationListener {
-
+public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener{
     private static final int RC_WELCOME_BACK_IDP = 15;
     private static final int RC_SIGN_IN = 16;
 
@@ -63,15 +57,6 @@ public class EmailActivity extends AppCompatBase implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_email);
-
-        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
-            @Override
-            public void onChanged(@Nullable IdpResponse response) {
-                if (response.isSuccessful()) {
-                    finish(RESULT_OK, response.toIntent());
-                }
-            }
-        });
 
         if (savedInstanceState != null) {
             return;
@@ -108,7 +93,8 @@ public class EmailActivity extends AppCompatBase implements
     public void onExistingEmailUser(User user) {
         // Existing email user, direct them to sign in with their password.
         startActivityForResult(
-                WelcomeBackPasswordPrompt.createIntent(this, getFlowParams(), user),
+                WelcomeBackPasswordPrompt.createIntent(
+                        this, getFlowParams(), new IdpResponse.Builder(user).build()),
                 RC_SIGN_IN);
 
         setSlideAnimation();
@@ -147,12 +133,6 @@ public class EmailActivity extends AppCompatBase implements
         } else {
             emailLayout.setError(getString(R.string.fui_error_email_does_not_exist));
         }
-    }
-
-    @Override
-    public void onRegistrationSuccess(AuthResult authResult, String password,
-                                      IdpResponse response) {
-        startSaveCredentials(authResult.getUser(), password, response);
     }
 
     private void setSlideAnimation() {

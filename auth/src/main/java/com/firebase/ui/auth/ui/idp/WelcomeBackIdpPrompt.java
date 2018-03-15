@@ -25,6 +25,8 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI.IdpConfig;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -38,6 +40,7 @@ import com.firebase.ui.auth.ui.provider.GoogleProvider;
 import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -85,8 +88,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         }
 
         if (mProvider == null) {
-            finish(RESULT_CANCELED,
-                    IdpResponse.getErrorIntent(new ProviderDisabledException(providerId)));
+            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                    new FirebaseUiException(ErrorCodes.PROVIDER_ERROR, "Provider: " + providerId)));
             return;
         }
 
@@ -114,7 +117,10 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 if (resource.getState() == State.SUCCESS) {
                     finish(RESULT_OK, resource.getValue().toIntent());
                 } else {
-                    finish(RESULT_CANCELED, IdpResponse.getErrorIntent(resource.getException()));
+                    Exception e = resource.getException();
+                    if (!FlowUtils.handleError(WelcomeBackIdpPrompt.this, e)) {
+                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
+                    }
                 }
             }
         });

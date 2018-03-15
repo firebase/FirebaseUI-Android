@@ -7,8 +7,9 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.data.model.ProviderErrorException;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
@@ -79,7 +80,8 @@ public class GoogleSignInHandler extends ProviderHandler<GoogleParams> {
                 mEmail = null;
                 start();
             } else {
-                setResult(IdpResponse.fromError(new ProviderErrorException(
+                setResult(IdpResponse.fromError(new FirebaseUiException(
+                        ErrorCodes.PROVIDER_ERROR,
                         "Code: " + e.getStatusCode() + ", message: " + e.getMessage())));
             }
         }

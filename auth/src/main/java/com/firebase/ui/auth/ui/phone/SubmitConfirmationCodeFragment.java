@@ -14,10 +14,10 @@
 
 package com.firebase.ui.auth.ui.phone;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.view.LayoutInflater;
@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.FragmentBase;
@@ -73,27 +72,18 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         super.onCreate(savedInstanceState);
         mHandler = ViewModelProviders.of(getActivity()).get(CheckPhoneNumberHandler.class);
         mPhoneNumber = getArguments().getString(ExtraConstants.EXTRA_PHONE);
-
-        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isDone) {
-                Toast.makeText(getContext(),
-                        "TODO isDone:  " + isDone,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fui_confirmation_code_layout, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mEditPhoneTextView = view.findViewById(R.id.edit_phone_number);
         mCountDownTextView = view.findViewById(R.id.ticker);
         mResendCodeTextView = view.findViewById(R.id.resend_code);
@@ -108,7 +98,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         setupCountDown(RESEND_WAIT_MILLIS);
         PreambleHandler.setup(
                 getContext(),
-                getFlowHolder().getParams(),
+                getFlowParams(),
                 R.string.fui_continue_phone_login,
                 view.<TextView>findViewById(R.id.create_account_tos));
     }
@@ -136,8 +126,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putLong(EXTRA_MILLIS_UNTIL_FINISHED, mMillisUntilFinished);
     }
 

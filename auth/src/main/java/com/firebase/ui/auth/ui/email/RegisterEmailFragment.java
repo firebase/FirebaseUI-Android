@@ -1,8 +1,10 @@
 package com.firebase.ui.auth.ui.email;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
@@ -12,15 +14,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.util.ui.fieldvalidators.BaseValidator;
@@ -28,6 +32,7 @@ import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.NoOpValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
@@ -40,15 +45,18 @@ public class RegisterEmailFragment extends FragmentBase implements
         View.OnClickListener, View.OnFocusChangeListener, ImeHelper.DonePressedListener {
     public static final String TAG = "RegisterEmailFragment";
 
+    private ProvidersHandler mHandler;
+
     private EditText mEmailEditText;
     private EditText mNameEditText;
     private EditText mPasswordEditText;
+    private TextView mAgreementText;
     private TextInputLayout mEmailInput;
     private TextInputLayout mPasswordInput;
 
     private EmailFieldValidator mEmailFieldValidator;
     private PasswordFieldValidator mPasswordFieldValidator;
-    private RequiredFieldValidator mNameValidator;
+    private BaseValidator mNameValidator;
 
     private User mUser;
 
@@ -69,57 +77,63 @@ public class RegisterEmailFragment extends FragmentBase implements
             mUser = User.getUser(savedInstanceState);
         }
 
-        getSignInHandler().getSignInLiveData().observe(this, new Observer<IdpResponse>() {
+        mHandler = ViewModelProviders.of(this).get(ProvidersHandler.class);
+        mHandler.init(getFlowParams());
+        mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
-            public void onChanged(@Nullable IdpResponse response) {
-                if (!response.isSuccessful()) {
-                    Exception e = response.getException();
-                    if (e instanceof FirebaseAuthWeakPasswordException) {
-                        mPasswordInput.setError(getResources().getQuantityString(
-                                R.plurals.fui_error_weak_password,
-                                R.integer.fui_min_password_length));
-                    } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                        mEmailInput.setError(getString(R.string.fui_invalid_email_address));
-                    } else {
-                        // General error message, this branch should not be invoked but
-                        // covers future API changes
-                        mEmailInput.setError(getString(R.string.fui_email_account_creation_error));
+            public void onChanged(Resource<IdpResponse> resource) {
+                if (resource.getState() == State.LOADING) {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
+                    return;
+                }
+                getDialogHolder().dismissDialog();
+
+                if (resource.getState() == State.SUCCESS) {
+                    startSaveCredentials(mHandler.getCurrentUser(), null, resource.getValue());
+                } else {
+                    Exception e = resource.getException();
+                    if (!FlowUtils.handleError(RegisterEmailFragment.this, e)) {
+                        if (e instanceof FirebaseAuthWeakPasswordException) {
+                            mPasswordInput.setError(getResources().getQuantityString(
+                                    R.plurals.fui_error_weak_password,
+                                    R.integer.fui_min_password_length));
+                        } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                            mEmailInput.setError(getString(R.string.fui_invalid_email_address));
+                        } else {
+                            // General error message, this branch should not be invoked but
+                            // covers future API changes
+                            mEmailInput.setError(getString(R.string.fui_email_account_creation_error));
+                        }
                     }
                 }
-            }
-        });
-        getFlowHolder().getProgressListener().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean isDone) {
-                Toast.makeText(getContext(),
-                        "TODO isDone:  " + isDone,
-                        Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fui_register_email_layout, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mEmailEditText = view.findViewById(R.id.email);
         mNameEditText = view.findViewById(R.id.name);
         mPasswordEditText = view.findViewById(R.id.password);
         mEmailInput = view.findViewById(R.id.email_layout);
         mPasswordInput = view.findViewById(R.id.password_layout);
 
-        mEmailEditText = v.findViewById(R.id.email);
-        mNameEditText = v.findViewById(R.id.name);
-        mPasswordEditText = v.findViewById(R.id.password);
-        mAgreementText = v.findViewById(R.id.create_account_text);
-        mEmailInput = v.findViewById(R.id.email_layout);
-        mPasswordInput = v.findViewById(R.id.password_layout);
+        mEmailEditText = view.findViewById(R.id.email);
+        mNameEditText = view.findViewById(R.id.name);
+        mPasswordEditText = view.findViewById(R.id.password);
+        mAgreementText = view.findViewById(R.id.create_account_text);
+        mEmailInput = view.findViewById(R.id.email_layout);
+        mPasswordInput = view.findViewById(R.id.password_layout);
+
+        TextInputLayout nameInput = view.findViewById(R.id.name_layout);
 
         // Get configuration
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
@@ -130,8 +144,8 @@ public class RegisterEmailFragment extends FragmentBase implements
                 mPasswordInput,
                 getResources().getInteger(R.integer.fui_min_password_length));
         mNameValidator = requireName
-                ? new RequiredFieldValidator(mNameInput)
-                : new NoOpValidator(mNameInput);
+                ? new RequiredFieldValidator(nameInput)
+                : new NoOpValidator(nameInput);
         mEmailFieldValidator = new EmailFieldValidator(mEmailInput);
 
         ImeHelper.setImeOnDoneListener(mPasswordEditText, this);
@@ -141,13 +155,12 @@ public class RegisterEmailFragment extends FragmentBase implements
         mPasswordEditText.setOnFocusChangeListener(this);
         view.findViewById(R.id.button_create).setOnClickListener(this);
 
-        FlowParameters params = getFlowHolder().getParams();
         PreambleHandler.setup(
                 getContext(),
-                params,
+                getFlowParams(),
                 R.string.fui_button_text_save,
                 view.<TextView>findViewById(R.id.create_account_text));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && params.enableCredentials) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getFlowParams().enableCredentials) {
             mEmailEditText.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO);
         }
 
@@ -191,13 +204,12 @@ public class RegisterEmailFragment extends FragmentBase implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelable(ExtraConstants.EXTRA_USER,
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, mEmailEditText.getText().toString())
                         .setName(mNameEditText.getText().toString())
                         .setPhotoUri(mUser.getPhotoUri())
                         .build());
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -235,7 +247,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         boolean passwordValid = mPasswordFieldValidator.validate(password);
         boolean nameValid = mNameValidator.validate(name);
         if (emailValid && passwordValid && nameValid) {
-            getSignInHandler().signIn(new IdpResponse.Builder(
+            mHandler.startSignIn(new IdpResponse.Builder(
                     new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
                             .setName(name)
                             .setPhotoUri(mUser.getPhotoUri())
