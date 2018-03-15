@@ -45,7 +45,7 @@ dependencies {
     implementation project(path: ':database')
     implementation project(path: ':storage')
 
-    implementation 'com.facebook.android:facebook-login:4.30.0'
+    implementation 'com.facebook.android:facebook-login:4.31.0'
     // Needed to override Facebook
     implementation "com.android.support:cardview-v7:$supportLibraryVersion"
     implementation "com.android.support:customtabs:$supportLibraryVersion"
