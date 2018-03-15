@@ -24,7 +24,6 @@ import com.firebase.ui.auth.testhelpers.TestHelper;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -55,7 +54,6 @@ public class AuthMethodPickerActivityTest {
         // Exclude Facebook until the `NoClassDefFoundError: com/facebook/common/R$style` exception
         // is fixed.
         List<String> providers = Arrays.asList(
-                FacebookAuthProvider.PROVIDER_ID,
                 GoogleAuthProvider.PROVIDER_ID,
                 TwitterAuthProvider.PROVIDER_ID,
                 EmailAuthProvider.PROVIDER_ID,

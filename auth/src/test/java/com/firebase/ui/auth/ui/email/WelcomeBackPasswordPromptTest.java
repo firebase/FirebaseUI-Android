@@ -18,8 +18,6 @@ import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.widget.Button;
 
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.BuildConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
@@ -52,7 +50,9 @@ public class WelcomeBackPasswordPromptTest {
         Intent startIntent = WelcomeBackPasswordPrompt.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(Collections.singletonList(EmailAuthProvider.PROVIDER_ID)),
-                new User.Builder(EmailAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build());
+                new IdpResponse.Builder(new User.Builder(
+                        EmailAuthProvider.PROVIDER_ID,
+                        TestConstants.EMAIL).build()).build());
         return Robolectric
                 .buildActivity(WelcomeBackPasswordPrompt.class, startIntent)
                 .create()

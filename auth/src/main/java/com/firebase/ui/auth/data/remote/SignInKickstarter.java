@@ -207,9 +207,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             }
         } else {
             final IdpResponse response = new IdpResponse.Builder(
-                    new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build())
-                    .setPassword(password)
-                    .build();
+                    new User.Builder(EmailAuthProvider.PROVIDER_ID, id).build()).build();
 
             getAuth().signInWithEmailAndPassword(id, password)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {

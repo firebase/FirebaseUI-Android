@@ -252,7 +252,6 @@ public class RegisterEmailFragment extends FragmentBase implements
                             .setName(name)
                             .setPhotoUri(mUser.getPhotoUri())
                             .build())
-                    .setPassword(password)
                     .build());
         }
     }
