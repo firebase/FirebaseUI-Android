@@ -84,6 +84,8 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                                     setResult(Resource.<IdpResponse>forFailure(
                                             new PendingIntentRequiredException(
                                                     e.getResolution(), RC_CREDENTIALS_READ)));
+                                } else {
+                                    startAuthMethodChoice();
                                 }
                             } catch (ApiException e) {
                                 startAuthMethodChoice();
