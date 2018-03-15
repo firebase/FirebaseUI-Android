@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
@@ -31,6 +33,8 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.Collections;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
@@ -77,7 +81,7 @@ public class WelcomeBackPasswordHandlerTest {
         AuthCredential credential = FacebookAuthProvider.getCredential(TestConstants.TOKEN);
 
         // Mock sign in to always succeed
-        when(mMockAuth.signInWithEmailAndPassword(TestConstants.EMAIL, TestConstants.PASSWORD))
+        when(mMockAuth.signInWithCredential(any(EmailAuthCredential.class)))
                 .thenReturn(AutoCompleteTask.forSuccess(FakeAuthResult.INSTANCE));
 
         // Mock linking to always succeed
@@ -98,8 +102,12 @@ public class WelcomeBackPasswordHandlerTest {
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
 
         // Verify that sign in is called with the right arguments
-        verify(mMockAuth).signInWithEmailAndPassword(
-                TestConstants.EMAIL, TestConstants.PASSWORD);
+        ArgumentCaptor<AuthCredential> credentialCaptor = ArgumentCaptor.forClass(AuthCredential.class);
+        verify(mMockAuth).signInWithCredential(credentialCaptor.capture());
+
+        // Check that the email credential matches
+        AuthCredential cred = credentialCaptor.getValue();
+        checkCredential(cred);
 
         // Verify that account linking is attempted
         verify(FakeAuthResult.INSTANCE.getUser()).linkWithCredential(credential);
@@ -113,7 +121,7 @@ public class WelcomeBackPasswordHandlerTest {
         mHandler.getSignInOperation().observeForever(mResponseObserver);
 
         // Mock sign in to always fail
-        when(mMockAuth.signInWithEmailAndPassword(any(String.class), any(String.class)))
+        when(mMockAuth.signInWithCredential(any(EmailAuthCredential.class)))
                 .thenReturn(AutoContinueTask.<AuthResult>forFailure(new Exception("FAILED")));
 
         // Kick off the sign in flow
@@ -123,10 +131,22 @@ public class WelcomeBackPasswordHandlerTest {
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isLoading()));
 
         // Verify that sign in is called with the right arguments
-        verify(mMockAuth).signInWithEmailAndPassword(
-                TestConstants.EMAIL, TestConstants.PASSWORD);
+        ArgumentCaptor<AuthCredential> credentialCaptor = ArgumentCaptor.forClass(AuthCredential.class);
+        verify(mMockAuth).signInWithCredential(credentialCaptor.capture());
+
+        // Check that the email credential matches
+        AuthCredential cred = credentialCaptor.getValue();
+        checkCredential(cred);
 
         // Verify that we get a failure event
         verify(mResponseObserver).onChanged(argThat(ResourceMatchers.<IdpResponse>isFailure()));
+    }
+
+    private void checkCredential(AuthCredential cred) {
+        assertTrue(cred instanceof EmailAuthCredential);
+
+        EmailAuthCredential emailCred = (EmailAuthCredential) cred;
+        assertEquals(emailCred.getEmail(), TestConstants.EMAIL);
+        assertEquals(emailCred.getPassword(), TestConstants.PASSWORD);
     }
 }

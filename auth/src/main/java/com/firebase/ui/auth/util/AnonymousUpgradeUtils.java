@@ -15,13 +15,13 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
-import java.util.UUID;
-
 /**
  * Utilities to help with Anonymous user upgrade.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AnonymousUpgradeUtils {
+
+    private static FirebaseApp sSandboxApp;
 
     /**
      * Uses type system to enforce the proper failure listener.
@@ -80,14 +80,10 @@ public class AnonymousUpgradeUtils {
 
     @NonNull
     public static Task<Void> validateCredential(FirebaseApp app, AuthCredential credential) {
-        // Create a new FirebaseApp for us to do this operation.
-        // TODO: is this expensive?
-        String randomName = UUID.randomUUID().toString();
-        FirebaseApp scratchApp = FirebaseApp.initializeApp(
-                app.getApplicationContext(), app.getOptions(), randomName);
-        FirebaseAuth scratchAuth = FirebaseAuth.getInstance(scratchApp);
+        // Do this operation in an Auth sandbox
+        FirebaseAuth sandboxAuth = FirebaseAuth.getInstance(getAppSandbox(app));
 
-        return scratchAuth.signInWithCredential(credential)
+        return sandboxAuth.signInWithCredential(credential)
                 .continueWith(new Continuation<AuthResult, Void>() {
                     @Override
                     public Void then(@NonNull Task<AuthResult> task) throws Exception {
@@ -98,6 +94,17 @@ public class AnonymousUpgradeUtils {
                         }
                     }
                 });
+    }
+
+    private static FirebaseApp getAppSandbox(FirebaseApp baseApp) {
+        if (sSandboxApp == null) {
+            // This is meant to take about ~50ms, so we use a singleton.
+            String sandboxName = baseApp.getName() + "_sandbox";
+            sSandboxApp = FirebaseApp.initializeApp(
+                    baseApp.getApplicationContext(), baseApp.getOptions(), sandboxName);
+        }
+
+        return sSandboxApp;
     }
 
     public static boolean canUpgradeAnonymous(FlowParameters parameters, FirebaseAuth auth) {
