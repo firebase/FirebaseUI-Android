@@ -39,7 +39,9 @@ import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.idp.CredentialSignInHandler;
+import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.UpgradeFailureListener;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthCredential;
@@ -129,9 +131,15 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
     @Override
     public void onSuccess(@NonNull final IdpResponse response) {
         AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        // TODO: Probably need to allow linking here
-        getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(credential)
+
+        AnonymousUpgradeUtils.signInOrLink(mActivity, credential)
+                .addOnFailureListener(mActivity, new UpgradeFailureListener(mActivity, credential) {
+                    @Override
+                    protected void onNonUpgradeFailure(@NonNull Exception e) {
+                        new CredentialSignInHandler(
+                                mActivity, RC_WELCOME_BACK_IDP, response).onFailure(e);
+                    }
+                })
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
@@ -139,8 +147,6 @@ public class IdpSignInContainer extends FragmentBase implements IdpCallback {
                         mActivity.startSaveCredentials(firebaseUser, null, response);
                     }
                 })
-                .addOnFailureListener(new CredentialSignInHandler(
-                        mActivity, RC_WELCOME_BACK_IDP, response))
                 .addOnFailureListener(
                         new TaskFailureLogger(TAG, "Failure authenticating with credential " +
                                 credential.getProvider()));
