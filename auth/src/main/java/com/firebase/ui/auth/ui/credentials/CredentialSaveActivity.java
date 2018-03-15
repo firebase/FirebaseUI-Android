@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,8 +14,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.viewmodel.PendingResolution;
-import com.firebase.ui.auth.viewmodel.ResolutionCodes;
+import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 
@@ -24,8 +22,7 @@ import com.google.android.gms.auth.api.credentials.Credential;
  * Invisible Activity used for saving credentials to SmartLock.
  */
 public class CredentialSaveActivity extends HelperActivityBase {
-
-    private static final String TAG = "SmartlockSave";
+    private static final String TAG = "CredentialSaveActivity";
 
     private SmartLockHandler mHandler;
     private IdpResponse mIdpResponse;
@@ -50,7 +47,7 @@ public class CredentialSaveActivity extends HelperActivityBase {
         Credential credential = getIntent().getParcelableExtra(ExtraConstants.EXTRA_CREDENTIAL);
         mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
 
-        mHandler.getSaveOperation().observe(this, new Observer<Resource<Void>>() {
+        mHandler.getOperation().observe(this, new Observer<Resource<Void>>() {
             @Override
             public void onChanged(@Nullable Resource<Void> resource) {
                 if (resource == null) {
@@ -62,20 +59,8 @@ public class CredentialSaveActivity extends HelperActivityBase {
             }
         });
 
-        mHandler.getPendingResolution().observe(this, new Observer<PendingResolution>() {
-            @Override
-            public void onChanged(@Nullable PendingResolution resolution) {
-                if (resolution == null) {
-                    Log.w(TAG, "getPendingResolution:onChanged: null");
-                    return;
-                }
-
-                onPendingResolution(resolution);
-            }
-        });
-
         // Avoid double-saving
-        Resource<Void> currentOp = mHandler.getSaveOperation().getValue();
+        Resource<Void> currentOp = mHandler.getOperation().getValue();
         if (currentOp == null) {
             Log.d(TAG, "Launching save operation.");
             mHandler.saveCredentials(credential);
@@ -86,10 +71,8 @@ public class CredentialSaveActivity extends HelperActivityBase {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Forward activity results to the ViewModel
-        if (!mHandler.onActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+        super.onActivityResult(requestCode, resultCode, data);
+        mHandler.onActivityResult(requestCode, resultCode);
     }
 
     private void onSaveOperation(@NonNull Resource<Void> resource) {
@@ -99,23 +82,10 @@ public class CredentialSaveActivity extends HelperActivityBase {
                 break;
             case SUCCESS:
             case FAILURE:
-                finish(RESULT_OK, mIdpResponse.toIntent());
+                if (!FlowUtils.handleError(this, resource.getException())) {
+                    finish(RESULT_OK, mIdpResponse.toIntent());
+                }
                 break;
         }
     }
-
-    private void onPendingResolution(@NonNull PendingResolution resolution) {
-        if (resolution.getRequestCode() == ResolutionCodes.RC_CRED_SAVE) {
-            try {
-                startIntentSenderForResult(
-                        resolution.getPendingIntent().getIntentSender(),
-                        resolution.getRequestCode(),
-                        null, 0, 0, 0);
-            } catch (IntentSender.SendIntentException e) {
-                Log.e(TAG, "Failed to send resolution.", e);
-                finish(RESULT_OK, mIdpResponse.toIntent());
-            };
-        }
-    }
-
 }

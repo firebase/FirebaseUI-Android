@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.arch.lifecycle.Observer;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
@@ -42,7 +43,6 @@ public class SmartLockHandlerTest {
     @Mock FirebaseAuth mMockAuth;
     @Mock CredentialsClient mMockCredentials;
     @Mock Observer<Resource<Void>> mResultObserver;
-    @Mock Observer<PendingResolution> mResolutionObserver;
 
     private SmartLockHandler mHandler;
 
@@ -61,7 +61,7 @@ public class SmartLockHandlerTest {
 
     @Test
     public void testSaveCredentials_success() {
-        mHandler.getSaveOperation().observeForever(mResultObserver);
+        mHandler.getOperation().observeForever(mResultObserver);
 
         when(mMockCredentials.save(any(Credential.class)))
                 .thenReturn(AutoCompleteTask.<Void>forSuccess(null));
@@ -74,8 +74,7 @@ public class SmartLockHandlerTest {
 
     @Test
     public void testSaveCredentials_resolution() {
-        mHandler.getSaveOperation().observeForever(mResultObserver);
-        mHandler.getPendingResolution().observeForever(mResolutionObserver);
+        mHandler.getOperation().observeForever(mResultObserver);
 
         // Mock credentials to throw an RAE
         ResolvableApiException mockRae = mock(ResolvableApiException.class);
@@ -86,12 +85,13 @@ public class SmartLockHandlerTest {
         mHandler.saveCredentials(TestHelper.getMockFirebaseUser(), TestConstants.PASSWORD, null);
 
         // Make sure we get a resolution
-        ArgumentCaptor<PendingResolution> resolveCaptor = ArgumentCaptor.forClass(PendingResolution.class);
-        verify(mResolutionObserver).onChanged(resolveCaptor.capture());
+        ArgumentCaptor<Resource<Void>> resolveCaptor = ArgumentCaptor.forClass(Resource.class);
+        verify(mResultObserver).onChanged(resolveCaptor.capture());
 
         // Call activity result
-        PendingResolution pr = resolveCaptor.getValue();
-        mHandler.onActivityResult(pr.getRequestCode(), Activity.RESULT_OK, null);
+        PendingIntentRequiredException e =
+                ((PendingIntentRequiredException) resolveCaptor.getValue().getException());
+        mHandler.onActivityResult(e.getRequestCode(), Activity.RESULT_OK);
 
         // Make sure we get success
         verify(mResultObserver).onChanged(argThat(ResourceMatchers.<Void>isSuccess()));
@@ -99,7 +99,7 @@ public class SmartLockHandlerTest {
 
     @Test
     public void testSaveCredentials_failure() {
-        mHandler.getSaveOperation().observeForever(mResultObserver);
+        mHandler.getOperation().observeForever(mResultObserver);
 
         when(mMockCredentials.save(any(Credential.class)))
                 .thenReturn(AutoCompleteTask.<Void>forFailure(new Exception("FAILED")));
