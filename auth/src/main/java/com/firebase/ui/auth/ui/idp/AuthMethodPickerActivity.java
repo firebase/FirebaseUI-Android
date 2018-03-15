@@ -171,7 +171,7 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
                 .signInOrLink(this, credential)
                 .addOnFailureListener(this, new UpgradeFailureListener(this, credential) {
                     @Override
-                    public void onNonUpgradeFailure(@NonNull Exception e) {
+                    protected void onNonUpgradeFailure(@NonNull Exception e) {
                         new CredentialSignInHandler(AuthMethodPickerActivity.this,
                                 RC_ACCOUNT_LINK,
                                 response).onFailure(e);

@@ -44,6 +44,7 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -323,7 +324,7 @@ public class PhoneActivity extends AppCompatBase {
                 .signInOrLink(this, credential)
                 .addOnFailureListener(this, new UpgradeFailureListener(this, credential) {
                     @Override
-                    public void onNonUpgradeFailure(@NonNull Exception e) {
+                    protected void onNonUpgradeFailure(@NonNull Exception e) {
                         if (e instanceof FirebaseAuthInvalidCredentialsException) {
                             // Invalid phone verification code
                             FirebaseAuthError error = FirebaseAuthError.fromException(

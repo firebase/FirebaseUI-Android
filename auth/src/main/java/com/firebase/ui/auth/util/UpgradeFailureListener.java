@@ -9,6 +9,7 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 import java.lang.ref.WeakReference;
 
@@ -34,14 +35,24 @@ public abstract class UpgradeFailureListener implements OnFailureListener {
     @Override
     public void onFailure(@NonNull Exception e) {
         if (AnonymousUpgradeUtils.isUpgradeFailure(mParameters, mAuth, e)) {
-            IdpResponse response = new IdpResponse.Builder(mCredential).build();
-            if (mActivity.get() != null) {
-                mActivity.get().finish(Activity.RESULT_CANCELED, response.toIntent());
-            }
+            onUpgradeFailure((FirebaseAuthUserCollisionException) e);
         } else {
             onNonUpgradeFailure(e);
         }
     }
 
-    public abstract void onNonUpgradeFailure(@NonNull Exception e);
+    protected void onUpgradeFailure(@NonNull FirebaseAuthUserCollisionException e) {
+        // In the case of Phone Auth the exception contains an updated credential we can
+        // user since the other credential is expired after one use.
+        AuthCredential credential = e.getUpdatedCredential() != null
+                ? e.getUpdatedCredential()
+                : mCredential;
+
+        IdpResponse response = new IdpResponse.Builder(credential).build();
+        if (mActivity.get() != null) {
+            mActivity.get().finish(Activity.RESULT_CANCELED, response.toIntent());
+        }
+    }
+
+    protected abstract void onNonUpgradeFailure(@NonNull Exception e);
 }

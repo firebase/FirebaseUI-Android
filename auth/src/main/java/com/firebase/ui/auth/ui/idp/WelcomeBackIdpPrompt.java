@@ -51,6 +51,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -148,7 +149,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase implements IdpCallback {
             AnonymousUpgradeUtils.signInOrLink(this, newCredential)
                     .addOnFailureListener(this, new UpgradeFailureListener(this, newCredential) {
                         @Override
-                        public void onNonUpgradeFailure(@NonNull Exception e) {
+                        protected void onNonUpgradeFailure(@NonNull Exception e) {
                             finishWithError(e);
                         }
                     })
