@@ -33,7 +33,6 @@ import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 
 /**
@@ -103,7 +102,8 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     public void onExistingIdpUser(User user) {
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
-                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
+                WelcomeBackIdpPrompt.createIntent(
+                        this, getFlowParams(), new IdpResponse.Builder(user).build()),
                 RequestCodes.WELCOME_BACK_IDP_FLOW);
         setSlideAnimation();
     }

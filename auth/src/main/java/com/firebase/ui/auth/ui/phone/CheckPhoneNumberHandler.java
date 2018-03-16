@@ -18,7 +18,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.SimpleProvidersHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.HintRequest;
@@ -33,7 +33,7 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
     private static final long AUTO_RETRIEVAL_TIMEOUT_SECONDS = 120;
     private static final int RC_HINT = 14;
 
-    private ProvidersHandler mSignInHandler;
+    private SimpleProvidersHandler mSignInHandler;
 
     private MutableLiveData<PhoneNumber> mPhoneNumberListener = new SingleLiveEvent<>();
     private MutableLiveData<Exception> mVerificationErrorListener = new SingleLiveEvent<>();
@@ -46,7 +46,7 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
         super(application);
     }
 
-    public void setProvidersHandler(ProvidersHandler handler) {
+    public void setProvidersHandler(SimpleProvidersHandler handler) {
         mSignInHandler = handler;
     }
 

@@ -34,7 +34,7 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.util.ui.FlowUtils;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.SimpleProvidersHandler;
 import com.google.firebase.auth.FirebaseAuthException;
 
 /**
@@ -57,7 +57,7 @@ public class PhoneActivity extends AppCompatBase {
                 ViewModelProviders.of(this).get(CheckPhoneNumberHandler.class);
         handler.init(getFlowParams());
         handler.setProvidersHandler(
-                ViewModelProviders.of(this).get(ProvidersHandler.class));
+                ViewModelProviders.of(this).get(SimpleProvidersHandler.class));
         handler.getVerificationErrorListener().observe(this, new Observer<Exception>() {
             @Override
             public void onChanged(@Nullable Exception e) {

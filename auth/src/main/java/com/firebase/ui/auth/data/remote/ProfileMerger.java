@@ -22,6 +22,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>> {
+    private static final String TAG = "ProfileMerger";
+
     private final IdpResponse mResponse;
 
     public ProfileMerger(IdpResponse response) {

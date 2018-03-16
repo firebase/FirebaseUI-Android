@@ -72,7 +72,7 @@ public class CredentialSaveActivity extends HelperActivityBase {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mHandler.onActivityResult(requestCode, resultCode, data);
+        mHandler.onActivityResult(requestCode, resultCode);
     }
 
     private void onSaveOperation(@NonNull Resource<Void> resource) {

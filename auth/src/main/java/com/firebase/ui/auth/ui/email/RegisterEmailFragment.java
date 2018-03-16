@@ -22,10 +22,8 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.PreambleHandler;
@@ -34,7 +32,7 @@ import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.NoOpValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.SimpleProvidersHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
@@ -47,7 +45,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         View.OnClickListener, View.OnFocusChangeListener, ImeHelper.DonePressedListener {
     public static final String TAG = "RegisterEmailFragment";
 
-    private ProvidersHandler mHandler;
+    private SimpleProvidersHandler mHandler;
 
     private EditText mEmailEditText;
     private EditText mNameEditText;
@@ -79,7 +77,7 @@ public class RegisterEmailFragment extends FragmentBase implements
             mUser = User.getUser(savedInstanceState);
         }
 
-        mHandler = ViewModelProviders.of(this).get(ProvidersHandler.class);
+        mHandler = ViewModelProviders.of(this).get(SimpleProvidersHandler.class);
         mHandler.init(getFlowParams());
         mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
