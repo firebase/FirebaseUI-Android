@@ -33,7 +33,7 @@ public enum FirebaseAuthError {
 
     ERROR_CREDENTIAL_ALREADY_IN_USE("This credential is already associated with a different user account."),
 
-    ERROR_USER_DISABLED( "The user account has been disabled by an administrator."),
+    ERROR_USER_DISABLED("The user account has been disabled by an administrator."),
 
     ERROR_USER_TOKEN_EXPIRED("The user's credential has expired. The user must sign in again."),
 
