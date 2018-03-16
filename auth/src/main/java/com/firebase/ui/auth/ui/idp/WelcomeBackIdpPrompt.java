@@ -32,7 +32,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
-import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
@@ -41,7 +40,7 @@ import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.FlowUtils;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.LinkingProvidersHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -50,9 +49,10 @@ import com.google.firebase.auth.TwitterAuthProvider;
 public class WelcomeBackIdpPrompt extends AppCompatBase {
     private Provider mProvider;
 
-    public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
+    public static Intent createIntent(
+            Context context, FlowParameters flowParams, IdpResponse response) {
         return HelperActivityBase.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_USER, user);
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }
 
     @Override
@@ -63,17 +63,19 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     }
 
     private void setupProvider() {
-        final ProvidersHandler handler = ViewModelProviders.of(this).get(ProvidersHandler.class);
+        IdpResponse prevResponse = IdpResponse.fromResultIntent(getIntent());
+
+        LinkingProvidersHandler handler =
+                ViewModelProviders.of(this).get(LinkingProvidersHandler.class);
         handler.init(getFlowParams());
+        handler.setAttemptedSignInResponse(prevResponse);
 
-        User oldUser = User.getUser(getIntent());
-
-        String providerId = oldUser.getProviderId();
+        String providerId = prevResponse.getProviderType();
         for (IdpConfig idpConfig : getFlowParams().providerInfo) {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mProvider = new GoogleProvider(handler, this, oldUser.getEmail());
+                        mProvider = new GoogleProvider(handler, this, prevResponse.getEmail());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         mProvider = new FacebookProvider(handler, this);
@@ -98,7 +100,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
 
         ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
                 R.string.fui_welcome_back_idp_prompt,
-                oldUser.getEmail(),
+                prevResponse.getEmail(),
                 mProvider.getName()));
 
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {

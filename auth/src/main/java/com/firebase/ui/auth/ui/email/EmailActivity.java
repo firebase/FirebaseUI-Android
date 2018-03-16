@@ -95,9 +95,7 @@ public class EmailActivity extends AppCompatBase implements
         // Existing email user, direct them to sign in with their password.
         startActivityForResult(
                 WelcomeBackPasswordPrompt.createIntent(
-                        this,
-                        getFlowParams(),
-                        new IdpResponse.Builder(user).build()),
+                        this, getFlowParams(), new IdpResponse.Builder(user).build()),
                 RequestCodes.WELCOME_BACK_EMAIL_FLOW);
 
         setSlideAnimation();
@@ -107,7 +105,8 @@ public class EmailActivity extends AppCompatBase implements
     public void onExistingIdpUser(User user) {
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
-                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
+                WelcomeBackIdpPrompt.createIntent(
+                        this, getFlowParams(), new IdpResponse.Builder(user).build()),
                 RequestCodes.WELCOME_BACK_IDP_FLOW);
         setSlideAnimation();
     }

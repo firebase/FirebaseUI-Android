@@ -5,26 +5,27 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.facebook.WebDialog;
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.remote.FacebookParams;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.firebase.auth.FacebookAuthProvider;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FacebookProvider extends ProviderBase {
     private final FacebookSignInHandler mHandler;
 
-    public FacebookProvider(ProvidersHandler handler, HelperActivityBase activity) {
+    public FacebookProvider(ProvidersHandlerBase handler, HelperActivityBase activity) {
         super(handler);
         WebDialog.setWebDialogTheme(activity.getFlowParams().themeId);
         mHandler = ViewModelProviders.of(activity).get(FacebookSignInHandler.class);
-        mHandler.init(new FacebookParams(
+        mHandler.init(new FacebookSignInHandler.Params(
                 handler,
                 ProviderUtils.getConfigFromIdpsOrThrow(
                         activity.getFlowParams().providerInfo, FacebookAuthProvider.PROVIDER_ID)));

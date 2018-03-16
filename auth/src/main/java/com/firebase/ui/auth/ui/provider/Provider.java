@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.ui.HelperActivityBase;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public interface Provider {
     /** Retrieves the name of the IDP, for display on-screen. */
     @NonNull
