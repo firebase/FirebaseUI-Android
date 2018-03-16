@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.remote.GoogleParams;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -18,6 +18,7 @@ import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GoogleProvider extends ProviderBase {
     private final GoogleSignInHandler mHandler;
 
@@ -30,7 +31,7 @@ public class GoogleProvider extends ProviderBase {
                           @Nullable String email) {
         super(handler);
         mHandler = ViewModelProviders.of(activity).get(GoogleSignInHandler.class);
-        mHandler.init(new GoogleParams(
+        mHandler.init(new GoogleSignInHandler.Params(
                 handler,
                 ProviderUtils.getConfigFromIdpsOrThrow(
                         activity.getFlowParams().providerInfo, GoogleAuthProvider.PROVIDER_ID),

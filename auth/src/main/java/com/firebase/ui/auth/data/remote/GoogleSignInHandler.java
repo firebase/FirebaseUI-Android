@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -16,6 +17,8 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandler;
+import com.firebase.ui.auth.viewmodel.idp.ProviderParamsBase;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -23,7 +26,8 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class GoogleSignInHandler extends ProviderHandler<GoogleParams> {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+public class GoogleSignInHandler extends ProviderHandler<GoogleSignInHandler.Params> {
     private static final String TAG = "GoogleSignInHandler";
 
     private MutableLiveData<Resource<Intent>> mRequest = new MutableLiveData<>();
@@ -47,9 +51,9 @@ public class GoogleSignInHandler extends ProviderHandler<GoogleParams> {
 
     @Override
     protected void onCreate() {
-        GoogleParams params = getArguments();
-        mConfig = params.getConfig();
-        mEmail = params.getEmail();
+        Params params = getArguments();
+        mConfig = params.config;
+        mEmail = params.email;
     }
 
     public void start() {
@@ -81,6 +85,8 @@ public class GoogleSignInHandler extends ProviderHandler<GoogleParams> {
             setResult(createIdpResponse(account));
         } catch (ApiException e) {
             if (e.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
+                // If we get INVALID_ACCOUNT, it means the pre-set account was not available on the
+                // device so set the email to null and launch the sign-in picker.
                 mEmail = null;
                 start();
             } else {
@@ -92,6 +98,17 @@ public class GoogleSignInHandler extends ProviderHandler<GoogleParams> {
                         ErrorCodes.PROVIDER_ERROR,
                         "Code: " + e.getStatusCode() + ", message: " + e.getMessage())));
             }
+        }
+    }
+
+    public static final class Params extends ProviderParamsBase {
+        private final AuthUI.IdpConfig config;
+        @Nullable private final String email;
+
+        public Params(ProvidersHandler handler, AuthUI.IdpConfig config, @Nullable String email) {
+            super(handler);
+            this.config = config;
+            this.email = email;
         }
     }
 }

@@ -5,21 +5,22 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.remote.TwitterParams;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class TwitterProvider extends ProviderBase {
     private final TwitterSignInHandler mHandler;
 
     public TwitterProvider(ProvidersHandler handler, HelperActivityBase activity) {
         super(handler);
         mHandler = ViewModelProviders.of(activity).get(TwitterSignInHandler.class);
-        mHandler.init(new TwitterParams(handler));
+        mHandler.init(new TwitterSignInHandler.Params(handler));
     }
 
     @NonNull

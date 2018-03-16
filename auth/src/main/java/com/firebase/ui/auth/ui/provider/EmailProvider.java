@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -14,6 +15,7 @@ import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailProvider extends ProviderBase {
     public EmailProvider(ProvidersHandler handler) {
         super(handler);
