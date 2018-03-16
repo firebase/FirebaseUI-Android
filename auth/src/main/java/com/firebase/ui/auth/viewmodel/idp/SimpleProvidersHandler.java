@@ -12,48 +12,29 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
-    public ProvidersHandler(Application application) {
+public class SimpleProvidersHandler extends ProvidersHandlerBase {
+    public SimpleProvidersHandler(Application application) {
         super(application);
     }
 
-    public void startSignIn(@NonNull IdpResponse inputResponse) {
-        if (checkInvalidStateForSignIn(inputResponse)) return;
-        startSignIn(ProviderUtils.getAuthCredential(inputResponse), inputResponse);
-    }
-
-    /** Kick off the sign-in process. */
-    public void startSignIn(@NonNull AuthCredential credential,
-                            @NonNull final IdpResponse inputResponse) {
-        if (checkInvalidStateForSignIn(inputResponse)) return;
-        setResult(Resource.<IdpResponse>forLoading());
-
-        Task<AuthResult> signIn;
-        FirebaseUser currentUser = getCurrentUser();
-        if (currentUser == null) {
-            signIn = getAuth().signInWithCredential(credential);
-        } else {
-            signIn = currentUser.linkWithCredential(credential);
-        }
-        signIn.continueWithTask(new ProfileMerger(inputResponse))
+    @Override
+    protected void signIn(@NonNull AuthCredential credential,
+                          @NonNull final IdpResponse inputResponse) {
+        getAuth().signInWithCredential(credential)
+                .continueWithTask(new ProfileMerger(inputResponse))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {
@@ -81,19 +62,6 @@ public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
                         }
                     }
                 });
-    }
-
-    private boolean checkInvalidStateForSignIn(@NonNull IdpResponse inputResponse) {
-        if (!inputResponse.isSuccessful()) {
-            setResult(Resource.<IdpResponse>forFailure(inputResponse.getError()));
-            return true;
-        }
-        if (inputResponse.getProviderType().equals(EmailAuthProvider.PROVIDER_ID)
-                || inputResponse.getProviderType().equals(PhoneAuthProvider.PROVIDER_ID)) {
-            setResult(Resource.forSuccess(inputResponse));
-            return true;
-        }
-        return false;
     }
 
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -143,11 +111,10 @@ public class ProvidersHandler extends AuthViewModelBase<IdpResponse> {
                         WelcomeBackIdpPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
-                                new User.Builder(provider, mResponse.getEmail()).build()),
+                                mResponse),
                         RequestCodes.ACCOUNT_LINK_FLOW
                 )));
             }
         }
     }
 }
-

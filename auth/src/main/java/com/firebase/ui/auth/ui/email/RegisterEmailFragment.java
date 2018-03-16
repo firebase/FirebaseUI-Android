@@ -311,8 +311,11 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                         WelcomeBackIdpPrompt.createIntent(
                                                                 getContext(),
                                                                 getFlowParams(),
-                                                                new User.Builder(provider, email)
-                                                                        .build()),
+                                                                new IdpResponse.Builder(
+                                                                        new User.Builder(
+                                                                                provider, email
+                                                                        ).build()
+                                                                ).build()),
                                                         RequestCodes.WELCOME_BACK_IDP_FLOW);
                                             }
                                         }

@@ -32,7 +32,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
-import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
@@ -41,19 +40,19 @@ import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.FlowUtils;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.LinkingProvidersHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase {
-    private ProvidersHandler mHandler;
     private Provider mProvider;
 
-    public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
+    public static Intent createIntent(
+            Context context, FlowParameters flowParams, IdpResponse response) {
         return HelperActivityBase.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_USER, user);
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
     }
 
     @Override
@@ -64,23 +63,25 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     }
 
     private void setupProvider() {
-        mHandler = ViewModelProviders.of(this).get(ProvidersHandler.class);
-        mHandler.init(getFlowParams());
+        IdpResponse prevResponse = IdpResponse.fromResultIntent(getIntent());
 
-        User oldUser = User.getUser(getIntent());
+        LinkingProvidersHandler handler =
+                ViewModelProviders.of(this).get(LinkingProvidersHandler.class);
+        handler.init(getFlowParams());
+        handler.setAttemptedSignInResponse(prevResponse);
 
-        String providerId = oldUser.getProviderId();
+        String providerId = prevResponse.getProviderType();
         for (IdpConfig idpConfig : getFlowParams().providerInfo) {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mProvider = new GoogleProvider(mHandler, this, oldUser.getEmail());
+                        mProvider = new GoogleProvider(handler, this, prevResponse.getEmail());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mProvider = new FacebookProvider(mHandler, this);
+                        mProvider = new FacebookProvider(handler, this);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
-                        mProvider = new TwitterProvider(mHandler, this);
+                        mProvider = new TwitterProvider(handler, this);
                         break;
                     default:
                         throw new IllegalStateException("Unknown provider: " + providerId);
@@ -99,7 +100,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
 
         ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
                 R.string.fui_welcome_back_idp_prompt,
-                oldUser.getEmail(),
+                prevResponse.getEmail(),
                 mProvider.getName()));
 
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
@@ -109,7 +110,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             }
         });
 
-        mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(Resource<IdpResponse> resource) {
                 if (resource.getState() == State.LOADING) {
@@ -135,7 +136,6 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mHandler.onActivityResult(requestCode, resultCode, data);
         mProvider.onActivityResult(requestCode, resultCode, data);
     }
 }
