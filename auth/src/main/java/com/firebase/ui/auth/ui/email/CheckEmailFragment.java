@@ -150,23 +150,15 @@ public class CheckEmailFragment extends FragmentBase implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RequestCodes.CRED_HINT:
-                if (data != null) {
-                    mLastCredential = data.getParcelableExtra(Credential.EXTRA_KEY);
-                    if (mLastCredential != null) {
-                        // Get the email from the credential
-                        mEmailEditText.setText(mLastCredential.getId());
+        if (requestCode == RequestCodes.CRED_HINT && data != null) {
+            mLastCredential = data.getParcelableExtra(Credential.EXTRA_KEY);
+            if (mLastCredential != null) {
+                // Get the email from the credential
+                mEmailEditText.setText(mLastCredential.getId());
 
-                        // Attempt to proceed
-                        validateAndProceed();
-                    }
-                }
-                break;
-            case RequestCodes.WELCOME_BACK_EMAIL_FLOW:
-            case RequestCodes.WELCOME_BACK_IDP_FLOW:
-                finish(resultCode, data);
-                break;
+                // Attempt to proceed
+                validateAndProceed();
+            }
         }
     }
 

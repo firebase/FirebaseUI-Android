@@ -32,24 +32,24 @@ public class SimpleProvidersHandler extends ProvidersHandlerBase {
 
     @Override
     protected void signIn(@NonNull AuthCredential credential,
-                          @NonNull final IdpResponse inputResponse) {
+                          @NonNull final IdpResponse response) {
         getAuth().signInWithCredential(credential)
-                .continueWithTask(new ProfileMerger(inputResponse))
+                .continueWithTask(new ProfileMerger(response))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {
-                        setResult(Resource.forSuccess(inputResponse));
+                        setResult(Resource.forSuccess(response));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        String email = inputResponse.getEmail();
+                        String email = response.getEmail();
                         if (email != null) {
                             if (e instanceof FirebaseAuthUserCollisionException) {
                                 ProviderUtils.fetchTopProvider(getAuth(), email)
                                         .addOnSuccessListener(
-                                                new StartWelcomeBackFlow(inputResponse))
+                                                new StartWelcomeBackFlow(response))
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {

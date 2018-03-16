@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.idp;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -41,42 +40,7 @@ public class SingleSignInActivity extends HelperActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            startLogin();
-        }
-    }
-
-    private void startLogin() {
-        User user = User.getUser(getIntent());
-        String provider = user.getProviderId();
-
-        AuthUI.IdpConfig providerConfig =
-                ProviderUtils.getConfigFromIdps(getFlowParams().providerInfo, provider);
-        if (providerConfig == null) {
-            // we don't have a provider to handle this
-            finish(Activity.RESULT_CANCELED, IdpResponse.getErrorIntent(
-                    new FirebaseUiException(ErrorCodes.PROVIDER_ERROR,
-                            "Provider not enabled: " + provider)));
-            return;
-        }
-
-        mHandler = ViewModelProviders.of(this).get(SimpleProvidersHandler.class);
-        mHandler.init(getFlowParams());
-
-        switch (provider) {
-            case GoogleAuthProvider.PROVIDER_ID:
-                mProvider = new GoogleProvider(mHandler, this, user.getEmail());
-                break;
-            case FacebookAuthProvider.PROVIDER_ID:
-                mProvider = new FacebookProvider(mHandler, this);
-                break;
-            case TwitterAuthProvider.PROVIDER_ID:
-                mProvider = new TwitterProvider(mHandler, this);
-                break;
-            default:
-                throw new IllegalStateException(
-                        "Provider config id does not equal Firebase auth one");
-        }
+        if (!setup()) { return; }
 
         mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
@@ -99,7 +63,43 @@ public class SingleSignInActivity extends HelperActivityBase {
                 }
             }
         });
-        mProvider.startLogin(this);
+
+        if (savedInstanceState == null) {
+            mProvider.startLogin(this);
+        }
+    }
+
+    private boolean setup() {
+        User user = User.getUser(getIntent());
+        String provider = user.getProviderId();
+
+        AuthUI.IdpConfig providerConfig =
+                ProviderUtils.getConfigFromIdps(getFlowParams().providerInfo, provider);
+        if (providerConfig == null) {
+            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
+                    ErrorCodes.DEVELOPER_ERROR,
+                    "Provider not enabled: " + provider)));
+            return false;
+        }
+
+        mHandler = ViewModelProviders.of(this).get(SimpleProvidersHandler.class);
+        mHandler.init(getFlowParams());
+
+        switch (provider) {
+            case GoogleAuthProvider.PROVIDER_ID:
+                mProvider = new GoogleProvider(mHandler, this, user.getEmail());
+                break;
+            case FacebookAuthProvider.PROVIDER_ID:
+                mProvider = new FacebookProvider(mHandler, this);
+                break;
+            case TwitterAuthProvider.PROVIDER_ID:
+                mProvider = new TwitterProvider(mHandler, this);
+                break;
+            default:
+                throw new IllegalStateException("Invalid provider id: " + provider);
+        }
+
+        return true;
     }
 
     @Override

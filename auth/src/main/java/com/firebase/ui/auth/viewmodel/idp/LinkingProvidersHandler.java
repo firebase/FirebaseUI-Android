@@ -29,11 +29,11 @@ public class LinkingProvidersHandler extends ProvidersHandlerBase {
 
     @Override
     protected void signIn(@NonNull AuthCredential credential,
-                          @NonNull final IdpResponse inputResponse) {
+                          @NonNull final IdpResponse response) {
         FirebaseUser currentUser = getCurrentUser();
         if (currentUser == null) {
             getAuth().signInWithCredential(credential)
-                    .addOnSuccessListener(new StartLink(inputResponse))
+                    .addOnSuccessListener(new StartLink(response))
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
@@ -48,7 +48,7 @@ public class LinkingProvidersHandler extends ProvidersHandlerBase {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             // I'm not sure why we ignore failures here, but this mirrors previous
                             // behavior.
-                            setResult(Resource.forSuccess(inputResponse));
+                            setResult(Resource.forSuccess(response));
                         }
                     });
         }

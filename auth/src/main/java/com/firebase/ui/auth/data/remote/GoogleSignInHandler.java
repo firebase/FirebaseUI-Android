@@ -16,8 +16,8 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandler;
-import com.firebase.ui.auth.viewmodel.idp.ProviderParamsBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -27,7 +27,7 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class GoogleSignInHandler extends ProviderHandler<GoogleSignInHandler.Params> {
+public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler.Params> {
     private static final String TAG = "GoogleSignInHandler";
 
     private MutableLiveData<Resource<Intent>> mRequest = new MutableLiveData<>();
@@ -101,7 +101,7 @@ public class GoogleSignInHandler extends ProviderHandler<GoogleSignInHandler.Par
         }
     }
 
-    public static final class Params extends ProviderParamsBase {
+    public static final class Params extends ProviderHandlerParamsBase {
         private final AuthUI.IdpConfig config;
         @Nullable private final String email;
 

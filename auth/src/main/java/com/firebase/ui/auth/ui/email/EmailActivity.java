@@ -83,10 +83,9 @@ public class EmailActivity extends AppCompatBase implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RequestCodes.WELCOME_BACK_EMAIL_FLOW:
-            case RequestCodes.WELCOME_BACK_IDP_FLOW:
-                finish(resultCode, data);
+        if (requestCode == RequestCodes.WELCOME_BACK_EMAIL_FLOW
+                || requestCode == RequestCodes.WELCOME_BACK_IDP_FLOW) {
+            finish(resultCode, data);
         }
     }
 

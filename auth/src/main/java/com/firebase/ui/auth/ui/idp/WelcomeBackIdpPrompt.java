@@ -59,12 +59,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_idp_prompt_layout);
-        setupProvider();
-    }
 
-    private void setupProvider() {
         IdpResponse prevResponse = IdpResponse.fromResultIntent(getIntent());
-
         LinkingProvidersHandler handler =
                 ViewModelProviders.of(this).get(LinkingProvidersHandler.class);
         handler.init(getFlowParams());
