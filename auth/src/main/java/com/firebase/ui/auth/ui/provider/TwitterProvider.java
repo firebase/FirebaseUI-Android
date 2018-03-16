@@ -11,13 +11,13 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class TwitterProvider extends ProviderBase {
     private final TwitterSignInHandler mHandler;
 
-    public TwitterProvider(ProvidersHandler handler, HelperActivityBase activity) {
+    public TwitterProvider(ProvidersHandlerBase handler, HelperActivityBase activity) {
         super(handler);
         mHandler = ViewModelProviders.of(activity).get(TwitterSignInHandler.class);
         mHandler.init(new TwitterSignInHandler.Params(handler));
