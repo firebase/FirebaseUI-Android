@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
@@ -30,8 +31,8 @@ import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -85,9 +86,13 @@ public class SmartLockHandlerTest {
         // Kick off save
         mHandler.saveCredentials(TestHelper.getMockFirebaseUser(), TestConstants.PASSWORD, null);
 
+        InOrder inOrder = inOrder(mResultObserver);
+
+        inOrder.verify(mResultObserver).onChanged(argThat(ResourceMatchers.<Void>isLoading()));
+
         // Make sure we get a resolution
         ArgumentCaptor<Resource<Void>> resolveCaptor = ArgumentCaptor.forClass(Resource.class);
-        verify(mResultObserver, times(2)).onChanged(resolveCaptor.capture());
+        inOrder.verify(mResultObserver).onChanged(resolveCaptor.capture());
 
         // Call activity result
         PendingIntentRequiredException e =
@@ -95,7 +100,7 @@ public class SmartLockHandlerTest {
         mHandler.onActivityResult(e.getRequestCode(), Activity.RESULT_OK);
 
         // Make sure we get success
-        verify(mResultObserver).onChanged(argThat(ResourceMatchers.<Void>isSuccess()));
+        inOrder.verify(mResultObserver).onChanged(argThat(ResourceMatchers.<Void>isSuccess()));
     }
 
     @Test
