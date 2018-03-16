@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Läser in…</string>
     <string name="fui_sign_in_default">Logga in</string>
     <string name="fui_idp_name_google">Google</string>
@@ -47,7 +47,6 @@
     <string name="fui_error_unknown">Ett okänt fel uppstod.</string>
     <string name="fui_error_invalid_password">Felaktigt lösenord.</string>
     <string name="fui_accessibility_logo">Appens logotyp</string>
-    <string name="fui_signed_in_with_specific_account">Inloggad som %1$s</string>
     <string name="fui_verify_phone_number_title">Ange ditt telefonnummer</string>
     <string name="fui_invalid_phone_number">Ange ett giltigt telefonnummer</string>
     <string name="fui_enter_confirmation_code">Ange den sexsiffriga koden vi skickade till</string>

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">لوڈ ہو رہا ہے…</string>
     <string name="fui_sign_in_default">سائن ان کریں</string>
     <string name="fui_idp_name_google">Google</string>
@@ -47,7 +47,6 @@
     <string name="fui_error_unknown">ایک نامعلوم خرابی پیش آ گئی۔</string>
     <string name="fui_error_invalid_password">غلط پاس ورڈ۔</string>
     <string name="fui_accessibility_logo">ایپ لوگو</string>
-    <string name="fui_signed_in_with_specific_account">%1$s کے بطور سائن ان ہوا</string>
     <string name="fui_verify_phone_number_title">اپنا فون نمبر درج کریں</string>
     <string name="fui_invalid_phone_number">براہ کرم ایک درست فون نمبر درج کریں</string>
     <string name="fui_enter_confirmation_code">ہماری جانب سے حسبِ ذیل کو بھیجا گیا 6 عدد کا کوڈ درج کریں</string>

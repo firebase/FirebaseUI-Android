@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Načítava sa…</string>
     <string name="fui_sign_in_default">Prihlásiť sa</string>
     <string name="fui_idp_name_google">Google</string>
@@ -47,7 +47,6 @@
     <string name="fui_error_unknown">Vyskytla sa neznáma chyba.</string>
     <string name="fui_error_invalid_password">Nesprávne heslo.</string>
     <string name="fui_accessibility_logo">Logo aplikácie</string>
-    <string name="fui_signed_in_with_specific_account">Je prihlásený účet %1$s</string>
     <string name="fui_verify_phone_number_title">Zadajte svoje telefónne číslo</string>
     <string name="fui_invalid_phone_number">Zadajte platné telefónne číslo</string>
     <string name="fui_enter_confirmation_code">Zadajte 6-ciferný kód, ktorý sme odoslali na adresu</string>

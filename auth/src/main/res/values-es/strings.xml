@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Cargando…</string>
     <string name="fui_sign_in_default">Iniciar sesión</string>
     <string name="fui_idp_name_google">Google</string>
@@ -47,7 +47,6 @@
     <string name="fui_error_unknown">Se ha producido un error desconocido.</string>
     <string name="fui_error_invalid_password">La contraseña no es correcta.</string>
     <string name="fui_accessibility_logo">Logotipo de la aplicación</string>
-    <string name="fui_signed_in_with_specific_account">Has iniciado sesión como %1$s</string>
     <string name="fui_verify_phone_number_title">Introduce tu número de teléfono</string>
     <string name="fui_invalid_phone_number">Introduce un número de teléfono válido</string>
     <string name="fui_enter_confirmation_code">Introduce el código de seis dígitos que hemos enviado a</string>

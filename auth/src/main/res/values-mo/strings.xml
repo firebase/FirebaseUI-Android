@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Se încarcă…</string>
     <string name="fui_sign_in_default">Conectați-vă</string>
     <string name="fui_idp_name_google">Google</string>
@@ -47,7 +47,6 @@
     <string name="fui_error_unknown">A apărut o eroare necunoscută.</string>
     <string name="fui_error_invalid_password">Parolă incorectă</string>
     <string name="fui_accessibility_logo">Sigla aplicației</string>
-    <string name="fui_signed_in_with_specific_account">V-ați conectat ca %1$s</string>
     <string name="fui_verify_phone_number_title">Introduceți numărul de telefon</string>
     <string name="fui_invalid_phone_number">Introduceți un număr valid de telefon</string>
     <string name="fui_enter_confirmation_code">Introduceți codul din 6 cifre pe care l-am trimis la</string>

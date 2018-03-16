@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">正在加载…</string>
     <string name="fui_sign_in_default">登录</string>
     <string name="fui_idp_name_google">Google</string>
@@ -47,7 +47,6 @@
     <string name="fui_error_unknown">发生未知错误。</string>
     <string name="fui_error_invalid_password">密码不正确。</string>
     <string name="fui_accessibility_logo">应用徽标</string>
-    <string name="fui_signed_in_with_specific_account">已使用 %1$s 登录</string>
     <string name="fui_verify_phone_number_title">输入您的电话号码</string>
     <string name="fui_invalid_phone_number">请输入有效的电话号码</string>
     <string name="fui_enter_confirmation_code">输入我们发送至以下电话号码的 6 位数验证码</string>
