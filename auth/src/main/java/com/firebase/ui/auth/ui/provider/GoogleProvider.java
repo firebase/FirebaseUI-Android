@@ -6,39 +6,43 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.remote.GoogleParams;
+import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GoogleProvider extends ProviderBase {
-    private static final int RC_SIGN_IN = 13;
-
     private final GoogleSignInHandler mHandler;
 
-    public GoogleProvider(ProvidersHandler handler, HelperActivityBase activity) {
+    public GoogleProvider(ProvidersHandlerBase handler, HelperActivityBase activity) {
         this(handler, activity, null);
     }
 
-    public GoogleProvider(final ProvidersHandler handler,
+    public GoogleProvider(final ProvidersHandlerBase handler,
                           final HelperActivityBase activity,
                           @Nullable String email) {
         super(handler);
         mHandler = ViewModelProviders.of(activity).get(GoogleSignInHandler.class);
-        mHandler.init(new GoogleParams(
+        mHandler.init(new GoogleSignInHandler.Params(
                 handler,
-                ProviderUtils.getConfigFromIdps(
+                ProviderUtils.getConfigFromIdpsOrThrow(
                         activity.getFlowParams().providerInfo, GoogleAuthProvider.PROVIDER_ID),
                 email));
-        mHandler.getRequest().observe(activity, new Observer<Intent>() {
+        mHandler.getRequest().observe(activity, new Observer<Resource<Intent>>() {
             @Override
-            public void onChanged(Intent intent) {
-                activity.startActivityForResult(intent, RC_SIGN_IN);
+            public void onChanged(Resource<Intent> resource) {
+                if (!resource.isUsed()) {
+                    activity.startActivityForResult(
+                            resource.getValue(), RequestCodes.GOOGLE_PROVIDER);
+                }
             }
         });
     }
@@ -62,7 +66,7 @@ public class GoogleProvider extends ProviderBase {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == RequestCodes.GOOGLE_PROVIDER) {
             mHandler.onActivityResult(requestCode, resultCode, data);
         }
     }

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">लोड हो रहा है…</string>
     <string name="fui_sign_in_default">प्रवेश करें</string>
     <string name="fui_idp_name_google">Google</string>
@@ -47,7 +47,6 @@
     <string name="fui_error_unknown">कोई अज्ञात गड़बड़ी हुई है.</string>
     <string name="fui_error_invalid_password">गलत पासवर्ड.</string>
     <string name="fui_accessibility_logo">ऐप्लिकेशन लोगो</string>
-    <string name="fui_signed_in_with_specific_account">%1$s के रूप में प्रवेश किया</string>
     <string name="fui_verify_phone_number_title">अपना फ़ोन नंबर डालें</string>
     <string name="fui_invalid_phone_number">कोई मान्य फ़ोन नंबर डालें</string>
     <string name="fui_enter_confirmation_code">हमारी ओर से भेजा गया 6-अंकों वाला कोड डालें</string>

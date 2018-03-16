@@ -1,15 +1,18 @@
 package com.firebase.ui.auth.ui.provider;
 
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import android.support.annotation.RestrictTo;
 
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
+
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class ProviderBase implements Provider {
-    private final ProvidersHandler mHandler;
+    private final ProvidersHandlerBase mHandler;
 
-    public ProviderBase(ProvidersHandler handler) {
+    public ProviderBase(ProvidersHandlerBase handler) {
         mHandler = handler;
     }
 
-    protected ProvidersHandler getProvidersHandler() {
+    protected ProvidersHandlerBase getProvidersHandler() {
         return mHandler;
     }
 }

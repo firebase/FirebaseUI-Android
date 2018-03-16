@@ -138,7 +138,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         TextInputLayout nameInput = view.findViewById(R.id.name_layout);
 
         // Get configuration
-        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
+        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
         boolean requireName = emailConfig.getParams()
                 .getBoolean(ExtraConstants.EXTRA_REQUIRE_NAME, true);

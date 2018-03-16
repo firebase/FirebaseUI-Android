@@ -113,6 +113,16 @@ public final class ProviderUtils {
         return null;
     }
 
+    @NonNull
+    public static AuthUI.IdpConfig getConfigFromIdpsOrThrow(List<AuthUI.IdpConfig> idps,
+                                                            String id) {
+        AuthUI.IdpConfig config = getConfigFromIdps(idps, id);
+        if (config == null) {
+            throw new IllegalStateException("Provider " + id + " not found.");
+        }
+        return config;
+    }
+
     public static Task<String> fetchTopProvider(FirebaseAuth auth, @NonNull String email) {
         if (TextUtils.isEmpty(email)) {
             return Tasks.forException(new NullPointerException("Email cannot be empty"));

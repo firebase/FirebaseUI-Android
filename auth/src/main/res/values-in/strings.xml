@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">Memuat…</string>
     <string name="fui_sign_in_default">Login</string>
     <string name="fui_idp_name_google">Google</string>
@@ -47,7 +47,6 @@
     <string name="fui_error_unknown">Terjadi error yang tidak diketahui.</string>
     <string name="fui_error_invalid_password">Sandi salah.</string>
     <string name="fui_accessibility_logo">Logo aplikasi</string>
-    <string name="fui_signed_in_with_specific_account">Login sebagai %1$s</string>
     <string name="fui_verify_phone_number_title">Masukkan nomor telepon Anda</string>
     <string name="fui_invalid_phone_number">Masukkan nomor telepon yang valid</string>
     <string name="fui_enter_confirmation_code">Masukkan kode 6 digit yang kami kirimkan ke</string>

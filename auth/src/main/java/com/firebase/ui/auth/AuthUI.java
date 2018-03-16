@@ -276,7 +276,7 @@ public class AuthUI {
                 .disableAutoSignIn()
                 .continueWithTask(new Continuation<Void, Task<Void>>() {
                     @Override
-                    public Task<Void> then(@NonNull Task<Void> task) throws Exception {
+                    public Task<Void> then(@NonNull Task<Void> task) {
                         // We want to ignore a specific exception, since it's not a good reason
                         // to fail (see Issue 1156).
                         if (!task.isSuccessful() && (task.getException() instanceof ApiException)) {
@@ -365,7 +365,7 @@ public class AuthUI {
         }
 
         try {
-            TwitterSignInHandler.signOut(context);
+            TwitterSignInHandler.signOut();
         } catch (NoClassDefFoundError e) {
             // See comment above
             // Note: we need to have separate try/catch statements since devs can include

@@ -5,18 +5,19 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.email.EmailActivity;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailProvider extends ProviderBase {
-    private static final int RC_EMAIL_FLOW = 8;
-
-    public EmailProvider(ProvidersHandler handler) {
+    public EmailProvider(ProvidersHandlerBase handler) {
         super(handler);
     }
 
@@ -36,12 +37,12 @@ public class EmailProvider extends ProviderBase {
     public void startLogin(@NonNull HelperActivityBase activity) {
         activity.startActivityForResult(
                 EmailActivity.createIntent(activity, activity.getFlowParams()),
-                RC_EMAIL_FLOW);
+                RequestCodes.RC_EMAIL_FLOW);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == RC_EMAIL_FLOW && resultCode == Activity.RESULT_OK) {
+        if (requestCode == RequestCodes.RC_EMAIL_FLOW && resultCode == Activity.RESULT_OK) {
             getProvidersHandler().startSignIn(IdpResponse.fromResultIntent(data));
         }
     }

@@ -32,6 +32,8 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 
 /**
@@ -40,10 +42,7 @@ import com.google.firebase.auth.EmailAuthProvider;
  * WelcomeBackIdpPrompt}.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener{
-    private static final int RC_WELCOME_BACK_IDP = 15;
-    private static final int RC_SIGN_IN = 16;
-
+public class EmailActivity extends AppCompatBase implements CheckEmailFragment.CheckEmailListener {
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createIntent(context, flowParams, null);
     }
@@ -83,8 +82,8 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case RC_SIGN_IN:
-            case RC_WELCOME_BACK_IDP:
+            case RequestCodes.WELCOME_BACK_EMAIL_FLOW:
+            case RequestCodes.WELCOME_BACK_IDP_FLOW:
                 finish(resultCode, data);
         }
     }
@@ -95,7 +94,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         startActivityForResult(
                 WelcomeBackPasswordPrompt.createIntent(
                         this, getFlowParams(), new IdpResponse.Builder(user).build()),
-                RC_SIGN_IN);
+                RequestCodes.WELCOME_BACK_EMAIL_FLOW);
 
         setSlideAnimation();
     }
@@ -105,7 +104,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
                 WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
-                RC_WELCOME_BACK_IDP);
+                RequestCodes.WELCOME_BACK_IDP_FLOW);
         setSlideAnimation();
     }
 
@@ -116,7 +115,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
 
         TextInputLayout emailLayout = findViewById(R.id.email_layout);
 
-        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
+        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
         if (emailConfig.getParams().getBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, true)) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(user);

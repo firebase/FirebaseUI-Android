@@ -5,11 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandler;
+import com.firebase.ui.auth.viewmodel.idp.ProviderParamsBase;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -20,37 +24,35 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
-public class TwitterSignInHandler extends ProviderHandler<TwitterParams> {
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+public class TwitterSignInHandler extends ProviderHandler<TwitterSignInHandler.Params> {
     private final TwitterAuthClient mClient;
     private final Callback mCallback = new Callback();
 
     public TwitterSignInHandler(Application application) {
         super(application);
-        initialize(getApplication());
+        initialize();
         mClient = new TwitterAuthClient();
     }
 
-    public static void signOut(Context context) {
+    public static void signOut() {
         try {
-            signOut();
+            TwitterCore.getInstance();
         } catch (IllegalStateException e) {
-            initialize(context);
+            initialize();
         }
 
-        signOut();
+        TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 
-    private static void initialize(Context context) {
+    private static void initialize() {
+        Context context = AuthUI.getApplicationContext();
         TwitterConfig config = new TwitterConfig.Builder(context)
                 .twitterAuthConfig(new TwitterAuthConfig(
                         context.getString(R.string.twitter_consumer_key),
                         context.getString(R.string.twitter_consumer_secret)))
                 .build();
         Twitter.initialize(config);
-    }
-
-    private static void signOut() throws IllegalStateException {
-        TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 
     private static IdpResponse createIdpResponse(
@@ -109,4 +111,9 @@ public class TwitterSignInHandler extends ProviderHandler<TwitterParams> {
         }
     }
 
+    public static final class Params extends ProviderParamsBase {
+        public Params(ProvidersHandlerBase handler) {
+            super(handler);
+        }
+    }
 }
