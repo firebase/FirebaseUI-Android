@@ -20,7 +20,6 @@ public final class FlowUtils {
         if (!(e instanceof StatefulException) || ((StatefulException) e).isUsed()) {
             return false;
         }
-        ((StatefulException) e).setUsed(true);
 
         if (e instanceof IntentRequiredException) {
             IntentRequiredException typed = (IntentRequiredException) e;

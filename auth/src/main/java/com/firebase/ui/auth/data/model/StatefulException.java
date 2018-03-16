@@ -14,7 +14,7 @@ public class StatefulException extends FirebaseUiException {
         return mUsed;
     }
 
-    public void setUsed(boolean used) {
+    protected void setUsed(boolean used) {
         mUsed = used;
     }
 }

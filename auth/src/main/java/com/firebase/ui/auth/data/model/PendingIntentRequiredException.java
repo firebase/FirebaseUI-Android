@@ -16,10 +16,12 @@ public class PendingIntentRequiredException extends StatefulException {
 
     @NonNull
     public PendingIntent getPendingIntent() {
+        setUsed(true);
         return mPendingIntent;
     }
 
     public int getRequestCode() {
+        setUsed(true);
         return mRequestCode;
     }
 }

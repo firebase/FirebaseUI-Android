@@ -16,10 +16,12 @@ public class IntentRequiredException extends StatefulException {
 
     @NonNull
     public Intent getIntent() {
+        setUsed(true);
         return mIntent;
     }
 
     public int getRequestCode() {
+        setUsed(true);
         return mRequestCode;
     }
 }
