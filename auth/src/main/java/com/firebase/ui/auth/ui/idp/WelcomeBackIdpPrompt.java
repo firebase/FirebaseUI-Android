@@ -48,6 +48,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase {
+    private ProvidersHandler mHandler;
     private Provider mProvider;
 
     public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
@@ -63,8 +64,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     }
 
     private void setupProvider() {
-        final ProvidersHandler handler = ViewModelProviders.of(this).get(ProvidersHandler.class);
-        handler.init(getFlowParams());
+        mHandler = ViewModelProviders.of(this).get(ProvidersHandler.class);
+        mHandler.init(getFlowParams());
 
         User oldUser = User.getUser(getIntent());
 
@@ -73,13 +74,13 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mProvider = new GoogleProvider(handler, this, oldUser.getEmail());
+                        mProvider = new GoogleProvider(mHandler, this, oldUser.getEmail());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mProvider = new FacebookProvider(handler, this);
+                        mProvider = new FacebookProvider(mHandler, this);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
-                        mProvider = new TwitterProvider(handler, this);
+                        mProvider = new TwitterProvider(mHandler, this);
                         break;
                     default:
                         throw new IllegalStateException("Unknown provider: " + providerId);
@@ -108,7 +109,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             }
         });
 
-        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(Resource<IdpResponse> resource) {
                 if (resource.getState() == State.LOADING) {
@@ -134,6 +135,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mHandler.onActivityResult(requestCode, resultCode, data);
         mProvider.onActivityResult(requestCode, resultCode, data);
     }
 }

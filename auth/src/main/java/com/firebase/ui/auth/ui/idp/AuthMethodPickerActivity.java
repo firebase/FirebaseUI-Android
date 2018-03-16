@@ -59,6 +59,7 @@ import java.util.List;
 public class AuthMethodPickerActivity extends AppCompatBase {
     private static final String TAG = "AuthMethodPicker";
 
+    private ProvidersHandler mHandler;
     private List<Provider> mProviders;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
@@ -72,10 +73,10 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         setContentView(R.layout.fui_auth_method_picker_layout);
 
         FlowParameters params = getFlowParams();
-        final ProvidersHandler handler = ViewModelProviders.of(this).get(ProvidersHandler.class);
-        handler.init(params);
+        mHandler = ViewModelProviders.of(this).get(ProvidersHandler.class);
+        mHandler.init(params);
 
-        populateIdpList(params.providerInfo, handler);
+        populateIdpList(params.providerInfo, mHandler);
 
         int logoId = params.logoId;
         if (logoId == AuthUI.NO_LOGO) {
@@ -92,7 +93,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             logo.setImageResource(logoId);
         }
 
-        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(Resource<IdpResponse> resource) {
                 if (resource.getState() == State.LOADING) {
@@ -104,7 +105,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 if (resource.isUsed()) { return; }
 
                 if (resource.getState() == State.SUCCESS) {
-                    startSaveCredentials(handler.getCurrentUser(), null, resource.getValue());
+                    startSaveCredentials(mHandler.getCurrentUser(), null, resource.getValue());
                 } else {
                     Exception e = resource.getException();
                     if (!FlowUtils.handleError(AuthMethodPickerActivity.this, e)) {
@@ -160,6 +161,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mHandler.onActivityResult(requestCode, resultCode, data);
         for (Provider provider : mProviders) {
             provider.onActivityResult(requestCode, resultCode, data);
         }
