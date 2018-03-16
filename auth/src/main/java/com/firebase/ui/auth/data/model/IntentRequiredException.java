@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.data.model;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.ErrorCodes;
@@ -11,12 +12,13 @@ public class IntentRequiredException extends FirebaseUiException {
     private final Intent mIntent;
     private final int mRequestCode;
 
-    public IntentRequiredException(Intent intent, int requestCode) {
+    public IntentRequiredException(@NonNull Intent intent, int requestCode) {
         super(ErrorCodes.UNKNOWN_ERROR);
         mIntent = intent;
         mRequestCode = requestCode;
     }
 
+    @NonNull
     public Intent getIntent() {
         return mIntent;
     }

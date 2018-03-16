@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.data.model;
 
 import android.app.PendingIntent;
+import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.ErrorCodes;
@@ -11,12 +12,13 @@ public class PendingIntentRequiredException extends FirebaseUiException {
     private final PendingIntent mPendingIntent;
     private final int mRequestCode;
 
-    public PendingIntentRequiredException(PendingIntent pendingIntent, int requestCode) {
+    public PendingIntentRequiredException(@NonNull PendingIntent pendingIntent, int requestCode) {
         super(ErrorCodes.UNKNOWN_ERROR);
         mPendingIntent = pendingIntent;
         mRequestCode = requestCode;
     }
 
+    @NonNull
     public PendingIntent getPendingIntent() {
         return mPendingIntent;
     }

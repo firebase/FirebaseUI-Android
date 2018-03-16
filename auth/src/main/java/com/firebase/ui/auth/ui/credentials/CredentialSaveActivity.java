@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,8 +14,7 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.viewmodel.PendingResolution;
-import com.firebase.ui.auth.viewmodel.ResolutionCodes;
+import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 
@@ -61,18 +59,6 @@ public class CredentialSaveActivity extends HelperActivityBase {
             }
         });
 
-        mHandler.getPendingResolution().observe(this, new Observer<PendingResolution>() {
-            @Override
-            public void onChanged(@Nullable PendingResolution resolution) {
-                if (resolution == null) {
-                    Log.w(TAG, "getPendingResolution:onChanged: null");
-                    return;
-                }
-
-                onPendingResolution(resolution);
-            }
-        });
-
         // Avoid double-saving
         Resource<Void> currentOp = mHandler.getOperation().getValue();
         if (currentOp == null) {
@@ -96,22 +82,11 @@ public class CredentialSaveActivity extends HelperActivityBase {
                 break;
             case SUCCESS:
             case FAILURE:
-                finish(RESULT_OK, mIdpResponse.toIntent());
+                if (!resource.isUsed()
+                        && !FlowUtils.handleError(this, resource.getException())) {
+                    finish(RESULT_OK, mIdpResponse.toIntent());
+                }
                 break;
-        }
-    }
-
-    private void onPendingResolution(@NonNull PendingResolution resolution) {
-        if (resolution.getRequestCode() == ResolutionCodes.RC_CRED_SAVE) {
-            try {
-                startIntentSenderForResult(
-                        resolution.getPendingIntent().getIntentSender(),
-                        resolution.getRequestCode(),
-                        null, 0, 0, 0);
-            } catch (IntentSender.SendIntentException e) {
-                Log.e(TAG, "Failed to send resolution.", e);
-                finish(RESULT_OK, mIdpResponse.toIntent());
-            }
         }
     }
 }

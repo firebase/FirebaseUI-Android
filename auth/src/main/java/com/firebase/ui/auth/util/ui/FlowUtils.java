@@ -3,6 +3,7 @@ package com.firebase.ui.auth.util.ui;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.IntentSender;
+import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
@@ -16,7 +17,7 @@ public final class FlowUtils {
         throw new AssertionError("No instance for you!");
     }
 
-    public static boolean handleError(HelperActivityBase activity, Exception e) {
+    public static boolean handleError(@NonNull HelperActivityBase activity, @NonNull Exception e) {
         if (e instanceof UserCancellationException) {
             activity.finish(Activity.RESULT_CANCELED, null);
             return true;
@@ -28,9 +29,9 @@ public final class FlowUtils {
             PendingIntentRequiredException typed = (PendingIntentRequiredException) e;
             startIntentSenderForResult(activity, typed.getPendingIntent(), typed.getRequestCode());
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public static boolean handleError(FragmentBase fragment, Exception e) {

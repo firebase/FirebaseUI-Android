@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -47,6 +48,7 @@ public class ProfileMerger implements Continuation<AuthResult, Task<AuthResult>>
                         .setDisplayName(name)
                         .setPhotoUri(photoUri)
                         .build())
+                .addOnFailureListener(new TaskFailureLogger(TAG, "Error updating profile"))
                 .continueWithTask(new Continuation<Void, Task<AuthResult>>() {
                     @Override
                     public Task<AuthResult> then(@NonNull Task<Void> task) {

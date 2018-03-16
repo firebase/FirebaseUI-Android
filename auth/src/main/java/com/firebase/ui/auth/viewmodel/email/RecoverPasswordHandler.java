@@ -21,10 +21,10 @@ public class RecoverPasswordHandler extends AuthViewModelBase<String> {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Resource<String> state = task.isSuccessful()
+                        Resource<String> resource = task.isSuccessful()
                                 ? Resource.forSuccess(email)
                                 : Resource.<String>forFailure(task.getException());
-                        setResult(state);
+                        setResult(resource);
                     }
                 });
     }

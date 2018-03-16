@@ -2,9 +2,6 @@ package com.firebase.ui.auth.viewmodel.smartlock;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.PendingIntent;
-import android.arch.lifecycle.LiveData;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -12,10 +9,10 @@ import android.util.Log;
 
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
+import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.CredentialsUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
-import com.firebase.ui.auth.viewmodel.PendingResolution;
 import com.firebase.ui.auth.viewmodel.ResolutionCodes;
 import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -36,26 +33,14 @@ import java.util.List;
 public class SmartLockHandler extends AuthViewModelBase<Void> {
     private static final String TAG = "SmartLockViewModel";
 
-    private SingleLiveEvent<PendingResolution> mPendingResolution = new SingleLiveEvent<>();
-
     public SmartLockHandler(Application application) {
         super(application);
     }
 
     /**
-     * Get an observable stream of {@link PendingIntent} resolutions requested by the ViewModel.
-     * <p>
-     * Make sure to call {@link #onActivityResult(int, int, Intent)} for all activity results after
-     * firing these pending intents.
-     */
-    public LiveData<PendingResolution> getPendingResolution() {
-        return mPendingResolution;
-    }
-
-    /**
      * Forward the result of a resolution from the Activity to the ViewModel.
      */
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode) {
         if (requestCode == ResolutionCodes.RC_CRED_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
                 setResult(Resource.forVoidSuccess());
@@ -82,9 +67,7 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
             setResult(Resource.forVoidSuccess());
             return;
         }
-
         setResult(Resource.<Void>forLoading());
-
 
         if (credential == null) {
             setResult(Resource.<Void>forFailure(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR,
@@ -116,8 +99,8 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
                             setResult(Resource.forVoidSuccess());
                         } else if (task.getException() instanceof ResolvableApiException) {
                             ResolvableApiException rae = (ResolvableApiException) task.getException();
-                            mPendingResolution.setValue(new PendingResolution(
-                                    rae.getResolution(), ResolutionCodes.RC_CRED_SAVE));
+                            setResult(Resource.<Void>forFailure(new PendingIntentRequiredException(
+                                    rae.getResolution(), ResolutionCodes.RC_CRED_SAVE)));
                         } else {
                             Log.w(TAG, "Non-resolvable exception: " + task.getException());
 
