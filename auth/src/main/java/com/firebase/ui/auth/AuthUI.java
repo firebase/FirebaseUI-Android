@@ -177,10 +177,10 @@ public class AuthUI {
      */
     public static final Set<String> SUPPORTED_PROVIDERS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-                    EmailAuthProvider.PROVIDER_ID,
                     GoogleAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
                     TwitterAuthProvider.PROVIDER_ID,
+                    EmailAuthProvider.PROVIDER_ID,
                     PhoneAuthProvider.PROVIDER_ID
             )));
 

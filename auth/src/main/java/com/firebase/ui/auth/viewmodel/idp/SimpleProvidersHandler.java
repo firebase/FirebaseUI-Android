@@ -12,6 +12,7 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
@@ -111,6 +112,7 @@ public class SimpleProvidersHandler extends ProvidersHandlerBase {
                         WelcomeBackIdpPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
+                                new User.Builder(provider, mResponse.getEmail()).build(),
                                 mResponse),
                         RequestCodes.ACCOUNT_LINK_FLOW
                 )));

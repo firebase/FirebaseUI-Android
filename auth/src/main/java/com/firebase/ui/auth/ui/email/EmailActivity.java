@@ -104,8 +104,7 @@ public class EmailActivity extends AppCompatBase implements
     public void onExistingIdpUser(User user) {
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
-                WelcomeBackIdpPrompt.createIntent(
-                        this, getFlowParams(), new IdpResponse.Builder(user).build()),
+                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
                 RequestCodes.WELCOME_BACK_IDP_FLOW);
         setSlideAnimation();
     }
