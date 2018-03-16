@@ -31,6 +31,7 @@ import java.util.Collections;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -86,7 +87,7 @@ public class SmartLockHandlerTest {
 
         // Make sure we get a resolution
         ArgumentCaptor<Resource<Void>> resolveCaptor = ArgumentCaptor.forClass(Resource.class);
-        verify(mResultObserver).onChanged(resolveCaptor.capture());
+        verify(mResultObserver, times(2)).onChanged(resolveCaptor.capture());
 
         // Call activity result
         PendingIntentRequiredException e =

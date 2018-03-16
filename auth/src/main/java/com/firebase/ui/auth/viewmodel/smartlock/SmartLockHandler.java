@@ -60,9 +60,7 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
             setResult(Resource.forVoidSuccess());
             return;
         }
-
         setResult(Resource.<Void>forLoading());
-
 
         if (credential == null) {
             setResult(Resource.<Void>forFailure(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR,
