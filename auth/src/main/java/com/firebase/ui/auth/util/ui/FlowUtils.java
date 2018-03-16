@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
-import com.firebase.ui.auth.data.remote.UserCancellationException;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 
 public final class FlowUtils {

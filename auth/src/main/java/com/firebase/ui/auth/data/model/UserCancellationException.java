@@ -1,4 +1,4 @@
-package com.firebase.ui.auth.data.remote;
+package com.firebase.ui.auth.data.model;
 
 import android.support.annotation.RestrictTo;
 
