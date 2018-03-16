@@ -45,8 +45,8 @@ public final class PhoneNumberUtils {
     private static final CountryInfo DEFAULT_COUNTRY =
             new CountryInfo(DEFAULT_LOCALE, DEFAULT_COUNTRY_CODE_INT);
 
-    private static final int MAX_COUNTRIES = 291;
-    private static final int MAX_COUNTRY_CODES = 286;
+    private static final int MAX_COUNTRY_CODES = 215;
+    private static final int MAX_COUNTRIES = 248;
     private static final int MAX_LENGTH_COUNTRY_CODE = 3;
 
     private static final SparseArray<List<String>> COUNTRY_TO_REGION_CODES =
