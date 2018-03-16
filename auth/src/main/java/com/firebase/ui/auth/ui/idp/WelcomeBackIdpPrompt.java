@@ -47,7 +47,6 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase {
-    private LinkingProvidersHandler mHandler;
     private Provider mProvider;
 
     public static Intent createIntent(
@@ -66,22 +65,23 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     private void setupProvider() {
         IdpResponse prevResponse = IdpResponse.fromResultIntent(getIntent());
 
-        mHandler = ViewModelProviders.of(this).get(LinkingProvidersHandler.class);
-        mHandler.init(getFlowParams());
-        mHandler.setAttemptedSignInResponse(prevResponse);
+        LinkingProvidersHandler handler =
+                ViewModelProviders.of(this).get(LinkingProvidersHandler.class);
+        handler.init(getFlowParams());
+        handler.setAttemptedSignInResponse(prevResponse);
 
         String providerId = prevResponse.getProviderType();
         for (IdpConfig idpConfig : getFlowParams().providerInfo) {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mProvider = new GoogleProvider(mHandler, this, prevResponse.getEmail());
+                        mProvider = new GoogleProvider(handler, this, prevResponse.getEmail());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mProvider = new FacebookProvider(mHandler, this);
+                        mProvider = new FacebookProvider(handler, this);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
-                        mProvider = new TwitterProvider(mHandler, this);
+                        mProvider = new TwitterProvider(handler, this);
                         break;
                     default:
                         throw new IllegalStateException("Unknown provider: " + providerId);
@@ -110,7 +110,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             }
         });
 
-        mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(Resource<IdpResponse> resource) {
                 if (resource.getState() == State.LOADING) {

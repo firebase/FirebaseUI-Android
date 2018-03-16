@@ -44,6 +44,8 @@ public class KickoffActivity extends HelperActivityBase {
                 }
                 getDialogHolder().dismissDialog();
 
+                if (resource.isUsed()) { return; }
+
                 if (resource.getState() == State.SUCCESS) {
                     finish(RESULT_OK, resource.getValue().toIntent());
                 } else {
@@ -67,16 +69,16 @@ public class KickoffActivity extends HelperActivityBase {
             return;
         }
 
-            boolean isPlayServicesAvailable = PlayServicesHelper.makePlayServicesAvailable(
-                    this,
-                    RequestCodes.PLAY_SERVICES_CHECK,
-                    new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
-                                    new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED)));
-                        }
-                    });
+        boolean isPlayServicesAvailable = PlayServicesHelper.makePlayServicesAvailable(
+                this,
+                RequestCodes.PLAY_SERVICES_CHECK,
+                new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
+                                new FirebaseUiException(ErrorCodes.PLAY_SERVICES_UPDATE_CANCELLED)));
+                    }
+                });
 
         if (isPlayServicesAvailable) {
             mKickstarter.start();
