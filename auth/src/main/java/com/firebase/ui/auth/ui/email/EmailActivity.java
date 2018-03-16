@@ -32,6 +32,7 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 
@@ -44,10 +45,6 @@ import com.google.firebase.auth.EmailAuthProvider;
 public class EmailActivity extends AppCompatBase implements
         CheckEmailFragment.CheckEmailListener,
         RegisterEmailFragment.RegistrationListener {
-
-    public static final int RC_WELCOME_BACK_IDP = 18;
-    private static final int RC_SIGN_IN = 17;
-
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createIntent(context, flowParams, null);
     }
@@ -87,8 +84,8 @@ public class EmailActivity extends AppCompatBase implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case RC_SIGN_IN:
-            case RC_WELCOME_BACK_IDP:
+            case RequestCodes.WELCOME_BACK_EMAIL:
+            case RequestCodes.WELCOME_BACK_IDP:
                 finish(resultCode, data);
         }
     }
@@ -101,7 +98,7 @@ public class EmailActivity extends AppCompatBase implements
                         this,
                         getFlowParams(),
                         new IdpResponse.Builder(user).build()),
-                RC_SIGN_IN);
+                RequestCodes.WELCOME_BACK_EMAIL);
 
         setSlideAnimation();
     }
@@ -110,8 +107,8 @@ public class EmailActivity extends AppCompatBase implements
     public void onExistingIdpUser(User user) {
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
-                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user, null),
-                RC_WELCOME_BACK_IDP);
+                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
+                RequestCodes.WELCOME_BACK_IDP);
         setSlideAnimation();
     }
 

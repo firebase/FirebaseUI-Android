@@ -21,11 +21,13 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
+import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
@@ -60,12 +62,6 @@ public class SignInDelegate extends FragmentBase
         implements OnCompleteListener<CredentialRequestResponse> {
 
     private static final String TAG = "SignInDelegate";
-
-    private static final int RC_CREDENTIALS_READ = 2;
-    private static final int RC_IDP_SIGNIN = 3;
-    private static final int RC_AUTH_METHOD_PICKER = 4;
-    private static final int RC_EMAIL_FLOW = 5;
-    private static final int RC_PHONE_FLOW = 6;
 
     private boolean mWasProgressDialogShowing;
     private Pair<Integer, Intent> mActivityResultPair;
@@ -168,7 +164,7 @@ public class SignInDelegate extends FragmentBase
             if (rae.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
                 try {
                     startIntentSenderForResult(rae.getResolution().getIntentSender(),
-                            RC_CREDENTIALS_READ);
+                            RequestCodes.CRED_HINT);
                     return;
                 } catch (IntentSender.SendIntentException e) {
                     Log.e(TAG, "Failed to send Credentials intent.", e);
@@ -184,7 +180,7 @@ public class SignInDelegate extends FragmentBase
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case RC_CREDENTIALS_READ:
+            case RequestCodes.CRED_HINT:
                 if (resultCode == Activity.RESULT_OK) {
                     // credential selected from SmartLock, log in with that credential
                     Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
@@ -194,17 +190,12 @@ public class SignInDelegate extends FragmentBase
                     startAuthMethodChoice();
                 }
                 break;
-            case RC_IDP_SIGNIN:
-            case RC_AUTH_METHOD_PICKER:
-            case RC_EMAIL_FLOW:
-            case RC_PHONE_FLOW:
+            case RequestCodes.AUTH_PICKER_FLOW:
+            case RequestCodes.RC_EMAIL_FLOW:
+            case RequestCodes.RC_PHONE_FLOW:
+            case RequestCodes.PROVIDER_FLOW:
                 finish(resultCode, data);
                 break;
-            default:
-                IdpSignInContainer signInContainer = IdpSignInContainer.getInstance(getActivity());
-                if (signInContainer != null) {
-                    signInContainer.onActivityResult(requestCode, resultCode, data);
-                }
         }
     }
 
@@ -282,7 +273,7 @@ public class SignInDelegate extends FragmentBase
                     // Go directly to email flow
                     startActivityForResult(
                             EmailActivity.createIntent(getContext(), flowParams),
-                            RC_EMAIL_FLOW);
+                            RequestCodes.RC_EMAIL_FLOW);
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
                     // Go directly to phone flow
@@ -291,7 +282,7 @@ public class SignInDelegate extends FragmentBase
                             .createIntent(getContext(), flowParams, params);
                     startActivityForResult(
                             phoneActivityIntent,
-                            RC_PHONE_FLOW);
+                            RequestCodes.RC_PHONE_FLOW);
                     break;
                 default:
                     // Launch IDP flow
@@ -303,7 +294,7 @@ public class SignInDelegate extends FragmentBase
                     AuthMethodPickerActivity.createIntent(
                             getContext(),
                             flowParams),
-                    RC_AUTH_METHOD_PICKER);
+                    RequestCodes.AUTH_PICKER_FLOW);
         }
         getDialogHolder().dismissDialog();
     }
@@ -374,25 +365,28 @@ public class SignInDelegate extends FragmentBase
                             getContext(),
                             getFlowParams(),
                             email),
-                    RC_EMAIL_FLOW);
+                    RequestCodes.RC_EMAIL_FLOW);
             return;
         }
 
         if (accountType.equals(IdentityProviders.GOOGLE)
                 || accountType.equals(IdentityProviders.FACEBOOK)
                 || accountType.equals(IdentityProviders.TWITTER)) {
-            IdpSignInContainer.signIn(
-                    getActivity(),
-                    getFlowParams(),
-                    new User.Builder(ProviderUtils.accountTypeToProviderId(accountType), email)
-                            .build());
+            startActivityForResult(
+                    SingleSignInActivity.createIntent(
+                            getActivity(),
+                            getFlowParams(),
+                            new User.Builder(ProviderUtils.accountTypeToProviderId(accountType), email)
+                                    .build()),
+                    RequestCodes.PROVIDER_FLOW
+            );
         } else {
             Log.w(TAG, "Unknown provider: " + accountType);
             startActivityForResult(
                     AuthMethodPickerActivity.createIntent(
                             getContext(),
                             getFlowParams()),
-                    RC_IDP_SIGNIN);
+                    RequestCodes.AUTH_PICKER_FLOW);
             getDialogHolder().dismissDialog();
         }
     }

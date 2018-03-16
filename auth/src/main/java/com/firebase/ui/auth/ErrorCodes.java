@@ -16,7 +16,8 @@ public final class ErrorCodes {
                     UNKNOWN_ERROR,
                     NO_NETWORK,
                     PLAY_SERVICES_UPDATE_CANCELLED,
-                    DEVELOPER_ERROR
+                    DEVELOPER_ERROR,
+                    PROVIDER_ERROR
             })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Code {}
@@ -40,6 +41,11 @@ public final class ErrorCodes {
      * A sign-in operation couldn't be completed due to a developer error.
      */
     public static final int DEVELOPER_ERROR = 3;
+
+    /**
+     * An external sign-in provider error occurred.
+     */
+    public static final int PROVIDER_ERROR = 4;
 
     private ErrorCodes() {
         throw new AssertionError("No instance for you!");

@@ -31,7 +31,7 @@ import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.provider.TwitterProvider;
+import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
@@ -276,7 +276,7 @@ public class AuthUI {
                 .disableAutoSignIn()
                 .continueWithTask(new Continuation<Void, Task<Void>>() {
                     @Override
-                    public Task<Void> then(@NonNull Task<Void> task) throws Exception {
+                    public Task<Void> then(@NonNull Task<Void> task) {
                         // We want to ignore a specific exception, since it's not a good reason
                         // to fail (see Issue 1156).
                         if (!task.isSuccessful() && (task.getException() instanceof ApiException)) {
@@ -365,7 +365,7 @@ public class AuthUI {
         }
 
         try {
-            TwitterProvider.signOut(context);
+            TwitterSignInHandler.signOut(context);
         } catch (NoClassDefFoundError e) {
             // See comment above
             // Note: we need to have separate try/catch statements since devs can include

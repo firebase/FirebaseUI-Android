@@ -104,8 +104,7 @@ public class CredentialSignInHandler implements OnFailureListener {
                         WelcomeBackIdpPrompt.createIntent(
                                 mActivity,
                                 mActivity.getFlowParams(),
-                                new User.Builder(provider, mResponse.getEmail()).build(),
-                                mResponse),
+                                new User.Builder(provider, mResponse.getEmail()).build()),
                         mAccountLinkRequestCode);
             }
         }

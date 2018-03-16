@@ -14,10 +14,11 @@
 
 package com.firebase.ui.auth.ui.idp;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -25,32 +26,27 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.provider.EmailProvider;
-import com.firebase.ui.auth.provider.FacebookProvider;
-import com.firebase.ui.auth.provider.GoogleProvider;
-import com.firebase.ui.auth.provider.IdpProvider;
-import com.firebase.ui.auth.provider.IdpProvider.IdpCallback;
-import com.firebase.ui.auth.provider.PhoneProvider;
-import com.firebase.ui.auth.provider.Provider;
-import com.firebase.ui.auth.provider.TwitterProvider;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.email.EmailActivity;
-import com.firebase.ui.auth.ui.phone.PhoneActivity;
-import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.data.TaskFailureLogger;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
+import com.firebase.ui.auth.ui.provider.EmailProvider;
+import com.firebase.ui.auth.ui.provider.FacebookProvider;
+import com.firebase.ui.auth.ui.provider.GoogleProvider;
+import com.firebase.ui.auth.ui.provider.PhoneProvider;
+import com.firebase.ui.auth.ui.provider.Provider;
+import com.firebase.ui.auth.ui.provider.TwitterProvider;
+import com.firebase.ui.auth.util.ui.FlowUtils;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -58,18 +54,10 @@ import com.google.firebase.auth.TwitterAuthProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Presents the list of authentication options for this app to the user. If an identity provider
- * option is selected, a {@link CredentialSignInHandler} is launched to manage the IDP-specific
- * sign-in flow. If email authentication is chosen, the {@link EmailActivity} is started. if
- * phone authentication is chosen, the {@link PhoneActivity}
- * is started.
- */
+/** Presents the list of authentication options for this app to the user. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallback {
+public class AuthMethodPickerActivity extends AppCompatBase {
     private static final String TAG = "AuthMethodPicker";
-
-    private static final int RC_ACCOUNT_LINK = 3;
 
     private List<Provider> mProviders;
 
@@ -83,9 +71,13 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_auth_method_picker_layout);
 
-        populateIdpList(getFlowParams().providerInfo);
+        FlowParameters params = getFlowParams();
+        final ProvidersHandler handler = ViewModelProviders.of(this).get(ProvidersHandler.class);
+        handler.init(params);
 
-        int logoId = getFlowParams().logoId;
+        populateIdpList(params.providerInfo, handler);
+
+        int logoId = params.logoId;
         if (logoId == AuthUI.NO_LOGO) {
             findViewById(R.id.logo).setVisibility(View.GONE);
 
@@ -99,27 +91,48 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
             ImageView logo = findViewById(R.id.logo);
             logo.setImageResource(logoId);
         }
+
+        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+            @Override
+            public void onChanged(Resource<IdpResponse> resource) {
+                if (resource.getState() == State.LOADING) {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
+                    return;
+                }
+                getDialogHolder().dismissDialog();
+
+                if (resource.getState() == State.SUCCESS) {
+                    startSaveCredentials(handler.getCurrentUser(), null, resource.getValue());
+                } else {
+                    Exception e = resource.getException();
+                    if (!FlowUtils.handleError(AuthMethodPickerActivity.this, e)) {
+                        Toast.makeText(AuthMethodPickerActivity.this,
+                                e.getLocalizedMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 
-    private void populateIdpList(List<IdpConfig> providers) {
+    private void populateIdpList(List<IdpConfig> providerConfigs, ProvidersHandler handler) {
         mProviders = new ArrayList<>();
-        for (IdpConfig idpConfig : providers) {
+        for (IdpConfig idpConfig : providerConfigs) {
             switch (idpConfig.getProviderId()) {
                 case GoogleAuthProvider.PROVIDER_ID:
-                    mProviders.add(new GoogleProvider(this, idpConfig));
+                    mProviders.add(new GoogleProvider(handler, this));
                     break;
                 case FacebookAuthProvider.PROVIDER_ID:
-                    mProviders.add(new FacebookProvider(
-                            idpConfig, getFlowParams().themeId));
+                    mProviders.add(new FacebookProvider(handler, this));
                     break;
                 case TwitterAuthProvider.PROVIDER_ID:
-                    mProviders.add(new TwitterProvider(this));
+                    mProviders.add(new TwitterProvider(handler, this));
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
-                    mProviders.add(new EmailProvider(this, getFlowParams()));
+                    mProviders.add(new EmailProvider(handler));
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    mProviders.add(new PhoneProvider(this, getFlowParams()));
+                    mProviders.add(new PhoneProvider(handler, idpConfig));
                     break;
                 default:
                     Log.e(TAG, "Encountered unknown provider parcel with type: "
@@ -135,54 +148,18 @@ public class AuthMethodPickerActivity extends AppCompatBase implements IdpCallba
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (provider instanceof IdpProvider) {
-                        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
-                    }
                     provider.startLogin(AuthMethodPickerActivity.this);
                 }
             });
-            if (provider instanceof IdpProvider) {
-                ((IdpProvider) provider).setAuthenticationCallback(this);
-            }
             btnHolder.addView(loginButton);
         }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_ACCOUNT_LINK) {
-            finish(resultCode, data);
-        } else {
-            for (Provider provider : mProviders) {
-                provider.onActivityResult(requestCode, resultCode, data);
-            }
+        for (Provider provider : mProviders) {
+            provider.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    public void onSuccess(@NonNull final IdpResponse response) {
-        AuthCredential credential = ProviderUtils.getAuthCredential(response);
-        getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(credential)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        FirebaseUser firebaseUser = authResult.getUser();
-                        startSaveCredentials(firebaseUser, null, response);
-                    }
-                })
-                .addOnFailureListener(new CredentialSignInHandler(
-                        this, RC_ACCOUNT_LINK, response))
-                .addOnFailureListener(
-                        new TaskFailureLogger(TAG, "Firebase sign in with credential " +
-                                credential.getProvider() + " unsuccessful. " +
-                                "Visit https://console.firebase.google.com to enable it."));
-    }
-
-    @Override
-    public void onFailure(@NonNull Exception e) {
-        // stay on this screen
-        getDialogHolder().dismissDialog();
     }
 }

@@ -32,6 +32,7 @@ import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.NoOpValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -304,16 +305,15 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                                 new IdpResponse.Builder(new User.Builder(
                                                                         EmailAuthProvider.PROVIDER_ID,
                                                                         email).build()).build()),
-                                                        EmailActivity.RC_WELCOME_BACK_IDP);
+                                                        RequestCodes.WELCOME_BACK_IDP);
                                             } else {
                                                 getActivity().startActivityForResult(
                                                         WelcomeBackIdpPrompt.createIntent(
                                                                 getContext(),
                                                                 getFlowParams(),
                                                                 new User.Builder(provider, email)
-                                                                        .build(),
-                                                                null),
-                                                        EmailActivity.RC_WELCOME_BACK_IDP);
+                                                                        .build()),
+                                                        RequestCodes.WELCOME_BACK_IDP);
                                             }
                                         }
                                     })
