@@ -22,6 +22,7 @@ import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -88,6 +89,10 @@ public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler
                 // If we get INVALID_ACCOUNT, it means the pre-set account was not available on the
                 // device so set the email to null and launch the sign-in picker.
                 mEmail = null;
+                start();
+            } else if (e.getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS) {
+                // Hack for https://github.com/googlesamples/google-services/issues/345
+                // Google remembers the account so the picker doesn't appear twice for the user.
                 start();
             } else {
                 if (e.getStatusCode() == CommonStatusCodes.DEVELOPER_ERROR) {
