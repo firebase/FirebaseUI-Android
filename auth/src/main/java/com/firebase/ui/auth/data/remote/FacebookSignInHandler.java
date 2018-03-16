@@ -23,7 +23,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandler;
 import com.firebase.ui.auth.viewmodel.idp.ProviderParamsBase;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.json.JSONException;
@@ -159,7 +159,7 @@ public class FacebookSignInHandler extends ProviderHandler<FacebookSignInHandler
     public static final class Params extends ProviderParamsBase {
         private final AuthUI.IdpConfig config;
 
-        public Params(ProvidersHandler handler, AuthUI.IdpConfig config) {
+        public Params(ProvidersHandlerBase handler, AuthUI.IdpConfig config) {
             super(handler);
             this.config = config;
         }

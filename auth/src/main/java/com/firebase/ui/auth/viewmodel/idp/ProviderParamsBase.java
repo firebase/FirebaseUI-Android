@@ -4,13 +4,13 @@ import android.support.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class ProviderParamsBase {
-    private final ProvidersHandler mHandler;
+    private final ProvidersHandlerBase mHandler;
 
-    protected ProviderParamsBase(ProvidersHandler handler) {
+    protected ProviderParamsBase(ProvidersHandlerBase handler) {
         mHandler = handler;
     }
 
-    public ProvidersHandler getHandler() {
+    public ProvidersHandlerBase getHandler() {
         return mHandler;
     }
 }

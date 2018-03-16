@@ -15,7 +15,7 @@ import com.firebase.ui.auth.testhelpers.FakeProviderQueryResult;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.SimpleProvidersHandler;
 import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -49,18 +49,18 @@ import static org.mockito.Mockito.when;
  * Unit tests for {@link SmartLockHandler}.
  */
 @RunWith(RobolectricTestRunner.class)
-public class ProvidersHandlerTest {
+public class SimpleProvidersHandlerTest {
     @Mock FirebaseAuth mMockAuth;
     @Mock Observer<Resource<IdpResponse>> mResultObserver;
 
-    private ProvidersHandler mHandler;
+    private SimpleProvidersHandler mHandler;
 
     @Before
     public void setUp() {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
-        mHandler = new ProvidersHandler(RuntimeEnvironment.application);
+        mHandler = new SimpleProvidersHandler(RuntimeEnvironment.application);
 
         FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS);
 
