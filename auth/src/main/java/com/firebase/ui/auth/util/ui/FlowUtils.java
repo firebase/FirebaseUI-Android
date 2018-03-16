@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
-import com.firebase.ui.auth.data.model.StatefulException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 
 public final class FlowUtils {
@@ -17,17 +16,17 @@ public final class FlowUtils {
     }
 
     public static boolean handleError(@NonNull HelperActivityBase activity, @NonNull Exception e) {
-        if (!(e instanceof StatefulException)) { return false; }
-
         if (e instanceof IntentRequiredException) {
             IntentRequiredException typed = (IntentRequiredException) e;
             activity.startActivityForResult(typed.getIntent(), typed.getRequestCode());
+            return true;
         } else if (e instanceof PendingIntentRequiredException) {
             PendingIntentRequiredException typed = (PendingIntentRequiredException) e;
             startIntentSenderForResult(activity, typed.getPendingIntent(), typed.getRequestCode());
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private static void startIntentSenderForResult(HelperActivityBase activity,
