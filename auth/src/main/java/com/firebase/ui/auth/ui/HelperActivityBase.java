@@ -62,7 +62,7 @@ public class HelperActivityBase extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Forward the results of Smartlock Saving
-        if (requestCode == RequestCodes.CRED_SAVE) {
+        if (requestCode == RequestCodes.CRED_SAVE_FLOW) {
             finish(RESULT_OK, data);
         }
     }
@@ -110,6 +110,6 @@ public class HelperActivityBase extends AppCompatActivity {
         // Start the dedicated SmartLock Activity
         Intent intent = CredentialSaveActivity.createIntent(this, getFlowParams(),
                 credential, response);
-        startActivityForResult(intent, RequestCodes.CRED_SAVE);
+        startActivityForResult(intent, RequestCodes.CRED_SAVE_FLOW);
     }
 }
