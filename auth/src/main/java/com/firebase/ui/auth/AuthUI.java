@@ -365,7 +365,7 @@ public class AuthUI {
         }
 
         try {
-            TwitterSignInHandler.signOut(context);
+            TwitterSignInHandler.signOut();
         } catch (NoClassDefFoundError e) {
             // See comment above
             // Note: we need to have separate try/catch statements since devs can include

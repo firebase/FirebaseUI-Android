@@ -163,8 +163,8 @@ public class CheckEmailFragment extends FragmentBase implements
                     }
                 }
                 break;
-            case RequestCodes.WELCOME_BACK_EMAIL:
-            case RequestCodes.WELCOME_BACK_IDP:
+            case RequestCodes.WELCOME_BACK_EMAIL_FLOW:
+            case RequestCodes.WELCOME_BACK_IDP_FLOW:
                 finish(resultCode, data);
                 break;
         }

@@ -18,12 +18,12 @@ public final class RequestCodes {
     /**
      * Request code for starting an IDP welcome back flow.
      */
-    public static final int WELCOME_BACK_IDP = 102;
+    public static final int WELCOME_BACK_IDP_FLOW = 102;
 
     /**
      * Request code for starting an email welcome back flow.
      */
-    public static final int WELCOME_BACK_EMAIL = 103;
+    public static final int WELCOME_BACK_EMAIL_FLOW = 103;
 
     /**
      * Request code for starting a user pickable provider flow.

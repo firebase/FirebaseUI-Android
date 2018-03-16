@@ -88,8 +88,11 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         }
 
         if (mProvider == null) {
-            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(
-                    new FirebaseUiException(ErrorCodes.PROVIDER_ERROR, "Provider: " + providerId)));
+            finish(RESULT_CANCELED, IdpResponse.getErrorIntent(new FirebaseUiException(
+                    ErrorCodes.DEVELOPER_ERROR,
+                    "Firebase login unsuccessful."
+                            + " Account linking failed due to provider not enabled by application: "
+                            + providerId)));
             return;
         }
 
@@ -113,6 +116,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                     return;
                 }
                 getDialogHolder().dismissDialog();
+
+                if (resource.isUsed()) { return; }
 
                 if (resource.getState() == State.SUCCESS) {
                     finish(RESULT_OK, resource.getValue().toIntent());

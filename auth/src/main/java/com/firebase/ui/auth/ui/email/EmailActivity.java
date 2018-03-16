@@ -84,8 +84,8 @@ public class EmailActivity extends AppCompatBase implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case RequestCodes.WELCOME_BACK_EMAIL:
-            case RequestCodes.WELCOME_BACK_IDP:
+            case RequestCodes.WELCOME_BACK_EMAIL_FLOW:
+            case RequestCodes.WELCOME_BACK_IDP_FLOW:
                 finish(resultCode, data);
         }
     }
@@ -98,7 +98,7 @@ public class EmailActivity extends AppCompatBase implements
                         this,
                         getFlowParams(),
                         new IdpResponse.Builder(user).build()),
-                RequestCodes.WELCOME_BACK_EMAIL);
+                RequestCodes.WELCOME_BACK_EMAIL_FLOW);
 
         setSlideAnimation();
     }
@@ -108,7 +108,7 @@ public class EmailActivity extends AppCompatBase implements
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
                 WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
-                RequestCodes.WELCOME_BACK_IDP);
+                RequestCodes.WELCOME_BACK_IDP_FLOW);
         setSlideAnimation();
     }
 
@@ -119,7 +119,7 @@ public class EmailActivity extends AppCompatBase implements
 
         TextInputLayout emailLayout = findViewById(R.id.email_layout);
 
-        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
+        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
         if (emailConfig.getParams().getBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, true)) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(

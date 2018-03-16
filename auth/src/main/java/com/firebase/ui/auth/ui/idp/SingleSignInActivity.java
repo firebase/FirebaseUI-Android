@@ -54,7 +54,8 @@ public class SingleSignInActivity extends HelperActivityBase {
         if (providerConfig == null) {
             // we don't have a provider to handle this
             finish(Activity.RESULT_CANCELED, IdpResponse.getErrorIntent(
-                    new FirebaseUiException(ErrorCodes.PROVIDER_ERROR, "Provider: " + provider)));
+                    new FirebaseUiException(ErrorCodes.PROVIDER_ERROR,
+                            "Provider not enabled: " + provider)));
             return;
         }
 
@@ -84,6 +85,8 @@ public class SingleSignInActivity extends HelperActivityBase {
                     return;
                 }
                 getDialogHolder().dismissDialog();
+
+                if (resource.isUsed()) { return; }
 
                 if (resource.getState() == State.SUCCESS) {
                     startSaveCredentials(handler.getCurrentUser(), null, resource.getValue());

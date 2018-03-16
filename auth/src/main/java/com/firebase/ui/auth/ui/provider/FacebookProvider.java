@@ -26,7 +26,7 @@ public class FacebookProvider extends ProviderBase {
         mHandler = ViewModelProviders.of(activity).get(FacebookSignInHandler.class);
         mHandler.init(new FacebookParams(
                 handler,
-                ProviderUtils.getConfigFromIdps(
+                ProviderUtils.getConfigFromIdpsOrThrow(
                         activity.getFlowParams().providerInfo, FacebookAuthProvider.PROVIDER_ID)));
     }
 

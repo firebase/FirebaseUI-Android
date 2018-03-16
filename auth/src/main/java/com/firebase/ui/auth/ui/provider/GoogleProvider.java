@@ -9,12 +9,11 @@ import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.IntentRequiredException;
+import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.remote.GoogleParams;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandler;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -33,13 +32,16 @@ public class GoogleProvider extends ProviderBase {
         mHandler = ViewModelProviders.of(activity).get(GoogleSignInHandler.class);
         mHandler.init(new GoogleParams(
                 handler,
-                ProviderUtils.getConfigFromIdps(
+                ProviderUtils.getConfigFromIdpsOrThrow(
                         activity.getFlowParams().providerInfo, GoogleAuthProvider.PROVIDER_ID),
                 email));
-        mHandler.getRequest().observe(activity, new Observer<IntentRequiredException>() {
+        mHandler.getRequest().observe(activity, new Observer<Resource<Intent>>() {
             @Override
-            public void onChanged(IntentRequiredException e) {
-                FlowUtils.handleError(activity, e);
+            public void onChanged(Resource<Intent> resource) {
+                if (!resource.isUsed()) {
+                    activity.startActivityForResult(
+                            resource.getValue(), RequestCodes.GOOGLE_PROVIDER);
+                }
             }
         });
     }

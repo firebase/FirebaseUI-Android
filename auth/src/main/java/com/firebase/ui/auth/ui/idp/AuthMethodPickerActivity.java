@@ -101,6 +101,8 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
                 getDialogHolder().dismissDialog();
 
+                if (resource.isUsed()) { return; }
+
                 if (resource.getState() == State.SUCCESS) {
                     startSaveCredentials(handler.getCurrentUser(), null, resource.getValue());
                 } else {

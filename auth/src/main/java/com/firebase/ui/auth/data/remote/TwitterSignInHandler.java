@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
@@ -26,31 +27,28 @@ public class TwitterSignInHandler extends ProviderHandler<TwitterParams> {
 
     public TwitterSignInHandler(Application application) {
         super(application);
-        initialize(getApplication());
+        initialize();
         mClient = new TwitterAuthClient();
     }
 
-    public static void signOut(Context context) {
+    public static void signOut() {
         try {
-            signOut();
+            TwitterCore.getInstance();
         } catch (IllegalStateException e) {
-            initialize(context);
+            initialize();
         }
 
-        signOut();
+        TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 
-    private static void initialize(Context context) {
+    private static void initialize() {
+        Context context = AuthUI.getApplicationContext();
         TwitterConfig config = new TwitterConfig.Builder(context)
                 .twitterAuthConfig(new TwitterAuthConfig(
                         context.getString(R.string.twitter_consumer_key),
                         context.getString(R.string.twitter_consumer_secret)))
                 .build();
         Twitter.initialize(config);
-    }
-
-    private static void signOut() throws IllegalStateException {
-        TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 
     private static IdpResponse createIdpResponse(
@@ -108,5 +106,4 @@ public class TwitterSignInHandler extends ProviderHandler<TwitterParams> {
             setResult(IdpResponse.fromError(e));
         }
     }
-
 }
