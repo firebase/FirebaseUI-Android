@@ -17,6 +17,8 @@ public final class Resource<T> {
     private final T mValue;
     private final Exception mException;
 
+    private boolean mUsed;
+
     private Resource(State state, T value, Exception exception) {
         mState = state;
         mValue = value;
@@ -62,12 +64,18 @@ public final class Resource<T> {
 
     @Nullable
     public final Exception getException() {
+        mUsed = true;
         return mException;
     }
 
     @Nullable
     public T getValue() {
+        mUsed = true;
         return mValue;
+    }
+
+    public boolean isUsed() {
+        return mUsed;
     }
 
     @Override

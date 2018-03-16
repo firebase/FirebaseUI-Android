@@ -17,9 +17,7 @@ public final class FlowUtils {
     }
 
     public static boolean handleError(@NonNull HelperActivityBase activity, @NonNull Exception e) {
-        if (!(e instanceof StatefulException) || ((StatefulException) e).isUsed()) {
-            return false;
-        }
+        if (!(e instanceof StatefulException)) { return false; }
 
         if (e instanceof IntentRequiredException) {
             IntentRequiredException typed = (IntentRequiredException) e;
