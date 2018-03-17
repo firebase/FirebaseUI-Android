@@ -14,7 +14,6 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
@@ -89,10 +88,8 @@ public class KickoffActivity extends HelperActivityBase {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        // It doesn't matter what we put here, we just don't want outState to be empty
-        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
-        outState.putBoolean(IS_WAITING_FOR_PLAY_SERVICES, mIsWaitingForPlayServices);
         super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_WAITING_FOR_PLAY_SERVICES, mIsWaitingForPlayServices);
     }
 
     @Override
