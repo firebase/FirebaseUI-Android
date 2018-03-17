@@ -23,10 +23,10 @@ public final class RequestCodes {
     public static final int AUTH_PICKER_FLOW = 105;
 
     /** Request code for starting a fresh email flow. */
-    public static final int RC_EMAIL_FLOW = 106;
+    public static final int EMAIL_FLOW = 106;
 
     /** Request code for starting a fresh phone flow. */
-    public static final int RC_PHONE_FLOW = 107;
+    public static final int PHONE_FLOW = 107;
 
     /** Request code for starting an account linking flow. */
     public static final int ACCOUNT_LINK_FLOW = 108;

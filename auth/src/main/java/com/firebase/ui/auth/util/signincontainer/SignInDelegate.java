@@ -191,8 +191,8 @@ public class SignInDelegate extends FragmentBase
                 }
                 break;
             case RequestCodes.AUTH_PICKER_FLOW:
-            case RequestCodes.RC_EMAIL_FLOW:
-            case RequestCodes.RC_PHONE_FLOW:
+            case RequestCodes.EMAIL_FLOW:
+            case RequestCodes.PHONE_FLOW:
             case RequestCodes.PROVIDER_FLOW:
                 finish(resultCode, data);
                 break;
@@ -273,7 +273,7 @@ public class SignInDelegate extends FragmentBase
                     // Go directly to email flow
                     startActivityForResult(
                             EmailActivity.createIntent(getContext(), flowParams),
-                            RequestCodes.RC_EMAIL_FLOW);
+                            RequestCodes.EMAIL_FLOW);
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
                     // Go directly to phone flow
@@ -282,7 +282,7 @@ public class SignInDelegate extends FragmentBase
                             .createIntent(getContext(), flowParams, params);
                     startActivityForResult(
                             phoneActivityIntent,
-                            RequestCodes.RC_PHONE_FLOW);
+                            RequestCodes.PHONE_FLOW);
                     break;
                 default:
                     // Launch IDP flow
@@ -365,7 +365,7 @@ public class SignInDelegate extends FragmentBase
                             getContext(),
                             getFlowParams(),
                             email),
-                    RequestCodes.RC_EMAIL_FLOW);
+                    RequestCodes.EMAIL_FLOW);
             return;
         }
 
