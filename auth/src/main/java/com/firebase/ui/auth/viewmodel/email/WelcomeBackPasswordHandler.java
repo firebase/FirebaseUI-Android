@@ -1,8 +1,6 @@
 package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -11,7 +9,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
-import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.firebase.ui.auth.util.accountlink.ManualMergeUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.android.gms.tasks.Continuation;
@@ -30,11 +28,8 @@ import java.util.concurrent.Callable;
  * SmartLock.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class WelcomeBackPasswordHandler extends AuthViewModelBase {
-
+public class WelcomeBackPasswordHandler extends AuthViewModelBase<IdpResponse> {
     private static final String TAG = "WBPasswordHandler";
-
-    private MutableLiveData<Resource<IdpResponse>> mSignInLiveData = new MutableLiveData<>();
 
     private String mPendingPassword;
 
@@ -50,7 +45,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                             @NonNull final IdpResponse inputResponse,
                             @Nullable final AuthCredential credential,
                             @Nullable final String prevUid) {
-        mSignInLiveData.setValue(Resource.<IdpResponse>forLoading());
+        setResult(Resource.<IdpResponse>forLoading());
 
         // Store the password before signing in so it can be used for later credential building
         mPendingPassword = password;
@@ -72,6 +67,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
             outputResponse.getUser().setPrevUid(prevUid);
         }
 
+        // Kick off the flow including signing in, linking accounts, and saving with SmartLock
         ManualMergeUtils.injectSignInTaskBetweenDataTransfer(getApplication(),
                 outputResponse,
                 getArguments(),
@@ -105,20 +101,15 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            mSignInLiveData.setValue(Resource.<IdpResponse>forFailure(task.getException()));
+                            setResult(Resource.<IdpResponse>forFailure(task.getException()));
                             return;
                         }
 
-                       setSuccess(outputResponse);
+                        setResult(Resource.forSuccess(outputResponse));
                     }
-                });
-    }
-
-    /**
-     * Get the observable state of the sign in operation.
-     */
-    public LiveData<Resource<IdpResponse>> getSignInOperation() {
-        return mSignInLiveData;
+                })
+                .addOnFailureListener(
+                        new TaskFailureLogger(TAG, "signInWithEmailAndPassword failed."));
     }
 
     /**
@@ -126,9 +117,5 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
      */
     public String getPendingPassword() {
         return mPendingPassword;
-    }
-
-    private void setSuccess(IdpResponse idpResponse) {
-        mSignInLiveData.setValue(Resource.forSuccess(idpResponse));
     }
 }

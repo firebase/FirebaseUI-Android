@@ -63,7 +63,7 @@ public class WelcomeBackPasswordHandlerTest {
 
     @Test
     public void testSignIn_linksIdpCredential() {
-        mHandler.getSignInOperation().observeForever(mResponseObserver);
+        mHandler.getOperation().observeForever(mResponseObserver);
 
         // Fake social response from Facebook
         User user = new User.Builder(FacebookAuthProvider.PROVIDER_ID, TestConstants.EMAIL)
@@ -111,7 +111,7 @@ public class WelcomeBackPasswordHandlerTest {
 
     @Test
     public void testSignIn_propagatesFailure() {
-        mHandler.getSignInOperation().observeForever(mResponseObserver);
+        mHandler.getOperation().observeForever(mResponseObserver);
 
         // Mock sign in to always fail
         when(mMockAuth.signInWithEmailAndPassword(any(String.class), any(String.class)))
