@@ -14,6 +14,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
@@ -23,8 +24,6 @@ import com.google.android.gms.tasks.Task;
 
 @SuppressWarnings("WrongConstant")
 public class CheckEmailHandler extends AuthViewModelBase<IdpResponse> {
-    private static final int RC_HINT = 17;
-
     private MutableLiveData<User> mProviderListener = new SingleLiveEvent<>();
 
     public CheckEmailHandler(Application application) {
@@ -42,7 +41,7 @@ public class CheckEmailHandler extends AuthViewModelBase<IdpResponse> {
         setResult(Resource.<IdpResponse>forFailure(new PendingIntentRequiredException(
                 Credentials.getClient(getApplication()).getHintPickerIntent(
                         new HintRequest.Builder().setEmailAddressIdentifierSupported(true).build()),
-                RC_HINT
+                RequestCodes.CRED_HINT
         )));
     }
 
@@ -60,7 +59,7 @@ public class CheckEmailHandler extends AuthViewModelBase<IdpResponse> {
     }
 
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode != RC_HINT || resultCode != Activity.RESULT_OK) { return; }
+        if (requestCode != RequestCodes.CRED_HINT || resultCode != Activity.RESULT_OK) { return; }
 
         setResult(Resource.<IdpResponse>forLoading());
         final Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);

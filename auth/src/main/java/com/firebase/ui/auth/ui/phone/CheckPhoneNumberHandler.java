@@ -17,6 +17,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.firebase.ui.auth.viewmodel.idp.SimpleProvidersHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
@@ -31,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 
 public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
     private static final long AUTO_RETRIEVAL_TIMEOUT_SECONDS = 120;
-    private static final int RC_HINT = 14;
 
     private SimpleProvidersHandler mSignInHandler;
 
@@ -64,7 +64,7 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
                     Credentials.getClient(getApplication()).getHintPickerIntent(
                             new HintRequest.Builder().setPhoneNumberIdentifierSupported(true)
                                     .build()),
-                    RC_HINT
+                    RequestCodes.CRED_HINT
             )));
         } else {
             mPhoneNumberListener.setValue(PhoneNumberUtils.getPhoneNumber(mPhoneNumber));
@@ -72,7 +72,7 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
     }
 
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode != RC_HINT || resultCode != Activity.RESULT_OK) { return; }
+        if (requestCode != RequestCodes.CRED_HINT || resultCode != Activity.RESULT_OK) { return; }
 
         Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
         String formattedPhone = PhoneNumberUtils.formatUsingCurrentCountry(
