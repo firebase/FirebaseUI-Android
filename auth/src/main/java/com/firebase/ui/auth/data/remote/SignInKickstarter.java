@@ -3,7 +3,6 @@ package com.firebase.ui.auth.data.remote;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -19,7 +18,6 @@ import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
-import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
@@ -150,8 +148,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
             if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
                     || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)
-                    || providerId.equals(PhoneAuthProvider.PROVIDER_ID)) {
+                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
                 accounts.add(ProviderUtils.providerIdToAccountType(providerId));
             }
         }
@@ -186,19 +183,12 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
         String id = credential.getId();
         String password = credential.getPassword();
         if (TextUtils.isEmpty(password)) {
-            String provider = ProviderUtils.accountTypeToProviderId(
-                    String.valueOf(credential.getAccountType()));
-            if (TextUtils.equals(provider, PhoneAuthProvider.PROVIDER_ID)) {
-                Bundle args = new Bundle();
-                args.putString(ExtraConstants.EXTRA_PHONE, id);
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
-                        PhoneActivity.createIntent(
-                                getApplication(),
-                                getArguments(),
-                                args),
-                        RequestCodes.PHONE_FLOW)));
+            String identity = credential.getAccountType();
+            if (identity == null) {
+                startAuthMethodChoice();
             } else {
-                redirectSignIn(provider, id);
+                redirectSignIn(
+                        ProviderUtils.accountTypeToProviderId(credential.getAccountType()), id);
             }
         } else {
             final IdpResponse response = new IdpResponse.Builder(
@@ -220,16 +210,9 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                                 // a valid credential, we should delete it from SmartLock
                                 // before continuing.
                                 GoogleApiUtils.getCredentialsClient(getApplication())
-                                        .delete(credential)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                startAuthMethodChoice();
-                                            }
-                                        });
-                            } else {
-                                startAuthMethodChoice();
+                                        .delete(credential);
                             }
+                            startAuthMethodChoice();
                         }
                     });
         }
