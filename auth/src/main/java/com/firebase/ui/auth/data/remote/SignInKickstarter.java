@@ -103,13 +103,13 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                 case EmailAuthProvider.PROVIDER_ID:
                     setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                             EmailActivity.createIntent(getApplication(), getArguments()),
-                            RequestCodes.RC_EMAIL_FLOW)));
+                            RequestCodes.EMAIL_FLOW)));
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
                     setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                             PhoneActivity.createIntent(
                                     getApplication(), getArguments(), firstIdpConfig.getParams()),
-                            RequestCodes.RC_PHONE_FLOW)));
+                            RequestCodes.PHONE_FLOW)));
                     break;
                 default:
                     redirectSignIn(firstProvider, null);
@@ -127,7 +127,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             case EmailAuthProvider.PROVIDER_ID:
                 setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         EmailActivity.createIntent(getApplication(), getArguments(), email),
-                        RequestCodes.RC_EMAIL_FLOW)));
+                        RequestCodes.EMAIL_FLOW)));
                 break;
             case GoogleAuthProvider.PROVIDER_ID:
             case FacebookAuthProvider.PROVIDER_ID:
@@ -168,8 +168,8 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                 }
                 break;
             case RequestCodes.AUTH_PICKER_FLOW:
-            case RequestCodes.RC_EMAIL_FLOW:
-            case RequestCodes.RC_PHONE_FLOW:
+            case RequestCodes.EMAIL_FLOW:
+            case RequestCodes.PHONE_FLOW:
             case RequestCodes.PROVIDER_FLOW:
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 if (response == null) {
@@ -196,7 +196,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                                 getApplication(),
                                 getArguments(),
                                 args),
-                        RC_PHONE_FLOW)));
+                        RequestCodes.PHONE_FLOW)));
             } else {
                 redirectSignIn(provider, id);
             }
