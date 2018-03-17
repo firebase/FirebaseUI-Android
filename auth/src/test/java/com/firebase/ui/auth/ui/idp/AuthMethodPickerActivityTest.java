@@ -51,6 +51,8 @@ public class AuthMethodPickerActivityTest {
 
     @Test
     public void testAllProvidersArePopulated() {
+        // Exclude Facebook until the `NoClassDefFoundError: com/facebook/common/R$style` exception
+        // is fixed.
         List<String> providers = Arrays.asList(
                 GoogleAuthProvider.PROVIDER_ID,
                 TwitterAuthProvider.PROVIDER_ID,

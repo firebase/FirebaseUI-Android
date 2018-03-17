@@ -83,10 +83,9 @@ public class EmailActivity extends AppCompatBase implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RequestCodes.WELCOME_BACK_EMAIL_FLOW:
-            case RequestCodes.WELCOME_BACK_IDP_FLOW:
-                finish(resultCode, data);
+        if (requestCode == RequestCodes.WELCOME_BACK_EMAIL_FLOW
+                || requestCode == RequestCodes.WELCOME_BACK_IDP_FLOW) {
+            finish(resultCode, data);
         }
     }
 
@@ -105,8 +104,7 @@ public class EmailActivity extends AppCompatBase implements
     public void onExistingIdpUser(User user) {
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
-                WelcomeBackIdpPrompt.createIntent(
-                        this, getFlowParams(), new IdpResponse.Builder(user).build()),
+                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
                 RequestCodes.WELCOME_BACK_IDP_FLOW);
         setSlideAnimation();
     }

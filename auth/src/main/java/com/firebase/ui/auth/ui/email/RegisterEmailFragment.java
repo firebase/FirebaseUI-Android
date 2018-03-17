@@ -305,17 +305,14 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                                 new IdpResponse.Builder(new User.Builder(
                                                                         EmailAuthProvider.PROVIDER_ID,
                                                                         email).build()).build()),
-                                                        RequestCodes.WELCOME_BACK_IDP_FLOW);
+                                                        RequestCodes.WELCOME_BACK_EMAIL_FLOW);
                                             } else {
                                                 getActivity().startActivityForResult(
                                                         WelcomeBackIdpPrompt.createIntent(
                                                                 getContext(),
                                                                 getFlowParams(),
-                                                                new IdpResponse.Builder(
-                                                                        new User.Builder(
-                                                                                provider, email
-                                                                        ).build()
-                                                                ).build()),
+                                                                new User.Builder(provider, email)
+                                                                        .build()),
                                                         RequestCodes.WELCOME_BACK_IDP_FLOW);
                                             }
                                         }

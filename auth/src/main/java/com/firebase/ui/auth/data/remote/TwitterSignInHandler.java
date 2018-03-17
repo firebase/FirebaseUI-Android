@@ -11,8 +11,8 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandler;
-import com.firebase.ui.auth.viewmodel.idp.ProviderParamsBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Result;
@@ -25,7 +25,7 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class TwitterSignInHandler extends ProviderHandler<TwitterSignInHandler.Params> {
+public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandler.Params> {
     private final TwitterAuthClient mClient;
     private final Callback mCallback = new Callback();
 
@@ -111,7 +111,7 @@ public class TwitterSignInHandler extends ProviderHandler<TwitterSignInHandler.P
         }
     }
 
-    public static final class Params extends ProviderParamsBase {
+    public static final class Params extends ProviderHandlerParamsBase {
         public Params(ProvidersHandlerBase handler) {
             super(handler);
         }

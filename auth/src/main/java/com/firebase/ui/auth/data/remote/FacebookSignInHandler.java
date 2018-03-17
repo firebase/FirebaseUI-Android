@@ -21,8 +21,8 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandler;
-import com.firebase.ui.auth.viewmodel.idp.ProviderParamsBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.firebase.auth.FacebookAuthProvider;
 
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class FacebookSignInHandler extends ProviderHandler<FacebookSignInHandler.Params>
+public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHandler.Params>
         implements FacebookCallback<LoginResult> {
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
@@ -105,7 +105,7 @@ public class FacebookSignInHandler extends ProviderHandler<FacebookSignInHandler
 
     @Override
     public void onCancel() {
-        onError(new FacebookException("Sign in request cancelled."));
+        onError(new FacebookException());
     }
 
     @Override
@@ -156,7 +156,7 @@ public class FacebookSignInHandler extends ProviderHandler<FacebookSignInHandler
         }
     }
 
-    public static final class Params extends ProviderParamsBase {
+    public static final class Params extends ProviderHandlerParamsBase {
         private final AuthUI.IdpConfig config;
 
         public Params(ProvidersHandlerBase handler, AuthUI.IdpConfig config) {

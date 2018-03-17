@@ -12,6 +12,7 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
@@ -32,24 +33,24 @@ public class SimpleProvidersHandler extends ProvidersHandlerBase {
 
     @Override
     protected void signIn(@NonNull AuthCredential credential,
-                          @NonNull final IdpResponse inputResponse) {
+                          @NonNull final IdpResponse response) {
         getAuth().signInWithCredential(credential)
-                .continueWithTask(new ProfileMerger(inputResponse))
+                .continueWithTask(new ProfileMerger(response))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {
-                        setResult(Resource.forSuccess(inputResponse));
+                        setResult(Resource.forSuccess(response));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        String email = inputResponse.getEmail();
+                        String email = response.getEmail();
                         if (email != null) {
                             if (e instanceof FirebaseAuthUserCollisionException) {
                                 ProviderUtils.fetchTopProvider(getAuth(), email)
                                         .addOnSuccessListener(
-                                                new StartWelcomeBackFlow(inputResponse))
+                                                new StartWelcomeBackFlow(response))
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
@@ -111,6 +112,7 @@ public class SimpleProvidersHandler extends ProvidersHandlerBase {
                         WelcomeBackIdpPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
+                                new User.Builder(provider, mResponse.getEmail()).build(),
                                 mResponse),
                         RequestCodes.ACCOUNT_LINK_FLOW
                 )));

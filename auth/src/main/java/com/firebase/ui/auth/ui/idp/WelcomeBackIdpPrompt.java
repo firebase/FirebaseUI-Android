@@ -19,6 +19,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +33,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
@@ -39,6 +41,7 @@ import com.firebase.ui.auth.ui.provider.GoogleProvider;
 import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.idp.LinkingProvidersHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -50,32 +53,42 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
     private Provider mProvider;
 
     public static Intent createIntent(
-            Context context, FlowParameters flowParams, IdpResponse response) {
+            Context context, FlowParameters flowParams, User existingUser) {
+        return createIntent(context, flowParams, existingUser, null);
+    }
+
+    public static Intent createIntent(
+            Context context,
+            FlowParameters flowParams,
+            User existingUser,
+            @Nullable IdpResponse requestedUserResponse) {
         return HelperActivityBase.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, requestedUserResponse)
+                .putExtra(ExtraConstants.EXTRA_USER, existingUser);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_idp_prompt_layout);
-        setupProvider();
-    }
 
-    private void setupProvider() {
-        IdpResponse prevResponse = IdpResponse.fromResultIntent(getIntent());
+        User existingUser = User.getUser(getIntent());
+        IdpResponse requestedUserResponse = IdpResponse.fromResultIntent(getIntent());
 
         LinkingProvidersHandler handler =
                 ViewModelProviders.of(this).get(LinkingProvidersHandler.class);
         handler.init(getFlowParams());
-        handler.setAttemptedSignInResponse(prevResponse);
+        if (requestedUserResponse != null) {
+            handler.setRequestedSignInCredential(
+                    ProviderUtils.getAuthCredential(requestedUserResponse));
+        }
 
-        String providerId = prevResponse.getProviderType();
+        String providerId = existingUser.getProviderId();
         for (IdpConfig idpConfig : getFlowParams().providerInfo) {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mProvider = new GoogleProvider(handler, this, prevResponse.getEmail());
+                        mProvider = new GoogleProvider(handler, this, existingUser.getEmail());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
                         mProvider = new FacebookProvider(handler, this);
@@ -100,7 +113,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
 
         ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
                 R.string.fui_welcome_back_idp_prompt,
-                prevResponse.getEmail(),
+                existingUser.getEmail(),
                 mProvider.getName()));
 
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {

@@ -19,19 +19,19 @@ public abstract class ProvidersHandlerBase extends AuthViewModelBase<IdpResponse
     }
 
     public void startSignIn(@NonNull IdpResponse inputResponse) {
-        if (checkInvalidStateForSignIn(inputResponse)) return;
+        if (checkForInvalidSignInState(inputResponse)) return;
         startSignIn(ProviderUtils.getAuthCredential(inputResponse), inputResponse);
     }
 
     /** Kick off the sign-in process. */
     public void startSignIn(@NonNull AuthCredential credential,
                             @NonNull final IdpResponse inputResponse) {
-        if (checkInvalidStateForSignIn(inputResponse)) return;
+        if (checkForInvalidSignInState(inputResponse)) return;
         setResult(Resource.<IdpResponse>forLoading());
         signIn(credential, inputResponse);
     }
 
-    private boolean checkInvalidStateForSignIn(@NonNull IdpResponse inputResponse) {
+    private boolean checkForInvalidSignInState(@NonNull IdpResponse inputResponse) {
         if (!inputResponse.isSuccessful()) {
             setResult(Resource.<IdpResponse>forFailure(inputResponse.getError()));
             return true;
@@ -44,7 +44,7 @@ public abstract class ProvidersHandlerBase extends AuthViewModelBase<IdpResponse
         return false;
     }
 
-    protected abstract void signIn(@NonNull AuthCredential credential,
-                                   @NonNull final IdpResponse inputResponse);
+    protected abstract void signIn(
+            @NonNull AuthCredential credential, @NonNull IdpResponse response);
 }
 

@@ -109,9 +109,10 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     startSaveCredentials(mHandler.getCurrentUser(), null, resource.getValue());
                 } else {
                     Exception e = resource.getException();
-                    if (!FlowUtils.handleError(AuthMethodPickerActivity.this, e)) {
+                    if (!FlowUtils.handleError(AuthMethodPickerActivity.this, e)
+                            && e.getLocalizedMessage() != null) {
                         Toast.makeText(AuthMethodPickerActivity.this,
-                                e.getLocalizedMessage(),
+                                R.string.fui_error_unknown,
                                 Toast.LENGTH_SHORT).show();
                     }
                 }
