@@ -16,18 +16,19 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandler;
-import com.firebase.ui.auth.viewmodel.idp.ProviderParamsBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class GoogleSignInHandler extends ProviderHandler<GoogleSignInHandler.Params> {
+public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler.Params> {
     private static final String TAG = "GoogleSignInHandler";
 
     private MutableLiveData<Resource<Intent>> mRequest = new MutableLiveData<>();
@@ -89,6 +90,10 @@ public class GoogleSignInHandler extends ProviderHandler<GoogleSignInHandler.Par
                 // device so set the email to null and launch the sign-in picker.
                 mEmail = null;
                 start();
+            } else if (e.getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS) {
+                // Hack for https://github.com/googlesamples/google-services/issues/345
+                // Google remembers the account so the picker doesn't appear twice for the user.
+                start();
             } else {
                 if (e.getStatusCode() == CommonStatusCodes.DEVELOPER_ERROR) {
                     Log.w(TAG, "Developer error: this application is misconfigured. " +
@@ -101,7 +106,7 @@ public class GoogleSignInHandler extends ProviderHandler<GoogleSignInHandler.Par
         }
     }
 
-    public static final class Params extends ProviderParamsBase {
+    public static final class Params extends ProviderHandlerParamsBase {
         private final AuthUI.IdpConfig config;
         @Nullable private final String email;
 
