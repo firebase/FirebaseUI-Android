@@ -7,7 +7,7 @@ import android.support.annotation.RestrictTo;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.TaskFailureLogger;
+import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
