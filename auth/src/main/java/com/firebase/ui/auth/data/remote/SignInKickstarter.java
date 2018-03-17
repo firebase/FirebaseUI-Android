@@ -3,6 +3,7 @@ package com.firebase.ui.auth.data.remote;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.ui.idp.SingleSignInActivity;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
+import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.GoogleApiUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
@@ -122,11 +124,6 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
 
     private void redirectSignIn(String provider, String email) {
         switch (provider) {
-            case EmailAuthProvider.PROVIDER_ID:
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
-                        EmailActivity.createIntent(getApplication(), getArguments(), email),
-                        RequestCodes.EMAIL_FLOW)));
-                break;
             case GoogleAuthProvider.PROVIDER_ID:
             case FacebookAuthProvider.PROVIDER_ID:
             case TwitterAuthProvider.PROVIDER_ID:
@@ -137,6 +134,20 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                                 new User.Builder(provider, email).build()),
                         RequestCodes.PROVIDER_FLOW)));
                 break;
+            case EmailAuthProvider.PROVIDER_ID:
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                        EmailActivity.createIntent(getApplication(), getArguments(), email),
+                        RequestCodes.EMAIL_FLOW)));
+                break;
+            case PhoneAuthProvider.PROVIDER_ID:
+                Bundle args = new Bundle();
+                args.putString(ExtraConstants.EXTRA_PHONE, email);
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                        PhoneActivity.createIntent(
+                                getApplication(),
+                                getArguments(),
+                                args),
+                        RequestCodes.PHONE_FLOW)));
             default:
                 startAuthMethodChoice();
         }
@@ -148,7 +159,8 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
             if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
                     || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
+                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)
+                    || providerId.equals(PhoneAuthProvider.PROVIDER_ID)) {
                 accounts.add(ProviderUtils.providerIdToAccountType(providerId));
             }
         }
