@@ -42,12 +42,12 @@ public class PhoneProvider extends ProviderBase {
         activity.startActivityForResult(
                 PhoneActivity.createIntent(
                         activity, activity.getFlowParams(), mConfig.getParams()),
-                RequestCodes.RC_PHONE_FLOW);
+                RequestCodes.PHONE_FLOW);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == RequestCodes.RC_PHONE_FLOW) {
+        if (requestCode == RequestCodes.PHONE_FLOW) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
                 getProvidersHandler().startSignIn(IdpResponse.fromError(

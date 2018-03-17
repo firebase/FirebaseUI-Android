@@ -38,12 +38,12 @@ public class EmailProvider extends ProviderBase {
     public void startLogin(@NonNull HelperActivityBase activity) {
         activity.startActivityForResult(
                 EmailActivity.createIntent(activity, activity.getFlowParams()),
-                RequestCodes.RC_EMAIL_FLOW);
+                RequestCodes.EMAIL_FLOW);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == RequestCodes.RC_EMAIL_FLOW) {
+        if (requestCode == RequestCodes.EMAIL_FLOW) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
                 getProvidersHandler().startSignIn(IdpResponse.fromError(
