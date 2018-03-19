@@ -4,62 +4,53 @@ import android.arch.lifecycle.LiveData;
 import android.arch.paging.DataSource;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
-import android.support.annotation.NonNull;
-import android.support.v7.recyclerview.extensions.DiffCallback;
+import android.support.v7.util.DiffUtil;
 
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 /**
- * Created by samstern on 3/15/18.
+ * TODO(samstern): Document
  */
-
 public abstract class FirestorePagedList {
 
-    public static LiveData<PagedList<DocumentSnapshot>> getLiveData() {
-        DataSource.Factory<PageKey, DocumentSnapshot> factory = new DataSource.Factory<PageKey, DocumentSnapshot>() {
+    private static final DiffUtil.ItemCallback<DocumentSnapshot> DOCUMENT_DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<DocumentSnapshot>() {
+                @Override
+                public boolean areItemsTheSame(DocumentSnapshot oldItem, DocumentSnapshot newItem) {
+                    return oldItem.getId().equals(newItem.getId());
+                }
 
-            @Override
-            public DataSource<PageKey, DocumentSnapshot> create() {
-                // TODO
-                Query query = FirebaseFirestore.getInstance().collection("items")
-                        .orderBy("value", Query.Direction.ASCENDING);
-                return new FirestoreDataSource(query);
-            }
+                @Override
+                public boolean areContentsTheSame(DocumentSnapshot oldItem,
+                                                  DocumentSnapshot newItem) {
+                    // TODO: Does this even work?
+                    return oldItem.getData().equals(newItem.getData());
+                }
+            };
 
-        };
+    public static LiveData<PagedList<DocumentSnapshot>> getLiveData(final Query query) {
+        DataSource.Factory<PageKey, DocumentSnapshot> factory =
+                new DataSource.Factory<PageKey, DocumentSnapshot>() {
+                    @Override
+                    public DataSource<PageKey, DocumentSnapshot> create() {
+                        return new FirestoreDataSource(query);
+                    }
+                };
 
+        // TODO: configurable
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
                 .setPrefetchDistance(10)
                 .setPageSize(20)
                 .build();
 
-        LiveData<PagedList<DocumentSnapshot>> liveData =
-                new LivePagedListBuilder<>(factory, config)
-                        .build();
-
-        return liveData;
+        return new LivePagedListBuilder<>(factory, config).build();
     }
 
-    public static DiffCallback<DocumentSnapshot> getDiffer() {
-        return new DiffCallback<DocumentSnapshot>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull DocumentSnapshot oldItem,
-                                           @NonNull DocumentSnapshot newItem) {
-
-                return oldItem.getId().equals(newItem.getId());
-            }
-
-            @Override
-            public boolean areContentsTheSame(@NonNull DocumentSnapshot oldItem,
-                                              @NonNull DocumentSnapshot newItem) {
-
-                // TODO: Does this even work?
-                return oldItem.getData().equals(newItem.getData());
-            }
-        };
+    // TODO: Provide a way to do this with classes
+    public static DiffUtil.ItemCallback<DocumentSnapshot> getDiffCallback() {
+        return DOCUMENT_DIFF_CALLBACK;
     }
 
 }

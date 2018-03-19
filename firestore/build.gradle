@@ -23,8 +23,8 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:$architectureVersion"
 
 
-    api "android.arch.paging:common:1.0.0-alpha5"
-    api "android.arch.paging:runtime:1.0.0-alpha5"
+    api "android.arch.paging:common:1.0.0-alpha6"
+    api "android.arch.paging:runtime:1.0.0-alpha6"
 
     androidTestImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

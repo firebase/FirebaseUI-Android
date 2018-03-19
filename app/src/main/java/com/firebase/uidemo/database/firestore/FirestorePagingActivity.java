@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.recyclerview.extensions.DiffCallback;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,9 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.firestore.FirestoreInfiniteScrollListener;
-import com.firebase.ui.firestore.FirestorePagingAdapter;
-import com.firebase.ui.firestore.FirestorePagingOptions;
 import com.firebase.ui.firestore.paging.FirestorePagedList;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,70 +56,17 @@ public class FirestorePagingActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
         mProgressBar.setIndeterminate(true);
 
-        // TODO
-//        setUpAdapter();
-        setUpAdapter_Alternate();
+        setUpAdapter();
     }
 
     private void setUpAdapter() {
         Query baseQuery = mFirestore.collection("items")
                 .orderBy("value", Query.Direction.ASCENDING);
 
-        // Paging options:
-        //  * pageSize - number of items to load in each 'page'.
-        //  * loadTriggerDistance - how far from the bottom/top of the data set to trigger a load.
-        //  * maxPages - maximum number of pages to keep in memory at a time.
-        FirestorePagingOptions<Item> options = new FirestorePagingOptions.Builder<Item>()
-                .setQuery(baseQuery, Item.class)
-                .setPageSize(20)
-                .setLoadTriggerDistance(10)
-                .setMaxPages(5)
-                .build();
-
-        FirestorePagingAdapter<Item, ItemViewHolder> adapter =
-                new FirestorePagingAdapter<Item, ItemViewHolder>(options) {
-                    @Override
-                    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                        View view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_item, parent, false);
-
-                        return new ItemViewHolder(view);
-                    }
-
-                    @Override
-                    protected void onBindViewHolder(ItemViewHolder holder, int position, Item model) {
-                        holder.bind(model);
-                    }
-
-                    @Override
-                    protected void onLoadingStateChanged(boolean isLoading) {
-                        super.onLoadingStateChanged(isLoading);
-                        if (isLoading) {
-                            mProgressBar.setVisibility(View.VISIBLE);
-                        } else {
-                            mProgressBar.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                };
-
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-
-        // The infinite scroll listener will instruct the adapter to page up and down at the
-        // appropriate times.
-        FirestoreInfiniteScrollListener listener =
-                new FirestoreInfiniteScrollListener(manager, adapter);
-
-        mRecycler.setLayoutManager(manager);
-        mRecycler.setAdapter(adapter);
-        mRecycler.addOnScrollListener(listener);
-    }
-
-    private void setUpAdapter_Alternate() {
-        DiffCallback<DocumentSnapshot> diffCallback = FirestorePagedList.getDiffer();
-
+        DiffUtil.ItemCallback<DocumentSnapshot> diffCallback = FirestorePagedList.getDiffCallback();
         final PagedListAdapter<DocumentSnapshot, ItemViewHolder> adapter = new PagedListAdapter<DocumentSnapshot, ItemViewHolder>(diffCallback) {
             @Override
-            public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_item, parent, false);
 
@@ -130,7 +74,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onBindViewHolder(ItemViewHolder holder, int position) {
+            public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
                 DocumentSnapshot snapshot = getItem(position);
                 Item model = snapshot.toObject(Item.class);
 
@@ -138,11 +82,13 @@ public class FirestorePagingActivity extends AppCompatActivity {
             }
         };
 
-        FirestorePagedList.getLiveData().observe(this,
+        // TODO: Expose loading state in the adapter
+
+        FirestorePagedList.getLiveData(baseQuery).observe(this,
                 new Observer<PagedList<DocumentSnapshot>>() {
                     @Override
                     public void onChanged(@Nullable PagedList<DocumentSnapshot> snapshots) {
-                        adapter.setList(snapshots);
+                        adapter.submitList(snapshots);
                     }
                 });
 
