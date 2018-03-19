@@ -200,10 +200,10 @@ public class IdpResponse implements Parcelable {
         dest.writeString(mToken);
         dest.writeString(mSecret);
 
+        ObjectOutputStream oos = null;
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new ByteArrayOutputStream());
+            oos = new ObjectOutputStream(new ByteArrayOutputStream());
             oos.writeObject(mException);
-            oos.close();
 
             // Success! The entire exception tree is serializable.
             dest.writeSerializable(mException);
@@ -211,6 +211,12 @@ public class IdpResponse implements Parcelable {
             // Somewhere down the line, the exception is holding on to an object that isn't
             // serializable so default to some exception. It's the best we can do in this case.
             dest.writeSerializable(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR));
+        } finally {
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException ignored) {}
+            }
         }
     }
 
