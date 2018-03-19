@@ -1,8 +1,13 @@
 package com.firebase.uidemo.database.firestore;
 
+import android.arch.lifecycle.Observer;
+import android.arch.paging.PagedList;
+import android.arch.paging.PagedListAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,10 +23,12 @@ import android.widget.Toast;
 import com.firebase.ui.firestore.FirestoreInfiniteScrollListener;
 import com.firebase.ui.firestore.FirestorePagingAdapter;
 import com.firebase.ui.firestore.FirestorePagingOptions;
+import com.firebase.ui.firestore.paging.FirestorePagedList;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.WriteBatch;
@@ -52,7 +59,9 @@ public class FirestorePagingActivity extends AppCompatActivity {
         mFirestore = FirebaseFirestore.getInstance();
         mProgressBar.setIndeterminate(true);
 
-        setUpAdapter();
+        // TODO
+//        setUpAdapter();
+        setUpAdapter_Alternate();
     }
 
     private void setUpAdapter() {
@@ -106,6 +115,39 @@ public class FirestorePagingActivity extends AppCompatActivity {
         mRecycler.setLayoutManager(manager);
         mRecycler.setAdapter(adapter);
         mRecycler.addOnScrollListener(listener);
+    }
+
+    private void setUpAdapter_Alternate() {
+        DiffCallback<DocumentSnapshot> diffCallback = FirestorePagedList.getDiffer();
+
+        final PagedListAdapter<DocumentSnapshot, ItemViewHolder> adapter = new PagedListAdapter<DocumentSnapshot, ItemViewHolder>(diffCallback) {
+            @Override
+            public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_item, parent, false);
+
+                return new ItemViewHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(ItemViewHolder holder, int position) {
+                DocumentSnapshot snapshot = getItem(position);
+                Item model = snapshot.toObject(Item.class);
+
+                holder.bind(model);
+            }
+        };
+
+        FirestorePagedList.getLiveData().observe(this,
+                new Observer<PagedList<DocumentSnapshot>>() {
+                    @Override
+                    public void onChanged(@Nullable PagedList<DocumentSnapshot> snapshots) {
+                        adapter.setList(snapshots);
+                    }
+                });
+
+        mRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mRecycler.setAdapter(adapter);
     }
 
     @Override
