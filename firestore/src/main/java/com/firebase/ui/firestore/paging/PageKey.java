@@ -6,9 +6,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
- * Created by samstern on 3/15/18.
+ * TODO: Document.
  */
-
 public class PageKey {
 
     private final DocumentSnapshot mStartAfter;

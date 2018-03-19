@@ -1,13 +1,9 @@
 package com.firebase.uidemo.database.firestore;
 
-import android.arch.lifecycle.Observer;
 import android.arch.paging.PagedList;
-import android.arch.paging.PagedListAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,12 +16,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.firestore.paging.FirestorePagedList;
+import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
+import com.firebase.ui.firestore.paging.FirestorePagingOptions;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.WriteBatch;
@@ -63,34 +59,36 @@ public class FirestorePagingActivity extends AppCompatActivity {
         Query baseQuery = mFirestore.collection("items")
                 .orderBy("value", Query.Direction.ASCENDING);
 
-        DiffUtil.ItemCallback<DocumentSnapshot> diffCallback = FirestorePagedList.getDiffCallback();
-        final PagedListAdapter<DocumentSnapshot, ItemViewHolder> adapter = new PagedListAdapter<DocumentSnapshot, ItemViewHolder>(diffCallback) {
-            @Override
-            public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_item, parent, false);
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setPrefetchDistance(10)
+                .setPageSize(20)
+                .build();
 
-                return new ItemViewHolder(view);
-            }
+        FirestorePagingOptions<Item> options = new FirestorePagingOptions.Builder<Item>()
+                .setQuery(baseQuery, config, Item.class)
+                .build();
 
-            @Override
-            public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-                DocumentSnapshot snapshot = getItem(position);
-                Item model = snapshot.toObject(Item.class);
+        FirestorePagingAdapter<Item, ItemViewHolder> adapter =
+                new FirestorePagingAdapter<Item, ItemViewHolder>(options) {
+                    @NonNull
+                    @Override
+                    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                             int viewType) {
+                        View view = LayoutInflater.from(parent.getContext())
+                                .inflate(R.layout.item_item, parent, false);
+                        return new ItemViewHolder(view);
+                    }
 
-                holder.bind(model);
-            }
-        };
+                    @Override
+                    protected void onBindViewHolder(@NonNull ItemViewHolder holder,
+                                                    int position,
+                                                    Item model) {
+                        holder.bind(model);
+                    }
+                };
 
         // TODO: Expose loading state in the adapter
-
-        FirestorePagedList.getLiveData(baseQuery).observe(this,
-                new Observer<PagedList<DocumentSnapshot>>() {
-                    @Override
-                    public void onChanged(@Nullable PagedList<DocumentSnapshot> snapshots) {
-                        adapter.submitList(snapshots);
-                    }
-                });
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.setAdapter(adapter);

@@ -1,5 +1,6 @@
 package com.firebase.ui.firestore.paging;
 
+import android.arch.paging.DataSource;
 import android.arch.paging.PageKeyedDataSource;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -24,6 +25,16 @@ public class FirestoreDataSource extends PageKeyedDataSource<PageKey, DocumentSn
 
     public FirestoreDataSource(Query baseQuery) {
         mBaseQuery = baseQuery;
+    }
+
+    @NonNull
+    public static DataSource.Factory<PageKey, DocumentSnapshot> newFactory(final Query query) {
+        return new DataSource.Factory<PageKey, DocumentSnapshot>() {
+            @Override
+            public DataSource<PageKey, DocumentSnapshot> create() {
+                return new FirestoreDataSource(query);
+            }
+        };
     }
 
     @Override
