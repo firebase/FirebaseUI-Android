@@ -6,10 +6,10 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 
 import com.facebook.WebDialog;
 import com.facebook.login.LoginManager;
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
@@ -31,10 +31,10 @@ public class FacebookProvider extends ProviderBase {
                         activity.getFlowParams().providerInfo, FacebookAuthProvider.PROVIDER_ID)));
     }
 
-    @NonNull
+    @StringRes
     @Override
-    public String getName() {
-        return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_facebook);
+    public int getNameRes() {
+        return R.string.fui_idp_name_facebook;
     }
 
     @Override

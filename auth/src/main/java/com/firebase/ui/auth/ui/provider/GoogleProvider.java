@@ -7,14 +7,14 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.firebase.auth.GoogleAuthProvider;
 
@@ -36,21 +36,20 @@ public class GoogleProvider extends ProviderBase {
                 ProviderUtils.getConfigFromIdpsOrThrow(
                         activity.getFlowParams().providerInfo, GoogleAuthProvider.PROVIDER_ID),
                 email));
-        mHandler.getRequest().observe(activity, new Observer<Resource<Intent>>() {
+        mHandler.getRequest().observe(activity, new Observer<Resource<Void>>() {
             @Override
-            public void onChanged(Resource<Intent> resource) {
+            public void onChanged(Resource<Void> resource) {
                 if (!resource.isUsed()) {
-                    activity.startActivityForResult(
-                            resource.getValue(), RequestCodes.GOOGLE_PROVIDER);
+                    FlowUtils.handleError(activity, resource.getException());
                 }
             }
         });
     }
 
-    @NonNull
+    @StringRes
     @Override
-    public String getName() {
-        return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_google);
+    public int getNameRes() {
+        return R.string.fui_idp_name_google;
     }
 
     @Override
@@ -66,8 +65,6 @@ public class GoogleProvider extends ProviderBase {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == RequestCodes.GOOGLE_PROVIDER) {
-            mHandler.onActivityResult(requestCode, resultCode, data);
-        }
+        mHandler.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -5,14 +5,15 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 
 import com.firebase.ui.auth.ui.HelperActivityBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public interface Provider {
     /** Retrieves the name of the IDP, for display on-screen. */
-    @NonNull
-    String getName();
+    @StringRes
+    int getNameRes();
 
     /** Retrieves the layout id of the button to inflate and/or set a click listener. */
     @LayoutRes

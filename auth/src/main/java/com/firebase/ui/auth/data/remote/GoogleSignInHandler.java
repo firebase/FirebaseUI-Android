@@ -13,9 +13,11 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
@@ -31,7 +33,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler.Params> {
     private static final String TAG = "GoogleSignInHandler";
 
-    private MutableLiveData<Resource<Intent>> mRequest = new MutableLiveData<>();
+    private MutableLiveData<Resource<Void>> mRequest = new MutableLiveData<>();
 
     private AuthUI.IdpConfig mConfig;
     @Nullable private String mEmail;
@@ -58,11 +60,12 @@ public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler
     }
 
     public void start() {
-        mRequest.setValue(Resource.forSuccess(
-                GoogleSignIn.getClient(getApplication(), getSignInOptions()).getSignInIntent()));
+        mRequest.setValue(Resource.<Void>forFailure(new IntentRequiredException(
+                GoogleSignIn.getClient(getApplication(), getSignInOptions()).getSignInIntent(),
+                RequestCodes.GOOGLE_PROVIDER)));
     }
 
-    public LiveData<Resource<Intent>> getRequest() {
+    public LiveData<Resource<Void>> getRequest() {
         return mRequest;
     }
 
@@ -80,6 +83,8 @@ public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode != RequestCodes.GOOGLE_PROVIDER) { return; }
+
         try {
             GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(data)
                     .getResult(ApiException.class);
@@ -110,7 +115,9 @@ public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler
         private final AuthUI.IdpConfig config;
         @Nullable private final String email;
 
-        public Params(ProvidersHandlerBase handler, AuthUI.IdpConfig config, @Nullable String email) {
+        public Params(ProvidersHandlerBase handler,
+                      AuthUI.IdpConfig config,
+                      @Nullable String email) {
             super(handler);
             this.config = config;
             this.email = email;

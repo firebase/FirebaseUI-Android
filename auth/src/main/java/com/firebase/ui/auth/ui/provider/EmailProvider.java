@@ -5,8 +5,8 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
@@ -22,10 +22,10 @@ public class EmailProvider extends ProviderBase {
         super(handler);
     }
 
-    @NonNull
+    @StringRes
     @Override
-    public String getName() {
-        return AuthUI.getApplicationContext().getString(R.string.fui_provider_name_email);
+    public int getNameRes() {
+        return R.string.fui_provider_name_email;
     }
 
     @Override

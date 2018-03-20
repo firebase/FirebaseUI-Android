@@ -114,7 +114,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
                 R.string.fui_welcome_back_idp_prompt,
                 existingUser.getEmail(),
-                mProvider.getName()));
+                getString(mProvider.getNameRes())));
 
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
             @Override

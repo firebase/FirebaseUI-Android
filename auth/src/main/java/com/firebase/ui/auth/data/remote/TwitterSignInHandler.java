@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
@@ -15,6 +17,7 @@ import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
 import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -27,7 +30,7 @@ import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandler.Params> {
     private final TwitterAuthClient mClient;
-    private final Callback mCallback = new Callback();
+    private final TwitterSessionResult mCallback = new TwitterSessionResult();
 
     public TwitterSignInHandler(Application application) {
         super(application);
@@ -71,7 +74,7 @@ public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandl
         return mClient;
     }
 
-    public Callback getCallback() {
+    public Callback<TwitterSession> getCallback() {
         return mCallback;
     }
 
@@ -80,14 +83,14 @@ public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandl
         mClient.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class Callback extends com.twitter.sdk.android.core.Callback<TwitterSession> {
+    private class TwitterSessionResult extends Callback<TwitterSession> {
         @Override
         public void success(final Result<TwitterSession> sessionResult) {
             TwitterCore.getInstance()
                     .getApiClient()
                     .getAccountService()
                     .verifyCredentials(false, false, true)
-                    .enqueue(new com.twitter.sdk.android.core.Callback<com.twitter.sdk.android.core.models.User>() {
+                    .enqueue(new Callback<com.twitter.sdk.android.core.models.User>() {
                         @Override
                         public void success(Result<com.twitter.sdk.android.core.models.User> result) {
                             com.twitter.sdk.android.core.models.User user = result.data;
@@ -100,14 +103,16 @@ public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandl
 
                         @Override
                         public void failure(TwitterException e) {
-                            setResult(IdpResponse.fromError(e));
+                            setResult(IdpResponse.fromError(new FirebaseUiException(
+                                    ErrorCodes.PROVIDER_ERROR, e)));
                         }
                     });
         }
 
         @Override
         public void failure(TwitterException e) {
-            setResult(IdpResponse.fromError(e));
+            setResult(IdpResponse.fromError(new FirebaseUiException(
+                    ErrorCodes.PROVIDER_ERROR, e)));
         }
     }
 

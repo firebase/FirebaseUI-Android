@@ -110,7 +110,8 @@ public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHan
 
     @Override
     public void onError(FacebookException e) {
-        setResult(IdpResponse.fromError(e));
+        setResult(IdpResponse.fromError(new FirebaseUiException(
+                ErrorCodes.PROVIDER_ERROR, e)));
     }
 
     @Override
@@ -129,10 +130,14 @@ public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHan
         @Override
         public void onCompleted(JSONObject object, GraphResponse response) {
             FacebookRequestError error = response.getError();
-            if (error != null || object == null) {
-                setResult(IdpResponse.fromError(error == null ? new FirebaseUiException(
-                        ErrorCodes.PROVIDER_ERROR, "Facebook graph request failed")
-                        : error.getException()));
+            if (error != null) {
+                setResult(IdpResponse.fromError(new FirebaseUiException(
+                        ErrorCodes.PROVIDER_ERROR, error.getException())));
+                return;
+            }
+            if (object == null) {
+                setResult(IdpResponse.fromError(new FirebaseUiException(
+                        ErrorCodes.PROVIDER_ERROR, "Facebook graph request failed")));
                 return;
             }
 
