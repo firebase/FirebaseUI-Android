@@ -43,7 +43,7 @@ import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.FlowUtils;
-import com.firebase.ui.auth.viewmodel.idp.LinkingProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.LinkingProviderResponseHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -75,8 +75,8 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         User existingUser = User.getUser(getIntent());
         IdpResponse requestedUserResponse = IdpResponse.fromResultIntent(getIntent());
 
-        LinkingProvidersHandler handler =
-                ViewModelProviders.of(this).get(LinkingProvidersHandler.class);
+        LinkingProviderResponseHandler handler =
+                ViewModelProviders.of(this).get(LinkingProviderResponseHandler.class);
         handler.init(getFlowParams());
         if (requestedUserResponse != null) {
             handler.setRequestedSignInCredential(

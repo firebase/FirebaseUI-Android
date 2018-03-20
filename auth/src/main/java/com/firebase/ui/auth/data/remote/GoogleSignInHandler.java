@@ -20,7 +20,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -115,7 +115,7 @@ public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler
         private final AuthUI.IdpConfig config;
         @Nullable private final String email;
 
-        public Params(ProvidersHandlerBase handler,
+        public Params(ProviderResponseHandlerBase handler,
                       AuthUI.IdpConfig config,
                       @Nullable String email) {
             super(handler);

@@ -15,7 +15,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -110,7 +110,7 @@ public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandl
     }
 
     public static final class Params extends ProviderHandlerParamsBase {
-        public Params(ProvidersHandlerBase handler) {
+        public Params(ProviderResponseHandlerBase handler) {
             super(handler);
         }
     }

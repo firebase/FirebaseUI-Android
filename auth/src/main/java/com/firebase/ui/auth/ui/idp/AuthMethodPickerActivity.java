@@ -44,8 +44,8 @@ import com.firebase.ui.auth.ui.provider.PhoneProvider;
 import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ui.FlowUtils;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
-import com.firebase.ui.auth.viewmodel.idp.SimpleProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.SimpleProviderResponseHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -60,7 +60,7 @@ import java.util.List;
 public class AuthMethodPickerActivity extends AppCompatBase {
     private static final String TAG = "AuthMethodPicker";
 
-    private SimpleProvidersHandler mHandler;
+    private SimpleProviderResponseHandler mHandler;
     private List<Provider> mProviders;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
@@ -74,7 +74,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         setContentView(R.layout.fui_auth_method_picker_layout);
 
         FlowParameters params = getFlowParams();
-        mHandler = ViewModelProviders.of(this).get(SimpleProvidersHandler.class);
+        mHandler = ViewModelProviders.of(this).get(SimpleProviderResponseHandler.class);
         mHandler.init(params);
 
         populateIdpList(params.providerInfo, mHandler);
@@ -120,7 +120,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         });
     }
 
-    private void populateIdpList(List<IdpConfig> providerConfigs, ProvidersHandlerBase handler) {
+    private void populateIdpList(List<IdpConfig> providerConfigs, ProviderResponseHandlerBase handler) {
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
             switch (idpConfig.getProviderId()) {

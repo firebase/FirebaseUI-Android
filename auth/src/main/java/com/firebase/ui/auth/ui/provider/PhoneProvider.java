@@ -15,13 +15,13 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhoneProvider extends ProviderBase {
     private final AuthUI.IdpConfig mConfig;
 
-    public PhoneProvider(ProvidersHandlerBase handler, AuthUI.IdpConfig config) {
+    public PhoneProvider(ProviderResponseHandlerBase handler, AuthUI.IdpConfig config) {
         super(handler);
         mConfig = config;
     }

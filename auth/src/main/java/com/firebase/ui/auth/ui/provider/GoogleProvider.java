@@ -15,18 +15,18 @@ import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.FlowUtils;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GoogleProvider extends ProviderBase {
     private final GoogleSignInHandler mHandler;
 
-    public GoogleProvider(ProvidersHandlerBase handler, HelperActivityBase activity) {
+    public GoogleProvider(ProviderResponseHandlerBase handler, HelperActivityBase activity) {
         this(handler, activity, null);
     }
 
-    public GoogleProvider(final ProvidersHandlerBase handler,
+    public GoogleProvider(final ProviderResponseHandlerBase handler,
                           final HelperActivityBase activity,
                           @Nullable String email) {
         super(handler);

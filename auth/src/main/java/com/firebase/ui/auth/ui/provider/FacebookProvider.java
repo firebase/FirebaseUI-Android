@@ -14,14 +14,14 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FacebookProvider extends ProviderBase {
     private final FacebookSignInHandler mHandler;
 
-    public FacebookProvider(ProvidersHandlerBase handler, HelperActivityBase activity) {
+    public FacebookProvider(ProviderResponseHandlerBase handler, HelperActivityBase activity) {
         super(handler);
         WebDialog.setWebDialogTheme(activity.getFlowParams().themeId);
         mHandler = ViewModelProviders.of(activity).get(FacebookSignInHandler.class);

@@ -14,11 +14,11 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailProvider extends ProviderBase {
-    public EmailProvider(ProvidersHandlerBase handler) {
+    public EmailProvider(ProviderResponseHandlerBase handler) {
         super(handler);
     }
 
