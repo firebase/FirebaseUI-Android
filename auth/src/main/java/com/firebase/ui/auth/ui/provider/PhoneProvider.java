@@ -5,30 +5,30 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhoneProvider extends ProviderBase {
     private final AuthUI.IdpConfig mConfig;
 
-    public PhoneProvider(ProvidersHandlerBase handler, AuthUI.IdpConfig config) {
+    public PhoneProvider(ProviderResponseHandlerBase handler, AuthUI.IdpConfig config) {
         super(handler);
         mConfig = config;
     }
 
-    @NonNull
+    @StringRes
     @Override
-    public String getName() {
-        return AuthUI.getApplicationContext().getString(R.string.fui_provider_name_phone);
+    public int getNameRes() {
+        return R.string.fui_provider_name_phone;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PhoneProvider extends ProviderBase {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
                 getProvidersHandler().startSignIn(IdpResponse.fromError(
-                        new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR)));
+                        new UserCancellationException()));
             } else {
                 getProvidersHandler().startSignIn(response);
             }

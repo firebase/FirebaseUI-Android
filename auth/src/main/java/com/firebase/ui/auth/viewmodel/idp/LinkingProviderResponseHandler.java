@@ -16,10 +16,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class LinkingProvidersHandler extends ProvidersHandlerBase {
+public class LinkingProviderResponseHandler extends ProviderResponseHandlerBase {
     private AuthCredential mRequestedSignInCredential;
 
-    public LinkingProvidersHandler(Application application) {
+    public LinkingProviderResponseHandler(Application application) {
         super(application);
     }
 

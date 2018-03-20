@@ -6,27 +6,27 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.annotation.StringRes;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.viewmodel.idp.ProvidersHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class TwitterProvider extends ProviderBase {
     private final TwitterSignInHandler mHandler;
 
-    public TwitterProvider(ProvidersHandlerBase handler, HelperActivityBase activity) {
+    public TwitterProvider(ProviderResponseHandlerBase handler, HelperActivityBase activity) {
         super(handler);
         mHandler = ViewModelProviders.of(activity).get(TwitterSignInHandler.class);
         mHandler.init(new TwitterSignInHandler.Params(handler));
     }
 
-    @NonNull
+    @StringRes
     @Override
-    public String getName() {
-        return AuthUI.getApplicationContext().getString(R.string.fui_idp_name_twitter);
+    public int getNameRes() {
+        return R.string.fui_idp_name_twitter;
     }
 
     @Override

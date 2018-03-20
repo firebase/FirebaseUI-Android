@@ -26,8 +26,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class SimpleProvidersHandler extends ProvidersHandlerBase {
-    public SimpleProvidersHandler(Application application) {
+public class SimpleProviderResponseHandler extends ProviderResponseHandlerBase {
+    public SimpleProviderResponseHandler(Application application) {
         super(application);
     }
 
