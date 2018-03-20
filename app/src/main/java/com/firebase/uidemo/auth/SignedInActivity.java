@@ -19,6 +19,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -62,8 +63,6 @@ public class SignedInActivity extends AppCompatActivity {
     @BindView(R.id.user_phone_number) TextView mUserPhoneNumber;
     @BindView(R.id.user_enabled_providers) TextView mEnabledProviders;
 
-    private IdpResponse mIdpResponse;
-
     public static Intent createIntent(Context context, IdpResponse idpResponse) {
         return new Intent().setClass(context, SignedInActivity.class)
                 .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, idpResponse);
@@ -80,12 +79,12 @@ public class SignedInActivity extends AppCompatActivity {
             return;
         }
 
-        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        IdpResponse response = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
 
         setContentView(R.layout.signed_in_layout);
         ButterKnife.bind(this);
         populateProfile();
-        populateIdpToken();
+        populateIdpToken(response);
     }
 
     @OnClick(R.id.sign_out)
@@ -182,12 +181,12 @@ public class SignedInActivity extends AppCompatActivity {
         mEnabledProviders.setText("Providers used: " + providers);
     }
 
-    private void populateIdpToken() {
+    private void populateIdpToken(@Nullable IdpResponse response) {
         String token = null;
         String secret = null;
-        if (mIdpResponse != null) {
-            token = mIdpResponse.getIdpToken();
-            secret = mIdpResponse.getIdpSecret();
+        if (response != null) {
+            token = response.getIdpToken();
+            secret = response.getIdpSecret();
         }
 
         View idpTokenLayout = findViewById(R.id.idp_token_layout);
