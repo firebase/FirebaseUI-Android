@@ -29,26 +29,7 @@ import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandler.Params> {
-    private final TwitterAuthClient mClient;
-    private final TwitterSessionResult mCallback = new TwitterSessionResult();
-
-    public TwitterSignInHandler(Application application) {
-        super(application);
-        initialize();
-        mClient = new TwitterAuthClient();
-    }
-
-    public static void signOut() {
-        try {
-            TwitterCore.getInstance();
-        } catch (IllegalStateException e) {
-            initialize();
-        }
-
-        TwitterCore.getInstance().getSessionManager().clearActiveSession();
-    }
-
-    private static void initialize() {
+    static {
         Context context = AuthUI.getApplicationContext();
         TwitterConfig config = new TwitterConfig.Builder(context)
                 .twitterAuthConfig(new TwitterAuthConfig(
@@ -56,6 +37,18 @@ public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandl
                         context.getString(R.string.twitter_consumer_secret)))
                 .build();
         Twitter.initialize(config);
+    }
+
+    private final TwitterAuthClient mClient;
+    private final TwitterSessionResult mCallback = new TwitterSessionResult();
+
+    public TwitterSignInHandler(Application application) {
+        super(application);
+        mClient = new TwitterAuthClient();
+    }
+
+    public static void signOut() {
+        TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 
     private static IdpResponse createIdpResponse(
