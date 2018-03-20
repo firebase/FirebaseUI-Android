@@ -152,7 +152,7 @@ public class SignedInActivity extends AppCompatActivity {
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
 
         List<String> providers = new ArrayList<>();
-        if (user.getProviders() == null) {
+        if (user.getProviders() == null || user.getProviders().isEmpty()) {
             providers.add("Anonymous");
         } else {
             for (String provider : user.getProviders()) {
