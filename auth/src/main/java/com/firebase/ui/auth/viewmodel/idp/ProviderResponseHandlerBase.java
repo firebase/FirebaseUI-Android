@@ -13,8 +13,8 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public abstract class ProvidersHandlerBase extends AuthViewModelBase<IdpResponse> {
-    public ProvidersHandlerBase(Application application) {
+public abstract class ProviderResponseHandlerBase extends AuthViewModelBase<IdpResponse> {
+    public ProviderResponseHandlerBase(Application application) {
         super(application);
     }
 

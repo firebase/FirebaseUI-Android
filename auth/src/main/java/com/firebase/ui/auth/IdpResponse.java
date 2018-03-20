@@ -28,6 +28,10 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 /**
  * A container that encapsulates the result of authenticating with an Identity Provider.
  */
@@ -195,7 +199,25 @@ public class IdpResponse implements Parcelable {
         dest.writeParcelable(mUser, flags);
         dest.writeString(mToken);
         dest.writeString(mSecret);
-        dest.writeSerializable(mException);
+
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(new ByteArrayOutputStream());
+            oos.writeObject(mException);
+
+            // Success! The entire exception tree is serializable.
+            dest.writeSerializable(mException);
+        } catch (IOException e) {
+            // Somewhere down the line, the exception is holding on to an object that isn't
+            // serializable so default to some exception. It's the best we can do in this case.
+            dest.writeSerializable(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR));
+        } finally {
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException ignored) {}
+            }
+        }
     }
 
     @Override
