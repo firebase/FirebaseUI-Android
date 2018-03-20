@@ -158,19 +158,19 @@ public class SignedInActivity extends AppCompatActivity {
             for (String provider : user.getProviders()) {
                 switch (provider) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        providers.add("Google");
+                        providers.add(getString(R.string.providers_google));
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        providers.add("Facebook");
+                        providers.add(getString(R.string.providers_facebook));
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
-                        providers.add("Twitter");
+                        providers.add(getString(R.string.providers_twitter));
                         break;
                     case EmailAuthProvider.PROVIDER_ID:
-                        providers.add("Email");
+                        providers.add(getString(R.string.providers_email));
                         break;
                     case PhoneAuthProvider.PROVIDER_ID:
-                        providers.add("Phone");
+                        providers.add(getString(R.string.providers_phone));
                         break;
                     default:
                         throw new IllegalStateException("Unknown provider: " + provider);
@@ -178,7 +178,7 @@ public class SignedInActivity extends AppCompatActivity {
             }
         }
 
-        mEnabledProviders.setText("Providers used: " + providers);
+        mEnabledProviders.setText(getString(R.string.used_providers, providers));
     }
 
     private void populateIdpToken(@Nullable IdpResponse response) {

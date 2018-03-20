@@ -75,9 +75,9 @@
 
     <string name="user_profile_header">User profile:</string>
     <string name="profile_picture_content_desc">Profile picture</string>
+    <string name="used_providers">Providers used: %s</string>
     <string name="idp_token">IDP Token</string>
     <string name="idp_secret">IDP Secret</string>
-
 
     <!-- Storage -->
     <string name="choose_image">Choose Image</string>
