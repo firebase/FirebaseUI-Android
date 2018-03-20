@@ -35,6 +35,7 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.EmailProvider;
@@ -110,7 +111,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 } else {
                     Exception e = resource.getException();
                     if (!FlowUtils.handleError(AuthMethodPickerActivity.this, e)
-                            && e.getLocalizedMessage() != null) {
+                            && !(e instanceof UserCancellationException)) {
                         Toast.makeText(AuthMethodPickerActivity.this,
                                 R.string.fui_error_unknown,
                                 Toast.LENGTH_SHORT).show();

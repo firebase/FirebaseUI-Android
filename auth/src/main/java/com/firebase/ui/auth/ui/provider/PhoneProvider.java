@@ -8,10 +8,9 @@ import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
@@ -52,7 +51,7 @@ public class PhoneProvider extends ProviderBase {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
                 getProvidersHandler().startSignIn(IdpResponse.fromError(
-                        new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR)));
+                        new UserCancellationException()));
             } else {
                 getProvidersHandler().startSignIn(response);
             }
