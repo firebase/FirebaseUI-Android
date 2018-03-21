@@ -11,6 +11,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookRequestError;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
@@ -35,6 +36,21 @@ import java.util.List;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHandler.Params>
         implements FacebookCallback<LoginResult> {
+    public static final boolean IS_AVAILABLE;
+
+    static {
+        boolean available;
+        try {
+            //noinspection unused to possibly throw
+            Class c = FacebookSdk.class;
+            available = true;
+        } catch (NoClassDefFoundError e) {
+            available = false;
+        }
+        //noinspection ConstantConditions IntelliJ is wrong
+        IS_AVAILABLE = available;
+    }
+
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
 
