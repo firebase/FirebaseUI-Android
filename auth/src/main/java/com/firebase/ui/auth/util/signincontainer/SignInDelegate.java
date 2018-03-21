@@ -41,12 +41,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +105,7 @@ public class SignInDelegate extends FragmentBase
                 supportPasswords = true;
             }
         }
-        List<String> accountTypes = getSupportedAccountTypes();
+        List<String> accountTypes = getCredentialAccountTypes();
 
         // If the request will be empty, avoid the step entirely
         boolean willRequestCredentials = supportPasswords || accountTypes.size() > 0;
@@ -211,13 +209,11 @@ public class SignInDelegate extends FragmentBase
         }
     }
 
-    private List<String> getSupportedAccountTypes() {
+    private List<String> getCredentialAccountTypes() {
         List<String> accounts = new ArrayList<>();
         for (AuthUI.IdpConfig idpConfig : getFlowParams().providerInfo) {
             @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
-            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
-                    || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
+            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)) {
                 accounts.add(ProviderUtils.providerIdToAccountType(providerId));
             }
         }
