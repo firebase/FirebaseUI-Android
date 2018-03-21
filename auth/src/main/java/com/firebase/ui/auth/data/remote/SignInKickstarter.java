@@ -53,7 +53,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
         // Only support password credentials if email auth is enabled
         boolean supportPasswords = ProviderUtils.getConfigFromIdps(
                 getArguments().providerInfo, EmailAuthProvider.PROVIDER_ID) != null;
-        List<String> accountTypes = getSupportedAccountTypes();
+        List<String> accountTypes = getCredentialAccountTypes();
 
         // If the request will be empty, avoid the step entirely
         boolean willRequestCredentials = supportPasswords || accountTypes.size() > 0;
@@ -142,13 +142,11 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
         }
     }
 
-    private List<String> getSupportedAccountTypes() {
+    private List<String> getCredentialAccountTypes() {
         List<String> accounts = new ArrayList<>();
         for (AuthUI.IdpConfig idpConfig : getArguments().providerInfo) {
             @AuthUI.SupportedProvider String providerId = idpConfig.getProviderId();
-            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)
-                    || providerId.equals(FacebookAuthProvider.PROVIDER_ID)
-                    || providerId.equals(TwitterAuthProvider.PROVIDER_ID)) {
+            if (providerId.equals(GoogleAuthProvider.PROVIDER_ID)) {
                 accounts.add(ProviderUtils.providerIdToAccountType(providerId));
             }
         }
