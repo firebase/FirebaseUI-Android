@@ -58,89 +58,42 @@ public class AuthUiActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 100;
 
-    @BindView(R.id.default_theme)
-    RadioButton mUseDefaultTheme;
+    @BindView(R.id.root) View mRootView;
+    @BindView(R.id.sign_in) Button mSignIn;
 
-    @BindView(R.id.green_theme)
-    RadioButton mUseGreenTheme;
+    @BindView(R.id.google_provider) CheckBox mUseGoogleProvider;
+    @BindView(R.id.facebook_provider) CheckBox mUseFacebookProvider;
+    @BindView(R.id.twitter_provider) CheckBox mUseTwitterProvider;
+    @BindView(R.id.email_provider) CheckBox mUseEmailProvider;
+    @BindView(R.id.phone_provider) CheckBox mUsePhoneProvider;
 
-    @BindView(R.id.purple_theme)
-    RadioButton mUsePurpleTheme;
+    @BindView(R.id.default_theme) RadioButton mUseDefaultTheme;
+    @BindView(R.id.green_theme) RadioButton mUseGreenTheme;
+    @BindView(R.id.purple_theme) RadioButton mUsePurpleTheme;
+    @BindView(R.id.dark_theme) RadioButton mUseDarkTheme;
 
-    @BindView(R.id.dark_theme)
-    RadioButton mUseDarkTheme;
+    @BindView(R.id.firebase_logo) RadioButton mFirebaseLogo;
+    @BindView(R.id.google_logo) RadioButton mGoogleLogo;
+    @BindView(R.id.no_logo) RadioButton mNoLogo;
 
-    @BindView(R.id.email_provider)
-    CheckBox mUseEmailProvider;
+    @BindView(R.id.google_tos) RadioButton mUseGoogleTos;
+    @BindView(R.id.firebase_tos) RadioButton mUseFirebaseTos;
 
-    @BindView(R.id.phone_provider)
-    CheckBox mUsePhoneProvider;
+    @BindView(R.id.google_privacy) RadioButton mUseGooglePrivacyPolicy;
+    @BindView(R.id.firebase_privacy) RadioButton mUseFirebasePrivacyPolicy;
 
-    @BindView(R.id.google_provider)
-    CheckBox mUseGoogleProvider;
+    @BindView(R.id.google_scopes_header) TextView mGoogleScopesLabel;
+    @BindView(R.id.google_scope_drive_file) CheckBox mGoogleScopeDriveFile;
+    @BindView(R.id.google_scope_youtube_data) CheckBox mGoogleScopeYoutubeData;
 
-    @BindView(R.id.facebook_provider)
-    CheckBox mUseFacebookProvider;
+    @BindView(R.id.facebook_permissions_header) TextView mFacebookScopesLabel;
+    @BindView(R.id.facebook_permission_friends) CheckBox mFacebookScopeFriends;
+    @BindView(R.id.facebook_permission_photos) CheckBox mFacebookScopePhotos;
 
-    @BindView(R.id.twitter_provider)
-    CheckBox mUseTwitterProvider;
-
-    @BindView(R.id.google_tos)
-    RadioButton mUseGoogleTos;
-
-    @BindView(R.id.firebase_tos)
-    RadioButton mUseFirebaseTos;
-
-    @BindView(R.id.google_privacy)
-    RadioButton mUseGooglePrivacyPolicy;
-
-    @BindView(R.id.firebase_privacy)
-    RadioButton mUseFirebasePrivacyPolicy;
-
-    @BindView(R.id.sign_in)
-    Button mSignIn;
-
-    @BindView(R.id.root)
-    View mRootView;
-
-    @BindView(R.id.firebase_logo)
-    RadioButton mFirebaseLogo;
-
-    @BindView(R.id.google_logo)
-    RadioButton mGoogleLogo;
-
-    @BindView(R.id.no_logo)
-    RadioButton mNoLogo;
-
-    @BindView(R.id.credential_selector_enabled)
-    CheckBox mEnableCredentialSelector;
-
-    @BindView(R.id.hint_selector_enabled)
-    CheckBox mEnableHintSelector;
-
-    @BindView(R.id.allow_new_email_accounts)
-    CheckBox mAllowNewEmailAccounts;
-
-    @BindView(R.id.require_name)
-    CheckBox mRequireName;
-
-    @BindView(R.id.facebook_scopes_label)
-    TextView mFacebookScopesLabel;
-
-    @BindView(R.id.facebook_scope_friends)
-    CheckBox mFacebookScopeFriends;
-
-    @BindView(R.id.facebook_scope_photos)
-    CheckBox mFacebookScopePhotos;
-
-    @BindView(R.id.google_scopes_label)
-    TextView mGoogleScopesLabel;
-
-    @BindView(R.id.google_scope_drive_file)
-    CheckBox mGoogleScopeDriveFile;
-
-    @BindView(R.id.google_scope_youtube_data)
-    CheckBox mGoogleScopeYoutubeData;
+    @BindView(R.id.credential_selector_enabled) CheckBox mEnableCredentialSelector;
+    @BindView(R.id.hint_selector_enabled) CheckBox mEnableHintSelector;
+    @BindView(R.id.allow_new_email_accounts) CheckBox mAllowNewEmailAccounts;
+    @BindView(R.id.require_name) CheckBox mRequireName;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, AuthUiActivity.class);
@@ -217,10 +170,7 @@ public class AuthUiActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             handleSignInResponse(resultCode, data);
-            return;
         }
-
-        showSnackbar(R.string.unknown_response);
     }
 
     @Override
@@ -259,29 +209,7 @@ public class AuthUiActivity extends AppCompatActivity {
     }
 
     private void startSignedInActivity(IdpResponse response) {
-        startActivity(
-                SignedInActivity.createIntent(
-                        this,
-                        response,
-                        new SignedInActivity.SignedInConfig(
-                                getSelectedLogo(),
-                                getSelectedTheme(),
-                                getSelectedProviders(),
-                                getSelectedTosUrl(),
-                                mEnableCredentialSelector.isChecked(),
-                                mEnableHintSelector.isChecked())));
-    }
-
-    private void setGoogleScopesEnabled(boolean enabled) {
-        mGoogleScopesLabel.setEnabled(enabled);
-        mGoogleScopeDriveFile.setEnabled(enabled);
-        mGoogleScopeYoutubeData.setEnabled(enabled);
-    }
-
-    private void setFacebookScopesEnabled(boolean enabled) {
-        mFacebookScopesLabel.setEnabled(enabled);
-        mFacebookScopeFriends.setEnabled(enabled);
-        mFacebookScopePhotos.setEnabled(enabled);
+        startActivity(SignedInActivity.createIntent(this, response));
     }
 
     @OnClick({R.id.default_theme, R.id.purple_theme, R.id.green_theme, R.id.dark_theme})
@@ -380,8 +308,27 @@ public class AuthUiActivity extends AppCompatActivity {
         return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
-    private void showSnackbar(@StringRes int errorMessageRes) {
-        Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
+    private void setGoogleScopesEnabled(boolean enabled) {
+        mGoogleScopesLabel.setEnabled(enabled);
+        mGoogleScopeDriveFile.setEnabled(enabled);
+        mGoogleScopeYoutubeData.setEnabled(enabled);
+    }
+
+    private void setFacebookScopesEnabled(boolean enabled) {
+        mFacebookScopesLabel.setEnabled(enabled);
+        mFacebookScopeFriends.setEnabled(enabled);
+        mFacebookScopePhotos.setEnabled(enabled);
+    }
+
+    private List<String> getGoogleScopes() {
+        List<String> result = new ArrayList<>();
+        if (mGoogleScopeYoutubeData.isChecked()) {
+            result.add("https://www.googleapis.com/auth/youtube.readonly");
+        }
+        if (mGoogleScopeDriveFile.isChecked()) {
+            result.add(Scopes.DRIVE_FILE);
+        }
+        return result;
     }
 
     private List<String> getFacebookPermissions() {
@@ -395,14 +342,7 @@ public class AuthUiActivity extends AppCompatActivity {
         return result;
     }
 
-    private List<String> getGoogleScopes() {
-        List<String> result = new ArrayList<>();
-        if (mGoogleScopeYoutubeData.isChecked()) {
-            result.add("https://www.googleapis.com/auth/youtube.readonly");
-        }
-        if (mGoogleScopeDriveFile.isChecked()) {
-            result.add(Scopes.DRIVE_FILE);
-        }
-        return result;
+    private void showSnackbar(@StringRes int errorMessageRes) {
+        Snackbar.make(mRootView, errorMessageRes, Snackbar.LENGTH_LONG).show();
     }
 }
