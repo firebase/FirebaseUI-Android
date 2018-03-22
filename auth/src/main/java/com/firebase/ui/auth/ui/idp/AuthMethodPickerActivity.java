@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -59,8 +58,6 @@ import java.util.List;
 /** Presents the list of authentication options for this app to the user. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase {
-    private static final String TAG = "AuthMethodPicker";
-
     private SimpleProviderResponseHandler mHandler;
     private List<ProviderBase> mProviders;
 
@@ -119,43 +116,50 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         });
     }
 
-    private void populateIdpList(List<IdpConfig> providerConfigs, ProviderResponseHandlerBase handler) {
+    private void populateIdpList(List<IdpConfig> providerConfigs,
+                                 final ProviderResponseHandlerBase handler) {
+        ViewGroup providerHolder = findViewById(R.id.btn_holder);
+
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
+            final ProviderBase provider;
             switch (idpConfig.getProviderId()) {
                 case GoogleAuthProvider.PROVIDER_ID:
-                    mProviders.add(new GoogleProvider(handler, this));
+                    provider = new GoogleProvider(this);
                     break;
                 case FacebookAuthProvider.PROVIDER_ID:
-                    mProviders.add(new FacebookProvider(handler, this));
+                    provider = new FacebookProvider(this);
                     break;
                 case TwitterAuthProvider.PROVIDER_ID:
-                    mProviders.add(new TwitterProvider(handler, this));
+                    provider = new TwitterProvider(this);
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
-                    mProviders.add(new EmailProvider(handler));
+                    provider = new EmailProvider();
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    mProviders.add(new PhoneProvider(handler, idpConfig));
+                    provider = new PhoneProvider(idpConfig);
                     break;
                 default:
-                    Log.e(TAG, "Encountered unknown provider parcel with type: "
-                            + idpConfig.getProviderId());
+                    throw new IllegalStateException("Unknown provider: " + idpConfig.getProviderId());
             }
-        }
+            mProviders.add(provider);
 
-        ViewGroup btnHolder = findViewById(R.id.btn_holder);
-        for (final ProviderBase provider : mProviders) {
+            provider.getResponseListener().observe(this, new Observer<IdpResponse>() {
+                @Override
+                public void onChanged(IdpResponse response) {
+                    handler.startSignIn(response);
+                }
+            });
+
             View loginButton = getLayoutInflater()
-                    .inflate(provider.getButtonLayout(), btnHolder, false);
-
+                    .inflate(provider.getButtonLayout(), providerHolder, false);
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     provider.startLogin(AuthMethodPickerActivity.this);
                 }
             });
-            btnHolder.addView(loginButton);
+            providerHolder.addView(loginButton);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.provider;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
@@ -8,19 +9,23 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class TwitterProvider extends ProviderBase {
     private final TwitterSignInHandler mHandler;
 
-    public TwitterProvider(ProviderResponseHandlerBase handler, HelperActivityBase activity) {
-        super(handler);
+    public TwitterProvider(HelperActivityBase activity) {
         mHandler = ViewModelProviders.of(activity).get(TwitterSignInHandler.class);
-        mHandler.init(new TwitterSignInHandler.Params(handler));
+        mHandler.init(null);
+    }
+
+    @Override
+    public LiveData<IdpResponse> getResponseListener() {
+        return mHandler.getOperation();
     }
 
     @StringRes

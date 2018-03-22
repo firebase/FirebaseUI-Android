@@ -75,7 +75,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         User existingUser = User.getUser(getIntent());
         IdpResponse requestedUserResponse = IdpResponse.fromResultIntent(getIntent());
 
-        LinkingProviderResponseHandler handler =
+        final LinkingProviderResponseHandler handler =
                 ViewModelProviders.of(this).get(LinkingProviderResponseHandler.class);
         handler.init(getFlowParams());
         if (requestedUserResponse != null) {
@@ -88,13 +88,13 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mProvider = new GoogleProvider(handler, this, existingUser.getEmail());
+                        mProvider = new GoogleProvider(this, existingUser.getEmail());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mProvider = new FacebookProvider(handler, this);
+                        mProvider = new FacebookProvider(this);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
-                        mProvider = new TwitterProvider(handler, this);
+                        mProvider = new TwitterProvider(this);
                         break;
                     default:
                         throw new IllegalStateException("Unknown provider: " + providerId);
@@ -110,6 +110,13 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                             + providerId)));
             return;
         }
+
+        mProvider.getResponseListener().observe(this, new Observer<IdpResponse>() {
+            @Override
+            public void onChanged(IdpResponse response) {
+                handler.startSignIn(response);
+            }
+        });
 
         ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
                 R.string.fui_welcome_back_idp_prompt,

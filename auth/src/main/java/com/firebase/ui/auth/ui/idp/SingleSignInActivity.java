@@ -57,17 +57,24 @@ public class SingleSignInActivity extends HelperActivityBase {
 
         switch (provider) {
             case GoogleAuthProvider.PROVIDER_ID:
-                mProvider = new GoogleProvider(mHandler, this, user.getEmail());
+                mProvider = new GoogleProvider(this, user.getEmail());
                 break;
             case FacebookAuthProvider.PROVIDER_ID:
-                mProvider = new FacebookProvider(mHandler, this);
+                mProvider = new FacebookProvider(this);
                 break;
             case TwitterAuthProvider.PROVIDER_ID:
-                mProvider = new TwitterProvider(mHandler, this);
+                mProvider = new TwitterProvider(this);
                 break;
             default:
                 throw new IllegalStateException("Invalid provider id: " + provider);
         }
+
+        mProvider.getResponseListener().observe(this, new Observer<IdpResponse>() {
+            @Override
+            public void onChanged(IdpResponse response) {
+                mHandler.startSignIn(response);
+            }
+        });
 
         mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override

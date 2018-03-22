@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.provider;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
@@ -10,25 +11,27 @@ import android.support.annotation.StringRes;
 
 import com.facebook.WebDialog;
 import com.facebook.login.LoginManager;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FacebookProvider extends ProviderBase {
     private final FacebookSignInHandler mHandler;
 
-    public FacebookProvider(ProviderResponseHandlerBase handler, HelperActivityBase activity) {
-        super(handler);
+    public FacebookProvider(HelperActivityBase activity) {
         WebDialog.setWebDialogTheme(activity.getFlowParams().themeId);
         mHandler = ViewModelProviders.of(activity).get(FacebookSignInHandler.class);
-        mHandler.init(new FacebookSignInHandler.Params(
-                handler,
-                ProviderUtils.getConfigFromIdpsOrThrow(
-                        activity.getFlowParams().providerInfo, FacebookAuthProvider.PROVIDER_ID)));
+        mHandler.init(ProviderUtils.getConfigFromIdpsOrThrow(
+                activity.getFlowParams().providerInfo, FacebookAuthProvider.PROVIDER_ID));
+    }
+
+    @Override
+    public LiveData<IdpResponse> getResponseListener() {
+        return mHandler.getOperation();
     }
 
     @StringRes

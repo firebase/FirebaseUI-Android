@@ -1,5 +1,6 @@
 package com.firebase.ui.auth.ui.provider;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -7,16 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class ProviderBase {
-    private final ProviderResponseHandlerBase mHandler;
-
-    public ProviderBase(@NonNull ProviderResponseHandlerBase handler) {
-        mHandler = handler;
-    }
+    public abstract LiveData<IdpResponse> getResponseListener();
 
     /** Retrieves the name of the IDP, for display on-screen. */
     @StringRes
@@ -30,9 +27,4 @@ public abstract class ProviderBase {
     public abstract void startLogin(@NonNull HelperActivityBase activity);
 
     public abstract void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
-
-    @NonNull
-    protected ProviderResponseHandlerBase getProvidersHandler() {
-        return mHandler;
-    }
 }

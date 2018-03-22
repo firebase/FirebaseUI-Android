@@ -14,8 +14,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -28,7 +26,7 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandler.Params> {
+public class TwitterSignInHandler extends ProviderHandlerBase<Void> {
     public static final boolean IS_AVAILABLE;
 
     static {
@@ -117,12 +115,6 @@ public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandl
         public void failure(TwitterException e) {
             setResult(IdpResponse.fromError(new FirebaseUiException(
                     ErrorCodes.PROVIDER_ERROR, e)));
-        }
-    }
-
-    public static final class Params extends ProviderHandlerParamsBase {
-        public Params(ProviderResponseHandlerBase handler) {
-            super(handler);
         }
     }
 }
