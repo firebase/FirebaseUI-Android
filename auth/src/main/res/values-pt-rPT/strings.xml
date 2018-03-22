@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Ocorreu um erro desconhecido.</string>
     <string name="fui_error_invalid_password">Palavra-passe incorreta.</string>
     <string name="fui_accessibility_logo">Logótipo da aplicação</string>
+    <string name="fui_signed_in_with_specific_account">Sessão iniciada como %1$s</string>
     <string name="fui_verify_phone_number_title">Introduza o seu número de telefone</string>
     <string name="fui_invalid_phone_number">Introduza um número de telefone válido</string>
     <string name="fui_enter_confirmation_code">Introduza o código de 6 dígitos que enviámos para</string>

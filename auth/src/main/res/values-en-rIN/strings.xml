@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">An unknown error occurred.</string>
     <string name="fui_error_invalid_password">Incorrect password.</string>
     <string name="fui_accessibility_logo">App logo</string>
+    <string name="fui_signed_in_with_specific_account">Signed in as %1$s</string>
     <string name="fui_verify_phone_number_title">Enter your phone number</string>
     <string name="fui_invalid_phone_number">Enter a valid phone number</string>
     <string name="fui_enter_confirmation_code">Enter the 6-digit code that we sent to</string>

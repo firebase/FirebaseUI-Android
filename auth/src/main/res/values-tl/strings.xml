@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Nagkaroon ng hindi malamang error.</string>
     <string name="fui_error_invalid_password">Maling password.</string>
     <string name="fui_accessibility_logo">Logo ng app</string>
+    <string name="fui_signed_in_with_specific_account">Naka-sign in bilang %1$s</string>
     <string name="fui_verify_phone_number_title">Ilagay ang numero ng iyong telepono</string>
     <string name="fui_invalid_phone_number">Maglagay ng wastong numero ng telepono</string>
     <string name="fui_enter_confirmation_code">Ilagay ang 6-digit na code na ipinadala namin sa</string>

@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Įvyko nežinoma klaida.</string>
     <string name="fui_error_invalid_password">Netinkamas slaptažodis.</string>
     <string name="fui_accessibility_logo">Programos logotipas</string>
+    <string name="fui_signed_in_with_specific_account">Esate prisijungę kaip %1$s</string>
     <string name="fui_verify_phone_number_title">Įveskite telefono numerį</string>
     <string name="fui_invalid_phone_number">Įveskite tinkamą telefono numerį</string>
     <string name="fui_enter_confirmation_code">Įveskite 6 skaitmenų kodą, kurį išsiuntėme</string>

@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">S\'ha produït un error desconegut.</string>
     <string name="fui_error_invalid_password">La contrasenya no és correcta.</string>
     <string name="fui_accessibility_logo">Logotip de l\'aplicació</string>
+    <string name="fui_signed_in_with_specific_account">Has iniciat la sessió com a %1$s</string>
     <string name="fui_verify_phone_number_title">Introdueix el número de telèfon</string>
     <string name="fui_invalid_phone_number">Introdueix un número de telèfon vàlid</string>
     <string name="fui_enter_confirmation_code">Introdueix el codi de 6 dígits que s\'ha enviat al número</string>

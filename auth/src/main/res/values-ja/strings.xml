@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">不明なエラーが発生しました。</string>
     <string name="fui_error_invalid_password">パスワードが正しくありません。</string>
     <string name="fui_accessibility_logo">アプリのロゴ</string>
+    <string name="fui_signed_in_with_specific_account">%1$s でログインしています</string>
     <string name="fui_verify_phone_number_title">電話番号を入力してください</string>
     <string name="fui_invalid_phone_number">有効な電話番号を入力してください</string>
     <string name="fui_enter_confirmation_code">送信された 6 桁のコードを入力してください</string>

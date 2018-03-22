@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Bilinmeyen bir hata oluştu.</string>
     <string name="fui_error_invalid_password">Yanlış şifre.</string>
     <string name="fui_accessibility_logo">Uygulama logosu</string>
+    <string name="fui_signed_in_with_specific_account">%1$s olarak oturum açıldı</string>
     <string name="fui_verify_phone_number_title">Telefon numaranızı girin</string>
     <string name="fui_invalid_phone_number">Geçerli bir telefon numarası girin</string>
     <string name="fui_enter_confirmation_code">Şu telefon numarasına gönderdiğimiz 6 haneli kodu girin:</string>

@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">કોઈ અજ્ઞાત ભૂલ આવી છે.</string>
     <string name="fui_error_invalid_password">ખોટો પાસવર્ડ.</string>
     <string name="fui_accessibility_logo">ઍપ્લિકેશન લોગો</string>
+    <string name="fui_signed_in_with_specific_account">%1$s તરીકે સાઇન ઇન કર્યું</string>
     <string name="fui_verify_phone_number_title">તમારો ફોન નંબર દાખલ કરો</string>
     <string name="fui_invalid_phone_number">એક માન્ય ફોન નંબર દાખલ કરો</string>
     <string name="fui_enter_confirmation_code">અમે આ ફોન નંબર પર મોકલેલ 6-અંકનો કોડ દાખલ કરો</string>

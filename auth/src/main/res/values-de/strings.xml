@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Ein unbekannter Fehler ist aufgetreten.</string>
     <string name="fui_error_invalid_password">Falsches Passwort</string>
     <string name="fui_accessibility_logo">App-Logo</string>
+    <string name="fui_signed_in_with_specific_account">Angemeldet als %1$s</string>
     <string name="fui_verify_phone_number_title">Telefonnummer eingeben</string>
     <string name="fui_invalid_phone_number">Geben Sie eine gültige Telefonnummer ein</string>
     <string name="fui_enter_confirmation_code">Geben Sie den 6-stelligen Code ein, der gesendet wurde an</string>

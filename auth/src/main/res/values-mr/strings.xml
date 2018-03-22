@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">एक अज्ञात एरर आली.</string>
     <string name="fui_error_invalid_password">अयोग्य पासवर्ड</string>
     <string name="fui_accessibility_logo">अ‍ॅप लोगो</string>
+    <string name="fui_signed_in_with_specific_account">%1$s म्हणून साइन इन केले</string>
     <string name="fui_verify_phone_number_title">तुमचा फोन नंबर टाका</string>
     <string name="fui_invalid_phone_number">कृपया वैध फोन नंबर टाका</string>
     <string name="fui_enter_confirmation_code">वर आम्ही पाठवलेला 6 अंकी कोड टाका</string>

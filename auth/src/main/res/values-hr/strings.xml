@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Došlo je do nepoznate pogreške.</string>
     <string name="fui_error_invalid_password">Pogrešna zaporka.</string>
     <string name="fui_accessibility_logo">Logotip aplikacije</string>
+    <string name="fui_signed_in_with_specific_account">Prijavljeni ste kao %1$s</string>
     <string name="fui_verify_phone_number_title">Unesite telefonski broj</string>
     <string name="fui_invalid_phone_number">Unesite važeći telefonski broj</string>
     <string name="fui_enter_confirmation_code">Unesite 6-znamenkasti kôd koji smo poslali na broj</string>

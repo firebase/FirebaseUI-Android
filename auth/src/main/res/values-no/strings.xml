@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Det oppsto en ukjent feil.</string>
     <string name="fui_error_invalid_password">Feil passord.</string>
     <string name="fui_accessibility_logo">App-logo</string>
+    <string name="fui_signed_in_with_specific_account">Logget på som %1$s</string>
     <string name="fui_verify_phone_number_title">Oppgi telefonnummeret ditt</string>
     <string name="fui_invalid_phone_number">Oppgi et gyldig telefonnummer</string>
     <string name="fui_enter_confirmation_code">Oppgi den 6-sifrede koden vi sendte til</string>

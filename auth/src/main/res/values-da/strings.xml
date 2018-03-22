@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Der opstod en ukendt fejl.</string>
     <string name="fui_error_invalid_password">Ugyldig adgangskode.</string>
     <string name="fui_accessibility_logo">App-logo</string>
+    <string name="fui_signed_in_with_specific_account">Du er logget ind som %1$s</string>
     <string name="fui_verify_phone_number_title">Angiv dit telefonnummer</string>
     <string name="fui_invalid_phone_number">Angiv et gyldigt telefonnummer</string>
     <string name="fui_enter_confirmation_code">Angiv den 6-cifrede kode, vi sendte til</string>

@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Radās nezināma kļūda.</string>
     <string name="fui_error_invalid_password">Nepareiza parole.</string>
     <string name="fui_accessibility_logo">Lietotnes logotips</string>
+    <string name="fui_signed_in_with_specific_account">Pierakstījies kā %1$s</string>
     <string name="fui_verify_phone_number_title">Ievadiet savu tālruņa numuru</string>
     <string name="fui_invalid_phone_number">Ievadiet derīgu tālruņa numuru</string>
     <string name="fui_enter_confirmation_code">Ievadiet 6 ciparu kodu, ko nosūtījām</string>

@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Er is een onbekende fout opgetreden.</string>
     <string name="fui_error_invalid_password">Onjuist wachtwoord.</string>
     <string name="fui_accessibility_logo">App-logo</string>
+    <string name="fui_signed_in_with_specific_account">Ingelogd als %1$s</string>
     <string name="fui_verify_phone_number_title">Voer uw telefoonnummer in</string>
     <string name="fui_invalid_phone_number">Voer een geldig telefoonnummer in</string>
     <string name="fui_enter_confirmation_code">Voer de zescijferige code in die we hebben verzonden naar</string>
