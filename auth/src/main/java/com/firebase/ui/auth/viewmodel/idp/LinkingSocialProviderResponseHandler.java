@@ -31,13 +31,13 @@ public class LinkingSocialProviderResponseHandler extends AuthViewModelBase<IdpR
     }
 
     public void startSignIn(@NonNull final IdpResponse response) {
-        if (!AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
-            throw new IllegalStateException(
-                    "This handler cannot be used to link email or phone providers");
-        }
         if (!response.isSuccessful()) {
             setResult(Resource.<IdpResponse>forFailure(response.getError()));
             return;
+        }
+        if (!AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
+            throw new IllegalStateException(
+                    "This handler cannot be used to link email or phone providers");
         }
         setResult(Resource.<IdpResponse>forLoading());
 
