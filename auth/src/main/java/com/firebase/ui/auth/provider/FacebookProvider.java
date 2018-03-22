@@ -49,7 +49,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResult> {
+public class FacebookProvider implements IdpProvider {
     private static final String TAG = "FacebookProvider";
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
@@ -60,7 +60,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     // DO NOT USE DIRECTLY: see onSuccess(String, LoginResult) and onFailure(Bundle) below
     private IdpCallback mCallbackObject;
 
-    public FacebookProvider(AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
+        public FacebookProvider(AuthUI.IdpConfig idpConfig, @StyleRes int theme) {
         List<String> scopes = idpConfig.getParams()
                 .getStringArrayList(ExtraConstants.EXTRA_FACEBOOK_PERMISSIONS);
         if (scopes == null) {
@@ -93,7 +93,7 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
     public void startLogin(Activity activity) {
         sCallbackManager = CallbackManager.Factory.create();
         LoginManager loginManager = LoginManager.getInstance();
-        loginManager.registerCallback(sCallbackManager, this);
+        loginManager.registerCallback(sCallbackManager, callback);
 
         List<String> permissionsList = new ArrayList<>(mScopes);
 
@@ -122,62 +122,64 @@ public class FacebookProvider implements IdpProvider, FacebookCallback<LoginResu
         }
     }
 
-    @Override
-    public void onSuccess(final LoginResult loginResult) {
-        GraphRequest request = GraphRequest.newMeRequest(
-                loginResult.getAccessToken(),
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        FacebookRequestError requestError = response.getError();
-                        if (requestError != null) {
-                            Log.e(TAG, "Received Facebook error: " + requestError.getErrorMessage());
-                            onFailure(requestError.getException());
-                            return;
-                        }
-                        if (object == null) {
-                            Log.w(TAG, "Received null response from Facebook GraphRequest");
-                            onFailure(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR));
-                        } else {
-                            String email = null;
-                            String name = null;
-                            Uri photoUri = null;
-
-                            try {
-                                email = object.getString("email");
-                            } catch (JSONException e) {
-                                Log.e(TAG, "Failure retrieving Facebook email", e);
+    private final FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>(){
+        @Override
+        public void onSuccess(final LoginResult loginResult) {
+            GraphRequest request = GraphRequest.newMeRequest(
+                    loginResult.getAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            FacebookRequestError requestError = response.getError();
+                            if (requestError != null) {
+                                Log.e(TAG, "Received Facebook error: " + requestError.getErrorMessage());
+                                onFailure(requestError.getException());
+                                return;
                             }
-                            try {
-                                name = object.getString("name");
-                            } catch (JSONException ignored) {}
-                            try {
-                                photoUri = Uri.parse(object.getJSONObject("picture")
-                                        .getJSONObject("data")
-                                        .getString("url"));
-                            } catch (JSONException ignored) {}
+                            if (object == null) {
+                                Log.w(TAG, "Received null response from Facebook GraphRequest");
+                                onFailure(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR));
+                            } else {
+                                String email = null;
+                                String name = null;
+                                Uri photoUri = null;
 
-                            onSuccess(loginResult, email, name, photoUri);
+                                try {
+                                    email = object.getString("email");
+                                } catch (JSONException e) {
+                                    Log.e(TAG, "Failure retrieving Facebook email", e);
+                                }
+                                try {
+                                    name = object.getString("name");
+                                } catch (JSONException ignored) {}
+                                try {
+                                    photoUri = Uri.parse(object.getJSONObject("picture")
+                                            .getJSONObject("data")
+                                            .getString("url"));
+                                } catch (JSONException ignored) {}
+
+                                FacebookProvider.this.onSuccess(loginResult, email, name, photoUri);
+                            }
                         }
-                    }
-                });
+                    });
 
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,email,picture");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,picture");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
 
-    @Override
-    public void onCancel() {
-        onFailure(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR));
-    }
+        @Override
+        public void onCancel() {
+            onFailure(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR));
+        }
 
-    @Override
-    public void onError(FacebookException e) {
-        Log.e(TAG, "Error logging in with Facebook. " + e.getMessage());
-        onFailure(e);
-    }
+        @Override
+        public void onError(FacebookException e) {
+            Log.e(TAG, "Error logging in with Facebook. " + e.getMessage());
+            onFailure(e);
+        }
+    };
 
     private void onSuccess(LoginResult loginResult,
                            @Nullable String email,

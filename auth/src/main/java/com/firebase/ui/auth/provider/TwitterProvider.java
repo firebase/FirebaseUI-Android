@@ -22,7 +22,7 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 import com.twitter.sdk.android.core.models.User;
 
-public class TwitterProvider extends Callback<TwitterSession> implements IdpProvider {
+public class TwitterProvider implements IdpProvider {
     private static final String TAG = "TwitterProvider";
 
     private IdpCallback mCallbackObject;
@@ -87,38 +87,42 @@ public class TwitterProvider extends Callback<TwitterSession> implements IdpProv
 
     @Override
     public void startLogin(Activity activity) {
-        mTwitterAuthClient.authorize(activity, this);
+        mTwitterAuthClient.authorize(activity, callback);
     }
 
-    @Override
-    public void success(final Result<TwitterSession> sessionResult) {
-        TwitterCore.getInstance()
-                .getApiClient()
-                .getAccountService()
-                .verifyCredentials(false, false, true)
-                .enqueue(new Callback<User>() {
-                    @Override
-                    public void success(Result<User> result) {
-                        User user = result.data;
-                        mCallbackObject.onSuccess(createIdpResponse(
-                                sessionResult.data,
-                                user.email,
-                                user.name,
-                                Uri.parse(user.profileImageUrlHttps)));
-                    }
+    private final Callback<TwitterSession> callback = new Callback<TwitterSession>(){
+        @Override
+        public void success(final Result<TwitterSession> sessionResult) {
+            TwitterCore.getInstance()
+                    .getApiClient()
+                    .getAccountService()
+                    .verifyCredentials(false, false, true)
+                    .enqueue(new Callback<User>() {
+                        @Override
+                        public void success(Result<User> result) {
+                            User user = result.data;
+                            mCallbackObject.onSuccess(createIdpResponse(
+                                    sessionResult.data,
+                                    user.email,
+                                    user.name,
+                                    Uri.parse(user.profileImageUrlHttps)));
+                        }
 
-                    @Override
-                    public void failure(TwitterException e) {
-                        mCallbackObject.onFailure(e);
-                    }
-                });
-    }
+                        @Override
+                        public void failure(TwitterException e) {
+                            mCallbackObject.onFailure(e);
+                        }
+                    });
+        }
 
-    @Override
-    public void failure(TwitterException e) {
-        Log.e(TAG, "Failure logging in to Twitter. " + e.getMessage());
-        mCallbackObject.onFailure(e);
-    }
+        @Override
+        public void failure(TwitterException e) {
+            Log.e(TAG, "Failure logging in to Twitter. " + e.getMessage());
+            mCallbackObject.onFailure(e);
+        }
+    };
+
+
 
     private IdpResponse createIdpResponse(TwitterSession session,
                                           String email,
