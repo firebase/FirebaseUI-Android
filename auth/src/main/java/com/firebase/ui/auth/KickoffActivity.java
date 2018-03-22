@@ -12,6 +12,7 @@ import android.support.annotation.RestrictTo;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
+import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.PlayServicesHelper;
@@ -49,6 +50,8 @@ public class KickoffActivity extends HelperActivityBase {
                     Exception e = resource.getException();
                     if (!FlowUtils.handleError(KickoffActivity.this, e)) {
                         finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
+                    } else if (e instanceof UserCancellationException) {
+                        finish(RESULT_CANCELED, null);
                     }
                 }
             }
