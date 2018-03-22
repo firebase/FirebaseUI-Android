@@ -60,7 +60,7 @@ public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler
     }
 
     public void start() {
-        mRequest.setValue(Resource.<Void>forFailure(new IntentRequiredException(
+        mRequest.setValue(Resource.<Void>forUsableFailure(new IntentRequiredException(
                 GoogleSignIn.getClient(getApplication(), getSignInOptions()).getSignInIntent(),
                 RequestCodes.GOOGLE_PROVIDER)));
     }

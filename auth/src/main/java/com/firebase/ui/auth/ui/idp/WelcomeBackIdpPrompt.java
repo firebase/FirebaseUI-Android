@@ -132,11 +132,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 }
                 getDialogHolder().dismissDialog();
 
-                if (resource.isUsed()) { return; }
-
                 if (resource.getState() == State.SUCCESS) {
                     finish(RESULT_OK, resource.getValue().toIntent());
-                } else {
+                } else if (resource.getState() == State.FAILURE) {
                     Exception e = resource.getException();
                     if (!FlowUtils.handleError(WelcomeBackIdpPrompt.this, e)) {
                         finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));

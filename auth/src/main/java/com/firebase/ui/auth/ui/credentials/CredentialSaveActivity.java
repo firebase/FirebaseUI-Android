@@ -82,8 +82,7 @@ public class CredentialSaveActivity extends HelperActivityBase {
                 break;
             case SUCCESS:
             case FAILURE:
-                if (!resource.isUsed()
-                        && !FlowUtils.handleError(this, resource.getException())) {
+                if (!FlowUtils.handleError(this, resource.getException())) {
                     finish(RESULT_OK, mIdpResponse.toIntent());
                 }
                 break;

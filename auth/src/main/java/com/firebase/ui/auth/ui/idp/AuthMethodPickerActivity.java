@@ -104,11 +104,9 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                 }
                 getDialogHolder().dismissDialog();
 
-                if (resource.isUsed()) { return; }
-
                 if (resource.getState() == State.SUCCESS) {
                     startSaveCredentials(mHandler.getCurrentUser(), null, resource.getValue());
-                } else {
+                } else if (resource.getState() == State.FAILURE) {
                     Exception e = resource.getException();
                     if (!FlowUtils.handleError(AuthMethodPickerActivity.this, e)
                             && !(e instanceof UserCancellationException)) {

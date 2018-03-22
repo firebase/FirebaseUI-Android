@@ -11,6 +11,7 @@ import android.support.annotation.StringRes;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -39,7 +40,7 @@ public class GoogleProvider extends ProviderBase {
         mHandler.getRequest().observe(activity, new Observer<Resource<Void>>() {
             @Override
             public void onChanged(Resource<Void> resource) {
-                if (!resource.isUsed()) {
+                if (resource.getState() == State.FAILURE) {
                     FlowUtils.handleError(activity, resource.getException());
                 }
             }
