@@ -38,7 +38,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
 import com.firebase.ui.auth.ui.provider.GoogleProvider;
-import com.firebase.ui.auth.ui.provider.Provider;
+import com.firebase.ui.auth.ui.provider.ProviderBase;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -50,7 +50,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase {
-    private Provider mProvider;
+    private ProviderBase mProvider;
 
     public static Intent createIntent(
             Context context, FlowParameters flowParams, User existingUser) {
@@ -75,7 +75,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         User existingUser = User.getUser(getIntent());
         IdpResponse requestedUserResponse = IdpResponse.fromResultIntent(getIntent());
 
-        LinkingProviderResponseHandler handler =
+        final LinkingProviderResponseHandler handler =
                 ViewModelProviders.of(this).get(LinkingProviderResponseHandler.class);
         handler.init(getFlowParams());
         if (requestedUserResponse != null) {
@@ -88,13 +88,13 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             if (providerId.equals(idpConfig.getProviderId())) {
                 switch (providerId) {
                     case GoogleAuthProvider.PROVIDER_ID:
-                        mProvider = new GoogleProvider(handler, this, existingUser.getEmail());
+                        mProvider = new GoogleProvider(this, existingUser.getEmail());
                         break;
                     case FacebookAuthProvider.PROVIDER_ID:
-                        mProvider = new FacebookProvider(handler, this);
+                        mProvider = new FacebookProvider(this);
                         break;
                     case TwitterAuthProvider.PROVIDER_ID:
-                        mProvider = new TwitterProvider(handler, this);
+                        mProvider = new TwitterProvider(this);
                         break;
                     default:
                         throw new IllegalStateException("Unknown provider: " + providerId);
@@ -110,6 +110,13 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                             + providerId)));
             return;
         }
+
+        mProvider.getResponseListener().observe(this, new Observer<IdpResponse>() {
+            @Override
+            public void onChanged(IdpResponse response) {
+                handler.startSignIn(response);
+            }
+        });
 
         ((TextView) findViewById(R.id.welcome_back_idp_prompt)).setText(getString(
                 R.string.fui_welcome_back_idp_prompt,
@@ -132,11 +139,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 }
                 getDialogHolder().dismissDialog();
 
-                if (resource.isUsed()) { return; }
-
                 if (resource.getState() == State.SUCCESS) {
                     finish(RESULT_OK, resource.getValue().toIntent());
-                } else {
+                } else if (resource.getState() == State.FAILURE) {
                     Exception e = resource.getException();
                     if (!FlowUtils.handleError(WelcomeBackIdpPrompt.this, e)) {
                         finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));

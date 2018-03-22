@@ -1,5 +1,7 @@
 package com.firebase.ui.auth.ui.provider;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -13,12 +15,14 @@ import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class EmailProvider extends ProviderBase {
-    public EmailProvider(ProviderResponseHandlerBase handler) {
-        super(handler);
+    private final MutableLiveData<IdpResponse> mResponseData = new MutableLiveData<>();
+
+    @Override
+    public LiveData<IdpResponse> getResponseListener() {
+        return mResponseData;
     }
 
     @StringRes
@@ -45,10 +49,10 @@ public class EmailProvider extends ProviderBase {
         if (requestCode == RequestCodes.EMAIL_FLOW) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
-                getProvidersHandler().startSignIn(IdpResponse.fromError(
+                mResponseData.setValue(IdpResponse.fromError(
                         new UserCancellationException()));
             } else {
-                getProvidersHandler().startSignIn(response);
+                mResponseData.setValue(response);
             }
         }
     }

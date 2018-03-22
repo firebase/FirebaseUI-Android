@@ -76,8 +76,9 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
                             setResult(Resource.forVoidSuccess());
                         } else if (task.getException() instanceof ResolvableApiException) {
                             ResolvableApiException rae = (ResolvableApiException) task.getException();
-                            setResult(Resource.<Void>forFailure(new PendingIntentRequiredException(
-                                    rae.getResolution(), RequestCodes.CRED_SAVE)));
+                            setResult(Resource.<Void>forUsableFailure(
+                                    new PendingIntentRequiredException(
+                                            rae.getResolution(), RequestCodes.CRED_SAVE)));
                         } else {
                             Log.w(TAG, "Non-resolvable exception: " + task.getException());
 

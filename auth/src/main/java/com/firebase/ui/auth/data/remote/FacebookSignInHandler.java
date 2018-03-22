@@ -11,6 +11,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookRequestError;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
@@ -22,8 +23,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.json.JSONException;
@@ -33,8 +32,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHandler.Params>
+public class FacebookSignInHandler extends ProviderHandlerBase<AuthUI.IdpConfig>
         implements FacebookCallback<LoginResult> {
+    public static final boolean IS_AVAILABLE;
+
+    static {
+        boolean available;
+        try {
+            //noinspection unused to possibly throw
+            Class c = FacebookSdk.class;
+            available = true;
+        } catch (NoClassDefFoundError e) {
+            available = false;
+        }
+        //noinspection ConstantConditions IntelliJ is wrong
+        IS_AVAILABLE = available;
+    }
+
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
 
@@ -64,7 +78,7 @@ public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHan
     }
 
     private void initPermissionList() {
-        List<String> scopes = getArguments().config.getParams()
+        List<String> scopes = getArguments().getParams()
                 .getStringArrayList(ExtraConstants.EXTRA_FACEBOOK_PERMISSIONS);
         if (scopes == null) {
             scopes = new ArrayList<>();
@@ -158,15 +172,6 @@ public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHan
             } catch (JSONException ignored) {}
 
             setResult(createIdpResponse(mResult, email, name, photoUri));
-        }
-    }
-
-    public static final class Params extends ProviderHandlerParamsBase {
-        private final AuthUI.IdpConfig config;
-
-        public Params(ProviderResponseHandlerBase handler, AuthUI.IdpConfig config) {
-            super(handler);
-            this.config = config;
         }
     }
 }

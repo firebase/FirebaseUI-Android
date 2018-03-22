@@ -14,8 +14,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -28,15 +26,30 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandler.Params> {
+public class TwitterSignInHandler extends ProviderHandlerBase<Void> {
+    public static final boolean IS_AVAILABLE;
+
     static {
-        Context context = AuthUI.getApplicationContext();
-        TwitterConfig config = new TwitterConfig.Builder(context)
-                .twitterAuthConfig(new TwitterAuthConfig(
-                        context.getString(R.string.twitter_consumer_key),
-                        context.getString(R.string.twitter_consumer_secret)))
-                .build();
-        Twitter.initialize(config);
+        boolean available;
+        try {
+            //noinspection unused to possibly throw
+            Class c = TwitterCore.class;
+            available = true;
+        } catch (NoClassDefFoundError e) {
+            available = false;
+        }
+        //noinspection ConstantConditions IntelliJ is wrong
+        IS_AVAILABLE = available;
+
+        //noinspection ConstantConditions IntelliJ is still wrong
+        if (IS_AVAILABLE) {
+            Context context = AuthUI.getApplicationContext();
+            Twitter.initialize(new TwitterConfig.Builder(context)
+                    .twitterAuthConfig(new TwitterAuthConfig(
+                            context.getString(R.string.twitter_consumer_key),
+                            context.getString(R.string.twitter_consumer_secret)))
+                    .build());
+        }
     }
 
     private final TwitterAuthClient mClient;
@@ -45,10 +58,6 @@ public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandl
     public TwitterSignInHandler(Application application) {
         super(application);
         mClient = new TwitterAuthClient();
-    }
-
-    public static void signOut() {
-        TwitterCore.getInstance().getSessionManager().clearActiveSession();
     }
 
     private static IdpResponse createIdpResponse(
@@ -106,12 +115,6 @@ public class TwitterSignInHandler extends ProviderHandlerBase<TwitterSignInHandl
         public void failure(TwitterException e) {
             setResult(IdpResponse.fromError(new FirebaseUiException(
                     ErrorCodes.PROVIDER_ERROR, e)));
-        }
-    }
-
-    public static final class Params extends ProviderHandlerParamsBase {
-        public Params(ProviderResponseHandlerBase handler) {
-            super(handler);
         }
     }
 }

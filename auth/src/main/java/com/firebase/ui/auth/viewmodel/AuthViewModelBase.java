@@ -1,8 +1,6 @@
 package com.firebase.ui.auth.viewmodel;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.VisibleForTesting;
@@ -17,12 +15,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public abstract class AuthViewModelBase<T> extends ViewModelBase<FlowParameters> {
+public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParameters, Resource<T>> {
     private CredentialsClient mCredentialsClient;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider mPhoneAuth;
-
-    private MutableLiveData<Resource<T>> mOperation = new MutableLiveData<>();
 
     protected AuthViewModelBase(Application application) {
         super(application);
@@ -51,17 +47,6 @@ public abstract class AuthViewModelBase<T> extends ViewModelBase<FlowParameters>
 
     protected CredentialsClient getCredentialsClient() {
         return mCredentialsClient;
-    }
-
-    /**
-     * Get the observable state of the sign in operation.
-     */
-    public LiveData<Resource<T>> getOperation() {
-        return mOperation;
-    }
-
-    protected void setResult(Resource<T> result) {
-        mOperation.setValue(result);
     }
 
     @VisibleForTesting
