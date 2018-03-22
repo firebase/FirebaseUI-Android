@@ -99,7 +99,7 @@ public class SimpleProviderResponseHandler extends ProviderResponseHandlerBase {
 
             if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
                 // Start email welcome back flow
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
                         WelcomeBackPasswordPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
@@ -108,7 +108,7 @@ public class SimpleProviderResponseHandler extends ProviderResponseHandlerBase {
                 )));
             } else {
                 // Start Idp welcome back flow
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
                         WelcomeBackIdpPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
