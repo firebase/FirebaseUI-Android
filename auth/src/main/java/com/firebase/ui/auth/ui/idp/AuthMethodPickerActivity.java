@@ -15,10 +15,12 @@
 package com.firebase.ui.auth.ui.idp;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -35,15 +37,15 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.UserCancellationException;
+import com.firebase.ui.auth.data.remote.EmailSignInHandler;
+import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
+import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
+import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
+import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.provider.EmailProvider;
-import com.firebase.ui.auth.ui.provider.FacebookProvider;
-import com.firebase.ui.auth.ui.provider.GoogleProvider;
-import com.firebase.ui.auth.ui.provider.PhoneProvider;
-import com.firebase.ui.auth.ui.provider.Provider;
-import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ui.FlowUtils;
+import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -58,7 +60,7 @@ import java.util.List;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase {
     private SocialProviderResponseHandler mHandler;
-    private List<Provider> mProviders;
+    private List<ProviderSignInBase<?>> mProviders;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return HelperActivityBase.createBaseIntent(
@@ -117,41 +119,62 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
     private void populateIdpList(List<IdpConfig> providerConfigs,
                                  final SocialProviderResponseHandler handler) {
+        ViewModelProvider supplier = ViewModelProviders.of(this);
         ViewGroup providerHolder = findViewById(R.id.btn_holder);
 
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
-            final Provider provider;
+            final ProviderSignInBase<?> provider;
+            @LayoutRes int buttonLayout;
             switch (idpConfig.getProviderId()) {
                 case GoogleAuthProvider.PROVIDER_ID:
-                    provider = new GoogleProvider(this);
+                    GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
+                    google.init(new GoogleSignInHandler.Params(idpConfig));
+                    provider = google;
+
+                    buttonLayout = R.layout.fui_idp_button_google;
                     break;
                 case FacebookAuthProvider.PROVIDER_ID:
-                    provider = new FacebookProvider(this);
+                    FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
+                    facebook.init(idpConfig);
+                    provider = facebook;
+
+                    buttonLayout = R.layout.fui_idp_button_facebook;
                     break;
                 case TwitterAuthProvider.PROVIDER_ID:
-                    provider = new TwitterProvider(this);
+                    TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
+                    twitter.init(null);
+                    provider = twitter;
+
+                    buttonLayout = R.layout.fui_idp_button_twitter;
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
-                    provider = new EmailProvider();
+                    EmailSignInHandler email = supplier.get(EmailSignInHandler.class);
+                    email.init(null);
+                    provider = email;
+
+                    buttonLayout = R.layout.fui_provider_button_email;
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    provider = new PhoneProvider(idpConfig);
+                    PhoneSignInHandler phone = supplier.get(PhoneSignInHandler.class);
+                    phone.init(idpConfig);
+                    provider = phone;
+
+                    buttonLayout = R.layout.fui_provider_button_phone;
                     break;
                 default:
                     throw new IllegalStateException("Unknown provider: " + idpConfig.getProviderId());
             }
             mProviders.add(provider);
 
-            provider.getResponseListener().observe(this, new Observer<IdpResponse>() {
+            provider.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
                 @Override
-                public void onChanged(IdpResponse response) {
-                    handler.startSignIn(response);
+                public void onChanged(Resource<IdpResponse> resource) {
+                    handler.startSignIn(IdpResponse.from(resource));
                 }
             });
 
-            View loginButton = getLayoutInflater()
-                    .inflate(provider.getButtonLayout(), providerHolder, false);
+            View loginButton = getLayoutInflater().inflate(buttonLayout, providerHolder, false);
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -166,7 +189,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mHandler.onActivityResult(requestCode, resultCode, data);
-        for (Provider provider : mProviders) {
+        for (ProviderSignInBase<?> provider : mProviders) {
             provider.onActivityResult(requestCode, resultCode, data);
         }
     }

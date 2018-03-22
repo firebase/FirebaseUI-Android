@@ -108,7 +108,7 @@ public class SocialProviderResponseHandlerTest {
     public void testSignInResponse_failure() {
         mHandler.getOperation().observeForever(mResultObserver);
 
-        IdpResponse response = IdpResponse.fromError(new Exception("Failure"));
+        IdpResponse response = IdpResponse.from(new Exception("Failure"));
 
         mHandler.startSignIn(response);
 

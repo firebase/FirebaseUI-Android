@@ -1,40 +1,23 @@
-package com.firebase.ui.auth.ui.provider;
+package com.firebase.ui.auth.data.remote;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
+import android.app.Application;
 import android.content.Intent;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.support.annotation.StringRes;
 
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailProvider implements Provider {
-    private final MutableLiveData<IdpResponse> mResponseData = new MutableLiveData<>();
-
-    @Override
-    public LiveData<IdpResponse> getResponseListener() {
-        return mResponseData;
-    }
-
-    @StringRes
-    @Override
-    public int getNameRes() {
-        return R.string.fui_provider_name_email;
-    }
-
-    @Override
-    @LayoutRes
-    public int getButtonLayout() {
-        return R.layout.fui_provider_button_email;
+public class EmailSignInHandler extends ProviderSignInBase<Void> {
+    public EmailSignInHandler(Application application) {
+        super(application);
     }
 
     @Override
@@ -49,10 +32,9 @@ public class EmailProvider implements Provider {
         if (requestCode == RequestCodes.EMAIL_FLOW) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
-                mResponseData.setValue(IdpResponse.fromError(
-                        new UserCancellationException()));
+                setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
             } else {
-                mResponseData.setValue(response);
+                setResult(Resource.forSuccess(response));
             }
         }
     }
