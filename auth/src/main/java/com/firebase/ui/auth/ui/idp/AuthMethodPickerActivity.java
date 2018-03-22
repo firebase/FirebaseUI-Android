@@ -42,7 +42,7 @@ import com.firebase.ui.auth.ui.provider.EmailProvider;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
 import com.firebase.ui.auth.ui.provider.GoogleProvider;
 import com.firebase.ui.auth.ui.provider.PhoneProvider;
-import com.firebase.ui.auth.ui.provider.Provider;
+import com.firebase.ui.auth.ui.provider.ProviderBase;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
@@ -62,7 +62,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     private static final String TAG = "AuthMethodPicker";
 
     private SimpleProviderResponseHandler mHandler;
-    private List<Provider> mProviders;
+    private List<ProviderBase> mProviders;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return HelperActivityBase.createBaseIntent(
@@ -145,7 +145,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         }
 
         ViewGroup btnHolder = findViewById(R.id.btn_holder);
-        for (final Provider provider : mProviders) {
+        for (final ProviderBase provider : mProviders) {
             View loginButton = getLayoutInflater()
                     .inflate(provider.getButtonLayout(), btnHolder, false);
 
@@ -163,7 +163,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mHandler.onActivityResult(requestCode, resultCode, data);
-        for (Provider provider : mProviders) {
+        for (ProviderBase provider : mProviders) {
             provider.onActivityResult(requestCode, resultCode, data);
         }
     }

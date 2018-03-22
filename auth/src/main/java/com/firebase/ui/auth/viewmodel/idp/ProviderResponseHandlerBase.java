@@ -19,14 +19,14 @@ public abstract class ProviderResponseHandlerBase extends AuthViewModelBase<IdpR
     }
 
     public void startSignIn(@NonNull IdpResponse inputResponse) {
-        if (checkForInvalidSignInState(inputResponse)) return;
+        if (checkForInvalidSignInState(inputResponse)) { return; }
         startSignIn(ProviderUtils.getAuthCredential(inputResponse), inputResponse);
     }
 
     /** Kick off the sign-in process. */
     public void startSignIn(@NonNull AuthCredential credential,
                             @NonNull final IdpResponse inputResponse) {
-        if (checkForInvalidSignInState(inputResponse)) return;
+        if (checkForInvalidSignInState(inputResponse)) { return; }
         setResult(Resource.<IdpResponse>forLoading());
         signIn(credential, inputResponse);
     }

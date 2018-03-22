@@ -7,10 +7,10 @@ import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,11 +33,33 @@ public class LinkingProviderResponseHandler extends ProviderResponseHandlerBase 
         FirebaseUser currentUser = getCurrentUser();
         if (currentUser == null) {
             getAuth().signInWithCredential(credential)
-                    .addOnSuccessListener(new StartLink(response))
-                    .addOnFailureListener(new OnFailureListener() {
+                    .continueWithTask(new Continuation<AuthResult, Task<Void>>() {
                         @Override
-                        public void onFailure(@NonNull Exception e) {
-                            setResult(Resource.<IdpResponse>forFailure(e));
+                        public Task<Void> then(@NonNull Task<AuthResult> task) {
+                            if (mRequestedSignInCredential == null) {
+                                return Tasks.forResult(null);
+                            } else {
+                                return task.getResult().getUser()
+                                        .linkWithCredential(mRequestedSignInCredential)
+                                        .continueWith(new Continuation<AuthResult, Void>() {
+                                            @Override
+                                            public Void then(@NonNull Task<AuthResult> task) {
+                                                // Since we've already signed in, it's too late to
+                                                // backtrack so we just ignore any errors.
+                                                return null;
+                                            }
+                                        });
+                            }
+                        }
+                    })
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                setResult(Resource.forSuccess(response));
+                            } else {
+                                setResult(Resource.<IdpResponse>forFailure(task.getException()));
+                            }
                         }
                     });
         } else {
@@ -51,32 +73,6 @@ public class LinkingProviderResponseHandler extends ProviderResponseHandlerBase 
                             setResult(Resource.forSuccess(response));
                         }
                     });
-        }
-    }
-
-    private class StartLink implements OnSuccessListener<AuthResult> {
-        private final IdpResponse mResponse;
-
-        public StartLink(IdpResponse response) {
-            mResponse = response;
-        }
-
-        @Override
-        public void onSuccess(AuthResult result) {
-            if (mRequestedSignInCredential == null) {
-                setResult(Resource.forSuccess(mResponse));
-            } else {
-                result.getUser()
-                        .linkWithCredential(mRequestedSignInCredential)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                // Since we've already signed in, it's too late to
-                                // backtrack.
-                                setResult(Resource.forSuccess(mResponse));
-                            }
-                        });
-            }
         }
     }
 }
