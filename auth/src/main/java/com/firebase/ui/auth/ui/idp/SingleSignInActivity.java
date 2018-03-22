@@ -23,13 +23,13 @@ import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.FlowUtils;
-import com.firebase.ui.auth.viewmodel.idp.SimpleProviderResponseHandler;
+import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 public class SingleSignInActivity extends HelperActivityBase {
-    private SimpleProviderResponseHandler mHandler;
+    private SocialProviderResponseHandler mHandler;
     private Provider mProvider;
 
     public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
@@ -52,7 +52,7 @@ public class SingleSignInActivity extends HelperActivityBase {
             return;
         }
 
-        mHandler = ViewModelProviders.of(this).get(SimpleProviderResponseHandler.class);
+        mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(getFlowParams());
 
         switch (provider) {

@@ -44,8 +44,7 @@ import com.firebase.ui.auth.ui.provider.PhoneProvider;
 import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ui.FlowUtils;
-import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
-import com.firebase.ui.auth.viewmodel.idp.SimpleProviderResponseHandler;
+import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -58,7 +57,7 @@ import java.util.List;
 /** Presents the list of authentication options for this app to the user. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase {
-    private SimpleProviderResponseHandler mHandler;
+    private SocialProviderResponseHandler mHandler;
     private List<Provider> mProviders;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
@@ -72,7 +71,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
         setContentView(R.layout.fui_auth_method_picker_layout);
 
         FlowParameters params = getFlowParams();
-        mHandler = ViewModelProviders.of(this).get(SimpleProviderResponseHandler.class);
+        mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(params);
 
         populateIdpList(params.providerInfo, mHandler);
@@ -117,7 +116,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     }
 
     private void populateIdpList(List<IdpConfig> providerConfigs,
-                                 final ProviderResponseHandlerBase handler) {
+                                 final SocialProviderResponseHandler handler) {
         ViewGroup providerHolder = findViewById(R.id.btn_holder);
 
         mProviders = new ArrayList<>();
