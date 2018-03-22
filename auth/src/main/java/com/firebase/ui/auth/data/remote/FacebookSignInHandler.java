@@ -107,7 +107,7 @@ public class FacebookSignInHandler extends ProviderHandlerBase<AuthUI.IdpConfig>
     }
 
     @Override
-    public void onSuccess(final LoginResult result) {
+    public void onSuccess(LoginResult result) {
         GraphRequest request = GraphRequest.newMeRequest(result.getAccessToken(),
                 new ProfileRequest(result));
 
