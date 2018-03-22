@@ -108,9 +108,9 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 providerName = R.string.fui_idp_name_google;
                 break;
             case FacebookAuthProvider.PROVIDER_ID:
-                FacebookSignInHandler providerHandler = supplier.get(FacebookSignInHandler.class);
-                providerHandler.init(config);
-                mProvider = providerHandler;
+                FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
+                facebook.init(config);
+                mProvider = facebook;
 
                 providerName = R.string.fui_idp_name_facebook;
                 break;

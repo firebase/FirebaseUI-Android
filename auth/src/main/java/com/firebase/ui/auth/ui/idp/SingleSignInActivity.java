@@ -65,9 +65,9 @@ public class SingleSignInActivity extends HelperActivityBase {
                 mProvider = google;
                 break;
             case FacebookAuthProvider.PROVIDER_ID:
-                FacebookSignInHandler providerHandler = supplier.get(FacebookSignInHandler.class);
-                providerHandler.init(providerConfig);
-                mProvider = providerHandler;
+                FacebookSignInHandler facebook = supplier.get(FacebookSignInHandler.class);
+                facebook.init(providerConfig);
+                mProvider = facebook;
                 break;
             case TwitterAuthProvider.PROVIDER_ID:
                 TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
