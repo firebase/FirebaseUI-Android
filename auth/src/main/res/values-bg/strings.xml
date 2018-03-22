@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Възникна неизвестна грешка.</string>
     <string name="fui_error_invalid_password">Грешна парола.</string>
     <string name="fui_accessibility_logo">Лого на приложението</string>
+    <string name="fui_signed_in_with_specific_account">Влязохте като %1$s</string>
     <string name="fui_verify_phone_number_title">Въвеждане на телефонния ви номер</string>
     <string name="fui_invalid_phone_number">Въведете валиден телефонен номер</string>
     <string name="fui_enter_confirmation_code">Въведете 6-цифрения код, който изпратихме до</string>

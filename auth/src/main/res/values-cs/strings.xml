@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Došlo k neznámé chybě.</string>
     <string name="fui_error_invalid_password">Nesprávné heslo.</string>
     <string name="fui_accessibility_logo">Logo aplikace</string>
+    <string name="fui_signed_in_with_specific_account">Jste přihlášeni jako %1$s</string>
     <string name="fui_verify_phone_number_title">Zadejte své telefonní číslo</string>
     <string name="fui_invalid_phone_number">Zadejte platné telefonní číslo</string>
     <string name="fui_enter_confirmation_code">Zadejte šestimístný kód, který jsme vám zaslali</string>

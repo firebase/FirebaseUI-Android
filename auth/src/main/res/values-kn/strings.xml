@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">ಅಪರಿಚಿತ ದೋಷವೊಂದು ಸಂಭವಿಸಿದೆ.</string>
     <string name="fui_error_invalid_password">ತಪ್ಪಾದ ಪಾಸ್‌ವರ್ಡ್.</string>
     <string name="fui_accessibility_logo">ಅಪ್ಲಿಕೇಶನ್‌ ಲೋಗೊ</string>
+    <string name="fui_signed_in_with_specific_account">ನೀವು %1$s ನಿಂದ ಸೈನ್ ಇನ್ ಮಾಡಿರುವಿರಿ</string>
     <string name="fui_verify_phone_number_title">ನಿಮ್ಮ ಫೋನ್‌ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_invalid_phone_number">ಮಾನ್ಯವಾದ ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ</string>
     <string name="fui_enter_confirmation_code">ನಾವು ಕಳುಹಿಸಿರುವ 6 ಅಂಕಿಯ ಕೋಡ್‌ ನಮೂದಿಸಿ</string>

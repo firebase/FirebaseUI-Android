@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Wystąpił nieznany błąd.</string>
     <string name="fui_error_invalid_password">Nieprawidłowe hasło.</string>
     <string name="fui_accessibility_logo">Logo aplikacji</string>
+    <string name="fui_signed_in_with_specific_account">Używasz konta %1$s</string>
     <string name="fui_verify_phone_number_title">Wpisz numer telefonu</string>
     <string name="fui_invalid_phone_number">Wpisz prawidłowy numer telefonu</string>
     <string name="fui_enter_confirmation_code">Wpisz sześciocyfrowy kod, który wysłaliśmy na numer</string>

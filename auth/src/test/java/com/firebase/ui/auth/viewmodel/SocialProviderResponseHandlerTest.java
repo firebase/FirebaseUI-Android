@@ -15,7 +15,7 @@ import com.firebase.ui.auth.testhelpers.FakeProviderQueryResult;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
-import com.firebase.ui.auth.viewmodel.idp.SimpleProviderResponseHandler;
+import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -49,18 +49,18 @@ import static org.mockito.Mockito.when;
  * Unit tests for {@link SmartLockHandler}.
  */
 @RunWith(RobolectricTestRunner.class)
-public class SimpleProviderResponseHandlerTest {
+public class SocialProviderResponseHandlerTest {
     @Mock FirebaseAuth mMockAuth;
     @Mock Observer<Resource<IdpResponse>> mResultObserver;
 
-    private SimpleProviderResponseHandler mHandler;
+    private SocialProviderResponseHandler mHandler;
 
     @Before
     public void setUp() {
         TestHelper.initialize();
         MockitoAnnotations.initMocks(this);
 
-        mHandler = new SimpleProviderResponseHandler(RuntimeEnvironment.application);
+        mHandler = new SocialProviderResponseHandler(RuntimeEnvironment.application);
 
         FlowParameters testParams = TestHelper.getFlowParameters(AuthUI.SUPPORTED_PROVIDERS);
 
@@ -108,7 +108,7 @@ public class SimpleProviderResponseHandlerTest {
     public void testSignInResponse_failure() {
         mHandler.getOperation().observeForever(mResultObserver);
 
-        IdpResponse response = IdpResponse.fromError(new Exception("Failure"));
+        IdpResponse response = IdpResponse.from(new Exception("Failure"));
 
         mHandler.startSignIn(response);
 

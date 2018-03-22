@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">알 수 없는 오류가 발생했습니다.</string>
     <string name="fui_error_invalid_password">비밀번호가 잘못되었습니다.</string>
     <string name="fui_accessibility_logo">앱 로고</string>
+    <string name="fui_signed_in_with_specific_account">%1$s(으)로 로그인됨</string>
     <string name="fui_verify_phone_number_title">전화번호 입력</string>
     <string name="fui_invalid_phone_number">올바른 전화번호를 입력하세요.</string>
     <string name="fui_enter_confirmation_code">전송된 6자리 코드를 입력하세요.</string>

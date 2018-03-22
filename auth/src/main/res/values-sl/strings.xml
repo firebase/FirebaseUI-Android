@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Neznana napaka.</string>
     <string name="fui_error_invalid_password">Napačno geslo.</string>
     <string name="fui_accessibility_logo">Logotip aplikacije</string>
+    <string name="fui_signed_in_with_specific_account">Prijavljeni ste kot %1$s</string>
     <string name="fui_verify_phone_number_title">Vnesite telefonsko številko</string>
     <string name="fui_invalid_phone_number">Vnesite veljavno telefonsko številko</string>
     <string name="fui_enter_confirmation_code">Vnesite 6-mestno kodo, ki smo jo poslali na številko</string>

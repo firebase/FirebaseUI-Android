@@ -17,24 +17,34 @@ import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class SimpleProviderResponseHandler extends ProviderResponseHandlerBase {
-    public SimpleProviderResponseHandler(Application application) {
+public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse> {
+    public SocialProviderResponseHandler(Application application) {
         super(application);
     }
 
-    @Override
-    protected void signIn(@NonNull AuthCredential credential,
-                          @NonNull final IdpResponse response) {
-        getAuth().signInWithCredential(credential)
+    public void startSignIn(@NonNull final IdpResponse response) {
+        if (!response.isSuccessful()) {
+            setResult(Resource.<IdpResponse>forFailure(response.getError()));
+            return;
+        }
+        if (response.getProviderType().equals(EmailAuthProvider.PROVIDER_ID)
+                || response.getProviderType().equals(PhoneAuthProvider.PROVIDER_ID)) {
+            setResult(Resource.forSuccess(response));
+            return;
+        }
+        setResult(Resource.<IdpResponse>forLoading());
+
+        getAuth().signInWithCredential(ProviderUtils.getAuthCredential(response))
                 .continueWithTask(new ProfileMerger(response))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override

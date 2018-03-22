@@ -1,6 +1,7 @@
 package com.firebase.ui.auth.ui.idp;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -15,22 +16,22 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
+import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
+import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.ui.provider.FacebookProvider;
-import com.firebase.ui.auth.ui.provider.GoogleProvider;
-import com.firebase.ui.auth.ui.provider.ProviderBase;
-import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.FlowUtils;
-import com.firebase.ui.auth.viewmodel.idp.SimpleProviderResponseHandler;
+import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
+import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 public class SingleSignInActivity extends HelperActivityBase {
-    private SimpleProviderResponseHandler mHandler;
-    private ProviderBase mProvider;
+    private SocialProviderResponseHandler mHandler;
+    private ProviderSignInBase<?> mProvider;
 
     public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
         return HelperActivityBase.createBaseIntent(context, SingleSignInActivity.class, flowParams)
@@ -52,27 +53,35 @@ public class SingleSignInActivity extends HelperActivityBase {
             return;
         }
 
-        mHandler = ViewModelProviders.of(this).get(SimpleProviderResponseHandler.class);
+        ViewModelProvider supplier = ViewModelProviders.of(this);
+
+        mHandler = supplier.get(SocialProviderResponseHandler.class);
         mHandler.init(getFlowParams());
 
         switch (provider) {
             case GoogleAuthProvider.PROVIDER_ID:
-                mProvider = new GoogleProvider(this, user.getEmail());
+                GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
+                google.init(new GoogleSignInHandler.Params(providerConfig, user.getEmail()));
+                mProvider = google;
                 break;
             case FacebookAuthProvider.PROVIDER_ID:
-                mProvider = new FacebookProvider(this);
+                FacebookSignInHandler providerHandler = supplier.get(FacebookSignInHandler.class);
+                providerHandler.init(providerConfig);
+                mProvider = providerHandler;
                 break;
             case TwitterAuthProvider.PROVIDER_ID:
-                mProvider = new TwitterProvider(this);
+                TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
+                twitter.init(null);
+                mProvider = twitter;
                 break;
             default:
                 throw new IllegalStateException("Invalid provider id: " + provider);
         }
 
-        mProvider.getResponseListener().observe(this, new Observer<IdpResponse>() {
+        mProvider.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
-            public void onChanged(IdpResponse response) {
-                mHandler.startSignIn(response);
+            public void onChanged(Resource<IdpResponse> resource) {
+                mHandler.startSignIn(IdpResponse.from(resource));
             }
         });
 
@@ -97,7 +106,7 @@ public class SingleSignInActivity extends HelperActivityBase {
         });
 
         if (mHandler.getOperation().getValue() == null) {
-            mProvider.startLogin(this);
+            mProvider.startSignIn(this);
         }
     }
 

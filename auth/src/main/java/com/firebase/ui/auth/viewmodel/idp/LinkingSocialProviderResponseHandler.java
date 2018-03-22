@@ -5,8 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
+import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -16,10 +19,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class LinkingProviderResponseHandler extends ProviderResponseHandlerBase {
+public class LinkingSocialProviderResponseHandler extends AuthViewModelBase<IdpResponse> {
     private AuthCredential mRequestedSignInCredential;
 
-    public LinkingProviderResponseHandler(Application application) {
+    public LinkingSocialProviderResponseHandler(Application application) {
         super(application);
     }
 
@@ -27,19 +30,29 @@ public class LinkingProviderResponseHandler extends ProviderResponseHandlerBase 
         mRequestedSignInCredential = credential;
     }
 
-    @Override
-    protected void signIn(@NonNull AuthCredential credential,
-                          @NonNull final IdpResponse response) {
+    public void startSignIn(@NonNull final IdpResponse response) {
+        if (!response.isSuccessful()) {
+            setResult(Resource.<IdpResponse>forFailure(response.getError()));
+            return;
+        }
+        if (!AuthUI.SOCIAL_PROVIDERS.contains(response.getProviderType())) {
+            throw new IllegalStateException(
+                    "This handler cannot be used to link email or phone providers");
+        }
+        setResult(Resource.<IdpResponse>forLoading());
+
+        AuthCredential credential = ProviderUtils.getAuthCredential(response);
         FirebaseUser currentUser = getCurrentUser();
         if (currentUser == null) {
             getAuth().signInWithCredential(credential)
                     .continueWithTask(new Continuation<AuthResult, Task<Void>>() {
                         @Override
                         public Task<Void> then(@NonNull Task<AuthResult> task) {
+                            AuthResult result = task.getResult();
                             if (mRequestedSignInCredential == null) {
                                 return Tasks.forResult(null);
                             } else {
-                                return task.getResult().getUser()
+                                return result.getUser()
                                         .linkWithCredential(mRequestedSignInCredential)
                                         .continueWith(new Continuation<AuthResult, Void>() {
                                             @Override
@@ -63,8 +76,7 @@ public class LinkingProviderResponseHandler extends ProviderResponseHandlerBase 
                         }
                     });
         } else {
-            currentUser
-                    .linkWithCredential(credential)
+            currentUser.linkWithCredential(credential)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {

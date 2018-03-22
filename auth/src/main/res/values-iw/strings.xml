@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">אירעה שגיאה לא ידועה.</string>
     <string name="fui_error_invalid_password">סיסמה שגויה.</string>
     <string name="fui_accessibility_logo">הלוגו של האפליקציה</string>
+    <string name="fui_signed_in_with_specific_account">מחובר כ-%1$s</string>
     <string name="fui_verify_phone_number_title">הזן את מספר הטלפון שלך</string>
     <string name="fui_invalid_phone_number">מספר הטלפון שהזנת לא תקין</string>
     <string name="fui_enter_confirmation_code">הזן את הקוד בן 6 הספרות ששלחנו אל</string>

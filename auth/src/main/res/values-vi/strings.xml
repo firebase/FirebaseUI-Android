@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Đã xảy ra lỗi không xác định.</string>
     <string name="fui_error_invalid_password">Sai mật khẩu.</string>
     <string name="fui_accessibility_logo">Biểu trưng ứng dụng</string>
+    <string name="fui_signed_in_with_specific_account">Đã đăng nhập bằng %1$s</string>
     <string name="fui_verify_phone_number_title">Nhập số điện thoại của bạn</string>
     <string name="fui_invalid_phone_number">Nhập số điện thoại hợp lệ</string>
     <string name="fui_enter_confirmation_code">Nhập mã 6 chữ số mà chúng tôi đã gửi cho bạn</string>

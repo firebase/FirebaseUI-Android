@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">حدث خطأ غير معروف.</string>
     <string name="fui_error_invalid_password">كلمة المرور غير صحيحة.</string>
     <string name="fui_accessibility_logo">شعار التطبيق</string>
+    <string name="fui_signed_in_with_specific_account">تم تسجيل الدخول من حساب %1$s</string>
     <string name="fui_verify_phone_number_title">أدخل رقم هاتفك</string>
     <string name="fui_invalid_phone_number">يُرجى إدخال رقم هاتف صالح</string>
     <string name="fui_enter_confirmation_code">أدخل الرمز المكوّن من 6 أرقام الذي أرسلناه إلى</string>

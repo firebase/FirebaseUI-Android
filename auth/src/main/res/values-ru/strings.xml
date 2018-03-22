@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Произошла неизвестная ошибка.</string>
     <string name="fui_error_invalid_password">Неправильный пароль.</string>
     <string name="fui_accessibility_logo">Логотип приложения</string>
+    <string name="fui_signed_in_with_specific_account">Вы вошли как %1$s</string>
     <string name="fui_verify_phone_number_title">Введите номер телефона</string>
     <string name="fui_invalid_phone_number">Введите действительный номер телефона.</string>
     <string name="fui_enter_confirmation_code">Введите 6-значный код, отправленный на номер</string>

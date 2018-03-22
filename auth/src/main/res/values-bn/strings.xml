@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">অজানা একটি সমস্যা হয়েছে।</string>
     <string name="fui_error_invalid_password">পাসওয়ার্ডটি সঠিক নয়।</string>
     <string name="fui_accessibility_logo">অ্যাপের লোগো</string>
+    <string name="fui_signed_in_with_specific_account">%1$s হিসাবে সাইন-ইন করেছেন</string>
     <string name="fui_verify_phone_number_title">আপনার ফোন নম্বর লিখুন</string>
     <string name="fui_invalid_phone_number">একটি সঠিক ফোন নম্বর লিখুন</string>
     <string name="fui_enter_confirmation_code">আমাদের পাঠানো ৬-সংখ্যার কোডটি লিখুন</string>

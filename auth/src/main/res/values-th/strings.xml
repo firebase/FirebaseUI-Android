@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">เกิดข้อผิดพลาดที่ไม่รู้จัก</string>
     <string name="fui_error_invalid_password">รหัสผ่านไม่ถูกต้อง</string>
     <string name="fui_accessibility_logo">โลโก้แอป</string>
+    <string name="fui_signed_in_with_specific_account">ลงชื่อเข้าใช้ด้วย %1$s</string>
     <string name="fui_verify_phone_number_title">ป้อนหมายเลขโทรศัพท์ของคุณ</string>
     <string name="fui_invalid_phone_number">ป้อนหมายเลขโทรศัพท์ที่ถูกต้อง</string>
     <string name="fui_enter_confirmation_code">ป้อนรหัส 6 หลักที่เราส่งไปยัง</string>

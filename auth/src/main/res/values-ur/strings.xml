@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">ایک نامعلوم خرابی پیش آ گئی۔</string>
     <string name="fui_error_invalid_password">غلط پاس ورڈ۔</string>
     <string name="fui_accessibility_logo">ایپ لوگو</string>
+    <string name="fui_signed_in_with_specific_account">%1$s کے بطور سائن ان ہوا</string>
     <string name="fui_verify_phone_number_title">اپنا فون نمبر درج کریں</string>
     <string name="fui_invalid_phone_number">براہ کرم ایک درست فون نمبر درج کریں</string>
     <string name="fui_enter_confirmation_code">ہماری جانب سے حسبِ ذیل کو بھیجا گیا 6 عدد کا کوڈ درج کریں</string>

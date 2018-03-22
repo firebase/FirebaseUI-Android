@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">அறியப்படாத பிழை ஏற்பட்டது.</string>
     <string name="fui_error_invalid_password">தவறான கடவுச்சொல்.</string>
     <string name="fui_accessibility_logo">பயன்பாட்டு லோகோ</string>
+    <string name="fui_signed_in_with_specific_account">உள்நுழைந்துள்ள முகவரி: %1$s</string>
     <string name="fui_verify_phone_number_title">ஃபோன் எண்ணை உள்ளிடவும்</string>
     <string name="fui_invalid_phone_number">சரியான ஃபோன் எண்ணை உள்ளிடவும்</string>
     <string name="fui_enter_confirmation_code">இந்த எண்ணுக்கு நாங்கள் அனுப்பிய 6 இலக்கக் குறியீட்டை உள்ளிடவும்:</string>

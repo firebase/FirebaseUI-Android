@@ -47,6 +47,7 @@
     <string name="fui_error_unknown">Tapahtui tuntematon virhe.</string>
     <string name="fui_error_invalid_password">Väärä salasana</string>
     <string name="fui_accessibility_logo">Sovelluksen logo</string>
+    <string name="fui_signed_in_with_specific_account">Kirjautunut sisään käyttäjänä %1$s</string>
     <string name="fui_verify_phone_number_title">Anna puhelinnumerosi</string>
     <string name="fui_invalid_phone_number">Anna voimassa oleva puhelinnumero.</string>
     <string name="fui_enter_confirmation_code">Anna 6 merkin pituinen koodi, jonka lähetimme numeroon</string>
