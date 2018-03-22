@@ -18,7 +18,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
 import com.firebase.ui.auth.ui.provider.GoogleProvider;
-import com.firebase.ui.auth.ui.provider.ProviderBase;
+import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -30,7 +30,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 public class SingleSignInActivity extends HelperActivityBase {
     private SimpleProviderResponseHandler mHandler;
-    private ProviderBase mProvider;
+    private Provider mProvider;
 
     public static Intent createIntent(Context context, FlowParameters flowParams, User user) {
         return HelperActivityBase.createBaseIntent(context, SingleSignInActivity.class, flowParams)
@@ -97,7 +97,7 @@ public class SingleSignInActivity extends HelperActivityBase {
         });
 
         if (mHandler.getOperation().getValue() == null) {
-            mProvider.startLogin(this);
+            mProvider.startSignIn(this);
         }
     }
 

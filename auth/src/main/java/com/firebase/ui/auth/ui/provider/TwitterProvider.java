@@ -15,7 +15,7 @@ import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class TwitterProvider extends ProviderBase {
+public class TwitterProvider implements Provider {
     private final TwitterSignInHandler mHandler;
 
     public TwitterProvider(HelperActivityBase activity) {
@@ -41,7 +41,7 @@ public class TwitterProvider extends ProviderBase {
     }
 
     @Override
-    public void startLogin(@NonNull HelperActivityBase activity) {
+    public void startSignIn(@NonNull HelperActivityBase activity) {
         mHandler.getClient().authorize(activity, mHandler.getCallback());
     }
 

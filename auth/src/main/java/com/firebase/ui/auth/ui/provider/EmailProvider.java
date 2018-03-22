@@ -17,7 +17,7 @@ import com.firebase.ui.auth.ui.email.EmailActivity;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class EmailProvider extends ProviderBase {
+public class EmailProvider implements Provider {
     private final MutableLiveData<IdpResponse> mResponseData = new MutableLiveData<>();
 
     @Override
@@ -38,7 +38,7 @@ public class EmailProvider extends ProviderBase {
     }
 
     @Override
-    public void startLogin(@NonNull HelperActivityBase activity) {
+    public void startSignIn(@NonNull HelperActivityBase activity) {
         activity.startActivityForResult(
                 EmailActivity.createIntent(activity, activity.getFlowParams()),
                 RequestCodes.EMAIL_FLOW);

@@ -11,20 +11,24 @@ import android.support.annotation.StringRes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 
+/**
+ * Middleman to communicate between context related classes such as activities and the provider sign
+ * in handlers.
+ */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public abstract class ProviderBase {
-    public abstract LiveData<IdpResponse> getResponseListener();
+public interface Provider {
+    LiveData<IdpResponse> getResponseListener();
 
     /** Retrieves the name of the IDP, for display on-screen. */
     @StringRes
-    public abstract int getNameRes();
+    int getNameRes();
 
     /** Retrieves the layout id of the button to inflate and/or set a click listener. */
     @LayoutRes
-    public abstract int getButtonLayout();
+    int getButtonLayout();
 
     /** Start the login process for the IDP, e.g. show the Google sign-in activity. */
-    public abstract void startLogin(@NonNull HelperActivityBase activity);
+    void startSignIn(@NonNull HelperActivityBase activity);
 
-    public abstract void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
+    void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
 }

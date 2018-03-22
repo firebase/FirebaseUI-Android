@@ -36,10 +36,11 @@ public class LinkingProviderResponseHandler extends ProviderResponseHandlerBase 
                     .continueWithTask(new Continuation<AuthResult, Task<Void>>() {
                         @Override
                         public Task<Void> then(@NonNull Task<AuthResult> task) {
+                            AuthResult result = task.getResult();
                             if (mRequestedSignInCredential == null) {
                                 return Tasks.forResult(null);
                             } else {
-                                return task.getResult().getUser()
+                                return result.getUser()
                                         .linkWithCredential(mRequestedSignInCredential)
                                         .continueWith(new Continuation<AuthResult, Void>() {
                                             @Override

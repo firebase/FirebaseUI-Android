@@ -38,7 +38,7 @@ import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
 import com.firebase.ui.auth.ui.provider.GoogleProvider;
-import com.firebase.ui.auth.ui.provider.ProviderBase;
+import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -50,7 +50,7 @@ import com.google.firebase.auth.TwitterAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackIdpPrompt extends AppCompatBase {
-    private ProviderBase mProvider;
+    private Provider mProvider;
 
     public static Intent createIntent(
             Context context, FlowParameters flowParams, User existingUser) {
@@ -126,7 +126,7 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         findViewById(R.id.welcome_back_idp_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mProvider.startLogin(WelcomeBackIdpPrompt.this);
+                mProvider.startSignIn(WelcomeBackIdpPrompt.this);
             }
         });
 

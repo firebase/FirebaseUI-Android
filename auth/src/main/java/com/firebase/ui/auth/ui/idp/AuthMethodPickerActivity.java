@@ -41,7 +41,7 @@ import com.firebase.ui.auth.ui.provider.EmailProvider;
 import com.firebase.ui.auth.ui.provider.FacebookProvider;
 import com.firebase.ui.auth.ui.provider.GoogleProvider;
 import com.firebase.ui.auth.ui.provider.PhoneProvider;
-import com.firebase.ui.auth.ui.provider.ProviderBase;
+import com.firebase.ui.auth.ui.provider.Provider;
 import com.firebase.ui.auth.ui.provider.TwitterProvider;
 import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
@@ -59,7 +59,7 @@ import java.util.List;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class AuthMethodPickerActivity extends AppCompatBase {
     private SimpleProviderResponseHandler mHandler;
-    private List<ProviderBase> mProviders;
+    private List<Provider> mProviders;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return HelperActivityBase.createBaseIntent(
@@ -122,7 +122,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
 
         mProviders = new ArrayList<>();
         for (IdpConfig idpConfig : providerConfigs) {
-            final ProviderBase provider;
+            final Provider provider;
             switch (idpConfig.getProviderId()) {
                 case GoogleAuthProvider.PROVIDER_ID:
                     provider = new GoogleProvider(this);
@@ -156,7 +156,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    provider.startLogin(AuthMethodPickerActivity.this);
+                    provider.startSignIn(AuthMethodPickerActivity.this);
                 }
             });
             providerHolder.addView(loginButton);
@@ -167,7 +167,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mHandler.onActivityResult(requestCode, resultCode, data);
-        for (ProviderBase provider : mProviders) {
+        for (Provider provider : mProviders) {
             provider.onActivityResult(requestCode, resultCode, data);
         }
     }

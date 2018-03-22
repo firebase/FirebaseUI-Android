@@ -12,6 +12,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+/**
+ * View model which takes a provider's sign-in credentials and uses them to sign into a Firebase
+ * Auth user account.
+ */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class ProviderResponseHandlerBase extends AuthViewModelBase<IdpResponse> {
     public ProviderResponseHandlerBase(Application application) {

@@ -21,7 +21,7 @@ import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class GoogleProvider extends ProviderBase {
+public class GoogleProvider implements Provider {
     private final GoogleSignInHandler mHandler;
 
     public GoogleProvider(HelperActivityBase activity) {
@@ -62,7 +62,7 @@ public class GoogleProvider extends ProviderBase {
     }
 
     @Override
-    public void startLogin(@NonNull HelperActivityBase activity) {
+    public void startSignIn(@NonNull HelperActivityBase activity) {
         mHandler.start();
     }
 

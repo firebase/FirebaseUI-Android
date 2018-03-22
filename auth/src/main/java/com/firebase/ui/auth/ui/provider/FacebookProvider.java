@@ -19,7 +19,7 @@ import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class FacebookProvider extends ProviderBase {
+public class FacebookProvider implements Provider {
     private final FacebookSignInHandler mHandler;
 
     public FacebookProvider(HelperActivityBase activity) {
@@ -47,7 +47,7 @@ public class FacebookProvider extends ProviderBase {
     }
 
     @Override
-    public void startLogin(@NonNull HelperActivityBase activity) {
+    public void startSignIn(@NonNull HelperActivityBase activity) {
         LoginManager.getInstance().logInWithReadPermissions(activity, mHandler.getPermissions());
     }
 

@@ -18,7 +18,7 @@ import com.firebase.ui.auth.ui.phone.PhoneActivity;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class PhoneProvider extends ProviderBase {
+public class PhoneProvider implements Provider {
     private final MutableLiveData<IdpResponse> mResponseData = new MutableLiveData<>();
     private final AuthUI.IdpConfig mConfig;
 
@@ -44,7 +44,7 @@ public class PhoneProvider extends ProviderBase {
     }
 
     @Override
-    public void startLogin(@NonNull HelperActivityBase activity) {
+    public void startSignIn(@NonNull HelperActivityBase activity) {
         activity.startActivityForResult(
                 PhoneActivity.createIntent(
                         activity, activity.getFlowParams(), mConfig.getParams()),
