@@ -4,8 +4,6 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">E-Mail-Adresse</string>
-    <string name="fui_provider_name_phone">Telefonnummer</string>
     <string name="fui_sign_in_with_google">Über Google anmelden</string>
     <string name="fui_sign_in_with_facebook">Über Facebook anmelden</string>
     <string name="fui_sign_in_with_twitter">Über Twitter anmelden</string>

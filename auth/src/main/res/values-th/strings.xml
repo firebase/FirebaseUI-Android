@@ -4,8 +4,6 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">อีเมล</string>
-    <string name="fui_provider_name_phone">โทรศัพท์</string>
     <string name="fui_sign_in_with_google">ลงชื่อเข้าใช้ด้วย Google</string>
     <string name="fui_sign_in_with_facebook">ลงชื่อเข้าใช้ด้วย Facebook</string>
     <string name="fui_sign_in_with_twitter">ลงชื่อเข้าใช้ด้วย Twitter</string>

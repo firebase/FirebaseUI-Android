@@ -1,9 +1,8 @@
 package com.firebase.ui.auth.data.remote;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
@@ -16,11 +15,10 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -30,10 +28,8 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler.Params> {
+public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.Params> {
     private static final String TAG = "GoogleSignInHandler";
-
-    private MutableLiveData<Resource<Void>> mRequest = new MutableLiveData<>();
 
     private AuthUI.IdpConfig mConfig;
     @Nullable private String mEmail;
@@ -59,14 +55,15 @@ public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler
         mEmail = params.email;
     }
 
-    public void start() {
-        mRequest.setValue(Resource.<Void>forFailure(new IntentRequiredException(
-                GoogleSignIn.getClient(getApplication(), getSignInOptions()).getSignInIntent(),
-                RequestCodes.GOOGLE_PROVIDER)));
+    @Override
+    public void startSignIn(@NonNull HelperActivityBase activity) {
+        start();
     }
 
-    public LiveData<Resource<Void>> getRequest() {
-        return mRequest;
+    private void start() {
+        setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
+                GoogleSignIn.getClient(getApplication(), getSignInOptions()).getSignInIntent(),
+                RequestCodes.GOOGLE_PROVIDER)));
     }
 
     private GoogleSignInOptions getSignInOptions() {
@@ -88,7 +85,7 @@ public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler
         try {
             GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(data)
                     .getResult(ApiException.class);
-            setResult(createIdpResponse(account));
+            setResult(Resource.forSuccess(createIdpResponse(account)));
         } catch (ApiException e) {
             if (e.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
                 // If we get INVALID_ACCOUNT, it means the pre-set account was not available on the
@@ -104,21 +101,22 @@ public class GoogleSignInHandler extends ProviderHandlerBase<GoogleSignInHandler
                     Log.w(TAG, "Developer error: this application is misconfigured. " +
                             "Check your SHA1 and package name in the Firebase console.");
                 }
-                setResult(IdpResponse.fromError(new FirebaseUiException(
+                setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
                         ErrorCodes.PROVIDER_ERROR,
                         "Code: " + e.getStatusCode() + ", message: " + e.getMessage())));
             }
         }
     }
 
-    public static final class Params extends ProviderHandlerParamsBase {
+    public static final class Params {
         private final AuthUI.IdpConfig config;
         @Nullable private final String email;
 
-        public Params(ProviderResponseHandlerBase handler,
-                      AuthUI.IdpConfig config,
-                      @Nullable String email) {
-            super(handler);
+        public Params(AuthUI.IdpConfig config) {
+            this(config, null);
+        }
+
+        public Params(AuthUI.IdpConfig config, @Nullable String email) {
             this.config = config;
             this.email = email;
         }

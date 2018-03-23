@@ -31,6 +31,7 @@ import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.idp.AuthMethodPickerActivity;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -59,6 +60,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
+import com.twitter.sdk.android.core.TwitterCore;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -357,22 +359,12 @@ public class AuthUI {
     }
 
     private Task<Void> signOutIdps(@NonNull Context context) {
-        try {
+        if (FacebookSignInHandler.IS_AVAILABLE) {
             LoginManager.getInstance().logOut();
-        } catch (NoClassDefFoundError e) {
-            // Do nothing: this is perfectly fine if the dev doesn't include Facebook/Twitter
-            // support
         }
-
-        try {
-            TwitterSignInHandler.signOut();
-        } catch (NoClassDefFoundError e) {
-            // See comment above
-            // Note: we need to have separate try/catch statements since devs can include
-            // _either_ one of the providers. If one crashes, we still need to sign out of
-            // the other one.
+        if (TwitterSignInHandler.IS_AVAILABLE) {
+            TwitterCore.getInstance().getSessionManager().clearActiveSession();
         }
-
         return GoogleSignIn.getClient(context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
     }
 
@@ -787,17 +779,12 @@ public class AuthUI {
             public FacebookBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
                 super(FacebookAuthProvider.PROVIDER_ID);
-
-                try {
-                    //noinspection unused to possibly throw
-                    Class c = com.facebook.FacebookSdk.class;
-                } catch (NoClassDefFoundError e) {
+                if (!FacebookSignInHandler.IS_AVAILABLE) {
                     throw new RuntimeException(
                             "Facebook provider cannot be configured " +
                                     "without dependency. Did you forget to add " +
                                     "'com.facebook.android:facebook-login:VERSION' dependency?");
                 }
-
                 Preconditions.checkConfigured(getApplicationContext(),
                         "Facebook provider unconfigured. Make sure to add a" +
                                 " `facebook_application_id` string. See the docs for more info:" +
@@ -830,17 +817,12 @@ public class AuthUI {
             public TwitterBuilder() {
                 //noinspection deprecation taking a hit for the backcompat team
                 super(TwitterAuthProvider.PROVIDER_ID);
-
-                try {
-                    //noinspection unused to possibly throw
-                    Class c = com.twitter.sdk.android.core.TwitterCore.class;
-                } catch (NoClassDefFoundError e) {
+                if (!TwitterSignInHandler.IS_AVAILABLE) {
                     throw new RuntimeException(
                             "Twitter provider cannot be configured " +
                                     "without dependency. Did you forget to add " +
                                     "'com.twitter.sdk.android:twitter-core:VERSION' dependency?");
                 }
-
                 Preconditions.checkConfigured(getApplicationContext(),
                         "Twitter provider unconfigured. Make sure to add your key and secret." +
                                 " See the docs for more info:" +

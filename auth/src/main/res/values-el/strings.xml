@@ -4,8 +4,6 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">Ηλεκτρονικό ταχυδρομείο</string>
-    <string name="fui_provider_name_phone">Τηλέφωνο</string>
     <string name="fui_sign_in_with_google">Σύνδεση μέσω Google</string>
     <string name="fui_sign_in_with_facebook">Σύνδεση μέσω Facebook</string>
     <string name="fui_sign_in_with_twitter">Σύνδεση μέσω Twitter</string>

@@ -75,13 +75,16 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 if (resource.getState() == State.SUCCESS) {
                     mEmailInputLayout.setError(null);
                     showEmailSentDialog(resource.getValue());
-                } else if (resource.getException() instanceof FirebaseAuthInvalidUserException
-                        || resource.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                    // No FirebaseUser exists with this email address, show error.
-                    mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
-                } else {
-                    // Unknown error
-                    mEmailInputLayout.setError(getString(R.string.fui_error_unknown));
+                } else if (resource.getState() == State.FAILURE) {
+                    Exception e = resource.getException();
+                    if (e instanceof FirebaseAuthInvalidUserException
+                            || e instanceof FirebaseAuthInvalidCredentialsException) {
+                        // No FirebaseUser exists with this email address, show error.
+                        mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
+                    } else {
+                        // Unknown error
+                        mEmailInputLayout.setError(getString(R.string.fui_error_unknown));
+                    }
                 }
             }
         });

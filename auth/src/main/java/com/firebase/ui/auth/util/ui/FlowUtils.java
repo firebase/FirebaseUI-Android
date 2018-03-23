@@ -19,10 +19,7 @@ public final class FlowUtils {
     }
 
     public static boolean handleError(@NonNull HelperActivityBase activity, @Nullable Exception e) {
-        if (e instanceof UserCancellationException) {
-            activity.finish(Activity.RESULT_CANCELED, null);
-            return true;
-        } else if (e instanceof IntentRequiredException) {
+        if (e instanceof IntentRequiredException) {
             IntentRequiredException typed = (IntentRequiredException) e;
             activity.startActivityForResult(typed.getIntent(), typed.getRequestCode());
             return true;

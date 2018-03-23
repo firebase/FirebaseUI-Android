@@ -4,8 +4,6 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">Email</string>
-    <string name="fui_provider_name_phone">Telefone</string>
     <string name="fui_sign_in_with_google">Iniciar sessão com o Google</string>
     <string name="fui_sign_in_with_facebook">Iniciar sessão com o Facebook</string>
     <string name="fui_sign_in_with_twitter">Iniciar sessão com o Twitter</string>

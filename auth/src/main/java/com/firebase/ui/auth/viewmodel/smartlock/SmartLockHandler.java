@@ -14,7 +14,6 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.CredentialsUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -99,8 +98,9 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
                             setResult(Resource.forVoidSuccess());
                         } else if (task.getException() instanceof ResolvableApiException) {
                             ResolvableApiException rae = (ResolvableApiException) task.getException();
-                            setResult(Resource.<Void>forFailure(new PendingIntentRequiredException(
-                                    rae.getResolution(), RequestCodes.CRED_SAVE)));
+                            setResult(Resource.<Void>forUsableFailure(
+                                    new PendingIntentRequiredException(
+                                            rae.getResolution(), RequestCodes.CRED_SAVE)));
                         } else {
                             Log.w(TAG, "Non-resolvable exception: " + task.getException());
 

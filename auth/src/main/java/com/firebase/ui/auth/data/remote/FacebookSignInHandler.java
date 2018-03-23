@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
@@ -11,35 +12,53 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookRequestError;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.WebDialog;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderHandlerParamsBase;
-import com.firebase.ui.auth.viewmodel.idp.ProviderResponseHandlerBase;
+import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.google.firebase.auth.FacebookAuthProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHandler.Params>
-        implements FacebookCallback<LoginResult> {
+public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {
+    public static final boolean IS_AVAILABLE;
+
+    static {
+        boolean available;
+        try {
+            //noinspection unused to possibly throw
+            Class c = FacebookSdk.class;
+            available = true;
+        } catch (NoClassDefFoundError e) {
+            available = false;
+        }
+        //noinspection ConstantConditions IntelliJ is wrong
+        IS_AVAILABLE = available;
+    }
+
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
 
     private List<String> mPermissions;
 
+    private final FacebookCallback<LoginResult> mCallback = new Callback();
     private final CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
     public FacebookSignInHandler(Application application) {
@@ -59,32 +78,24 @@ public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHan
 
     @Override
     protected void onCreate() {
-        initPermissionList();
-        LoginManager.getInstance().registerCallback(mCallbackManager, this);
-    }
-
-    private void initPermissionList() {
-        List<String> scopes = getArguments().config.getParams()
+        List<String> permissions = getArguments().getParams()
                 .getStringArrayList(ExtraConstants.EXTRA_FACEBOOK_PERMISSIONS);
-        if (scopes == null) {
-            scopes = new ArrayList<>();
-        }
+        permissions = new ArrayList<>(
+                permissions == null ? Collections.<String>emptyList() : permissions);
 
-        List<String> permissionsList = new ArrayList<>(scopes);
+        // Ensure we have email and public_profile permissions
+        if (!permissions.contains(EMAIL)) { permissions.add(EMAIL); }
+        if (!permissions.contains(PUBLIC_PROFILE)) { permissions.add(PUBLIC_PROFILE); }
 
-        // Ensure we have email and public_profile scopes
-        if (!permissionsList.contains(EMAIL)) {
-            permissionsList.add(EMAIL);
-        }
-        if (!permissionsList.contains(PUBLIC_PROFILE)) {
-            permissionsList.add(PUBLIC_PROFILE);
-        }
+        mPermissions = permissions;
 
-        mPermissions = permissionsList;
+        LoginManager.getInstance().registerCallback(mCallbackManager, mCallback);
     }
 
-    public List<String> getPermissions() {
-        return mPermissions;
+    @Override
+    public void startSignIn(@NonNull HelperActivityBase activity) {
+        WebDialog.setWebDialogTheme(activity.getFlowParams().themeId);
+        LoginManager.getInstance().logInWithReadPermissions(activity, mPermissions);
     }
 
     @Override
@@ -93,31 +104,35 @@ public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHan
     }
 
     @Override
-    public void onSuccess(final LoginResult result) {
-        GraphRequest request = GraphRequest.newMeRequest(result.getAccessToken(),
-                new ProfileRequest(result));
-
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,email,picture");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    @Override
-    public void onCancel() {
-        onError(new FacebookException());
-    }
-
-    @Override
-    public void onError(FacebookException e) {
-        setResult(IdpResponse.fromError(new FirebaseUiException(
-                ErrorCodes.PROVIDER_ERROR, e)));
-    }
-
-    @Override
     protected void onCleared() {
         super.onCleared();
         LoginManager.getInstance().unregisterCallback(mCallbackManager);
+    }
+
+    private class Callback implements FacebookCallback<LoginResult> {
+        @Override
+        public void onSuccess(LoginResult result) {
+            setResult(Resource.<IdpResponse>forLoading());
+
+            GraphRequest request = GraphRequest.newMeRequest(result.getAccessToken(),
+                    new ProfileRequest(result));
+
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,picture");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
+
+        @Override
+        public void onCancel() {
+            onError(new FacebookException());
+        }
+
+        @Override
+        public void onError(FacebookException e) {
+            setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
+                    ErrorCodes.PROVIDER_ERROR, e)));
+        }
     }
 
     private class ProfileRequest implements GraphRequest.GraphJSONObjectCallback {
@@ -131,12 +146,12 @@ public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHan
         public void onCompleted(JSONObject object, GraphResponse response) {
             FacebookRequestError error = response.getError();
             if (error != null) {
-                setResult(IdpResponse.fromError(new FirebaseUiException(
+                setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
                         ErrorCodes.PROVIDER_ERROR, error.getException())));
                 return;
             }
             if (object == null) {
-                setResult(IdpResponse.fromError(new FirebaseUiException(
+                setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
                         ErrorCodes.PROVIDER_ERROR, "Facebook graph request failed")));
                 return;
             }
@@ -157,16 +172,7 @@ public class FacebookSignInHandler extends ProviderHandlerBase<FacebookSignInHan
                         .getString("url"));
             } catch (JSONException ignored) {}
 
-            setResult(createIdpResponse(mResult, email, name, photoUri));
-        }
-    }
-
-    public static final class Params extends ProviderHandlerParamsBase {
-        private final AuthUI.IdpConfig config;
-
-        public Params(ProviderResponseHandlerBase handler, AuthUI.IdpConfig config) {
-            super(handler);
-            this.config = config;
+            setResult(Resource.forSuccess(createIdpResponse(mResult, email, name, photoUri)));
         }
     }
 }

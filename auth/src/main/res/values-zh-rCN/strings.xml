@@ -4,8 +4,6 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">电子邮件地址</string>
-    <string name="fui_provider_name_phone">电话号码</string>
     <string name="fui_sign_in_with_google">使用 Google 帐号登录</string>
     <string name="fui_sign_in_with_facebook">使用 Facebook 帐号登录</string>
     <string name="fui_sign_in_with_twitter">使用 Twitter 帐号登录</string>

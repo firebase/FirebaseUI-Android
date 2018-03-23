@@ -4,8 +4,6 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">Email</string>
-    <string name="fui_provider_name_phone">Telepon</string>
     <string name="fui_sign_in_with_google">Login dengan Google</string>
     <string name="fui_sign_in_with_facebook">Login dengan Facebook</string>
     <string name="fui_sign_in_with_twitter">Login dengan Twitter</string>

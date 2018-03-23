@@ -4,8 +4,6 @@
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">மின்னஞ்சல்</string>
-    <string name="fui_provider_name_phone">ஃபோன்</string>
     <string name="fui_sign_in_with_google">Google மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_facebook">Facebook மூலம் உள்நுழைக</string>
     <string name="fui_sign_in_with_twitter">Twitter மூலம் உள்நுழைக</string>

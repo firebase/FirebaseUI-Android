@@ -4,8 +4,6 @@
     <string name="fui_idp_name_google">Google‏</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">رایانامه</string>
-    <string name="fui_provider_name_phone">تلفن</string>
     <string name="fui_sign_in_with_google">ورود به سیستم با Google‎</string>
     <string name="fui_sign_in_with_facebook">ورود به سیستم با Facebook</string>
     <string name="fui_sign_in_with_twitter">ورود به سیستم با Twitter</string>
