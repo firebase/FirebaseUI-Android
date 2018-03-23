@@ -992,7 +992,9 @@ public class AuthUI {
      * Builder for the intent to start the user authentication flow.
      */
     public final class SignInIntentBuilder extends AuthIntentBuilder<SignInIntentBuilder> {
+
         private Boolean mAllowNewEmailAccounts;
+        private boolean mUpgradeAnonymous = false;
 
         private SignInIntentBuilder() {
             super();
@@ -1010,6 +1012,16 @@ public class AuthUI {
         @Deprecated
         public SignInIntentBuilder setAllowNewEmailAccounts(boolean enabled) {
             mAllowNewEmailAccounts = enabled;
+            return this;
+        }
+
+        /**
+         * Enables or disables upgrading anonymous accounts to full accounts during the sign-in
+         * flow. This is disabled by default.
+         */
+        @NonNull
+        public SignInIntentBuilder setUpgradeAnonymousAccounts(boolean enabled) {
+            mUpgradeAnonymous = enabled;
             return this;
         }
 
@@ -1041,7 +1053,8 @@ public class AuthUI {
                     mTosUrl,
                     mPrivacyPolicyUrl,
                     mEnableCredentials,
-                    mEnableHints);
+                    mEnableHints,
+                    mUpgradeAnonymous);
         }
     }
 }

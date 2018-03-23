@@ -21,6 +21,7 @@ import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -44,7 +45,9 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
         }
         setResult(Resource.<IdpResponse>forLoading());
 
-        getAuth().signInWithCredential(ProviderUtils.getAuthCredential(response))
+        AuthCredential credential = ProviderUtils.getAuthCredential(response);
+
+        getAuth().signInWithCredential(credential)
                 .continueWithTask(new ProfileMerger(response))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override

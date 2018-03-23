@@ -33,8 +33,11 @@ public class EmailSignInHandler extends ProviderSignInBase<Void> {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (response == null) {
                 setResult(Resource.<IdpResponse>forFailure(new UserCancellationException()));
-            } else {
+            } else if (response.isSuccessful()){
                 setResult(Resource.forSuccess(response));
+            } else {
+                // TODO: Will this correctly pass back anonymous errors?
+                setResult(Resource.<IdpResponse>forFailure(response.getError()));
             }
         }
     }

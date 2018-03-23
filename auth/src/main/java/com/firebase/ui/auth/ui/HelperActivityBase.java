@@ -20,6 +20,7 @@ import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.FlowHolder;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
@@ -86,6 +87,10 @@ public class HelperActivityBase extends AppCompatActivity {
 
     public AuthHelper getAuthHelper() {
         return mAuthHelper;
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return mAuthHelper.getFirebaseAuth();
     }
 
     public ProgressDialogHolder getDialogHolder() {

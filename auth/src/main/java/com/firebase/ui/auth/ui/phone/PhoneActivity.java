@@ -34,12 +34,15 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
+import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
+import com.firebase.ui.auth.util.UpgradeFailureListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
@@ -316,33 +319,23 @@ public class PhoneActivity extends AppCompatBase {
                 .show();
     }
 
-    private void signIn(@NonNull PhoneAuthCredential credential) {
-        getAuthHelper().getFirebaseAuth()
-                .signInWithCredential(credential)
-                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(final AuthResult authResult) {
-                        mVerificationState = VerificationState.VERIFIED;
-                        completeLoadingDialog(getString(R.string.fui_verified));
+    private void signIn(@NonNull final PhoneAuthCredential credential) {
+        FlowParameters parameters = getFlowParams();
+        FirebaseAuth auth = getAuthHelper().getFirebaseAuth();
 
-                        // Activity can be recreated before this message is handled
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!mIsDestroyed) {
-                                    dismissLoadingDialog();
-                                    finish(authResult.getUser());
-                                }
-                            }
-                        }, SHORT_DELAY_MILLIS);
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
+        AnonymousUpgradeUtils
+                .signInOrLink(parameters, auth, credential)
+                .addOnFailureListener(this, new UpgradeFailureListener(parameters, auth, credential) {
+
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        dismissLoadingDialog();
-                        //incorrect confirmation code
+                    protected void onUpgradeFailure(@NonNull IdpResponse response) {
+                        finish(RESULT_CANCELED, response.toIntent());
+                    }
+
+                    @Override
+                    protected void onNonUpgradeFailure(@NonNull Exception e) {
                         if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                            // Invalid phone verification code
                             FirebaseAuthError error = FirebaseAuthError.fromException(
                                     (FirebaseAuthInvalidCredentialsException) e);
 
@@ -376,6 +369,31 @@ public class PhoneActivity extends AppCompatBase {
                         } else {
                             showAlertDialog(R.string.fui_error_unknown, null);
                         }
+                    }
+                })
+                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(final AuthResult authResult) {
+                        mVerificationState = VerificationState.VERIFIED;
+                        completeLoadingDialog(getString(R.string.fui_verified));
+
+                        // Activity can be recreated before this message is handled
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!mIsDestroyed) {
+                                    dismissLoadingDialog();
+                                    finish(authResult.getUser());
+                                }
+                            }
+                        }, SHORT_DELAY_MILLIS);
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Dismiss loading dialog for any failure
+                        dismissLoadingDialog();
                     }
                 });
     }

@@ -184,7 +184,8 @@ public class TestHelper {
                 null,
                 null,
                 true,
-                true);
+                true,
+                false);
     }
 
     public static void verifyCredentialSaveStarted(@NonNull  Activity activity,

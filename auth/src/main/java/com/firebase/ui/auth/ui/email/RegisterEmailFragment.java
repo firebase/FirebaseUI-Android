@@ -22,6 +22,7 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
@@ -256,8 +257,8 @@ public class RegisterEmailFragment extends FragmentBase implements
                         .build())
                 .build();
 
-        getAuthHelper().getFirebaseAuth()
-                .createUserWithEmailAndPassword(email, password)
+        AnonymousUpgradeUtils
+                .signUpOrLink(getFlowParams(), getAuthHelper().getFirebaseAuth(), email, password)
                 .continueWithTask(new ProfileMerger(response))
                 .addOnFailureListener(new TaskFailureLogger(TAG, "Error creating user"))
                 .addOnSuccessListener(getActivity(), new OnSuccessListener<AuthResult>() {
@@ -269,6 +270,10 @@ public class RegisterEmailFragment extends FragmentBase implements
                 .addOnFailureListener(getActivity(), new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        // NOTE: there is no need to check for a linking failure here because
+                        //       this Fragment only handles new email registrations, the check
+                        //       to ensure that the email is unique happens before this screen.
+
                         if (e instanceof FirebaseAuthWeakPasswordException) {
                             // Password too weak
                             mPasswordInput.setError(getResources().getQuantityString(
@@ -323,6 +328,9 @@ public class RegisterEmailFragment extends FragmentBase implements
                                             getDialogHolder().dismissDialog();
                                         }
                                     });
+
+                            // This return statement prevents the dialog from being dismissed in
+                            // this case ... we should refactor.
                             return;
                         } else {
                             // General error message, this branch should not be invoked but

@@ -17,6 +17,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParameters, Resource<T>> {
     private CredentialsClient mCredentialsClient;
+    private FirebaseApp mApp;
     private FirebaseAuth mAuth;
     private PhoneAuthProvider mPhoneAuth;
 
@@ -26,8 +27,8 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
 
     @Override
     protected void onCreate() {
-        FirebaseApp app = FirebaseApp.getInstance(getArguments().appName);
-        mAuth = FirebaseAuth.getInstance(app);
+        mApp = FirebaseApp.getInstance(getArguments().appName);
+        mAuth = FirebaseAuth.getInstance(mApp);
         mPhoneAuth = PhoneAuthProvider.getInstance(mAuth);
         mCredentialsClient = GoogleApiUtils.getCredentialsClient(getApplication());
     }
@@ -39,6 +40,10 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
 
     protected FirebaseAuth getAuth() {
         return mAuth;
+    }
+
+    protected FirebaseApp getApp() {
+        return mApp;
     }
 
     protected PhoneAuthProvider getPhoneAuth() {
