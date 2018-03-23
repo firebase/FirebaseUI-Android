@@ -37,8 +37,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
-        implements FacebookCallback<LoginResult> {
+public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> {
     public static final boolean IS_AVAILABLE;
 
     static {
@@ -59,6 +58,7 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
 
     private List<String> mPermissions;
 
+    private final FacebookCallback<LoginResult> mCallback = new Callback();
     private final CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
     public FacebookSignInHandler(Application application) {
@@ -89,7 +89,7 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
 
         mPermissions = permissions;
 
-        LoginManager.getInstance().registerCallback(mCallbackManager, this);
+        LoginManager.getInstance().registerCallback(mCallbackManager, mCallback);
     }
 
     @Override
@@ -104,31 +104,33 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
     }
 
     @Override
-    public void onSuccess(LoginResult result) {
-        GraphRequest request = GraphRequest.newMeRequest(result.getAccessToken(),
-                new ProfileRequest(result));
-
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,email,picture");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    @Override
-    public void onCancel() {
-        onError(new FacebookException());
-    }
-
-    @Override
-    public void onError(FacebookException e) {
-        setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
-                ErrorCodes.PROVIDER_ERROR, e)));
-    }
-
-    @Override
     protected void onCleared() {
         super.onCleared();
         LoginManager.getInstance().unregisterCallback(mCallbackManager);
+    }
+
+    private class Callback implements FacebookCallback<LoginResult> {
+        @Override
+        public void onSuccess(LoginResult result) {
+            GraphRequest request = GraphRequest.newMeRequest(result.getAccessToken(),
+                    new ProfileRequest(result));
+
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,picture");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
+
+        @Override
+        public void onCancel() {
+            onError(new FacebookException());
+        }
+
+        @Override
+        public void onError(FacebookException e) {
+            setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
+                    ErrorCodes.PROVIDER_ERROR, e)));
+        }
     }
 
     private class ProfileRequest implements GraphRequest.GraphJSONObjectCallback {
