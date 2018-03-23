@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui;
 
-import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -53,11 +52,6 @@ public class FragmentBase extends Fragment {
 
     public ProgressDialogHolder getDialogHolder() {
         return mProgressDialogHolder;
-    }
-
-    public void finish(int resultCode, Intent resultIntent) {
-        getActivity().setResult(resultCode, resultIntent);
-        getActivity().finish();
     }
 
     public void startIntentSenderForResult(IntentSender sender, int requestCode)

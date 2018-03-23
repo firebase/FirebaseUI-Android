@@ -113,7 +113,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         mHandler.init(getFlowHolder().getArguments());
 
         // Observe the state of the main auth operation
-        mHandler.getSignInOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(@Nullable Resource<IdpResponse> resource) {
                 onSignInOperation(resource);

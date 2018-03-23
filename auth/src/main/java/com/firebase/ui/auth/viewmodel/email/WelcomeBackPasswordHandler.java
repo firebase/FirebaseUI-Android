@@ -1,8 +1,6 @@
 package com.firebase.ui.auth.viewmodel.email;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -13,8 +11,8 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
-import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
+import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,11 +28,8 @@ import com.google.firebase.auth.EmailAuthProvider;
  * SmartLock.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class WelcomeBackPasswordHandler extends AuthViewModelBase {
-
+public class WelcomeBackPasswordHandler extends AuthViewModelBase<IdpResponse> {
     private static final String TAG = "WBPasswordHandler";
-
-    private MutableLiveData<Resource<IdpResponse>> mSignInLiveData = new MutableLiveData<>();
 
     private String mPendingPassword;
 
@@ -49,7 +44,7 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                             @NonNull final String password,
                             @NonNull final IdpResponse inputResponse,
                             @Nullable final AuthCredential credential) {
-        mSignInLiveData.setValue(Resource.<IdpResponse>forLoading());
+        setResult(Resource.<IdpResponse>forLoading());
 
         // Store the password before signing in so it can be used for later credential building
         mPendingPassword = password;
@@ -69,6 +64,8 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                     .build();
         }
 
+        // Kick off the flow including signing in, linking accounts, and saving with SmartLock
+        //
         // Before signing in, check to see if this is an anonymous upgrade and, if so, if we will
         // produce a conflict.
         checkConflictAndSignIn(email, password)
@@ -94,11 +91,11 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            mSignInLiveData.setValue(Resource.<IdpResponse>forFailure(task.getException()));
+                            setResult(Resource.<IdpResponse>forFailure(task.getException()));
                             return;
                         }
 
-                       setSuccess(outputResponse);
+                        setResult(Resource.forSuccess(outputResponse));
                     }
                 });
     }
@@ -130,20 +127,9 @@ public class WelcomeBackPasswordHandler extends AuthViewModelBase {
     }
 
     /**
-     * Get the observable state of the sign in operation.
-     */
-    public LiveData<Resource<IdpResponse>> getSignInOperation() {
-        return mSignInLiveData;
-    }
-
-    /**
      * Get the most recent pending password.
      */
     public String getPendingPassword() {
         return mPendingPassword;
-    }
-
-    private void setSuccess(IdpResponse idpResponse) {
-        mSignInLiveData.setValue(Resource.forSuccess(idpResponse));
     }
 }

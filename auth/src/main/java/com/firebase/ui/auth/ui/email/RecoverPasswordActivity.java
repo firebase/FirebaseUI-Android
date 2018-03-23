@@ -64,7 +64,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
         mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
         mHandler.init(getFlowHolder().getArguments());
-        mHandler.getProgressLiveData().observe(this, new Observer<Resource<String>>() {
+        mHandler.getOperation().observe(this, new Observer<Resource<String>>() {
             @Override
             public void onChanged(Resource<String> resource) {
                 if (resource.getState() == State.LOADING) {
@@ -76,13 +76,16 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
                 if (resource.getState() == State.SUCCESS) {
                     mEmailInputLayout.setError(null);
                     showEmailSentDialog(resource.getValue());
-                } else if (resource.getException() instanceof FirebaseAuthInvalidUserException
-                        || resource.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                    // No FirebaseUser exists with this email address, show error.
-                    mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
-                } else {
-                    // Unknown error
-                    mEmailInputLayout.setError(getString(R.string.fui_error_unknown));
+                } else if (resource.getState() == State.FAILURE) {
+                    Exception e = resource.getException();
+                    if (e instanceof FirebaseAuthInvalidUserException
+                            || e instanceof FirebaseAuthInvalidCredentialsException) {
+                        // No FirebaseUser exists with this email address, show error.
+                        mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
+                    } else {
+                        // Unknown error
+                        mEmailInputLayout.setError(getString(R.string.fui_error_unknown));
+                    }
                 }
             }
         });

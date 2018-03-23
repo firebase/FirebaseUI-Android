@@ -1,7 +1,6 @@
 package com.firebase.ui.auth.testhelpers;
 
 import com.firebase.ui.auth.util.AuthHelper;
-import com.google.android.gms.auth.api.credentials.CredentialsApi;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -17,7 +16,6 @@ public class AuthHelperShadow {
 
     private static FirebaseAuth sFirebaseAuth;
     private static FirebaseUser sFirebaseUser;
-    private static CredentialsApi sCredentialsApi;
     private static PhoneAuthProvider sPhoneAuthProvider;
 
     public AuthHelperShadow() {}
