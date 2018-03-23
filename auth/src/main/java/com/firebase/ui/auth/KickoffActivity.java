@@ -13,12 +13,12 @@ import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.PlayServicesHelper;
 import com.firebase.ui.auth.util.signincontainer.SignInDelegate;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends HelperActivityBase {
     private static final String TAG = "KickoffActivity";
     private static final String IS_WAITING_FOR_PLAY_SERVICES = "is_waiting_for_play_services";
-    private static final int RC_PLAY_SERVICES = 1;
 
     private boolean mIsWaitingForPlayServices = false;
 
@@ -40,7 +40,7 @@ public class KickoffActivity extends HelperActivityBase {
 
             boolean isPlayServicesAvailable = PlayServicesHelper.makePlayServicesAvailable(
                     this,
-                    RC_PLAY_SERVICES,
+                    RequestCodes.PLAY_SERVICES_CHECK,
                     new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
@@ -68,7 +68,7 @@ public class KickoffActivity extends HelperActivityBase {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_PLAY_SERVICES) {
+        if (requestCode == RequestCodes.PLAY_SERVICES_CHECK) {
             if (resultCode == RESULT_OK) {
                 start();
             } else {

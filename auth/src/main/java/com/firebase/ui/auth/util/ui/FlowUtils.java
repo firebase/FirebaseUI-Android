@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.IntentSender;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
@@ -15,7 +16,7 @@ public final class FlowUtils {
         throw new AssertionError("No instance for you!");
     }
 
-    public static boolean handleError(@NonNull HelperActivityBase activity, @NonNull Exception e) {
+    public static boolean handleError(@NonNull HelperActivityBase activity, @Nullable Exception e) {
         if (e instanceof IntentRequiredException) {
             IntentRequiredException typed = (IntentRequiredException) e;
             activity.startActivityForResult(typed.getIntent(), typed.getRequestCode());

@@ -24,9 +24,16 @@
             android:theme="@style/FirebaseUI.Transparent" />
 
         <activity
+            android:name=".ui.idp.SingleSignInActivity"
+            android:label=""
+            android:exported="false"
+            android:theme="@style/FirebaseUI.Transparent" />
+
+        <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/fui_title_recover_password_activity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.email.EmailActivity"
@@ -43,7 +50,8 @@
         <activity
             android:name=".ui.idp.WelcomeBackIdpPrompt"
             android:label="@string/fui_title_welcome_back_idp_prompt"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.email.WelcomeBackPasswordPrompt"
