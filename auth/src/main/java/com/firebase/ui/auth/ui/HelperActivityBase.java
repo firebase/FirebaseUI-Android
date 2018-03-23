@@ -92,7 +92,7 @@ public class HelperActivityBase extends AppCompatActivity {
         return mProgressDialogHolder;
     }
 
-    public void finish(int resultCode, Intent intent) {
+    public void finish(int resultCode, @Nullable Intent intent) {
         setResult(resultCode, intent);
         finish();
     }
