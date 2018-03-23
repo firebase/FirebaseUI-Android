@@ -81,7 +81,16 @@ public class SingleSignInActivity extends HelperActivityBase {
         mProvider.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(Resource<IdpResponse> resource) {
-                mHandler.startSignIn(IdpResponse.from(resource));
+                if (resource.getState() == State.LOADING) {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
+                    return;
+                }
+                getDialogHolder().dismissDialog();
+
+                if (resource.getState() == State.SUCCESS
+                        || resource.getState() == State.FAILURE) {
+                    mHandler.startSignIn(IdpResponse.from(resource));
+                }
             }
         });
 
