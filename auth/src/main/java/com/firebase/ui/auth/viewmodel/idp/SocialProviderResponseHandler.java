@@ -16,11 +16,14 @@ import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.email.WelcomeBackPasswordPrompt;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
+import com.firebase.ui.auth.util.AnonymousUpgradeUtils;
+import com.firebase.ui.auth.util.UpgradeFailureListener;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -44,7 +47,23 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
         }
         setResult(Resource.<IdpResponse>forLoading());
 
-        getAuth().signInWithCredential(ProviderUtils.getAuthCredential(response))
+        AuthCredential credential = ProviderUtils.getAuthCredential(response);
+
+        AnonymousUpgradeUtils.signInOrLink(getArguments(), getAuth(), credential)
+                .addOnFailureListener(new UpgradeFailureListener(getArguments(), getAuth(), credential) {
+
+                    // TODO: Stop the profile merger early
+
+                    @Override
+                    protected void onUpgradeFailure(@NonNull IdpResponse response) {
+                        // TODO: Finish with RESULT_CANCELED and the Response
+                    }
+
+                    @Override
+                    protected void onNonUpgradeFailure(@NonNull Exception e) {
+                        // TODO: Implement
+                    }
+                })
                 .continueWithTask(new ProfileMerger(response))
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override

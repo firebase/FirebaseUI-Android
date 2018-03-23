@@ -1,34 +1,28 @@
 package com.firebase.ui.auth.util;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Failure listener for use with AnonymousUpgradeUtils.
  */
 public abstract class UpgradeFailureListener implements OnFailureListener {
 
-    private final WeakReference<HelperActivityBase> mActivity;
     private final FlowParameters mParameters;
     private final FirebaseAuth mAuth;
     private final AuthCredential mCredential;
 
-    public UpgradeFailureListener(HelperActivityBase activity,
+    public UpgradeFailureListener(FlowParameters parameters,
+                                  FirebaseAuth auth,
                                   AuthCredential credential) {
-        mActivity = new WeakReference<>(activity);
-
-        mParameters = activity.getFlowParams();
-        mAuth = activity.getFirebaseAuth();
+        mParameters = parameters;
+        mAuth = auth;
         mCredential = credential;
     }
 
@@ -49,10 +43,10 @@ public abstract class UpgradeFailureListener implements OnFailureListener {
                 : mCredential;
 
         IdpResponse response = new IdpResponse.Builder(credential).build();
-        if (mActivity.get() != null) {
-            mActivity.get().finish(Activity.RESULT_CANCELED, response.toIntent());
-        }
+        onUpgradeFailure(response);
     }
+
+    protected void onUpgradeFailure(@NonNull IdpResponse response) {}
 
     protected abstract void onNonUpgradeFailure(@NonNull Exception e);
 }

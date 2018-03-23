@@ -42,9 +42,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -320,9 +320,18 @@ public class PhoneActivity extends AppCompatBase {
     }
 
     private void signIn(@NonNull final PhoneAuthCredential credential) {
+        FlowParameters parameters = getFlowParams();
+        FirebaseAuth auth = getAuthHelper().getFirebaseAuth();
+
         AnonymousUpgradeUtils
-                .signInOrLink(this, credential)
-                .addOnFailureListener(this, new UpgradeFailureListener(this, credential) {
+                .signInOrLink(parameters, auth, credential)
+                .addOnFailureListener(this, new UpgradeFailureListener(parameters, auth, credential) {
+
+                    @Override
+                    protected void onUpgradeFailure(@NonNull IdpResponse response) {
+                        finish(RESULT_CANCELED, response.toIntent());
+                    }
+
                     @Override
                     protected void onNonUpgradeFailure(@NonNull Exception e) {
                         if (e instanceof FirebaseAuthInvalidCredentialsException) {

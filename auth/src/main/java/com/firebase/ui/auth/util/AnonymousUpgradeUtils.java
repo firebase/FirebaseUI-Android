@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -36,6 +35,10 @@ public class AnonymousUpgradeUtils {
             return mWrapped.addOnFailureListener(activity, listener);
         }
 
+        public Task<T> addOnFailureListener(UpgradeFailureListener listener) {
+            return mWrapped.addOnFailureListener(listener);
+        }
+
     }
 
     @NonNull
@@ -52,14 +55,15 @@ public class AnonymousUpgradeUtils {
     }
 
     @NonNull
-    public static UpgradeTaskWrapper<AuthResult> signInOrLink(HelperActivityBase activity,
-                                                AuthCredential credential) {
+    public static UpgradeTaskWrapper<AuthResult> signInOrLink(FlowParameters flowParameters,
+                                                              FirebaseAuth auth,
+                                                              AuthCredential credential) {
         return new UpgradeTaskWrapper<>(
-                signInOrLink(activity.getFlowParams(), activity.getFirebaseAuth(), credential));
+                signInOrLinkTask(flowParameters, auth, credential));
     }
 
     @NonNull
-    private static Task<AuthResult> signInOrLink(FlowParameters flowParameters,
+    private static Task<AuthResult> signInOrLinkTask(FlowParameters flowParameters,
                                                 FirebaseAuth auth,
                                                 AuthCredential credential) {
         if (canUpgradeAnonymous(flowParameters, auth)) {
