@@ -112,6 +112,8 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> 
     private class Callback implements FacebookCallback<LoginResult> {
         @Override
         public void onSuccess(LoginResult result) {
+            setResult(Resource.<IdpResponse>forLoading());
+
             GraphRequest request = GraphRequest.newMeRequest(result.getAccessToken(),
                     new ProfileRequest(result));
 

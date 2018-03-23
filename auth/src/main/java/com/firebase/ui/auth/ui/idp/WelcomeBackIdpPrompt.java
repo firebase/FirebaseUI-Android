@@ -128,7 +128,16 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
         mProvider.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
             public void onChanged(Resource<IdpResponse> resource) {
-                handler.startSignIn(IdpResponse.from(resource));
+                if (resource.getState() == State.LOADING) {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
+                    return;
+                }
+                getDialogHolder().dismissDialog();
+
+                if (resource.getState() == State.SUCCESS
+                        || resource.getState() == State.FAILURE) {
+                    handler.startSignIn(IdpResponse.from(resource));
+                }
             }
         });
 
