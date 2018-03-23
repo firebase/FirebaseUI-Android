@@ -14,12 +14,11 @@ import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
-import com.firebase.ui.auth.viewmodel.idp.SimpleProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.HintRequest;
@@ -33,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
     private static final long AUTO_RETRIEVAL_TIMEOUT_SECONDS = 120;
 
-    private SimpleProvidersHandler mSignInHandler;
+    private SocialProviderResponseHandler mSignInHandler;
 
     private MutableLiveData<PhoneNumber> mPhoneNumberListener = new SingleLiveEvent<>();
     private MutableLiveData<Exception> mVerificationErrorListener = new SingleLiveEvent<>();
@@ -46,7 +45,7 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
         super(application);
     }
 
-    public void setProvidersHandler(SimpleProvidersHandler handler) {
+    public void setProvidersHandler(SocialProviderResponseHandler handler) {
         mSignInHandler = handler;
     }
 
@@ -117,10 +116,11 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
     }
 
     private void start(PhoneAuthCredential credential, String number) {
-        mSignInHandler.startSignIn(credential, new IdpResponse.Builder(
-                new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
-                        .setPhoneNumber(number)
-                        .build())
-                .build());
+        // TODO
+//        mSignInHandler.startSignIn(credential, new IdpResponse.Builder(
+//                new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
+//                        .setPhoneNumber(number)
+//                        .build())
+//                .build());
     }
 }

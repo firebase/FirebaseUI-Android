@@ -32,7 +32,7 @@ import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.NoOpValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
-import com.firebase.ui.auth.viewmodel.idp.SimpleProvidersHandler;
+import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
@@ -45,7 +45,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         View.OnClickListener, View.OnFocusChangeListener, ImeHelper.DonePressedListener {
     public static final String TAG = "RegisterEmailFragment";
 
-    private SimpleProvidersHandler mHandler;
+    private SocialProviderResponseHandler mHandler;
 
     private EditText mEmailEditText;
     private EditText mNameEditText;
@@ -77,7 +77,7 @@ public class RegisterEmailFragment extends FragmentBase implements
             mUser = User.getUser(savedInstanceState);
         }
 
-        mHandler = ViewModelProviders.of(this).get(SimpleProvidersHandler.class);
+        mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
         mHandler.init(getFlowParams());
         mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
             @Override
