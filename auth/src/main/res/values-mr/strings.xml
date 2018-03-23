@@ -1,11 +1,9 @@
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="fui_progress_dialog_loading">लोड करत आहे…</string>
     <string name="fui_sign_in_default">साइन इन करा</string>
     <string name="fui_idp_name_google">Google</string>
     <string name="fui_idp_name_facebook">Facebook</string>
     <string name="fui_idp_name_twitter">Twitter</string>
-    <string name="fui_provider_name_email">ईमेल</string>
-    <string name="fui_provider_name_phone">फोन</string>
     <string name="fui_sign_in_with_google">Googleने साइन इन करा</string>
     <string name="fui_sign_in_with_facebook">Facebookने साइन इन करा</string>
     <string name="fui_sign_in_with_twitter">Twitterने साइन इन करा</string>
@@ -47,7 +45,6 @@
     <string name="fui_error_unknown">एक अज्ञात एरर आली.</string>
     <string name="fui_error_invalid_password">अयोग्य पासवर्ड</string>
     <string name="fui_accessibility_logo">अ‍ॅप लोगो</string>
-    <string name="fui_signed_in_with_specific_account">%1$s म्हणून साइन इन केले</string>
     <string name="fui_verify_phone_number_title">तुमचा फोन नंबर टाका</string>
     <string name="fui_invalid_phone_number">कृपया वैध फोन नंबर टाका</string>
     <string name="fui_enter_confirmation_code">वर आम्ही पाठवलेला 6 अंकी कोड टाका</string>
