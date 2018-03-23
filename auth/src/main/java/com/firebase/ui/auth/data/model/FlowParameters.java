@@ -91,16 +91,6 @@ public class FlowParameters implements Parcelable {
         return bundle.getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS);
     }
 
-    /**
-     * Create a bundle containing this FlowParameters object as {@link
-     * ExtraConstants#EXTRA_FLOW_PARAMS}.
-     */
-    public Bundle toBundle() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, this);
-        return bundle;
-    }
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(appName);
