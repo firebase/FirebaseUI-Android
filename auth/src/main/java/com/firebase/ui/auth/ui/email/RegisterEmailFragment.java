@@ -50,7 +50,6 @@ public class RegisterEmailFragment extends FragmentBase implements
     private EditText mEmailEditText;
     private EditText mNameEditText;
     private EditText mPasswordEditText;
-    private TextView mAgreementText;
     private TextInputLayout mEmailInput;
     private TextInputLayout mPasswordInput;
 
@@ -129,7 +128,6 @@ public class RegisterEmailFragment extends FragmentBase implements
         mEmailEditText = view.findViewById(R.id.email);
         mNameEditText = view.findViewById(R.id.name);
         mPasswordEditText = view.findViewById(R.id.password);
-        mAgreementText = view.findViewById(R.id.create_account_text);
         mEmailInput = view.findViewById(R.id.email_layout);
         mPasswordInput = view.findViewById(R.id.password_layout);
 

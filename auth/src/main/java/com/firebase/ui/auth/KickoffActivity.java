@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
@@ -31,7 +32,7 @@ public class KickoffActivity extends HelperActivityBase {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
         mKickstarter.init(getFlowParams());

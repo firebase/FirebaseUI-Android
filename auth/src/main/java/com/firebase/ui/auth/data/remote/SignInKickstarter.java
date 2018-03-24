@@ -132,7 +132,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             case PhoneAuthProvider.PROVIDER_ID:
                 Bundle args = new Bundle();
                 args.putString(ExtraConstants.EXTRA_PHONE, email);
-                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
+                setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
                         PhoneActivity.createIntent(
                                 getApplication(),
                                 getArguments(),

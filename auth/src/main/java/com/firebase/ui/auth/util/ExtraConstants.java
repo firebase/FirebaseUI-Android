@@ -37,8 +37,6 @@ public final class ExtraConstants {
     public static final String EXTRA_COUNTRY_ISO = "extra_country_iso";
     public static final String EXTRA_NATIONAL_NUMBER = "extra_national_number";
 
-    public static final String HAS_EXISTING_INSTANCE = "has_existing_instance";
-
     private ExtraConstants() {
         throw new AssertionError("No instance for you!");
     }

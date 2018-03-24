@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -68,7 +69,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_auth_method_picker_layout);
 

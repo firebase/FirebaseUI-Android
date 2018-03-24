@@ -59,7 +59,7 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
 
     public void fetchCredential() {
         if (TextUtils.isEmpty(mPhoneNumber)) {
-            setResult(Resource.<IdpResponse>forFailure(new PendingIntentRequiredException(
+            setResult(Resource.<IdpResponse>forUsableFailure(new PendingIntentRequiredException(
                     Credentials.getClient(getApplication()).getHintPickerIntent(
                             new HintRequest.Builder().setPhoneNumberIdentifierSupported(true)
                                     .build()),

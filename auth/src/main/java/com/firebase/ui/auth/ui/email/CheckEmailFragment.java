@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
+import com.firebase.ui.auth.data.model.Resource;
+import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
@@ -109,10 +111,17 @@ public class CheckEmailFragment extends FragmentBase implements
         }
         mListener = (CheckEmailListener) getActivity();
 
-        mHandler.getUserListener().observe(this, new Observer<User>() {
+        mHandler.getOperation().observe(this, new Observer<Resource<User>>() {
             @Override
-            public void onChanged(@Nullable User user) {
-                if (user == null) { return; }
+            public void onChanged(Resource<User> resource) {
+                if (resource.getState() == State.LOADING) {
+                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_checking_accounts);
+                    return;
+                }
+                getDialogHolder().dismissDialog();
+
+                if (resource.getState() != State.SUCCESS) { return; }
+                User user = resource.getValue();
 
                 String email = user.getEmail();
                 String provider = user.getProviderId();
@@ -142,11 +151,6 @@ public class CheckEmailFragment extends FragmentBase implements
         } else if (getFlowParams().enableHints) {
             mHandler.fetchCredential();
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
     }
 
     private void validateAndProceed() {

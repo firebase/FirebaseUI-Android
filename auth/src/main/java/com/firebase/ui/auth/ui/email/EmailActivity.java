@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
@@ -52,7 +53,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_email);
 
@@ -69,12 +70,6 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
                 .replace(R.id.fragment_register_email, fragment, CheckEmailFragment.TAG)
                 .disallowAddToBackStack()
                 .commit();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
-        super.onSaveInstanceState(outState);
     }
 
     @Override

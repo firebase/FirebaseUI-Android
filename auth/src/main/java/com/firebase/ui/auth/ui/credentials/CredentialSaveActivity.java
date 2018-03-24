@@ -38,7 +38,7 @@ public class CredentialSaveActivity extends HelperActivityBase {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mHandler = ViewModelProviders.of(this).get(SmartLockHandler.class);

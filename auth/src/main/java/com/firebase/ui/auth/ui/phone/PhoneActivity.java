@@ -49,7 +49,7 @@ public class PhoneActivity extends AppCompatBase {
     }
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(@Nullable final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_phone);
 
