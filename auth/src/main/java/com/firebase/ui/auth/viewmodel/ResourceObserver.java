@@ -2,6 +2,7 @@ package com.firebase.ui.auth.viewmodel;
 
 import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
+import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 
 import com.firebase.ui.auth.data.model.Resource;
@@ -9,6 +10,7 @@ import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ui.FlowUtils;
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public abstract class ResourceObserver<T> implements Observer<Resource<T>> {
     private final HelperActivityBase mActivity;
     private final int mLoadingMessage;
