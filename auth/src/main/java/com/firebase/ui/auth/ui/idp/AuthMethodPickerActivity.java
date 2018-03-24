@@ -14,13 +14,14 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -34,8 +35,6 @@ import com.firebase.ui.auth.AuthUI.IdpConfig;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.EmailSignInHandler;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
@@ -43,8 +42,7 @@ import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
-import com.firebase.ui.auth.util.ui.FlowUtils;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -63,12 +61,11 @@ public class AuthMethodPickerActivity extends AppCompatBase {
     private List<ProviderSignInBase<?>> mProviders;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return HelperActivityBase.createBaseIntent(
-                context, AuthMethodPickerActivity.class, flowParams);
+        return createBaseIntent(context, AuthMethodPickerActivity.class, flowParams);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_auth_method_picker_layout);
 
@@ -93,25 +90,19 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             logo.setImageResource(logoId);
         }
 
-        mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
+                this, R.string.fui_progress_dialog_signing_in) {
             @Override
-            public void onChanged(Resource<IdpResponse> resource) {
-                if (resource.getState() == State.LOADING) {
-                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
-                    return;
-                }
-                getDialogHolder().dismissDialog();
+            protected void onSuccess(@NonNull IdpResponse response) {
+                startSaveCredentials(mHandler.getCurrentUser(), null, response);
+            }
 
-                if (resource.getState() == State.SUCCESS) {
-                    startSaveCredentials(mHandler.getCurrentUser(), null, resource.getValue());
-                } else if (resource.getState() == State.FAILURE) {
-                    Exception e = resource.getException();
-                    if (!FlowUtils.handleError(AuthMethodPickerActivity.this, e)
-                            && !(e instanceof UserCancellationException)) {
-                        Toast.makeText(AuthMethodPickerActivity.this,
-                                R.string.fui_error_unknown,
-                                Toast.LENGTH_SHORT).show();
-                    }
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                if (!(e instanceof UserCancellationException)) {
+                    Toast.makeText(AuthMethodPickerActivity.this,
+                            R.string.fui_error_unknown,
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -167,19 +158,16 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             }
             mProviders.add(provider);
 
-            provider.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+            provider.getOperation().observe(this, new ResourceObserver<IdpResponse>(
+                    this, R.string.fui_progress_dialog_loading) {
                 @Override
-                public void onChanged(Resource<IdpResponse> resource) {
-                    if (resource.getState() == State.LOADING) {
-                        getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
-                        return;
-                    }
-                    getDialogHolder().dismissDialog();
+                protected void onSuccess(@NonNull IdpResponse response) {
+                    handler.startSignIn(response);
+                }
 
-                    if (resource.getState() == State.SUCCESS
-                            || resource.getState() == State.FAILURE) {
-                        handler.startSignIn(IdpResponse.from(resource));
-                    }
+                @Override
+                protected void onFailure(@NonNull Exception e) {
+                    handler.startSignIn(IdpResponse.from(e));
                 }
             });
 

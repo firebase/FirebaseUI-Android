@@ -149,7 +149,7 @@ public class AuthUI {
      * instead.
      */
     @Deprecated
-    public static final String EXTRA_DEFAULT_PHONE_NUMBER = ExtraConstants.EXTRA_PHONE;
+    public static final String EXTRA_DEFAULT_PHONE_NUMBER = ExtraConstants.PHONE;
 
     /**
      * Bundle key for the default phone country code parameter.
@@ -158,7 +158,7 @@ public class AuthUI {
      * String)} instead.
      */
     @Deprecated
-    public static final String EXTRA_DEFAULT_COUNTRY_CODE = ExtraConstants.EXTRA_COUNTRY_ISO;
+    public static final String EXTRA_DEFAULT_COUNTRY_CODE = ExtraConstants.COUNTRY_ISO;
 
     /**
      * Bundle key for the default national phone number parameter.
@@ -167,7 +167,7 @@ public class AuthUI {
      * String)} instead.
      */
     @Deprecated
-    public static final String EXTRA_DEFAULT_NATIONAL_NUMBER = ExtraConstants.EXTRA_NATIONAL_NUMBER;
+    public static final String EXTRA_DEFAULT_NATIONAL_NUMBER = ExtraConstants.NATIONAL_NUMBER;
 
     /**
      * Default value for logo resource, omits the logo from the {@link AuthMethodPickerActivity}.
@@ -450,7 +450,7 @@ public class AuthUI {
             List<String> permissions;
             if (mProviderId.equals(GoogleAuthProvider.PROVIDER_ID)) {
                 Scope[] array = ((GoogleSignInOptions)
-                        mParams.getParcelable(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS))
+                        mParams.getParcelable(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS))
                         .getScopeArray();
 
                 List<String> scopes = new ArrayList<>();
@@ -459,7 +459,7 @@ public class AuthUI {
                 }
                 permissions = scopes;
             } else if (mProviderId.equals(FacebookAuthProvider.PROVIDER_ID)) {
-                permissions = mParams.getStringArrayList(ExtraConstants.EXTRA_FACEBOOK_PERMISSIONS);
+                permissions = mParams.getStringArrayList(ExtraConstants.FACEBOOK_PERMISSIONS);
             } else {
                 permissions = null;
             }
@@ -618,7 +618,7 @@ public class AuthUI {
              */
             @NonNull
             public EmailBuilder setAllowNewAccounts(boolean allow) {
-                getParams().putBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, allow);
+                getParams().putBoolean(ExtraConstants.ALLOW_NEW_EMAILS, allow);
                 return this;
             }
 
@@ -630,7 +630,7 @@ public class AuthUI {
              */
             @NonNull
             public EmailBuilder setRequireName(boolean requireName) {
-                getParams().putBoolean(ExtraConstants.EXTRA_REQUIRE_NAME, requireName);
+                getParams().putBoolean(ExtraConstants.REQUIRE_NAME, requireName);
                 return this;
             }
         }
@@ -652,13 +652,13 @@ public class AuthUI {
             public PhoneBuilder setDefaultNumber(@NonNull String number) {
                 Preconditions.checkUnset(getParams(),
                         "Cannot overwrite previously set phone number",
-                        ExtraConstants.EXTRA_COUNTRY_ISO,
-                        ExtraConstants.EXTRA_NATIONAL_NUMBER);
+                        ExtraConstants.COUNTRY_ISO,
+                        ExtraConstants.NATIONAL_NUMBER);
                 if (!PhoneNumberUtils.isValid(number)) {
                     throw new IllegalStateException("Invalid phone number: " + number);
                 }
 
-                getParams().putString(ExtraConstants.EXTRA_PHONE, number);
+                getParams().putString(ExtraConstants.PHONE, number);
 
                 return this;
             }
@@ -674,13 +674,13 @@ public class AuthUI {
             public PhoneBuilder setDefaultNumber(@NonNull String iso, @NonNull String number) {
                 Preconditions.checkUnset(getParams(),
                         "Cannot overwrite previously set phone number",
-                        ExtraConstants.EXTRA_PHONE);
+                        ExtraConstants.PHONE);
                 if (!PhoneNumberUtils.isValidIso(iso)) {
                     throw new IllegalStateException("Invalid country iso: " + iso);
                 }
 
-                getParams().putString(ExtraConstants.EXTRA_COUNTRY_ISO, iso);
-                getParams().putString(ExtraConstants.EXTRA_NATIONAL_NUMBER, number);
+                getParams().putString(ExtraConstants.COUNTRY_ISO, iso);
+                getParams().putString(ExtraConstants.NATIONAL_NUMBER, number);
 
                 return this;
             }
@@ -695,14 +695,14 @@ public class AuthUI {
             public PhoneBuilder setDefaultCountryIso(@NonNull String iso) {
                 Preconditions.checkUnset(getParams(),
                         "Cannot overwrite previously set phone number",
-                        ExtraConstants.EXTRA_PHONE,
-                        ExtraConstants.EXTRA_COUNTRY_ISO,
-                        ExtraConstants.EXTRA_NATIONAL_NUMBER);
+                        ExtraConstants.PHONE,
+                        ExtraConstants.COUNTRY_ISO,
+                        ExtraConstants.NATIONAL_NUMBER);
                 if (!PhoneNumberUtils.isValidIso(iso)) {
                     throw new IllegalStateException("Invalid country iso: " + iso);
                 }
 
-                getParams().putString(ExtraConstants.EXTRA_COUNTRY_ISO, iso);
+                getParams().putString(ExtraConstants.COUNTRY_ISO, iso);
 
                 return this;
             }
@@ -748,13 +748,13 @@ public class AuthUI {
             public GoogleBuilder setSignInOptions(@NonNull GoogleSignInOptions options) {
                 Preconditions.checkUnset(getParams(),
                         "Cannot overwrite previously set sign-in options.",
-                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS);
+                        ExtraConstants.GOOGLE_SIGN_IN_OPTIONS);
 
                 GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(options);
                 builder.requestEmail().requestIdToken(getApplicationContext()
                         .getString(R.string.default_web_client_id));
                 getParams().putParcelable(
-                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS, builder.build());
+                        ExtraConstants.GOOGLE_SIGN_IN_OPTIONS, builder.build());
 
                 return this;
             }
@@ -762,7 +762,7 @@ public class AuthUI {
             @NonNull
             @Override
             public IdpConfig build() {
-                if (!getParams().containsKey(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS)) {
+                if (!getParams().containsKey(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS)) {
                     setScopes(Collections.<String>emptyList());
                 }
 
@@ -805,7 +805,7 @@ public class AuthUI {
             @NonNull
             public FacebookBuilder setPermissions(@NonNull List<String> permissions) {
                 getParams().putStringArrayList(
-                        ExtraConstants.EXTRA_FACEBOOK_PERMISSIONS, new ArrayList<>(permissions));
+                        ExtraConstants.FACEBOOK_PERMISSIONS, new ArrayList<>(permissions));
                 return this;
             }
         }

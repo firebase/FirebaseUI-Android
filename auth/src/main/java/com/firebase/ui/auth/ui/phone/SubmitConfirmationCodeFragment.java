@@ -16,6 +16,7 @@ package com.firebase.ui.auth.ui.phone;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.VisibleForTesting;
@@ -63,8 +64,8 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         SubmitConfirmationCodeFragment fragment = new SubmitConfirmationCodeFragment();
 
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
-        args.putString(ExtraConstants.EXTRA_PHONE, phoneNumber);
+        args.putParcelable(ExtraConstants.FLOW_PARAMS, flowParameters);
+        args.putString(ExtraConstants.PHONE, phoneNumber);
 
         fragment.setArguments(args);
         return fragment;
@@ -72,7 +73,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fui_confirmation_code_layout, container, false);
         FragmentActivity parentActivity = getActivity();
@@ -84,7 +85,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         mSubmitConfirmationButton = v.findViewById(R.id.submit_confirmation_code);
         mAgreementText = v.findViewById(R.id.create_account_tos);
 
-        final String phoneNumber = getArguments().getString(ExtraConstants.EXTRA_PHONE);
+        final String phoneNumber = getArguments().getString(ExtraConstants.PHONE);
 
         parentActivity.setTitle(getString(R.string.fui_verify_your_phone_title));
         setupConfirmationCodeEditText();
@@ -126,8 +127,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putLong(EXTRA_MILLIS_UNTIL_FINISHED, mMillisUntilFinished);
     }
 
