@@ -19,6 +19,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
@@ -30,7 +31,6 @@ import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.util.ui.FlowUtils;
@@ -44,12 +44,12 @@ import com.google.firebase.auth.FirebaseAuthException;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class PhoneActivity extends AppCompatBase {
     public static Intent createIntent(Context context, FlowParameters params, Bundle args) {
-        return HelperActivityBase.createBaseIntent(context, PhoneActivity.class, params)
-                .putExtra(ExtraConstants.EXTRA_PARAMS, args);
+        return createBaseIntent(context, PhoneActivity.class, params)
+                .putExtra(ExtraConstants.PARAMS, args);
     }
 
     @Override
-    protected void onCreate(@Nullable final Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_phone);
 
@@ -94,7 +94,7 @@ public class PhoneActivity extends AppCompatBase {
 
         if (savedInstanceState != null) { return; }
 
-        Bundle params = getIntent().getExtras().getBundle(ExtraConstants.EXTRA_PARAMS);
+        Bundle params = getIntent().getExtras().getBundle(ExtraConstants.PARAMS);
         CheckPhoneNumberFragment fragment = CheckPhoneNumberFragment.newInstance(params);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_verify_phone, fragment, CheckPhoneNumberFragment.TAG)

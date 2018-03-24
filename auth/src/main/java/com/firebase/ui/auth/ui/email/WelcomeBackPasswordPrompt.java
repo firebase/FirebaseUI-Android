@@ -14,12 +14,12 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
@@ -28,7 +28,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -37,12 +36,11 @@ import android.widget.TextView;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.email.WelcomeBackPasswordHandler;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -54,8 +52,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackPasswordPrompt extends AppCompatBase
         implements View.OnClickListener, ImeHelper.DonePressedListener {
-    private static final String TAG = "WelcomeBackPassword";
-
     private IdpResponse mIdpResponse;
     private WelcomeBackPasswordHandler mHandler;
 
@@ -64,8 +60,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
     public static Intent createIntent(
             Context context, FlowParameters flowParams, IdpResponse response) {
-        return HelperActivityBase.createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+        return createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
+                .putExtra(ExtraConstants.IDP_RESPONSE, response);
     }
 
     @Override
@@ -107,40 +103,18 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         mHandler.init(getFlowParams());
 
         // Observe the state of the main auth operation
-        mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
+                this, R.string.fui_progress_dialog_signing_in) {
             @Override
-            public void onChanged(@Nullable Resource<IdpResponse> resource) {
-                onSignInOperation(resource);
+            protected void onSuccess(@NonNull IdpResponse response) {
+                startSaveCredentials(mHandler.getCurrentUser(), mHandler.getPendingPassword(), response);
+            }
+
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                mPasswordLayout.setError(getString(getErrorMessage(e)));
             }
         });
-    }
-
-    private void onSignInOperation(@Nullable Resource<IdpResponse> resource) {
-        if (resource == null) {
-            Log.w(TAG, "Got null resource, ignoring.");
-            return;
-        }
-
-        switch (resource.getState()) {
-            case LOADING:
-                getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
-                break;
-            case SUCCESS:
-                getDialogHolder().dismissDialog();
-
-                // This logic remains in the view since SmartLock is effectively a different
-                // 'screen' after the sign-in process.
-                startSaveCredentials(
-                        mHandler.getCurrentUser(),
-                        mHandler.getPendingPassword(),
-                        resource.getValue());
-                break;
-            case FAILURE:
-                getDialogHolder().dismissDialog();
-                String message = getString(getErrorMessage(resource.getException()));
-                mPasswordLayout.setError(message);
-                break;
-        }
     }
 
     @StringRes

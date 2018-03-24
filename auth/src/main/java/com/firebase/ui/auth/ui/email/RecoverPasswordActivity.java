@@ -14,12 +14,12 @@
 
 package com.firebase.ui.auth.ui.email;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
@@ -29,13 +29,11 @@ import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.email.RecoverPasswordHandler;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -53,8 +51,8 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
     private EmailFieldValidator mEmailFieldValidator;
 
     public static Intent createIntent(Context context, FlowParameters params, String email) {
-        return HelperActivityBase.createBaseIntent(context, RecoverPasswordActivity.class, params)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+        return createBaseIntent(context, RecoverPasswordActivity.class, params)
+                .putExtra(ExtraConstants.EMAIL, email);
     }
 
     @Override
@@ -64,28 +62,23 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
 
         mHandler = ViewModelProviders.of(this).get(RecoverPasswordHandler.class);
         mHandler.init(getFlowParams());
-        mHandler.getOperation().observe(this, new Observer<Resource<String>>() {
+        mHandler.getOperation().observe(this, new ResourceObserver<String>(
+                this, R.string.fui_progress_dialog_sending) {
             @Override
-            public void onChanged(Resource<String> resource) {
-                if (resource.getState() == State.LOADING) {
-                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_sending);
-                    return;
-                }
+            protected void onSuccess(@NonNull String email) {
+                mEmailInputLayout.setError(null);
+                showEmailSentDialog(email);
+            }
 
-                getDialogHolder().dismissDialog();
-                if (resource.getState() == State.SUCCESS) {
-                    mEmailInputLayout.setError(null);
-                    showEmailSentDialog(resource.getValue());
-                } else if (resource.getState() == State.FAILURE) {
-                    Exception e = resource.getException();
-                    if (e instanceof FirebaseAuthInvalidUserException
-                            || e instanceof FirebaseAuthInvalidCredentialsException) {
-                        // No FirebaseUser exists with this email address, show error.
-                        mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
-                    } else {
-                        // Unknown error
-                        mEmailInputLayout.setError(getString(R.string.fui_error_unknown));
-                    }
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                if (e instanceof FirebaseAuthInvalidUserException
+                        || e instanceof FirebaseAuthInvalidCredentialsException) {
+                    // No FirebaseUser exists with this email address, show error.
+                    mEmailInputLayout.setError(getString(R.string.fui_error_email_does_not_exist));
+                } else {
+                    // Unknown error
+                    mEmailInputLayout.setError(getString(R.string.fui_error_unknown));
                 }
             }
         });
@@ -94,7 +87,7 @@ public class RecoverPasswordActivity extends AppCompatBase implements View.OnCli
         mEmailEditText = findViewById(R.id.email);
         mEmailFieldValidator = new EmailFieldValidator(mEmailInputLayout);
 
-        String email = getIntent().getStringExtra(ExtraConstants.EXTRA_EMAIL);
+        String email = getIntent().getStringExtra(ExtraConstants.EMAIL);
         if (email != null) {
             mEmailEditText.setText(email);
         }

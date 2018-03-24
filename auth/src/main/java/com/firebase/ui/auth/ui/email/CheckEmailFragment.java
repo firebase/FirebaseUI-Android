@@ -69,13 +69,12 @@ public class CheckEmailFragment extends FragmentBase implements
     public static CheckEmailFragment newInstance(@Nullable String email) {
         CheckEmailFragment fragment = new CheckEmailFragment();
         Bundle args = new Bundle();
-        args.putString(ExtraConstants.EXTRA_EMAIL, email);
+        args.putString(ExtraConstants.EMAIL, email);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    @Nullable
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -144,7 +143,7 @@ public class CheckEmailFragment extends FragmentBase implements
         if (savedInstanceState != null) { return; }
 
         // Check for email
-        String email = getArguments().getString(ExtraConstants.EXTRA_EMAIL);
+        String email = getArguments().getString(ExtraConstants.EMAIL);
         if (!TextUtils.isEmpty(email)) {
             mEmailEditText.setText(email);
             validateAndProceed();

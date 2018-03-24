@@ -62,7 +62,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     public static SubmitConfirmationCodeFragment newInstance(String phoneNumber) {
         SubmitConfirmationCodeFragment fragment = new SubmitConfirmationCodeFragment();
         Bundle args = new Bundle();
-        args.putString(ExtraConstants.EXTRA_PHONE, phoneNumber);
+        args.putString(ExtraConstants.PHONE, phoneNumber);
         fragment.setArguments(args);
         return fragment;
     }

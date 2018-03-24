@@ -69,7 +69,7 @@ public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.
     private GoogleSignInOptions getSignInOptions() {
         GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(
                 mConfig.getParams().<GoogleSignInOptions>getParcelable(
-                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS));
+                        ExtraConstants.GOOGLE_SIGN_IN_OPTIONS));
 
         if (!TextUtils.isEmpty(mEmail)) {
             builder.setAccountName(mEmail);

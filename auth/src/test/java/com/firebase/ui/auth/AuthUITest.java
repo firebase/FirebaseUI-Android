@@ -45,7 +45,7 @@ public class AuthUITest {
                 .getInstance()
                 .createSignInIntentBuilder()
                 .build()
-                .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
+                .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
         assertEquals(1, flowParameters.providerInfo.size());
         assertEquals(EmailAuthProvider.PROVIDER_ID,
                 flowParameters.providerInfo.get(0).getProviderId());
@@ -70,7 +70,7 @@ public class AuthUITest {
                 .setTosUrl(TestConstants.TOS_URL)
                 .setPrivacyPolicyUrl(TestConstants.PRIVACY_URL)
                 .build()
-                .getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
+                .getParcelableExtra(ExtraConstants.FLOW_PARAMS);
 
         assertEquals(3, flowParameters.providerInfo.size());
         assertEquals(FirebaseApp.getInstance().getName(), flowParameters.appName);

@@ -29,7 +29,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -48,8 +47,8 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
     }
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return HelperActivityBase.createBaseIntent(context, EmailActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+        return createBaseIntent(context, EmailActivity.class, flowParams)
+                .putExtra(ExtraConstants.EMAIL, email);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
         }
 
         // Get email from intent (can be null)
-        String email = getIntent().getExtras().getString(ExtraConstants.EXTRA_EMAIL);
+        String email = getIntent().getExtras().getString(ExtraConstants.EMAIL);
 
         // Start with check email
         CheckEmailFragment fragment = CheckEmailFragment.newInstance(email);
@@ -110,7 +109,7 @@ public class EmailActivity extends AppCompatBase implements CheckEmailFragment.C
 
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
-        if (emailConfig.getParams().getBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, true)) {
+        if (emailConfig.getParams().getBoolean(ExtraConstants.ALLOW_NEW_EMAILS, true)) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(user);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_register_email, fragment, RegisterEmailFragment.TAG);

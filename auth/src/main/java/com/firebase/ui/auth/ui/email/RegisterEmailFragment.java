@@ -62,7 +62,7 @@ public class RegisterEmailFragment extends FragmentBase implements
     public static RegisterEmailFragment newInstance(User user) {
         RegisterEmailFragment fragment = new RegisterEmailFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_USER, user);
+        args.putParcelable(ExtraConstants.USER, user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -137,7 +137,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
         boolean requireName = emailConfig.getParams()
-                .getBoolean(ExtraConstants.EXTRA_REQUIRE_NAME, true);
+                .getBoolean(ExtraConstants.REQUIRE_NAME, true);
         mPasswordFieldValidator = new PasswordFieldValidator(
                 mPasswordInput,
                 getResources().getInteger(R.integer.fui_min_password_length));
@@ -203,7 +203,7 @@ public class RegisterEmailFragment extends FragmentBase implements
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelable(ExtraConstants.EXTRA_USER,
+        outState.putParcelable(ExtraConstants.USER,
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, mEmailEditText.getText().toString())
                         .setName(mNameEditText.getText().toString())
                         .setPhotoUri(mUser.getPhotoUri())

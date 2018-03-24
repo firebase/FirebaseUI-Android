@@ -28,14 +28,14 @@ public class HelperActivityBase extends AppCompatActivity {
 
     private ProgressDialogHolder mProgressDialogHolder;
 
-    public static Intent createBaseIntent(
+    protected static Intent createBaseIntent(
             @NonNull Context context,
             @NonNull Class<? extends Activity> target,
             @NonNull FlowParameters flowParams) {
         return new Intent(
                 checkNotNull(context, "context cannot be null"),
                 checkNotNull(target, "target activity cannot be null"))
-                .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS,
+                .putExtra(ExtraConstants.FLOW_PARAMS,
                         checkNotNull(flowParams, "flowParams cannot be null"));
     }
 

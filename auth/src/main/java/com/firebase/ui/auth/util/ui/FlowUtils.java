@@ -18,18 +18,18 @@ public final class FlowUtils {
         throw new AssertionError("No instance for you!");
     }
 
-    public static boolean handleError(@NonNull HelperActivityBase activity, @Nullable Exception e) {
+    public static boolean unhandled(@NonNull HelperActivityBase activity, @Nullable Exception e) {
         if (e instanceof IntentRequiredException) {
             IntentRequiredException typed = (IntentRequiredException) e;
             activity.startActivityForResult(typed.getIntent(), typed.getRequestCode());
-            return true;
+            return false;
         } else if (e instanceof PendingIntentRequiredException) {
             PendingIntentRequiredException typed = (PendingIntentRequiredException) e;
             startIntentSenderForResult(activity, typed.getPendingIntent(), typed.getRequestCode());
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     public static boolean handleError(FragmentBase fragment, Exception e) {
