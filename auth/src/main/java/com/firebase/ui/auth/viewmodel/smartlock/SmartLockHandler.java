@@ -13,7 +13,7 @@ import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
-import com.firebase.ui.auth.viewmodel.ResolutionCodes;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,7 +34,7 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
      * Forward the result of a resolution from the Activity to the ViewModel.
      */
     public void onActivityResult(int requestCode, int resultCode) {
-        if (requestCode == ResolutionCodes.RC_CRED_SAVE) {
+        if (requestCode == RequestCodes.CRED_SAVE) {
             if (resultCode == Activity.RESULT_OK) {
                 setResult(Resource.forVoidSuccess());
             } else {
@@ -76,8 +76,9 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
                             setResult(Resource.forVoidSuccess());
                         } else if (task.getException() instanceof ResolvableApiException) {
                             ResolvableApiException rae = (ResolvableApiException) task.getException();
-                            setResult(Resource.<Void>forFailure(new PendingIntentRequiredException(
-                                    rae.getResolution(), ResolutionCodes.RC_CRED_SAVE)));
+                            setResult(Resource.<Void>forUsableFailure(
+                                    new PendingIntentRequiredException(
+                                            rae.getResolution(), RequestCodes.CRED_SAVE)));
                         } else {
                             Log.w(TAG, "Non-resolvable exception: " + task.getException());
 

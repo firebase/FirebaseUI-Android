@@ -23,10 +23,15 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
+import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * A container that encapsulates the result of authenticating with an Identity Provider.
@@ -93,13 +98,19 @@ public class IdpResponse implements Parcelable {
         }
     }
 
+    @NonNull
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static Intent getErrorIntent(@NonNull Exception e) {
-        return fromError(e).toIntent();
+    public static IdpResponse from(@NonNull Resource<IdpResponse> resource) {
+        IdpResponse response = resource.getValue();
+        if (resource.getException() != null) {
+            response = from(resource.getException());
+        }
+        return response;
     }
 
+    @NonNull
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static IdpResponse fromError(@NonNull Exception e) {
+    public static IdpResponse from(@NonNull Exception e) {
         if (e instanceof FirebaseUiException) {
             return new IdpResponse((FirebaseUiException) e);
         } else {
@@ -107,6 +118,13 @@ public class IdpResponse implements Parcelable {
         }
     }
 
+    @NonNull
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public static Intent getErrorIntent(@NonNull Exception e) {
+        return from(e).toIntent();
+    }
+
+    @NonNull
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public Intent toIntent() {
         return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, this);
@@ -209,7 +227,25 @@ public class IdpResponse implements Parcelable {
         dest.writeParcelable(mUser, flags);
         dest.writeString(mToken);
         dest.writeString(mSecret);
-        dest.writeSerializable(mException);
+
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(new ByteArrayOutputStream());
+            oos.writeObject(mException);
+
+            // Success! The entire exception tree is serializable.
+            dest.writeSerializable(mException);
+        } catch (IOException e) {
+            // Somewhere down the line, the exception is holding on to an object that isn't
+            // serializable so default to some exception. It's the best we can do in this case.
+            dest.writeSerializable(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR));
+        } finally {
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException ignored) {}
+            }
+        }
     }
 
     @Override
