@@ -117,7 +117,7 @@ public class CheckEmailFragment extends FragmentBase implements
                 String provider = user.getProviderId();
 
                 mEmailEditText.setText(email);
-                //noinspection ConstantConditions
+                //noinspection ConstantConditions new user
                 if (provider == null) {
                     mListener.onNewUser(new User.Builder(EmailAuthProvider.PROVIDER_ID, email)
                             .setName(user.getName())
@@ -148,13 +148,6 @@ public class CheckEmailFragment extends FragmentBase implements
         }
     }
 
-    private void validateAndProceed() {
-        String email = mEmailEditText.getText().toString();
-        if (mEmailFieldValidator.validate(email)) {
-            mHandler.fetchProvider(email);
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         mHandler.onActivityResult(requestCode, resultCode, data);
@@ -174,5 +167,12 @@ public class CheckEmailFragment extends FragmentBase implements
     @Override
     public void onDonePressed() {
         validateAndProceed();
+    }
+
+    private void validateAndProceed() {
+        String email = mEmailEditText.getText().toString();
+        if (mEmailFieldValidator.validate(email)) {
+            mHandler.fetchProvider(email);
+        }
     }
 }

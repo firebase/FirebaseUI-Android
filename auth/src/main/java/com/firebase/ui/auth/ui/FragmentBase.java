@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class FragmentBase extends Fragment {
+    private HelperActivityBase mActivity;
     private ProgressDialogHolder mProgressDialogHolder;
 
     @Override
@@ -21,6 +22,7 @@ public class FragmentBase extends Fragment {
         if (!(getActivity() instanceof HelperActivityBase)) {
             throw new IllegalStateException("Cannot use this fragment without the helper activity");
         }
+        mActivity = (HelperActivityBase) getActivity();
 
         mProgressDialogHolder = new ProgressDialogHolder(new ContextThemeWrapper(
                 getContext(), getFlowParams().themeId));
@@ -33,13 +35,13 @@ public class FragmentBase extends Fragment {
     }
 
     public FlowParameters getFlowParams() {
-        return ((HelperActivityBase) getActivity()).getFlowParams();
+        return mActivity.getFlowParams();
     }
 
     public void startSaveCredentials(
             FirebaseUser firebaseUser,
             IdpResponse response,
             @Nullable String password) {
-        ((HelperActivityBase) getActivity()).startSaveCredentials(firebaseUser, response, password);
+        mActivity.startSaveCredentials(firebaseUser, response, password);
     }
 }

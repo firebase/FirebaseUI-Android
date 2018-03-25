@@ -107,9 +107,8 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
                 this, R.string.fui_progress_dialog_signing_in) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                startSaveCredentials(mHandler.getCurrentUser(),
-                        response,
-                        mHandler.getPendingPassword());
+                startSaveCredentials(
+                        mHandler.getCurrentUser(), response, mHandler.getPendingPassword());
             }
 
             @Override
