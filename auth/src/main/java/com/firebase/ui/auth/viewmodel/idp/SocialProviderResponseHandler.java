@@ -82,6 +82,8 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
                                                 setResult(Resource.<IdpResponse>forFailure(e));
                                             }
                                         });
+                            } else {
+                                setResult(Resource.<IdpResponse>forFailure(e));
                             }
                         } else {
                             setResult(Resource.<IdpResponse>forFailure(e));
