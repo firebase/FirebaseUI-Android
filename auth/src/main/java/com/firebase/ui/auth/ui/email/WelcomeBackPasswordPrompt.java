@@ -52,17 +52,14 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class WelcomeBackPasswordPrompt extends AppCompatBase
         implements View.OnClickListener, ImeHelper.DonePressedListener {
-    private String mEmail;
-    private TextInputLayout mPasswordLayout;
-    private EditText mPasswordField;
     private IdpResponse mIdpResponse;
-
     private WelcomeBackPasswordHandler mHandler;
 
+    private TextInputLayout mPasswordLayout;
+    private EditText mPasswordField;
+
     public static Intent createIntent(
-            Context context,
-            FlowParameters flowParams,
-            IdpResponse response) {
+            Context context, FlowParameters flowParams, IdpResponse response) {
         return createBaseIntent(context, WelcomeBackPasswordPrompt.class, flowParams)
                 .putExtra(ExtraConstants.IDP_RESPONSE, response);
     }
@@ -76,7 +73,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         mIdpResponse = IdpResponse.fromResultIntent(getIntent());
-        mEmail = mIdpResponse.getEmail();
+        String email = mIdpResponse.getEmail();
 
         mPasswordLayout = findViewById(R.id.password_layout);
         mPasswordField = findViewById(R.id.password);
@@ -84,13 +81,14 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         ImeHelper.setImeOnDoneListener(mPasswordField, this);
 
         // Create welcome back text with email bolded.
-        String bodyText = getString(R.string.fui_welcome_back_password_prompt_body, mEmail);
+        String bodyText =
+                getString(R.string.fui_welcome_back_password_prompt_body, email);
 
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(bodyText);
-        int emailStart = bodyText.indexOf(mEmail);
+        int emailStart = bodyText.indexOf(email);
         spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD),
                 emailStart,
-                emailStart + mEmail.length(),
+                emailStart + email.length(),
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
         TextView bodyTextView = findViewById(R.id.welcome_back_password_body);
@@ -102,14 +100,16 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
 
         // Initialize ViewModel with arguments
         mHandler = ViewModelProviders.of(this).get(WelcomeBackPasswordHandler.class);
-        mHandler.init(getFlowHolder().getArguments());
+        mHandler.init(getFlowParams());
 
         // Observe the state of the main auth operation
         mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
                 this, R.string.fui_progress_dialog_signing_in) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                startSaveCredentials(mHandler.getCurrentUser(), mHandler.getPendingPassword(), response);
+                startSaveCredentials(mHandler.getCurrentUser(),
+                        response,
+                        mHandler.getPendingPassword());
             }
 
             @Override
@@ -132,7 +132,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         startActivity(RecoverPasswordActivity.createIntent(
                 this,
                 getFlowParams(),
-                mEmail));
+                mIdpResponse.getEmail()));
     }
 
     @Override
@@ -141,10 +141,10 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
     }
 
     private void validateAndSignIn() {
-        validateAndSignIn(mEmail, mPasswordField.getText().toString());
+        validateAndSignIn(mPasswordField.getText().toString());
     }
 
-    private void validateAndSignIn(final String email, final String password) {
+    private void validateAndSignIn(String password) {
         // Check for null or empty password
         if (TextUtils.isEmpty(password)) {
             mPasswordLayout.setError(getString(R.string.fui_required_field));
@@ -154,7 +154,7 @@ public class WelcomeBackPasswordPrompt extends AppCompatBase
         }
 
         AuthCredential authCredential = ProviderUtils.getAuthCredential(mIdpResponse);
-        mHandler.startSignIn(email, password, mIdpResponse, authCredential);
+        mHandler.startSignIn(mIdpResponse.getEmail(), password, mIdpResponse, authCredential);
     }
 
     @Override
