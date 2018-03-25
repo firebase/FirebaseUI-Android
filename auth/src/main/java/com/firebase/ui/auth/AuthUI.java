@@ -40,8 +40,11 @@ import com.firebase.ui.auth.util.Preconditions;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialRequest;
+import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -50,6 +53,8 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -260,6 +265,75 @@ public class AuthUI {
     @StyleRes
     public static int getDefaultTheme() {
         return R.style.FirebaseUI;
+    }
+
+    public Task<AuthResult> silentSignIn(@NonNull final Context context, List<IdpConfig> configs) {
+        if (configs.isEmpty()) {
+            throw new IllegalArgumentException("Configs must not be empty.");
+        }
+        for (IdpConfig config : configs) {
+            String provider = config.getProviderId();
+            if (!provider.equals(EmailAuthProvider.PROVIDER_ID)
+                    && !provider.equals(GoogleAuthProvider.PROVIDER_ID)) {
+                throw new IllegalArgumentException("Only email and google providers are supported " +
+                        "for silent sign-in.");
+            }
+        }
+
+        if (mAuth.getCurrentUser() != null) {
+            return Tasks.forException(new IllegalStateException("User already signed in!"));
+        }
+
+        final IdpConfig google =
+                ProviderUtils.getConfigFromIdps(configs, GoogleAuthProvider.PROVIDER_ID);
+        final IdpConfig email =
+                ProviderUtils.getConfigFromIdps(configs, EmailAuthProvider.PROVIDER_ID);
+
+        GoogleSignInOptions googleOptions = null;
+        if (google != null) {
+            GoogleSignInAccount last = GoogleSignIn.getLastSignedInAccount(context);
+            if (last != null && last.getIdToken() != null) {
+                return mAuth.signInWithCredential(GoogleAuthProvider.getCredential(
+                        last.getIdToken(), null));
+            }
+
+            googleOptions = google.getParams()
+                    .getParcelable(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS);
+        }
+
+        final GoogleSignInOptions finalGoogleOptions = googleOptions;
+        return GoogleApiUtils.getCredentialsClient(context)
+                .request(new CredentialRequest.Builder()
+                        .setPasswordLoginSupported(email != null)
+                        .setAccountTypes(google == null ? null :
+                                ProviderUtils.providerIdToAccountType(GoogleAuthProvider.PROVIDER_ID))
+                        .build())
+                .continueWithTask(new Continuation<CredentialRequestResponse, Task<AuthResult>>() {
+                    @Override
+                    public Task<AuthResult> then(@NonNull Task<CredentialRequestResponse> task) {
+                        Credential credential = task.getResult().getCredential();
+                        String email = credential.getId();
+                        String password = credential.getPassword();
+
+                        if (TextUtils.isEmpty(password)) {
+                            return GoogleSignIn.getClient(context,
+                                    new GoogleSignInOptions.Builder(finalGoogleOptions)
+                                            .setAccountName(email)
+                                            .build())
+                                    .silentSignIn()
+                                    .continueWithTask(new Continuation<GoogleSignInAccount, Task<AuthResult>>() {
+                                        @Override
+                                        public Task<AuthResult> then(@NonNull Task<GoogleSignInAccount> task) {
+                                            AuthCredential authCredential = GoogleAuthProvider.getCredential(
+                                                    task.getResult().getIdToken(), null);
+                                            return mAuth.signInWithCredential(authCredential);
+                                        }
+                                    });
+                        } else {
+                            return mAuth.signInWithEmailAndPassword(email, password);
+                        }
+                    }
+                });
     }
 
     /**
