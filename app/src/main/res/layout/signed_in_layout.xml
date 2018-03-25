@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
-                android:text="@string/link_account" />
+                android:text="@string/options_link_account" />
 
         </LinearLayout>
 

@@ -6,8 +6,8 @@ import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.data.TaskFailureLogger;
+import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 public final class AccountLinker {
     private static final String TAG = "AccountLinker";
 
-    private final HelperActivityBase mActivity;
+    private final AuthViewModelBase<?> mHandler;
     private final IdpResponse mIdpResponse;
 
     /** The credential of the user's existing account. */
@@ -40,11 +40,11 @@ public final class AccountLinker {
 
     private final Task<AuthResult> mTask;
 
-    private AccountLinker(HelperActivityBase activity,
+    private AccountLinker(AuthViewModelBase<?> handler,
                           IdpResponse response,
                           @NonNull AuthCredential existingCredential,
                           @Nullable AuthCredential newCredential) {
-        mActivity = activity;
+        mHandler = handler;
         mIdpResponse = response;
         mExistingCredential = existingCredential;
         mNewCredential = newCredential;
@@ -52,24 +52,24 @@ public final class AccountLinker {
         mTask = start();
     }
 
-    public static Task<AuthResult> linkWithCurrentUser(HelperActivityBase activity,
+    public static Task<AuthResult> linkWithCurrentUser(AuthViewModelBase<?> handler,
                                                        IdpResponse response,
                                                        AuthCredential existingCredential) {
-        return new AccountLinker(activity, response, existingCredential, null).mTask;
+        return new AccountLinker(handler, response, existingCredential, null).mTask;
     }
 
-    public static Task<AuthResult> linkToNewUser(HelperActivityBase activity,
+    public static Task<AuthResult> linkToNewUser(AuthViewModelBase<?> handler,
                                                  IdpResponse response,
                                                  AuthCredential existingCredential,
                                                  AuthCredential newCredential) {
-        return new AccountLinker(activity, response, existingCredential, newCredential).mTask;
+        return new AccountLinker(handler, response, existingCredential, newCredential).mTask;
     }
 
     private Task<AuthResult> start() {
-        FirebaseUser currentUser = mActivity.getAuthHelper().getCurrentUser();
+        FirebaseUser currentUser = mHandler.getCurrentUser();
         if (currentUser == null) {
             // The user has an existing account and is trying to log in with a new provider
-            return mActivity.getAuthHelper().getFirebaseAuth()
+            return mHandler.getAuth()
                     .signInWithCredential(mExistingCredential)
                     .continueWithTask(new NoCurrentUser())
                     .addOnFailureListener(
@@ -108,21 +108,21 @@ public final class AccountLinker {
         @Override
         public Task<AuthResult> then(@NonNull final Task<AuthResult> task) {
             if (task.getException() instanceof FirebaseAuthUserCollisionException
-                    && mActivity.getAuthHelper().canLinkAccounts()) {
+                    && mHandler.canLinkAccounts()) {
                 mIdpResponse.getUser()
-                        .setPrevUid(mActivity.getAuthHelper().getUidForAccountLinking());
+                        .setPrevUid(mHandler.getUidForAccountLinking());
 
                 // Since we still want the user to be able to sign in even though
                 // they have an existing account, we are going to save the uid of the
                 // current user, log them out, and then sign in with the new credential.
                 Task<AuthResult> signInTask = ManualMergeUtils.injectSignInTaskBetweenDataTransfer(
-                        mActivity,
+                        mHandler.getApplication(),
                         mIdpResponse,
-                        mActivity.getFlowParams(),
+                        mHandler.getArguments(),
                         new Callable<Task<AuthResult>>() {
                             @Override
                             public Task<AuthResult> call() {
-                                return mActivity.getAuthHelper().getFirebaseAuth()
+                                return mHandler.getAuth()
                                         .signInWithCredential(mExistingCredential)
                                         .continueWithTask(new ProfileMerger(mIdpResponse))
                                         .continueWithTask(new ExceptionWrapper(task));
@@ -141,7 +141,7 @@ public final class AccountLinker {
                     return signInTask.continueWithTask(new Continuation<AuthResult, Task<AuthResult>>() {
                         @Override
                         public Task<AuthResult> then(@NonNull Task<AuthResult> task) {
-                            return mActivity.getAuthHelper().getCurrentUser()
+                            return mHandler.getCurrentUser()
                                     .linkWithCredential(mNewCredential)
                                     .continueWithTask(new ProfileMerger(mIdpResponse))
                                     .continueWithTask(new ExceptionWrapper(task))

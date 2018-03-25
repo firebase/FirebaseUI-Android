@@ -37,7 +37,7 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
         return mAuth.getCurrentUser();
     }
 
-    protected FirebaseAuth getAuth() {
+    public FirebaseAuth getAuth() {
         return mAuth;
     }
 
@@ -47,6 +47,15 @@ public abstract class AuthViewModelBase<T> extends OperableViewModel<FlowParamet
 
     protected CredentialsClient getCredentialsClient() {
         return mCredentialsClient;
+    }
+
+    public boolean canLinkAccounts() {
+        return getArguments().accountLinkingEnabled && getCurrentUser() != null;
+    }
+
+    @Nullable
+    public String getUidForAccountLinking() {
+        return canLinkAccounts() ? getCurrentUser().getUid() : null;
     }
 
     @VisibleForTesting

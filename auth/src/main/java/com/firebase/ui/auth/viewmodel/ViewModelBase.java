@@ -26,7 +26,7 @@ public abstract class ViewModelBase<T> extends AndroidViewModel {
 
     protected void onCreate() {}
 
-    protected T getArguments() {
+    public T getArguments() {
         return mArguments;
     }
 

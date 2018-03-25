@@ -87,6 +87,7 @@ public class SignedInActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         populateProfile();
         populateIdpToken(response);
+        populatePrevUid(response);
     }
 
     @Override
@@ -221,8 +222,8 @@ public class SignedInActivity extends AppCompatActivity {
         }
     }
 
-    private void populatePrevUid() {
-        String prevUid = mIdpResponse == null ? null : mIdpResponse.getPrevUid();
+    private void populatePrevUid(IdpResponse response) {
+        String prevUid = response == null ? null : response.getPrevUid();
 
         if (prevUid == null) {
             findViewById(R.id.prev_uid_layout).setVisibility(View.GONE);

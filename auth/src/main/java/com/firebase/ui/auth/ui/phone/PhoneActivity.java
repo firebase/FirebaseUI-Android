@@ -14,6 +14,7 @@
 
 package com.firebase.ui.auth.ui.phone;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,6 +41,7 @@ import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.util.accountlink.AccountLinker;
 import com.firebase.ui.auth.util.accountlink.ManualMergeUtils;
+import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -357,9 +359,13 @@ public class PhoneActivity extends AppCompatBase {
             return;
         }
 
+        SocialProviderResponseHandler handler =
+                ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
+        handler.init(getFlowParams());
+
         Task<AuthResult> signInTask;
         if (getAuthHelper().canLinkAccounts()) {
-            signInTask = AccountLinker.linkWithCurrentUser(this, response, credential);
+            signInTask = AccountLinker.linkWithCurrentUser(handler, response, credential);
         } else {
             signInTask = getAuthHelper().getFirebaseAuth().signInWithCredential(credential);
         }
