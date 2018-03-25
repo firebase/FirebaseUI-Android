@@ -20,14 +20,10 @@ public class FragmentBase extends Fragment {
         return ((HelperActivityBase) getActivity()).getFlowParams();
     }
 
-    public ProgressDialogHolder getDialogHolder() {
-        return ((HelperActivityBase) getActivity()).getDialogHolder();
-    }
-
     public void startSaveCredentials(
             FirebaseUser firebaseUser,
             @Nullable String password,
             IdpResponse response) {
-        ((HelperActivityBase) getActivity()).startSaveCredentials(firebaseUser, password, response);
+        ((HelperActivityBase) getActivity()).startSaveCredentials(firebaseUser, response, password);
     }
 }

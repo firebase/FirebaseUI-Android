@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,13 +17,11 @@ import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.util.ui.fieldvalidators.BaseValidator;
@@ -32,7 +29,8 @@ import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.NoOpValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
-import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
+import com.firebase.ui.auth.viewmodel.idp.EmailProviderResponseHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
@@ -45,7 +43,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         View.OnClickListener, View.OnFocusChangeListener, ImeHelper.DonePressedListener {
     public static final String TAG = "RegisterEmailFragment";
 
-    private SocialProviderResponseHandler mHandler;
+    private EmailProviderResponseHandler mHandler;
 
     private EditText mEmailEditText;
     private EditText mNameEditText;
@@ -76,34 +74,27 @@ public class RegisterEmailFragment extends FragmentBase implements
             mUser = User.getUser(savedInstanceState);
         }
 
-        mHandler = ViewModelProviders.of(this).get(SocialProviderResponseHandler.class);
+        mHandler = ViewModelProviders.of(this).get(EmailProviderResponseHandler.class);
         mHandler.init(getFlowParams());
-        mHandler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
+                (HelperActivityBase) getActivity(), R.string.fui_progress_dialog_signing_in) {
             @Override
-            public void onChanged(Resource<IdpResponse> resource) {
-                if (resource.getState() == State.LOADING) {
-                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_signing_in);
-                    return;
-                }
-                getDialogHolder().dismissDialog();
+            protected void onSuccess(@NonNull IdpResponse response) {
+                startSaveCredentials(mHandler.getCurrentUser(), null, response);
+            }
 
-                if (resource.getState() == State.SUCCESS) {
-                    startSaveCredentials(mHandler.getCurrentUser(), null, resource.getValue());
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                if (e instanceof FirebaseAuthWeakPasswordException) {
+                    mPasswordInput.setError(getResources().getQuantityString(
+                            R.plurals.fui_error_weak_password,
+                            R.integer.fui_min_password_length));
+                } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                    mEmailInput.setError(getString(R.string.fui_invalid_email_address));
                 } else {
-                    Exception e = resource.getException();
-                    if (!FlowUtils.handleError(RegisterEmailFragment.this, e)) {
-                        if (e instanceof FirebaseAuthWeakPasswordException) {
-                            mPasswordInput.setError(getResources().getQuantityString(
-                                    R.plurals.fui_error_weak_password,
-                                    R.integer.fui_min_password_length));
-                        } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                            mEmailInput.setError(getString(R.string.fui_invalid_email_address));
-                        } else {
-                            // General error message, this branch should not be invoked but
-                            // covers future API changes
-                            mEmailInput.setError(getString(R.string.fui_email_account_creation_error));
-                        }
-                    }
+                    // General error message, this branch should not be invoked but
+                    // covers future API changes
+                    mEmailInput.setError(getString(R.string.fui_email_account_creation_error));
                 }
             }
         });
@@ -250,7 +241,8 @@ public class RegisterEmailFragment extends FragmentBase implements
                             .setName(name)
                             .setPhotoUri(mUser.getPhotoUri())
                             .build())
-                    .build());
+                    .build(),
+                    password);
         }
     }
 }

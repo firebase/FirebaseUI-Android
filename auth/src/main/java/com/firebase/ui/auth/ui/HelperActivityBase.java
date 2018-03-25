@@ -78,8 +78,8 @@ public class HelperActivityBase extends AppCompatActivity {
 
     public void startSaveCredentials(
             FirebaseUser firebaseUser,
-            @Nullable String password,
-            IdpResponse response) {
+            IdpResponse response,
+            @Nullable String password) {
         // Build credential
         String accountType = ProviderUtils.idpResponseToAccountType(response);
         Credential credential = CredentialsUtils.buildCredential(

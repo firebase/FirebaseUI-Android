@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.phone;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,9 +19,11 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
 
 import java.util.Locale;
 
@@ -43,7 +44,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     public static CheckPhoneNumberFragment newInstance(Bundle params) {
         CheckPhoneNumberFragment fragment = new CheckPhoneNumberFragment();
         Bundle args = new Bundle();
-        args.putBundle(ExtraConstants.EXTRA_PARAMS, params);
+        args.putBundle(ExtraConstants.PARAMS, params);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,10 +53,17 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = ViewModelProviders.of(getActivity()).get(CheckPhoneNumberHandler.class);
-        mHandler.getPhoneNumberListener().observe(this, new Observer<PhoneNumber>() {
+        mHandler.getPhoneNumberListener().observe(this, new ResourceObserver<PhoneNumber>(
+                (HelperActivityBase) getActivity(),
+                R.string.fui_progress_dialog_checking_accounts) {
             @Override
-            public void onChanged(@Nullable PhoneNumber number) {
+            protected void onSuccess(@NonNull PhoneNumber number) {
                 start(number);
+            }
+
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                // Just let the user enter their data
             }
         });
     }
@@ -115,7 +123,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         // Check for phone
         // It is assumed that the phone number that are being wired in via Credential Selector
         // are e164 since we store it.
-        Bundle params = getArguments().getBundle(ExtraConstants.EXTRA_PARAMS);
+        Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
         String phone = null;
         String countryCode = null;
         String nationalNumber = null;

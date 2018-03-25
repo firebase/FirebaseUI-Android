@@ -1,7 +1,7 @@
 package com.firebase.ui.auth.ui.email;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,13 +15,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.firebase.ui.auth.R;
-import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
+import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.firebase.auth.EmailAuthProvider;
 
 /**
@@ -110,18 +110,11 @@ public class CheckEmailFragment extends FragmentBase implements
         }
         mListener = (CheckEmailListener) getActivity();
 
-        mHandler.getOperation().observe(this, new Observer<Resource<User>>() {
+        mHandler.getOperation().observe(this, new ResourceObserver<User>(
+                (HelperActivityBase) getActivity(),
+                R.string.fui_progress_dialog_checking_accounts) {
             @Override
-            public void onChanged(Resource<User> resource) {
-                if (resource.getState() == State.LOADING) {
-                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_checking_accounts);
-                    return;
-                }
-                getDialogHolder().dismissDialog();
-
-                if (resource.getState() != State.SUCCESS) { return; }
-                User user = resource.getValue();
-
+            protected void onSuccess(@NonNull User user) {
                 String email = user.getEmail();
                 String provider = user.getProviderId();
 
@@ -137,6 +130,11 @@ public class CheckEmailFragment extends FragmentBase implements
                 } else {
                     mListener.onExistingIdpUser(user);
                 }
+            }
+
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                // Just let the user enter their data
             }
         });
 
@@ -157,6 +155,11 @@ public class CheckEmailFragment extends FragmentBase implements
         if (mEmailFieldValidator.validate(email)) {
             mHandler.fetchProvider(email);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mHandler.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

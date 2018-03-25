@@ -15,59 +15,37 @@ import com.google.firebase.auth.FirebaseUser;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class CredentialsUtils {
-
     /**
-     * Build a credential for the specified {@link FirebaseUser} with optional
-     * password and {@link IdpResponse}.
-     *
-     * See {@link #buildCredential(String, String, String, String, String, String)}.
+     * Build a credential for the specified {@link FirebaseUser} with optional password and {@link
+     * IdpResponse}.
+     * <p>
+     * If the credential cannot be built (for example, empty email) then will return {@code null}.
      */
     @Nullable
     public static Credential buildCredential(@NonNull FirebaseUser user,
                                              @Nullable String password,
                                              @Nullable String accountType) {
-        return buildCredential(
-                user.getEmail(),
-                password,
-                user.getPhoneNumber(),
-                user.getDisplayName(),
-                user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null,
-                accountType);
-    }
+        String email = user.getEmail();
+        String phone = user.getPhoneNumber();
+        String profilePictureUri =
+                user.getPhotoUrl() == null ? null : user.getPhotoUrl().toString();
 
-    /**
-     * Build the appropriate credential for the user information passed.
-     *
-     * If the credential cannot be built (for example, empty email) then
-     * will return {@code null}.
-     */
-    @Nullable
-    private static Credential buildCredential(@Nullable String email,
-                                              @Nullable String password,
-                                              @Nullable String phone,
-                                              @Nullable String name,
-                                              @Nullable String profilePictureUri,
-                                              @Nullable String accountType) {
-        if (TextUtils.isEmpty(email) && TextUtils.isEmpty(phone)) {
+        if (TextUtils.isEmpty(email) && TextUtils.isEmpty(phone)
+                || password == null && accountType == null) {
             return null;
         }
 
         Credential.Builder builder =
-                new Credential.Builder(TextUtils.isEmpty(email) ? phone : email);
+                new Credential.Builder(TextUtils.isEmpty(email) ? phone : email)
+                        .setName(user.getDisplayName())
+                        .setProfilePictureUri(Uri.parse(profilePictureUri));
 
-        builder.setName(name);
-        builder.setProfilePictureUri(Uri.parse(profilePictureUri));
-
-        builder.setPassword(password);
-        if (password == null) {
-            if (accountType != null) {
-                builder.setAccountType(accountType);
-            } else {
-                return null;
-            }
+        if (TextUtils.isEmpty(password)) {
+            builder.setAccountType(accountType);
+        } else {
+            builder.setPassword(password);
         }
 
         return builder.build();
     }
-
 }

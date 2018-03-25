@@ -9,8 +9,6 @@ import android.support.annotation.Nullable;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.IntentRequiredException;
 import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
-import com.firebase.ui.auth.data.model.UserCancellationException;
-import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 
 public final class FlowUtils {
@@ -30,10 +28,6 @@ public final class FlowUtils {
         }
 
         return true;
-    }
-
-    public static boolean handleError(FragmentBase fragment, Exception e) {
-        return handleError(((HelperActivityBase) fragment.getActivity()), e);
     }
 
     private static void startIntentSenderForResult(HelperActivityBase activity,

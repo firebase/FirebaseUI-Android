@@ -71,7 +71,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = ViewModelProviders.of(getActivity()).get(CheckPhoneNumberHandler.class);
-        mPhoneNumber = getArguments().getString(ExtraConstants.EXTRA_PHONE);
+        mPhoneNumber = getArguments().getString(ExtraConstants.PHONE);
     }
 
     @Nullable

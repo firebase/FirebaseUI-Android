@@ -17,8 +17,6 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
-import com.firebase.ui.auth.viewmodel.SingleLiveEvent;
-import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.auth.api.credentials.HintRequest;
@@ -32,10 +30,8 @@ import java.util.concurrent.TimeUnit;
 public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
     private static final long AUTO_RETRIEVAL_TIMEOUT_SECONDS = 120;
 
-    private SocialProviderResponseHandler mSignInHandler;
-
-    private MutableLiveData<PhoneNumber> mPhoneNumberListener = new SingleLiveEvent<>();
-    private MutableLiveData<Exception> mVerificationErrorListener = new SingleLiveEvent<>();
+    private MutableLiveData<Resource<PhoneNumber>> mPhoneNumberListener = new MutableLiveData<>();
+    private MutableLiveData<Exception> mVerificationErrorListener = new MutableLiveData<>();
 
     private String mPhoneNumber;
     private String mVerificationId;
@@ -45,16 +41,8 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
         super(application);
     }
 
-    public void setProvidersHandler(SocialProviderResponseHandler handler) {
-        mSignInHandler = handler;
-    }
-
-    public LiveData<PhoneNumber> getPhoneNumberListener() {
+    public LiveData<Resource<PhoneNumber>> getPhoneNumberListener() {
         return mPhoneNumberListener;
-    }
-
-    public LiveData<Exception> getVerificationErrorListener() {
-        return mVerificationErrorListener;
     }
 
     public void fetchCredential() {
@@ -66,7 +54,8 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
                     RequestCodes.CRED_HINT
             )));
         } else {
-            mPhoneNumberListener.setValue(PhoneNumberUtils.getPhoneNumber(mPhoneNumber));
+            mPhoneNumberListener.setValue(Resource.forSuccess(
+                    PhoneNumberUtils.getPhoneNumber(mPhoneNumber)));
         }
     }
 
@@ -77,7 +66,8 @@ public class CheckPhoneNumberHandler extends AuthViewModelBase<IdpResponse> {
         String formattedPhone = PhoneNumberUtils.formatUsingCurrentCountry(
                 credential.getId(), getApplication());
         if (formattedPhone != null) {
-            mPhoneNumberListener.setValue(PhoneNumberUtils.getPhoneNumber(formattedPhone));
+            mPhoneNumberListener.setValue(Resource.forSuccess(
+                    PhoneNumberUtils.getPhoneNumber(formattedPhone)));
         }
     }
 

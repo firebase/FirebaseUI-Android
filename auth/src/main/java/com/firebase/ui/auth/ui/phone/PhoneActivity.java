@@ -14,7 +14,6 @@
 
 package com.firebase.ui.auth.ui.phone;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -27,14 +26,10 @@ import android.support.design.widget.TextInputLayout;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
-import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
-import com.firebase.ui.auth.util.ui.FlowUtils;
-import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.google.firebase.auth.FirebaseAuthException;
 
 /**
@@ -56,39 +51,30 @@ public class PhoneActivity extends AppCompatBase {
         final CheckPhoneNumberHandler handler =
                 ViewModelProviders.of(this).get(CheckPhoneNumberHandler.class);
         handler.init(getFlowParams());
-        handler.setProvidersHandler(
-                ViewModelProviders.of(this).get(SocialProviderResponseHandler.class));
-        handler.getVerificationErrorListener().observe(this, new Observer<Exception>() {
+//        handler.getVerificationErrorListener().observe(this, new Observer<Exception>() {
+//            @Override
+//            public void onChanged(@Nullable Exception e) {
+//                if (e instanceof PhoneNumberVerificationRequiredException) {
+//                    // Ignore if resending verification code
+//                    if (getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG) == null) {
+//                        showSubmitCodeFragment(
+//                                ((PhoneNumberVerificationRequiredException) e).getPhoneNumber());
+//                    }
+//                } else {
+//                    handleError(e);
+//                }
+//            }
+//        });
+        handler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
+                this, R.string.fui_progress_dialog_loading) {
             @Override
-            public void onChanged(@Nullable Exception e) {
-                if (e instanceof PhoneNumberVerificationRequiredException) {
-                    // Ignore if resending verification code
-                    if (getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG) == null) {
-                        showSubmitCodeFragment(
-                                ((PhoneNumberVerificationRequiredException) e).getPhoneNumber());
-                    }
-                } else {
-                    handleError(e);
-                }
+            protected void onSuccess(@NonNull IdpResponse response) {
+                startSaveCredentials(handler.getCurrentUser(), response, null);
             }
-        });
-        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
-            @Override
-            public void onChanged(Resource<IdpResponse> resource) {
-                if (resource.getState() == State.LOADING) {
-                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
-                    return;
-                }
-                getDialogHolder().dismissDialog();
 
-                if (resource.getState() == State.SUCCESS) {
-                    startSaveCredentials(handler.getCurrentUser(), null, resource.getValue());
-                } else {
-                    Exception e = resource.getException();
-                    if (!FlowUtils.handleError(PhoneActivity.this, e)) {
-                        handleError(e);
-                    }
-                }
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                handleError(e);
             }
         });
 

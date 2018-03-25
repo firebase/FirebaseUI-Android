@@ -15,16 +15,10 @@ import com.firebase.ui.auth.util.CredentialsUtils;
 import com.firebase.ui.auth.viewmodel.AuthViewModelBase;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.credentials.Credentials;
 import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.PhoneAuthProvider;
-
-import java.util.List;
 
 /**
  * ViewModel for initiating saves to the Credentials API (SmartLock).
@@ -75,22 +69,6 @@ public class SmartLockHandler extends AuthViewModelBase<Void> {
         }
 
         getCredentialsClient().save(credential)
-                .continueWithTask(new Continuation<Void, Task<Void>>() {
-                    @Override
-                    public Task<Void> then(@NonNull Task<Void> task) {
-                        FirebaseUser user = getCurrentUser();
-                        if (user == null) { return task; }
-
-                        List<String> providers = user.getProviders();
-                        if (providers.contains(EmailAuthProvider.PROVIDER_ID)
-                                && providers.contains(PhoneAuthProvider.PROVIDER_ID)) {
-                            return Credentials.getClient(getApplication())
-                                    .delete(new Credential.Builder(user.getPhoneNumber()).build());
-                        } else {
-                            return task;
-                        }
-                    }
-                })
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
