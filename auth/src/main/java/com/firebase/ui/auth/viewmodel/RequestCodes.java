@@ -37,8 +37,11 @@ public final class RequestCodes {
     /** Request code for retrieving a Google credential. */
     public static final int GOOGLE_PROVIDER = 110;
 
+    /** Request code for retrieving a GitHub credential. */
+    public static final int GITHUB_PROVIDER = 111;
+
     /** Request code for checking if a valid version of Play Services exists. */
-    public static final int PLAY_SERVICES_CHECK = 111;
+    public static final int PLAY_SERVICES_CHECK = 112;
 
     private RequestCodes() {
         throw new AssertionError("No instance for you!");

@@ -31,6 +31,7 @@ public final class ExtraConstants {
     public static final String EXTRA_REQUIRE_NAME = "extra_require_name";
     public static final String EXTRA_GOOGLE_SIGN_IN_OPTIONS = "extra_google_sign_in_options";
     public static final String EXTRA_FACEBOOK_PERMISSIONS = "extra_facebook_permissions";
+    public static final String EXTRA_GITHUB_PERMISSIONS = "extra_github_permissions";
 
     public static final String EXTRA_PARAMS = "extra_params";
     public static final String EXTRA_PHONE = "extra_phone_number";

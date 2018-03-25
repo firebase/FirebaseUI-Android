@@ -50,6 +50,10 @@ dependencies {
     implementation "com.android.support:customtabs:$supportLibraryVersion"
     compileOnly("com.twitter.sdk.android:twitter-core:3.1.1@aar") { transitive = true }
 
+    // Retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.4.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.4.0'
+
     testImplementation 'junit:junit:4.12'
     //noinspection GradleDynamicVersion
     testImplementation 'org.mockito:mockito-core:2.15.+'

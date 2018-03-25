@@ -39,6 +39,7 @@ import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.EmailSignInHandler;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
+import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.PhoneSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
@@ -49,6 +50,7 @@ import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
@@ -147,6 +149,13 @@ public class AuthMethodPickerActivity extends AppCompatBase {
                     provider = twitter;
 
                     buttonLayout = R.layout.fui_idp_button_twitter;
+                    break;
+                case GithubAuthProvider.PROVIDER_ID:
+                    GitHubSignInHandler github = supplier.get(GitHubSignInHandler.class);
+                    github.init(idpConfig);
+                    provider = github;
+
+                    buttonLayout = R.layout.fui_idp_button_github;
                     break;
                 case EmailAuthProvider.PROVIDER_ID:
                     EmailSignInHandler email = supplier.get(EmailSignInHandler.class);

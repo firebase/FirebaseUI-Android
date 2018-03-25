@@ -19,6 +19,7 @@
     <string name="providers_header">Auth providers</string>
     <string name="providers_google">Google</string>
     <string name="providers_facebook">Facebook</string>
+    <string name="providers_github">GitHub</string>
     <string name="providers_twitter">Twitter</string>
     <string name="providers_email">Email</string>
     <string name="providers_phone">Phone</string>
@@ -50,6 +51,10 @@
     <string name="facebook_permission_friends">Friends</string>
     <string name="facebook_permission_photos">Photos</string>
 
+    <string name="github_permissions_header">Example extra GitHub scopes</string>
+    <string name="github_permission_repo">Repo</string>
+    <string name="github_permission_gist">Gist</string>
+
     <string name="options_header">Other Options</string>
     <string name="options_enable_credential_selector">Enable Smart Lock\'s credential selector</string>
     <string name="options_enable_hint_selector">Enable Smart Lock\'s hint selector</string>
@@ -60,6 +65,7 @@
     <string name="google_label_missing_config">Google configuration missing</string>
     <string name="facebook_label_missing_config">Facebook configuration missing</string>
     <string name="twitter_label_missing_config">Twitter configuration missing</string>
+    <string name="github_label_missing_config">GitHub configuration missing</string>
 
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>

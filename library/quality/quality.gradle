@@ -76,6 +76,7 @@ android {
         disable 'WrongConstant', // TODO it's being unruly, figure that out later
                 'ObsoleteLintCustomCheck', // TODO ButterKnife will fix this in v9.0
                 'IconExpectedSize',
+                'MissingTranslation', // TODO remove in future PR
                 'NewerVersionAvailable', 'GradleDependency' // For reproducible builds
 
         baseline file("$configDir/lint-baseline.xml")

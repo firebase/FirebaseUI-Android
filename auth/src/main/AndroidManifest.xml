@@ -30,6 +30,32 @@
             android:theme="@style/FirebaseUI.Transparent" />
 
         <activity
+            android:name=".ui.credentials.CredentialSaveActivity"
+            android:label=""
+            android:exported="false"
+            android:theme="@style/FirebaseUI.Transparent" />
+
+        <activity
+            android:name=".ui.provider.GitHubLoginActivity"
+            android:label=""
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:launchMode="singleTop"
+            android:theme="@style/FirebaseUI.Transparent">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="authorize"
+                    android:scheme="@string/project_id" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
             android:name=".ui.email.RecoverPasswordActivity"
             android:label="@string/fui_title_recover_password_activity"
             android:exported="false"
@@ -69,12 +95,6 @@
             android:label="@string/app_name"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             tools:ignore="MissingRegistered" />
-
-        <activity
-            android:name=".ui.credentials.CredentialSaveActivity"
-            android:label=""
-            android:exported="false"
-            android:theme="@style/FirebaseUI.Transparent" />
 
         <activity
             android:name="com.facebook.CustomTabActivity"

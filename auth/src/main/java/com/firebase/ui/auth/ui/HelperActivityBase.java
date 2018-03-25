@@ -45,8 +45,8 @@ public class HelperActivityBase extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mAuthHelper = new AuthHelper(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
     }

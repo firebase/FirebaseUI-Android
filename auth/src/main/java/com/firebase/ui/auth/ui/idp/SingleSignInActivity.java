@@ -17,6 +17,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
+import com.firebase.ui.auth.data.remote.GitHubSignInHandler;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.HelperActivityBase;
@@ -26,6 +27,7 @@ import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
@@ -73,6 +75,11 @@ public class SingleSignInActivity extends HelperActivityBase {
                 TwitterSignInHandler twitter = supplier.get(TwitterSignInHandler.class);
                 twitter.init(null);
                 mProvider = twitter;
+                break;
+            case GithubAuthProvider.PROVIDER_ID:
+                GitHubSignInHandler github = supplier.get(GitHubSignInHandler.class);
+                github.init(providerConfig);
+                mProvider = github;
                 break;
             default:
                 throw new IllegalStateException("Invalid provider id: " + provider);

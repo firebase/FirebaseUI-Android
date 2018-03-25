@@ -230,4 +230,10 @@
         <item name="android:textColor">#FFFFFFFF</item>
     </style>
 
+    <style name="FirebaseUI.Button.AccountChooser.GitHubButton">
+        <item name="android:drawableLeft">@drawable/fui_ic_github_white_24dp</item>
+        <item name="android:background">@drawable/fui_idp_button_background_github</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>
