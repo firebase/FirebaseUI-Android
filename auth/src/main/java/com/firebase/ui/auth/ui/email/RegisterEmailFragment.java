@@ -76,7 +76,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         mHandler = ViewModelProviders.of(this).get(EmailProviderResponseHandler.class);
         mHandler.init(getFlowParams());
         mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_signing_in) {
+                this, R.string.fui_progress_dialog_signing_up) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 startSaveCredentials(
