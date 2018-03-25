@@ -39,6 +39,8 @@ public abstract class ResourceObserver<T> implements Observer<Resource<T>> {
         }
         mActivity.getDialogHolder().dismissDialog();
 
+        if (resource.isUsed()) { return; }
+
         if (resource.getState() == State.SUCCESS) {
             onSuccess(resource.getValue());
         } else if (resource.getState() == State.FAILURE) {

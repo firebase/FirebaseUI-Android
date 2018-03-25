@@ -76,7 +76,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                                         task.getResult(ApiException.class).getCredential());
                             } catch (ResolvableApiException e) {
                                 if (e.getStatusCode() == CommonStatusCodes.RESOLUTION_REQUIRED) {
-                                    setResult(Resource.<IdpResponse>forUsableFailure(
+                                    setResult(Resource.<IdpResponse>forFailure(
                                             new PendingIntentRequiredException(
                                                     e.getResolution(), RequestCodes.CRED_HINT)));
                                 } else {
@@ -101,12 +101,12 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             String firstProvider = firstIdpConfig.getProviderId();
             switch (firstProvider) {
                 case EmailAuthProvider.PROVIDER_ID:
-                    setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
+                    setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                             EmailActivity.createIntent(getApplication(), getArguments()),
                             RequestCodes.EMAIL_FLOW)));
                     break;
                 case PhoneAuthProvider.PROVIDER_ID:
-                    setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
+                    setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                             PhoneActivity.createIntent(
                                     getApplication(), getArguments(), firstIdpConfig.getParams()),
                             RequestCodes.PHONE_FLOW)));
@@ -116,7 +116,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
                     break;
             }
         } else {
-            setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
+            setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                     AuthMethodPickerActivity.createIntent(getApplication(), getArguments()),
                     RequestCodes.AUTH_PICKER_FLOW)));
         }
@@ -125,7 +125,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
     private void redirectSignIn(String provider, String email) {
         switch (provider) {
             case EmailAuthProvider.PROVIDER_ID:
-                setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         EmailActivity.createIntent(getApplication(), getArguments(), email),
                         RequestCodes.EMAIL_FLOW)));
                 break;
@@ -141,7 +141,7 @@ public class SignInKickstarter extends AuthViewModelBase<IdpResponse> {
             case GoogleAuthProvider.PROVIDER_ID:
             case FacebookAuthProvider.PROVIDER_ID:
             case TwitterAuthProvider.PROVIDER_ID:
-                setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         SingleSignInActivity.createIntent(
                                 getApplication(),
                                 getArguments(),
