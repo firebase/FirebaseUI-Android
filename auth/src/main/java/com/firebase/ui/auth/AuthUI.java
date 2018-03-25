@@ -267,7 +267,16 @@ public class AuthUI {
         return R.style.FirebaseUI;
     }
 
-    public Task<AuthResult> silentSignIn(@NonNull final Context context, List<IdpConfig> configs) {
+    /**
+     * Signs the user in without any UI if possible. If this operation fails, you can safely start a
+     * UI-based sign-in flow knowing it is required.
+     *
+     * @param context the context requesting the user be signed in
+     * @return a task which indicates whether or not the user was successfully signed in.
+     */
+    @NonNull
+    public Task<AuthResult> silentSignIn(@NonNull final Context context,
+                                         @NonNull List<IdpConfig> configs) {
         if (configs.isEmpty()) {
             throw new IllegalArgumentException("Configs must not be empty.");
         }
@@ -279,9 +288,8 @@ public class AuthUI {
                         "for silent sign-in.");
             }
         }
-
         if (mAuth.getCurrentUser() != null) {
-            return Tasks.forException(new IllegalStateException("User already signed in!"));
+            throw new IllegalArgumentException("User already signed in!");
         }
 
         final IdpConfig google =
