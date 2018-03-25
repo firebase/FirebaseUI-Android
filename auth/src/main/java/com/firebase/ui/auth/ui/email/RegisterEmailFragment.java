@@ -19,7 +19,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
@@ -77,10 +76,11 @@ public class RegisterEmailFragment extends FragmentBase implements
         mHandler = ViewModelProviders.of(this).get(EmailProviderResponseHandler.class);
         mHandler.init(getFlowParams());
         mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                (HelperActivityBase) getActivity(), R.string.fui_progress_dialog_signing_in) {
+                this, R.string.fui_progress_dialog_signing_in) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
-                startSaveCredentials(mHandler.getCurrentUser(), null, response);
+                startSaveCredentials(
+                        mHandler.getCurrentUser(), response, mPasswordEditText.getText().toString());
             }
 
             @Override

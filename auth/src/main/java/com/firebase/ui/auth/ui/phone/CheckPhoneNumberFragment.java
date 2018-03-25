@@ -19,7 +19,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.CountryInfo;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
@@ -54,8 +53,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         super.onCreate(savedInstanceState);
         mHandler = ViewModelProviders.of(getActivity()).get(CheckPhoneNumberHandler.class);
         mHandler.getPhoneNumberListener().observe(this, new ResourceObserver<PhoneNumber>(
-                (HelperActivityBase) getActivity(),
-                R.string.fui_progress_dialog_checking_accounts) {
+                this, R.string.fui_progress_dialog_checking_accounts) {
             @Override
             protected void onSuccess(@NonNull PhoneNumber number) {
                 start(number);

@@ -22,8 +22,8 @@ public class FragmentBase extends Fragment {
 
     public void startSaveCredentials(
             FirebaseUser firebaseUser,
-            @Nullable String password,
-            IdpResponse response) {
+            IdpResponse response,
+            @Nullable String password) {
         ((HelperActivityBase) getActivity()).startSaveCredentials(firebaseUser, response, password);
     }
 }

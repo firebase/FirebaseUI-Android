@@ -17,7 +17,6 @@ import android.widget.EditText;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
@@ -111,8 +110,7 @@ public class CheckEmailFragment extends FragmentBase implements
         mListener = (CheckEmailListener) getActivity();
 
         mHandler.getOperation().observe(this, new ResourceObserver<User>(
-                (HelperActivityBase) getActivity(),
-                R.string.fui_progress_dialog_checking_accounts) {
+                this, R.string.fui_progress_dialog_checking_accounts) {
             @Override
             protected void onSuccess(@NonNull User user) {
                 String email = user.getEmail();
