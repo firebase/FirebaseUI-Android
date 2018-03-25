@@ -26,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PlayGamesAuthProvider;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.Params> {
@@ -38,13 +39,14 @@ public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.
         super(application);
     }
 
-    private static IdpResponse createIdpResponse(GoogleSignInAccount account) {
+    private static IdpResponse createIdpResponse(GoogleSignInAccount account,
+                                                 @NonNull String token) {
         return new IdpResponse.Builder(
                 new User.Builder(GoogleAuthProvider.PROVIDER_ID, account.getEmail())
                         .setName(account.getDisplayName())
                         .setPhotoUri(account.getPhotoUrl())
                         .build())
-                .setToken(account.getIdToken())
+                .setToken(token)
                 .build();
     }
 
@@ -85,7 +87,17 @@ public class GoogleSignInHandler extends ProviderSignInBase<GoogleSignInHandler.
         try {
             GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(data)
                     .getResult(ApiException.class);
-            setResult(Resource.forSuccess(createIdpResponse(account)));
+
+            String token;
+            if (mConfig.getProviderId().equals(GoogleAuthProvider.PROVIDER_ID)) {
+                token = account.getIdToken();
+            } else if (mConfig.getProviderId().equals(PlayGamesAuthProvider.PROVIDER_ID)) {
+                token = account.getServerAuthCode();
+            } else {
+                throw new IllegalStateException("Unsupported provider: " + mConfig.getProviderId());
+            }
+
+            setResult(Resource.forSuccess(createIdpResponse(account, token)));
         } catch (ApiException e) {
             if (e.getStatusCode() == CommonStatusCodes.INVALID_ACCOUNT) {
                 // If we get INVALID_ACCOUNT, it means the pre-set account was not available on the

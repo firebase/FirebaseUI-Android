@@ -27,6 +27,7 @@ import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.firebase.ui.auth.viewmodel.idp.SocialProviderResponseHandler;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.PlayGamesAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 public class SingleSignInActivity extends HelperActivityBase {
@@ -60,6 +61,7 @@ public class SingleSignInActivity extends HelperActivityBase {
 
         switch (provider) {
             case GoogleAuthProvider.PROVIDER_ID:
+            case PlayGamesAuthProvider.PROVIDER_ID:
                 GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
                 google.init(new GoogleSignInHandler.Params(providerConfig, user.getEmail()));
                 mProvider = google;

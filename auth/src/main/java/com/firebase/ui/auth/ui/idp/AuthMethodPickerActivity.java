@@ -51,6 +51,7 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.PlayGamesAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.ArrayList;
@@ -128,6 +129,7 @@ public class AuthMethodPickerActivity extends AppCompatBase {
             @LayoutRes int buttonLayout;
             switch (idpConfig.getProviderId()) {
                 case GoogleAuthProvider.PROVIDER_ID:
+                case PlayGamesAuthProvider.PROVIDER_ID:
                     GoogleSignInHandler google = supplier.get(GoogleSignInHandler.class);
                     google.init(new GoogleSignInHandler.Params(idpConfig));
                     provider = google;

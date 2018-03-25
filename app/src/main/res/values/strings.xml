@@ -18,6 +18,7 @@
 
     <string name="providers_header">Auth providers</string>
     <string name="providers_google">Google</string>
+    <string name="providers_play_games">Play Games</string>
     <string name="providers_facebook">Facebook</string>
     <string name="providers_twitter">Twitter</string>
     <string name="providers_email">Email</string>

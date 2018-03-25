@@ -58,6 +58,7 @@ import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.PlayGamesAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 import com.google.firebase.auth.UserInfo;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -90,6 +91,7 @@ public class AuthUI {
                        EmailAuthProvider.PROVIDER_ID,
                        PhoneAuthProvider.PROVIDER_ID,
                        GoogleAuthProvider.PROVIDER_ID,
+                       PlayGamesAuthProvider.PROVIDER_ID,
                        FacebookAuthProvider.PROVIDER_ID,
                        TwitterAuthProvider.PROVIDER_ID
                })
@@ -180,6 +182,7 @@ public class AuthUI {
     public static final Set<String> SUPPORTED_PROVIDERS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     GoogleAuthProvider.PROVIDER_ID,
+                    PlayGamesAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
                     TwitterAuthProvider.PROVIDER_ID,
                     EmailAuthProvider.PROVIDER_ID,
@@ -193,6 +196,7 @@ public class AuthUI {
     public static final Set<String> SOCIAL_PROVIDERS =
             Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                     GoogleAuthProvider.PROVIDER_ID,
+                    PlayGamesAuthProvider.PROVIDER_ID,
                     FacebookAuthProvider.PROVIDER_ID,
                     TwitterAuthProvider.PROVIDER_ID)));
 
@@ -623,8 +627,8 @@ public class AuthUI {
             }
 
             /**
-             * Configures the requirement for the user to enter first and last name
-             * in the email sign up flow.
+             * Configures the requirement for the user to enter first and last name in the email
+             * sign up flow.
              * <p>
              * Name is required by default.
              */
@@ -764,6 +768,52 @@ public class AuthUI {
             public IdpConfig build() {
                 if (!getParams().containsKey(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS)) {
                     setScopes(Collections.<String>emptyList());
+                }
+
+                return super.build();
+            }
+        }
+
+        /**
+         * {@link IdpConfig} builder for the Google Play Games provider.
+         */
+        public static final class PlayGamesBuilder extends Builder {
+            public PlayGamesBuilder() {
+                //noinspection deprecation taking a hit for the backcompat team
+                super(PlayGamesAuthProvider.PROVIDER_ID);
+                Preconditions.checkConfigured(getApplicationContext(),
+                        "Check your google-services plugin configuration, the" +
+                                " default_web_client_id string wasn't populated.",
+                        R.string.default_web_client_id);
+            }
+
+            /**
+             * Set the {@link GoogleSignInOptions} to be used for Google sign-in. Standard options
+             * like requesting the user's email will automatically be added.
+             *
+             * @param options sign-in options
+             */
+            @NonNull
+            public PlayGamesBuilder setSignInOptions(@NonNull GoogleSignInOptions options) {
+                Preconditions.checkUnset(getParams(),
+                        "Cannot overwrite previously set sign-in options.",
+                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS);
+
+                GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(options);
+                builder.requestEmail().requestServerAuthCode(getApplicationContext()
+                        .getString(R.string.default_web_client_id));
+                getParams().putParcelable(
+                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS, builder.build());
+
+                return this;
+            }
+
+            @NonNull
+            @Override
+            public IdpConfig build() {
+                if (!getParams().containsKey(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS)) {
+                    setSignInOptions(new GoogleSignInOptions.Builder(
+                            GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).build());
                 }
 
                 return super.build();
@@ -912,6 +962,12 @@ public class AuthUI {
                 } else {
                     mProviders.add(config);
                 }
+            }
+
+            if (mProviders.contains(new IdpConfig.PlayGamesBuilder().build())
+                    && mProviders.contains(new IdpConfig.GoogleBuilder().build())) {
+                throw new IllegalArgumentException("The Google and Play Games providers cannot " +
+                        "be used simultaneously. You must choose one.");
             }
 
             return (T) this;

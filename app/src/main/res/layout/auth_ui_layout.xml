@@ -53,6 +53,13 @@
                 android:text="@string/providers_google" />
 
             <CheckBox
+                android:id="@+id/play_games_provider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/providers_play_games" />
+
+            <CheckBox
                 android:id="@+id/facebook_provider"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

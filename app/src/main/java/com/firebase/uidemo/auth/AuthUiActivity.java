@@ -62,6 +62,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @BindView(R.id.sign_in) Button mSignIn;
 
     @BindView(R.id.google_provider) CheckBox mUseGoogleProvider;
+    @BindView(R.id.play_games_provider) CheckBox mUsePlayGamesProvider;
     @BindView(R.id.facebook_provider) CheckBox mUseFacebookProvider;
     @BindView(R.id.twitter_provider) CheckBox mUseTwitterProvider;
     @BindView(R.id.email_provider) CheckBox mUseEmailProvider;
@@ -110,6 +111,10 @@ public class AuthUiActivity extends AppCompatActivity {
             mUseGoogleProvider.setEnabled(false);
             mUseGoogleProvider.setText(R.string.google_label_missing_config);
             setGoogleScopesEnabled(false);
+
+            mUsePlayGamesProvider.setChecked(false);
+            mUsePlayGamesProvider.setEnabled(false);
+            mUsePlayGamesProvider.setText(R.string.google_label_missing_config);
         } else {
             setGoogleScopesEnabled(mUseGoogleProvider.isChecked());
             mUseGoogleProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -249,6 +254,10 @@ public class AuthUiActivity extends AppCompatActivity {
         if (mUseGoogleProvider.isChecked()) {
             selectedProviders.add(
                     new IdpConfig.GoogleBuilder().setScopes(getGoogleScopes()).build());
+        }
+
+        if (mUsePlayGamesProvider.isChecked()) {
+            selectedProviders.add(new IdpConfig.PlayGamesBuilder().build());
         }
 
         if (mUseFacebookProvider.isChecked()) {

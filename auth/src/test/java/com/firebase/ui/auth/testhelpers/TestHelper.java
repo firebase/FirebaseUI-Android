@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.PlayGamesAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 import org.junit.Assert;
@@ -159,6 +160,9 @@ public class TestHelper {
             switch (providerId) {
                 case GoogleAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.GoogleBuilder().build());
+                    break;
+                case PlayGamesAuthProvider.PROVIDER_ID:
+                    idpConfigs.add(new IdpConfig.PlayGamesBuilder().build());
                     break;
                 case FacebookAuthProvider.PROVIDER_ID:
                     idpConfigs.add(new IdpConfig.FacebookBuilder().build());
