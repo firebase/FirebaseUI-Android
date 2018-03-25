@@ -25,7 +25,7 @@ public class CheckEmailHandler extends AuthViewModelBase<User> {
     }
 
     public void fetchCredential() {
-        setResult(Resource.<User>forUsableFailure(new PendingIntentRequiredException(
+        setResult(Resource.<User>forFailure(new PendingIntentRequiredException(
                 Credentials.getClient(getApplication()).getHintPickerIntent(
                         new HintRequest.Builder().setEmailAddressIdentifierSupported(true).build()),
                 RequestCodes.CRED_HINT

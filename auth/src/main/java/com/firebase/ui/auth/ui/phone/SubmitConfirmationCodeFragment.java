@@ -48,10 +48,10 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     private static final long RESEND_WAIT_MILLIS = 15000;
     private static final String EXTRA_MILLIS_UNTIL_FINISHED = "millis_until_finished";
 
-    private CheckPhoneNumberHandler mHandler;
+    private PhoneNumberVerificationHandler mHandler;
     private String mPhoneNumber;
 
-    private TextView mEditPhoneTextView;
+    private TextView mPhoneTextView;
     private TextView mResendCodeTextView;
     private TextView mCountDownTextView;
     private SpacedEditText mConfirmationCodeEditText;
@@ -70,7 +70,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = ViewModelProviders.of(getActivity()).get(CheckPhoneNumberHandler.class);
+        mHandler = ViewModelProviders.of(getActivity()).get(PhoneNumberVerificationHandler.class);
         mPhoneNumber = getArguments().getString(ExtraConstants.PHONE);
     }
 
@@ -84,7 +84,7 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mEditPhoneTextView = view.findViewById(R.id.edit_phone_number);
+        mPhoneTextView = view.findViewById(R.id.edit_phone_number);
         mCountDownTextView = view.findViewById(R.id.ticker);
         mResendCodeTextView = view.findViewById(R.id.resend_code);
         mConfirmationCodeEditText = view.findViewById(R.id.confirmation_code);
@@ -168,8 +168,8 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
     }
 
     private void setupEditPhoneNumberTextView() {
-        mEditPhoneTextView.setText(mPhoneNumber);
-        mEditPhoneTextView.setOnClickListener(new View.OnClickListener() {
+        mPhoneTextView.setText(mPhoneNumber);
+        mPhoneTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getFragmentManager().popBackStack();
@@ -209,6 +209,10 @@ public class SubmitConfirmationCodeFragment extends FragmentBase {
         };
 
         mCountdownTimer.start();
+    }
+
+    public String getPhoneNumber() {
+        return mPhoneNumber;
     }
 
     private void submitCode() {

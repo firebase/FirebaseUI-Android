@@ -1,6 +1,8 @@
 package com.firebase.ui.auth.ui.phone;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,15 +16,19 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.CountryInfo;
+import com.firebase.ui.auth.data.model.PendingIntentRequiredException;
 import com.firebase.ui.auth.data.model.PhoneNumber;
 import com.firebase.ui.auth.ui.FragmentBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.PhoneNumberUtils;
+import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.util.ui.ImeHelper;
-import com.firebase.ui.auth.viewmodel.ResourceObserver;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.Credentials;
+import com.google.android.gms.auth.api.credentials.HintRequest;
 
 import java.util.Locale;
 
@@ -33,7 +39,7 @@ import java.util.Locale;
 public class CheckPhoneNumberFragment extends FragmentBase implements View.OnClickListener {
     public static final String TAG = "VerifyPhoneFragment";
 
-    private CheckPhoneNumberHandler mHandler;
+    private PhoneNumberVerificationHandler mHandler;
 
     private CountryListSpinner mCountryListSpinner;
     private TextInputLayout mPhoneInputLayout;
@@ -51,19 +57,7 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = ViewModelProviders.of(getActivity()).get(CheckPhoneNumberHandler.class);
-        mHandler.getPhoneNumberListener().observe(this, new ResourceObserver<PhoneNumber>(
-                this, R.string.fui_progress_dialog_checking_accounts) {
-            @Override
-            protected void onSuccess(@NonNull PhoneNumber number) {
-                start(number);
-            }
-
-            @Override
-            protected void onFailure(@NonNull Exception e) {
-                // Just let the user enter their data
-            }
-        });
+        mHandler = ViewModelProviders.of(getActivity()).get(PhoneNumberVerificationHandler.class);
     }
 
     @Nullable
@@ -123,25 +117,29 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         // are e164 since we store it.
         Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
         String phone = null;
-        String countryCode = null;
+        String countryIso = null;
         String nationalNumber = null;
         if (params != null) {
-            phone = params.getString(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER);
-            countryCode = params.getString(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE);
-            nationalNumber = params.getString(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER);
-
-            // Clear these args so the user doesn't get stuck being sent to the submit code fragment
-            params.remove(AuthUI.EXTRA_DEFAULT_PHONE_NUMBER);
-            params.remove(AuthUI.EXTRA_DEFAULT_COUNTRY_CODE);
-            params.remove(AuthUI.EXTRA_DEFAULT_NATIONAL_NUMBER);
+            phone = params.getString(ExtraConstants.PHONE);
+            countryIso = params.getString(ExtraConstants.COUNTRY_ISO);
+            nationalNumber = params.getString(ExtraConstants.NATIONAL_NUMBER);
         }
 
-        if (!TextUtils.isEmpty(countryCode) && !TextUtils.isEmpty(nationalNumber)) {
-            start(PhoneNumberUtils.getPhoneNumber(countryCode, nationalNumber));
+        if (!TextUtils.isEmpty(countryIso) && !TextUtils.isEmpty(nationalNumber)) {
+            start(PhoneNumberUtils.getPhoneNumber(countryIso, nationalNumber));
+        } else if (!TextUtils.isEmpty(countryIso)) {
+            setCountryCode(new PhoneNumber(
+                    "",
+                    countryIso,
+                    String.valueOf(PhoneNumberUtils.getCountryCode(countryIso))));
         } else if (!TextUtils.isEmpty(phone)) {
             start(PhoneNumberUtils.getPhoneNumber(phone));
         } else if (getFlowParams().enableHints) {
-            mHandler.fetchCredential();
+            FlowUtils.unhandled(this, new PendingIntentRequiredException(
+                    Credentials.getClient(mHandler.getApplication()).getHintPickerIntent(
+                            new HintRequest.Builder().setPhoneNumberIdentifierSupported(true)
+                                    .build()),
+                    RequestCodes.CRED_HINT));
         }
     }
 
@@ -151,11 +149,27 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
             mPhoneEditText.setSelection(number.getPhoneNumber().length());
         }
         if (PhoneNumber.isCountryValid(number)) {
-            mCountryListSpinner.setSelectedForCountry(
-                    new Locale("", number.getCountryIso()), number.getCountryCode());
+            setCountryCode(number);
         }
 
         onNext();
+    }
+
+    private void setCountryCode(PhoneNumber number) {
+        mCountryListSpinner.setSelectedForCountry(
+                new Locale("", number.getCountryIso()), number.getCountryCode());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != RequestCodes.CRED_HINT || resultCode != Activity.RESULT_OK) { return; }
+
+        Credential credential = data.getParcelableExtra(Credential.EXTRA_KEY);
+        String formattedPhone = PhoneNumberUtils.formatUsingCurrentCountry(
+                credential.getId(), getContext());
+        if (formattedPhone != null) {
+            start(PhoneNumberUtils.getPhoneNumber(formattedPhone));
+        }
     }
 
     @Override
@@ -182,5 +196,9 @@ public class CheckPhoneNumberFragment extends FragmentBase implements View.OnCli
         }
 
         return PhoneNumberUtils.format(everythingElse, countryInfo);
+    }
+
+    public String getPhoneNumber() {
+        return mPhoneEditText.getText().toString();
     }
 }

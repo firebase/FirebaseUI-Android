@@ -26,11 +26,17 @@ import android.support.design.widget.TextInputLayout;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
+import com.firebase.ui.auth.data.model.PhoneNumberVerificationRequiredException;
+import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.firebase.ui.auth.viewmodel.ResourceObserver;
+import com.firebase.ui.auth.viewmodel.idp.PhoneProviderResponseHandler;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 /**
  * Activity to control the entire phone verification flow. Plays host to {@link
@@ -48,25 +54,11 @@ public class PhoneActivity extends AppCompatBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_phone);
 
-        final CheckPhoneNumberHandler handler =
-                ViewModelProviders.of(this).get(CheckPhoneNumberHandler.class);
+        final PhoneProviderResponseHandler handler =
+                ViewModelProviders.of(this).get(PhoneProviderResponseHandler.class);
         handler.init(getFlowParams());
-//        handler.getVerificationErrorListener().observe(this, new Observer<Exception>() {
-//            @Override
-//            public void onChanged(@Nullable Exception e) {
-//                if (e instanceof PhoneNumberVerificationRequiredException) {
-//                    // Ignore if resending verification code
-//                    if (getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG) == null) {
-//                        showSubmitCodeFragment(
-//                                ((PhoneNumberVerificationRequiredException) e).getPhoneNumber());
-//                    }
-//                } else {
-//                    handleError(e);
-//                }
-//            }
-//        });
         handler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_loading) {
+                this, R.string.fui_progress_dialog_signing_in) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 startSaveCredentials(handler.getCurrentUser(), response, null);
@@ -74,7 +66,70 @@ public class PhoneActivity extends AppCompatBase {
 
             @Override
             protected void onFailure(@NonNull Exception e) {
-                handleError(e);
+                if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                    FirebaseAuthError error = FirebaseAuthError.fromException(
+                            (FirebaseAuthInvalidCredentialsException) e);
+
+                    switch (error) {
+                        case ERROR_INVALID_VERIFICATION_CODE:
+//                            showAlertDialog(
+//                                    R.string.fui_incorrect_code_dialog_body,
+//                                    new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog,
+//                                                            int which) {
+//                                            getSubmitConfirmationCodeFragment()
+//                                                    .setConfirmationCode("");
+//                                        }
+//                                    });
+                            break;
+                        case ERROR_SESSION_EXPIRED:
+//                            showAlertDialog(
+//                                    R.string.fui_error_session_expired,
+//                                    new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog,
+//                                                            int which) {
+//                                            getSubmitConfirmationCodeFragment()
+//                                                    .setConfirmationCode("");
+//                                        }
+//                                    });
+                            break;
+                        default:
+//                            showAlertDialog(R.string.fui_error_unknown, null);
+                    }
+                } else {
+//                    showAlertDialog(R.string.fui_error_unknown, null);
+                }
+            }
+        });
+
+        final PhoneNumberVerificationHandler verificationHandler =
+                ViewModelProviders.of(this).get(PhoneNumberVerificationHandler.class);
+        verificationHandler.init(getFlowParams());
+        verificationHandler.getOperation().observe(this, new ResourceObserver<PhoneAuthCredential>(
+                this, R.string.fui_verifying) {
+            @Override
+            protected void onSuccess(@NonNull PhoneAuthCredential credential) {
+                handler.startSignIn(credential, new IdpResponse.Builder(
+                        new User.Builder(PhoneAuthProvider.PROVIDER_ID, null)
+                                .setPhoneNumber(getPhoneNumber())
+                                .build())
+                        .build());
+            }
+
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                if (e instanceof PhoneNumberVerificationRequiredException) {
+                    // Ignore if resending verification code
+                    if (getSupportFragmentManager()
+                            .findFragmentByTag(SubmitConfirmationCodeFragment.TAG) == null) {
+                        showSubmitCodeFragment(
+                                ((PhoneNumberVerificationRequiredException) e).getPhoneNumber());
+                    }
+                } else {
+                    handleError(e);
+                }
             }
         });
 
@@ -109,6 +164,7 @@ public class PhoneActivity extends AppCompatBase {
         }
     }
 
+    @Nullable
     private TextInputLayout getErrorView() {
         CheckPhoneNumberFragment checkFragment = (CheckPhoneNumberFragment)
                 getSupportFragmentManager().findFragmentByTag(CheckPhoneNumberFragment.TAG);
@@ -121,6 +177,21 @@ public class PhoneActivity extends AppCompatBase {
             return submitFragment.getView().findViewById(R.id.confirmation_code_layout);
         } else {
             return null;
+        }
+    }
+
+    private String getPhoneNumber() {
+        CheckPhoneNumberFragment checkFragment = (CheckPhoneNumberFragment)
+                getSupportFragmentManager().findFragmentByTag(CheckPhoneNumberFragment.TAG);
+        SubmitConfirmationCodeFragment submitFragment = (SubmitConfirmationCodeFragment)
+                getSupportFragmentManager().findFragmentByTag(SubmitConfirmationCodeFragment.TAG);
+
+        if (checkFragment != null) {
+            return checkFragment.getPhoneNumber();
+        } else if (submitFragment != null) {
+            return submitFragment.getPhoneNumber();
+        } else {
+            throw new IllegalStateException("No fragments added");
         }
     }
 

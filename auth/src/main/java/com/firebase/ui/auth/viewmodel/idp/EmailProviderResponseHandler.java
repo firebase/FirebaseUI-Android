@@ -80,7 +80,7 @@ public class EmailProviderResponseHandler extends AuthViewModelBase<IdpResponse>
             }
 
             if (EmailAuthProvider.PROVIDER_ID.equalsIgnoreCase(provider)) {
-                setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         WelcomeBackPasswordPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
@@ -90,7 +90,7 @@ public class EmailProviderResponseHandler extends AuthViewModelBase<IdpResponse>
                         RequestCodes.WELCOME_BACK_EMAIL_FLOW
                 )));
             } else {
-                setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         WelcomeBackIdpPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),

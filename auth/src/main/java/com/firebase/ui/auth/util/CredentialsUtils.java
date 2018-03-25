@@ -27,8 +27,8 @@ public class CredentialsUtils {
                                              @Nullable String accountType) {
         String email = user.getEmail();
         String phone = user.getPhoneNumber();
-        String profilePictureUri =
-                user.getPhotoUrl() == null ? null : user.getPhotoUrl().toString();
+        Uri profilePictureUri =
+                user.getPhotoUrl() == null ? null : Uri.parse(user.getPhotoUrl().toString());
 
         if (TextUtils.isEmpty(email) && TextUtils.isEmpty(phone)
                 || password == null && accountType == null) {
@@ -38,7 +38,7 @@ public class CredentialsUtils {
         Credential.Builder builder =
                 new Credential.Builder(TextUtils.isEmpty(email) ? phone : email)
                         .setName(user.getDisplayName())
-                        .setProfilePictureUri(Uri.parse(profilePictureUri));
+                        .setProfilePictureUri(profilePictureUri);
 
         if (TextUtils.isEmpty(password)) {
             builder.setAccountType(accountType);
