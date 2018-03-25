@@ -55,7 +55,7 @@ public class CredentialSaveActivity extends HelperActivityBase {
                     return;
                 }
 
-                onSaveOperation(resource);
+                if (!resource.isUsed()) { onSaveOperation(resource); }
             }
         });
 
