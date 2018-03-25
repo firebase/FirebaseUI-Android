@@ -172,8 +172,7 @@ public class AuthUiActivity extends AppCompatActivity {
     @OnClick(R.id.sign_in_silent)
     public void silentSignIn(View view) {
         List<IdpConfig> providers = new ArrayList<>();
-        List<IdpConfig> selected = getSelectedProviders();
-        for (IdpConfig config : selected) {
+        for (IdpConfig config : getSelectedProviders()) {
             String provider = config.getProviderId();
             if (provider.equals(EmailAuthProvider.PROVIDER_ID)
                     || provider.equals(GoogleAuthProvider.PROVIDER_ID)) {
