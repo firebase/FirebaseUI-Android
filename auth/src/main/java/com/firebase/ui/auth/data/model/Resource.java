@@ -12,15 +12,14 @@ import android.support.annotation.RestrictTo;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class Resource<T> {
-    private State mState;
-    private final boolean mUsable;
-
+    private final State mState;
     private final T mValue;
     private final Exception mException;
 
-    private Resource(State state, boolean usable, T value, Exception exception) {
+    private boolean mIsUsed;
+
+    private Resource(State state, T value, Exception exception) {
         mState = state;
-        mUsable = usable;
         mValue = value;
         mException = exception;
     }
@@ -30,7 +29,7 @@ public final class Resource<T> {
      */
     @NonNull
     public static Resource<Void> forVoidSuccess() {
-        return new Resource<>(State.SUCCESS, false, null, null);
+        return new Resource<>(State.SUCCESS, null, null);
     }
 
     /**
@@ -38,15 +37,7 @@ public final class Resource<T> {
      */
     @NonNull
     public static <T> Resource<T> forSuccess(@NonNull T value) {
-        return new Resource<>(State.SUCCESS, false, value, null);
-    }
-
-    /**
-     * Similar to {@link #forSuccess(Object)}, but this resource can be used up.
-     */
-    @NonNull
-    public static <T> Resource<T> forUsableSuccess(@NonNull T value) {
-        return new Resource<>(State.SUCCESS, true, value, null);
+        return new Resource<>(State.SUCCESS, value, null);
     }
 
     /**
@@ -54,15 +45,7 @@ public final class Resource<T> {
      */
     @NonNull
     public static <T> Resource<T> forFailure(@NonNull Exception e) {
-        return new Resource<>(State.FAILURE, false, null, e);
-    }
-
-    /**
-     * Similar to {@link #forFailure(Exception)}, but this resource can be used up.
-     */
-    @NonNull
-    public static <T> Resource<T> forUsableFailure(@NonNull Exception e) {
-        return new Resource<>(State.FAILURE, true, null, e);
+        return new Resource<>(State.FAILURE, null, e);
     }
 
     /**
@@ -70,7 +53,7 @@ public final class Resource<T> {
      */
     @NonNull
     public static <T> Resource<T> forLoading() {
-        return new Resource<>(State.LOADING, false, null, null);
+        return new Resource<>(State.LOADING, null, null);
     }
 
     @NonNull
@@ -80,14 +63,18 @@ public final class Resource<T> {
 
     @Nullable
     public final Exception getException() {
-        if (mUsable) { mState = State.USED; }
+        mIsUsed = true;
         return mException;
     }
 
     @Nullable
     public T getValue() {
-        if (mUsable) { mState = State.USED; }
+        mIsUsed = true;
         return mValue;
+    }
+
+    public boolean isUsed() {
+        return mIsUsed;
     }
 
     @Override

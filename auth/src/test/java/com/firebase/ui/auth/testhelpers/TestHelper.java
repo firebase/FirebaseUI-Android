@@ -207,7 +207,7 @@ public class TestHelper {
                 CredentialSaveActivity.class.getName());
 
         // Check the credential passed
-        Credential credential = startedIntent.getParcelableExtra(ExtraConstants.EXTRA_CREDENTIAL);
+        Credential credential = startedIntent.getParcelableExtra(ExtraConstants.CREDENTIAL);
 
         // Check the password
         assertEquals(credential.getPassword(), password);

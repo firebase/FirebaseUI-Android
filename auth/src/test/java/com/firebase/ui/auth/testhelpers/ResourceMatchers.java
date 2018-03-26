@@ -22,10 +22,6 @@ public class ResourceMatchers {
         return isState(State.FAILURE);
     }
 
-    public static <T> ArgumentMatcher<Resource<T>> isUsed() {
-        return isState(State.USED);
-    }
-
     public static <T> ArgumentMatcher<Resource<T>> isSuccessWith(final T result) {
         return new ArgumentMatcher<Resource<T>>() {
             @Override

@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
 import android.support.annotation.VisibleForTesting;
@@ -33,7 +34,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.FirebaseAuthError;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -76,28 +76,27 @@ public class PhoneActivity extends AppCompatBase {
     private VerificationState mVerificationState;
 
     public static Intent createIntent(Context context, FlowParameters flowParams, Bundle params) {
-        return HelperActivityBase.createBaseIntent(
-                context, PhoneActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_PARAMS, params);
+        return createBaseIntent(context, PhoneActivity.class, flowParams)
+                .putExtra(ExtraConstants.PARAMS, params);
     }
 
     @Override
-    protected void onCreate(final Bundle savedInstance) {
-        super.onCreate(savedInstance);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_phone);
 
         mHandler = new Handler();
         mVerificationState = VerificationState.VERIFICATION_NOT_STARTED;
-        if (savedInstance != null && !savedInstance.isEmpty()) {
-            mPhoneNumber = savedInstance.getString(KEY_VERIFICATION_PHONE);
+        if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
+            mPhoneNumber = savedInstanceState.getString(KEY_VERIFICATION_PHONE);
 
-            if (savedInstance.getSerializable(KEY_STATE) != null) {
-                mVerificationState = (VerificationState) savedInstance.getSerializable(KEY_STATE);
+            if (savedInstanceState.getSerializable(KEY_STATE) != null) {
+                mVerificationState = (VerificationState) savedInstanceState.getSerializable(KEY_STATE);
             }
             return;
         }
 
-        Bundle params = getIntent().getExtras().getBundle(ExtraConstants.EXTRA_PARAMS);
+        Bundle params = getIntent().getExtras().getBundle(ExtraConstants.PARAMS);
         VerifyPhoneNumberFragment fragment = VerifyPhoneNumberFragment.newInstance
                 (getFlowParams(), params);
         getSupportFragmentManager().beginTransaction()

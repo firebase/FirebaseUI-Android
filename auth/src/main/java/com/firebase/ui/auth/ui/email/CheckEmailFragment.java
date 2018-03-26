@@ -82,8 +82,8 @@ public class CheckEmailFragment extends FragmentBase implements
                                                  @Nullable String email) {
         CheckEmailFragment fragment = new CheckEmailFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
-        args.putString(ExtraConstants.EXTRA_EMAIL, email);
+        args.putParcelable(ExtraConstants.FLOW_PARAMS, flowParameters);
+        args.putString(ExtraConstants.EMAIL, email);
 
         fragment.setArguments(args);
         return fragment;
@@ -91,7 +91,7 @@ public class CheckEmailFragment extends FragmentBase implements
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fui_check_email_layout, container, false);
@@ -130,7 +130,7 @@ public class CheckEmailFragment extends FragmentBase implements
         }
 
         // Check for email
-        String email = getArguments().getString(ExtraConstants.EXTRA_EMAIL);
+        String email = getArguments().getString(ExtraConstants.EMAIL);
         if (!TextUtils.isEmpty(email)) {
             // Use email passed in
             mEmailEditText.setText(email);
@@ -142,9 +142,8 @@ public class CheckEmailFragment extends FragmentBase implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean(ExtraConstants.HAS_EXISTING_INSTANCE, true);
-        super.onSaveInstanceState(outState);
     }
 
     @Override

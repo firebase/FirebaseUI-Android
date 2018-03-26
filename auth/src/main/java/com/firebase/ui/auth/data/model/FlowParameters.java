@@ -81,14 +81,14 @@ public class FlowParameters implements Parcelable {
      * Extract FlowParameters from an Intent.
      */
     public static FlowParameters fromIntent(Intent intent) {
-        return intent.getParcelableExtra(ExtraConstants.EXTRA_FLOW_PARAMS);
+        return intent.getParcelableExtra(ExtraConstants.FLOW_PARAMS);
     }
 
     /**
      * Extract FlowParameters from a Bundle.
      */
     public static FlowParameters fromBundle(Bundle bundle) {
-        return bundle.getParcelable(ExtraConstants.EXTRA_FLOW_PARAMS);
+        return bundle.getParcelable(ExtraConstants.FLOW_PARAMS);
     }
 
     @Override
