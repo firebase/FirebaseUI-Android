@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Rekisteröityminen käynnissä…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item> <item quantity="other">Salasana ei ole tarpeeksi vahva. Siinä on oltava vähintään %1$d merkkiä – sekä kirjaimia että numeroita.</item> </plurals>
     <string name="fui_email_account_creation_error">Sähköpostitilin rekisteröinti epäonnistui.</string>
-    <string name="fui_error_user_collision">Kyseisellä sähköpostiosoitteella on jo rekisteröity tili.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Valitsemalla %1$s vahvistat, että hyväksyt %2$s ja %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Valitsemalla %1$s vahvistat, että hyväksyt %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Valitsemalla %1$s vahvistat, että hyväksyt %2$s.</string>

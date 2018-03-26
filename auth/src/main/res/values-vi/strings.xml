@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Đang đăng ký…</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> <item quantity="other">Mật khẩu không đủ mạnh. Sử dụng ít nhất %1$d ký tự, kết hợp chữ cái và số</item> </plurals>
     <string name="fui_email_account_creation_error">Đăng ký tài khoản email không thành công</string>
-    <string name="fui_error_user_collision">Tài khoản có địa chỉ email đó đã tồn tại.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Bằng cách nhấn vào %1$s, bạn cho biết rằng bạn đồng ý với %2$s và %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Bằng cách nhấn vào %1$s, bạn cho biết rằng bạn đồng ý với %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Bằng cách nhấn vào %1$s, bạn cho biết rằng bạn đồng ý với %2$s.</string>
