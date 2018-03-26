@@ -88,6 +88,7 @@ public class TwitterSignInHandler extends ProviderSignInBase<Void> {
     private class TwitterSessionResult extends Callback<TwitterSession> {
         @Override
         public void success(final Result<TwitterSession> sessionResult) {
+            setResult(Resource.<IdpResponse>forLoading());
             TwitterCore.getInstance()
                     .getApiClient()
                     .getAccountService()

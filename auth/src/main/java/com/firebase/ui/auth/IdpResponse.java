@@ -23,7 +23,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 
-import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -92,20 +91,10 @@ public class IdpResponse implements Parcelable {
     @Nullable
     public static IdpResponse fromResultIntent(@Nullable Intent resultIntent) {
         if (resultIntent != null) {
-            return resultIntent.getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+            return resultIntent.getParcelableExtra(ExtraConstants.IDP_RESPONSE);
         } else {
             return null;
         }
-    }
-
-    @NonNull
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static IdpResponse from(@NonNull Resource<IdpResponse> resource) {
-        IdpResponse response = resource.getValue();
-        if (resource.getException() != null) {
-            response = from(resource.getException());
-        }
-        return response;
     }
 
     @NonNull
@@ -127,7 +116,7 @@ public class IdpResponse implements Parcelable {
     @NonNull
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public Intent toIntent() {
-        return new Intent().putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, this);
+        return new Intent().putExtra(ExtraConstants.IDP_RESPONSE, this);
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)

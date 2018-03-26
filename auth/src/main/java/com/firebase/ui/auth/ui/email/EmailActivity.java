@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
@@ -28,7 +29,6 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
@@ -50,12 +50,12 @@ public class EmailActivity extends AppCompatBase implements
     }
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return HelperActivityBase.createBaseIntent(context, EmailActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+        return createBaseIntent(context, EmailActivity.class, flowParams)
+                .putExtra(ExtraConstants.EMAIL, email);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_email);
 
@@ -64,7 +64,7 @@ public class EmailActivity extends AppCompatBase implements
         }
 
         // Get email from intent (can be null)
-        String email = getIntent().getExtras().getString(ExtraConstants.EXTRA_EMAIL);
+        String email = getIntent().getExtras().getString(ExtraConstants.EMAIL);
 
         // Start with check email
         CheckEmailFragment fragment = CheckEmailFragment.newInstance(getFlowParams(), email);
@@ -118,7 +118,7 @@ public class EmailActivity extends AppCompatBase implements
 
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
-        if (emailConfig.getParams().getBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, true)) {
+        if (emailConfig.getParams().getBoolean(ExtraConstants.ALLOW_NEW_EMAILS, true)) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(
                     getFlowParams(),
                     user);
