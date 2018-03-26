@@ -84,7 +84,7 @@ android {
 
     defaultConfig {
        // ...
-       resConfigs "auto"
+       resConfigs "en" // And any other languages you support
     }
 }
 ```
