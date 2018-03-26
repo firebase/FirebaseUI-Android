@@ -79,8 +79,8 @@ public class RegisterEmailFragment extends FragmentBase implements
         RegisterEmailFragment fragment = new RegisterEmailFragment();
 
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
-        args.putParcelable(ExtraConstants.EXTRA_USER, user);
+        args.putParcelable(ExtraConstants.FLOW_PARAMS, flowParameters);
+        args.putParcelable(ExtraConstants.USER, user);
 
         fragment.setArguments(args);
         return fragment;
@@ -98,7 +98,7 @@ public class RegisterEmailFragment extends FragmentBase implements
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
@@ -108,7 +108,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
         boolean requireName = emailConfig.getParams()
-                .getBoolean(ExtraConstants.EXTRA_REQUIRE_NAME, true);
+                .getBoolean(ExtraConstants.REQUIRE_NAME, true);
 
         mEmailEditText = v.findViewById(R.id.email);
         mNameEditText = v.findViewById(R.id.name);
@@ -199,13 +199,12 @@ public class RegisterEmailFragment extends FragmentBase implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(ExtraConstants.EXTRA_USER,
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(ExtraConstants.USER,
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, mEmailEditText.getText().toString())
                         .setName(mNameEditText.getText().toString())
                         .setPhotoUri(mUser.getPhotoUri())
                         .build());
-        super.onSaveInstanceState(outState);
     }
 
     @Override

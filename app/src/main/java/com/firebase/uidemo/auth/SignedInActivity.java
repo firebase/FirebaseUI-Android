@@ -67,11 +67,11 @@ public class SignedInActivity extends AppCompatActivity {
 
     public static Intent createIntent(Context context, IdpResponse idpResponse) {
         return new Intent().setClass(context, SignedInActivity.class)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, idpResponse);
+                .putExtra(ExtraConstants.IDP_RESPONSE, idpResponse);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -81,7 +81,7 @@ public class SignedInActivity extends AppCompatActivity {
             return;
         }
 
-        IdpResponse response = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        IdpResponse response = getIntent().getParcelableExtra(ExtraConstants.IDP_RESPONSE);
 
         setContentView(R.layout.signed_in_layout);
         ButterKnife.bind(this);

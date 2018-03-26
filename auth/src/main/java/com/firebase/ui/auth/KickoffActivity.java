@@ -1,23 +1,22 @@
 package com.firebase.ui.auth;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.UserCancellationException;
 import com.firebase.ui.auth.data.remote.SignInKickstarter;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.PlayServicesHelper;
-import com.firebase.ui.auth.util.ui.FlowUtils;
 import com.firebase.ui.auth.viewmodel.RequestCodes;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class KickoffActivity extends HelperActivityBase {
@@ -27,32 +26,27 @@ public class KickoffActivity extends HelperActivityBase {
     private boolean mIsWaitingForPlayServices = false;
 
     public static Intent createIntent(Context context, FlowParameters flowParams) {
-        return HelperActivityBase.createBaseIntent(context, KickoffActivity.class, flowParams);
+        return createBaseIntent(context, KickoffActivity.class, flowParams);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mKickstarter = ViewModelProviders.of(this).get(SignInKickstarter.class);
         mKickstarter.init(getFlowParams());
-        mKickstarter.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        mKickstarter.getOperation().observe(this, new ResourceObserver<IdpResponse>(
+                this, R.string.fui_progress_dialog_loading) {
             @Override
-            public void onChanged(Resource<IdpResponse> resource) {
-                if (resource.getState() == State.LOADING) {
-                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
-                    return;
-                }
-                getDialogHolder().dismissDialog();
+            protected void onSuccess(@NonNull IdpResponse response) {
+                finish(RESULT_OK, response.toIntent());
+            }
 
-                if (resource.getState() == State.SUCCESS) {
-                    finish(RESULT_OK, resource.getValue().toIntent());
-                } else if (resource.getState() == State.FAILURE) {
-                    Exception e = resource.getException();
-                    if (!FlowUtils.handleError(KickoffActivity.this, e)) {
-                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
-                    } else if (e instanceof UserCancellationException) {
-                        finish(RESULT_CANCELED, null);
-                    }
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                if (e instanceof UserCancellationException) {
+                    finish(RESULT_CANCELED, null);
+                } else {
+                    finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
                 }
             }
         });

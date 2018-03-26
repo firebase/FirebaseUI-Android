@@ -112,7 +112,7 @@ public class PhoneActivityTest {
     @Test
     public void testDefaultFullPhoneNumber_prePopulatesPhoneNumberInBundle() {
         Bundle fullPhoneParams = new Bundle();
-        fullPhoneParams.putString(ExtraConstants.EXTRA_PHONE, YE_RAW_PHONE);
+        fullPhoneParams.putString(ExtraConstants.PHONE, YE_RAW_PHONE);
         Intent startIntent = PhoneActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
@@ -137,8 +137,8 @@ public class PhoneActivityTest {
     @Test
     public void testDefaultCountryCodeAndNationalNumber_prePopulatesPhoneNumberInBundle() {
         Bundle phoneParams = new Bundle();
-        phoneParams.putString(ExtraConstants.EXTRA_COUNTRY_ISO, CA_ISO2);
-        phoneParams.putString(ExtraConstants.EXTRA_NATIONAL_NUMBER, PHONE_NO_COUNTRY_CODE);
+        phoneParams.putString(ExtraConstants.COUNTRY_ISO, CA_ISO2);
+        phoneParams.putString(ExtraConstants.NATIONAL_NUMBER, PHONE_NO_COUNTRY_CODE);
         Intent startIntent = PhoneActivity.createIntent(
                 RuntimeEnvironment.application,
                 TestHelper.getFlowParameters(
