@@ -46,6 +46,7 @@ and [Web](https://github.com/firebase/firebaseui-web/).
    1. [Google](#google-1)
    1. [Facebook](#facebook-1)
    1. [Twitter](#twitter-1)
+   1. [GitHub](#github-1)
 
 ## Demo
 
@@ -126,8 +127,8 @@ Twitter app as reported by the [Twitter application manager](https://apps.twitte
 
 ```xml
 <resources>
-  <string name="twitter_consumer_key" translatable="false">YOURCONSUMERKEY</string>
-  <string name="twitter_consumer_secret" translatable="false">YOURCONSUMERSECRET</string>
+  <string name="twitter_consumer_key" translatable="false">YOUR_CONSUMER_KEY</string>
+  <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
 </resources>
 ```
 
@@ -143,6 +144,18 @@ allprojects {
         maven { url 'https://maven.fabric.io/public' }
     }
 }
+```
+
+#### GitHub
+
+If support for GitHub OAuth is also required, define the resource strings `github_client_id` and
+`github_client_secret` found in your [GitHub app](https://github.com/settings/developers):
+
+```xml
+<resources>
+    <string name="github_client_id" translatable="false">YOUR_CLIENT_ID</string>
+    <string name="github_client_secret" translatable="false">YOUR_CLIENT_SECRET</string>
+</resources>
 ```
 
 ## Using FirebaseUI for authentication
@@ -219,11 +232,12 @@ startActivityForResult(
         AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(Arrays.asList(
-                        new AuthUI.IdpConfig.EmailBuilder().build(),
-                        new AuthUI.IdpConfig.PhoneBuilder().build(),
                         new AuthUI.IdpConfig.GoogleBuilder().build(),
                         new AuthUI.IdpConfig.FacebookBuilder().build(),
-                        new AuthUI.IdpConfig.TwitterBuilder().build()))
+                        new AuthUI.IdpConfig.TwitterBuilder().build(),
+                        new AuthUI.IdpConfig.GitHubBuilder().build(),
+                        new AuthUI.IdpConfig.EmailBuilder().build(),
+                        new AuthUI.IdpConfig.PhoneBuilder().build()))
                 .build(),
         RC_SIGN_IN);
 ```
@@ -352,7 +366,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 showSnackbar(R.string.no_internet_connection);
                 return;
             }
-        
+
             showSnackbar(R.string.unknown_error);
             Log.e(TAG, "Sign-in error: ", response.getError());
         }
@@ -561,7 +575,6 @@ By default, FirebaseUI requests the `email` and `profile` scopes when using Goog
 would like to request additional scopes from the user, call `setScopes` on the
 `AuthUI.IdpConfig.GoogleBuilder` when initializing FirebaseUI.
 
-
 ```java
 // For a list of all scopes, see:
 // https://developers.google.com/identity/protocols/googlescopes
@@ -576,7 +589,6 @@ startActivityForResult(
                 .build(),
         RC_SIGN_IN);
 ```
-
 
 ### Facebook
 
@@ -603,3 +615,25 @@ startActivityForResult(
 ### Twitter
 
 Twitter permissions can only be configured through [Twitter's developer console](https://apps.twitter.com/).
+
+### GitHub
+
+By default, FirebaseUI requests the `user:email` permission when performing OAuth. If you would like
+to request additional permissions from the user, call `setPermissions` on the
+`AuthUI.IdpConfig.GitHubBuilder` when initializing FirebaseUI.
+
+```java
+// For a list of permissions, see:
+// https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/#available-scopes
+
+AuthUI.IdpConfig gitHubIdp = new AuthUI.IdpConfig.GitHubBuilder()
+        .setPermissions(Arrays.asList("gist"))
+        .build();
+
+startActivityForResult(
+        AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(Arrays.asList(gitHubIdp, ...))
+                .build(),
+        RC_SIGN_IN);
+```
