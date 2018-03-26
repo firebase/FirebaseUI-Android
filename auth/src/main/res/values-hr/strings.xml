@@ -23,7 +23,6 @@
     <string name="fui_progress_dialog_signing_up">Registriranje….</string>
     <plurals name="fui_error_weak_password"> <item quantity="one">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znak i koristite kombinaciju slova i znamenki.</item> <item quantity="few">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znaka i koristite kombinaciju slova i znamenki.</item> <item quantity="other">Zaporka nije dovoljno jaka. Upotrijebite najmanje %1$d znakova i koristite kombinaciju slova i znamenki.</item> </plurals>
     <string name="fui_email_account_creation_error">Registracija računa putem e-adrese nije uspjela</string>
-    <string name="fui_error_user_collision">Račun s tom e-adresom već postoji.</string>
     <string name="fui_create_account_preamble_tos_and_pp">Dodirivanjem gumba %1$s potvrđujete da prihvaćate odredbe koje sadrže %2$s i %3$s.</string>
     <string name="fui_create_account_preamble_tos_only">Dodirivanjem gumba %1$s potvrđujete da prihvaćate odredbe koje sadrže %2$s.</string>
     <string name="fui_create_account_preamble_pp_only">Dodirivanjem gumba %1$s potvrđujete da prihvaćate odredbe koje sadrže %2$s.</string>
