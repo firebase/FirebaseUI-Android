@@ -797,13 +797,12 @@ public class AuthUI {
             public PlayGamesBuilder setSignInOptions(@NonNull GoogleSignInOptions options) {
                 Preconditions.checkUnset(getParams(),
                         "Cannot overwrite previously set sign-in options.",
-                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS);
+                        ExtraConstants.GOOGLE_SIGN_IN_OPTIONS);
 
                 GoogleSignInOptions.Builder builder = new GoogleSignInOptions.Builder(options);
                 builder.requestEmail().requestServerAuthCode(getApplicationContext()
                         .getString(R.string.default_web_client_id));
-                getParams().putParcelable(
-                        ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS, builder.build());
+                getParams().putParcelable(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS, builder.build());
 
                 return this;
             }
@@ -811,7 +810,7 @@ public class AuthUI {
             @NonNull
             @Override
             public IdpConfig build() {
-                if (!getParams().containsKey(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS)) {
+                if (!getParams().containsKey(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS)) {
                     setSignInOptions(new GoogleSignInOptions.Builder(
                             GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).build());
                 }
