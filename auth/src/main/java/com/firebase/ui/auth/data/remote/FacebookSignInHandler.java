@@ -79,7 +79,7 @@ public class FacebookSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig> 
     @Override
     protected void onCreate() {
         List<String> permissions = getArguments().getParams()
-                .getStringArrayList(ExtraConstants.EXTRA_FACEBOOK_PERMISSIONS);
+                .getStringArrayList(ExtraConstants.FACEBOOK_PERMISSIONS);
         permissions = new ArrayList<>(
                 permissions == null ? Collections.<String>emptyList() : permissions);
 

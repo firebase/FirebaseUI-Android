@@ -1,6 +1,5 @@
 package com.firebase.ui.auth.ui.credentials;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -10,11 +9,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
-import com.firebase.ui.auth.util.ui.FlowUtils;
+import com.firebase.ui.auth.viewmodel.VoidResourceObserver;
 import com.firebase.ui.auth.viewmodel.smartlock.SmartLockHandler;
 import com.google.android.gms.auth.api.credentials.Credential;
 
@@ -32,30 +32,33 @@ public class CredentialSaveActivity extends HelperActivityBase {
                                       FlowParameters flowParams,
                                       Credential credential,
                                       IdpResponse response) {
-        return HelperActivityBase.createBaseIntent(context, CredentialSaveActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_CREDENTIAL, credential)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+        return createBaseIntent(context, CredentialSaveActivity.class, flowParams)
+                .putExtra(ExtraConstants.CREDENTIAL, credential)
+                .putExtra(ExtraConstants.IDP_RESPONSE, response);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mHandler = ViewModelProviders.of(this).get(SmartLockHandler.class);
         mHandler.init(getFlowParams());
 
-        Credential credential = getIntent().getParcelableExtra(ExtraConstants.EXTRA_CREDENTIAL);
-        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        Credential credential = getIntent().getParcelableExtra(ExtraConstants.CREDENTIAL);
+        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.IDP_RESPONSE);
 
-        mHandler.getOperation().observe(this, new Observer<Resource<Void>>() {
+        mHandler.getOperation().observe(this, new VoidResourceObserver(
+                this, R.string.fui_progress_dialog_loading) {
             @Override
-            public void onChanged(@Nullable Resource<Void> resource) {
-                if (resource == null) {
-                    Log.w(TAG, "getSaveOperation:onChanged:null");
-                    return;
-                }
+            protected void onSuccess() {
+                finish(RESULT_OK, mIdpResponse.toIntent());
+            }
 
-                onSaveOperation(resource);
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                // RESULT_OK since we don't want to halt sign-in just because of a credential save
+                // error.
+                finish(RESULT_OK, mIdpResponse.toIntent());
             }
         });
 
@@ -73,19 +76,5 @@ public class CredentialSaveActivity extends HelperActivityBase {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mHandler.onActivityResult(requestCode, resultCode);
-    }
-
-    private void onSaveOperation(@NonNull Resource<Void> resource) {
-        switch (resource.getState()) {
-            case LOADING:
-                // No-op?
-                break;
-            case SUCCESS:
-            case FAILURE:
-                if (!FlowUtils.handleError(this, resource.getException())) {
-                    finish(RESULT_OK, mIdpResponse.toIntent());
-                }
-                break;
-        }
     }
 }
