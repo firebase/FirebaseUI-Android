@@ -33,20 +33,20 @@ public class HelperActivityBase extends AppCompatActivity {
     private AuthHelper mAuthHelper;
     private ProgressDialogHolder mProgressDialogHolder;
 
-    public static Intent createBaseIntent(
+    protected static Intent createBaseIntent(
             @NonNull Context context,
             @NonNull Class<? extends Activity> target,
             @NonNull FlowParameters flowParams) {
         return new Intent(
                 checkNotNull(context, "context cannot be null"),
                 checkNotNull(target, "target activity cannot be null"))
-                .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS,
+                .putExtra(ExtraConstants.FLOW_PARAMS,
                         checkNotNull(flowParams, "flowParams cannot be null"));
     }
 
     @Override
-    protected void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mAuthHelper = new AuthHelper(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
     }

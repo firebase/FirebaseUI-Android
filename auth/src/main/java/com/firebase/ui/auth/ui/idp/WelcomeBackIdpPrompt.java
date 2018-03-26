@@ -14,12 +14,12 @@
 
 package com.firebase.ui.auth.ui.idp;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.StringRes;
@@ -33,17 +33,14 @@ import com.firebase.ui.auth.FirebaseUiException;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
-import com.firebase.ui.auth.data.model.Resource;
-import com.firebase.ui.auth.data.model.State;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.FacebookSignInHandler;
 import com.firebase.ui.auth.data.remote.GoogleSignInHandler;
 import com.firebase.ui.auth.data.remote.TwitterSignInHandler;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
-import com.firebase.ui.auth.util.ui.FlowUtils;
+import com.firebase.ui.auth.viewmodel.ResourceObserver;
 import com.firebase.ui.auth.viewmodel.idp.LinkingSocialProviderResponseHandler;
 import com.firebase.ui.auth.viewmodel.idp.ProviderSignInBase;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -65,13 +62,13 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             FlowParameters flowParams,
             User existingUser,
             @Nullable IdpResponse requestedUserResponse) {
-        return HelperActivityBase.createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, requestedUserResponse)
-                .putExtra(ExtraConstants.EXTRA_USER, existingUser);
+        return createBaseIntent(context, WelcomeBackIdpPrompt.class, flowParams)
+                .putExtra(ExtraConstants.IDP_RESPONSE, requestedUserResponse)
+                .putExtra(ExtraConstants.USER, existingUser);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_welcome_back_idp_prompt_layout);
 
@@ -127,19 +124,16 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
                 throw new IllegalStateException("Invalid provider id: " + providerId);
         }
 
-        mProvider.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        mProvider.getOperation().observe(this, new ResourceObserver<IdpResponse>(
+                this, R.string.fui_progress_dialog_loading) {
             @Override
-            public void onChanged(Resource<IdpResponse> resource) {
-                if (resource.getState() == State.LOADING) {
-                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
-                    return;
-                }
-                getDialogHolder().dismissDialog();
+            protected void onSuccess(@NonNull IdpResponse response) {
+                handler.startSignIn(response);
+            }
 
-                if (resource.getState() == State.SUCCESS
-                        || resource.getState() == State.FAILURE) {
-                    handler.startSignIn(IdpResponse.from(resource));
-                }
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                handler.startSignIn(IdpResponse.from(e));
             }
         });
 
@@ -155,23 +149,16 @@ public class WelcomeBackIdpPrompt extends AppCompatBase {
             }
         });
 
-        handler.getOperation().observe(this, new Observer<Resource<IdpResponse>>() {
+        handler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
+                this, R.string.fui_progress_dialog_loading) {
             @Override
-            public void onChanged(Resource<IdpResponse> resource) {
-                if (resource.getState() == State.LOADING) {
-                    getDialogHolder().showLoadingDialog(R.string.fui_progress_dialog_loading);
-                    return;
-                }
-                getDialogHolder().dismissDialog();
+            protected void onSuccess(@NonNull IdpResponse response) {
+                finish(RESULT_OK, response.toIntent());
+            }
 
-                if (resource.getState() == State.SUCCESS) {
-                    finish(RESULT_OK, resource.getValue().toIntent());
-                } else if (resource.getState() == State.FAILURE) {
-                    Exception e = resource.getException();
-                    if (!FlowUtils.handleError(WelcomeBackIdpPrompt.this, e)) {
-                        finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
-                    }
-                }
+            @Override
+            protected void onFailure(@NonNull Exception e) {
+                finish(RESULT_CANCELED, IdpResponse.getErrorIntent(e));
             }
         });
     }

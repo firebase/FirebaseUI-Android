@@ -67,10 +67,10 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
                                                 setResult(Resource.<IdpResponse>forFailure(e));
                                             }
                                         });
+                                return;
                             }
-                        } else {
-                            setResult(Resource.<IdpResponse>forFailure(e));
                         }
+                        setResult(Resource.<IdpResponse>forFailure(e));
                     }
                 });
     }
@@ -109,7 +109,7 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
 
             if (provider.equals(EmailAuthProvider.PROVIDER_ID)) {
                 // Start email welcome back flow
-                setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         WelcomeBackPasswordPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
@@ -118,7 +118,7 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
                 )));
             } else {
                 // Start Idp welcome back flow
-                setResult(Resource.<IdpResponse>forUsableFailure(new IntentRequiredException(
+                setResult(Resource.<IdpResponse>forFailure(new IntentRequiredException(
                         WelcomeBackIdpPrompt.createIntent(
                                 getApplication(),
                                 getArguments(),
