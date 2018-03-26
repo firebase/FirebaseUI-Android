@@ -25,7 +25,7 @@ public class GitHubLoginActivity extends HelperActivityBase {
     @NonNull
     public static Intent createIntent(Context context, Uri starter) {
         return new Intent(context, GitHubLoginActivity.class)
-                .putExtra(ExtraConstants.EXTRA_PARAMS, starter);
+                .putExtra(ExtraConstants.PARAMS, starter);
     }
 
     @Override
@@ -37,8 +37,7 @@ public class GitHubLoginActivity extends HelperActivityBase {
                     .enableUrlBarHiding()
                     .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
                     .build()
-                    .launchUrl(this,
-                            (Uri) getIntent().getParcelableExtra(ExtraConstants.EXTRA_PARAMS));
+                    .launchUrl(this, (Uri) getIntent().getParcelableExtra(ExtraConstants.PARAMS));
             mShouldCloseCustomTab = false;
         }
     }
@@ -58,7 +57,7 @@ public class GitHubLoginActivity extends HelperActivityBase {
         mShouldCloseCustomTab = false;
 
         if (REFRESH_ACTION.equals(intent.getAction())) {
-            finish(RESULT_OK, (Intent) intent.getParcelableExtra(ExtraConstants.EXTRA_PARAMS));
+            finish(RESULT_OK, (Intent) intent.getParcelableExtra(ExtraConstants.PARAMS));
             return;
         }
 
@@ -74,7 +73,7 @@ public class GitHubLoginActivity extends HelperActivityBase {
 
         // Force a recursive launch to clear the Custom Tabs activity
         startActivity(new Intent(this, GitHubLoginActivity.class)
-                .putExtra(ExtraConstants.EXTRA_PARAMS, result)
+                .putExtra(ExtraConstants.PARAMS, result)
                 .setAction(REFRESH_ACTION)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
     }
