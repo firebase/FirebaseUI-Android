@@ -76,7 +76,7 @@ public class RegisterEmailFragment extends FragmentBase implements
         mHandler = ViewModelProviders.of(this).get(EmailProviderResponseHandler.class);
         mHandler.init(getFlowParams());
         mHandler.getOperation().observe(this, new ResourceObserver<IdpResponse>(
-                this, R.string.fui_progress_dialog_signing_in) {
+                this, R.string.fui_progress_dialog_signing_up) {
             @Override
             protected void onSuccess(@NonNull IdpResponse response) {
                 startSaveCredentials(
@@ -115,13 +115,6 @@ public class RegisterEmailFragment extends FragmentBase implements
         mPasswordEditText = view.findViewById(R.id.password);
         mEmailInput = view.findViewById(R.id.email_layout);
         mPasswordInput = view.findViewById(R.id.password_layout);
-
-        mEmailEditText = view.findViewById(R.id.email);
-        mNameEditText = view.findViewById(R.id.name);
-        mPasswordEditText = view.findViewById(R.id.password);
-        mEmailInput = view.findViewById(R.id.email_layout);
-        mPasswordInput = view.findViewById(R.id.password_layout);
-
         TextInputLayout nameInput = view.findViewById(R.id.name_layout);
 
         // Get configuration
@@ -143,6 +136,9 @@ public class RegisterEmailFragment extends FragmentBase implements
         mNameEditText.setOnFocusChangeListener(this);
         mPasswordEditText.setOnFocusChangeListener(this);
         view.findViewById(R.id.button_create).setOnClickListener(this);
+
+        // Only show the name field if required
+        nameInput.setVisibility(requireName ? View.VISIBLE : View.GONE);
 
         PreambleHandler.setup(
                 getContext(),
