@@ -59,7 +59,7 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
             .create(GitHubApi.class);
 
     private static final String KEY_ACCESS_TOKEN = "access_token";
-    private static final String EMAIL = "user:email";
+    private static final String EMAIL_PERMISSION = "user:email";
 
     private List<String> mPermissions;
 
@@ -85,7 +85,9 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
     protected void onCreate() {
         List<String> permissions = new ArrayList<>(getArguments().getParams()
                 .getStringArrayList(ExtraConstants.GITHUB_PERMISSIONS));
-        if (!permissions.contains(EMAIL)) { permissions.add(EMAIL); }
+        if (!permissions.contains(EMAIL_PERMISSION)) {
+            permissions.add(EMAIL_PERMISSION);
+        }
         mPermissions = permissions;
     }
 
@@ -127,7 +129,7 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
     @Override
     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
         if (response.isSuccessful()) {
-            final String token = response.body().get(KEY_ACCESS_TOKEN).getAsString();
+            String token = response.body().get(KEY_ACCESS_TOKEN).getAsString();
             RETROFIT_GITHUB.getUser("token " + token).enqueue(new ProfileRequest(token));
         } else {
             setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
@@ -139,19 +141,6 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
     public void onFailure(Call<JsonObject> call, Throwable throwable) {
         setResult(Resource.<IdpResponse>forFailure(new FirebaseUiException(
                 ErrorCodes.PROVIDER_ERROR, throwable)));
-    }
-
-    private interface GitHubOAuth {
-        @POST(KEY_ACCESS_TOKEN)
-        Call<JsonObject> getAuthToken(@Header("Accept") String header,
-                                      @Query("client_id") String id,
-                                      @Query("client_secret") String secret,
-                                      @Query("code") String code);
-    }
-
-    private interface GitHubApi {
-        @GET("user")
-        Call<JsonObject> getUser(@Header("Authorization") String token);
     }
 
     private class ProfileRequest implements Callback<JsonObject> {
@@ -190,5 +179,18 @@ public class GitHubSignInHandler extends ProviderSignInBase<AuthUI.IdpConfig>
         public void onFailure(Call<JsonObject> call, Throwable throwable) {
             GitHubSignInHandler.this.onFailure(call, throwable);
         }
+    }
+
+    private interface GitHubOAuth {
+        @POST(KEY_ACCESS_TOKEN)
+        Call<JsonObject> getAuthToken(@Header("Accept") String header,
+                                      @Query("client_id") String id,
+                                      @Query("client_secret") String secret,
+                                      @Query("code") String code);
+    }
+
+    private interface GitHubApi {
+        @GET("user")
+        Call<JsonObject> getUser(@Header("Authorization") String token);
     }
 }

@@ -130,13 +130,13 @@ public class AuthUiActivity extends AppCompatActivity {
             mUseFacebookProvider.setChecked(false);
             mUseFacebookProvider.setEnabled(false);
             mUseFacebookProvider.setText(R.string.facebook_label_missing_config);
-            setFacebookScopesEnabled(false);
+            setFacebookPermissionsEnabled(false);
         } else {
-            setFacebookScopesEnabled(mUseFacebookProvider.isChecked());
+            setFacebookPermissionsEnabled(mUseFacebookProvider.isChecked());
             mUseFacebookProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    setFacebookScopesEnabled(checked);
+                    setFacebookPermissionsEnabled(checked);
                 }
             });
         }
@@ -147,22 +147,23 @@ public class AuthUiActivity extends AppCompatActivity {
             mUseTwitterProvider.setText(R.string.twitter_label_missing_config);
         }
 
-        if (!isGitHubConfigured()) {
+        if (isGitHubMisconfigured()) {
             mUseGitHubProvider.setChecked(false);
             mUseGitHubProvider.setEnabled(false);
             mUseGitHubProvider.setText(R.string.github_label_missing_config);
-            setGitHubScopesEnabled(false);
+            setGitHubPermissionsEnabled(false);
         } else {
-            setGitHubScopesEnabled(mUseGoogleProvider.isChecked());
+            setGitHubPermissionsEnabled(mUseGitHubProvider.isChecked());
             mUseGitHubProvider.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    setGitHubScopesEnabled(checked);
+                    setGitHubPermissionsEnabled(checked);
                 }
             });
         }
 
-        if (isGoogleMisconfigured() || isFacebookMisconfigured() || isTwitterMisconfigured() || !isGitHubConfigured()) {
+        if (isGoogleMisconfigured() || isFacebookMisconfigured()
+                || isTwitterMisconfigured() || isGitHubMisconfigured()) {
             showSnackbar(R.string.configuration_required);
         }
 
@@ -335,13 +336,13 @@ public class AuthUiActivity extends AppCompatActivity {
         return twitterConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
-    private boolean isGitHubConfigured() {
+    private boolean isGitHubMisconfigured() {
         List<String> gitHubConfigs = Arrays.asList(
                 getString(R.string.github_client_id),
                 getString(R.string.github_client_secret)
         );
 
-        return !gitHubConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
+        return gitHubConfigs.contains(AuthUI.UNCONFIGURED_CONFIG_VALUE);
     }
 
     private void setGoogleScopesEnabled(boolean enabled) {
@@ -350,13 +351,13 @@ public class AuthUiActivity extends AppCompatActivity {
         mGoogleScopeYoutubeData.setEnabled(enabled);
     }
 
-    private void setFacebookScopesEnabled(boolean enabled) {
+    private void setFacebookPermissionsEnabled(boolean enabled) {
         mFacebookPermissionsHeader.setEnabled(enabled);
         mFacebookPermissionFriends.setEnabled(enabled);
         mFacebookPermissionPhotos.setEnabled(enabled);
     }
 
-    private void setGitHubScopesEnabled(boolean enabled) {
+    private void setGitHubPermissionsEnabled(boolean enabled) {
         mGitHubPermissionsHeader.setEnabled(enabled);
         mGitHubPermissionRepo.setEnabled(enabled);
         mGitHubPermissionGist.setEnabled(enabled);

@@ -51,7 +51,7 @@
     <string name="facebook_permission_friends">Friends</string>
     <string name="facebook_permission_photos">Photos</string>
 
-    <string name="github_permissions_header">Example extra GitHub scopes</string>
+    <string name="github_permissions_header">Example extra GitHub permissions</string>
     <string name="github_permission_repo">Repo</string>
     <string name="github_permission_gist">Gist</string>
 
