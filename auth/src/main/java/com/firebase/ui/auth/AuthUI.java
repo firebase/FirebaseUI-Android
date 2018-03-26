@@ -307,7 +307,7 @@ public class AuthUI {
             }
 
             googleOptions = google.getParams()
-                    .getParcelable(ExtraConstants.EXTRA_GOOGLE_SIGN_IN_OPTIONS);
+                    .getParcelable(ExtraConstants.GOOGLE_SIGN_IN_OPTIONS);
         }
 
         final GoogleSignInOptions finalGoogleOptions = googleOptions;
