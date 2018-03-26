@@ -32,20 +32,20 @@ public class CredentialSaveActivity extends HelperActivityBase {
                                       FlowParameters flowParams,
                                       Credential credential,
                                       IdpResponse response) {
-        return HelperActivityBase.createBaseIntent(context, CredentialSaveActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_CREDENTIAL, credential)
-                .putExtra(ExtraConstants.EXTRA_IDP_RESPONSE, response);
+        return createBaseIntent(context, CredentialSaveActivity.class, flowParams)
+                .putExtra(ExtraConstants.CREDENTIAL, credential)
+                .putExtra(ExtraConstants.IDP_RESPONSE, response);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mHandler = ViewModelProviders.of(this).get(SmartLockHandler.class);
         mHandler.init(getFlowParams());
 
-        Credential credential = getIntent().getParcelableExtra(ExtraConstants.EXTRA_CREDENTIAL);
-        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.EXTRA_IDP_RESPONSE);
+        Credential credential = getIntent().getParcelableExtra(ExtraConstants.CREDENTIAL);
+        mIdpResponse = getIntent().getParcelableExtra(ExtraConstants.IDP_RESPONSE);
 
         mHandler.getOperation().observe(this, new Observer<Resource<Void>>() {
             @Override
@@ -82,7 +82,7 @@ public class CredentialSaveActivity extends HelperActivityBase {
                 break;
             case SUCCESS:
             case FAILURE:
-                if (!FlowUtils.handleError(this, resource.getException())) {
+                if (FlowUtils.unhandled(this, resource.getException())) {
                     finish(RESULT_OK, mIdpResponse.toIntent());
                 }
                 break;

@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
@@ -69,8 +70,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         VerifyPhoneNumberFragment fragment = new VerifyPhoneNumberFragment();
 
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
-        args.putBundle(ExtraConstants.EXTRA_PARAMS, params);
+        args.putParcelable(ExtraConstants.FLOW_PARAMS, flowParameters);
+        args.putBundle(ExtraConstants.PARAMS, params);
 
         fragment.setArguments(args);
         return fragment;
@@ -84,8 +85,8 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
-            Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fui_phone_layout, container, false);
 
@@ -133,14 +134,14 @@ public class VerifyPhoneNumberFragment extends FragmentBase implements View.OnCl
         // Check for phone
         // It is assumed that the phone number that are being wired in via Credential Selector
         // are e164 since we store it.
-        Bundle params = getArguments().getBundle(ExtraConstants.EXTRA_PARAMS);
+        Bundle params = getArguments().getBundle(ExtraConstants.PARAMS);
         String phone = null;
         String countryIso = null;
         String nationalNumber = null;
         if (params != null) {
-            phone = params.getString(ExtraConstants.EXTRA_PHONE);
-            countryIso = params.getString(ExtraConstants.EXTRA_COUNTRY_ISO);
-            nationalNumber = params.getString(ExtraConstants.EXTRA_NATIONAL_NUMBER);
+            phone = params.getString(ExtraConstants.PHONE);
+            countryIso = params.getString(ExtraConstants.COUNTRY_ISO);
+            nationalNumber = params.getString(ExtraConstants.NATIONAL_NUMBER);
         }
         if (!TextUtils.isEmpty(countryIso) && !TextUtils.isEmpty(nationalNumber)) {
             // User supplied country code & national number

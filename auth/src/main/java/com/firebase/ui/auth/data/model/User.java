@@ -46,11 +46,11 @@ public class User implements Parcelable {
     }
 
     public static User getUser(Intent intent) {
-        return intent.getParcelableExtra(ExtraConstants.EXTRA_USER);
+        return intent.getParcelableExtra(ExtraConstants.USER);
     }
 
     public static User getUser(Bundle arguments) {
-        return arguments.getParcelable(ExtraConstants.EXTRA_USER);
+        return arguments.getParcelable(ExtraConstants.USER);
     }
 
     @NonNull
