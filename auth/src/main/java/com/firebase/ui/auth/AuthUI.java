@@ -859,7 +859,7 @@ public class AuthUI {
             @NonNull
             public GitHubBuilder setPermissions(@NonNull List<String> permissions) {
                 getParams().putStringArrayList(
-                        ExtraConstants.EXTRA_GITHUB_PERMISSIONS, new ArrayList<>(permissions));
+                        ExtraConstants.GITHUB_PERMISSIONS, new ArrayList<>(permissions));
                 return this;
             }
         }
