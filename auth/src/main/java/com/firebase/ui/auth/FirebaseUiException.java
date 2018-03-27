@@ -11,7 +11,7 @@ public class FirebaseUiException extends Exception {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public FirebaseUiException(@ErrorCodes.Code int code) {
-        mErrorCode = code;
+        this(code, ErrorCodes.toFriendlyMessage(code));
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
@@ -21,16 +21,15 @@ public class FirebaseUiException extends Exception {
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    public FirebaseUiException(@ErrorCodes.Code int code, @NonNull Throwable cause) {
+        this(code, ErrorCodes.toFriendlyMessage(code), cause);
+    }
+
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public FirebaseUiException(@ErrorCodes.Code int code,
                                @NonNull String message,
                                @NonNull Throwable cause) {
         super(message, cause);
-        mErrorCode = code;
-    }
-
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public FirebaseUiException(@ErrorCodes.Code int code, @NonNull Throwable cause) {
-        super(cause);
         mErrorCode = code;
     }
 
