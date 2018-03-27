@@ -11,7 +11,7 @@ import com.firebase.ui.auth.data.model.Resource;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.testhelpers.AutoCompleteTask;
 import com.firebase.ui.auth.testhelpers.FakeAuthResult;
-import com.firebase.ui.auth.testhelpers.FakeProviderQueryResult;
+import com.firebase.ui.auth.testhelpers.FakeSignInMethodQueryResult;
 import com.firebase.ui.auth.testhelpers.ResourceMatchers;
 import com.firebase.ui.auth.testhelpers.TestConstants;
 import com.firebase.ui.auth.testhelpers.TestHelper;
@@ -24,7 +24,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.ProviderQueryResult;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
 import org.junit.Before;
@@ -122,10 +122,10 @@ public class SocialProviderResponseHandlerTest {
         when(mMockAuth.signInWithCredential(any(AuthCredential.class)))
                 .thenReturn(AutoCompleteTask.<AuthResult>forFailure(
                         new FirebaseAuthUserCollisionException("foo", "bar")));
-        when(mMockAuth.fetchProvidersForEmail(any(String.class)))
-                .thenReturn(AutoCompleteTask.<ProviderQueryResult>forSuccess(
-                        new FakeProviderQueryResult(Collections.singletonList(
-                                FacebookAuthProvider.PROVIDER_ID))));
+        when(mMockAuth.fetchSignInMethodsForEmail(any(String.class)))
+                .thenReturn(AutoCompleteTask.<SignInMethodQueryResult>forSuccess(
+                        new FakeSignInMethodQueryResult(Collections.singletonList(
+                                FacebookAuthProvider.FACEBOOK_SIGN_IN_METHOD))));
 
         IdpResponse response = new IdpResponse.Builder(new User.Builder(
                 GoogleAuthProvider.PROVIDER_ID, TestConstants.EMAIL).build())
