@@ -9,8 +9,14 @@ import com.google.android.gms.common.GoogleApiAvailability;
 /**
  * Helper class wrapping {@link GoogleApiAvailability}. Used internally but can also be used by
  * client application
+ *
+ * @deprecated use {@link GoogleApiAvailability} instead
  */
+@Deprecated
 public class PlayServicesHelper {
+    /**
+     * @deprecated use {@link GoogleApiAvailability#getInstance()} instead
+     */
     @Deprecated
     public static GoogleApiAvailability getGoogleApiAvailability() {
         return GoogleApiAvailability.getInstance();
@@ -21,7 +27,10 @@ public class PlayServicesHelper {
      * @param requestCode    A request code to be used to return results to the Activity.
      * @param cancelListener A Dialog listener if the user cancels the recommended action.
      * @return true if play services is available, false otherwise.
+     * @deprecated use {@link GoogleApiAvailability#makeGooglePlayServicesAvailable(Activity)}
+     * instead.
      */
+    @Deprecated
     public static boolean makePlayServicesAvailable(Activity activity,
                                                     int requestCode,
                                                     DialogInterface.OnCancelListener cancelListener) {

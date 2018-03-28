@@ -16,20 +16,20 @@ package com.firebase.ui.auth.testhelpers;
 
 import android.support.annotation.Nullable;
 
-import com.google.firebase.auth.ProviderQueryResult;
+import com.google.firebase.auth.SignInMethodQueryResult;
 
 import java.util.List;
 
-public class FakeProviderQueryResult implements ProviderQueryResult {
-    private List<String> mProviders;
+public class FakeSignInMethodQueryResult implements SignInMethodQueryResult {
+    private List<String> mMethods;
 
-    public FakeProviderQueryResult(List<String> providers) {
-        mProviders = providers;
+    public FakeSignInMethodQueryResult(List<String> methods) {
+        mMethods = methods;
     }
 
     @Nullable
     @Override
-    public List<String> getProviders() {
-        return mProviders;
+    public List<String> getSignInMethods() {
+        return mMethods;
     }
 }
