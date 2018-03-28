@@ -44,6 +44,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.google.firebase.auth.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,11 +153,11 @@ public class SignedInActivity extends AppCompatActivity {
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
 
         List<String> providers = new ArrayList<>();
-        if (user.getProviders() == null || user.getProviders().isEmpty()) {
+        if (user.getProviderData().isEmpty()) {
             providers.add("Anonymous");
         } else {
-            for (String provider : user.getProviders()) {
-                switch (provider) {
+            for (UserInfo info : user.getProviderData()) {
+                switch (info.getProviderId()) {
                     case GoogleAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_google));
                         break;
@@ -173,7 +174,8 @@ public class SignedInActivity extends AppCompatActivity {
                         providers.add(getString(R.string.providers_phone));
                         break;
                     default:
-                        throw new IllegalStateException("Unknown provider: " + provider);
+                        throw new IllegalStateException(
+                                "Unknown provider: " + info.getProviderId());
                 }
             }
         }
