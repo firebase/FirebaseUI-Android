@@ -32,7 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GithubAuthProvider;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.auth.ProviderQueryResult;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.auth.TwitterAuthProvider;
 
 import java.util.List;
@@ -70,6 +70,26 @@ public final class ProviderUtils {
         }
 
         return providerIdToAccountType(response.getProviderType());
+    }
+
+    @NonNull
+    @AuthUI.SupportedProvider
+    public static String signInMethodToProviderId(@NonNull String method) {
+        switch (method) {
+            case GoogleAuthProvider.GOOGLE_SIGN_IN_METHOD:
+                return GoogleAuthProvider.PROVIDER_ID;
+            case FacebookAuthProvider.FACEBOOK_SIGN_IN_METHOD:
+                return FacebookAuthProvider.PROVIDER_ID;
+            case TwitterAuthProvider.TWITTER_SIGN_IN_METHOD:
+                return TwitterAuthProvider.PROVIDER_ID;
+            case PhoneAuthProvider.PHONE_SIGN_IN_METHOD:
+                return PhoneAuthProvider.PROVIDER_ID;
+            case EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD:
+            case EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD:
+                return EmailAuthProvider.PROVIDER_ID;
+            default:
+                throw new IllegalStateException("Unknown method: + " + method);
+        }
     }
 
     /**
@@ -136,15 +156,25 @@ public final class ProviderUtils {
             return Tasks.forException(new NullPointerException("Email cannot be empty"));
         }
 
-        return auth.fetchProvidersForEmail(email)
-                .continueWith(new Continuation<ProviderQueryResult, String>() {
+        return auth.fetchSignInMethodsForEmail(email)
+                .continueWith(new Continuation<SignInMethodQueryResult, String>() {
                     @Override
-                    public String then(@NonNull Task<ProviderQueryResult> task) {
+                    public String then(@NonNull Task<SignInMethodQueryResult> task) {
                         if (!task.isSuccessful()) return null;
 
-                        List<String> providers = task.getResult().getProviders();
-                        return providers == null || providers.isEmpty()
-                                ? null : providers.get(providers.size() - 1);
+                        List<String> methods = task.getResult().getSignInMethods();
+                        return methods == null || methods.isEmpty()
+                                ? null : methods.get(methods.size() - 1);
+                    }
+                }).continueWith(new Continuation<String, String>() {
+                    @Override
+                    public String then(@NonNull Task<String> task) {
+                        String method = task.getResult();
+                        if (method == null) {
+                            return null;
+                        } else {
+                            return signInMethodToProviderId(method);
+                        }
                     }
                 });
     }
