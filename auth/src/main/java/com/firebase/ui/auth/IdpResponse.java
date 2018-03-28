@@ -103,7 +103,9 @@ public class IdpResponse implements Parcelable {
         if (e instanceof FirebaseUiException) {
             return new IdpResponse((FirebaseUiException) e);
         } else {
-            return new IdpResponse(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, e));
+            FirebaseUiException wrapped = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR, e);
+            wrapped.setStackTrace(e.getStackTrace());
+            return new IdpResponse(wrapped);
         }
     }
 
@@ -227,7 +229,11 @@ public class IdpResponse implements Parcelable {
         } catch (IOException e) {
             // Somewhere down the line, the exception is holding on to an object that isn't
             // serializable so default to some exception. It's the best we can do in this case.
-            dest.writeSerializable(new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR));
+            FirebaseUiException fake = new FirebaseUiException(ErrorCodes.UNKNOWN_ERROR,
+                    "Fake exception created, original: " + mException
+                            + ", original cause: " + mException.getCause());
+            fake.setStackTrace(mException.getStackTrace());
+            dest.writeSerializable(fake);
         } finally {
             if (oos != null) {
                 try {
