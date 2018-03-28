@@ -152,11 +152,7 @@ public final class ProviderUtils {
                 .continueWith(new Continuation<SignInMethodQueryResult, String>() {
                     @Override
                     public String then(@NonNull Task<SignInMethodQueryResult> task) {
-                        if (!task.isSuccessful()) return null;
-
-                        List<String> methods = task.getResult().getSignInMethods();
-                        return methods == null || methods.isEmpty()
-                                ? null : methods.get(methods.size() - 1);
+                        return task.isSuccessful() ? getLastUsedProvider(task.getResult()) : null;
                     }
                 }).continueWith(new Continuation<String, String>() {
                     @Override
@@ -169,5 +165,12 @@ public final class ProviderUtils {
                         }
                     }
                 });
+    }
+
+    @Nullable
+    public static String getLastUsedProvider(SignInMethodQueryResult result) {
+        List<String> methods = result.getSignInMethods();
+        return methods == null || methods.isEmpty()
+                ? null : methods.get(methods.size() - 1);
     }
 }

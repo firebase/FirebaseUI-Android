@@ -29,7 +29,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.auth.ProviderQueryResult;
+import com.google.firebase.auth.SignInMethodQueryResult;
 
 import java.util.List;
 
@@ -74,7 +74,7 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
                         String email = response.getEmail();
                         if (email != null) {
                             if (e instanceof FirebaseAuthUserCollisionException) {
-                                getAuth().fetchProvidersForEmail(email)
+                                getAuth().fetchSignInMethodsForEmail(email)
                                         .addOnSuccessListener(new StartWelcomeBackFlow(response))
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -108,7 +108,7 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
         }
     }
 
-    private class StartWelcomeBackFlow implements OnSuccessListener<ProviderQueryResult> {
+    private class StartWelcomeBackFlow implements OnSuccessListener<SignInMethodQueryResult> {
         private final IdpResponse mResponse;
 
         public StartWelcomeBackFlow(IdpResponse response) {
@@ -116,11 +116,11 @@ public class SocialProviderResponseHandler extends AuthViewModelBase<IdpResponse
         }
 
         @Override
-        public void onSuccess(ProviderQueryResult result) {
-            List<String> providers = result.getProviders();
+        public void onSuccess(SignInMethodQueryResult result) {
+            List<String> methods = result.getSignInMethods();
             AuthCredential credential = ProviderUtils.getAuthCredential(mResponse);
             if (canLinkAccounts() && credential != null
-                    && providers != null && providers.contains(credential.getProvider())) {
+                    && methods != null && methods.contains(credential.getSignInMethod())) {
                 // We don't want to show the welcome back dialog since the user selected
                 // an existing account and we can just link the two accounts without knowing
                 // prevCredential.
