@@ -58,7 +58,7 @@ dependencies {
     // They are used to make some aspects of the demo app implementation simpler for
     // demonstrative purposes, and you may find them useful in your own apps; YMMV.
     implementation "android.arch.lifecycle:runtime:$architectureVersion"
-    implementation 'pub.devrel:easypermissions:1.1.3'
+    implementation 'pub.devrel:easypermissions:1.2.0'
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'

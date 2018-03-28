@@ -40,11 +40,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.PlayGamesAuthProvider;
 import com.google.firebase.auth.TwitterAuthProvider;
+import com.google.firebase.auth.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,11 +155,11 @@ public class SignedInActivity extends AppCompatActivity {
                 TextUtils.isEmpty(user.getDisplayName()) ? "No display name" : user.getDisplayName());
 
         List<String> providers = new ArrayList<>();
-        if (user.getProviders() == null || user.getProviders().isEmpty()) {
+        if (user.getProviderData().isEmpty()) {
             providers.add("Anonymous");
         } else {
-            for (String provider : user.getProviders()) {
-                switch (provider) {
+            for (UserInfo info : user.getProviderData()) {
+                switch (info.getProviderId()) {
                     case GoogleAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_google));
                         break;
@@ -176,8 +178,12 @@ public class SignedInActivity extends AppCompatActivity {
                     case PhoneAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_phone));
                         break;
+                    case FirebaseAuthProvider.PROVIDER_ID:
+                        // Ignore this provider, it's not very meaningful
+                        break;
                     default:
-                        throw new IllegalStateException("Unknown provider: " + provider);
+                        throw new IllegalStateException(
+                                "Unknown provider: " + info.getProviderId());
                 }
             }
         }
