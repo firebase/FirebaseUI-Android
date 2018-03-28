@@ -9,6 +9,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QueryListenOptions;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -95,30 +96,32 @@ public class FirestoreArray<T> extends ObservableSnapshotArray<T>
     }
 
     private void onDocumentAdded(DocumentChange change) {
-        mSnapshots.add(change.getNewIndex(), change.getDocument());
-        notifyOnChildChanged(ChangeEventType.ADDED, change.getDocument(), change.getNewIndex(), -1);
+        QueryDocumentSnapshot snapshot = change.getDocument();
+        mSnapshots.add(change.getNewIndex(), snapshot);
+        notifyOnChildChanged(ChangeEventType.ADDED, snapshot, change.getNewIndex(), -1);
     }
 
     private void onDocumentRemoved(DocumentChange change) {
         mSnapshots.remove(change.getOldIndex());
-        notifyOnChildChanged(
-                ChangeEventType.REMOVED, change.getDocument(), -1, change.getOldIndex());
+        QueryDocumentSnapshot snapshot = change.getDocument();
+        notifyOnChildChanged(ChangeEventType.REMOVED, snapshot, -1, change.getOldIndex());
     }
 
     private void onDocumentModified(DocumentChange change) {
+        QueryDocumentSnapshot snapshot = change.getDocument();
         if (change.getOldIndex() == change.getNewIndex()) {
             // Document modified only
-            mSnapshots.set(change.getNewIndex(), change.getDocument());
-            notifyOnChildChanged(ChangeEventType.CHANGED, change.getDocument(),
+            mSnapshots.set(change.getNewIndex(), snapshot);
+            notifyOnChildChanged(ChangeEventType.CHANGED, snapshot,
                     change.getNewIndex(), change.getNewIndex());
         } else {
             // Document moved and possibly also modified
             mSnapshots.remove(change.getOldIndex());
-            mSnapshots.add(change.getNewIndex(), change.getDocument());
+            mSnapshots.add(change.getNewIndex(), snapshot);
 
-            notifyOnChildChanged(ChangeEventType.MOVED, change.getDocument(),
+            notifyOnChildChanged(ChangeEventType.MOVED, snapshot,
                     change.getNewIndex(), change.getOldIndex());
-            notifyOnChildChanged(ChangeEventType.CHANGED, change.getDocument(),
+            notifyOnChildChanged(ChangeEventType.CHANGED, snapshot,
                     change.getNewIndex(), change.getNewIndex());
         }
     }
