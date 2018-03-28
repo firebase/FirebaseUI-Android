@@ -12,10 +12,11 @@ import android.support.annotation.RestrictTo;
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public final class Resource<T> {
-
     private final State mState;
     private final T mValue;
     private final Exception mException;
+
+    private boolean mIsUsed;
 
     private Resource(State state, T value, Exception exception) {
         mState = state;
@@ -62,12 +63,18 @@ public final class Resource<T> {
 
     @Nullable
     public final Exception getException() {
+        mIsUsed = true;
         return mException;
     }
 
     @Nullable
     public T getValue() {
+        mIsUsed = true;
         return mValue;
+    }
+
+    public boolean isUsed() {
+        return mIsUsed;
     }
 
     @Override

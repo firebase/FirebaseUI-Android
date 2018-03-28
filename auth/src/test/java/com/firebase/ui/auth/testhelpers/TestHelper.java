@@ -50,6 +50,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -152,7 +153,7 @@ public class TestHelper {
         return user;
     }
 
-    public static FlowParameters getFlowParameters(List<String> providerIds) {
+    public static FlowParameters getFlowParameters(Collection<String> providerIds) {
         List<IdpConfig> idpConfigs = new ArrayList<>();
         for (String providerId : providerIds) {
             switch (providerId) {
@@ -200,7 +201,7 @@ public class TestHelper {
                 CredentialSaveActivity.class.getName());
 
         // Check the credential passed
-        Credential credential = startedIntent.getParcelableExtra(ExtraConstants.EXTRA_CREDENTIAL);
+        Credential credential = startedIntent.getParcelableExtra(ExtraConstants.CREDENTIAL);
 
         // Check the password
         assertEquals(credential.getPassword(), password);

@@ -139,7 +139,7 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
         try {
             return Tasks.forResult(continuation.then(this));
         } catch (Exception e) {
-            return Tasks.forException(e);
+            return Tasks.forException(unwrap(e));
         }
     }
 
@@ -150,7 +150,7 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
         try {
             return continuation.then(this);
         } catch (Exception e) {
-            return Tasks.forException(e);
+            return Tasks.forException(unwrap(e));
         }
     }
 
@@ -161,5 +161,12 @@ public class AutoCompleteTask<TResult> extends Task<TResult> {
         } else {
             throw mException;
         }
+    }
+
+    private static Exception unwrap(Exception e) {
+        if (e instanceof RuntimeExecutionException && e.getCause() instanceof Exception) {
+            return (Exception) e.getCause();
+        }
+        return e;
     }
 }

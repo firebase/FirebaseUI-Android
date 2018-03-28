@@ -18,6 +18,7 @@ import com.firebase.ui.auth.util.CredentialsUtil;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
 import com.firebase.ui.auth.viewmodel.FlowHolder;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -26,31 +27,26 @@ import static com.firebase.ui.auth.util.Preconditions.checkNotNull;
 @SuppressWarnings("Registered")
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 public class HelperActivityBase extends AppCompatActivity {
-
-    private static final String TAG = "HelperActivityBase";
-
-    private static final int RC_SAVE_CREDENTIAL = 101;
-
     private FlowHolder mFlowHolder;
 
     private FlowParameters mFlowParameters;
     private AuthHelper mAuthHelper;
     private ProgressDialogHolder mProgressDialogHolder;
 
-    public static Intent createBaseIntent(
+    protected static Intent createBaseIntent(
             @NonNull Context context,
             @NonNull Class<? extends Activity> target,
             @NonNull FlowParameters flowParams) {
         return new Intent(
                 checkNotNull(context, "context cannot be null"),
                 checkNotNull(target, "target activity cannot be null"))
-                .putExtra(ExtraConstants.EXTRA_FLOW_PARAMS,
+                .putExtra(ExtraConstants.FLOW_PARAMS,
                         checkNotNull(flowParams, "flowParams cannot be null"));
     }
 
     @Override
-    protected void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         mAuthHelper = new AuthHelper(getFlowParams());
         mProgressDialogHolder = new ProgressDialogHolder(this);
     }
@@ -66,7 +62,7 @@ public class HelperActivityBase extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Forward the results of Smartlock Saving
-        if (requestCode == RC_SAVE_CREDENTIAL) {
+        if (requestCode == RequestCodes.CRED_SAVE_FLOW) {
             finish(RESULT_OK, data);
         }
     }
@@ -96,7 +92,7 @@ public class HelperActivityBase extends AppCompatActivity {
         return mProgressDialogHolder;
     }
 
-    public void finish(int resultCode, Intent intent) {
+    public void finish(int resultCode, @Nullable Intent intent) {
         setResult(resultCode, intent);
         finish();
     }
@@ -114,6 +110,6 @@ public class HelperActivityBase extends AppCompatActivity {
         // Start the dedicated SmartLock Activity
         Intent intent = CredentialSaveActivity.createIntent(this, getFlowParams(),
                 credential, response);
-        startActivityForResult(intent, RC_SAVE_CREDENTIAL);
+        startActivityForResult(intent, RequestCodes.CRED_SAVE_FLOW);
     }
 }

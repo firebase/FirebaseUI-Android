@@ -14,54 +14,53 @@
 
     <!-- Auth UI -->
     <string name="launch_title">FirebaseUI Auth Demo</string>
-    <string name="sign_in">Start</string>
+    <string name="sign_in_start">Start</string>
 
-    <string name="use_theme_header">Use theme:</string>
-    <string name="default_theme">Default theme</string>
-    <string name="purple_theme">Purple Theme</string>
-    <string name="green_theme">Green Theme</string>
-    <string name="dark_theme">Dark Theme</string>
+    <string name="providers_header">Auth providers</string>
+    <string name="providers_google">Google</string>
+    <string name="providers_facebook">Facebook</string>
+    <string name="providers_twitter">Twitter</string>
+    <string name="providers_email">Email</string>
+    <string name="providers_phone">Phone</string>
 
-    <string name="logo_header">Logo:</string>
-    <string name="firebase_logo_label">Firebase Auth</string>
-    <string name="google_logo_label">Google</string>
-    <string name="no_logo_label">None</string>
+    <string name="theme_header">Theme</string>
+    <string name="theme_default">Default theme</string>
+    <string name="theme_purple">Purple Theme</string>
+    <string name="theme_green">Green Theme</string>
+    <string name="theme_dark">Dark Theme</string>
 
-    <string name="auth_providers_header">Use auth providers:</string>
-    <string name="google_label">Google</string>
-    <string name="facebook_label">Facebook</string>
-    <string name="twitter_label">Twitter</string>
-    <string name="email_label">Email</string>
-    <string name="phone_label">Phone</string>
+    <string name="logo_header">Logo</string>
+    <string name="logo_firebase">Firebase Auth</string>
+    <string name="logo_google">Google</string>
+    <string name="logo_none">None</string>
 
-    <string name="configuration_required">Configuration is required - see README.md</string>
-    <string name="google_label_missing_config">Google - configuration missing</string>
-    <string name="facebook_label_missing_config">Facebook - configuration missing</string>
-    <string name="twitter_label_missing_config">Twitter - configuration missing</string>
+    <string name="tos_header">Terms of Service URL</string>
+    <string name="tos_google">Google</string>
+    <string name="tos_firebase">Firebase</string>
 
-    <string name="tos_header">Terms of Service URL:</string>
-    <string name="google_tos_label">Google TOS</string>
-    <string name="firebase_tos_label">Firebase TOS</string>
+    <string name="pp_header">Privacy Policy URL</string>
+    <string name="pp_google">Google</string>
+    <string name="pp_firebase">Firebase</string>
 
-    <string name="privacy_policy_header">Privacy Policy URL:</string>
-    <string name="google_privacy_label">Google Privacy Policy</string>
-    <string name="firebase_privacy_label">Firebase Privacy Policy</string>
+    <string name="google_scopes_header">Example extra Google scopes</string>
+    <string name="google_scope_drive_file">Drive File</string>
+    <string name="google_scope_youtube_data">Youtube data</string>
 
-    <string name="extra_google_scopes">Example extra Google scopes</string>
-    <string name="drive_file_scope">Drive File</string>
-    <string name="youtube_data_scope">Youtube data</string>
+    <string name="facebook_permissions_header">Example extra Facebook permissions</string>
+    <string name="facebook_permission_friends">Friends</string>
+    <string name="facebook_permission_photos">Photos</string>
 
-    <string name="extra_facebook_scopes">Example extra Facebook scopes</string>
-    <string name="friends">Friends</string>
-    <string name="photos">Photos</string>
+    <string name="options_header">Other Options</string>
+    <string name="options_enable_credential_selector">Enable Smart Lock\'s credential selector</string>
+    <string name="options_enable_hint_selector">Enable Smart Lock\'s hint selector</string>
+    <string name="options_allow_new_email_acccount">Allow new account creation</string>
+    <string name="options_require_name">Require first/last name with email accounts.</string>
 
-    <string name="other_options_header">Other Options:</string>
-    <string name="enable_credential_selector">Enable Smart Lock\'s credential selector</string>
-    <string name="enable_hint_selector">Enable Smart Lock\'s hint selector</string>
-    <string name="allow_new_email_acccount">Allow account creation if email does not exist.</string>
-    <string name="require_name">Require first/last name with email accounts.</string>
+    <string name="configuration_required">Configuration required - see README.md</string>
+    <string name="google_label_missing_config">Google configuration missing</string>
+    <string name="facebook_label_missing_config">Facebook configuration missing</string>
+    <string name="twitter_label_missing_config">Twitter configuration missing</string>
 
-    <string name="unknown_response">Unexpected onActivityResult response code</string>
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="unknown_error">An unknown error occurred</string>
@@ -76,9 +75,9 @@
 
     <string name="user_profile_header">User profile:</string>
     <string name="profile_picture_content_desc">Profile picture</string>
+    <string name="used_providers">Providers used: %s</string>
     <string name="idp_token">IDP Token</string>
     <string name="idp_secret">IDP Secret</string>
-
 
     <!-- Storage -->
     <string name="choose_image">Choose Image</string>
@@ -98,4 +97,5 @@
         Make sure your device is online and that Anonymous Auth is configured in your Firebase project
         (https://console.firebase.google.com/project/_/authentication/providers)
     </string>
+    <string name="hint_message">Say something…</string>
 </resources>

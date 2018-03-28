@@ -17,6 +17,7 @@ package com.firebase.ui.auth.ui.email;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentTransaction;
@@ -28,10 +29,10 @@ import com.firebase.ui.auth.R;
 import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.ui.AppCompatBase;
-import com.firebase.ui.auth.ui.HelperActivityBase;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 
@@ -44,21 +45,17 @@ import com.google.firebase.auth.EmailAuthProvider;
 public class EmailActivity extends AppCompatBase implements
         CheckEmailFragment.CheckEmailListener,
         RegisterEmailFragment.RegistrationListener {
-
-    public static final int RC_WELCOME_BACK_IDP = 18;
-    private static final int RC_SIGN_IN = 17;
-
     public static Intent createIntent(Context context, FlowParameters flowParams) {
         return createIntent(context, flowParams, null);
     }
 
     public static Intent createIntent(Context context, FlowParameters flowParams, String email) {
-        return HelperActivityBase.createBaseIntent(context, EmailActivity.class, flowParams)
-                .putExtra(ExtraConstants.EXTRA_EMAIL, email);
+        return createBaseIntent(context, EmailActivity.class, flowParams)
+                .putExtra(ExtraConstants.EMAIL, email);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fui_activity_register_email);
 
@@ -67,7 +64,7 @@ public class EmailActivity extends AppCompatBase implements
         }
 
         // Get email from intent (can be null)
-        String email = getIntent().getExtras().getString(ExtraConstants.EXTRA_EMAIL);
+        String email = getIntent().getExtras().getString(ExtraConstants.EMAIL);
 
         // Start with check email
         CheckEmailFragment fragment = CheckEmailFragment.newInstance(getFlowParams(), email);
@@ -86,10 +83,9 @@ public class EmailActivity extends AppCompatBase implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RC_SIGN_IN:
-            case RC_WELCOME_BACK_IDP:
-                finish(resultCode, data);
+        if (requestCode == RequestCodes.WELCOME_BACK_EMAIL_FLOW
+                || requestCode == RequestCodes.WELCOME_BACK_IDP_FLOW) {
+            finish(resultCode, data);
         }
     }
 
@@ -98,10 +94,8 @@ public class EmailActivity extends AppCompatBase implements
         // Existing email user, direct them to sign in with their password.
         startActivityForResult(
                 WelcomeBackPasswordPrompt.createIntent(
-                        this,
-                        getFlowParams(),
-                        new IdpResponse.Builder(user).build()),
-                RC_SIGN_IN);
+                        this, getFlowParams(), new IdpResponse.Builder(user).build()),
+                RequestCodes.WELCOME_BACK_EMAIL_FLOW);
 
         setSlideAnimation();
     }
@@ -110,8 +104,8 @@ public class EmailActivity extends AppCompatBase implements
     public void onExistingIdpUser(User user) {
         // Existing social user, direct them to sign in using their chosen provider.
         startActivityForResult(
-                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user, null),
-                RC_WELCOME_BACK_IDP);
+                WelcomeBackIdpPrompt.createIntent(this, getFlowParams(), user),
+                RequestCodes.WELCOME_BACK_IDP_FLOW);
         setSlideAnimation();
     }
 
@@ -122,9 +116,9 @@ public class EmailActivity extends AppCompatBase implements
 
         TextInputLayout emailLayout = findViewById(R.id.email_layout);
 
-        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
+        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
-        if (emailConfig.getParams().getBoolean(ExtraConstants.EXTRA_ALLOW_NEW_EMAILS, true)) {
+        if (emailConfig.getParams().getBoolean(ExtraConstants.ALLOW_NEW_EMAILS, true)) {
             RegisterEmailFragment fragment = RegisterEmailFragment.newInstance(
                     getFlowParams(),
                     user);

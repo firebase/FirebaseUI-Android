@@ -21,10 +21,10 @@ import com.firebase.ui.auth.data.model.FlowParameters;
 import com.firebase.ui.auth.data.model.User;
 import com.firebase.ui.auth.data.remote.ProfileMerger;
 import com.firebase.ui.auth.ui.FragmentBase;
-import com.firebase.ui.auth.ui.TaskFailureLogger;
 import com.firebase.ui.auth.ui.idp.WelcomeBackIdpPrompt;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.firebase.ui.auth.util.data.ProviderUtils;
+import com.firebase.ui.auth.util.data.TaskFailureLogger;
 import com.firebase.ui.auth.util.ui.ImeHelper;
 import com.firebase.ui.auth.util.ui.PreambleHandler;
 import com.firebase.ui.auth.util.ui.fieldvalidators.BaseValidator;
@@ -32,6 +32,7 @@ import com.firebase.ui.auth.util.ui.fieldvalidators.EmailFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.NoOpValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.PasswordFieldValidator;
 import com.firebase.ui.auth.util.ui.fieldvalidators.RequiredFieldValidator;
+import com.firebase.ui.auth.viewmodel.RequestCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -78,8 +79,8 @@ public class RegisterEmailFragment extends FragmentBase implements
         RegisterEmailFragment fragment = new RegisterEmailFragment();
 
         Bundle args = new Bundle();
-        args.putParcelable(ExtraConstants.EXTRA_FLOW_PARAMS, flowParameters);
-        args.putParcelable(ExtraConstants.EXTRA_USER, user);
+        args.putParcelable(ExtraConstants.FLOW_PARAMS, flowParameters);
+        args.putParcelable(ExtraConstants.USER, user);
 
         fragment.setArguments(args);
         return fragment;
@@ -97,17 +98,17 @@ public class RegisterEmailFragment extends FragmentBase implements
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fui_register_email_layout, container, false);
 
         // Get configuration
-        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdps(
+        AuthUI.IdpConfig emailConfig = ProviderUtils.getConfigFromIdpsOrThrow(
                 getFlowParams().providerInfo, EmailAuthProvider.PROVIDER_ID);
         boolean requireName = emailConfig.getParams()
-                .getBoolean(ExtraConstants.EXTRA_REQUIRE_NAME, true);
+                .getBoolean(ExtraConstants.REQUIRE_NAME, true);
 
         mEmailEditText = v.findViewById(R.id.email);
         mNameEditText = v.findViewById(R.id.name);
@@ -198,13 +199,12 @@ public class RegisterEmailFragment extends FragmentBase implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(ExtraConstants.EXTRA_USER,
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(ExtraConstants.USER,
                 new User.Builder(EmailAuthProvider.PROVIDER_ID, mEmailEditText.getText().toString())
                         .setName(mNameEditText.getText().toString())
                         .setPhotoUri(mUser.getPhotoUri())
                         .build());
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -304,16 +304,15 @@ public class RegisterEmailFragment extends FragmentBase implements
                                                                 new IdpResponse.Builder(new User.Builder(
                                                                         EmailAuthProvider.PROVIDER_ID,
                                                                         email).build()).build()),
-                                                        EmailActivity.RC_WELCOME_BACK_IDP);
+                                                        RequestCodes.WELCOME_BACK_EMAIL_FLOW);
                                             } else {
                                                 getActivity().startActivityForResult(
                                                         WelcomeBackIdpPrompt.createIntent(
                                                                 getContext(),
                                                                 getFlowParams(),
                                                                 new User.Builder(provider, email)
-                                                                        .build(),
-                                                                null),
-                                                        EmailActivity.RC_WELCOME_BACK_IDP);
+                                                                        .build()),
+                                                        RequestCodes.WELCOME_BACK_IDP_FLOW);
                                             }
                                         }
                                     })
