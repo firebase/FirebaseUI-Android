@@ -40,6 +40,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -171,6 +172,9 @@ public class SignedInActivity extends AppCompatActivity {
                         break;
                     case PhoneAuthProvider.PROVIDER_ID:
                         providers.add(getString(R.string.providers_phone));
+                        break;
+                    case FirebaseAuthProvider.PROVIDER_ID:
+                        // Ignore this provider, it's not very meaningful
                         break;
                     default:
                         throw new IllegalStateException("Unknown provider: " + provider);
