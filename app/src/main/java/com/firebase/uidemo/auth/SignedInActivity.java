@@ -174,7 +174,8 @@ public class SignedInActivity extends AppCompatActivity {
                         providers.add(getString(R.string.providers_phone));
                         break;
                     default:
-                        throw new IllegalStateException("Unknown provider: " + info);
+                        throw new IllegalStateException(
+                                "Unknown provider: " + info.getProviderId());
                 }
             }
         }
