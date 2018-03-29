@@ -320,6 +320,10 @@ public class AuthUI {
         final GoogleSignInOptions finalGoogleOptions = googleOptions;
         return GoogleApiUtils.getCredentialsClient(context)
                 .request(new CredentialRequest.Builder()
+                        // We can support both email and Google at the same time here because they
+                        // are mutually exclusive. If a user signs in with Google, their email
+                        // account will automatically be upgraded (a.k.a. replaced) with the Google
+                        // one, meaning Smart Lock won't have to show the picker UI.
                         .setPasswordLoginSupported(email != null)
                         .setAccountTypes(google == null ? null :
                                 ProviderUtils.providerIdToAccountType(GoogleAuthProvider.PROVIDER_ID))
