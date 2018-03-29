@@ -282,9 +282,6 @@ public class AuthUI {
         if (mAuth.getCurrentUser() != null) {
             throw new IllegalArgumentException("User already signed in!");
         }
-        if (desiredConfigs.isEmpty()) {
-            throw new IllegalArgumentException("At least one provider must be specified.");
-        }
 
         List<IdpConfig> configs = new ArrayList<>();
         for (IdpConfig config : desiredConfigs) {
@@ -296,7 +293,8 @@ public class AuthUI {
         }
 
         if (configs.isEmpty()) {
-            throw new IllegalArgumentException("No supported providers were supplied.");
+            throw new IllegalArgumentException("No supported providers were supplied. " +
+                    "Add either Google or email support.");
         }
 
         final Context appContext = context.getApplicationContext();
