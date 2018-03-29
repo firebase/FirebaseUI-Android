@@ -2,7 +2,6 @@ package com.firebase.ui.firestore.paging;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.arch.paging.PagedList;
@@ -26,9 +25,21 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
         implements LifecycleObserver {
 
     private final SnapshotParser<T> mParser;
-    private final LiveData<PagedList<DocumentSnapshot>> mData;
+    private final PagingData mData;
 
-    private final Observer<PagedList<DocumentSnapshot>> mObserver =
+    private final Observer<LoadingState> mStateObserver =
+            new Observer<LoadingState>() {
+                @Override
+                public void onChanged(@Nullable LoadingState state) {
+                    if (state == null) {
+                        return;
+                    }
+
+                    onLoadingStateChanged(state);
+                }
+            };
+
+    private final Observer<PagedList<DocumentSnapshot>> mDataObserver =
             new Observer<PagedList<DocumentSnapshot>>() {
                 @Override
                 public void onChanged(@Nullable PagedList<DocumentSnapshot> snapshots) {
@@ -75,12 +86,14 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void startListening() {
-        mData.observeForever(mObserver);
+        mData.getSnapshots().observeForever(mDataObserver);
+        mData.getLoadingState().observeForever(mStateObserver);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void stopListening() {
-        mData.removeObserver(mObserver);
+        mData.getSnapshots().removeObserver(mDataObserver);
+        mData.getLoadingState().removeObserver(mStateObserver);
     }
 
     @NonNull
@@ -94,6 +107,10 @@ public abstract class FirestorePagingAdapter<T, VH extends RecyclerView.ViewHold
     }
 
     protected abstract void onBindViewHolder(@NonNull VH holder, int position, T model);
+
+    protected void onLoadingStateChanged(@NonNull LoadingState state) {
+        // For overriding
+    }
 
     private void onListChanged(@NonNull PagedList<DocumentSnapshot> snapshots) {
         submitList(snapshots);

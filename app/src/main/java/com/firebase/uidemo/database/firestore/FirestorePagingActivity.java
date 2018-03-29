@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter;
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
+import com.firebase.ui.firestore.paging.LoadingState;
 import com.firebase.uidemo.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -66,6 +67,7 @@ public class FirestorePagingActivity extends AppCompatActivity {
                 .build();
 
         FirestorePagingOptions<Item> options = new FirestorePagingOptions.Builder<Item>()
+                .setOwner(this)
                 .setQuery(baseQuery, config, Item.class)
                 .build();
 
@@ -86,9 +88,23 @@ public class FirestorePagingActivity extends AppCompatActivity {
                                                     Item model) {
                         holder.bind(model);
                     }
-                };
 
-        // TODO: Expose loading state in the adapter
+                    @Override
+                    protected void onLoadingStateChanged(@NonNull LoadingState state) {
+                        switch (state) {
+                            case LOADING_INITIAL:
+                            case LOADING_MORE:
+                                mProgressBar.setVisibility(View.VISIBLE);
+                                break;
+                            case LOADED:
+                                mProgressBar.setVisibility(View.GONE);
+                                break;
+                            case ERROR:
+                                showToast("An error occurred.");
+                                break;
+                        }
+                    }
+                };
 
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
         mRecycler.setAdapter(adapter);

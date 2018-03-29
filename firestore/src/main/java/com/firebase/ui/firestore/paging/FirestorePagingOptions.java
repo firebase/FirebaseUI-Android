@@ -1,15 +1,12 @@
 package com.firebase.ui.firestore.paging;
 
 import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.LiveData;
-import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.firebase.ui.firestore.ClassSnapshotParser;
 import com.firebase.ui.firestore.SnapshotParser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
@@ -17,20 +14,20 @@ import com.google.firebase.firestore.Query;
  */
 public class FirestorePagingOptions<T> {
 
-    private final LiveData<PagedList<DocumentSnapshot>> mData;
+    private final PagingData mData;
     private final SnapshotParser<T> mParser;
     private final LifecycleOwner mOwner;
 
-    private FirestorePagingOptions(@NonNull LiveData<PagedList<DocumentSnapshot>> data,
-                                  @NonNull SnapshotParser<T> parser,
-                                  @Nullable LifecycleOwner owner) {
+    private FirestorePagingOptions(@NonNull PagingData data,
+                                   @NonNull SnapshotParser<T> parser,
+                                   @Nullable LifecycleOwner owner) {
         mData = data;
         mParser = parser;
         mOwner = owner;
     }
 
     @NonNull
-    public LiveData<PagedList<DocumentSnapshot>> getData() {
+    public PagingData getData() {
         return mData;
     }
 
@@ -46,7 +43,7 @@ public class FirestorePagingOptions<T> {
 
     public static class Builder<T> {
 
-        private LiveData<PagedList<DocumentSnapshot>> mData;
+        private PagingData mData;
         private SnapshotParser<T> mParser;
         private LifecycleOwner mOwner;
 
@@ -62,10 +59,10 @@ public class FirestorePagingOptions<T> {
                                    @NonNull PagedList.Config config,
                                    @NonNull SnapshotParser<T> parser) {
 
+
             // Build paged list
-            mData = new LivePagedListBuilder<>(
-                    FirestoreDataSource.newFactory(query),
-                    config).build();
+            FirestoreDataSource.Factory factory = new FirestoreDataSource.Factory(query);
+            mData = new PagingData(factory, config);
 
             mParser = parser;
             return this;
